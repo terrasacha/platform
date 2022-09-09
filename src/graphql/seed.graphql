@@ -1,0 +1,38 @@
+# Roles Admon y Willer(dummy)
+mutation MyMutationCreateAdmon {
+  createUser(input: {id: "13eebb18-190f-45b2-a09f-e11976918b7d", name: "BLOCK-E ADMON", cellphone: "3102241181", addresss: "CR 1 # 11-01 ", dateOfBirth: "2000-10-01", role: "admon", isProfileUpdated: false}) {
+    addresss
+    cellphone
+    dateOfBirth
+    id
+    isProfileUpdated
+    name
+  }
+}
+
+mutation MyMutationCreateUserInvestor {
+  createUser(input: 
+    {
+        addresss: "Crr 1 # 1", 
+        cellphone: "+573102241181", 
+        dateOfBirth: "2022-01-01", 
+        id: "investor", 
+        isProfileUpdated: true,  
+        name: "Investor", 
+        role: "investor"}) {
+    addresss
+    cellphone
+    dateOfBirth
+    id
+    isProfileUpdated
+    name
+    role
+  }
+}
+
+# It must create a Discount
+
+
+# s3 for dev and production replace on ListProducts.jsx
+> prod: https://kio-willow-pay-bucket110530-prod.s3.amazonaws.com/public/
+> dev: https://kio-willow-pay-bucket110245-dev.s3.amazonaws.com/public/
