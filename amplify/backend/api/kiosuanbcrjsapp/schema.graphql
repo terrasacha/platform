@@ -1,0 +1,132 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+# Data Types https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+# Auth Models
+
+type User @model 
+{
+  id: ID!
+  name: String!
+  dateOfBirth: AWSDate
+  isProfileUpdated: Boolean!
+  addresss: String
+  cellphone: AWSPhone
+  role: String!
+  wallets: [Wallet] @hasMany(indexName: "byUser", fields: ["id"])
+  verifierVerifications: [Verification] @hasMany(indexName: "byVerifierUser", fields: ["id"])
+  verifiedVerifications: [Verification] @hasMany(indexName: "byVerifiedUser", fields: ["id"])
+}
+
+type Wallet @model 
+  {
+  id: ID!
+  name: String!
+  status: String!
+  isSelected: Boolean
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
+}
+
+type Verification @model {
+  id: ID!
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  sign: String
+  userVerifierID: ID @index(name: "byVerifierUser")
+  userVerifier: User @belongsTo(fields: ["userVerifierID"])
+  userVerifiedID: ID @index(name: "byVerifiedUser")
+  userVerified: User @belongsTo(fields: ["userVerifiedID"])
+  productFeatureID: ID! @index(name: "byProductFeature")
+  productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+}
+
+type DocumentType @model {
+  id: ID!
+  name: String!
+  description: String!
+  documents: [Document] @hasMany(indexName: "byDocumentType", fields: ["id"])
+}
+
+type Document @model 
+  {
+  id: ID!
+  data: AWSJSON!
+  timeStamp: AWSTimestamp!
+  hash: String
+  url: AWSURL
+  signed: String
+  isApproved: Boolean
+  status: String
+  isUploadedToBlockChain: Boolean
+  documentTypeID: ID! @index(name: "byDocumentType")
+  documentType: DocumentType @belongsTo(fields: ["documentTypeID"])
+  productFeatureID: ID! @index(name: "byProductFeature")
+  productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+}
+
+# Product Models
+
+type Category @model 
+{
+  id: ID!
+  name: String!
+  products: [Product] @hasMany(indexName: "byCategory", fields: ["id"])
+  isSelected: Boolean
+}
+
+type Product @model 
+{
+  id: ID!
+  name: String!
+  description: String
+  isActive: Boolean!
+  counterNumberOfTimesBuyed: Int
+  amountToBuy: Float
+  order: Int
+  categoryID: ID! @index(name: "byCategory")
+  category: Category @belongsTo(fields: ["categoryID"])
+  images: [Image] @hasMany(indexName: "byProduct", fields: ["id"])
+  productFeatures: [ProductFeature] @hasMany(indexName: "byProduct", fields: ["id"])
+}
+
+type Image @model 
+{
+  id: ID!
+  imageURL: String!
+  format: String!
+  title: String
+  imageURLToDisplay: String
+  isOnCarousel: Boolean
+  carouselLabel: String
+  carouselDescription: String
+  isActive: Boolean!
+  order: Int
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+}
+
+type Feature @model 
+{
+  id: ID!
+  name: String!
+  description: String
+  order: Int
+  isTemplate: Boolean
+  productFeatures: [ProductFeature] @hasMany(indexName: "byFeature", fields: ["id"])
+}
+
+type ProductFeature @model 
+{
+  id: ID!
+  value: Float
+  isToBlockChain: Boolean
+  isVerifable: Boolean
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  featureID: ID! @index(name: "byFeature")
+  feature: Feature @belongsTo(fields: ["featureID"])
+  verifications: [Verification] @hasMany(indexName: "byProductFeature", fields: ["id"])
+  documents: [Document] @hasMany(indexName: "byProductFeature", fields: ["id"])
+}

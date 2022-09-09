@@ -585,19 +585,6 @@ export const listProducts = /* GraphQL */ `
         }
         images {
           nextToken
-          items {
-            id
-            imageURL
-            carouselDescription
-            carouselLabel
-            format
-            isOnCarousel
-            isActive
-            imageURLToDisplay
-            title
-            productID
-            order
-          }
         }
         productFeatures {
           nextToken
