@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "kiosuanbcrjsappa6accc93_identitypool_a6accc93",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "kiosuaa6accc93",
     "userPoolName": "kiosuanbcrjsappa6accc93_userpool_a6accc93",
     "autoVerifiedAttributes": [
@@ -40,6 +40,20 @@
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true
+    "useEnabledMfas": true,
+    "authRoleArn": {
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
+    },
+    "unauthRoleArn": {
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
+    },
+    "breakCircularDependency": true,
+    "dependsOn": []
   }
 }
