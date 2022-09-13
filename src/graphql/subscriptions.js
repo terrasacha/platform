@@ -340,6 +340,9 @@ export const onCreateVerification = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -432,6 +435,9 @@ export const onUpdateVerification = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -524,6 +530,9 @@ export const onDeleteVerification = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -677,6 +686,9 @@ export const onCreateDocument = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -743,6 +755,9 @@ export const onUpdateDocument = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -809,6 +824,9 @@ export const onDeleteDocument = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -956,6 +974,18 @@ export const onCreateProduct = /* GraphQL */ `
         }
         nextToken
       }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1008,6 +1038,18 @@ export const onUpdateProduct = /* GraphQL */ `
           isVerifable
           productID
           featureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
           createdAt
           updatedAt
         }
@@ -1070,6 +1112,18 @@ export const onDeleteProduct = /* GraphQL */ `
         }
         nextToken
       }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1109,6 +1163,9 @@ export const onCreateImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        results {
           nextToken
         }
         createdAt
@@ -1155,6 +1212,9 @@ export const onUpdateImage = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        results {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1199,8 +1259,89 @@ export const onDeleteImage = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        results {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateFeatureType = /* GraphQL */ `
+  subscription OnCreateFeatureType {
+    onCreateFeatureType {
+      id
+      name
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFeatureType = /* GraphQL */ `
+  subscription OnUpdateFeatureType {
+    onUpdateFeatureType {
+      id
+      name
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFeatureType = /* GraphQL */ `
+  subscription OnDeleteFeatureType {
+    onDeleteFeatureType {
+      id
+      name
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -1215,6 +1356,32 @@ export const onCreateFeature = /* GraphQL */ `
       description
       order
       isTemplate
+      defaultValue
+      featureTypeID
+      featureType {
+        id
+        name
+        description
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       productFeatures {
         items {
           id
@@ -1223,6 +1390,18 @@ export const onCreateFeature = /* GraphQL */ `
           isVerifable
           productID
           featureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -1241,6 +1420,32 @@ export const onUpdateFeature = /* GraphQL */ `
       description
       order
       isTemplate
+      defaultValue
+      featureTypeID
+      featureType {
+        id
+        name
+        description
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       productFeatures {
         items {
           id
@@ -1249,6 +1454,18 @@ export const onUpdateFeature = /* GraphQL */ `
           isVerifable
           productID
           featureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -1267,6 +1484,32 @@ export const onDeleteFeature = /* GraphQL */ `
       description
       order
       isTemplate
+      defaultValue
+      featureTypeID
+      featureType {
+        id
+        name
+        description
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       productFeatures {
         items {
           id
@@ -1279,6 +1522,558 @@ export const onDeleteFeature = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateUnitOfMeasure = /* GraphQL */ `
+  subscription OnCreateUnitOfMeasure {
+    onCreateUnitOfMeasure {
+      id
+      engineeringUnit
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateUnitOfMeasure = /* GraphQL */ `
+  subscription OnUpdateUnitOfMeasure {
+    onUpdateUnitOfMeasure {
+      id
+      engineeringUnit
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteUnitOfMeasure = /* GraphQL */ `
+  subscription OnDeleteUnitOfMeasure {
+    onDeleteUnitOfMeasure {
+      id
+      engineeringUnit
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateFormula = /* GraphQL */ `
+  subscription OnCreateFormula {
+    onCreateFormula {
+      id
+      varID
+      equation
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFormula = /* GraphQL */ `
+  subscription OnUpdateFormula {
+    onUpdateFormula {
+      id
+      varID
+      equation
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFormula = /* GraphQL */ `
+  subscription OnDeleteFormula {
+    onDeleteFormula {
+      id
+      varID
+      equation
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateResult = /* GraphQL */ `
+  subscription OnCreateResult {
+    onCreateResult {
+      id
+      varID
+      equation
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        featureID
+        feature {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateResult = /* GraphQL */ `
+  subscription OnUpdateResult {
+    onUpdateResult {
+      id
+      varID
+      equation
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        featureID
+        feature {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteResult = /* GraphQL */ `
+  subscription OnDeleteResult {
+    onDeleteResult {
+      id
+      varID
+      equation
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        featureID
+        feature {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -1315,6 +2110,9 @@ export const onCreateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        results {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1325,7 +2123,27 @@ export const onCreateProductFeature = /* GraphQL */ `
         description
         order
         isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
         productFeatures {
+          nextToken
+        }
+        formulas {
           nextToken
         }
         createdAt
@@ -1398,6 +2216,9 @@ export const onUpdateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        results {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1408,7 +2229,27 @@ export const onUpdateProductFeature = /* GraphQL */ `
         description
         order
         isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
         productFeatures {
+          nextToken
+        }
+        formulas {
           nextToken
         }
         createdAt
@@ -1481,6 +2322,9 @@ export const onDeleteProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        results {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1491,7 +2335,27 @@ export const onDeleteProductFeature = /* GraphQL */ `
         description
         order
         isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
         productFeatures {
+          nextToken
+        }
+        formulas {
           nextToken
         }
         createdAt

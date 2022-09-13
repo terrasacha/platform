@@ -128,7 +128,7 @@ type Feature @model
   unitOfMeasureID: ID @index(name: "byUnitOfMeasure")
   unitOfMeasure: UnitOfMeasure @belongsTo(fields: ["unitOfMeasureID"])
   productFeatures: [ProductFeature] @hasMany(indexName: "byFeature", fields: ["id"])
-  formulas: [Formula] @hasMany(indexName: "byFormula", fields: ["id"])
+  formulas: [Formula] @hasMany(indexName: "byFeature", fields: ["id"])
 }
 # Formulas
 type UnitOfMeasure @model {

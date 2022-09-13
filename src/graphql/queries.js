@@ -226,6 +226,9 @@ export const getVerification = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -396,6 +399,9 @@ export const getDocument = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -555,6 +561,18 @@ export const getProduct = /* GraphQL */ `
         }
         nextToken
       }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -587,6 +605,9 @@ export const listProducts = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        results {
           nextToken
         }
         createdAt
@@ -630,6 +651,9 @@ export const getImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        results {
           nextToken
         }
         createdAt
@@ -678,6 +702,53 @@ export const listImages = /* GraphQL */ `
     }
   }
 `;
+export const getFeatureType = /* GraphQL */ `
+  query GetFeatureType($id: ID!) {
+    getFeatureType(id: $id) {
+      id
+      name
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFeatureTypes = /* GraphQL */ `
+  query ListFeatureTypes(
+    $filter: ModelFeatureTypeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFeatureTypes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        description
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getFeature = /* GraphQL */ `
   query GetFeature($id: ID!) {
     getFeature(id: $id) {
@@ -686,6 +757,32 @@ export const getFeature = /* GraphQL */ `
       description
       order
       isTemplate
+      defaultValue
+      featureTypeID
+      featureType {
+        id
+        name
+        description
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       productFeatures {
         items {
           id
@@ -694,6 +791,18 @@ export const getFeature = /* GraphQL */ `
           isVerifable
           productID
           featureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
@@ -717,8 +826,315 @@ export const listFeatures = /* GraphQL */ `
         description
         order
         isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
         productFeatures {
           nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getUnitOfMeasure = /* GraphQL */ `
+  query GetUnitOfMeasure($id: ID!) {
+    getUnitOfMeasure(id: $id) {
+      id
+      engineeringUnit
+      description
+      features {
+        items {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      formulas {
+        items {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUnitOfMeasures = /* GraphQL */ `
+  query ListUnitOfMeasures(
+    $filter: ModelUnitOfMeasureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUnitOfMeasures(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getFormula = /* GraphQL */ `
+  query GetFormula($id: ID!) {
+    getFormula(id: $id) {
+      id
+      varID
+      equation
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFormulas = /* GraphQL */ `
+  query ListFormulas(
+    $filter: ModelFormulaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFormulas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        varID
+        equation
+        featureID
+        feature {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getResult = /* GraphQL */ `
+  query GetResult($id: ID!) {
+    getResult(id: $id) {
+      id
+      varID
+      equation
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        featureID
+        feature {
+          id
+          name
+          description
+          order
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listResults = /* GraphQL */ `
+  query ListResults(
+    $filter: ModelResultFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listResults(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        varID
+        equation
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          categoryID
+          createdAt
+          updatedAt
+        }
+        formulaID
+        formula {
+          id
+          varID
+          equation
+          featureID
+          unitOfMeasureID
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -757,6 +1173,9 @@ export const getProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        results {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -767,7 +1186,27 @@ export const getProductFeature = /* GraphQL */ `
         description
         order
         isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          createdAt
+          updatedAt
+        }
         productFeatures {
+          nextToken
+        }
+        formulas {
           nextToken
         }
         createdAt
@@ -842,6 +1281,9 @@ export const listProductFeatures = /* GraphQL */ `
           description
           order
           isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
           createdAt
           updatedAt
         }
