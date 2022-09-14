@@ -4,6 +4,7 @@ import { Container, Row, Col, Alert } from 'react-bootstrap'
 // Components
 import HeaderNavbar from './Navbars/HeaderNavbar'
 import Categorys from './Categorys/Categorys'
+import Features from './Features/Features'
 import Products from './Products/Products'
 import AdmonProfile from './AdmonProfile/AdmonProfile'
 
@@ -29,6 +30,7 @@ export default class Admon extends Component {
             isShowAdmonProfile: false,
             isShowProducts: true,
             isShowCategorys: false,
+            isShowFeatures: false,
             isShowNotAuthorize: false,
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
@@ -55,6 +57,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowFeatures: false,
                 isShowAdmonProfile: true,
                 isShowNotAuthorize: false,
             })
@@ -64,6 +67,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: true,
             })
@@ -74,6 +78,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: true,
                 isShowCategorys: false,
+                isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
             })
@@ -83,9 +88,19 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: true,
+                isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
             })
+        }
+        if (pRequest === 'features') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowFeatures: true,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+        })
         }
         
     }
@@ -133,6 +148,7 @@ export default class Admon extends Component {
     render() {
         let {isShowProducts,
             isShowCategorys,
+            isShowFeatures,
             isShowAdmonProfile,
             isShowNotAuthorize,
         } = this.state
@@ -174,6 +190,17 @@ export default class Admon extends Component {
                 )
             }
         }
+        const renderFeatures = () => {
+            if (isShowFeatures) {
+                return (
+                    <Features 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                    ></Features>
+                )
+            }
+        }
 
        
         const renderUserNoAuthorize = () => {
@@ -202,6 +229,7 @@ export default class Admon extends Component {
                 <Row>
                     {renderProducts()}
                     {renderCategorys()}
+                    {renderFeatures()}
                     {renderAdmonProfile()}
                     {renderUserNoAuthorize()}
                 </Row>
