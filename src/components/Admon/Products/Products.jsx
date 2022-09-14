@@ -7,7 +7,7 @@ import { Container, Button, Form, Row, Col, Spinner, Table, Alert, Image, Card, 
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listProducts, listCategories } from '../../../graphql/queries'
+import { listProducts, listCategories, listFeatures } from '../../../graphql/queries'
 import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature } from '../../../graphql/mutations'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
@@ -39,7 +39,9 @@ class Products extends Component {
             isImageUploadingFile: false,
             products: [],
             categorySelectList: [],
+            featuresSelectList: [],
             selectedCategory: null,
+            selectedFeature: null,
             isShowModalAreYouSureDeleteProduct: false,
             productToDelete: null,
         }
@@ -48,6 +50,7 @@ class Products extends Component {
         this.handleAddNewImageToActualProduct = this.handleAddNewImageToActualProduct.bind(this)
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
+        this.handleOnSelectFeature = this.handleOnSelectFeature.bind(this)
         this.handleLoadEditProduct = this.handleLoadEditProduct.bind(this)
         this.handleShowAreYouSureDeleteProduct = this.handleShowAreYouSureDeleteProduct.bind(this)
         this.handleDeleteProduct = this.handleDeleteProduct.bind(this)
@@ -61,6 +64,7 @@ class Products extends Component {
         //     if (this.props.user.role === 'admon') {
                 await this.loadProducts()
                 await this.loadCategorysSelectItems()
+                await this.loadFeaturesSelectItems()
 
                 // Subscriptions
                 // OnCreate Product
@@ -133,6 +137,10 @@ class Products extends Component {
         this.setState({selectedCategory: event.value})
         this.validateCRUDProduct()
     }
+    handleOnSelectFeature(event) {
+        this.setState({selectedFeature: event.value})
+        this.validateCRUDProduct()
+    }
 
     async loadCategorysSelectItems() {
         let categorysSelectItems = []
@@ -147,6 +155,20 @@ class Products extends Component {
             })
         }
         this.setState({categorySelectList: categorysSelectItems})
+    }
+    async loadFeaturesSelectItems() {
+        let featuresSelectItems = []
+        const listFeaturesResult = await API.graphql(graphqlOperation(listFeatures))
+        if (listFeaturesResult.data.listFeatures.items.length > 0) {
+            let tempFeatures = listFeaturesResult.data.listFeatures.items
+            // Ordering features by name
+            tempFeatures.sort((a, b) => (a.name > b.name) ? 1 : -1)
+            tempFeatures.map( (features) => {
+                featuresSelectItems.push( {value: features, label: features.name})
+                return features
+            })
+        }
+        this.setState({featureSelectList: featuresSelectItems})
     }
 
     async loadProducts() {
@@ -543,7 +565,7 @@ class Products extends Component {
     // RENDER
     render() {
         // State Varibles
-        let {CRUD_Product, CRUDButtonName, products, selectedCategory, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete} = this.state
+        let {CRUD_Product, CRUDButtonName, products, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete} = this.state
         const urlS3Image = 'https://kioproyectobrjsapp627f51dfee5f4a219ed7016e45916213406-dev.s3.amazonaws.com/public/'
 
         // Renders uploading image
@@ -847,7 +869,7 @@ class Products extends Component {
                 <Table striped bordered hover>
                     <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Features</th>
                         <th>Description</th>
                     </tr>
                     </thead>
@@ -855,23 +877,15 @@ class Products extends Component {
                     {CRUD_Product.features.map(feature => (
                         <tr key={feature.id}>
                             <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureName'>
-                                    <Form.Control
-                                        type='text'
-                                        placeholder='Ex. Feature name'
-                                        name='CRUD_ProductFeatureName'
-                                        value={feature.name}
-                                        onChange={(e) => this.handleOnChangeInputFormProductFeatures(e, feature, '')} />
+                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
+                                    <Form.Label>Select one</Form.Label>
+                                        <Select options={this.state.featureSelectList} onChange={this.handleOnSelectFeature} />
                                 </Form.Group>
                             </td>
                             <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureDescription'>
-                                    <Form.Control
-                                        type='text'
-                                        placeholder='Ex. Feature description'
-                                        name='CRUD_ProductFeatureDescription'
-                                        value={feature.description}
-                                        onChange={(e) => this.handleOnChangeInputFormProductFeatures(e, feature, '')} />
+                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
+                                    <Form.Label>{selectedFeature?this.state.selectedFeature.description : '-'}</Form.Label>
+                                        
                                 </Form.Group>
                             </td>
                             <td>
@@ -1063,7 +1077,7 @@ class Products extends Component {
                     </Form>
                     {renderColoredBreakLine('red')}
                     <br></br>
-                    {renderProducts()}
+                    {/* {renderProducts()} */}
                 </Container>
         )
     }
