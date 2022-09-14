@@ -139,7 +139,7 @@ class Products extends Component {
         this.validateCRUDProduct()
     }
     handleOnSelectFeature(event) {
-        this.setState({selectedFeature: event.value.id})
+        this.setState({selectedFeature: event.value})
         console.log(this.state.valueProductFeature)
         this.validateCRUDProduct()
     }
@@ -225,7 +225,7 @@ class Products extends Component {
             tempCRUD_Product.features.map( async(feature) => {
                 const newProductFeature = {
                     productID: tempCRUD_Product.id,
-                    id: this.state.selectedFeature,
+                    id: this.state.selectedFeature.id,
                     value: this.state.valueProductFeature,
                     isToBlockChain: feature.isToBlockChain,
                     isVerifable: feature.isVerifable,
@@ -873,6 +873,7 @@ class Products extends Component {
                     <tr>
                         <th>Features</th>
                         <th>Description</th>
+                        <th>Value</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -885,20 +886,19 @@ class Products extends Component {
                                 </Form.Group>
                             </td>
                             <td>
+                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
+                                    <Form.Label>{selectedFeature?this.state.selectedFeature.description : '-'}</Form.Label>
+                                        
+                                </Form.Group>
+                            </td>
+                            <td>
                                 <Form.Group as={Col} controlId='formGridCRUD_ProductOrder'>
-                                    <Form.Label>Value</Form.Label>
                                     <Form.Control
                                         type='number'
                                         placeholder=''
                                         name='valueProductFeature'
                                         value={this.state.valueProductFeature}
                                         onChange={(e) => this.setState({valueProductFeature: e.target.value})} />
-                                </Form.Group>
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
-                                    <Form.Label>{selectedFeature?this.state.selectedFeature.description : '-'}</Form.Label>
-                                        
                                 </Form.Group>
                             </td>
                             <td>
