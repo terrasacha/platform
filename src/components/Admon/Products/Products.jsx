@@ -7,8 +7,8 @@ import { Container, Button, Form, Row, Col, Spinner, Table, Alert, Image, Card, 
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listProducts, listCategories, listFeatures } from '../../../graphql/queries'
-import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature } from '../../../graphql/mutations'
+import { listProducts, listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
+import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
@@ -42,6 +42,7 @@ class Products extends Component {
             featuresSelectList: [],
             selectedCategory: null,
             selectedFeature: null,
+            valueProductFeature: 0,
             isShowModalAreYouSureDeleteProduct: false,
             productToDelete: null,
         }
@@ -65,7 +66,6 @@ class Products extends Component {
                 await this.loadProducts()
                 await this.loadCategorysSelectItems()
                 await this.loadFeaturesSelectItems()
-
                 // Subscriptions
                 // OnCreate Product
                 let tempProducts = this.state.products
@@ -135,10 +135,12 @@ class Products extends Component {
 
     handleOnSelectCategory(event) {
         this.setState({selectedCategory: event.value})
+        console.log(this.state.selectedCategory)
         this.validateCRUDProduct()
     }
     handleOnSelectFeature(event) {
-        this.setState({selectedFeature: event.value})
+        this.setState({selectedFeature: event.value.id})
+        console.log(this.state.valueProductFeature)
         this.validateCRUDProduct()
     }
 
@@ -176,7 +178,7 @@ class Products extends Component {
         listProductsResult.data.listProducts.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         this.setState({products: listProductsResult.data.listProducts.items})
     }
-    
+
     async validateCRUDProduct() {
         if ( this.state.selectedCategory !== null && 
              this.state.CRUD_Product.name !== '' && 
@@ -223,13 +225,12 @@ class Products extends Component {
             tempCRUD_Product.features.map( async(feature) => {
                 const newProductFeature = {
                     productID: tempCRUD_Product.id,
-                    id: feature.id,
-                    name: feature.name,
-                    description: feature.description,
+                    id: this.state.selectedFeature,
+                    value: this.state.valueProductFeature,
                     isToBlockChain: feature.isToBlockChain,
                     isVerifable: feature.isVerifable,
                 }
-                await API.graphql(graphqlOperation(createFeature, { input: newProductFeature }))
+                await API.graphql(graphqlOperation(createProductFeature, { input: newProductFeature }))
                 return feature
             })
 
@@ -428,6 +429,7 @@ class Products extends Component {
     }
 
     async handleAddNewFeatureToActualProduct(event) {
+        console.log(this.state.CRUD_Product.features)
         this.addNewFeatureToActualProductFeatures()
         this.validateCRUDProduct()
     }
@@ -565,7 +567,7 @@ class Products extends Component {
     // RENDER
     render() {
         // State Varibles
-        let {CRUD_Product, CRUDButtonName, products, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete} = this.state
+        let {CRUD_Product, CRUDButtonName, products, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature} = this.state
         const urlS3Image = 'https://kioproyectobrjsapp627f51dfee5f4a219ed7016e45916213406-dev.s3.amazonaws.com/public/'
 
         // Renders uploading image
@@ -880,6 +882,17 @@ class Products extends Component {
                                 <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
                                     <Form.Label>Select one</Form.Label>
                                         <Select options={this.state.featureSelectList} onChange={this.handleOnSelectFeature} />
+                                </Form.Group>
+                            </td>
+                            <td>
+                                <Form.Group as={Col} controlId='formGridCRUD_ProductOrder'>
+                                    <Form.Label>Value</Form.Label>
+                                    <Form.Control
+                                        type='number'
+                                        placeholder=''
+                                        name='valueProductFeature'
+                                        value={this.state.valueProductFeature}
+                                        onChange={(e) => this.setState({valueProductFeature: e.target.value})} />
                                 </Form.Group>
                             </td>
                             <td>
