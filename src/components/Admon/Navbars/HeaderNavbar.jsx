@@ -51,7 +51,14 @@ export default class HeaderNavbar extends Component {
                                 ><Filter></Filter>Categories</Button> 
 
                             </Nav.Link>
+                            <Nav.Link href="#features">
+                                <Button
+                                    variant='outline-primary'
+                                    block
+                                    onClick={(e) => this.handleChangeNavBar('features', e)}
+                                ><Filter></Filter>Features</Button>
 
+                            </Nav.Link>
                             <Nav.Link href="#products">
                                 
                                 <Button 
