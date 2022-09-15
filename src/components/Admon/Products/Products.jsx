@@ -40,6 +40,7 @@ class Products extends Component {
             products: [],
             categorySelectList: [],
             featuresSelectList: [],
+            featuresSelectListFiltered: [],
             selectedCategory: null,
             selectedFeature: null,
             valueProductFeature: 0,
@@ -63,9 +64,9 @@ class Products extends Component {
     componentDidMount = async () => {
         // if (this.props.user.id !== '') {
         //     if (this.props.user.role === 'admon') {
-                await this.loadProducts()
-                await this.loadCategorysSelectItems()
-                await this.loadFeaturesSelectItems()
+            await this.loadProducts()
+            await this.loadCategorysSelectItems()
+            await this.loadFeaturesSelectItems()
                 // Subscriptions
                 // OnCreate Product
                 let tempProducts = this.state.products

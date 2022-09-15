@@ -26,7 +26,8 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 name: '',
                 description: '',
                 order: 0,
-                isTemplate: false
+                isTemplate: false,
+               /*  isAvailable: true, */
             },
         }
             this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
@@ -96,6 +97,14 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 
             }
         }
+/*         if (event.target.name === 'feature.isAvailable') {
+            if(event.target.value === 'yes'){
+               tempNewFeature.isAvailable = true
+            }else{
+                tempNewFeature.isAvailable = false
+                
+            }
+        } */
         
         this.setState({newFeature: tempNewFeature})
         this.validateCRUDFeature()
@@ -149,7 +158,8 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 name: '',
                 description: '',
                 order: 0,
-                isTemplate: false
+                isTemplate: false,
+                isAvailable: true,
             }
         })
     }
@@ -170,6 +180,7 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                             <th>Description</th>
                             <th>Order</th>
                             <th>Is template</th>
+                            <th>Is available</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -187,6 +198,9 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                                 <td>
                                     {features.isTemplate? 'Si' : 'No'}
                                 </td>
+{/*                                 <td>
+                                    {features.isAvailable? 'Si' : 'No'}
+                                </td> */}
                                 <td>
                                     <Button 
                                         variant='primary'
@@ -239,6 +253,13 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                           <option value="no">No</option>
                           <option value="yes">Yes</option>
                         </Form.Select>
+{/*                         <Form.Label>Is available</Form.Label>
+                        <Form.Select 
+                            name='feature.isAvailable'
+                            onChange={(e) => this.handleOnChangeInputForm(e)}>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Form.Select> */}
                     </Form.Group>
                 </Row>
 
