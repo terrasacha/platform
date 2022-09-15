@@ -6,6 +6,8 @@ import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
+//Feature Types component
+import FeaturesType from './FeaturesType'
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { listFeatures, } from '../../../graphql/queries'
@@ -27,7 +29,7 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 description: '',
                 order: 0,
                 isTemplate: false,
-                defaultValue: null
+                defaultValue: ''
                /*  isAvailable: true, */
             },
         }
@@ -293,6 +295,8 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                     >{CRUDButtonName}</Button>
                 </Row>
             </Form>
+
+            <FeaturesType/>
 
         </Container>
         )
