@@ -135,12 +135,10 @@ class Products extends Component {
 
     handleOnSelectCategory(event) {
         this.setState({selectedCategory: event.value})
-        console.log(this.state.selectedCategory)
         this.validateCRUDProduct()
     }
     handleOnSelectFeature(event) {
         this.setState({selectedFeature: event.value})
-        console.log(this.state.valueProductFeature)
         this.validateCRUDProduct()
     }
 
@@ -429,7 +427,6 @@ class Products extends Component {
     }
 
     async handleAddNewFeatureToActualProduct(event) {
-        console.log(this.state.CRUD_Product.features)
         this.addNewFeatureToActualProductFeatures()
         this.validateCRUDProduct()
     }
