@@ -10,9 +10,9 @@ import Bootstrap from "../../common/themes"
 import FeaturesType from './FeaturesType'
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listFeatures, } from '../../../graphql/queries'
+import { listFeatures, listFeatureTypes, listUnitOfMeasures } from '../../../graphql/queries'
 import { createFeature, updateFeature } from '../../../graphql/mutations'
-import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions'
+import { onCreateFeature, onUpdateFeature, onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subscriptions'
 
 
  class Features extends Component {
@@ -23,13 +23,16 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             features:[],
+            featureTypes: [],
+            UnitOfMeasures: [],
             newFeature:{
                 id: '',
                 name: '',
                 description: '',
                 order: 0,
                 isTemplate: false,
-                defaultValue: ''
+                defaultValue: '',
+                featureTypeID: ''
                /*  isAvailable: true, */
             },
         }
@@ -37,9 +40,12 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
             this.handleCRUDFeature = this.handleCRUDFeature.bind(this)
             this.handleLoadEditFeature = this.handleLoadEditFeature.bind(this)
         }
-
-    componentDidMount = async () => {
-        await this.loadFeatures()
+        
+        componentDidMount = async () => {
+            await this.loadFeatures()
+            await this.loadFeatureTypes()
+            await this.loadUnitOfMeasures()
+            await this.loadFeatureTypes()
         // Subscriptions
         // OnCreate Feature
         let tempFeatures = this.state.features
@@ -70,6 +76,36 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 this.setState((state) => ({features: tempFeatures}))
             }
         })
+        // Subscriptions
+        // OnCreate Feature
+        let tempFeatureTypes = this.state.featureTypes
+        this.createFeatureTypeListener = API.graphql(graphqlOperation(onCreateFeatureType))
+        .subscribe({
+            next: createdFeatureTypeData => {
+                let tempOnCreateFeatureType = createdFeatureTypeData.value.data.onCreateFeatureType
+                tempFeatureTypes.push(tempOnCreateFeatureType)
+                // Ordering Features by name
+                tempFeatureTypes.sort((a, b) => (a.name > b.name) ? 1 : -1)
+                // this.updateStateFeatures(tempFeatures)
+                this.setState((state) => ({featureTypes: tempFeatureTypes}))
+            }
+        })
+        // OnUpdate Feature
+        this.updateFeatureTypeListener = API.graphql(graphqlOperation(onUpdateFeatureType))
+        .subscribe({
+            next: updatedFeatureTypeData => {
+                let tempFeatureTypes = this.state.featureTypes.map((mapFeatureType) => {
+                    if (updatedFeatureTypeData.value.data.onUpdateFeatureType.id === mapFeatureType.id) {
+                        return updatedFeatureTypeData.value.data.onUpdateFeatureType
+                    } else {
+                        return mapFeatureType
+                    }
+                })
+                // Ordering Features by name
+                tempFeatureTypes.sort((a, b) => (a.name > b.name) ? 1 : -1)
+                this.setState((state) => ({featuresTypes: tempFeatureTypes}))
+            }
+        })
     
     }
 
@@ -77,6 +113,17 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
         const listFeaturesResult = await API.graphql(graphqlOperation(listFeatures))
         listFeaturesResult.data.listFeatures.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
         this.setState({features: listFeaturesResult.data.listFeatures.items})
+        }
+
+    async loadFeatureTypes() {
+        const listFeatureTypesResult = await API.graphql(graphqlOperation(listFeatureTypes))
+        listFeatureTypesResult.data.listFeatureTypes.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        this.setState({featureTypes: listFeatureTypesResult.data.listFeatureTypes.items})
+        }
+    async loadUnitOfMeasures() {
+        const listUnitOfMeasuresResult = await API.graphql(graphqlOperation(listUnitOfMeasures))
+        listUnitOfMeasuresResult.data.listUnitOfMeasures.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        this.setState({UnitOfMeasures: listUnitOfMeasuresResult.data.listUnitOfMeasures.items})
         }
         
     handleOnChangeInputForm = async(event) => {
@@ -102,6 +149,12 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 
             }
         }
+        if (event.target.name === 'feature.featureType') {
+            tempNewFeature.featureTypeID = event.target.value
+            }
+        if (event.target.name === 'feature.unitOfMeasure') {
+            tempNewFeature.unitOfMeasureID = event.target.value
+            }
 /*         if (event.target.name === 'feature.isAvailable') {
             if(event.target.value === 'yes'){
                tempNewFeature.isAvailable = true
@@ -112,7 +165,6 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
         } */
         
         this.setState({newFeature: tempNewFeature})
-        console.log(this.state.newFeature)
         this.validateCRUDFeature()
         
     }
@@ -130,7 +182,6 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
             
             const newFeatureId = this.state.newFeature.name
             tempNewFeature.id = newFeatureId
-
             await API.graphql(graphqlOperation(createFeature, { input: tempNewFeature }))
             await this.cleanFeatureOnCreate()
         }
@@ -177,7 +228,9 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
 
     render() {
         let {features, newFeature, CRUDButtonName,} = this.state
-        
+        const renderFeaturesType = () =>{
+            return <FeaturesType/>
+        }
         const renderFeatures = () => {
             if (features.length > 0) {
                 return (
@@ -190,8 +243,11 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                                 <th>Description</th>
                                 <th>Order</th>
                                 <th>Default value</th>
+                                <th>Type</th>
+                                <th>Unit of Measure</th>
                                 <th>Is template</th>
-                                <th>Is available</th>
+                                <th>Editar</th>
+                                {/* <th>Is available</th> */}
                             </tr>
                             </thead>
                             <tbody>
@@ -208,6 +264,12 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                                     </td>
                                     <td>
                                         {features.defaultValue}
+                                    </td>
+                                    <td>
+                                        {features.featureTypeID}
+                                    </td>
+                                    <td>
+                                        {features.unitOfMeasureID}
                                     </td>
                                     <td>
                                         {features.isTemplate? 'Si' : 'No'}
@@ -276,6 +338,18 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                           <option value="no">No</option>
                           <option value="yes">Yes</option>
                         </Form.Select>
+                        <Form.Label>Type</Form.Label>
+                        <Form.Select 
+                            name='feature.featureType'
+                            onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                {this.state.featureTypes.map((featureType, idx) => (<option value={featureType.name} key={idx}>{featureType.name}</option>))}
+                        </Form.Select>
+                        <Form.Label>Unit Of Measure</Form.Label>
+                        <Form.Select 
+                            name='feature.unitOfMeasure'
+                            onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (<option value={UnitOfMeasure.engineeringUnit} key={idx}>{UnitOfMeasure.engineeringUnit}</option>))}
+                        </Form.Select>
 {/*                         <Form.Label>Is available</Form.Label>
                         <Form.Select 
                             name='feature.isAvailable'
@@ -296,7 +370,7 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 </Row>
             </Form>
 
-            <FeaturesType/>
+            {renderFeaturesType()}
 
         </Container>
         )

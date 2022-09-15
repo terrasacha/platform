@@ -34,43 +34,11 @@ import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subsc
 
     componentDidMount = async () => {
         await this.loadFeatureTypes()
-        console.log('feature Types', this.state.featureTypes)
-        // Subscriptions
-        // OnCreate Feature
-        let tempFeatureTypes = this.state.featureTypes
-        this.createFeatureTypeListener = API.graphql(graphqlOperation(onCreateFeatureType))
-        .subscribe({
-            next: createdFeatureTypeData => {
-                let tempOnCreateFeatureType = createdFeatureTypeData.value.data.onCreateFeatureType
-                tempFeatureTypes.push(tempOnCreateFeatureType)
-                // Ordering Features by name
-                tempFeatureTypes.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                // this.updateStateFeatures(tempFeatures)
-                this.setState((state) => ({featureTypes: tempFeatureTypes}))
-            }
-        })
-        // OnUpdate Feature
-        this.updateFeatureTypeListener = API.graphql(graphqlOperation(onUpdateFeatureType))
-        .subscribe({
-            next: updatedFeatureTypeData => {
-                let tempFeatureTypes = this.state.featureTypes.map((mapFeatureType) => {
-                    if (updatedFeatureTypeData.value.data.onUpdateFeatureType.id === mapFeatureType.id) {
-                        return updatedFeatureTypeData.value.data.onUpdateFeatureType
-                    } else {
-                        return mapFeatureType
-                    }
-                })
-                // Ordering Features by name
-                tempFeatureTypes.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                this.setState((state) => ({featuresTypes: tempFeatureTypes}))
-            }
-        })
     
     }
 
     async loadFeatureTypes() {
         const listFeatureTypesResult = await API.graphql(graphqlOperation(listFeatureTypes))
-        console.log(listFeatureTypesResult)
         listFeatureTypesResult.data.listFeatureTypes.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
         this.setState({featureTypes: listFeatureTypesResult.data.listFeatureTypes.items})
         }
@@ -86,7 +54,6 @@ import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subsc
         }
        
         this.setState({newFeatureType: tempNewFeatureType})
-        console.log(this.state.newFeatureType)
         this.validateCRUDFeatureType()
         
     }
@@ -104,7 +71,6 @@ import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subsc
             
             const newFeatureTypeId = this.state.newFeatureType.name
             tempNewFeatureType.id = newFeatureTypeId
-            console.log(tempNewFeatureType)
            await API.graphql(graphqlOperation(createFeatureType, { input: tempNewFeatureType }))
             await this.cleanFeatureTypeOnCreate() 
         }
@@ -226,7 +192,7 @@ import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subsc
     }
 }
 
-export default withAuthenticator(FeaturesType, {
+export default withAuthenticator(FeaturesType/* , {
     theme: Bootstrap,
     includeGreetings: true,
     signUpConfig: {
@@ -234,5 +200,5 @@ export default withAuthenticator(FeaturesType, {
         signUpFields: [
         { label: 'Name', key: 'name', required: true, type: 'string' }
     ]
-}})
+}} */)
 
