@@ -40,7 +40,6 @@ class Products extends Component {
             products: [],
             categorySelectList: [],
             featuresSelectList: [],
-            featuresSelectListFiltered: [],
             selectedCategory: null,
             selectedFeature: null,
             valueProductFeature: 0,

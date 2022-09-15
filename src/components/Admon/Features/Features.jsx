@@ -27,6 +27,7 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                 description: '',
                 order: 0,
                 isTemplate: false,
+                defaultValue: null
                /*  isAvailable: true, */
             },
         }
@@ -37,22 +38,21 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
 
     componentDidMount = async () => {
         await this.loadFeatures()
-        console.log(this.state.features)
         // Subscriptions
-        // OnCreate Category
+        // OnCreate Feature
         let tempFeatures = this.state.features
         this.createFeatureListener = API.graphql(graphqlOperation(onCreateFeature))
         .subscribe({
             next: createdFeatureData => {
                 let tempOnCreateFeature = createdFeatureData.value.data.onCreateFeature
                 tempFeatures.push(tempOnCreateFeature)
-                // Ordering categorys by name
+                // Ordering Features by name
                 tempFeatures.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                // this.updateStateCategorys(tempFeatures)
+                // this.updateStateFeatures(tempFeatures)
                 this.setState((state) => ({features: tempFeatures}))
             }
         })
-        // OnUpdate Category
+        // OnUpdate Feature
         this.updateFeatureListener = API.graphql(graphqlOperation(onUpdateFeature))
         .subscribe({
             next: updatedFeatureData => {
@@ -63,7 +63,7 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                         return mapFeature
                     }
                 })
-                // Ordering categorys by name
+                // Ordering Features by name
                 tempFeatures.sort((a, b) => (a.name > b.name) ? 1 : -1)
                 this.setState((state) => ({features: tempFeatures}))
             }
@@ -89,6 +89,9 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
         if (event.target.name === 'feature.order') {
         tempNewFeature.order = parseInt(event.target.value)
         }
+        if (event.target.name === 'feature.defaultValue') {
+        tempNewFeature.defaultValue = parseInt(event.target.value)
+        }
         if (event.target.name === 'feature.isTemplate') {
             if(event.target.value === 'yes'){
                tempNewFeature.isTemplate = true
@@ -107,9 +110,9 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
         } */
         
         this.setState({newFeature: tempNewFeature})
+        console.log(this.state.newFeature)
         this.validateCRUDFeature()
         
-        console.log(this.state.newFeature)
     }
 
     async validateCRUDFeature() {
@@ -131,10 +134,13 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
         }
 
         if (this.state.CRUDButtonName === 'UPDATE') {
-            delete tempNewFeature.products
             delete tempNewFeature.createdAt
             delete tempNewFeature.updatedAt
-            await API.graphql(graphqlOperation(updateFeature, { input: tempNewFeature }))
+            delete tempNewFeature.featureType
+            delete tempNewFeature.unitOfMeasure
+            delete tempNewFeature.productFeatures
+            delete tempNewFeature.formulas
+            await API.graphql(graphqlOperation(updateFeature, { input: tempNewFeature }))        
             await this.cleanFeatureOnCreate()
         }
     }
@@ -173,46 +179,53 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
         const renderFeatures = () => {
             if (features.length > 0) {
                 return (
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Order</th>
-                            <th>Is template</th>
-                            <th>Is available</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {features.map(features => (
-                            <tr key={features.id}>
-                                <td>
-                                    {features.name}
-                                </td>
-                                <td>
-                                    {features.description}
-                                </td>
-                                <td>
-                                    {features.order}
-                                </td>
-                                <td>
-                                    {features.isTemplate? 'Si' : 'No'}
-                                </td>
-{/*                                 <td>
-                                    {features.isAvailable? 'Si' : 'No'}
-                                </td> */}
-                                <td>
-                                    <Button 
-                                        variant='primary'
-                                        size='lg' 
-                                        block
-                                        onClick={(e) => this.handleLoadEditFeature(features, e)}
-                                    >Editar</Button>
-                                </td>
+                    <>
+                    <h2>Features</h2>
+                        <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Order</th>
+                                <th>Default value</th>
+                                <th>Is template</th>
+                                <th>Is available</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                            {features.map(features => (
+                                <tr key={features.id}>
+                                    <td>
+                                        {features.name}
+                                    </td>
+                                    <td>
+                                        {features.description}
+                                    </td>
+                                    <td>
+                                        {features.order}
+                                    </td>
+                                    <td>
+                                        {features.defaultValue}
+                                    </td>
+                                    <td>
+                                        {features.isTemplate? 'Si' : 'No'}
+                                    </td>
+    {/*                                 <td>
+                                        {features.isAvailable? 'Si' : 'No'}
+                                    </td> */}
+                                    <td>
+                                        <Button 
+                                            variant='primary'
+                                            size='lg' 
+                                            block
+                                            onClick={(e) => this.handleLoadEditFeature(features, e)}
+                                        >Editar</Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                    </>
                 )
             }
         
@@ -222,9 +235,10 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
             <Container>
            {renderFeatures()}
             <br></br>
+            <h2>{CRUDButtonName} Feature: {newFeature.name}</h2>
             <Form>
                 <Row className='mb-2'>
-                    <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                    <Form.Group as={Col} controlId='formGridNewFeatureName'>
                         <Form.Label>Name</Form.Label>
                         <Form.Control
                             type='text'
@@ -245,6 +259,13 @@ import { onCreateFeature, onUpdateFeature } from '../../../graphql/subscriptions
                             placeholder=''
                             name='feature.order'
                             value={newFeature.order}
+                            onChange={(e) => this.handleOnChangeInputForm(e)} />
+                        <Form.Label>Default value</Form.Label>
+                        <Form.Control
+                            type='number'
+                            placeholder=''
+                            name='feature.defaultValue'
+                            value={newFeature.defaultValue}
                             onChange={(e) => this.handleOnChangeInputForm(e)} />
                         <Form.Label>Is template</Form.Label>
                         <Form.Select 
