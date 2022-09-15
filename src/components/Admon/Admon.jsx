@@ -5,6 +5,7 @@ import { Container, Row, Col, Alert } from 'react-bootstrap'
 import HeaderNavbar from './Navbars/HeaderNavbar'
 import Categorys from './Categorys/Categorys'
 import Features from './Features/Features'
+import UOM from './UOM/UOM'
 import Products from './Products/Products'
 import AdmonProfile from './AdmonProfile/AdmonProfile'
 
@@ -32,6 +33,7 @@ export default class Admon extends Component {
             isShowCategorys: false,
             isShowFeatures: false,
             isShowNotAuthorize: false,
+            isShowUOM: false
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
         this.setUserGraphQLUser = this.setUserGraphQLUser.bind(this)
@@ -60,6 +62,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: true,
                 isShowNotAuthorize: false,
+                isShowUOM: false
             })
         }
 
@@ -70,6 +73,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: true,
+                isShowUOM: false
             })
         }
 
@@ -81,6 +85,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
+                isShowUOM: false
             })
         }
 
@@ -91,6 +96,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
+                isShowUOM: false
             })
         }
         if (pRequest === 'features') {
@@ -100,6 +106,17 @@ export default class Admon extends Component {
                 isShowFeatures: true,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
+                isShowUOM: false
+        })
+        }
+        if (pRequest === 'uom') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowFeatures: false,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+                isShowUOM: true
         })
         }
         
@@ -151,6 +168,7 @@ export default class Admon extends Component {
             isShowFeatures,
             isShowAdmonProfile,
             isShowNotAuthorize,
+            isShowUOM
         } = this.state
 
         const renderAdmonProfile = () => {
@@ -201,6 +219,17 @@ export default class Admon extends Component {
                 )
             }
         }
+        const renderOUM = () => {
+            if (isShowUOM) {
+                return (
+                    <UOM 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                    ></UOM>
+                )
+            }
+        }
 
        
         const renderUserNoAuthorize = () => {
@@ -230,6 +259,7 @@ export default class Admon extends Component {
                     {renderProducts()}
                     {renderCategorys()}
                     {renderFeatures()}
+                    {renderOUM()}
                     {renderAdmonProfile()}
                     {renderUserNoAuthorize()}
                 </Row>
