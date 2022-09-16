@@ -2,20 +2,19 @@ import React, { Component } from 'react'
 // Amplify
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Spinner, Table, Alert, Card, Modal } from 'react-bootstrap'
+import { Container, Button, Form, Row, Col, Spinner, Table, Alert, Image, Card, Modal } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listProducts, listCategories, listFeatures } from '../../../graphql/queries'
+import { listProducts, listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
 import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
-// Components
+//Components
 import ListProducts from './ListProducts'
-
-
+import CRUDProductFeatures from './CRUDProductFeatures'
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
@@ -170,7 +169,7 @@ class Products extends Component {
                 return features
             })
         }
-        this.setState({featureSelectList: featuresSelectItems})
+        this.setState({featuresSelectList: featuresSelectItems})
     }
 
     async loadProducts() {
@@ -566,7 +565,7 @@ class Products extends Component {
     // RENDER
     render() {
         // State Varibles
-        let {CRUD_Product, CRUDButtonName, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature} = this.state
+        let {CRUD_Product, CRUDButtonName, products, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature} = this.state
         const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
 
         // Renders uploading image
@@ -578,7 +577,6 @@ class Products extends Component {
             }
         
         }
-        
 
         // Render CRUD product images
         const renderCRUDProductImages = () => {
@@ -700,67 +698,6 @@ class Products extends Component {
             }
         }
         // Render CRUD product features
-        const renderCRUDProductFeatures = () => {
-            return (
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>Features</th>
-                        <th>Description</th>
-                        <th>Value</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {CRUD_Product.features.map(feature => (
-                        <tr key={feature.id}>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
-                                    <Form.Label>Select one</Form.Label>
-                                        <Select options={this.state.featureSelectList} onChange={this.handleOnSelectFeature} />
-                                </Form.Group>
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
-                                    <Form.Label>{selectedFeature?this.state.selectedFeature.description : '-'}</Form.Label>
-                                        
-                                </Form.Group>
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductOrder'>
-                                    <Form.Control
-                                        type='number'
-                                        placeholder=''
-                                        name='valueProductFeature'
-                                        value={this.state.valueProductFeature}
-                                        onChange={(e) => this.setState({valueProductFeature: e.target.value})} />
-                                </Form.Group>
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsToBlockChain'>
-                                        <Form.Label>Is to Blockchain?</Form.Label>
-                                        <Button 
-                                            variant='primary'
-                                            size='sm' 
-                                            onClick={(e) => this.handleOnChangeInputFormProductFeatures(e, feature, 'CRUD_ProductFeatureIsToBlockChain')}
-                                        >{feature.isToBlockChain? 'YES' : 'NO'}</Button>
-                                    </Form.Group>
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsVerifable'>
-                                        <Form.Label>Is to Verifable?</Form.Label>
-                                        <Button 
-                                            variant='primary'
-                                            size='sm' 
-                                            onClick={(e) => this.handleOnChangeInputFormProductFeatures(e, feature, 'CRUD_ProductFeatureIsVerifable')}
-                                        >{feature.isVerifable? 'YES' : 'NO'}</Button>
-                                    </Form.Group>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </Table>
-            )
-        }
         // Render are you sure delete the product?
         const renderAreYouSureDeleteProduct = () => {
             if (isShowModalAreYouSureDeleteProduct && productToDelete !== null) {
@@ -906,7 +843,11 @@ class Products extends Component {
                                     >
                                     ADD FEATURE TO ACTUAL PROJECT-B
                                     </Button>
-                                    {renderCRUDProductFeatures()}
+                                    <CRUDProductFeatures 
+                                        CRUD_Product={this.state.CRUD_Product} 
+                                        featuresSelectList={this.state.featuresSelectList}
+                                        selectedFeature={this.state.selectedFeature}
+                                        />
                                     {/* <Image src={productImageURLToDisplay} rounded style={{width: 200, height: 'auto'}} /> */}
                                 </Row>
                             </Card.Body>
@@ -924,8 +865,8 @@ class Products extends Component {
                     </Form>
                     {renderColoredBreakLine('red')}
                     <br></br>
-                    <ListProducts products={this.state.products} urlS3Image={urlS3Image}>
-                    </ListProducts>
+                    <ListProducts products={this.state.products} urlS3Image={urlS3Image}/>
+                    {/* {renderProducts()} */}
                 </Container>
         )
     }
