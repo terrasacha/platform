@@ -2,17 +2,19 @@ import React, { Component } from 'react'
 // Amplify
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Spinner, Table, Alert, Image, Card, Modal } from 'react-bootstrap'
+import { Container, Button, Form, Row, Col, Spinner, Table, Alert, Card, Modal } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listProducts, listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
+import { listProducts, listCategories, listFeatures } from '../../../graphql/queries'
 import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
-// import 'moment-timezone'
+// Components
+import ListProducts from './ListProducts'
+
 
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
@@ -567,7 +569,7 @@ class Products extends Component {
     // RENDER
     render() {
         // State Varibles
-        let {CRUD_Product, CRUDButtonName, products, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature} = this.state
+        let {CRUD_Product, CRUDButtonName, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature} = this.state
         const urlS3Image = 'https://kioproyectobrjsapp627f51dfee5f4a219ed7016e45916213406-dev.s3.amazonaws.com/public/'
 
         // Renders uploading image
@@ -579,172 +581,7 @@ class Products extends Component {
             }
         
         }
-        // Render Products
-        const renderProducts = () => {
-            if (products.length > 0) {
-                return (
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Order</th>
-                            <th>Category</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Images</th>
-                            <th>Features</th>
-                            <th>Is Active</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {products.map(product => (
-                            <tr key={product.id}>
-                                <td>
-                                    {product.order}
-                                </td>
-                                <td>
-                                    {product.category.name}
-                                </td>
-                                <td>
-                                    {product.name}
-                                </td>
-                                <td>
-                                    {product.description}
-                                </td>
-                                <td>
-                                    {renderProductImages(product, product.images.items)}
-                                </td>
-                                <td>
-                                    {renderProductFeatures(product,product.features.items)}
-                                </td>
-                                <td>
-                                    {product.isActive ? 'YES' : 'NO'}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='primary'
-                                        size='md' 
-                                        block
-                                        onClick={(e) => this.handleLoadEditProduct(product, e)}
-                                    >Edit</Button>
-                                    <Button 
-                                        variant='danger'
-                                        size='md' 
-                                        block
-                                        onClick={(e) => this.handleShowAreYouSureDeleteProduct(product, e)}
-                                    >Delete</Button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-                )
-            }
-        }
-        // Render product images
-        const renderProductImages = (pProduct, pProductImages) => {
-            if (pProductImages.length > 0) {
-                return (
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Order</th>
-                            <th>Is On Carousel</th>
-                            <th>Carousel Label</th>
-                            <th>Carousel Description</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {pProductImages.map(image => (
-                            <tr key={image.id}>
-                                <td>
-                                    <Image
-                                        src={urlS3Image+image.imageURL}
-                                        rounded
-                                        style={{height: 100, width: 'auto'}}
-                                        />
-                                </td>
-                                <td>
-                                    {image.title}
-                                </td>
-                                <td>
-                                    {image.order === null ? 'N/A' : image.order}
-                                </td>
-                                <td>
-                                    {image.isOnCarousel ? 'YES' : 'NO'}
-                                </td>
-                                <td>
-                                    {image.carouselLabel}
-                                </td>
-                                <td>
-                                    {image.carouselDescription}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='danger'
-                                        size='sm' 
-                                        block
-                                        onClick={(e) => this.handleDeleteImageProduct(pProduct, image, e)}
-                                    >
-                                    DELETE
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-                )
-            }
-        }
-        // Render product features
-        const renderProductFeatures = (pProduct, pProductFeatures) => {
-            if (pProductFeatures.length > 0) {
-                return (
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Is to BlockChain?</th>
-                            <th>Is Verifable?</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {pProductFeatures.map(feature => (
-                            <tr key={feature.id}>
-                                <td>
-                                    {feature.name}
-                                </td>
-                                <td>
-                                    {feature.description}
-                                </td>
-                                <td>
-                                    {feature.isToBlockChain? 'YES' : 'NO'}
-                                </td>
-                                <td>
-                                    {feature.isVerifable? 'YES' : 'NO'}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='danger'
-                                        size='sm' 
-                                        block
-                                        onClick={(e) => this.handleDeleteFeatureProduct(pProduct, feature, e)}
-                                    >
-                                    DELETE
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-                )
-            }
-        }
+        
 
         // Render CRUD product images
         const renderCRUDProductImages = () => {
@@ -1090,7 +927,8 @@ class Products extends Component {
                     </Form>
                     {renderColoredBreakLine('red')}
                     <br></br>
-                    {/* {renderProducts()} */}
+                    <ListProducts products={this.state.products}>
+                    </ListProducts>
                 </Container>
         )
     }
