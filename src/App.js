@@ -34,7 +34,7 @@ class App extends Component{
           <Route path="landing_page" element={<LandingPage />} />
           <Route path="admon" element={<Admon/>} />
           <Route path="investor_admon" element={<InvestorAdmon/>} />
-          {/* <Route
+          {/* ToDd fat arrow for new Route version <Route
               path="/admon"
               render={(props) => <Admon {...props} />}
           /> */}
