@@ -618,7 +618,18 @@ export const listProducts = /* GraphQL */ `
           }
         }
         productFeatures {
-          nextToken
+          items {
+            id
+            isToBlockChain
+            isVerifable
+            value
+            feature {
+              id
+              name
+              order
+              isTemplate
+            }
+          }
         }
         results {
           nextToken

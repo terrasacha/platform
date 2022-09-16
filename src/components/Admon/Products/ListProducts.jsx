@@ -50,7 +50,7 @@ export default class ListProducts extends Component {
                                     {renderProductImages(product, product.images.items)}
                                 </td>
                                 <td>
-                                    {/* {renderProductFeatures(product,product.features.items)} */}
+                                    {renderProductFeatures(product,product.productFeatures.items)}
                                 </td>
                                 <td>
                                     {product.isActive ? 'YES' : 'NO'}

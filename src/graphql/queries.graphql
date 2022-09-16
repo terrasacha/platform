@@ -1,0 +1,110 @@
+query MyQuery {
+  listProducts {
+    items {
+      productFeatures {
+        items {
+          id
+          isToBlockChain
+          isVerifable
+          value
+          feature {
+            id
+            name
+            order
+            isTemplate
+          }
+        }
+      }
+      id
+      name
+    }
+  }
+}
+
+
+
+{
+  "data": {
+    "listProducts": {
+      "items": [
+        {
+          "productFeatures": {
+            "items": []
+          },
+          "id": "e8b03fcf_2c4c_49cc_8715_2b7c683bfbad",
+          "name": "test 1"
+        },
+        {
+          "productFeatures": {
+            "items": []
+          },
+          "id": "5136354b_a051_47e9_8cd5_5cf394d52915",
+          "name": "Bart"
+        }
+      ]
+    }
+  }
+}
+
+{
+  "data": {
+    "listFeatures": {
+      "items": [
+        {
+          "id": "TEST4",
+          "name": "TEST4"
+        },
+        {
+          "id": "TEST2",
+          "name": "TEST2"
+        },
+        {
+          "id": "TESTFEATURETYPE",
+          "name": "TESTFEATURETYPE"
+        },
+        {
+          "id": "PC34",
+          "name": "PC345531"
+        },
+        {
+          "id": "TEST3",
+          "name": "TEST3"
+        },
+        {
+          "id": "6a54d601-3ef1-4ed2-80ff-e50949cacc34",
+          "name": "Year"
+        },
+        {
+          "id": "TESTDV",
+          "name": "TESTDV"
+        },
+        {
+          "id": "TEST",
+          "name": "TEST"
+        }
+      ]
+    }
+  }
+}
+
+{
+  "data": {
+    "listProducts": {
+      "items": [
+        {
+          "id": "e8b03fcf_2c4c_49cc_8715_2b7c683bfbad"
+        },
+        {
+          "id": "5136354b_a051_47e9_8cd5_5cf394d52915"
+        }
+      ]
+    }
+  }
+}
+
+mutation MyMutationCreateProductFeature {
+  createProductFeature(input: {featureID: "TEST4", id: "PF_UNO", isToBlockChain: false, isVerifable: false, productID: "e8b03fcf_2c4c_49cc_8715_2b7c683bfbad", value: 1.5}) {
+    id
+  }
+}
+
