@@ -10,9 +10,12 @@ export default class CRUDProductFeatures extends Component {
         this.state = {
 
         }
+        this.handleOnSelectFeature = this.props.handleOnSelectFeature.bind(this)
+        this.handleOnChangeInputFormProductFeatures = this.props.handleOnChangeInputFormProductFeatures.bind(this)
+        this.handleValueProductFeature = this.props.handleValueProductFeature.bind
     }
   render() {
-    let {CRUD_Product, featuresSelectList, selectedFeature} = this.props
+    let {CRUD_Product, featuresSelectList, selectedFeature, valueProductFeature} = this.props
 
     const renderCRUDProductFeatures = () => {
         return (
@@ -35,7 +38,7 @@ export default class CRUDProductFeatures extends Component {
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
-                                <Form.Label>{selectedFeature?this.state.selectedFeature.description : '-'}</Form.Label>
+                                <Form.Label>{selectedFeature?selectedFeature.description : '-'}</Form.Label>
                                     
                             </Form.Group>
                         </td>
@@ -45,8 +48,8 @@ export default class CRUDProductFeatures extends Component {
                                     type='number'
                                     placeholder=''
                                     name='valueProductFeature'
-                                    value={this.state.valueProductFeature}
-                                    onChange={(e) => this.setState({valueProductFeature: e.target.value})} />
+                                    value={valueProductFeature}
+                                    onChange={(e) => this.handleValueProductFeature} />
                             </Form.Group>
                         </td>
                         <td>
