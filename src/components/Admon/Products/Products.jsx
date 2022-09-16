@@ -570,7 +570,7 @@ class Products extends Component {
     render() {
         // State Varibles
         let {CRUD_Product, CRUDButtonName, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature} = this.state
-        const urlS3Image = 'https://kioproyectobrjsapp627f51dfee5f4a219ed7016e45916213406-dev.s3.amazonaws.com/public/'
+        const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
 
         // Renders uploading image
         const renderIsisImageUploadingFile = () => {
@@ -927,7 +927,7 @@ class Products extends Component {
                     </Form>
                     {renderColoredBreakLine('red')}
                     <br></br>
-                    <ListProducts products={this.state.products}>
+                    <ListProducts products={this.state.products} urlS3Image={urlS3Image}>
                     </ListProducts>
                 </Container>
         )

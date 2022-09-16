@@ -47,7 +47,7 @@ export default class ListProducts extends Component {
                                     {product.description}
                                 </td>
                                 <td>
-                                    {/* {renderProductImages(product, product.images.items)} */}
+                                    {renderProductImages(product, product.images.items)}
                                 </td>
                                 <td>
                                     {/* {renderProductFeatures(product,product.features.items)} */}
