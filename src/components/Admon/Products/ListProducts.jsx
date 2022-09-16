@@ -9,6 +9,10 @@ export default class ListProducts extends Component {
         this.state = {
 
         }
+        this.handleShowAreYouSureDeleteProduct = this.props.handleShowAreYouSureDeleteProduct.bind(this)
+        this.handleLoadEditProduct = this.props.handleLoadEditProduct.bind(this)
+        this.handleDeleteFeatureProduct = this.props.handleDeleteFeatureProduct.bind(this)
+        this.handleDeleteImageProduct = this.props.handleDeleteImageProduct.bind(this)
     }
     // RENDER
     render() {
