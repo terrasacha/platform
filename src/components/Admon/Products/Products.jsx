@@ -15,6 +15,7 @@ import Select from 'react-select'
 //Components
 import ListProducts from './ListProducts'
 import CRUDProductFeatures from './CRUDProductFeatures'
+import CRUDProductImages from './CRUDProductImages'
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
@@ -52,6 +53,7 @@ class Products extends Component {
         this.handleAddNewImageToActualProduct = this.handleAddNewImageToActualProduct.bind(this)
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
+        this.handleValueProductFeature = this.handleValueProductFeature.bind(this)
         this.handleOnSelectFeature = this.handleOnSelectFeature.bind(this)
         this.handleLoadEditProduct = this.handleLoadEditProduct.bind(this)
         this.handleShowAreYouSureDeleteProduct = this.handleShowAreYouSureDeleteProduct.bind(this)
@@ -141,6 +143,9 @@ class Products extends Component {
     handleOnSelectFeature(event) {
         this.setState({selectedFeature: event.value})
         this.validateCRUDProduct()
+    }
+    handleValueProductFeature(e) {
+        this.setState({valueProductFeature: e.target.value})
     }
 
     async loadCategorysSelectItems() {
@@ -565,139 +570,9 @@ class Products extends Component {
     // RENDER
     render() {
         // State Varibles
-        let {CRUD_Product, CRUDButtonName, products, selectedCategory,selectedFeature, isImageUploadingFile, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature} = this.state
+        let {CRUD_Product, CRUDButtonName, selectedCategory, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature, } = this.state
         const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
 
-        // Renders uploading image
-        const renderIsisImageUploadingFile = () => {
-            if (this.state.isImageUploadingFile) {
-                return (
-                    <Spinner animation='border' variant='primary' />
-                )
-            }
-        
-        }
-
-        // Render CRUD product images
-        const renderCRUDProductImages = () => {
-            return (
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>Upload</th>
-                        <th>Image</th>
-                        <th>URL</th>
-                        <th>Title</th>
-                        <th>Order</th>
-                        <th>Is On Carousel</th>
-                        <th>Carousel Label</th>
-                        <th>Carousel Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {CRUD_Product.images.map(image => (
-                        <tr key={image.id}>
-                            <td>
-                                <Form.Group controlId='formFile' className='mb-3'>
-                                    <Form.Control type='file' onChange={(e) => this.handleChangeProductImageProperty(e, image, 'carouselImage')} />
-                                </Form.Group>
-                                {renderIsisImageUploadingFile()}
-                            </td>
-                            <td>
-                                {renderProductImage(image)}
-                            </td>
-                            <td>
-                                {image.imageURL}
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridNewProductImageTitle'>
-                                    <Form.Control
-                                        type='text'
-                                        placeholder='Ex. Cats'
-                                        name='newProductImageTitle'
-                                        value={image.title}
-                                        onChange={(e) => this.handleChangeProductImageProperty(e, image, 'newProductImageTitle')} />
-                                </Form.Group>
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridNewProductImageOrder'>
-                                    <Form.Control
-                                        type='number'
-                                        placeholder='Ex. 1'
-                                        name='newProductImageOrder'
-                                        value={image.order}
-                                        onChange={(e) => this.handleChangeProductImageProperty(e, image, 'newProductImageOrder')} />
-                                </Form.Group>
-                            </td>
-                            <td>
-                                <Form.Group as={Col} controlId='formGridCRUD_ProductIsOnCarousel'>
-                                    <Button 
-                                        variant='primary'
-                                        size='lg' 
-                                        block
-                                        onClick={(e) => this.handleChangeProductImageProperty(e, image, 'isOnCarousel')}
-                                    >{image.isOnCarousel? 'YES' : 'NO'}</Button>
-                                </Form.Group>
-                            </td>
-                            <td>
-                                {renderCarouselLabelForm(image)}
-                            </td>
-                            <td>
-                                {renderCarouselDescriptionForm(image)}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </Table>
-            )
-            
-        }
-        // Render Product Image
-        const renderProductImage = (pImage) => {
-            if (pImage.imageURL !== '' && !isImageUploadingFile) {
-                return (
-                    <img
-                        src={urlS3Image+pImage.imageURL}
-                        alt={pImage.id}
-                        height={100}
-                        width={100}
-                    />
-                )
-            } else {
-                <p>N/A</p>
-            }
-        }
-        // Render Carousel Label form
-        const renderCarouselLabelForm = (pImage) => {
-            if (pImage.isOnCarousel) {
-                return (
-                    <Form.Group as={Col} controlId='formGridCarouselLabel'>
-                        <Form.Control
-                            type='text'
-                            placeholder='Ex. lorem ipsum label'
-                            name='carouselLabel'
-                            value={pImage.carouselLabel}
-                            onChange={(e) => this.handleChangeProductImageProperty(e, pImage,'carouselLabel')} />
-                    </Form.Group>
-                )
-            }
-        }
-        // Render Carousel Description form
-        const renderCarouselDescriptionForm = (pImage) => {
-            if (pImage.isOnCarousel) {
-                return (
-                    <Form.Group as={Col} controlId='formGridCarouselDescription'>
-                        <Form.Control
-                            type='text'
-                            placeholder='Ex. lorem ipsum description'
-                            name='carouselDescription'
-                            value={pImage.carouselDescription}
-                            onChange={(e) => this.handleChangeProductImageProperty(e,pImage,'carouselDescription')} />
-                    </Form.Group>
-                )
-            }
-        }
-        // Render CRUD product features
         // Render are you sure delete the product?
         const renderAreYouSureDeleteProduct = () => {
             if (isShowModalAreYouSureDeleteProduct && productToDelete !== null) {
@@ -826,7 +701,13 @@ class Products extends Component {
                                     >
                                     ADD IMAGE TO ACTUAL PROJECT-B
                                     </Button>
-                                    {renderCRUDProductImages()}
+                                    <CRUDProductImages 
+                                        CRUD_Product={CRUD_Product}
+                                        isImageUploadingFile={this.state.isImageUploadingFile}
+                                        urlS3Image={urlS3Image}
+                                        handleChangeProductImageProperty={this.handleChangeProductImageProperty}
+                                        />
+
                                 </Row>
                             </Card.Body>
                         </Card>
@@ -847,6 +728,10 @@ class Products extends Component {
                                         CRUD_Product={this.state.CRUD_Product} 
                                         featuresSelectList={this.state.featuresSelectList}
                                         selectedFeature={this.state.selectedFeature}
+                                        valueProductFeature={this.state.valueProductFeature}
+                                        handleOnSelectFeature={this.handleOnSelectFeature}
+                                        handleOnChangeInputFormProductFeatures={this.handleOnChangeInputFormProductFeatures}
+                                        handleValueProductFeature={this.handleValueProductFeature}
                                         />
                                     {/* <Image src={productImageURLToDisplay} rounded style={{width: 200, height: 'auto'}} /> */}
                                 </Row>
@@ -865,8 +750,14 @@ class Products extends Component {
                     </Form>
                     {renderColoredBreakLine('red')}
                     <br></br>
-                    <ListProducts products={this.state.products} urlS3Image={urlS3Image}/>
-                    {/* {renderProducts()} */}
+                    <ListProducts 
+                        products={this.state.products} 
+                        urlS3Image={urlS3Image} 
+                        handleShowAreYouSureDeleteProduct= {this.handleShowAreYouSureDeleteProduct}
+                        handleLoadEditProduct={this.handleLoadEditProduct}
+                        handleDeleteFeatureProduct={this.handleDeleteFeatureProduct}
+                        handleDeleteImageProduct={this.handleDeleteImageProduct}
+                        />
                 </Container>
         )
     }
