@@ -34,8 +34,8 @@ class Products extends Component {
                 amountToBuy: 0.0,
                 categoryID: '',
                 images: [],
-                features: [],
             },
+            productFeatures: [],
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false,
@@ -53,7 +53,6 @@ class Products extends Component {
         this.handleAddNewImageToActualProduct = this.handleAddNewImageToActualProduct.bind(this)
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
-        this.handleValueProductFeature = this.handleValueProductFeature.bind(this)
         this.handleOnSelectFeature = this.handleOnSelectFeature.bind(this)
         this.handleLoadEditProduct = this.handleLoadEditProduct.bind(this)
         this.handleShowAreYouSureDeleteProduct = this.handleShowAreYouSureDeleteProduct.bind(this)
@@ -61,6 +60,8 @@ class Products extends Component {
         this.handleHideModalAreYouSureDeleteProduct = this.handleHideModalAreYouSureDeleteProduct.bind(this)
         this.handleDeleteImageProduct = this.handleDeleteImageProduct.bind(this)
         this.handleDeleteFeatureProduct = this.handleDeleteFeatureProduct.bind(this)
+        this.handleAddNewFeatureToActualProduct = this.handleAddNewFeatureToActualProduct.bind(this)
+        this.handleValueProductFeature = this.handleValueProductFeature.bind(this)
     }
 
     componentDidMount = async () => {
@@ -125,16 +126,6 @@ class Products extends Component {
         this.setState({CRUD_Product: tempCRUD_Product})
     }
 
-    async addNewFeatureToActualProductFeatures() {
-        let tempCRUD_Product = this.state.CRUD_Product
-        let newProductFeature = {
-            id: uuidv4().replaceAll('-','_'),
-            name: '',
-            description: '',
-        }
-        tempCRUD_Product.features.push(newProductFeature)
-        this.setState({CRUD_Product: tempCRUD_Product})
-    }
 
     handleOnSelectCategory(event) {
         this.setState({selectedCategory: event.value})
@@ -187,8 +178,8 @@ class Products extends Component {
         if ( this.state.selectedCategory !== null && 
              this.state.CRUD_Product.name !== '' && 
              this.state.CRUD_Product.description !== '' && 
-             this.state.CRUD_Product.images.length > 0 &&
-             this.state.CRUD_Product.features.length > 0 ) {
+/*              this.state.CRUD_Product.images.length > 0 && */
+             this.state.productFeatures.length > 0 ) {
             this.setState({isCRUDButtonDisable: false})
         }
     }
@@ -225,20 +216,16 @@ class Products extends Component {
                 await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
                 return image
             })
-            // Creating Product => Features
-            tempCRUD_Product.features.map( async(feature) => {
-                const newProductFeature = {
-                    productID: tempCRUD_Product.id,
-                    id: this.state.selectedFeature.id,
-                    value: this.state.valueProductFeature,
-                    isToBlockChain: feature.isToBlockChain,
-                    isVerifable: feature.isVerifable,
-                }
-                await API.graphql(graphqlOperation(createProductFeature, { input: newProductFeature }))
-                return feature
-            })
+            // Creating ProductFeatures
+            console.log('por crear productFeatures', this.state.productFeatures)
+            console.log('state', this.state)
 
-            // Clean CRUD_Product
+/*             await Promise.all(
+                this.state.productFeatures.map(async (productFeature, idx) => {
+                    console.log('iteracion nro',  idx)
+                  return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
+                })
+              ) */
             await this.cleanProductOnCreate()
         }
 
@@ -432,9 +419,12 @@ class Products extends Component {
         this.validateCRUDProduct()
     }
 
-    async handleAddNewFeatureToActualProduct(event) {
-        this.addNewFeatureToActualProductFeatures()
-        this.validateCRUDProduct()
+    handleAddNewFeatureToActualProduct(newProductFeature) {
+        let tempProductFeatures = this.state.productFeatures
+
+        tempProductFeatures.push(newProductFeature)
+        this.setState({productFeatures: tempProductFeatures})
+        console.log(this.state.productFeatures)
     }
 
     async cleanProductOnCreate() {
@@ -448,14 +438,19 @@ class Products extends Component {
                 amountToBuy: 0.0,
                 categoryID: '',
                 images: [],
-                features: [],
             },
+            productFeatures: [],
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false,
             products: [],
             categorySelectList: [],
+            featuresSelectList: [],
             selectedCategory: null,
+            selectedFeature: null,
+            valueProductFeature: 0,
+            isShowModalAreYouSureDeleteProduct: false,
+            productToDelete: null,
         })
     }
 
@@ -716,23 +711,18 @@ class Products extends Component {
                             <Card.Body>
                                 <Card.Title>PROJECT-B Features</Card.Title>
                                 <Row className='mb-1'>
-                                    <Button 
-                                        variant='primary'
-                                        size='sm' 
-                                        block
-                                        onClick={(e) => this.handleAddNewFeatureToActualProduct(e)}
-                                    >
-                                    ADD FEATURE TO ACTUAL PROJECT-B
-                                    </Button>
-                                    <CRUDProductFeatures 
+                                <CRUDProductFeatures 
                                         CRUD_Product={this.state.CRUD_Product} 
+                                        productFeatures={this.state.productFeatures}
                                         featuresSelectList={this.state.featuresSelectList}
                                         selectedFeature={this.state.selectedFeature}
                                         valueProductFeature={this.state.valueProductFeature}
+                                        handleAddNewFeatureToActualProduct={this.handleAddNewFeatureToActualProduct}
                                         handleOnSelectFeature={this.handleOnSelectFeature}
                                         handleOnChangeInputFormProductFeatures={this.handleOnChangeInputFormProductFeatures}
                                         handleValueProductFeature={this.handleValueProductFeature}
                                         />
+                                    
                                     {/* <Image src={productImageURLToDisplay} rounded style={{width: 200, height: 'auto'}} /> */}
                                 </Row>
                             </Card.Body>
