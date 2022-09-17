@@ -1,24 +1,142 @@
 import React, { Component } from 'react'
 //bootstrap
 import {  Button, Form, Col, Table } from 'react-bootstrap'
+//GraphQL
+import { API, graphqlOperation } from 'aws-amplify'
+import { createProductFeature, updateProductFeature } from '../../../graphql/mutations'
+import { listProductFeatures } from '../../../graphql/queries'
+import { onCreateProductFeature, onUpdateProductFeature } from '../../../graphql/subscriptions'
 //Utils
 import Select from 'react-select'
+import { v4 as uuidv4 } from 'uuid'
+
 
 export default class CRUDProductFeatures extends Component {
     constructor(props) {
         super(props)
         this.state = {
-
+            CRUDButtonName: 'CREATE',
+            isCRUDButtonDisable: true,
+            newProductFeature: {
+                id: '',
+                productID: '',
+                featureID: '',
+                value: 0,
+                isToBlockChain: false,
+                isVerifable: false,
+            },
         }
         this.handleOnSelectFeature = this.props.handleOnSelectFeature.bind(this)
-        this.handleOnChangeInputFormProductFeatures = this.props.handleOnChangeInputFormProductFeatures.bind(this)
-        this.handleValueProductFeature = this.props.handleValueProductFeature.bind
+        this.handleAddNewFeatureToActualProduct = this.props.handleAddNewFeatureToActualProduct.bind(this)
+        this.handleCreateProductFeature = this.handleCreateProductFeature.bind(this)
+        this.handleCRUDProductFeature = this.handleCRUDProductFeature.bind(this)
+        this.handleLoadEditProductFeature = this.handleLoadEditProductFeature.bind(this)
     }
+
+    handleCreateProductFeature(e){
+        if(e.target.name === 'valueProductFeature'){
+            this.setState(prevState => ({
+                newProductFeature: {                   
+                    ...prevState.newProductFeature,   
+                    value: e.target.value       
+                }
+            }))
+        }
+        if(e.target.name === 'isToBlockChain'){
+            if(e.target.value === 'yes'){
+                this.setState(prevState => ({
+                    newProductFeature: {                   
+                        ...prevState.newProductFeature,   
+                        isToBlockChain: true       
+                    }
+                }))
+            }
+            if(e.target.value === 'no'){
+                this.setState(prevState => ({
+                    newProductFeature: {                   
+                        ...prevState.newProductFeature,   
+                        isToBlockChain: false       
+                    }
+                }))
+            }
+            
+        }
+        if(e.target.name === 'isVerifiable'){
+            if(e.target.value === 'yes'){
+                this.setState(prevState => ({
+                    newProductFeature: {                   
+                        ...prevState.newProductFeature,   
+                        isVerifable: true       
+                    }
+                }))
+            }
+            if(e.target.value === 'no'){
+                this.setState(prevState => ({
+                    newProductFeature: {                   
+                        ...prevState.newProductFeature,   
+                        isVerifable: false       
+                    }
+                }))
+            }
+            
+        }
+    }
+    async handleCRUDProductFeature() {
+        let tempNewProductFeature = this.state.newProductFeature
+
+        if (this.state.CRUDButtonName === 'CREATE') {
+            tempNewProductFeature.id = uuidv4().replaceAll('-','_')
+            tempNewProductFeature.productID = this.props.CRUD_Product.id
+            tempNewProductFeature.featureID = this.props.selectedFeature.id
+            
+            this.handleAddNewFeatureToActualProduct(tempNewProductFeature)
+            await this.cleanProductFeatureCreate()
+        }
+        
+        
+        
+
+        if (this.state.CRUDButtonName === 'UPDATE') {
+            delete tempNewProductFeature.createdAt
+            delete tempNewProductFeature.updatedAt
+            delete tempNewProductFeature.product
+            delete tempNewProductFeature.feature
+            delete tempNewProductFeature.verifications
+            delete tempNewProductFeature.documents
+            await API.graphql(graphqlOperation(updateProductFeature, { input: this.state.newProductFeature }))
+            await this.cleanProductFeatureCreate()
+        }
+    }
+
+
+    async cleanProductFeatureCreate() {
+        this.setState({
+           CRUDButtonName: 'CREATE',
+           isCRUDButtonDisable: true,
+           newProductFeature: {
+            id: '',
+            productID: '',
+            featureID: '',
+            value: 0,
+            isToBlockChain: false,
+            isVerifable: false,
+        },
+       })
+   }
+   handleLoadEditProductFeature= async(productFeature, event) => {
+
+    this.setState({
+        newProductFeature:  productFeature,
+        CRUDButtonName: 'UPDATE',
+    })
+    }
+
   render() {
-    let {CRUD_Product, featuresSelectList, selectedFeature, valueProductFeature} = this.props
+    let { featuresSelectList, selectedFeature, productFeatures} = this.props
 
     const renderCRUDProductFeatures = () => {
         return (
+            <>
             <Table striped bordered hover>
                 <thead>
                 <tr>
@@ -28,8 +146,7 @@ export default class CRUDProductFeatures extends Component {
                 </tr>
                 </thead>
                 <tbody>
-                {CRUD_Product.features.map(feature => (
-                    <tr key={feature.id}>
+                    <tr>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
                                 <Form.Label>Select one</Form.Label>
@@ -48,39 +165,88 @@ export default class CRUDProductFeatures extends Component {
                                     type='number'
                                     placeholder=''
                                     name='valueProductFeature'
-                                    value={valueProductFeature}
-                                    onChange={(e) => this.handleValueProductFeature} />
+                                    value={this.state.newProductFeature.value}
+                                    onChange={(e) => this.handleCreateProductFeature(e)} />
                             </Form.Group>
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsToBlockChain'>
                                     <Form.Label>Is to Blockchain?</Form.Label>
-                                    <Button 
-                                        variant='primary'
-                                        size='sm' 
-                                        onClick={(e) => this.handleOnChangeInputFormProductFeatures(e, feature, 'CRUD_ProductFeatureIsToBlockChain')}
-                                    >{feature.isToBlockChain? 'YES' : 'NO'}</Button>
+                                    <Form.Select  name='isToBlockChain' onChange={(e) => this.handleCreateProductFeature(e)} >
+                                        <option value='no'>No</option>
+                                        <option value='yes'>Yes</option>
+                                    </Form.Select>
                                 </Form.Group>
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsVerifable'>
                                     <Form.Label>Is to Verifable?</Form.Label>
-                                    <Button 
-                                        variant='primary'
-                                        size='sm' 
-                                        onClick={(e) => this.handleOnChangeInputFormProductFeatures(e, feature, 'CRUD_ProductFeatureIsVerifable')}
-                                    >{feature.isVerifable? 'YES' : 'NO'}</Button>
+                                    <Form.Select  name='isVerifiable' onChange={(e) => this.handleCreateProductFeature(e)} >
+                                        <option value='no' >No</option>
+                                        <option value='yes'>Yes</option>
+                                    </Form.Select>
                                 </Form.Group>
                         </td>
                     </tr>
-                ))}
                 </tbody>
             </Table>
+            <Button
+            variant='primary'
+            block
+            onClick={this.handleCRUDProductFeature}
+            >{this.state.CRUDButtonName}</Button>
+            </>
+            
         )
+    }
+        const renderProductFeatures = () => {
+        if (productFeatures.length > 0) {
+            return (
+                <Table striped bordered hover>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Value</th>
+                        <th>isToBlockChain</th>
+                        <th>isVerifable</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {productFeatures.map(productFeatures => (
+                        <tr key={productFeatures.id}>
+                            <td>
+                                {productFeatures.id}
+                            </td>
+                            <td>
+                                {productFeatures.value}
+                            </td>
+                            <td>
+                                {productFeatures.isToBlockChain? 'Yes' : 'No'}
+                            </td>
+                            <td>
+                                {productFeatures.isVerifable? 'Yes' : 'No'}
+                            </td>
+                            <td>
+                                <Button 
+                                    variant='primary'
+                                    size='lg' 
+                                    block
+                                    onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
+                                >Editar</Button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </Table>
+            )
+        }
+    
     }
     return (
       <>
         {renderCRUDProductFeatures()}
+        <h2>Product Features</h2>
+        {renderProductFeatures()}
       </>
     )
   }
