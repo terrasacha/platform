@@ -3,9 +3,7 @@ import React, { Component } from 'react'
 import {  Button, Form, Col, Table } from 'react-bootstrap'
 //GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { createProductFeature, updateProductFeature } from '../../../graphql/mutations'
-import { listProductFeatures } from '../../../graphql/queries'
-import { onCreateProductFeature, onUpdateProductFeature } from '../../../graphql/subscriptions'
+import {updateProductFeature } from '../../../graphql/mutations'
 //Utils
 import Select from 'react-select'
 import { v4 as uuidv4 } from 'uuid'

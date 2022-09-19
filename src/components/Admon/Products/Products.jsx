@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 // Amplify
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Spinner, Table, Alert, Image, Card, Modal } from 'react-bootstrap'
+import { Container, Button, Form, Row, Col, Alert, Card, Modal } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listProducts, listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
+import { listProducts, listCategories, listFeatures } from '../../../graphql/queries'
 import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
@@ -47,7 +47,6 @@ class Products extends Component {
             valueProductFeature: 0,
             isShowModalAreYouSureDeleteProduct: false,
             productToDelete: null,
-            productsFeaturesListed: []
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.handleChangeProductImageProperty = this.handleChangeProductImageProperty.bind(this)
@@ -71,7 +70,6 @@ class Products extends Component {
             await this.loadProducts()
             await this.loadCategorysSelectItems()
             await this.loadFeaturesSelectItems()
-            await this.loadProductFeatures()
                 // Subscriptions
                 // OnCreate Product
                 let tempProducts = this.state.products
@@ -104,8 +102,6 @@ class Products extends Component {
                         this.setState((state) => ({products: tempProducts}))
                     }
                 })
-                console.log('state', this.state.productsFeaturesListed.map(pf => pf.productID))
-                console.log('product', this.state.products.map(pf => pf.id))
 
         //     }
         // } else {
@@ -177,11 +173,6 @@ class Products extends Component {
         listProductsResult.data.listProducts.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         this.setState({products: listProductsResult.data.listProducts.items})
     }
-    async loadProductFeatures() {
-        const listProductsResult = await API.graphql(graphqlOperation(listProductFeatures))
-        listProductsResult.data.listProductFeatures.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
-        this.setState({productsFeaturesListed: listProductsResult.data.listProductFeatures.items})
-    }
 
     async validateCRUDProduct() {
         if ( this.state.selectedCategory !== null && 
@@ -226,16 +217,14 @@ class Products extends Component {
                 return image
             })
             // Creating ProductFeatures
-            console.log('por crear productFeatures', this.state.productFeatures)
-            console.log('state', this.state)
-
-            await Promise.all(
+            let productFeaturesCreation = await Promise.all(
                 this.state.productFeatures.map(async (productFeature, idx) => {
                     console.log('iteracion nro',  idx)
                   return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
                 })
               )
-            await this.cleanProductOnCreate()
+            productFeaturesCreation.then(await this.cleanProductOnCreate())
+            /* await this.cleanProductOnCreate() */
         }
 
         if (this.state.CRUDButtonName === 'UPDATE') {
