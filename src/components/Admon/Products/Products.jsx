@@ -47,6 +47,7 @@ class Products extends Component {
             valueProductFeature: 0,
             isShowModalAreYouSureDeleteProduct: false,
             productToDelete: null,
+            productsFeaturesListed: []
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.handleChangeProductImageProperty = this.handleChangeProductImageProperty.bind(this)
@@ -70,6 +71,7 @@ class Products extends Component {
             await this.loadProducts()
             await this.loadCategorysSelectItems()
             await this.loadFeaturesSelectItems()
+            await this.loadProductFeatures()
                 // Subscriptions
                 // OnCreate Product
                 let tempProducts = this.state.products
@@ -102,6 +104,8 @@ class Products extends Component {
                         this.setState((state) => ({products: tempProducts}))
                     }
                 })
+                console.log('state', this.state.productsFeaturesListed.map(pf => pf.productID))
+                console.log('product', this.state.products.map(pf => pf.id))
 
         //     }
         // } else {
@@ -173,12 +177,17 @@ class Products extends Component {
         listProductsResult.data.listProducts.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         this.setState({products: listProductsResult.data.listProducts.items})
     }
+    async loadProductFeatures() {
+        const listProductsResult = await API.graphql(graphqlOperation(listProductFeatures))
+        listProductsResult.data.listProductFeatures.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        this.setState({productsFeaturesListed: listProductsResult.data.listProductFeatures.items})
+    }
 
     async validateCRUDProduct() {
         if ( this.state.selectedCategory !== null && 
              this.state.CRUD_Product.name !== '' && 
              this.state.CRUD_Product.description !== '' && 
-/*              this.state.CRUD_Product.images.length > 0 && */
+             this.state.CRUD_Product.images.length > 0 &&
              this.state.productFeatures.length > 0 ) {
             this.setState({isCRUDButtonDisable: false})
         }
@@ -220,12 +229,12 @@ class Products extends Component {
             console.log('por crear productFeatures', this.state.productFeatures)
             console.log('state', this.state)
 
-/*             await Promise.all(
+            await Promise.all(
                 this.state.productFeatures.map(async (productFeature, idx) => {
                     console.log('iteracion nro',  idx)
                   return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
                 })
-              ) */
+              )
             await this.cleanProductOnCreate()
         }
 
