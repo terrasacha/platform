@@ -63,13 +63,13 @@ export default class ListProducts extends Component {
                                     <Button 
                                         variant='primary'
                                         size='md' 
-                                        block
+                                        block='true'
                                         onClick={(e) => this.handleLoadEditProduct(product, e)}
                                     >Edit</Button>
                                     <Button 
                                         variant='danger'
                                         size='md' 
-                                        block
+                                        block='true'
                                         onClick={(e) => this.handleShowAreYouSureDeleteProduct(product, e)}
                                     >Delete</Button>
                                 </td>
@@ -125,7 +125,7 @@ export default class ListProducts extends Component {
                                     <Button 
                                         variant='danger'
                                         size='sm' 
-                                        block
+                                        block='true'
                                         onClick={(e) => this.handleDeleteImageProduct(pProduct, image, e)}
                                     >
                                     DELETE
@@ -171,7 +171,7 @@ export default class ListProducts extends Component {
                                     <Button 
                                         variant='danger'
                                         size='sm' 
-                                        block
+                                        block='true'
                                         onClick={(e) => this.handleDeleteFeatureProduct(pProduct, feature, e)}
                                     >
                                     DELETE

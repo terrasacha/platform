@@ -190,7 +190,7 @@ export default class CRUDProductFeatures extends Component {
             </Table>
             <Button
             variant='primary'
-            block
+            block='true'
             onClick={this.handleCRUDProductFeature}
             >{this.state.CRUDButtonName}</Button>
             </>
@@ -228,7 +228,7 @@ export default class CRUDProductFeatures extends Component {
                                 <Button 
                                     variant='primary'
                                     size='lg' 
-                                    block
+                                    block='true'
                                     onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
                                 >Editar</Button>
                             </td>

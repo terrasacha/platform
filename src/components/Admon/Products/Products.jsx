@@ -217,13 +217,13 @@ class Products extends Component {
                 return image
             })
             // Creating ProductFeatures
-            let productFeaturesCreation = await Promise.all(
+            Promise.all(
                 this.state.productFeatures.map(async (productFeature, idx) => {
                     console.log('iteracion nro',  idx)
                   return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
                 })
               )
-            productFeaturesCreation.then(await this.cleanProductOnCreate())
+            .then(await this.cleanProductOnCreate())
             /* await this.cleanProductOnCreate() */
         }
 
@@ -563,7 +563,7 @@ class Products extends Component {
     // RENDER
     render() {
         // State Varibles
-        let {CRUD_Product, CRUDButtonName, selectedCategory, isShowModalAreYouSureDeleteProduct, productToDelete, valueProductFeature, } = this.state
+        let {CRUD_Product, CRUDButtonName, selectedCategory, isShowModalAreYouSureDeleteProduct, productToDelete } = this.state
         const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
 
         // Render are you sure delete the product?
@@ -591,13 +591,13 @@ class Products extends Component {
                             <Button 
                                 variant='danger'
                                 size='md' 
-                                block
+                                block='true'
                                 onClick={(e) => this.handleDeleteProduct(e)}
                             >YES</Button>
                             <Button 
                                 variant='secondary'
                                 size='md' 
-                                block
+                                block='true'
                                 onClick={(e) => this.setState({isShowModalAreYouSureDeleteProduct: false})}
                             >NO</Button>
                         </Modal.Footer>
@@ -689,7 +689,7 @@ class Products extends Component {
                                     <Button 
                                         variant='primary'
                                         size='sm' 
-                                        block
+                                        block='true'
                                         onClick={(e) => this.handleAddNewImageToActualProduct(e)}
                                     >
                                     ADD IMAGE TO ACTUAL PROJECT-B
@@ -729,7 +729,7 @@ class Products extends Component {
                         <Row className='mb-1'>
                             <Button
                             variant='primary'
-                            block
+                            block='true'
                             onClick={this.handleCRUDProduct}
                             disabled={this.state.isCRUDButtonDisable}
                             >{CRUDButtonName}</Button>

@@ -119,7 +119,7 @@ class AdmonProfile extends Component {
                         <Button
                             variant='primary'
                             size='lg'
-                            block
+                            block='true'
                             onClick={this.handleCUUser}
                             >Actualizar</Button>
                         </Form>
@@ -151,7 +151,7 @@ class AdmonProfile extends Component {
                                     <Button 
                                         variant='primary'
                                         size='sm' 
-                                        block
+                                        block='true'
                                         onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}
                                     >Actualizar</Button>
                                 </td>

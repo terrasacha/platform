@@ -68,7 +68,7 @@ export default class CRUDProductImages extends Component {
                                 <Button 
                                     variant='primary'
                                     size='lg' 
-                                    block
+                                    block='true'
                                     onClick={(e) => this.handleChangeProductImageProperty(e, image, 'isOnCarousel')}
                                 >{image.isOnCarousel? 'YES' : 'NO'}</Button>
                             </Form.Group>

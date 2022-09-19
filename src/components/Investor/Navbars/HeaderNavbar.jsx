@@ -39,7 +39,7 @@ export default class HeaderNavbar extends Component {
                                 
                                 <Button 
                                     variant='outline-primary'
-                                    block
+                                    block='true'
                                     onClick={(e) => this.handleChangeNavBar('investor_profile', e)}
                                 ><ListTask></ListTask>Profile</Button> 
 
@@ -49,7 +49,7 @@ export default class HeaderNavbar extends Component {
                                 
                                 <Button 
                                     variant='outline-primary'
-                                    block
+                                    block='true'
                                     onClick={(e) => this.handleChangeNavBar('investor_documents', e)}
                                 ><ListTask></ListTask>Documents</Button> 
 

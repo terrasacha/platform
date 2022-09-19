@@ -138,7 +138,7 @@ import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subsc
                                         <Button 
                                             variant='primary'
                                             size='lg' 
-                                            block
+                                            block='true'
                                             onClick={(e) => this.handleLoadEditFeatureType(featuresType, e)}
                                         >Editar</Button>
                                     </td>
@@ -180,7 +180,7 @@ import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subsc
                 <Row className='mb-1'>
                     <Button
                     variant='primary'
-                    block
+                    block='true'
                     onClick={this.handleCRUDFeatureType}
                     disabled={this.state.isCRUDButtonDisable}
                     >{CRUDButtonName}</Button>
