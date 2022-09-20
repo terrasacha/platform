@@ -74,38 +74,37 @@ class Products extends Component {
             await this.loadProductFeatures()
             console.log("productFeatures", this.state.listPF)
             console.log("products", this.state.products)
-                // Subscriptions
-                // OnCreate Product
-                let tempProducts = this.state.products
-                this.createProductListener = API.graphql(graphqlOperation(onCreateProduct))
-                .subscribe({
-                    next: createdProductData => {
-                        let tempOnCreateProduct = createdProductData.value.data.onCreateProduct
+            
+            // Subscriptions
+            // OnCreate Product
+            this.createProductListener = API.graphql(graphqlOperation(onCreateProduct))
+            .subscribe({
+                next: createdProductData => {
+                    let tempProducts = this.state.products
+                    let tempOnCreateProduct = createdProductData.value.data.onCreateProduct
+                    tempProducts.push(tempOnCreateProduct)
+                    // Ordering products by name
+                    tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({products: tempProducts}))
+                }
+            })
 
-                        // tempOnCreateProduct.prices.items = result.data.listPrices.items
-                        tempProducts.push(tempOnCreateProduct)
-                        // Ordering products by name
-                        tempProducts.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                        this.setState((state) => ({products: tempProducts}))
-                    }
-                })
-
-                // OnUpdate Product
-                this.updateProductListener = API.graphql(graphqlOperation(onUpdateProduct))
-                .subscribe({
-                    next: updatedProductData => {
-                        let tempProducts = this.state.products.map((mapProduct) => {
-                            if (updatedProductData.value.data.onUpdateProduct.id === mapProduct.id) {
-                                return updatedProductData.value.data.onUpdateProduct
-                            } else {
-                                return mapProduct
-                            }
-                        })
-                        // Ordering products by name
-                        tempProducts.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                        this.setState((state) => ({products: tempProducts}))
-                    }
-                })
+            // OnUpdate Product
+            this.updateProductListener = API.graphql(graphqlOperation(onUpdateProduct))
+            .subscribe({
+                next: updatedProductData => {
+                    let tempProducts = this.state.products.map((mapProduct) => {
+                        if (updatedProductData.value.data.onUpdateProduct.id === mapProduct.id) {
+                            return updatedProductData.value.data.onUpdateProduct
+                        } else {
+                            return mapProduct
+                        }
+                    })
+                    // Ordering products by name
+                    tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({products: tempProducts}))
+                }
+            })
         //     }
         // } else {
         //     this.props.changeHeaderNavBarRequest('admon_profile')
@@ -460,7 +459,6 @@ class Products extends Component {
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false,
-            products: [],
             categorySelectList: [],
             featuresSelectList: [],
             selectedCategory: null,
