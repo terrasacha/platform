@@ -225,13 +225,11 @@ class Products extends Component {
                 return image
             })
             // Creating ProductFeatures
-            Promise.all(
-                this.state.productFeatures.map(async (productFeature, idx) => {
-                    delete productFeature.feature
-                  return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
-                })
-              )
-            .then(await this.cleanProductOnCreate())
+            this.state.productFeatures.map(async (productFeature, idx) => {
+                delete productFeature.feature
+                return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
+            })
+            await this.cleanProductOnCreate()
             /* await this.cleanProductOnCreate() */
         }
 
@@ -271,13 +269,14 @@ class Products extends Component {
                     }
                 }
             })
-            Promise.all(
-                this.state.productFeatures?.map(async (productFeature, idx) => {
-                    if(!productFeature.feature){
-                        return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
-                    }
-                })
-              ).then(this.cleanProductOnCreate()    )
+
+            this.state.productFeatures?.map(async (productFeature, idx) => {
+                if(!productFeature.feature){
+                    return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
+                }
+            })
+              
+            this.cleanProductOnCreate()
             
             // Updating ProductFeatures  No es necesario porque ya lo hago cuando edito cada productFeature 
 
