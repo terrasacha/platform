@@ -139,7 +139,7 @@ export default class Products extends Component {
                             <ul>
                                 {selectedProductToShow.productFeatures.items.map(productFeature => (
                                     <li>
-                                        {productFeature.feature.name}{/* : {feature.description} */}
+                                        {productFeature.feature.name}: {productFeature.feature.description}
                                     </li>
                                 ))}
                             </ul>
