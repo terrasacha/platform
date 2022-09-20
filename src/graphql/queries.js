@@ -603,33 +603,9 @@ export const listProducts = /* GraphQL */ `
         }
         images {
           nextToken
-          items {
-            id
-            imageURL
-            carouselDescription
-            carouselLabel
-            format
-            isOnCarousel
-            isActive
-            imageURLToDisplay
-            title
-            productID
-            order
-          }
         }
         productFeatures {
-          items {
-            id
-            isToBlockChain
-            isVerifable
-            value
-            feature {
-              id
-              name
-              order
-              isTemplate
-            }
-          }
+          nextToken
         }
         results {
           nextToken
@@ -798,6 +774,7 @@ export const getFeature = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -864,6 +841,7 @@ export const listFeatures = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -886,6 +864,7 @@ export const getUnitOfMeasure = /* GraphQL */ `
       id
       engineeringUnit
       description
+      isFloat
       features {
         items {
           id
@@ -929,6 +908,7 @@ export const listUnitOfMeasures = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -969,6 +949,7 @@ export const getFormula = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -986,6 +967,7 @@ export const getFormula = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -1041,6 +1023,7 @@ export const listFormulas = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -1112,6 +1095,7 @@ export const getResult = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -1224,6 +1208,7 @@ export const getProductFeature = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }

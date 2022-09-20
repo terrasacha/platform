@@ -1457,6 +1457,7 @@ export const createFeature = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -1524,6 +1525,7 @@ export const updateFeature = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -1591,6 +1593,7 @@ export const deleteFeature = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -1639,6 +1642,7 @@ export const createUnitOfMeasure = /* GraphQL */ `
       id
       engineeringUnit
       description
+      isFloat
       features {
         items {
           id
@@ -1680,6 +1684,7 @@ export const updateUnitOfMeasure = /* GraphQL */ `
       id
       engineeringUnit
       description
+      isFloat
       features {
         items {
           id
@@ -1721,6 +1726,7 @@ export const deleteUnitOfMeasure = /* GraphQL */ `
       id
       engineeringUnit
       description
+      isFloat
       features {
         items {
           id
@@ -1783,6 +1789,7 @@ export const createFormula = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -1800,6 +1807,7 @@ export const createFormula = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -1856,6 +1864,7 @@ export const updateFormula = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -1873,6 +1882,7 @@ export const updateFormula = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -1929,6 +1939,7 @@ export const deleteFormula = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -1946,6 +1957,7 @@ export const deleteFormula = /* GraphQL */ `
         id
         engineeringUnit
         description
+        isFloat
         features {
           nextToken
         }
@@ -2033,6 +2045,7 @@ export const createResult = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -2108,6 +2121,7 @@ export const updateResult = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -2183,6 +2197,7 @@ export const deleteResult = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -2257,6 +2272,7 @@ export const createProductFeature = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -2366,6 +2382,7 @@ export const updateProductFeature = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }
@@ -2475,6 +2492,7 @@ export const deleteProductFeature = /* GraphQL */ `
           id
           engineeringUnit
           description
+          isFloat
           createdAt
           updatedAt
         }

@@ -135,6 +135,7 @@ type UnitOfMeasure @model {
   id: ID!
   engineeringUnit: String!
   description: String
+  isFloat: Boolean
   features: [Feature] @hasMany(indexName: "byUnitOfMeasure", fields: ["id"])
   formulas: [Formula] @hasMany(indexName: "byUnitOfMeasure", fields: ["id"])
 }
@@ -165,7 +166,7 @@ type Result @model
 type ProductFeature @model 
 {
   id: ID!
-  value: Float
+  value: String
   isToBlockChain: Boolean
   isVerifable: Boolean
   productID: ID! @index(name: "byProduct")
