@@ -149,7 +149,7 @@ class InvestorProfile extends Component {
                         <Button
                             variant='primary'
                             size='lg'
-                            block='true'
+                             
                             onClick={this.handleCUUser}
                             >Actualizar</Button>
                         </Form>
@@ -181,7 +181,7 @@ class InvestorProfile extends Component {
                                     <Button 
                                         variant='primary'
                                         size='sm' 
-                                        block='true'
+                                         
                                         onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}
                                     >Actualizar</Button>
                                 </td>

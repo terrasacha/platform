@@ -166,7 +166,7 @@ class UOM extends Component {
                                     <Button 
                                         variant='primary'
                                         size='lg' 
-                                        block='true'
+                                         
                                         onClick={(e) => this.handleLoadEditUnitOfMeasure(unitOfMeasure, e)}
                                     >Editar</Button>
                                 </td>
@@ -208,7 +208,7 @@ class UOM extends Component {
                     <Row className='mb-1'>
                         <Button
                         variant='primary'
-                        block='true'
+                         
                         onClick={this.handleCRUDUnitOfMeasure}
                         disabled={this.state.isCRUDButtonDisable}
                         >{CRUDButtonName}</Button>

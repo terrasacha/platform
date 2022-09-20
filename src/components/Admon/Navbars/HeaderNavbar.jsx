@@ -45,7 +45,7 @@ export default class HeaderNavbar extends Component {
                                 
                                 <Button 
                                     variant='outline-primary'
-                                    block='true'
+                                     
                                     onClick={(e) => this.handleChangeNavBar('categorys', e)}
                                 ><Filter></Filter>Categories</Button> 
 
@@ -53,7 +53,7 @@ export default class HeaderNavbar extends Component {
                             <Nav.Link href="#features">
                                 <Button
                                     variant='outline-primary'
-                                    block='true'
+                                     
                                     onClick={(e) => this.handleChangeNavBar('features', e)}
                                 ><Filter></Filter>Features</Button>
 
@@ -61,7 +61,7 @@ export default class HeaderNavbar extends Component {
                             <Nav.Link href="#uom">
                                 <Button
                                     variant='outline-primary'
-                                    block='true'
+                                     
                                     onClick={(e) => this.handleChangeNavBar('uom', e)}
                                 ><Filter></Filter>OUM</Button>
 
@@ -70,7 +70,7 @@ export default class HeaderNavbar extends Component {
                                 
                                 <Button 
                                     variant='outline-primary'
-                                    block='true'
+                                     
                                     onClick={(e) => this.handleChangeNavBar('products', e)}
                                 ><InfoCircle></InfoCircle>Projects</Button>
 

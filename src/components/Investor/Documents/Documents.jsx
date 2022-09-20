@@ -229,7 +229,7 @@ class Documents extends Component {
               <Button 
                   variant='primary'
                   size='lg' 
-                  block='true'
+                   
                   onClick={(e) => this.handleUOrder(e, pOrder)}
                   // disabled={!order.isCompleteOrder}
               >UPDATE ORDEN</Button>

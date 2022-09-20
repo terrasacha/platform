@@ -97,7 +97,8 @@ export default class CRUDProductFeatures extends Component {
         if (this.state.CRUDButtonName === 'UPDATE') {
             delete tempNewProductFeature.createdAt
             delete tempNewProductFeature.updatedAt
-            delete tempNewProductFeature.product
+            delete tempNewProductFeature.productID
+            delete tempNewProductFeature.featureID
             delete tempNewProductFeature.feature
             delete tempNewProductFeature.verifications
             delete tempNewProductFeature.documents
@@ -171,6 +172,7 @@ export default class CRUDProductFeatures extends Component {
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsToBlockChain'>
                                     <Form.Label>Is to Blockchain?</Form.Label>
                                     <Form.Select  name='isToBlockChain' onChange={(e) => this.handleCreateProductFeature(e)} >
+                                        <option value="no">-</option>
                                         <option value='no'>No</option>
                                         <option value='yes'>Yes</option>
                                     </Form.Select>
@@ -180,6 +182,7 @@ export default class CRUDProductFeatures extends Component {
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsVerifable'>
                                     <Form.Label>Is to Verifable?</Form.Label>
                                     <Form.Select  name='isVerifiable' onChange={(e) => this.handleCreateProductFeature(e)} >
+                                        <option value="no" >-</option>
                                         <option value='no' >No</option>
                                         <option value='yes'>Yes</option>
                                     </Form.Select>
@@ -190,7 +193,7 @@ export default class CRUDProductFeatures extends Component {
             </Table>
             <Button
             variant='primary'
-            block='true'
+             
             onClick={this.handleCRUDProductFeature}
             >{this.state.CRUDButtonName}</Button>
             </>
@@ -228,7 +231,6 @@ export default class CRUDProductFeatures extends Component {
                                 <Button 
                                     variant='primary'
                                     size='lg' 
-                                    block='true'
                                     onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
                                 >Editar</Button>
                             </td>

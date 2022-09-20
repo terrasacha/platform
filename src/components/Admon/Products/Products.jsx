@@ -7,7 +7,7 @@ import { Container, Button, Form, Row, Col, Alert, Card, Modal } from 'react-boo
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listProducts, listCategories, listFeatures } from '../../../graphql/queries'
+import { listProducts, listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
 import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
@@ -36,6 +36,7 @@ class Products extends Component {
                 images: [],
             },
             productFeatures: [],
+            listPF:[],
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false,
@@ -70,6 +71,9 @@ class Products extends Component {
             await this.loadProducts()
             await this.loadCategorysSelectItems()
             await this.loadFeaturesSelectItems()
+            await this.loadProductFeatures()
+            console.log("productFeatures", this.state.listPF)
+            console.log("products", this.state.products)
                 // Subscriptions
                 // OnCreate Product
                 let tempProducts = this.state.products
@@ -102,7 +106,6 @@ class Products extends Component {
                         this.setState((state) => ({products: tempProducts}))
                     }
                 })
-
         //     }
         // } else {
         //     this.props.changeHeaderNavBarRequest('admon_profile')
@@ -173,6 +176,12 @@ class Products extends Component {
         listProductsResult.data.listProducts.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         this.setState({products: listProductsResult.data.listProducts.items})
     }
+    async loadProductFeatures() {
+        const listProductsResult = await API.graphql(graphqlOperation(listProductFeatures))
+        listProductsResult.data.listProductFeatures.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        this.setState({listPF: listProductsResult.data.listProductFeatures.items})
+    }
+
 
     async validateCRUDProduct() {
         if ( this.state.selectedCategory !== null && 
@@ -219,7 +228,7 @@ class Products extends Component {
             // Creating ProductFeatures
             Promise.all(
                 this.state.productFeatures.map(async (productFeature, idx) => {
-                    console.log('iteracion nro',  idx)
+                    delete productFeature.feature
                   return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
                 })
               )
@@ -263,8 +272,18 @@ class Products extends Component {
                     }
                 }
             })
-            // Updating Product => Features
-            tempCRUD_Product.features.map( async(feature) => {
+            Promise.all(
+                this.state.productFeatures?.map(async (productFeature, idx) => {
+                    if(!productFeature.feature){
+                        return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
+                    }
+                })
+              ).then(this.cleanProductOnCreate())
+            
+            // Updating ProductFeatures  No es necesario porque ya lo hago cuando edito cada productFeature 
+
+
+/*             tempCRUD_Product.features.map( async(feature) => {
                 const featurePayload = {
                     productID: tempCRUD_Product.id,
                     id: feature.id,
@@ -281,7 +300,7 @@ class Products extends Component {
                         await API.graphql(graphqlOperation(createFeature, { input: featurePayload }))
                     }
                 }
-            })
+            }) */  
             // Clean CRUD_Product
             await this.cleanProductOnCreate()
         }
@@ -306,7 +325,6 @@ class Products extends Component {
             amountToBuy: 0.0,
             categoryID: product.categoryID,
             images: product.images.items,
-            features: product.features.items,
             order: product.order,
         }
         
@@ -314,8 +332,9 @@ class Products extends Component {
             id: product.category.id,
             isSelected: true,
             name: product.category.name,
-        }  
-        await this.setState({CRUD_Product: tempCRUD_Product, selectedCategory: tempCategory, CRUDButtonName: 'UPDATE'})
+        }
+        const tempProductsFeatures = product.productFeatures.items
+        await this.setState({CRUD_Product: tempCRUD_Product, selectedCategory: tempCategory, productFeatures: tempProductsFeatures, CRUDButtonName: 'UPDATE'})
         this.validateCRUDProduct()
     }
 
@@ -421,8 +440,8 @@ class Products extends Component {
         let tempProductFeatures = this.state.productFeatures
 
         tempProductFeatures.push(newProductFeature)
-        this.setState({productFeatures: tempProductFeatures})
         console.log(this.state.productFeatures)
+        this.setState({productFeatures: tempProductFeatures})
     }
 
     async cleanProductOnCreate() {
@@ -532,29 +551,6 @@ class Products extends Component {
         return signedURL
     }
 
-    handleOnChangeInputFormProductFeatures = async(event, pFeature, pProperty) => {
-        let tempCRUD_Product = this.state.CRUD_Product;
-        let tempFeatures = tempCRUD_Product.features.map( (feature) => {
-            if (feature.id === pFeature.id) {
-                if (event.target.name === 'CRUD_ProductFeatureName') {
-                    feature.name = event.target.value
-                }
-                if (event.target.name === 'CRUD_ProductFeatureDescription') {
-                    feature.description = event.target.value
-                }
-                if (pProperty === 'CRUD_ProductFeatureIsToBlockChain') {
-                    feature.isToBlockChain = !feature.isToBlockChain
-                }
-                if (pProperty === 'CRUD_ProductFeatureIsVerifable') {
-                    feature.isVerifable = !feature.isVerifable
-                }
-            }
-            return feature
-        })
-        tempCRUD_Product.features = tempFeatures     
-        await this.setState({CRUD_Product: tempCRUD_Product})
-        this.validateCRUDProduct()
-    }
 
     async handleHideModalAreYouSureDeleteProduct(event) {
         this.setState({isShowModalAreYouSureDeleteProduct: !this.state.isShowModalAreYouSureDeleteProduct})
@@ -591,13 +587,13 @@ class Products extends Component {
                             <Button 
                                 variant='danger'
                                 size='md' 
-                                block='true'
+                                 
                                 onClick={(e) => this.handleDeleteProduct(e)}
                             >YES</Button>
                             <Button 
                                 variant='secondary'
                                 size='md' 
-                                block='true'
+                                 
                                 onClick={(e) => this.setState({isShowModalAreYouSureDeleteProduct: false})}
                             >NO</Button>
                         </Modal.Footer>
@@ -684,29 +680,6 @@ class Products extends Component {
                         
                         <Card style={{paddingTop: 20}}>
                             <Card.Body>
-                                <Card.Title>PROJECT-B Images</Card.Title>
-                                <Row className='mb-1'>
-                                    <Button 
-                                        variant='primary'
-                                        size='sm' 
-                                        block='true'
-                                        onClick={(e) => this.handleAddNewImageToActualProduct(e)}
-                                    >
-                                    ADD IMAGE TO ACTUAL PROJECT-B
-                                    </Button>
-                                    <CRUDProductImages 
-                                        CRUD_Product={CRUD_Product}
-                                        isImageUploadingFile={this.state.isImageUploadingFile}
-                                        urlS3Image={urlS3Image}
-                                        handleChangeProductImageProperty={this.handleChangeProductImageProperty}
-                                        />
-
-                                </Row>
-                            </Card.Body>
-                        </Card>
-                        
-                        <Card style={{paddingTop: 20}}>
-                            <Card.Body>
                                 <Card.Title>PROJECT-B Features</Card.Title>
                                 <Row className='mb-1'>
                                 <CRUDProductFeatures 
@@ -725,11 +698,34 @@ class Products extends Component {
                                 </Row>
                             </Card.Body>
                         </Card>
+                        <Card style={{paddingTop: 20}}>
+                            <Card.Body>
+                                <Card.Title>PROJECT-B Images</Card.Title>
+                                <Row className='mb-1'>
+                                    <Button 
+                                        variant='primary'
+                                        size='sm' 
+                                         
+                                        onClick={(e) => this.handleAddNewImageToActualProduct(e)}
+                                    >
+                                    ADD IMAGE TO ACTUAL PROJECT-B
+                                    </Button>
+                                    <CRUDProductImages 
+                                        CRUD_Product={CRUD_Product}
+                                        isImageUploadingFile={this.state.isImageUploadingFile}
+                                        urlS3Image={urlS3Image}
+                                        handleChangeProductImageProperty={this.handleChangeProductImageProperty}
+                                        />
+
+                                </Row>
+                            </Card.Body>
+                        </Card>
+                        
 
                         <Row className='mb-1'>
                             <Button
                             variant='primary'
-                            block='true'
+                             
                             onClick={this.handleCRUDProduct}
                             disabled={this.state.isCRUDButtonDisable}
                             >{CRUDButtonName}</Button>

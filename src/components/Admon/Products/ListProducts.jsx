@@ -30,7 +30,7 @@ export default class ListProducts extends Component {
                             <th>Name</th>
                             <th>Description</th>
                             <th>Images</th>
-                            <th>Features</th>
+                            <th>Product Features</th>
                             <th>Is Active</th>
                             <th>Action</th>
                         </tr>
@@ -63,13 +63,13 @@ export default class ListProducts extends Component {
                                     <Button 
                                         variant='primary'
                                         size='md' 
-                                        block='true'
+                                         
                                         onClick={(e) => this.handleLoadEditProduct(product, e)}
                                     >Edit</Button>
                                     <Button 
                                         variant='danger'
                                         size='md' 
-                                        block='true'
+                                         
                                         onClick={(e) => this.handleShowAreYouSureDeleteProduct(product, e)}
                                     >Delete</Button>
                                 </td>
@@ -125,7 +125,7 @@ export default class ListProducts extends Component {
                                     <Button 
                                         variant='danger'
                                         size='sm' 
-                                        block='true'
+                                         
                                         onClick={(e) => this.handleDeleteImageProduct(pProduct, image, e)}
                                     >
                                     DELETE
@@ -145,21 +145,21 @@ export default class ListProducts extends Component {
                     <Table striped bordered hover>
                         <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Description</th>
+                            <th>id</th>
+                            <th>Value</th>
                             <th>Is to BlockChain?</th>
                             <th>Is Verifable?</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {pProductFeatures.map(feature => (
+                        {pProductFeatures?.map(feature => (
                             <tr key={feature.id}>
                                 <td>
-                                    {feature.name}
+                                    {feature.id}
                                 </td>
                                 <td>
-                                    {feature.description}
+                                    {feature.value}
                                 </td>
                                 <td>
                                     {feature.isToBlockChain? 'YES' : 'NO'}
@@ -171,7 +171,7 @@ export default class ListProducts extends Component {
                                     <Button 
                                         variant='danger'
                                         size='sm' 
-                                        block='true'
+                                         
                                         onClick={(e) => this.handleDeleteFeatureProduct(pProduct, feature, e)}
                                     >
                                     DELETE

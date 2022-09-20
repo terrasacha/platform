@@ -281,7 +281,7 @@ import { onCreateFeature, onUpdateFeature, onCreateFeatureType, onUpdateFeatureT
                                         <Button 
                                             variant='primary'
                                             size='lg' 
-                                            block='true'
+                                             
                                             onClick={(e) => this.handleLoadEditFeature(features, e)}
                                         >Editar</Button>
                                     </td>
@@ -363,7 +363,7 @@ import { onCreateFeature, onUpdateFeature, onCreateFeatureType, onUpdateFeatureT
                 <Row className='mb-1'>
                     <Button
                     variant='primary'
-                    block='true'
+                     
                     onClick={this.handleCRUDFeature}
                     disabled={this.state.isCRUDButtonDisable}
                     >{CRUDButtonName}</Button>
