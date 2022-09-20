@@ -6,11 +6,11 @@ import { Carousel } from 'react-bootstrap'
 export default class Carousels extends Component {
   render() {
     let {productsImagesIsOnCarousel} = this.props
-    const urlS3Image = 'https://kioproyectobrjsapp627f51dfee5f4a219ed7016e45916213406-dev.s3.amazonaws.com/public/'
+    const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
     return (
         <Carousel>
-            {productsImagesIsOnCarousel.map(image => (
-                <Carousel.Item>
+            {productsImagesIsOnCarousel.map((image, idx) => (
+                <Carousel.Item key={idx}>
                     <img
                     className="d-block w-100"
                     src={urlS3Image+image.imageURL}

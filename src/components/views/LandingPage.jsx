@@ -137,8 +137,8 @@ export default class LandingPage extends Component {
     return (
       <Container>
         <HeaderNavbar handleChangeRenderView={this.handleChangeRenderView}></HeaderNavbar>
-        {renderCarousel()}
         {renderAboutUs()}
+        {renderCarousel()}
         {renderProducts()}
         {renderTermAndConditions()}
       </Container>
