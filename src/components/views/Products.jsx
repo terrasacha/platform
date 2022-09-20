@@ -19,6 +19,7 @@ export default class Products extends Component {
     }
 
     componentDidMount = async () => {
+        console.log(this.props.products)
     }
     
     async handleLoadSelectedProduct(event, pProduct, pModal) {
@@ -26,6 +27,7 @@ export default class Products extends Component {
             this.setState({isRenderModalProductImages: true, selectedProductToShow: pProduct})
         }
         if (pModal === 'show_modal_product_features') {
+            console.log("modal productFeature", pProduct)
             this.setState({isRenderModalProductFeatures: true, selectedProductToShow: pProduct})
         }
     }
@@ -52,7 +54,7 @@ export default class Products extends Component {
         // State Varibles
         let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures} = this.state
         let {products} = this.props
-        const urlS3Image = 'https://kioproyectobrjsapp627f51dfee5f4a219ed7016e45916213406-dev.s3.amazonaws.com/public/'
+        const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
         // Render Products on Cards
         const renderProductsOnCards = () => {
             if (products.length > 0) {
@@ -135,9 +137,9 @@ export default class Products extends Component {
                         </Modal.Header>
                         <Modal.Body>
                             <ul>
-                                {selectedProductToShow.features.items.map(feature => (
+                                {selectedProductToShow.productFeatures.items.map(productFeature => (
                                     <li>
-                                        {feature.name}: {feature.description}
+                                        {productFeature.feature.name}{/* : {feature.description} */}
                                     </li>
                                 ))}
                             </ul>
