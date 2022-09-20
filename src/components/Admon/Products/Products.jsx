@@ -278,7 +278,7 @@ class Products extends Component {
                         return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
                     }
                 })
-              ).then(this.cleanProductOnCreate())
+              ).then(this.cleanProductOnCreate()    )
             
             // Updating ProductFeatures  No es necesario porque ya lo hago cuando edito cada productFeature 
 

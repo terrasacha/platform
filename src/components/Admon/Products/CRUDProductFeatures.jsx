@@ -123,11 +123,12 @@ export default class CRUDProductFeatures extends Component {
        })
    }
    handleLoadEditProductFeature= async(productFeature, event) => {
-
+    console.log(productFeature)
     this.setState({
         newProductFeature:  productFeature,
         CRUDButtonName: 'UPDATE',
     })
+
     }
 
   render() {
@@ -149,13 +150,14 @@ export default class CRUDProductFeatures extends Component {
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
                                 <Form.Label>Select one</Form.Label>
-                                    <Select options={featuresSelectList} onChange={this.handleOnSelectFeature} />
+                                    <Select 
+                                        options={featuresSelectList}
+                                        onChange={this.handleOnSelectFeature} />
                             </Form.Group>
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
                                 <Form.Label>{selectedFeature?selectedFeature.description : '-'}</Form.Label>
-                                    
                             </Form.Group>
                         </td>
                         <td>
