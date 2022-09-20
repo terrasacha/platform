@@ -603,9 +603,34 @@ export const listProducts = /* GraphQL */ `
         }
         images {
           nextToken
+          items {
+            id
+            imageURL
+            carouselDescription
+            carouselLabel
+            format
+            isOnCarousel
+            isActive
+            imageURLToDisplay
+            title
+            productID
+            order
+          }
         }
         productFeatures {
-          nextToken
+          items {
+            id
+            isToBlockChain
+            isVerifable
+            value
+            feature {
+              id
+              name
+              order
+              isTemplate
+              description
+            }
+          }
         }
         results {
           nextToken
