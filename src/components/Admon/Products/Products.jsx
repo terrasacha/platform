@@ -62,7 +62,6 @@ class Products extends Component {
         this.handleDeleteImageProduct = this.handleDeleteImageProduct.bind(this)
         this.handleDeleteFeatureProduct = this.handleDeleteFeatureProduct.bind(this)
         this.handleAddNewFeatureToActualProduct = this.handleAddNewFeatureToActualProduct.bind(this)
-        this.handleValueProductFeature = this.handleValueProductFeature.bind(this)
     }
 
     componentDidMount = async () => {
@@ -72,8 +71,6 @@ class Products extends Component {
             await this.loadCategorysSelectItems()
             await this.loadFeaturesSelectItems()
             await this.loadProductFeatures()
-            console.log("productFeatures", this.state.listPF)
-            console.log("products", this.state.products)
             
             // Subscriptions
             // OnCreate Product
@@ -137,9 +134,6 @@ class Products extends Component {
         this.setState({selectedFeature: event.value})
         this.validateCRUDProduct()
     }
-    handleValueProductFeature(e) {
-        this.setState({valueProductFeature: e.target.value})
-    }
 
     async loadCategorysSelectItems() {
         let categorysSelectItems = []
@@ -194,19 +188,8 @@ class Products extends Component {
     
     async handleCRUDProduct() {
         const tempCRUD_Product = this.state.CRUD_Product
-
+        console.log('tempCRUD_Product.images',tempCRUD_Product.images)
         if (this.state.CRUDButtonName === 'CREATE') {
-            // Creating new product
-            const payLoadNewProduct = {
-                id: tempCRUD_Product.id,
-                name: tempCRUD_Product.name,
-                description: tempCRUD_Product.description,
-                isActive: true,
-                counterNumberOfTimesBuyed: 0,
-                categoryID: this.state.selectedCategory.id,
-                order: tempCRUD_Product.order,
-            }
-            await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
             // Creating Product=>images
             tempCRUD_Product.images.map( async(image) => {
                 const newImagePayLoad = {
@@ -229,12 +212,7 @@ class Products extends Component {
                 delete productFeature.feature
                 return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
             })
-            await this.cleanProductOnCreate()
-            /* await this.cleanProductOnCreate() */
-        }
-
-        if (this.state.CRUDButtonName === 'UPDATE') {
-            // Updating new product
+            // Creating new product
             const payLoadNewProduct = {
                 id: tempCRUD_Product.id,
                 name: tempCRUD_Product.name,
@@ -244,7 +222,12 @@ class Products extends Component {
                 categoryID: this.state.selectedCategory.id,
                 order: tempCRUD_Product.order,
             }
-            await API.graphql(graphqlOperation(updateProduct, { input: payLoadNewProduct }))
+            await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
+            await this.cleanProductOnCreate()
+            /* await this.cleanProductOnCreate() */
+        }
+
+        if (this.state.CRUDButtonName === 'UPDATE') {
             // Updating Product=>images
             let indexProduct = this.state.products.findIndex(product => product.id === tempCRUD_Product.id)
             tempCRUD_Product.images.map( async(image) => {
@@ -275,30 +258,18 @@ class Products extends Component {
                     return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
                 }
             })
-              
-            this.cleanProductOnCreate()
-            
+            const payLoadNewProduct = {
+                id: tempCRUD_Product.id,
+                name: tempCRUD_Product.name,
+                description: tempCRUD_Product.description,
+                isActive: true,
+                counterNumberOfTimesBuyed: 0,
+                categoryID: this.state.selectedCategory.id,
+                order: tempCRUD_Product.order,
+            }
+            // Updating new product
+            await API.graphql(graphqlOperation(updateProduct, { input: payLoadNewProduct }))
             // Updating ProductFeatures  No es necesario porque ya lo hago cuando edito cada productFeature 
-
-
-/*             tempCRUD_Product.features.map( async(feature) => {
-                const featurePayload = {
-                    productID: tempCRUD_Product.id,
-                    id: feature.id,
-                    name: feature.name,
-                    description: feature.description,
-                    isToBlockChain: feature.isToBlockChain,
-                    isVerifable: feature.isVerifable,
-                }
-                if (indexProduct !== -1) {
-                    let indexFeature = this.state.products[indexProduct].features.items.findIndex(fFeature => fFeature.id === feature.id)
-                    if (indexFeature !== -1) {
-                        await API.graphql(graphqlOperation(updateFeature, { input: featurePayload }))
-                    } else {
-                        await API.graphql(graphqlOperation(createFeature, { input: featurePayload }))
-                    }
-                }
-            }) */  
             // Clean CRUD_Product
             await this.cleanProductOnCreate()
         }
@@ -325,7 +296,7 @@ class Products extends Component {
             images: product.images.items,
             order: product.order,
         }
-        
+        console.log('product to edit id',tempCRUD_Product.id)
         const tempCategory = {
             id: product.category.id,
             isSelected: true,
@@ -438,7 +409,6 @@ class Products extends Component {
         let tempProductFeatures = this.state.productFeatures
 
         tempProductFeatures.push(newProductFeature)
-        console.log(this.state.productFeatures)
         this.setState({productFeatures: tempProductFeatures})
     }
 
@@ -688,7 +658,6 @@ class Products extends Component {
                                         handleAddNewFeatureToActualProduct={this.handleAddNewFeatureToActualProduct}
                                         handleOnSelectFeature={this.handleOnSelectFeature}
                                         handleOnChangeInputFormProductFeatures={this.handleOnChangeInputFormProductFeatures}
-                                        handleValueProductFeature={this.handleValueProductFeature}
                                         />
                                     
                                     {/* <Image src={productImageURLToDisplay} rounded style={{width: 200, height: 'auto'}} /> */}
