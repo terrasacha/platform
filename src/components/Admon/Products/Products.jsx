@@ -188,8 +188,16 @@ class Products extends Component {
     
     async handleCRUDProduct() {
         const tempCRUD_Product = this.state.CRUD_Product
-        console.log('tempCRUD_Product.images',tempCRUD_Product.images)
         if (this.state.CRUDButtonName === 'CREATE') {
+            const payLoadNewProduct = {
+                id: tempCRUD_Product.id,
+                name: tempCRUD_Product.name,
+                description: tempCRUD_Product.description,
+                isActive: true,
+                counterNumberOfTimesBuyed: 0,
+                categoryID: this.state.selectedCategory.id,
+                order: tempCRUD_Product.order,
+            }
             // Creating Product=>images
             tempCRUD_Product.images.map( async(image) => {
                 const newImagePayLoad = {
@@ -213,6 +221,13 @@ class Products extends Component {
                 return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
             })
             // Creating new product
+
+            await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
+            await this.cleanProductOnCreate()
+            /* await this.cleanProductOnCreate() */
+        }
+
+        if (this.state.CRUDButtonName === 'UPDATE') {
             const payLoadNewProduct = {
                 id: tempCRUD_Product.id,
                 name: tempCRUD_Product.name,
@@ -222,12 +237,6 @@ class Products extends Component {
                 categoryID: this.state.selectedCategory.id,
                 order: tempCRUD_Product.order,
             }
-            await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
-            await this.cleanProductOnCreate()
-            /* await this.cleanProductOnCreate() */
-        }
-
-        if (this.state.CRUDButtonName === 'UPDATE') {
             // Updating Product=>images
             let indexProduct = this.state.products.findIndex(product => product.id === tempCRUD_Product.id)
             tempCRUD_Product.images.map( async(image) => {
@@ -258,15 +267,7 @@ class Products extends Component {
                     return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
                 }
             })
-            const payLoadNewProduct = {
-                id: tempCRUD_Product.id,
-                name: tempCRUD_Product.name,
-                description: tempCRUD_Product.description,
-                isActive: true,
-                counterNumberOfTimesBuyed: 0,
-                categoryID: this.state.selectedCategory.id,
-                order: tempCRUD_Product.order,
-            }
+
             // Updating new product
             await API.graphql(graphqlOperation(updateProduct, { input: payLoadNewProduct }))
             // Updating ProductFeatures  No es necesario porque ya lo hago cuando edito cada productFeature 
