@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 // Bootstrap
 import { Container, Button, Row, Col, Card, Modal, Carousel } from 'react-bootstrap'
-// GraphQL
-// import { API, graphqlOperation } from 'aws-amplify'
-// import { listProducts } from '../../graphql/queries'
+// Util
+import WebAppConfig from '../common/_conf/WebAppConfig'
 
 export default class Products extends Component {
     constructor(props) {
@@ -54,7 +53,7 @@ export default class Products extends Component {
         // State Varibles
         let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures} = this.state
         let {products} = this.props
-        const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
+        const urlS3Image = WebAppConfig.url_s3_public_images
         // Render Products on Cards
         const renderProductsOnCards = () => {
             if (products.length > 0) {

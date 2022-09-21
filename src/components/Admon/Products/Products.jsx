@@ -8,10 +8,11 @@ import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { listProducts, listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
-import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
+import { createImage, createProduct, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
+import WebAppConfig from '../../common/_conf/WebAppConfig'
 //Components
 import ListProducts from './ListProducts'
 import CRUDProductFeatures from './CRUDProductFeatures'
@@ -528,7 +529,7 @@ class Products extends Component {
     render() {
         // State Varibles
         let {CRUD_Product, CRUDButtonName, selectedCategory, isShowModalAreYouSureDeleteProduct, productToDelete } = this.state
-        const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
+        const urlS3Image = WebAppConfig.url_s3_public_images
 
         // Render are you sure delete the product?
         const renderAreYouSureDeleteProduct = () => {
