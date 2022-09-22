@@ -41,6 +41,15 @@ export default class HeaderNavbar extends Component {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         >
+                            <Nav.Link href="#formulas">
+                                
+                                <Button 
+                                    variant='outline-primary'
+                                     
+                                    onClick={(e) => this.handleChangeNavBar('formulas', e)}
+                                ><Filter></Filter>Formulas</Button> 
+
+                            </Nav.Link>
                             <Nav.Link href="#categorys">
                                 
                                 <Button 
