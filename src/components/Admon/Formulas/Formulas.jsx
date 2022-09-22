@@ -8,8 +8,8 @@ import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listFormulas } from '../../../graphql/queries'
-import { createCategory, updateCategory } from '../../../graphql/mutations'
+import { listFormulas, listFeatures } from '../../../graphql/queries'
+import { createFormula, updateFormula } from '../../../graphql/mutations'
 import { onCreateFormula, onUpdateFormula } from '../../../graphql/subscriptions'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -19,6 +19,7 @@ class Formulas extends Component {
         super(props)
         this.state = {
             formulas: [],
+            features:[],
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             newFormula: {   
@@ -36,6 +37,7 @@ class Formulas extends Component {
 
     componentDidMount = async () => {
         await this.loadFormulas()
+        await this.loadFeatures()
 
         // Subscriptions
         // OnCreate Formula
@@ -76,15 +78,37 @@ class Formulas extends Component {
         listFormulasResult.data.listFormulas.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
         this.setState({formulas: listFormulasResult.data.listFormulas.items})
     }
+    async loadFeatures() {
+        const listFeaturesResult = await API.graphql(graphqlOperation(listFeatures))
+        listFeaturesResult.data.listFeatures.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        this.setState({features: listFeaturesResult.data.listFeatures.items})
+        }
+
 
     handleOnChangeInputForm = async(event) => {
-
+        let tempNewFormula = this.state.newFormula
+        if (event.target.name === 'formula.varID') {
+            tempNewFormula.varID = event.target.value
+        }
+        if (event.target.name === 'formula.equation') {
+            tempNewFormula.equation = event.target.value
+        }
+        if (event.target.name === 'formula.featureID') {
+            tempNewFormula.featureID = event.target.value
+            let auxUOM = this.state.features.filter(f => f.id === event.target.value)
+            tempNewFormula.unitOfMeasureID = auxUOM[0].unitOfMeasureID
+        }
+        
+        this.setState({newFormula: tempNewFormula})
+        console.log(this.state.newFormula)
+        this.validateCRUDFormula()
+        
     }
 
-    async validateCRUDCategory() {
-        if (this.state.newFormula.id !== '' ||
-            this.state.newFormula.varID !== '' ||
-            this.state.newFormula.equation !== '' ||
+    async validateCRUDFormula() {
+        if (this.state.newFormula.id !== '' &&
+            this.state.newFormula.varID !== '' &&
+            this.state.newFormula.equation !== '' &&
             this.state.newFormula.featureID !== '') {
 
             this.setState({isCRUDButtonDisable: false})
@@ -92,74 +116,95 @@ class Formulas extends Component {
     }
     
     async handleCRUDFormula() {
-        let tempNewCategory = this.state.newCategory
+        console.log('handleCRUDFormula')
+        let tempNewFormula = this.state.newFormula
 
         if (this.state.CRUDButtonName === 'CREATE') {
             
-            const newCategorytId = this.state.newCategory.name
-            tempNewCategory.id = newCategorytId
+            if(tempNewFormula.unitOfMeasureID === undefined ){
+                tempNewFormula.unitOfMeasureID = ''
+            }
 
-            await API.graphql(graphqlOperation(createCategory, { input: tempNewCategory }))
-            await this.cleanCategoryOnCreate()
+            await API.graphql(graphqlOperation(createFormula, { input: tempNewFormula }))
+            await this.cleanFormulaOnCreate()
         }
 
         if (this.state.CRUDButtonName === 'UPDATE') {
-            delete tempNewCategory.products
-            delete tempNewCategory.createdAt
-            delete tempNewCategory.updatedAt
-            await API.graphql(graphqlOperation(updateCategory, { input: this.state.newCategory }))
-            await this.cleanCategoryOnCreate()
+            delete tempNewFormula.createdAt
+            delete tempNewFormula.updatedAt
+            delete tempNewFormula.results
+            delete tempNewFormula.unitOfMeasure
+            delete tempNewFormula.feature
+            await API.graphql(graphqlOperation(updateFormula, { input: this.state.newFormula }))
+            await this.cleanFormulaOnCreate()
         }
     }
     
 
-    handleLoadEditFormula= async(category, event) => {
+    handleLoadEditFormula= async(formula, event) => {
 
         this.setState({
-            newCategory:  category,
+            newFormula:  formula,
             CRUDButtonName: 'UPDATE',
             isCRUDButtonDisable: false
         })
-        this.validateCRUDCategory()
+        this.validateCRUDFormula()
     }
 
-    async cleanCategoryOnCreate() {
+    async cleanFormulaOnCreate() {
          this.setState({
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
-            newCategory: {   id: '',
-                            name: ''
-                        }
+            newFormula: {   
+                id: uuidv4().replaceAll('-','_'),
+                varID: '',
+                equation: '',
+                featureID: '',
+                unitOfMeasureID: ''
+            },
         })
     }
     
     // RENDER
     render() {
         // State Varibles
-        let {categorys, newCategory, CRUDButtonName} = this.state
+        let {formulas, newFormula, CRUDButtonName} = this.state
 
-        const renderCategorys = () => {
-            if (categorys.length > 0) {
+        const renderFormulas = () => {
+            if (formulas.length > 0) {
                 return (
                     <Table striped bordered hover>
                         <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Variable ID</th>
+                            <th>Equation</th>
+                            <th>Feature ID</th>
+                            <th>Unit of Measure ID</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {categorys.map(category => (
-                            <tr key={category.id}>
+                        {formulas.map(formula => (
+                            <tr key={formula.id}>
+
                                 <td>
-                                    {category.name}
+                                    {formula.varID}
+                                </td>
+                                <td>
+                                    {formula.equation}
+                                </td>
+                                <td>
+                                    {formula.featureID}
+                                </td>
+                                <td>
+                                    {formula.unitOfMeasure.engineeringUnit}
                                 </td>
                                 <td>
                                     <Button 
                                         variant='primary'
                                         size='lg' 
                                          
-                                        onClick={(e) => this.handleLoadEditCategory(category, e)}
+                                        onClick={(e) => this.handleLoadEditFormula(formula, e)}
                                     >Editar</Button>
                                 </td>
                             </tr>
@@ -175,18 +220,37 @@ class Formulas extends Component {
         return (
             
             <Container>
-                {renderCategorys()}
+                {renderFormulas()}
                 <br></br>
+                <h2>{CRUDButtonName} Formula: {newFormula.name}</h2>
                 <Form>
                     <Row className='mb-2'>
                         <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                            <Form.Label>Name</Form.Label>
+                            <Form.Label>Variable ID</Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder=''
+                                name='formula.varID'
+                                value={newFormula.varID}
+                                onChange={(e) => this.handleOnChangeInputForm(e)} />
+                        </Form.Group>
+                        <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                            <Form.Label>Equation</Form.Label>
                             <Form.Control
                                 type='text'
                                 placeholder='Ex. ANIMALS'
-                                name='category.name'
-                                value={newCategory.name}
+                                name='formula.equation'
+                                value={newFormula.equation}
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
+                        </Form.Group>
+                        <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                            <Form.Label>Feature</Form.Label>
+                            <Form.Select 
+                                name='formula.featureID'
+                                onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                    <option>-</option>
+                                    {this.state.features.map((features, idx) => (<option value={features.id} key={idx}>{features.name}</option>))}
+                            </Form.Select>
                         </Form.Group>
                     </Row>
 
@@ -194,7 +258,7 @@ class Formulas extends Component {
                         <Button
                         variant='primary'
                          
-                        onClick={this.handleCRUDCategory}
+                        onClick={this.handleCRUDFormula}
                         disabled={this.state.isCRUDButtonDisable}
                         >{CRUDButtonName}</Button>
                     </Row>
