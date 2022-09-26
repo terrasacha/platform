@@ -6,10 +6,10 @@ import { Container } from 'react-bootstrap'
 import { API, graphqlOperation } from 'aws-amplify'
 import { listProducts } from '../../graphql/queries'
 // Components
-import HeaderNavbar from './Navbars/HeaderNavbar'
-import Products from './Products'
 import Carousels from './Carousels'
 import Features from './Features'
+import HeaderNavbar from './Navbars/HeaderNavbar'
+import Products from './Products'
 import TermsAndConditions from './TermsAndConditions'
 
 
@@ -22,7 +22,7 @@ export default class LandingPage extends Component {
       productsImagesIsOnCarousel: [],
       isRenderCarousel: true,
       isRenderAboutUs: true,
-      isRenderProducts: false,
+      isRenderProducts: true,
       isRenderTermAndConditions: false
     }
     this.handleChangeRenderView = this.handleChangeRenderView.bind(this)
@@ -40,7 +40,7 @@ export default class LandingPage extends Component {
         product.images.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         // Adding is on carousel images
         product.images.items.map( (image) => {
-          if (image.isOnCarousel) {
+          if (image.isOnCarousel) { 
             tempProductsImagesIsOnCarousel.push(image)
           }
           return image
