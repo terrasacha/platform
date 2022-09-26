@@ -129,7 +129,7 @@ export default class LandingPage extends Component {
     const renderTermAndConditions = () => {
       if (isRenderTermAndConditions) {
         return (
-          <TermsAndConditions></TermsAndConditions>
+          <TermsAndConditions />
         )
       }
     }
