@@ -22,7 +22,7 @@ export default class LandingPage extends Component {
       productsImagesIsOnCarousel: [],
       isRenderCarousel: true,
       isRenderAboutUs: true,
-      isRenderProducts: true,
+      isRenderProducts: false,
       isRenderTermAndConditions: false
     }
     this.handleChangeRenderView = this.handleChangeRenderView.bind(this)
