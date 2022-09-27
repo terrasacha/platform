@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Container, Button, Row, Col, Card, Modal, Carousel } from 'react-bootstrap'
+import { Button, Card, Carousel, Col, Container, Modal, Row } from 'react-bootstrap'
 // GraphQL
 // import { API, graphqlOperation } from 'aws-amplify'
 // import { listProducts } from '../../graphql/queries'
+
+import './Views.css'
 
 export default class Products extends Component {
     constructor(props) {
@@ -19,7 +21,6 @@ export default class Products extends Component {
     }
 
     componentDidMount = async () => {
-        console.log(this.props.products)
     }
     
     async handleLoadSelectedProduct(event, pProduct, pModal) {
@@ -54,13 +55,14 @@ export default class Products extends Component {
         // State Varibles
         let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures} = this.state
         let {products} = this.props
+        let productsShort = products.slice(0,2) //para probar CSS *HAY QUE BORRAR Y CAMBIAR EL .MAP*
         const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
         // Render Products on Cards
         const renderProductsOnCards = () => {
-            if (products.length > 0) {
+            if (productsShort.length > 0) {
                 return (
                     <Row xs={1} md={3} lg={4}>
-                        {products.map(product => (
+                        {productsShort.map(product => (
                             <Col key={product.id + '_col'}>
                                 <Card>
                                     <Card.Img variant="top" src={urlS3Image+product.images.items[0].imageURL} />
@@ -153,7 +155,7 @@ export default class Products extends Component {
         }
         // RENDER
         return (
-            <Container style={{paddingTop: 50}}>
+            <Container className='feature_block'>
                 {renderProductsOnCards()}
                 {renderModalProductImages()}
                 {renderModalProductFeatures()}
