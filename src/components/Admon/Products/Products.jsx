@@ -2,20 +2,20 @@ import React, { Component } from 'react'
 // Amplify
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Alert, Card, Modal } from 'react-bootstrap'
+import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listProducts, listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
-import { createFeature, createImage, createProduct, updateFeature, updateImage, updateProduct, deleteProduct, deleteImage, deleteFeature, createProductFeature } from '../../../graphql/mutations'
+import { createFeature, createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateFeature, updateImage, updateProduct } from '../../../graphql/mutations'
+import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
 //Components
-import ListProducts from './ListProducts'
 import CRUDProductFeatures from './CRUDProductFeatures'
 import CRUDProductImages from './CRUDProductImages'
+import ListProducts from './ListProducts'
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
@@ -297,7 +297,6 @@ class Products extends Component {
             images: product.images.items,
             order: product.order,
         }
-        console.log('product to edit id',tempCRUD_Product.id)
         const tempCategory = {
             id: product.category.id,
             isSelected: true,
