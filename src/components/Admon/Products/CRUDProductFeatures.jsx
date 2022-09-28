@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 //bootstrap
-import {  Button, Form, Col, Table } from 'react-bootstrap'
+import { Alert, Button, Col, Form, Table } from 'react-bootstrap'
 //GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import {updateProductFeature } from '../../../graphql/mutations'
+import { updateProductFeature } from '../../../graphql/mutations'
 //Utils
 import Select from 'react-select'
 import { v4 as uuidv4 } from 'uuid'
@@ -125,9 +125,9 @@ export default class CRUDProductFeatures extends Component {
    handleLoadEditProductFeature= async(productFeature, event) => {
     console.log(productFeature)
     this.setState({
-        newProductFeature:  productFeature,
-        CRUDButtonName: 'UPDATE',
-    })
+            newProductFeature:  productFeature,
+            CRUDButtonName: 'UPDATE',
+        })
 
     }
 
@@ -140,24 +140,33 @@ export default class CRUDProductFeatures extends Component {
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th>Features</th>
+                    <th>Feature</th>
                     <th>Description</th>
                     <th>Value</th>
+                    <th>Is to BlockChain</th>
+                    <th>Is verifable</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
-                                <Form.Label>Select one</Form.Label>
                                     <Select 
                                         options={featuresSelectList}
                                         onChange={this.handleOnSelectFeature} />
+                                        {this.state.CRUDButtonName === 'UPDATE'?
+                                            <Alert key="idx_key_1" variant='success' size='sm'>
+                                                {this.state.newProductFeature.feature.name}
+                                            </Alert> : ''}
+                                        
                             </Form.Group>
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
-                                <Form.Label>{selectedFeature?selectedFeature.description : '-'}</Form.Label>
+                                {this.state.CRUDButtonName === 'UPDATE'? 
+                                        <Form.Label>{this.state.newProductFeature.feature.description}</Form.Label>
+                                        :
+                                        <Form.Label>{selectedFeature?selectedFeature.description : '-'}</Form.Label>}
                             </Form.Group>
                         </td>
                         <td>
@@ -172,22 +181,26 @@ export default class CRUDProductFeatures extends Component {
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsToBlockChain'>
-                                    <Form.Label>Is to Blockchain?</Form.Label>
                                     <Form.Select  name='isToBlockChain' onChange={(e) => this.handleCreateProductFeature(e)} >
-                                        <option value="no">-</option>
+                                        <option>-</option>
                                         <option value='no'>No</option>
                                         <option value='yes'>Yes</option>
                                     </Form.Select>
+                                    <Alert key="idx_key_1" variant='success'>
+                                            {this.state.newProductFeature.isToBlockChain? 'Yes' : 'No'}
+                                        </Alert>
                                 </Form.Group>
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsVerifable'>
-                                    <Form.Label>Is to Verifable?</Form.Label>
                                     <Form.Select  name='isVerifiable' onChange={(e) => this.handleCreateProductFeature(e)} >
-                                        <option value="no" >-</option>
+                                        <option>-</option>
                                         <option value='no' >No</option>
                                         <option value='yes'>Yes</option>
                                     </Form.Select>
+                                    <Alert key="idx_key_1" variant='success'>
+                                            {this.state.newProductFeature.isVerifable? 'Yes' : 'No'}
+                                        </Alert>
                                 </Form.Group>
                         </td>
                     </tr>
@@ -210,8 +223,9 @@ export default class CRUDProductFeatures extends Component {
                     <tr>
                         <th>ID</th>
                         <th>Value</th>
-                        <th>isToBlockChain</th>
-                        <th>isVerifable</th>
+                        <th>Is to BlockChain</th>
+                        <th>Is verifable</th>
+                        <th>Edit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -230,11 +244,12 @@ export default class CRUDProductFeatures extends Component {
                                 {productFeatures.isVerifable? 'Yes' : 'No'}
                             </td>
                             <td>
-                                <Button 
+                               {!productFeatures.isToBlockChain?
+                                <Button
                                     variant='primary'
-                                    size='lg' 
+                                    size='sm' 
                                     onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
-                                >Editar</Button>
+                                >Editar</Button> : ''}
                             </td>
                         </tr>
                     ))}
