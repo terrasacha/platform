@@ -55,15 +55,14 @@ export default class Products extends Component {
         // State Varibles
         let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures} = this.state
         let {products} = this.props
-        let productsShort = products.slice(0,2) //para probar CSS *HAY QUE BORRAR Y CAMBIAR EL .MAP*
         const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
         // Render Products on Cards
         const renderProductsOnCards = () => {
-            if (productsShort.length > 0) {
+            if (products.length > 0) {
                 return (
-                    <Row xs={1} md={3} lg={4}>
-                        {productsShort.map(product => (
-                            <Col key={product.id + '_col'}>
+                    <div className=''>
+                        {products.map(product => (
+/*                             <Col key={product.id + '_col'}>
                                 <Card>
                                     <Card.Img variant="top" src={urlS3Image+product.images.items[0].imageURL} />
                                     <Card.Body>
@@ -75,9 +74,60 @@ export default class Products extends Component {
                                         <Button variant="primary" onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>What is included?</Button>
                                     </Card.Body>
                                 </Card>
-                            </Col>
+                            </Col> */
+                    <div className='card_container' key={product.id + '_col'}>
+                    <div className='product_status'>NEW</div>
+                    <div className='product_info'>
+                        <div className='product_image_container'>
+                            <img 
+                                className='product_image'
+                                src={urlS3Image+product.images.items[0].imageURL} 
+                                alt={product.name}/>
+                        </div>
+                        <div className='product_details'>
+                            <div className='product_details_wrapper'>
+                                <div className='product_name'><h3>{product.name}</h3></div>
+                                <div className='product_description'><p>{product.description}</p></div>
+                                <div className='product_prices_container'>
+                                    <div className='product_total_price'>
+                                        <span className='product_price_tittle'>TOTAL PRICE</span>
+                                        <span className='product_price_number'>$1,223,584</span>
+                                    </div>
+                                    <div className='product_token_price'>
+                                        <span className='product_price_tittle'>TOKEN PRICE</span>
+                                        <span className='product_price_number_token'>$49,44</span>
+                                    </div>
+                                </div>
+                                <div className='product_expected_income_container'>
+                                    <div className='product_expected_income'>
+                                        <span>Expected Income</span>
+                                        <span>8.56%</span>
+                                    </div>
+                                    <div className='product_expected_income_text'>Not including capital appreciation</div>
+                                </div>
+                                <div className='product_rent_per_token'>
+                                    <span>Rent per Token</span>
+                                    <span className='rent_number'>$ 4.31 / year</span>
+                                </div>
+                                <div className='product_rent_start_day'>
+                                    <span>Rent start day</span>
+                                    <span className='rent_number'>2022-10-01</span>
+                                </div>
+                                <div className='product_buttons_container'>
+                                    <div className='product_what_is_include'>
+                                        <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_images')} >More pictures...</button>
+                                    </div>
+                                    <div className='product_more_pictures'>
+                                        <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>What is included?</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                         ))}
-                    </Row>
+                    </div>
+
                 )
             }
         }
@@ -163,3 +213,5 @@ export default class Products extends Component {
         )
     }
 }
+
+

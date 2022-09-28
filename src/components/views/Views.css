@@ -10,5 +10,179 @@
     padding-top: 100px;
     padding-right: 30px;
     padding-bottom: 50px;
-    padding-left: 80px;text-align: center;
+    padding-left: 80px;
+    text-align: center;
+}
+
+
+/* CSS Products.jsx */  
+.card_container{
+    width: 100%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin: 1em 0 1em 0;
+    box-shadow: 2px 2px 6px 2px rgb(0 0 0 / 20%);
+}
+.product_status{
+    height: 7%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #036667;
+    font-weight: 600;
+    color: #fff;
+}
+.product_info{
+    display: flex;
+    height: 93%;
+}
+.product_image_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 50%;
+    
+}
+.product_image_container .product_image{
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%
+}
+.product_details{
+    width: 50%;
+    margin-top: 10px;
+}
+.product_details_wrapper{
+    width: 90%;
+    height: 95%;
+    margin:0px auto;
+    display: flex;
+    flex-direction: column;
+}
+.product_name{
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4em;
+
+}
+.product_description{
+    font-size: .9em;
+    font-weight: 400;
+    text-align: center;
+}
+.product_prices_container{
+    display: flex;
+    height: 20%;
+}
+.product_total_price{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #f7f7f7;
+}
+.product_price_tittle{
+    font-size: 1.3em;
+    font-weight: 500;
+}
+.product_price_number{
+    margin-top: -.4em;
+    font-size: 2.3em;
+    font-weight: 700;
+}
+.product_price_number_token{
+    margin-top: -.4em;
+    font-size: 2.3em;
+    font-weight: 700;
+    color: #4DBC5E
+}
+.product_token_price{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #f7f7f7;
+}
+/* .product_rentability_details{
+    border: 1px  solid green;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+} */
+.product_expected_income_container{
+    width: 90%;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+.product_expected_income{
+    display: flex;
+    font-size: 1.1em;
+    color: #294378;
+    font-weight: 600;
+    justify-content: space-between;
+}
+.product_expected_income_text{
+    text-align: start;
+    font-size: .7em;
+}
+.product_rent_per_token{
+    width: 90%;
+    padding: 10px 0;
+    margin: 5px auto;
+    display: flex;
+    border-top: 1px solid #f1f1f1;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 1em;
+    color: #000000;
+    font-weight: 700;
+    justify-content: space-between;
+}
+.rent_number{
+    font-weight: 400;
+}
+.product_rent_start_day{
+    width: 90%;
+    margin: 0 auto;
+    padding-top: 5px;
+    display: flex;
+    font-size: 1em;
+    color: #D88E03;
+    font-weight: 700;
+    justify-content: space-between;
+}
+.product_buttons_container{
+    margin-top: 1em;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+@media (max-width: 993px) {
+    .product_info{
+        flex-direction: column  ;
+    }
+    .product_image_container{
+        width: 100%;
+        height: 50%;
+    }
+    .product_details{
+        width: 100%;
+    }
+    .card_container{
+        height: 800px;
+    }
+}
+@media (max-width: 450px) {
+    .product_price_tittle{
+        font-size: .8em;
+    }
+    .product_price_number{
+        font-size: 1.5em;
+    }
+    .product_price_number_token{
+        font-size: 1.5em;
+    }
 }
