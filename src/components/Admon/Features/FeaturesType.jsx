@@ -10,7 +10,6 @@ import Bootstrap from "../../common/themes"
 import { API, graphqlOperation } from 'aws-amplify'
 import { listFeatureTypes, } from '../../../graphql/queries'
 import { createFeatureType, updateFeatureType } from '../../../graphql/mutations'
-import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subscriptions'
 
 
  class FeaturesType extends Component {

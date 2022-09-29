@@ -7,7 +7,7 @@ import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-boo
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { createFeature, createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateFeature, updateImage, updateProduct } from '../../../graphql/mutations'
+import { createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
 import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
 // Utils 

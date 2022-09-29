@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Container, Button, Row, Col, Card, Modal, Carousel } from 'react-bootstrap'
+import { Container, Button, Modal, Carousel } from 'react-bootstrap'
 // Util
 import WebAppConfig from '../common/_conf/WebAppConfig'
-import { Button, Card, Carousel, Col, Container, Modal, Row } from 'react-bootstrap'
 // GraphQL
 // import { API, graphqlOperation } from 'aws-amplify'
 // import { listProducts } from '../../graphql/queries'
