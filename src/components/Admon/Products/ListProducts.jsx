@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Table, Image, Button } from 'react-bootstrap'
+import { Button, Image, Table } from 'react-bootstrap'
 
 
 export default class ListProducts extends Component {
@@ -28,6 +28,7 @@ export default class ListProducts extends Component {
                             <th>Order</th>
                             <th>Category</th>
                             <th>Name</th>
+                            <th>Status</th>
                             <th>Description</th>
                             <th>Images</th>
                             <th>Product Features</th>
@@ -46,6 +47,9 @@ export default class ListProducts extends Component {
                                 </td>
                                 <td>
                                     {product.name}
+                                </td>
+                                <td>
+                                    {product.status}
                                 </td>
                                 <td>
                                     {product.description}
@@ -153,26 +157,26 @@ export default class ListProducts extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {pProductFeatures?.map(feature => (
-                            <tr key={feature.id}>
+                        {pProductFeatures?.map(pfeature => (
+                            <tr key={pfeature.id}>
                                 <td>
-                                    {feature.id}
+                                    {pfeature.id}
                                 </td>
                                 <td>
-                                    {feature.value}
+                                    {pfeature.value}
                                 </td>
                                 <td>
-                                    {feature.isToBlockChain? 'YES' : 'NO'}
+                                    {pfeature.isToBlockChain? 'YES' : 'NO'}
                                 </td>
                                 <td>
-                                    {feature.isVerifable? 'YES' : 'NO'}
+                                    {pfeature.isVerifable? 'YES' : 'NO'}
                                 </td>
                                 <td>
                                     <Button 
                                         variant='danger'
                                         size='sm' 
                                          
-                                        onClick={(e) => this.handleDeleteFeatureProduct(pProduct, feature, e)}
+                                        onClick={(e) => this.handleDeleteFeatureProduct(pProduct, pfeature, e)}
                                     >
                                     DELETE
                                     </Button>
