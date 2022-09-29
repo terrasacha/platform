@@ -13,7 +13,7 @@ export default class CRUDProductFeatures extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            CRUDButtonName: 'CREATE',
+            CRUDButtonName: 'ADD',
             isCRUDButtonDisable: true,
             newProductFeature: {
                 id: '',
@@ -82,7 +82,7 @@ export default class CRUDProductFeatures extends Component {
     async handleCRUDProductFeature() {
         let tempNewProductFeature = this.state.newProductFeature
 
-        if (this.state.CRUDButtonName === 'CREATE') {
+        if (this.state.CRUDButtonName === 'ADD') {
             tempNewProductFeature.id = uuidv4().replaceAll('-','_')
             tempNewProductFeature.productID = this.props.CRUD_Product.id
             tempNewProductFeature.featureID = this.props.selectedFeature.id
@@ -110,7 +110,7 @@ export default class CRUDProductFeatures extends Component {
 
     async cleanProductFeatureCreate() {
         this.setState({
-           CRUDButtonName: 'CREATE',
+           CRUDButtonName: 'ADD',
            isCRUDButtonDisable: true,
            newProductFeature: {
             id: '',
