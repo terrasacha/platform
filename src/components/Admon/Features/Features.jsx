@@ -77,7 +77,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
             }
         })
         // Subscriptions
-        // OnCreate Feature
+        // OnCreate FeatureType
         let tempFeatureTypes = this.state.featureTypes
         this.createFeatureTypeListener = API.graphql(graphqlOperation(onCreateFeatureType))
         .subscribe({
@@ -90,7 +90,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 this.setState((state) => ({featureTypes: tempFeatureTypes}))
             }
         })
-        // OnUpdate Feature
+        // OnUpdate FeatureType
         this.updateFeatureTypeListener = API.graphql(graphqlOperation(onUpdateFeatureType))
         .subscribe({
             next: updatedFeatureTypeData => {
@@ -369,7 +369,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                     >{CRUDButtonName}</Button>
                 </Row>
             </Form>
-
             {renderFeaturesType()}
 
         </Container>

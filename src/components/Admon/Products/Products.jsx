@@ -31,6 +31,8 @@ class Products extends Component {
                 name: '',
                 description: '',
                 isActive: true,
+                status: '',
+                order: '',
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
                 categoryID: '',
@@ -194,7 +196,8 @@ class Products extends Component {
                 id: tempCRUD_Product.id,
                 name: tempCRUD_Product.name,
                 description: tempCRUD_Product.description,
-                isActive: true,
+                isActive: true, //Por que se manda true??
+                status: tempCRUD_Product.status,
                 counterNumberOfTimesBuyed: 0,
                 categoryID: this.state.selectedCategory.id,
                 order: tempCRUD_Product.order,
@@ -234,6 +237,7 @@ class Products extends Component {
                 name: tempCRUD_Product.name,
                 description: tempCRUD_Product.description,
                 isActive: true,
+                status: tempCRUD_Product.status,
                 counterNumberOfTimesBuyed: 0,
                 categoryID: this.state.selectedCategory.id,
                 order: tempCRUD_Product.order,
@@ -420,6 +424,7 @@ class Products extends Component {
                 name: '',
                 description: '',
                 isActive: true,
+                order: '',
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
                 categoryID: '',
@@ -448,12 +453,14 @@ class Products extends Component {
             tempCRUD_Product.description = event.target.value
         }
         if (event.target.name === 'CRUD_ProductOrder') {
-            tempCRUD_Product.order = event.target.value
+            tempCRUD_Product.order = parseInt(event.target.value)
         }
         if (pProperty === 'productIsActive') {
             tempCRUD_Product.isActive = !tempCRUD_Product.isActive
         }
-
+        if (event.target.name === 'CRUD_ProductStatus') {
+            tempCRUD_Product.status = event.target.value
+        }
         await this.setState({CRUD_Product: tempCRUD_Product})
         this.validateCRUDProduct()
     }
@@ -619,6 +626,15 @@ class Products extends Component {
                                             placeholder='Ex. Amazing Project B'
                                             name='CRUD_ProductDescription'
                                             value={CRUD_Product.description}
+                                            onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId='formGridCRUD_ProductStatus'>
+                                        <Form.Label>Status</Form.Label>
+                                        <Form.Control
+                                            type='text'
+                                            placeholder=''
+                                            name='CRUD_ProductStatus'
+                                            value={CRUD_Product.status}
                                             onChange={(e) => this.handleOnChangeInputForm(e)} />
                                     </Form.Group>
 
