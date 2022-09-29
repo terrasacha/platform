@@ -236,7 +236,7 @@ class Products extends Component {
                 id: tempCRUD_Product.id,
                 name: tempCRUD_Product.name,
                 description: tempCRUD_Product.description,
-                isActive: true,
+                isActive: tempCRUD_Product.isActive,
                 status: tempCRUD_Product.status,
                 counterNumberOfTimesBuyed: 0,
                 categoryID: this.state.selectedCategory.id,
