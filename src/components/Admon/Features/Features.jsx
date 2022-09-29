@@ -3,16 +3,16 @@ import React, { Component } from 'react'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 //Feature Types component
 import FeaturesType from './FeaturesType'
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listFeatures, listFeatureTypes, listUnitOfMeasures } from '../../../graphql/queries'
 import { createFeature, updateFeature } from '../../../graphql/mutations'
-import { onCreateFeature, onUpdateFeature, onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subscriptions'
+import { listFeatures, listFeatureTypes, listUnitOfMeasures } from '../../../graphql/queries'
+import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureType } from '../../../graphql/subscriptions'
 
 
  class Features extends Component {
@@ -229,7 +229,7 @@ import { onCreateFeature, onUpdateFeature, onCreateFeatureType, onUpdateFeatureT
     render() {
         let {features, newFeature, CRUDButtonName,} = this.state
         const renderFeaturesType = () =>{
-            return <FeaturesType/>
+            return <FeaturesType featureTypes={this.state.featureTypes}/>
         }
         const renderFeatures = () => {
             if (features.length > 0) {

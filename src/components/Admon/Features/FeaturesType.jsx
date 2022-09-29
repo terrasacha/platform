@@ -3,12 +3,11 @@ import React, { Component } from 'react'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listFeatureTypes, } from '../../../graphql/queries'
 import { createFeatureType, updateFeatureType } from '../../../graphql/mutations'
 
 
@@ -32,15 +31,14 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         }
 
     componentDidMount = async () => {
-        await this.loadFeatureTypes()
     
     }
 
-    async loadFeatureTypes() {
+/*     async loadFeatureTypes() {
         const listFeatureTypesResult = await API.graphql(graphqlOperation(listFeatureTypes))
         listFeatureTypesResult.data.listFeatureTypes.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
         this.setState({featureTypes: listFeatureTypesResult.data.listFeatureTypes.items})
-        }
+        } */
         
     handleOnChangeInputForm = async(event) => {
         let tempNewFeatureType = this.state.newFeatureType
@@ -110,8 +108,8 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         
 
     render() {
-        let {featureTypes, newFeatureType, CRUDButtonName,} = this.state
-        
+        let { newFeatureType, CRUDButtonName,} = this.state
+        let { featureTypes } = this.props
         const renderFeatureTypes = () => {
             if (featureTypes.length > 0) {
                 return (
