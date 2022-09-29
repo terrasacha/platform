@@ -329,6 +329,7 @@ export const onCreateVerification = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -424,6 +425,7 @@ export const onUpdateVerification = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -519,6 +521,7 @@ export const onDeleteVerification = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -675,6 +678,7 @@ export const onCreateDocument = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -744,6 +748,7 @@ export const onUpdateDocument = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -813,6 +818,7 @@ export const onDeleteDocument = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -858,6 +864,7 @@ export const onCreateCategory = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -884,6 +891,7 @@ export const onUpdateCategory = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -910,6 +918,7 @@ export const onDeleteCategory = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -932,6 +941,7 @@ export const onCreateProduct = /* GraphQL */ `
       counterNumberOfTimesBuyed
       amountToBuy
       order
+      status
       categoryID
       category {
         id
@@ -1001,6 +1011,7 @@ export const onUpdateProduct = /* GraphQL */ `
       counterNumberOfTimesBuyed
       amountToBuy
       order
+      status
       categoryID
       category {
         id
@@ -1070,6 +1081,7 @@ export const onDeleteProduct = /* GraphQL */ `
       counterNumberOfTimesBuyed
       amountToBuy
       order
+      status
       categoryID
       category {
         id
@@ -1151,6 +1163,7 @@ export const onCreateImage = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1198,6 +1211,7 @@ export const onUpdateImage = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1245,6 +1259,7 @@ export const onDeleteImage = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1396,13 +1411,11 @@ export const onCreateFeature = /* GraphQL */ `
         }
         nextToken
       }
-      formulas {
+      featureFormulas {
         items {
           id
-          varID
-          equation
           featureID
-          unitOfMeasureID
+          formulaID
           createdAt
           updatedAt
         }
@@ -1461,13 +1474,11 @@ export const onUpdateFeature = /* GraphQL */ `
         }
         nextToken
       }
-      formulas {
+      featureFormulas {
         items {
           id
-          varID
-          equation
           featureID
-          unitOfMeasureID
+          formulaID
           createdAt
           updatedAt
         }
@@ -1526,13 +1537,11 @@ export const onDeleteFeature = /* GraphQL */ `
         }
         nextToken
       }
-      formulas {
+      featureFormulas {
         items {
           id
-          varID
-          equation
           featureID
-          unitOfMeasureID
+          formulaID
           createdAt
           updatedAt
         }
@@ -1570,7 +1579,6 @@ export const onCreateUnitOfMeasure = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -1609,7 +1617,6 @@ export const onUpdateUnitOfMeasure = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -1648,7 +1655,6 @@ export const onDeleteUnitOfMeasure = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -1666,40 +1672,6 @@ export const onCreateFormula = /* GraphQL */ `
       id
       varID
       equation
-      featureID
-      feature {
-        id
-        name
-        description
-        order
-        isTemplate
-        defaultValue
-        featureTypeID
-        featureType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        unitOfMeasureID
-        unitOfMeasure {
-          id
-          engineeringUnit
-          description
-          isFloat
-          createdAt
-          updatedAt
-        }
-        productFeatures {
-          nextToken
-        }
-        formulas {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       unitOfMeasureID
       unitOfMeasure {
         id
@@ -1721,6 +1693,16 @@ export const onCreateFormula = /* GraphQL */ `
           varID
           equation
           productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      featureFormulas {
+        items {
+          id
+          featureID
           formulaID
           createdAt
           updatedAt
@@ -1738,40 +1720,6 @@ export const onUpdateFormula = /* GraphQL */ `
       id
       varID
       equation
-      featureID
-      feature {
-        id
-        name
-        description
-        order
-        isTemplate
-        defaultValue
-        featureTypeID
-        featureType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        unitOfMeasureID
-        unitOfMeasure {
-          id
-          engineeringUnit
-          description
-          isFloat
-          createdAt
-          updatedAt
-        }
-        productFeatures {
-          nextToken
-        }
-        formulas {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       unitOfMeasureID
       unitOfMeasure {
         id
@@ -1793,6 +1741,16 @@ export const onUpdateFormula = /* GraphQL */ `
           varID
           equation
           productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      featureFormulas {
+        items {
+          id
+          featureID
           formulaID
           createdAt
           updatedAt
@@ -1810,6 +1768,52 @@ export const onDeleteFormula = /* GraphQL */ `
       id
       varID
       equation
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        isFloat
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateFeatureFormula = /* GraphQL */ `
+  subscription OnCreateFeatureFormula {
+    onCreateFeatureFormula {
+      id
       featureID
       feature {
         id
@@ -1838,38 +1842,166 @@ export const onDeleteFormula = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
         updatedAt
       }
-      unitOfMeasureID
-      unitOfMeasure {
+      formulaID
+      formula {
         id
-        engineeringUnit
-        description
-        isFloat
-        features {
-          nextToken
-        }
-        formulas {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      results {
-        items {
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
           id
-          varID
-          equation
-          productID
-          formulaID
+          engineeringUnit
+          description
+          isFloat
           createdAt
           updatedAt
         }
-        nextToken
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFeatureFormula = /* GraphQL */ `
+  subscription OnUpdateFeatureFormula {
+    onUpdateFeatureFormula {
+      id
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFeatureFormula = /* GraphQL */ `
+  subscription OnDeleteFeatureFormula {
+    onDeleteFeatureFormula {
+      id
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -1891,6 +2023,7 @@ export const onCreateResult = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1916,19 +2049,6 @@ export const onCreateResult = /* GraphQL */ `
         id
         varID
         equation
-        featureID
-        feature {
-          id
-          name
-          description
-          order
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
-          createdAt
-          updatedAt
-        }
         unitOfMeasureID
         unitOfMeasure {
           id
@@ -1939,6 +2059,9 @@ export const onCreateResult = /* GraphQL */ `
           updatedAt
         }
         results {
+          nextToken
+        }
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -1964,6 +2087,7 @@ export const onUpdateResult = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1989,19 +2113,6 @@ export const onUpdateResult = /* GraphQL */ `
         id
         varID
         equation
-        featureID
-        feature {
-          id
-          name
-          description
-          order
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
-          createdAt
-          updatedAt
-        }
         unitOfMeasureID
         unitOfMeasure {
           id
@@ -2012,6 +2123,9 @@ export const onUpdateResult = /* GraphQL */ `
           updatedAt
         }
         results {
+          nextToken
+        }
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2037,6 +2151,7 @@ export const onDeleteResult = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2062,19 +2177,6 @@ export const onDeleteResult = /* GraphQL */ `
         id
         varID
         equation
-        featureID
-        feature {
-          id
-          name
-          description
-          order
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
-          createdAt
-          updatedAt
-        }
         unitOfMeasureID
         unitOfMeasure {
           id
@@ -2085,6 +2187,9 @@ export const onDeleteResult = /* GraphQL */ `
           updatedAt
         }
         results {
+          nextToken
+        }
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2111,6 +2216,7 @@ export const onCreateProductFeature = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2159,7 +2265,7 @@ export const onCreateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2218,6 +2324,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2266,7 +2373,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2325,6 +2432,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2373,7 +2481,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
