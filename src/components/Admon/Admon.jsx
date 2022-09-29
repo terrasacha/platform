@@ -8,6 +8,7 @@ import Features from './Features/Features'
 import UOM from './UOM/UOM'
 import Products from './Products/Products'
 import AdmonProfile from './AdmonProfile/AdmonProfile'
+import Formulas from './Formulas/Formulas'
 
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
@@ -33,7 +34,8 @@ export default class Admon extends Component {
             isShowCategorys: false,
             isShowFeatures: false,
             isShowNotAuthorize: false,
-            isShowUOM: false
+            isShowUOM: false,
+            isShowFormulas:false
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
         this.setUserGraphQLUser = this.setUserGraphQLUser.bind(this)
@@ -62,7 +64,8 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: true,
                 isShowNotAuthorize: false,
-                isShowUOM: false
+                isShowUOM: false,
+                isShowFormulas:false
             })
         }
 
@@ -73,7 +76,8 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: true,
-                isShowUOM: false
+                isShowUOM: false,
+                isShowFormulas:false
             })
         }
 
@@ -85,7 +89,8 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
-                isShowUOM: false
+                isShowUOM: false,
+                isShowFormulas:false
             })
         }
 
@@ -96,7 +101,8 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
-                isShowUOM: false
+                isShowUOM: false,
+                isShowFormulas:false
             })
         }
         if (pRequest === 'features') {
@@ -106,7 +112,8 @@ export default class Admon extends Component {
                 isShowFeatures: true,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
-                isShowUOM: false
+                isShowUOM: false,
+                isShowFormulas:false
         })
         }
         if (pRequest === 'uom') {
@@ -116,7 +123,19 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
-                isShowUOM: true
+                isShowUOM: true,
+                isShowFormulas:false
+        })
+        }
+        if (pRequest === 'formulas') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowFeatures: false,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+                isShowUOM: false,
+                isShowFormulas:true
         })
         }
         
@@ -168,7 +187,8 @@ export default class Admon extends Component {
             isShowFeatures,
             isShowAdmonProfile,
             isShowNotAuthorize,
-            isShowUOM
+            isShowUOM,
+            isShowFormulas
         } = this.state
 
         const renderAdmonProfile = () => {
@@ -230,6 +250,17 @@ export default class Admon extends Component {
                 )
             }
         }
+        const renderFormulas = () => {
+            if (isShowFormulas) {
+                return (
+                    <Formulas 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                    ></Formulas>
+                )
+            }
+        }
 
        
         const renderUserNoAuthorize = () => {
@@ -260,6 +291,7 @@ export default class Admon extends Component {
                     {renderCategorys()}
                     {renderFeatures()}
                     {renderOUM()}
+                    {renderFormulas()}
                     {renderAdmonProfile()}
                     {renderUserNoAuthorize()}
                 </Row>

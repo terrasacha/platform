@@ -192,7 +192,7 @@ import { onCreateFeatureType, onUpdateFeatureType } from '../../../graphql/subsc
     }
 }
 
-export default withAuthenticator(FeaturesType/* , {
+export default withAuthenticator(FeaturesType, {
     theme: Bootstrap,
     includeGreetings: true,
     signUpConfig: {
@@ -200,5 +200,5 @@ export default withAuthenticator(FeaturesType/* , {
         signUpFields: [
         { label: 'Name', key: 'name', required: true, type: 'string' }
     ]
-}} */)
+}})
 

@@ -1,18 +1,16 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 // Components
-import LandingPage from "./components/views/LandingPage.jsx";
 import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
+import LandingPage from "./components/views/LandingPage.jsx";
 
 
 
 // Routing
 import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom"
+  BrowserRouter, Route, Routes
+} from "react-router-dom";
 
 class App extends Component{
   

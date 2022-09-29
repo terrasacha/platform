@@ -348,7 +348,7 @@ import { onCreateFeature, onUpdateFeature, onCreateFeatureType, onUpdateFeatureT
                         <Form.Select 
                             name='feature.unitOfMeasure'
                             onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (<option value={UnitOfMeasure.engineeringUnit} key={idx}>{UnitOfMeasure.engineeringUnit}</option>))}
+                                {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (<option value={UnitOfMeasure.id} key={idx}>{UnitOfMeasure.engineeringUnit}</option>))}
                         </Form.Select>
 {/*                         <Form.Label>Is available</Form.Label>
                         <Form.Select 
