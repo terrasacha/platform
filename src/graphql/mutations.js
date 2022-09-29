@@ -350,6 +350,7 @@ export const createVerification = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -448,6 +449,7 @@ export const updateVerification = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -546,6 +548,7 @@ export const deleteVerification = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -714,6 +717,7 @@ export const createDocument = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -786,6 +790,7 @@ export const updateDocument = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -858,6 +863,7 @@ export const deleteDocument = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -906,6 +912,7 @@ export const createCategory = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -935,6 +942,7 @@ export const updateCategory = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -964,6 +972,7 @@ export const deleteCategory = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -989,6 +998,7 @@ export const createProduct = /* GraphQL */ `
       counterNumberOfTimesBuyed
       amountToBuy
       order
+      status
       categoryID
       category {
         id
@@ -1061,6 +1071,7 @@ export const updateProduct = /* GraphQL */ `
       counterNumberOfTimesBuyed
       amountToBuy
       order
+      status
       categoryID
       category {
         id
@@ -1133,6 +1144,7 @@ export const deleteProduct = /* GraphQL */ `
       counterNumberOfTimesBuyed
       amountToBuy
       order
+      status
       categoryID
       category {
         id
@@ -1217,6 +1229,7 @@ export const createImage = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1267,6 +1280,7 @@ export const updateImage = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1317,6 +1331,7 @@ export const deleteImage = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1480,13 +1495,11 @@ export const createFeature = /* GraphQL */ `
         }
         nextToken
       }
-      formulas {
+      featureFormulas {
         items {
           id
-          varID
-          equation
           featureID
-          unitOfMeasureID
+          formulaID
           createdAt
           updatedAt
         }
@@ -1548,13 +1561,11 @@ export const updateFeature = /* GraphQL */ `
         }
         nextToken
       }
-      formulas {
+      featureFormulas {
         items {
           id
-          varID
-          equation
           featureID
-          unitOfMeasureID
+          formulaID
           createdAt
           updatedAt
         }
@@ -1616,13 +1627,11 @@ export const deleteFeature = /* GraphQL */ `
         }
         nextToken
       }
-      formulas {
+      featureFormulas {
         items {
           id
-          varID
-          equation
           featureID
-          unitOfMeasureID
+          formulaID
           createdAt
           updatedAt
         }
@@ -1663,7 +1672,6 @@ export const createUnitOfMeasure = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -1705,7 +1713,6 @@ export const updateUnitOfMeasure = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -1747,7 +1754,6 @@ export const deleteUnitOfMeasure = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -1768,40 +1774,6 @@ export const createFormula = /* GraphQL */ `
       id
       varID
       equation
-      featureID
-      feature {
-        id
-        name
-        description
-        order
-        isTemplate
-        defaultValue
-        featureTypeID
-        featureType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        unitOfMeasureID
-        unitOfMeasure {
-          id
-          engineeringUnit
-          description
-          isFloat
-          createdAt
-          updatedAt
-        }
-        productFeatures {
-          nextToken
-        }
-        formulas {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       unitOfMeasureID
       unitOfMeasure {
         id
@@ -1823,6 +1795,16 @@ export const createFormula = /* GraphQL */ `
           varID
           equation
           productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      featureFormulas {
+        items {
+          id
+          featureID
           formulaID
           createdAt
           updatedAt
@@ -1843,40 +1825,6 @@ export const updateFormula = /* GraphQL */ `
       id
       varID
       equation
-      featureID
-      feature {
-        id
-        name
-        description
-        order
-        isTemplate
-        defaultValue
-        featureTypeID
-        featureType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        unitOfMeasureID
-        unitOfMeasure {
-          id
-          engineeringUnit
-          description
-          isFloat
-          createdAt
-          updatedAt
-        }
-        productFeatures {
-          nextToken
-        }
-        formulas {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       unitOfMeasureID
       unitOfMeasure {
         id
@@ -1898,6 +1846,16 @@ export const updateFormula = /* GraphQL */ `
           varID
           equation
           productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      featureFormulas {
+        items {
+          id
+          featureID
           formulaID
           createdAt
           updatedAt
@@ -1918,6 +1876,55 @@ export const deleteFormula = /* GraphQL */ `
       id
       varID
       equation
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        isFloat
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createFeatureFormula = /* GraphQL */ `
+  mutation CreateFeatureFormula(
+    $input: CreateFeatureFormulaInput!
+    $condition: ModelFeatureFormulaConditionInput
+  ) {
+    createFeatureFormula(input: $input, condition: $condition) {
+      id
       featureID
       feature {
         id
@@ -1946,38 +1953,172 @@ export const deleteFormula = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
         updatedAt
       }
-      unitOfMeasureID
-      unitOfMeasure {
+      formulaID
+      formula {
         id
-        engineeringUnit
-        description
-        isFloat
-        features {
-          nextToken
-        }
-        formulas {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      results {
-        items {
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
           id
-          varID
-          equation
-          productID
-          formulaID
+          engineeringUnit
+          description
+          isFloat
           createdAt
           updatedAt
         }
-        nextToken
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFeatureFormula = /* GraphQL */ `
+  mutation UpdateFeatureFormula(
+    $input: UpdateFeatureFormulaInput!
+    $condition: ModelFeatureFormulaConditionInput
+  ) {
+    updateFeatureFormula(input: $input, condition: $condition) {
+      id
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFeatureFormula = /* GraphQL */ `
+  mutation DeleteFeatureFormula(
+    $input: DeleteFeatureFormulaInput!
+    $condition: ModelFeatureFormulaConditionInput
+  ) {
+    deleteFeatureFormula(input: $input, condition: $condition) {
+      id
+      featureID
+      feature {
+        id
+        name
+        description
+        order
+        isTemplate
+        defaultValue
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      formulaID
+      formula {
+        id
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -2002,6 +2143,7 @@ export const createResult = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2027,19 +2169,6 @@ export const createResult = /* GraphQL */ `
         id
         varID
         equation
-        featureID
-        feature {
-          id
-          name
-          description
-          order
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
-          createdAt
-          updatedAt
-        }
         unitOfMeasureID
         unitOfMeasure {
           id
@@ -2050,6 +2179,9 @@ export const createResult = /* GraphQL */ `
           updatedAt
         }
         results {
+          nextToken
+        }
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2078,6 +2210,7 @@ export const updateResult = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2103,19 +2236,6 @@ export const updateResult = /* GraphQL */ `
         id
         varID
         equation
-        featureID
-        feature {
-          id
-          name
-          description
-          order
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
-          createdAt
-          updatedAt
-        }
         unitOfMeasureID
         unitOfMeasure {
           id
@@ -2126,6 +2246,9 @@ export const updateResult = /* GraphQL */ `
           updatedAt
         }
         results {
+          nextToken
+        }
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2154,6 +2277,7 @@ export const deleteResult = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2179,19 +2303,6 @@ export const deleteResult = /* GraphQL */ `
         id
         varID
         equation
-        featureID
-        feature {
-          id
-          name
-          description
-          order
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
-          createdAt
-          updatedAt
-        }
         unitOfMeasureID
         unitOfMeasure {
           id
@@ -2202,6 +2313,9 @@ export const deleteResult = /* GraphQL */ `
           updatedAt
         }
         results {
+          nextToken
+        }
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2231,6 +2345,7 @@ export const createProductFeature = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2279,7 +2394,7 @@ export const createProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2341,6 +2456,7 @@ export const updateProductFeature = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2389,7 +2505,7 @@ export const updateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -2451,6 +2567,7 @@ export const deleteProductFeature = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -2499,7 +2616,7 @@ export const deleteProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt

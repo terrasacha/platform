@@ -215,6 +215,7 @@ export const getVerification = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -388,6 +389,7 @@ export const getDocument = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -476,6 +478,7 @@ export const getCategory = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -519,6 +522,7 @@ export const getProduct = /* GraphQL */ `
       counterNumberOfTimesBuyed
       amountToBuy
       order
+      status
       categoryID
       category {
         id
@@ -593,6 +597,7 @@ export const listProducts = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -664,6 +669,7 @@ export const getImage = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -716,6 +722,7 @@ export const listImages = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -822,13 +829,11 @@ export const getFeature = /* GraphQL */ `
         }
         nextToken
       }
-      formulas {
+      featureFormulas {
         items {
           id
-          varID
-          equation
           featureID
-          unitOfMeasureID
+          formulaID
           createdAt
           updatedAt
         }
@@ -873,7 +878,7 @@ export const listFeatures = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -910,7 +915,6 @@ export const getUnitOfMeasure = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -953,6 +957,85 @@ export const getFormula = /* GraphQL */ `
       id
       varID
       equation
+      unitOfMeasureID
+      unitOfMeasure {
+        id
+        engineeringUnit
+        description
+        isFloat
+        features {
+          nextToken
+        }
+        formulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      results {
+        items {
+          id
+          varID
+          equation
+          productID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFormulas = /* GraphQL */ `
+  query ListFormulas(
+    $filter: ModelFormulaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFormulas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getFeatureFormula = /* GraphQL */ `
+  query GetFeatureFormula($id: ID!) {
+    getFeatureFormula(id: $id) {
+      id
       featureID
       feature {
         id
@@ -981,55 +1064,49 @@ export const getFormula = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
         updatedAt
       }
-      unitOfMeasureID
-      unitOfMeasure {
+      formulaID
+      formula {
         id
-        engineeringUnit
-        description
-        isFloat
-        features {
-          nextToken
-        }
-        formulas {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      results {
-        items {
+        varID
+        equation
+        unitOfMeasureID
+        unitOfMeasure {
           id
-          varID
-          equation
-          productID
-          formulaID
+          engineeringUnit
+          description
+          isFloat
           createdAt
           updatedAt
         }
-        nextToken
+        results {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
     }
   }
 `;
-export const listFormulas = /* GraphQL */ `
-  query ListFormulas(
-    $filter: ModelFormulaFilterInput
+export const listFeatureFormulas = /* GraphQL */ `
+  query ListFeatureFormulas(
+    $filter: ModelFeatureFormulaFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listFormulas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listFeatureFormulas(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        varID
-        equation
         featureID
         feature {
           id
@@ -1043,17 +1120,14 @@ export const listFormulas = /* GraphQL */ `
           createdAt
           updatedAt
         }
-        unitOfMeasureID
-        unitOfMeasure {
+        formulaID
+        formula {
           id
-          engineeringUnit
-          description
-          isFloat
+          varID
+          equation
+          unitOfMeasureID
           createdAt
           updatedAt
-        }
-        results {
-          nextToken
         }
         createdAt
         updatedAt
@@ -1077,6 +1151,7 @@ export const getResult = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1102,19 +1177,6 @@ export const getResult = /* GraphQL */ `
         id
         varID
         equation
-        featureID
-        feature {
-          id
-          name
-          description
-          order
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
-          createdAt
-          updatedAt
-        }
         unitOfMeasureID
         unitOfMeasure {
           id
@@ -1125,6 +1187,9 @@ export const getResult = /* GraphQL */ `
           updatedAt
         }
         results {
+          nextToken
+        }
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -1155,6 +1220,7 @@ export const listResults = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt
@@ -1164,7 +1230,6 @@ export const listResults = /* GraphQL */ `
           id
           varID
           equation
-          featureID
           unitOfMeasureID
           createdAt
           updatedAt
@@ -1192,6 +1257,7 @@ export const getProductFeature = /* GraphQL */ `
         counterNumberOfTimesBuyed
         amountToBuy
         order
+        status
         categoryID
         category {
           id
@@ -1240,7 +1306,7 @@ export const getProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        formulas {
+        featureFormulas {
           nextToken
         }
         createdAt
@@ -1304,6 +1370,7 @@ export const listProductFeatures = /* GraphQL */ `
           counterNumberOfTimesBuyed
           amountToBuy
           order
+          status
           categoryID
           createdAt
           updatedAt

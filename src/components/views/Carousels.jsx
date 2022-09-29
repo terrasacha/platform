@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 // Bootstrap
 import { Carousel } from 'react-bootstrap'
-// Import images
+// Utils
+import WebAppConfig from '../common/_conf/WebAppConfig'
 
 export default class Carousels extends Component {
   render() {
     let {productsImagesIsOnCarousel} = this.props
-    const urlS3Image = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
+    const urlS3Image = WebAppConfig.url_s3_public_images
     return (
         <Carousel>
             {productsImagesIsOnCarousel.map((image, idx) => (
