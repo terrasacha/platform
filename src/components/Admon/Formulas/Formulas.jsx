@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 // Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react'
+import { withAuthenticator } from '@aws-amplify/ui-react';
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 // Auth css custom
-import Bootstrap from "../../common/themes"
+import Bootstrap from "../../common/themes";
 // GraphQL
-import { API, graphqlOperation } from 'aws-amplify'
-import { listFormulas, listFeatures } from '../../../graphql/queries'
-import { createFormula, updateFormula } from '../../../graphql/mutations'
-import { onCreateFormula, onUpdateFormula } from '../../../graphql/subscriptions'
-import { v4 as uuidv4 } from 'uuid'
+import { API, graphqlOperation } from 'aws-amplify';
+import { v4 as uuidv4 } from 'uuid';
+import { createFormula, updateFormula } from '../../../graphql/mutations';
+import { listFeatures, listFormulas, listUnitOfMeasures } from '../../../graphql/queries';
+import { onCreateFormula, onUpdateFormula } from '../../../graphql/subscriptions';
 
 class Formulas extends Component {
 
@@ -20,13 +20,13 @@ class Formulas extends Component {
         this.state = {
             formulas: [],
             features:[],
+            unitOfMeasures: [],
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             newFormula: {   
                             id: uuidv4().replaceAll('-','_'),
                             varID: '',
                             equation: '',
-                            featureID: '',
                             unitOfMeasureID: ''
                         },
         }
@@ -38,7 +38,8 @@ class Formulas extends Component {
     componentDidMount = async () => {
         await this.loadFormulas()
         await this.loadFeatures()
-
+        await this.loadUnitOfMeasures()
+        console.log(this.state.unitOfMeasures)
         // Subscriptions
         // OnCreate Formula
         let tempFormulas = this.state.formulas
@@ -65,8 +66,8 @@ class Formulas extends Component {
                         return mapFormula
                     }
                 })
-                // Ordering categorys by name
-                tempFormulas.sort((a, b) => (a.name > b.name) ? 1 : -1)
+                // Ordering formulas by varID
+                tempFormulas.sort((a, b) => (a.varID > b.varID) ? 1 : -1)
                 this.setState((state) => ({formulas: tempFormulas}))
             }
         })
@@ -83,6 +84,11 @@ class Formulas extends Component {
         listFeaturesResult.data.listFeatures.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
         this.setState({features: listFeaturesResult.data.listFeatures.items})
         }
+    async loadUnitOfMeasures() {
+        const listUnitOfMeasuresResult = await API.graphql(graphqlOperation(listUnitOfMeasures))
+        /* listUnitOfMeasuresResult.data.listUnitOfMeasures.items.sort((a, b) => (a.name > b.name) ? 1 : -1) */
+        this.setState({unitOfMeasures: listUnitOfMeasuresResult.data.listUnitOfMeasures.items})
+        }
 
 
     handleOnChangeInputForm = async(event) => {
@@ -93,10 +99,8 @@ class Formulas extends Component {
         if (event.target.name === 'formula.equation') {
             tempNewFormula.equation = event.target.value
         }
-        if (event.target.name === 'formula.featureID') {
-            tempNewFormula.featureID = event.target.value
-            let auxUOM = this.state.features.filter(f => f.id === event.target.value)
-            tempNewFormula.unitOfMeasureID = auxUOM[0].unitOfMeasureID
+        if (event.target.name === 'formula.unitOfMeasure') {
+            tempNewFormula.unitOfMeasureID = event.target.value
         }
         
         this.setState({newFormula: tempNewFormula})
@@ -108,8 +112,7 @@ class Formulas extends Component {
     async validateCRUDFormula() {
         if (this.state.newFormula.id !== '' &&
             this.state.newFormula.varID !== '' &&
-            this.state.newFormula.equation !== '' &&
-            this.state.newFormula.featureID !== '') {
+            this.state.newFormula.equation !== '') {
 
             this.setState({isCRUDButtonDisable: false})
         }
@@ -121,10 +124,6 @@ class Formulas extends Component {
 
         if (this.state.CRUDButtonName === 'CREATE') {
             
-            if(tempNewFormula.unitOfMeasureID === undefined ){
-                tempNewFormula.unitOfMeasureID = ''
-            }
-
             await API.graphql(graphqlOperation(createFormula, { input: tempNewFormula }))
             await this.cleanFormulaOnCreate()
         }
@@ -244,12 +243,12 @@ class Formulas extends Component {
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
                         </Form.Group>
                         <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                            <Form.Label>Feature</Form.Label>
+                            <Form.Label>Unit of Measure</Form.Label>
                             <Form.Select 
-                                name='formula.featureID'
+                                name='formula.unitOfMeasure'
                                 onChange={(e) => this.handleOnChangeInputForm(e)}>
                                     <option>-</option>
-                                    {this.state.features.map((features, idx) => (<option value={features.id} key={idx}>{features.name}</option>))}
+                                    {this.state.unitOfMeasures.map((uom, idx) => (<option value={uom.id} key={idx}>{uom.engineeringUnit}</option>))}
                             </Form.Select>
                         </Form.Group>
                     </Row>
