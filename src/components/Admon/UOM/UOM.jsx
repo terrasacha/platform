@@ -3,13 +3,13 @@ import React, { Component } from 'react'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listUnitOfMeasures } from '../../../graphql/queries'
 import { createUnitOfMeasure, updateUnitOfMeasure } from '../../../graphql/mutations'
+import { listUnitOfMeasures } from '../../../graphql/queries'
 import { onCreateUnitOfMeasure, onUpdateUnitOfMeasure } from '../../../graphql/subscriptions'
 
 class UOM extends Component {
@@ -83,6 +83,9 @@ class UOM extends Component {
         if (event.target.name === 'newUnitOfMeasure.description') {
             tempNewUnitOfMeasure.description = event.target.value
         }
+        if (event.target.name === 'newUnitOfMeasure.isFloat') {
+            tempNewUnitOfMeasure.isFloat = event.target.value
+        }
         this.setState({newUnitOfMeasure: tempNewUnitOfMeasure})
         this.validateCRUDUnitOfMeasure()
     }
@@ -151,6 +154,7 @@ class UOM extends Component {
                         <tr>
                             <th>Engineering unit</th>
                             <th>description</th>
+                            <th>Is float</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -161,6 +165,9 @@ class UOM extends Component {
                                 </td>
                                 <td>
                                     {unitOfMeasure.description}
+                                </td>
+                                <td>
+                                    {unitOfMeasure.isFloat? 'Yes':'No'}
                                 </td>
                                 <td>
                                     <Button 
@@ -202,6 +209,14 @@ class UOM extends Component {
                                 name='newUnitOfMeasure.description'
                                 value={newUnitOfMeasure.description}
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            <Form.Label>Is float?</Form.Label>
+                            <Form.Select 
+                                name='newUnitOfMeasure.isFloat'
+                                onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                    <option>-</option>
+                                    <option value={true}>Yes</option>
+                                    <option value={false}>No</option>
+                            </Form.Select>
                         </Form.Group>
                     </Row>
 

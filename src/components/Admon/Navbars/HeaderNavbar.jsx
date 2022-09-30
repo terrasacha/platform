@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Container, Navbar, Nav, Button } from 'react-bootstrap'
+import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // Import React Bootstrap Icons
-import { InfoCircle, Filter } from 'react-bootstrap-icons'
+import { Filter, InfoCircle } from 'react-bootstrap-icons'
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
 
 // Import images
@@ -48,6 +48,15 @@ export default class HeaderNavbar extends Component {
                                      
                                     onClick={(e) => this.handleChangeNavBar('formulas', e)}
                                 ><Filter></Filter>Formulas</Button> 
+
+                            </Nav.Link>
+                            <Nav.Link href="#results">
+                                
+                                <Button 
+                                    variant='outline-primary'
+                                     
+                                    onClick={(e) => this.handleChangeNavBar('results', e)}
+                                ><Filter></Filter>Results</Button> 
 
                             </Nav.Link>
                             <Nav.Link href="#categorys">

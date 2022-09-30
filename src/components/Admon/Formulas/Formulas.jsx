@@ -39,7 +39,6 @@ class Formulas extends Component {
         await this.loadFormulas()
         await this.loadFeatures()
         await this.loadUnitOfMeasures()
-        console.log(this.state.unitOfMeasures)
         // Subscriptions
         // OnCreate Formula
         let tempFormulas = this.state.formulas
@@ -104,7 +103,6 @@ class Formulas extends Component {
         }
         
         this.setState({newFormula: tempNewFormula})
-        console.log(this.state.newFormula)
         this.validateCRUDFormula()
         
     }
@@ -119,7 +117,6 @@ class Formulas extends Component {
     }
     
     async handleCRUDFormula() {
-        console.log('handleCRUDFormula')
         let tempNewFormula = this.state.newFormula
 
         if (this.state.CRUDButtonName === 'CREATE') {
