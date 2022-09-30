@@ -23,7 +23,8 @@ class UOM extends Component {
             newUnitOfMeasure: {
                             id: '',
                             engineeringUnit: '',
-                            description: ''
+                            description: '',
+                            isFloat: false,
                         },
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
@@ -74,7 +75,7 @@ class UOM extends Component {
         this.setState({unitOfMeasures: listUnitOfMeasuresResult.data.listUnitOfMeasures.items})
     }
 
-    handleOnChangeInputForm = async(event) => {
+    handleOnChangeInputForm = async(event, pProperty) => {
         let tempNewUnitOfMeasure = this.state.newUnitOfMeasure
         if (event.target.name === 'newUnitOfMeasure.engineeringUnit') {
             tempNewUnitOfMeasure.engineeringUnit = event.target.value.toUpperCase()
@@ -83,10 +84,11 @@ class UOM extends Component {
         if (event.target.name === 'newUnitOfMeasure.description') {
             tempNewUnitOfMeasure.description = event.target.value
         }
-        if (event.target.name === 'newUnitOfMeasure.isFloat') {
-            tempNewUnitOfMeasure.isFloat = event.target.value
+        if (pProperty === 'isFloat') {
+            tempNewUnitOfMeasure.isFloat = !tempNewUnitOfMeasure.isFloat
         }
         this.setState({newUnitOfMeasure: tempNewUnitOfMeasure})
+        console.log(this.state.newUnitOfMeasure)
         this.validateCRUDUnitOfMeasure()
     }
 
@@ -136,7 +138,8 @@ class UOM extends Component {
             newUnitOfMeasure: {   
                             id: '',
                             engineeringUnit: '',
-                            description: ''
+                            description: '',
+                            isFloat: false
                         }
         })
     }
@@ -209,14 +212,13 @@ class UOM extends Component {
                                 name='newUnitOfMeasure.description'
                                 value={newUnitOfMeasure.description}
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            <Form.Label>Is float?</Form.Label>
-                            <Form.Select 
-                                name='newUnitOfMeasure.isFloat'
-                                onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                    <option>-</option>
-                                    <option value={true}>Yes</option>
-                                    <option value={false}>No</option>
-                            </Form.Select>
+                             <Form.Label>Is Float?</Form.Label>
+                             <br></br>
+                                        <Button 
+                                            variant='primary'
+                                            size='sm' 
+                                            onClick={(e) => this.handleOnChangeInputForm(e, 'isFloat')}
+                                        >{newUnitOfMeasure.isFloat? 'YES' : 'NO'}</Button>
                         </Form.Group>
                     </Row>
 
