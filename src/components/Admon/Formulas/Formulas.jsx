@@ -131,6 +131,7 @@ class Formulas extends Component {
             delete tempNewFormula.results
             delete tempNewFormula.unitOfMeasure
             delete tempNewFormula.feature
+            delete tempNewFormula.featureFormulas
             await API.graphql(graphqlOperation(updateFormula, { input: this.state.newFormula }))
             await this.cleanFormulaOnCreate()
         }
