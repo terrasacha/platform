@@ -16,11 +16,13 @@ export default class Results extends Component {
             selectedFormulaID: '',
             equationSelected: '', 
             selectedProductID: '', 
-            selectedProductName: ''
-
+            selectedProductName: '',
+            canCalculate: ''
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.checkIfVariablesMatchWithPF = this.checkIfVariablesMatchWithPF.bind(this)
+        this.resolveFormula = this.resolveFormula.bind(this)
+        this.evil = this.evil.bind(this)
     }
     componentDidMount = async () => {
         await this.loadFormulas()
@@ -40,36 +42,55 @@ export default class Results extends Component {
 
     handleOnChangeInputForm = async(e) => {
         if (e.target.name === 'result.selectedProduct') {
-            this.setState({selectedProductID: e.target.value})  
+            this.setState({selectedProductID: e.target.value, canCalculate: ''})  
             let productSelected = this.state.products.filter(product => product.id === e.target.value)
             this.setState({selectedProductID: e.target.value, selectedProductName: productSelected[0].name })   
         }
         if (e.target.name === 'result.selectedFormula') {
             let formulaSelected = this.state.formulas.filter(formula => formula.id === e.target.value)
-            this.setState({selectedFormulaID: e.target.value, equationSelected: formulaSelected[0].equation }) 
+            this.setState({selectedFormulaID: e.target.value, equationSelected: formulaSelected[0].equation, canCalculate: '' }) 
             
         }
     }
     checkIfVariablesMatchWithPF = () =>{
-        let formulaCopy = this.state.equationSelected
-        let formulaCopyclean = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)) //separa todas las variables y excluye numeros
-        let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo lasa productFeatures del producto seleccionado para usar la formula
-        productFeaturesProductSelected = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
-        let formulaCopycleanLength = formulaCopyclean.length
+        let formulaCopy = this.state.equationSelected //copia formula seleccionada
+        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)) //separa todas las variables y excluye numeros sueltos
+        let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
+        let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let aux = 0
-        for (let i = 0;i < formulaCopyclean.length; i++){
-            if(productFeaturesProductSelected.includes(formulaCopyclean[i])) aux = aux + 1
+        for (let i = 0;i < formulaArrayVariables.length; i++){
+            if(productFeaturesProductSelectedNames.includes(formulaArrayVariables[i])) aux = aux + 1
         }
-        if(formulaCopycleanLength === aux) {return(
-               console.log(' El producto si contiene todas las variables')
+        if(formulaArrayVariables.length === aux) {return(//si las variables de la formula existen como features del producto calculo, sino no hago nada
+               this.setState({canCalculate: true})
         )
         }else{
+            this.setState({canCalculate: false})
             return(
-                console.log(aux),
                 console.log(' El producto no contiene todas las variables')
             )
          }
     }
+
+    resolveFormula = () => {
+        let formulaCopy = this.state.equationSelected //copia formula seleccionada
+        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)) //separa todas las variables y excluye numeros sueltos
+        let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
+        let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
+        let productsFeatures = productFeaturesProductSelected[0].productFeatures.items
+        for(let i = 0; i< formulaArrayVariables.length ; i++){
+            let aux = formulaArrayVariables[i]
+            if(productFeaturesProductSelectedNames.indexOf(aux) !== -1){
+                let index = productFeaturesProductSelectedNames.indexOf(aux)
+                window[aux] = productsFeatures[index].value
+            }
+        }
+        console.log( this.evil(formulaCopy) );
+    }
+    evil(fn) {
+        console.log('entra a evil')
+        return new Function('return ' + fn)();
+      }
     render() {
         const SelectProductForm = () => {
             
@@ -78,6 +99,7 @@ export default class Results extends Component {
                     <Form.Label>Select a product</Form.Label>
                     <Form.Select 
                         name='result.selectedProduct'
+                        defaultValue={'-'}
                         onChange={(e) => this.handleOnChangeInputForm(e)}>
                             <option>-</option>
                             {this.state.products.map((products, idx) => (<option value={products.id} key={idx}>{products.name}</option>))}
@@ -112,6 +134,27 @@ export default class Results extends Component {
                 )
             }
         }
+        const Calculate = () => {
+            if(this.state.canCalculate){
+                return(
+                    <>
+                        <div>The variables exists as Features of this Product. You can calculate </div>
+                        <Button
+                            variant='primary'
+                            size='sm' 
+                            onClick={(e) => this.resolveFormula()}
+                        >Calculate</Button> 
+                    </>
+                )
+            }
+            if(this.state.canCalculate === false){
+                return(
+                    <>
+                        <div>The variables doesn't exists as Features of this Product. Try  another product/formula</div>
+                    </>
+                ) 
+            }
+        }
         return (
         <Container>
         <br></br>
@@ -119,7 +162,7 @@ export default class Results extends Component {
                 {SelectProductForm()}   
                 {SelectFormulaForm()}
                 {CheckVariablesPF()}
-
+                {Calculate()}
 {/*             <Row className='mb-1'>
                 <Button
                 variant='primary'
