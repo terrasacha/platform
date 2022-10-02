@@ -17,7 +17,9 @@ export default class Results extends Component {
             equationSelected: '', 
             selectedProductID: '', 
             selectedProductName: '',
-            canCalculate: ''
+            featuresUsed: [],
+            canCalculate: '',
+            result: ''
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.checkIfVariablesMatchWithPF = this.checkIfVariablesMatchWithPF.bind(this)
@@ -42,13 +44,25 @@ export default class Results extends Component {
 
     handleOnChangeInputForm = async(e) => {
         if (e.target.name === 'result.selectedProduct') {
-            this.setState({selectedProductID: e.target.value, canCalculate: ''})  
+            this.setState({
+                canCalculate: '', 
+                result: '',
+                featuresUsed: [],
+            })  
             let productSelected = this.state.products.filter(product => product.id === e.target.value)
-            this.setState({selectedProductID: e.target.value, selectedProductName: productSelected[0].name })   
+            this.setState({
+                selectedProductID: e.target.value, 
+                selectedProductName: productSelected[0].name 
+            })   
         }
         if (e.target.name === 'result.selectedFormula') {
             let formulaSelected = this.state.formulas.filter(formula => formula.id === e.target.value)
-            this.setState({selectedFormulaID: e.target.value, equationSelected: formulaSelected[0].equation, canCalculate: '' }) 
+            this.setState({
+                selectedFormulaID: e.target.value, 
+                equationSelected: formulaSelected[0].equation, 
+                canCalculate: '', 
+                result: '',
+                featuresUsed: [],}) 
             
         }
     }
@@ -78,19 +92,30 @@ export default class Results extends Component {
         let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
         let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let productsFeatures = productFeaturesProductSelected[0].productFeatures.items
+        let featuresUsed = []
         for(let i = 0; i< formulaArrayVariables.length ; i++){
             let aux = formulaArrayVariables[i]
             if(productFeaturesProductSelectedNames.indexOf(aux) !== -1){
                 let index = productFeaturesProductSelectedNames.indexOf(aux)
                 window[aux] = productsFeatures[index].value
+                console.log('productsFeatures', productsFeatures[index].feature.id)
+                featuresUsed.push(productsFeatures[index].feature.id)
             }
         }
         console.log( this.evil(formulaCopy) );
+        this.setState({result: this.evil(formulaCopy), featuresUsed: featuresUsed})
     }
-    evil(fn) {
+    evil = (fn) => {
         console.log('entra a evil')
         return new Function('return ' + fn)();
-      }
+    }
+    saveResult = () => {
+        console.log('se guardo el resultado', this.state.result)
+        console.log('se guardo el ID formula', this.state.selectedFormulaID)
+        console.log('se guardo el ID product', this.state.selectedProductID)
+        console.log('se guardaron estos productFeatures', this.state.featuresUsed)
+    }
+    
     render() {
         const SelectProductForm = () => {
             
@@ -155,6 +180,21 @@ export default class Results extends Component {
                 ) 
             }
         }
+        const Result = () => {
+            if(this.state.result !== ''){
+                return(
+                    <>
+                        <h5>The Result is:</h5>
+                        <h4>{this.state.result}</h4>
+                        <Button
+                            variant='primary'
+                            size='sm' 
+                            onClick={(e) => this.saveResult()}
+                        >Guardar</Button> 
+                    </>
+                )
+            }
+        }
         return (
         <Container>
         <br></br>
@@ -163,14 +203,7 @@ export default class Results extends Component {
                 {SelectFormulaForm()}
                 {CheckVariablesPF()}
                 {Calculate()}
-{/*             <Row className='mb-1'>
-                <Button
-                variant='primary'
-                 
-                onClick={this.handleCRUDFormula}
-                disabled={this.state.isCRUDButtonDisable}
-                >{CRUDButtonName}</Button>
-            </Row> */}
+                {Result()}
         </Form>
 
     </Container>
