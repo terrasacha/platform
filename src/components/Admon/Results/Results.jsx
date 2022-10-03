@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
+// Amplify
+import { withAuthenticator } from '@aws-amplify/ui-react';
+// Auth css custom
+import Bootstrap from "../../common/themes";
 // Bootstrap
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
+import { v4 as uuidv4 } from 'uuid';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
-import { v4 as uuidv4 } from 'uuid';
-import { listFormulas, listProducts } from '../../../graphql/queries';
+import { createFeatureFormula, createResult } from '../../../graphql/mutations';
+import { listFormulas, listProducts, listResults } from '../../../graphql/queries';
 
 
-export default class Results extends Component {
+class Results extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -19,7 +24,7 @@ export default class Results extends Component {
             selectedProductName: '',
             featuresUsed: [],
             canCalculate: '',
-            result: ''
+            result: '',
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.checkIfVariablesMatchWithPF = this.checkIfVariablesMatchWithPF.bind(this)
@@ -102,14 +107,29 @@ export default class Results extends Component {
                 featuresUsed.push(productsFeatures[index].feature.id)
             }
         }
-        console.log( this.evil(formulaCopy) );
         this.setState({result: this.evil(formulaCopy), featuresUsed: featuresUsed})
     }
     evil = (fn) => {
-        console.log('entra a evil')
         return new Function('return ' + fn)();
     }
-    saveResult = () => {
+    saveResult = async() => {
+/*         let tempNewResult = {
+            id: uuidv4().replaceAll('-','_'),
+            varID: this.state,
+            productID: this.state.selectedProductID,
+            formulaID: this.state.selectedFormulaID,
+            equation: this.state.result
+        }
+        await API.graphql(graphqlOperation(createResult , { input: tempNewResult }))
+
+        for(let i = 0; i < this.state.featuresUsed ; i++){
+            let tempNewFeatureFormula = {
+                id: uuidv4().replaceAll('-','_'),
+                featureID: this.state.featuresUsed[i],
+                formulaID: this.state.selectedFormulaID
+            }
+            await API.graphql(graphqlOperation(createFeatureFormula , { input: tempNewFeatureFormula }))
+        } */
         console.log('se guardo el resultado', this.state.result)
         console.log('se guardo el ID formula', this.state.selectedFormulaID)
         console.log('se guardo el ID product', this.state.selectedProductID)
@@ -148,34 +168,34 @@ export default class Results extends Component {
         const CheckVariablesPF = () => {
             if(this.state.selectedFormulaID !== '' && this.state.selectedProductID !== ''){
                 return(
-                    <>
-                        <div>Check if ProductFeatures of {this.state.selectedProductName} match with the variables on the equation</div>
+                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}} >
+                        <h6>Check if ProductFeatures of {this.state.selectedProductName} match with the variables on the equation</h6>
                         <Button
                             variant='primary'
                             size='sm' 
                             onClick={(e) => this.checkIfVariablesMatchWithPF()}
                         >Check</Button> 
-                    </>
+                    </div>
                 )
             }
         }
         const Calculate = () => {
             if(this.state.canCalculate){
                 return(
-                    <>
-                        <div>The variables exists as Features of this Product. You can calculate </div>
+                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}}>
+                        <h6>The variables exists as Features of this Product. You can calculate </h6>
                         <Button
                             variant='primary'
                             size='sm' 
                             onClick={(e) => this.resolveFormula()}
                         >Calculate</Button> 
-                    </>
+                    </div>
                 )
             }
             if(this.state.canCalculate === false){
                 return(
                     <>
-                        <div>The variables doesn't exists as Features of this Product. Try  another product/formula</div>
+                        <h6>The variables doesn't exists as Features of this Product. Try  another product/formula</h6>
                     </>
                 ) 
             }
@@ -201,12 +221,21 @@ export default class Results extends Component {
         <Form>
                 {SelectProductForm()}   
                 {SelectFormulaForm()}
+        </Form>
                 {CheckVariablesPF()}
                 {Calculate()}
                 {Result()}
-        </Form>
 
     </Container>
     )
   }
 }
+export default withAuthenticator(Results, {
+    theme: Bootstrap,
+    includeGreetings: true,
+    signUpConfig: {
+        hiddenDefaults: ['phone_number'],
+        signUpFields: [
+        { label: 'Name', key: 'name', required: true, type: 'string' }
+    ]
+}})
