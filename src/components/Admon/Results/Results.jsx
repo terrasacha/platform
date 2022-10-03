@@ -79,7 +79,6 @@ class Results extends Component {
             
         }
         if (e.target.name === 'result.varID') {
-            console.log(e.target.value)
             this.setState({varID: e.target.value}) 
             
         }
@@ -116,7 +115,6 @@ class Results extends Component {
             if(productFeaturesProductSelectedNames.indexOf(aux) !== -1){
                 let index = productFeaturesProductSelectedNames.indexOf(aux)
                 window[aux] = productsFeatures[index].value
-                console.log('productsFeatures', productsFeatures[index].feature.id)
                 featuresUsed.push(productsFeatures[index].feature.id)
             }
         }
