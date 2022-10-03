@@ -4,7 +4,7 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 // Auth css custom
 import Bootstrap from "../../common/themes";
 // Bootstrap
-import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
@@ -18,6 +18,7 @@ class Results extends Component {
         this.state = {
             formulas: [],
             products: [],
+            varID: '',
             selectedFormulaID: '',
             equationSelected: '', 
             selectedProductID: '', 
@@ -25,6 +26,7 @@ class Results extends Component {
             featuresUsed: [],
             canCalculate: '',
             result: '',
+            confirmSave: false
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.checkIfVariablesMatchWithPF = this.checkIfVariablesMatchWithPF.bind(this)
@@ -52,7 +54,9 @@ class Results extends Component {
             this.setState({
                 canCalculate: '', 
                 result: '',
+                varID: '',
                 featuresUsed: [],
+                confirmSave: false
             })  
             let productSelected = this.state.products.filter(product => product.id === e.target.value)
             this.setState({
@@ -65,9 +69,18 @@ class Results extends Component {
             this.setState({
                 selectedFormulaID: e.target.value, 
                 equationSelected: formulaSelected[0].equation, 
-                canCalculate: '', 
+                canCalculate: '',
+                varID: '', 
                 result: '',
-                featuresUsed: [],}) 
+                featuresUsed: [],
+                confirmSave: false,
+                saveButton: true
+            }) 
+            
+        }
+        if (e.target.name === 'result.varID') {
+            console.log(e.target.value)
+            this.setState({varID: e.target.value}) 
             
         }
     }
@@ -112,13 +125,17 @@ class Results extends Component {
     evil = (fn) => {
         return new Function('return ' + fn)();
     }
+    confirmSave = () => {
+        this.setState({confirmSave: true})
+    }
     saveResult = async() => {
 /*         let tempNewResult = {
             id: uuidv4().replaceAll('-','_'),
             varID: this.state,
             productID: this.state.selectedProductID,
             formulaID: this.state.selectedFormulaID,
-            equation: this.state.result
+            equation: this.state.result,
+            varID: this.state.varID
         }
         await API.graphql(graphqlOperation(createResult , { input: tempNewResult }))
 
@@ -134,13 +151,13 @@ class Results extends Component {
         console.log('se guardo el ID formula', this.state.selectedFormulaID)
         console.log('se guardo el ID product', this.state.selectedProductID)
         console.log('se guardaron estos productFeatures', this.state.featuresUsed)
+        console.log('varID ', this.state.varID)
     }
-    
     render() {
         const SelectProductForm = () => {
             
                 return(
-                    <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                    <Form.Group as={Col}>
                     <Form.Label>Select a product</Form.Label>
                     <Form.Select 
                         name='result.selectedProduct'
@@ -154,7 +171,7 @@ class Results extends Component {
         }
         const SelectFormulaForm = () => {
                 return(
-                    <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                    <Form.Group as={Col}>
                         <Form.Label>Select a formula</Form.Label>
                         <Form.Select 
                             name='result.selectedFormula'
@@ -204,14 +221,62 @@ class Results extends Component {
             if(this.state.result !== ''){
                 return(
                     <>
-                        <h5>The Result is:</h5>
-                        <h4>{this.state.result}</h4>
+                        <h5>The Result is: {this.state.result}</h5>
                         <Button
                             variant='primary'
                             size='sm' 
-                            onClick={(e) => this.saveResult()}
-                        >Guardar</Button> 
+                            onClick={(e) => this.confirmSave()}
+                        >Check Data</Button> 
                     </>
+                )
+            }
+        }
+        const SaveResult = () => {
+            if(this.state.confirmSave !== false){
+                return(
+                    <Row className='mb-2'>
+                        
+                        <Form.Group as={Col}>
+                            <Form.Label>Variable ID</Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder=''
+                                name='result.varID'
+                                value={this.state.varID}
+                                onChange={(e) => this.handleOnChangeInputForm(e)} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Result</Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder=''
+                                name='result.varID'
+                                disabled
+                                value={this.state.result}
+                                />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Formula</Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder=''
+                                name='result.equation'
+                                disabled
+                                value={this.state.equationSelected}
+                                />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Save</Form.Label>
+                            <br></br>
+                            <Button
+                                    variant='primary'
+                                    size='sm' 
+                                    disabled={this.state.varID === ''}
+                                    onClick={(e) => this.saveResult()}
+                                >Save</Button> 
+                        </Form.Group>
+
+                    </Row>
                 )
             }
         }
@@ -225,6 +290,7 @@ class Results extends Component {
                 {CheckVariablesPF()}
                 {Calculate()}
                 {Result()}
+                {SaveResult()}
 
     </Container>
     )
