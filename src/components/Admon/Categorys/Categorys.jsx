@@ -76,7 +76,7 @@ class Categorys extends Component {
         let tempNewCategory = this.state.newCategory
         if (event.target.name === 'category.name') {
             tempNewCategory.name = event.target.value.toUpperCase()
-            tempNewCategory.name = tempNewCategory.name.replace(' ','')
+            tempNewCategory.id = tempNewCategory.name.replaceAll(' ','_')
         }
         this.setState({newCategory: tempNewCategory})
         this.validateCRUDCategory()
@@ -92,10 +92,6 @@ class Categorys extends Component {
         let tempNewCategory = this.state.newCategory
 
         if (this.state.CRUDButtonName === 'CREATE') {
-            
-            const newCategorytId = this.state.newCategory.name
-            tempNewCategory.id = newCategorytId
-
             await API.graphql(graphqlOperation(createCategory, { input: tempNewCategory }))
             await this.cleanCategoryOnCreate()
         }

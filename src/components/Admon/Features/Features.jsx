@@ -129,8 +129,8 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
     handleOnChangeInputForm = async(event) => {
         let tempNewFeature = this.state.newFeature
         if (event.target.name === 'feature.name') {
-            tempNewFeature.name = event.target.value.toUpperCase()
-            tempNewFeature.name = tempNewFeature.name.replace(' ','')
+            tempNewFeature.name = event.target.value
+            tempNewFeature.id = tempNewFeature.name.replace(' ','_')
         }
         if (event.target.name === 'feature.description') {
             tempNewFeature.description = event.target.value
@@ -151,18 +151,10 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         }
         if (event.target.name === 'feature.featureType') {
             tempNewFeature.featureTypeID = event.target.value
-            }
+        }
         if (event.target.name === 'feature.unitOfMeasure') {
             tempNewFeature.unitOfMeasureID = event.target.value
-            }
-/*         if (event.target.name === 'feature.isAvailable') {
-            if(event.target.value === 'yes'){
-               tempNewFeature.isAvailable = true
-            }else{
-                tempNewFeature.isAvailable = false
-                
-            }
-        } */
+        }
         
         this.setState({newFeature: tempNewFeature})
         this.validateCRUDFeature()
@@ -179,9 +171,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         let tempNewFeature = this.state.newFeature
 
         if (this.state.CRUDButtonName === 'CREATE') {
-            
-            const newFeatureId = this.state.newFeature.name
-            tempNewFeature.id = newFeatureId
             await API.graphql(graphqlOperation(createFeature, { input: tempNewFeature }))
             await this.cleanFeatureOnCreate()
         }
@@ -326,7 +315,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                             onChange={(e) => this.handleOnChangeInputForm(e)} />
                         <Form.Label>Default value</Form.Label>
                         <Form.Control
-                            type='number'
+                            type='text'
                             placeholder=''
                             name='feature.defaultValue'
                             value={newFeature.defaultValue}

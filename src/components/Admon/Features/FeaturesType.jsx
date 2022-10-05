@@ -34,12 +34,6 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
     
     }
 
-/*     async loadFeatureTypes() {
-        const listFeatureTypesResult = await API.graphql(graphqlOperation(listFeatureTypes))
-        listFeatureTypesResult.data.listFeatureTypes.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
-        this.setState({featureTypes: listFeatureTypesResult.data.listFeatureTypes.items})
-        } */
-        
     handleOnChangeInputForm = async(event) => {
         let tempNewFeatureType = this.state.newFeatureType
         if (event.target.name === 'featureType.name') {
@@ -92,7 +86,7 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
     }
 
     async cleanFeatureTypeOnCreate() {
-         this.setState({
+         await this.setState({
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             newFeatureType: {   

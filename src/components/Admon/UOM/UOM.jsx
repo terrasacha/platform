@@ -78,8 +78,8 @@ class UOM extends Component {
     handleOnChangeInputForm = async(event, pProperty) => {
         let tempNewUnitOfMeasure = this.state.newUnitOfMeasure
         if (event.target.name === 'newUnitOfMeasure.engineeringUnit') {
-            tempNewUnitOfMeasure.engineeringUnit = event.target.value.toUpperCase()
-/*             tempNewUnitOfMeasure.engineeringUnit = tempNewUnitOfMeasure.name.replace(' ','') */
+            tempNewUnitOfMeasure.engineeringUnit = event.target.value
+            tempNewUnitOfMeasure.id = event.target.value.replaceAll(' ','_')
         }
         if (event.target.name === 'newUnitOfMeasure.description') {
             tempNewUnitOfMeasure.description = event.target.value
@@ -102,10 +102,6 @@ class UOM extends Component {
         let tempNewUnitOfMeasure = this.state.newUnitOfMeasure
 
         if (this.state.CRUDButtonName === 'CREATE') {
-            
-            const newUnitOfMeasuretId = this.state.newUnitOfMeasure.name
-            tempNewUnitOfMeasure.id = newUnitOfMeasuretId
-
             await API.graphql(graphqlOperation(createUnitOfMeasure, { input: tempNewUnitOfMeasure }))
             await this.cleanUnitOfMeasureOnCreate()
         }
