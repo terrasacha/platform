@@ -212,7 +212,7 @@ export default class CRUDProductFeatures extends Component {
                 <Table striped bordered hover>
                     <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Feature</th>
                         <th>Value</th>
                         <th>Is to BlockChain</th>
                         <th>Is verifable</th>
@@ -223,7 +223,7 @@ export default class CRUDProductFeatures extends Component {
                     {productFeatures.map(productFeatures => (
                         <tr key={productFeatures.id}>
                             <td>
-                                {productFeatures.id}
+                                {productFeatures.featureID}
                             </td>
                             <td>
                                 {productFeatures.value}

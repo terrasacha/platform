@@ -149,7 +149,7 @@ export default class ListProducts extends Component {
                     <Table striped bordered hover>
                         <thead>
                         <tr>
-                            <th>id</th>
+                            <th>Feature ID</th>
                             <th>Value</th>
                             <th>Is to BlockChain?</th>
                             <th>Is Verifable?</th>
@@ -160,7 +160,7 @@ export default class ListProducts extends Component {
                         {pProductFeatures?.map(pfeature => (
                             <tr key={pfeature.id}>
                                 <td>
-                                    {pfeature.id}
+                                    {pfeature.feature.id}/{pfeature.feature.description}
                                 </td>
                                 <td>
                                     {pfeature.value}
