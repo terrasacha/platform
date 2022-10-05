@@ -31,7 +31,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 description: '',
                 order: 0,
                 isTemplate: false,
-                defaultValue: '',
+                defaultValue: null,
                 featureTypeID: ''
                /*  isAvailable: true, */
             },
@@ -130,16 +130,16 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         let tempNewFeature = this.state.newFeature
         if (event.target.name === 'feature.name') {
             tempNewFeature.name = event.target.value
-            tempNewFeature.id = tempNewFeature.name.replace(' ','_')
+            tempNewFeature.id = tempNewFeature.name.replaceAll(' ','_')
         }
         if (event.target.name === 'feature.description') {
             tempNewFeature.description = event.target.value
         }
         if (event.target.name === 'feature.order') {
-        tempNewFeature.order = parseInt(event.target.value)
+            tempNewFeature.order = parseInt(event.target.value)
         }
         if (event.target.name === 'feature.defaultValue') {
-        tempNewFeature.defaultValue = parseInt(event.target.value)
+            tempNewFeature.defaultValue = event.target.value === '' ? null : parseFloat(event.target.value)
         }
         if (event.target.name === 'feature.isTemplate') {
             if(event.target.value === 'yes'){
@@ -206,6 +206,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 name: '',
                 description: '',
                 order: 0,
+                defaultValue: null,
                 isTemplate: false,
                 isAvailable: true,
             }
@@ -315,7 +316,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                             onChange={(e) => this.handleOnChangeInputForm(e)} />
                         <Form.Label>Default value</Form.Label>
                         <Form.Control
-                            type='text'
+                            type='number'
                             placeholder=''
                             name='feature.defaultValue'
                             value={newFeature.defaultValue}

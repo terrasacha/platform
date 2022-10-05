@@ -175,7 +175,6 @@ class Formulas extends Component {
                         <tr>
                             <th>Variable ID</th>
                             <th>Equation</th>
-                            <th>Feature ID</th>
                             <th>Unit of Measure ID</th>
                             <th>Action</th>
                         </tr>
@@ -189,9 +188,6 @@ class Formulas extends Component {
                                 </td>
                                 <td>
                                     {formula.equation}
-                                </td>
-                                <td>
-                                    {formula.featureID}
                                 </td>
                                 <td>
                                     {formula.unitOfMeasure.engineeringUnit}
