@@ -569,7 +569,7 @@ export const getProduct = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -638,7 +638,15 @@ export const listProducts = /* GraphQL */ `
           }
         }
         results {
-          nextToken
+          items {
+            id
+            value
+            formula {
+              equation
+              id
+              varID
+            }
+          }
         }
         createdAt
         updatedAt
@@ -976,7 +984,7 @@ export const getFormula = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -1141,7 +1149,7 @@ export const getResult = /* GraphQL */ `
     getResult(id: $id) {
       id
       varID
-      equation
+      value
       productID
       product {
         id
@@ -1210,7 +1218,7 @@ export const listResults = /* GraphQL */ `
       items {
         id
         varID
-        equation
+        value
         productID
         product {
           id

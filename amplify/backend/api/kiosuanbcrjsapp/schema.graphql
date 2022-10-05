@@ -164,7 +164,7 @@ type Result @model
 {
   id: ID!
   varID: String!
-  equation: String!
+  value: Float
   productID: ID @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
   formulaID: ID! @index(name: "byFormula")

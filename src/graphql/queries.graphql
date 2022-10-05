@@ -108,3 +108,21 @@ mutation MyMutationCreateProductFeature {
   }
 }
 
+
+# Deletes
+
+query MyQueryListFeatureTypes {
+  listFeatureTypes {
+    items {
+      id
+      name
+    }
+  }
+}
+
+mutation MyMutationDeleteFeatureType {
+  deleteFeatureType(input: {id: "TESTFEATURETYPE"}) {
+    id
+    name
+  }
+}

@@ -44,7 +44,7 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         let tempNewFeatureType = this.state.newFeatureType
         if (event.target.name === 'featureType.name') {
             tempNewFeatureType.name = event.target.value.toUpperCase()
-            tempNewFeatureType.name = tempNewFeatureType.name.replace(' ','')
+            tempNewFeatureType.id = tempNewFeatureType.name.replaceAll(' ','_')
         }
         if (event.target.name === 'featureType.description') {
             tempNewFeatureType.description = event.target.value
@@ -65,10 +65,9 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         let tempNewFeatureType = this.state.newFeatureType
 
         if (this.state.CRUDButtonName === 'CREATE') {
-            
             const newFeatureTypeId = this.state.newFeatureType.name
             tempNewFeatureType.id = newFeatureTypeId
-           await API.graphql(graphqlOperation(createFeatureType, { input: tempNewFeatureType }))
+            await API.graphql(graphqlOperation(createFeatureType, { input: tempNewFeatureType }))
             await this.cleanFeatureTypeOnCreate() 
         }
 

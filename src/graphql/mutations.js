@@ -1045,7 +1045,7 @@ export const createProduct = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -1118,7 +1118,7 @@ export const updateProduct = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -1191,7 +1191,7 @@ export const deleteProduct = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -1793,7 +1793,7 @@ export const createFormula = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -1844,7 +1844,7 @@ export const updateFormula = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -1895,7 +1895,7 @@ export const deleteFormula = /* GraphQL */ `
         items {
           id
           varID
-          equation
+          value
           productID
           formulaID
           createdAt
@@ -2133,7 +2133,7 @@ export const createResult = /* GraphQL */ `
     createResult(input: $input, condition: $condition) {
       id
       varID
-      equation
+      value
       productID
       product {
         id
@@ -2200,7 +2200,7 @@ export const updateResult = /* GraphQL */ `
     updateResult(input: $input, condition: $condition) {
       id
       varID
-      equation
+      value
       productID
       product {
         id
@@ -2267,7 +2267,7 @@ export const deleteResult = /* GraphQL */ `
     deleteResult(input: $input, condition: $condition) {
       id
       varID
-      equation
+      value
       productID
       product {
         id
