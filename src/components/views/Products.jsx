@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Container, Button, Modal, Carousel } from 'react-bootstrap'
+import { Button, Carousel, Container, Modal } from 'react-bootstrap'
 // Util
 import WebAppConfig from '../common/_conf/WebAppConfig'
 // GraphQL
@@ -57,13 +57,14 @@ export default class Products extends Component {
         // State Varibles
         let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures} = this.state
         let {products} = this.props
+        let productsActive = products.filter(p => p.isActive)
         const urlS3Image = WebAppConfig.url_s3_public_images
         // Render Products on Cards
         const renderProductsOnCards = () => {
             if (products.length > 0) {
                 return (
                     <div className=''>
-                        {products.map(product => (
+                        {productsActive.map(product => (
 /*                             <Col key={product.id + '_col'}>
                                 <Card>
                                     <Card.Img variant="top" src={urlS3Image+product.images.items[0].imageURL} />
