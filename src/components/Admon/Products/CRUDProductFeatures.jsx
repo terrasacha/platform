@@ -141,7 +141,6 @@ export default class CRUDProductFeatures extends Component {
                 <thead>
                 <tr>
                     <th>Feature</th>
-                    <th>Description</th>
                     <th>Value</th>
                     <th>Is to BlockChain</th>
                     <th>Is verifable</th>
@@ -159,14 +158,6 @@ export default class CRUDProductFeatures extends Component {
                                                 {this.state.newProductFeature.feature.name}
                                             </Alert> : ''}
                                         
-                            </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductFeature_Description'>
-                                {this.state.CRUDButtonName === 'UPDATE'? 
-                                        <Form.Label>{this.state.newProductFeature.feature.description}</Form.Label>
-                                        :
-                                        <Form.Label>{selectedFeature?selectedFeature.description : '-'}</Form.Label>}
                             </Form.Group>
                         </td>
                         <td>
