@@ -79,14 +79,13 @@ class Results extends Component {
             
         }
         if (e.target.name === 'result.varID') {
-            console.log(e.target.value)
             this.setState({varID: e.target.value}) 
             
         }
     }
     checkIfVariablesMatchWithPF = () =>{
         let formulaCopy = this.state.equationSelected //copia formula seleccionada
-        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)) //separa todas las variables y excluye numeros sueltos
+        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)).filter((v, i, a) => a.indexOf(v) === i) //separa todas las variables y excluye numeros sueltos y variables repetidas
         let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
         let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let aux = 0
@@ -106,7 +105,7 @@ class Results extends Component {
 
     resolveFormula = () => {
         let formulaCopy = this.state.equationSelected //copia formula seleccionada
-        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)) //separa todas las variables y excluye numeros sueltos
+        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)).filter((v, i, a) => a.indexOf(v) === i) //separa todas las variables y excluye numeros sueltos y variables repetidas
         let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
         let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let productsFeatures = productFeaturesProductSelected[0].productFeatures.items
@@ -116,7 +115,6 @@ class Results extends Component {
             if(productFeaturesProductSelectedNames.indexOf(aux) !== -1){
                 let index = productFeaturesProductSelectedNames.indexOf(aux)
                 window[aux] = productsFeatures[index].value
-                console.log('productsFeatures', productsFeatures[index].feature.id)
                 featuresUsed.push(productsFeatures[index].feature.id)
             }
         }
