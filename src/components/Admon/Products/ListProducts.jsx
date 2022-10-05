@@ -67,9 +67,9 @@ export default class ListProducts extends Component {
                                     <Button 
                                         variant='primary'
                                         size='md' 
-                                         
+                                        disabled={product.status === 'on_block_chain'} 
                                         onClick={(e) => this.handleLoadEditProduct(product, e)}
-                                    >Edit</Button>
+                                    >{product.status === 'on_block_chain'? 'Can not Edit' : 'Edit'}</Button>
                                     <Button 
                                         variant='danger'
                                         size='md' 
