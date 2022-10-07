@@ -6,6 +6,8 @@
     "@aws-amplify/datastore": "^3.8.0",
     "@aws-amplify/pubsub": "^4.3.0",
     "@aws-amplify/ui-react": "^2.20.0",
+    "@blueprintjs/core": "^4.11.2",
+    "@emurgo/cardano-serialization-lib-asmjs": "^11.1.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
