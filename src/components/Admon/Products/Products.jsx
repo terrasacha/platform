@@ -427,8 +427,11 @@ class Products extends Component {
         }
         if(action === 'UPDATE'){
             let tempProductFeatures = this.state.productFeatures
-    
-            tempProductFeatures.push(newProductFeature)
+            for( let i = 0; i < tempProductFeatures.length; i++){
+                if(tempProductFeatures[i].id === newProductFeature.id ){
+                    tempProductFeatures[i] = newProductFeature
+                }
+            }
             this.setState({productFeatures: tempProductFeatures})
         }
     }
