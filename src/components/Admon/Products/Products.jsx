@@ -65,6 +65,7 @@ class Products extends Component {
         this.handleDeleteImageProduct = this.handleDeleteImageProduct.bind(this)
         this.handleDeleteFeatureProduct = this.handleDeleteFeatureProduct.bind(this)
         this.handleAddNewFeatureToActualProduct = this.handleAddNewFeatureToActualProduct.bind(this)
+        this.goToTop = this.goToTop = this.goToTop.bind(this)
     }
 
     componentDidMount = async () => {
@@ -137,6 +138,12 @@ class Products extends Component {
         this.setState({selectedFeature: event.value})
         this.validateCRUDProduct()
     }
+    goToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
 
     async loadCategorysSelectItems() {
         let categorysSelectItems = []
@@ -291,6 +298,7 @@ class Products extends Component {
     }
 
     handleLoadEditProduct= async(product, event) => {
+        this.goToTop()
         const tempCRUD_Product = {
             id: product.id,
             name: product.name,
@@ -410,11 +418,22 @@ class Products extends Component {
         this.validateCRUDProduct()
     }
 
-    handleAddNewFeatureToActualProduct(newProductFeature) {
-        let tempProductFeatures = this.state.productFeatures
-
-        tempProductFeatures.push(newProductFeature)
-        this.setState({productFeatures: tempProductFeatures})
+    handleAddNewFeatureToActualProduct(newProductFeature, action) {
+        if(action === 'ADD'){
+            let tempProductFeatures = this.state.productFeatures
+    
+            tempProductFeatures.push(newProductFeature)
+            this.setState({productFeatures: tempProductFeatures})
+        }
+        if(action === 'UPDATE'){
+            let tempProductFeatures = this.state.productFeatures
+            for( let i = 0; i < tempProductFeatures.length; i++){
+                if(tempProductFeatures[i].id === newProductFeature.id ){
+                    tempProductFeatures[i] = newProductFeature
+                }
+            }
+            this.setState({productFeatures: tempProductFeatures})
+        }
     }
 
     async cleanProductOnCreate() {
@@ -717,7 +736,7 @@ class Products extends Component {
                     </Form>
                     {renderColoredBreakLine('red')}
                     <br></br>
-                    <ListProducts 
+                    <ListProducts
                         products={this.state.products} 
                         urlS3Image={urlS3Image} 
                         handleShowAreYouSureDeleteProduct= {this.handleShowAreYouSureDeleteProduct}

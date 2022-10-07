@@ -87,7 +87,7 @@ export default class CRUDProductFeatures extends Component {
             tempNewProductFeature.productID = this.props.CRUD_Product.id
             tempNewProductFeature.featureID = this.props.selectedFeature.id
             
-            this.handleAddNewFeatureToActualProduct(tempNewProductFeature)
+            this.handleAddNewFeatureToActualProduct(tempNewProductFeature, 'ADD')
             await this.cleanProductFeatureCreate()
         }
         
@@ -103,6 +103,7 @@ export default class CRUDProductFeatures extends Component {
             delete tempNewProductFeature.verifications
             delete tempNewProductFeature.documents
             await API.graphql(graphqlOperation(updateProductFeature, { input: this.state.newProductFeature }))
+            this.handleAddNewFeatureToActualProduct(tempNewProductFeature, 'UPDATE')
             await this.cleanProductFeatureCreate()
         }
     }
@@ -155,7 +156,7 @@ export default class CRUDProductFeatures extends Component {
                                         onChange={this.handleOnSelectFeature} />
                                         {this.state.CRUDButtonName === 'UPDATE'?
                                             <Alert key="idx_key_1" variant='success' size='sm'>
-                                                {this.state.newProductFeature.feature.name}
+                                                {this.state.newProductFeature.feature.name? this.state.newProductFeature.feature.name : '' }
                                             </Alert> : ''}
                                         
                             </Form.Group>
