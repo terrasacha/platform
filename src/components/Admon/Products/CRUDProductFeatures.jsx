@@ -133,7 +133,7 @@ export default class CRUDProductFeatures extends Component {
     }
 
   render() {
-    let { featuresSelectList, selectedFeature, productFeatures} = this.props
+    let { featuresSelectList, productFeatures} = this.props
 
     const renderCRUDProductFeatures = () => {
         return (

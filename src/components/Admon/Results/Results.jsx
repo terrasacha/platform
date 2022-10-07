@@ -5,11 +5,9 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import Bootstrap from "../../common/themes";
 // Bootstrap
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { v4 as uuidv4 } from 'uuid';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
-import { createFeatureFormula, createResult } from '../../../graphql/mutations';
-import { listFormulas, listProducts, listResults } from '../../../graphql/queries';
+import { listFormulas, listProducts } from '../../../graphql/queries';
 
 
 class Results extends Component {
@@ -121,6 +119,7 @@ class Results extends Component {
         this.setState({result: this.evil(formulaCopy), featuresUsed: featuresUsed})
     }
     evil = (fn) => {
+        // eslint-disable-next-line no-new-func
         return new Function('return ' + fn)();
     }
     confirmSave = () => {
