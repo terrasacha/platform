@@ -87,7 +87,7 @@ export default class CRUDProductFeatures extends Component {
             tempNewProductFeature.productID = this.props.CRUD_Product.id
             tempNewProductFeature.featureID = this.props.selectedFeature.id
             
-            this.handleAddNewFeatureToActualProduct(tempNewProductFeature)
+            this.handleAddNewFeatureToActualProduct(tempNewProductFeature, 'ADD')
             await this.cleanProductFeatureCreate()
         }
         
@@ -103,6 +103,7 @@ export default class CRUDProductFeatures extends Component {
             delete tempNewProductFeature.verifications
             delete tempNewProductFeature.documents
             await API.graphql(graphqlOperation(updateProductFeature, { input: this.state.newProductFeature }))
+            this.handleAddNewFeatureToActualProduct(tempNewProductFeature.id, 'UPDATE')
             await this.cleanProductFeatureCreate()
         }
     }
