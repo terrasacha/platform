@@ -189,8 +189,6 @@ class UOM extends Component {
         return (
             
             <Container>
-                {renderunitOfMeasures()}
-                <br></br>
                 <Form>
                     <Row className='mb-2'>
                         <Form.Group as={Col} controlId='formGridNewCategoryName'>
@@ -227,7 +225,8 @@ class UOM extends Component {
                         >{CRUDButtonName}</Button>
                     </Row>
                 </Form>
-
+                <br></br>
+                {renderunitOfMeasures()}
             </Container>
         
         )

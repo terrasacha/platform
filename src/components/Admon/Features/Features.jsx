@@ -287,8 +287,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
 
         return (
             <Container>
-           {renderFeatures()}
-            <br></br>
             <h2>{CRUDButtonName} Feature: {newFeature.name}</h2>
             <Form>
                 <Row className='mb-2'>
@@ -359,6 +357,8 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                     >{CRUDButtonName}</Button>
                 </Row>
             </Form>
+            <br></br>
+            {renderFeatures()}
             {renderFeaturesType()}
 
         </Container>

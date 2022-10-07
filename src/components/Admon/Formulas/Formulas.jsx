@@ -213,8 +213,6 @@ class Formulas extends Component {
         return (
             
             <Container>
-                {renderFormulas()}
-                <br></br>
                 <h2>{CRUDButtonName} Formula: {newFormula.name}</h2>
                 <Form>
                     <Row className='mb-2'>
@@ -256,7 +254,8 @@ class Formulas extends Component {
                         >{CRUDButtonName}</Button>
                     </Row>
                 </Form>
-
+                <br></br>
+                {renderFormulas()}
             </Container>
         
         )

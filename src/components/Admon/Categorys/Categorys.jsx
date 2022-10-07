@@ -3,13 +3,13 @@ import React, { Component } from 'react'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
-import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { listCategories } from '../../../graphql/queries'
 import { createCategory, updateCategory } from '../../../graphql/mutations'
+import { listCategories } from '../../../graphql/queries'
 import { onCreateCategory, onUpdateCategory } from '../../../graphql/subscriptions'
 
 class Categorys extends Component {
@@ -168,8 +168,7 @@ class Categorys extends Component {
         return (
             
             <Container>
-                {renderCategorys()}
-                <br></br>
+                <h2>{CRUDButtonName} Formula: {newCategory.name}</h2>
                 <Form>
                     <Row className='mb-2'>
                         <Form.Group as={Col} controlId='formGridNewCategoryName'>
@@ -192,7 +191,8 @@ class Categorys extends Component {
                         >{CRUDButtonName}</Button>
                     </Row>
                 </Form>
-
+                <br></br>
+                {renderCategorys()}
             </Container>
         
         )

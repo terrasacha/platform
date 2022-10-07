@@ -144,8 +144,6 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
 
         return (
             <Container>
-           {renderFeatureTypes()}
-            <br></br>
             <h2>{CRUDButtonName} Feature Type: {newFeatureType.name}</h2>
             <Form>
                 <Row className='mb-2'>
@@ -176,7 +174,8 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
                     >{CRUDButtonName}</Button>
                 </Row>
             </Form>
-
+            <br></br>
+            {renderFeatureTypes()}
         </Container>
         )
     }
