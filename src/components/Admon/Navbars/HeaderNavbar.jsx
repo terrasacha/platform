@@ -41,6 +41,15 @@ export default class HeaderNavbar extends Component {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         >
+                            <Nav.Link href="#products">
+                                
+                                <Button 
+                                    variant='outline-primary'
+                                     
+                                    onClick={(e) => this.handleChangeNavBar('products', e)}
+                                ><InfoCircle></InfoCircle>Projects</Button>
+
+                            </Nav.Link>
                             <Nav.Link href="#formulas">
                                 
                                 <Button 
@@ -84,15 +93,7 @@ export default class HeaderNavbar extends Component {
                                 ><Filter></Filter>OUM</Button>
 
                             </Nav.Link>
-                            <Nav.Link href="#products">
-                                
-                                <Button 
-                                    variant='outline-primary'
-                                     
-                                    onClick={(e) => this.handleChangeNavBar('products', e)}
-                                ><InfoCircle></InfoCircle>Projects</Button>
 
-                            </Nav.Link>
                            
                         </Nav>
                         </Navbar.Collapse>
