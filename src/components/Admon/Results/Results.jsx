@@ -280,17 +280,17 @@ class Results extends Component {
         }
         return (
         <Container>
-        <br></br>
-        <Form>
-                {SelectProductForm()}   
-                {SelectFormulaForm()}
-        </Form>
-                {CheckVariablesPF()}
-                {Calculate()}
-                {Result()}
-                {SaveResult()}
+            <h2>Calculate Result</h2>            
+            <Form>
+                    {SelectProductForm()}   
+                    {SelectFormulaForm()}
+            </Form>
+                    {CheckVariablesPF()}
+                    {Calculate()}
+                    {Result()}
+                    {SaveResult()}
 
-    </Container>
+        </Container>
     )
   }
 }

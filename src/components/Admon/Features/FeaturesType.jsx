@@ -34,11 +34,17 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
     
     }
 
+/*     async loadFeatureTypes() {
+        const listFeatureTypesResult = await API.graphql(graphqlOperation(listFeatureTypes))
+        listFeatureTypesResult.data.listFeatureTypes.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        this.setState({featureTypes: listFeatureTypesResult.data.listFeatureTypes.items})
+        } */
+        
     handleOnChangeInputForm = async(event) => {
         let tempNewFeatureType = this.state.newFeatureType
         if (event.target.name === 'featureType.name') {
             tempNewFeatureType.name = event.target.value.toUpperCase()
-            tempNewFeatureType.id = tempNewFeatureType.name.replaceAll(' ','_')
+            tempNewFeatureType.name = tempNewFeatureType.name.replace(' ','')
         }
         if (event.target.name === 'featureType.description') {
             tempNewFeatureType.description = event.target.value
@@ -59,9 +65,10 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         let tempNewFeatureType = this.state.newFeatureType
 
         if (this.state.CRUDButtonName === 'CREATE') {
+            
             const newFeatureTypeId = this.state.newFeatureType.name
             tempNewFeatureType.id = newFeatureTypeId
-            await API.graphql(graphqlOperation(createFeatureType, { input: tempNewFeatureType }))
+           await API.graphql(graphqlOperation(createFeatureType, { input: tempNewFeatureType }))
             await this.cleanFeatureTypeOnCreate() 
         }
 
@@ -86,7 +93,7 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
     }
 
     async cleanFeatureTypeOnCreate() {
-         await this.setState({
+         this.setState({
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             newFeatureType: {   
@@ -143,7 +150,8 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         }
 
         return (
-            <Container>
+            <>
+            <br></br>
             <h2>{CRUDButtonName} Feature Type: {newFeatureType.name}</h2>
             <Form>
                 <Row className='mb-2'>
@@ -174,9 +182,9 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
                     >{CRUDButtonName}</Button>
                 </Row>
             </Form>
-            <br></br>
             {renderFeatureTypes()}
-        </Container>
+
+        </>
         )
     }
 }

@@ -189,6 +189,7 @@ class UOM extends Component {
         return (
             
             <Container>
+                <h2>Create Unit of Measure</h2>
                 <Form>
                     <Row className='mb-2'>
                         <Form.Group as={Col} controlId='formGridNewCategoryName'>
