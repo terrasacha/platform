@@ -253,8 +253,8 @@ export default class CRUDProductFeatures extends Component {
     }
     return (
       <>
-        {renderCRUDProductFeatures()}
         <h2>Product Features</h2>
+        {renderCRUDProductFeatures()}
         {renderProductFeatures()}
       </>
     )

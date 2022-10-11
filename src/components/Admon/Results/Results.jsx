@@ -116,7 +116,12 @@ class Results extends Component {
                 featuresUsed.push(productsFeatures[index].feature.id)
             }
         }
-        this.setState({result: this.evil(formulaCopy), featuresUsed: featuresUsed})
+        let resultNumberType = this.state.formulas.filter(f => f.equation === this.state.equationSelected)
+        if(resultNumberType[0].unitOfMeasure.isFloat){
+            this.setState({result: this.evil(formulaCopy), featuresUsed: featuresUsed})
+        }else{
+            this.setState({result: parseInt(this.evil(formulaCopy)), featuresUsed: featuresUsed})
+        }
     }
     evil = (fn) => {
         // eslint-disable-next-line no-new-func

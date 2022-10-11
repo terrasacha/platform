@@ -160,8 +160,7 @@ export default class ListProducts extends Component {
                         {pProductFeatures?.map(pfeature => (
                             <tr key={pfeature.id}>
                                 <td>
-
-                                    {pfeature.feature !== undefined? `${pfeature.feature.id}/${pfeature.feature.description}` : 'Please reload to see changes'}
+                                    {pfeature.feature !== undefined? `${pfeature.feature.id}/${pfeature.feature.description}` : 'Please reload'}
                                 </td>
                                 <td>
                                     {pfeature.value}

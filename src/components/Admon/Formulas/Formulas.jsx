@@ -190,7 +190,7 @@ class Formulas extends Component {
                                     {formula.equation}
                                 </td>
                                 <td>
-                                    {formula.unitOfMeasure.engineeringUnit}
+                                    {formula.unitOfMeasure !== undefined? formula.unitOfMeasure.engineeringUnit : ''}
                                 </td>
                                 <td>
                                     <Button 
