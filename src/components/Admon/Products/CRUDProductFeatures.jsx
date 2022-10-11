@@ -224,7 +224,7 @@ export default class CRUDProductFeatures extends Component {
                     {productFeatures.map(productFeatures => (
                         <tr key={productFeatures.id}>
                             <td>
-                                {productFeatures.featureID}
+                                {productFeatures.feature !== undefined? productFeatures.feature.name : 'Reload'}
                             </td>
                             <td>
                                 {productFeatures.value}
