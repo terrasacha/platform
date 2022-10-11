@@ -309,6 +309,7 @@ class Products extends Component {
             categoryID: product.categoryID,
             images: product.images.items,
             order: product.order,
+            status: product.status
         }
         const tempCategory = {
             id: product.category.id,
