@@ -9,7 +9,7 @@ import Bootstrap from "../../common/themes"
 import { API, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
+import { onCreateProduct, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -104,6 +104,21 @@ class Products extends Component {
                     // Ordering products by name
                     tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({products: tempProducts}))
+                }
+            })
+            this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
+            .subscribe({
+                next: updatedProductFeatureData => {
+                    let tempProductFeatures = this.state.listPF.map((mapPF) => {
+                        if (updatedProductFeatureData.value.data.onUpdateProductFeature.id === mapPF.id) {
+                            return updatedProductFeatureData.value.data.onUpdateProductFeature
+                        } else {
+                            return mapPF
+                        }
+                    })
+                    // Ordering products by name
+                    tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({listPF: tempProductFeatures}))
                 }
             })
         //     }
@@ -739,6 +754,7 @@ class Products extends Component {
                     <br></br>
                     <ListProducts
                         products={this.state.products} 
+                        listPF={this.state.listPF}
                         urlS3Image={urlS3Image} 
                         handleShowAreYouSureDeleteProduct= {this.handleShowAreYouSureDeleteProduct}
                         handleLoadEditProduct={this.handleLoadEditProduct}
