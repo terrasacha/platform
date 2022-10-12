@@ -40,6 +40,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
             this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
             this.handleCRUDFeature = this.handleCRUDFeature.bind(this)
             this.handleLoadEditFeature = this.handleLoadEditFeature.bind(this)
+            this.goToTop = this.goToTop = this.goToTop.bind(this)
         }
         
         componentDidMount = async () => {
@@ -141,8 +142,8 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         }
         if (event.target.name === 'feature.defaultValue') {
             if(!tempNewFeature.unitOfMeasureID){
-                tempNewFeature.defaultValue =  null 
-            }
+                tempNewFeature.defaultValue =  '' //null
+            } 
             tempNewFeature.defaultValue = parseFloat(event.target.value)
         }
         if (event.target.name === 'feature.isTemplate') {
@@ -188,6 +189,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
             delete tempNewFeature.unitOfMeasure
             delete tempNewFeature.productFeatures
             delete tempNewFeature.formulas
+            delete tempNewFeature.featureFormulas
             await API.graphql(graphqlOperation(updateFeature, { input: tempNewFeature }))        
             await this.cleanFeatureOnCreate()
         }
@@ -200,8 +202,15 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
             CRUDButtonName: 'UPDATE',
             isCRUDButtonDisable: false
         })
+        this.goToTop()
         this.validateCRUDFeature()
     }
+    goToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
 
     async cleanFeatureOnCreate() {
          this.setState({

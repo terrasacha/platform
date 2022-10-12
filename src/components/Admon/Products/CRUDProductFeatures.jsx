@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Alert, Button, Col, Form, Table } from 'react-bootstrap'
 //GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { updateProductFeature } from '../../../graphql/mutations'
+import { createProductFeature, updateProductFeature } from '../../../graphql/mutations'
 //Utils
 import Select from 'react-select'
 import { v4 as uuidv4 } from 'uuid'
@@ -87,7 +87,7 @@ export default class CRUDProductFeatures extends Component {
             tempNewProductFeature.productID = this.props.CRUD_Product.id
             tempNewProductFeature.featureID = this.props.selectedFeature.id
             
-            this.handleAddNewFeatureToActualProduct(tempNewProductFeature, 'ADD')
+            await API.graphql(graphqlOperation(createProductFeature, { input: tempNewProductFeature }))
             await this.cleanProductFeatureCreate()
         }
         
@@ -210,45 +210,45 @@ export default class CRUDProductFeatures extends Component {
     }
         const renderProductFeatures = () => {
             let productFeatures = listPF.filter(pf => pf.productID === this.props.CRUD_Product.id);
-        if (productFeatures.length > 0) {
-            return (
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Value</th>
-                        <th>Is to BlockChain</th>
-                        <th>Is verifable</th>
-                        <th>Edit</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {productFeatures.map(productFeatures => (
-                        <tr key={productFeatures.id}>
-                            <td>
-                                {productFeatures.feature.name} 
-                            </td>
-                            <td>
-                                {productFeatures.value}
-                            </td>
-                            <td>
-                                {productFeatures.isToBlockChain? 'Yes' : 'No'}
-                            </td>
-                            <td>
-                                {productFeatures.isVerifable? 'Yes' : 'No'}
-                            </td>
-                            <td>
-                               {!productFeatures.isToBlockChain?
-                                <Button
-                                    variant='primary'
-                                    size='sm' 
-                                    onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
-                                >Editar</Button> : ''}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </Table>
+                if (productFeatures.length > 0) {
+                    return (
+                        <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Value</th>
+                                <th>Is to BlockChain</th>
+                                <th>Is verifable</th>
+                                <th>Edit</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {productFeatures.map(productFeatures => (
+                                <tr key={productFeatures.id}>
+                                    <td>
+                                        {productFeatures.feature.name} 
+                                    </td>
+                                    <td>
+                                        {productFeatures.value}
+                                    </td>
+                                    <td>
+                                        {productFeatures.isToBlockChain? 'Yes' : 'No'}
+                                    </td>
+                                    <td>
+                                        {productFeatures.isVerifable? 'Yes' : 'No'}
+                                    </td>
+                                    <td>
+                                    {!productFeatures.isToBlockChain?
+                                        <Button
+                                            variant='primary'
+                                            size='sm' 
+                                            onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
+                                        >Editar</Button> : ''}
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
             )
         }
     

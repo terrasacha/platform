@@ -9,7 +9,7 @@ import Bootstrap from "../../common/themes"
 import { API, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
+import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -106,6 +106,7 @@ class Products extends Component {
                     this.setState((state) => ({products: tempProducts}))
                 }
             })
+            // OnUpdate ProductFeature
             this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
             .subscribe({
                 next: updatedProductFeatureData => {
@@ -116,6 +117,18 @@ class Products extends Component {
                             return mapPF
                         }
                     })
+                    // Ordering products by name
+                    tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({listPF: tempProductFeatures}))
+                }
+            })
+            // OnCreate Product
+            this.createProductFeatureListener = API.graphql(graphqlOperation(onCreateProductFeature))
+            .subscribe({
+                next: createdProductFeatureData => {
+                    let tempProductFeatures = this.state.listPF
+                    let tempOnCreateProductFeature = createdProductFeatureData.value.data.onCreateProductFeature
+                    tempProductFeatures.push(tempOnCreateProductFeature)
                     // Ordering products by name
                     tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({listPF: tempProductFeatures}))
@@ -242,10 +255,10 @@ class Products extends Component {
                 return image
             })
             // Creating ProductFeatures
-            this.state.productFeatures.map(async (productFeature, idx) => {
+/*             this.state.productFeatures.map(async (productFeature, idx) => {
                 delete productFeature.feature
                 return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
-            })
+            }) */
             // Creating new product
 
             await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
