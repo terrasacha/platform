@@ -88,7 +88,6 @@ class UOM extends Component {
             tempNewUnitOfMeasure.isFloat = !tempNewUnitOfMeasure.isFloat
         }
         this.setState({newUnitOfMeasure: tempNewUnitOfMeasure})
-        console.log(this.state.newUnitOfMeasure)
         this.validateCRUDUnitOfMeasure()
     }
 

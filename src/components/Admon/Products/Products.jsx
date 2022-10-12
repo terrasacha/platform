@@ -9,7 +9,7 @@ import Bootstrap from "../../common/themes"
 import { API, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onUpdateProduct } from '../../../graphql/subscriptions'
+import { onCreateProduct, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -104,6 +104,21 @@ class Products extends Component {
                     // Ordering products by name
                     tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({products: tempProducts}))
+                }
+            })
+            this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
+            .subscribe({
+                next: updatedProductFeatureData => {
+                    let tempProductFeatures = this.state.listPF.map((mapPF) => {
+                        if (updatedProductFeatureData.value.data.onUpdateProductFeature.id === mapPF.id) {
+                            return updatedProductFeatureData.value.data.onUpdateProductFeature
+                        } else {
+                            return mapPF
+                        }
+                    })
+                    // Ordering products by name
+                    tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({listPF: tempProductFeatures}))
                 }
             })
         //     }
@@ -309,13 +324,14 @@ class Products extends Component {
             categoryID: product.categoryID,
             images: product.images.items,
             order: product.order,
+            status: product.status
         }
         const tempCategory = {
             id: product.category.id,
             isSelected: true,
             name: product.category.name,
         }
-        const tempProductsFeatures = product.productFeatures.items
+        const tempProductsFeatures = this.state.listPF.filter(pf => pf.productID === product.id)
         await this.setState({CRUD_Product: tempCRUD_Product, selectedCategory: tempCategory, productFeatures: tempProductsFeatures, CRUDButtonName: 'UPDATE'})
         this.validateCRUDProduct()
     }
@@ -687,7 +703,7 @@ class Products extends Component {
                                 <Row className='mb-1'>
                                 <CRUDProductFeatures 
                                         CRUD_Product={this.state.CRUD_Product} 
-                                        productFeatures={this.state.productFeatures}
+                                        listPF={this.state.listPF}
                                         featuresSelectList={this.state.featuresSelectList}
                                         selectedFeature={this.state.selectedFeature}
                                         valueProductFeature={this.state.valueProductFeature}
@@ -738,6 +754,7 @@ class Products extends Component {
                     <br></br>
                     <ListProducts
                         products={this.state.products} 
+                        listPF={this.state.listPF}
                         urlS3Image={urlS3Image} 
                         handleShowAreYouSureDeleteProduct= {this.handleShowAreYouSureDeleteProduct}
                         handleLoadEditProduct={this.handleLoadEditProduct}

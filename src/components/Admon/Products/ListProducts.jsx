@@ -16,7 +16,7 @@ export default class ListProducts extends Component {
     }
     // RENDER
     render() {
-        let {products, urlS3Image} = this.props
+        let {products, urlS3Image, listPF} = this.props
 
         // Render Products
         const renderProducts = () => {
@@ -58,7 +58,8 @@ export default class ListProducts extends Component {
                                     {renderProductImages(product, product.images.items)}
                                 </td>
                                 <td>
-                                    {renderProductFeatures(product,product.productFeatures.items)}
+                                    {/* {renderProductFeatures(product,product.productFeatures.items)} */}
+                                    {renderProductFeatures(product)}
                                 </td>
                                 <td>
                                     {product.isActive ? 'YES' : 'NO'}
@@ -143,8 +144,9 @@ export default class ListProducts extends Component {
             }
         }
         // Render product features
-        const renderProductFeatures = (pProduct, pProductFeatures) => {
-            if (pProductFeatures.length > 0) {
+        const renderProductFeatures = (pProduct) => {
+            let productFeatures = listPF.filter(pf => pf.productID === pProduct.id);
+            if(productFeatures[0]){
                 return (
                     <Table striped bordered hover>
                         <thead>
@@ -157,10 +159,10 @@ export default class ListProducts extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {pProductFeatures?.map(pfeature => (
+                        {productFeatures?.map(pfeature => (
                             <tr key={pfeature.id}>
                                 <td>
-                                    {pfeature.feature.id}/{pfeature.feature.description}
+                                    {pfeature.feature.name} / {pfeature.feature.description}
                                 </td>
                                 <td>
                                     {pfeature.value}
@@ -188,7 +190,6 @@ export default class ListProducts extends Component {
                 )
             }
         }
-
         return (
             <> 
                 <h1>Product List</h1>

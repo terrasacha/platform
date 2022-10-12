@@ -31,8 +31,9 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 description: '',
                 order: 0,
                 isTemplate: false,
-                defaultValue: null,
-                featureTypeID: ''
+                defaultValue: '',
+                featureTypeID: '',
+                unitOfMeasureID: ''
                /*  isAvailable: true, */
             },
         }
@@ -139,7 +140,10 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
             tempNewFeature.order = parseInt(event.target.value)
         }
         if (event.target.name === 'feature.defaultValue') {
-            tempNewFeature.defaultValue = event.target.value === '' ? null : parseFloat(event.target.value)
+            if(!tempNewFeature.unitOfMeasureID){
+                tempNewFeature.defaultValue =  null 
+            }
+            tempNewFeature.defaultValue = parseFloat(event.target.value)
         }
         if (event.target.name === 'feature.isTemplate') {
             if(event.target.value === 'yes'){
@@ -171,6 +175,8 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         let tempNewFeature = this.state.newFeature
 
         if (this.state.CRUDButtonName === 'CREATE') {
+            let numberType = this.state.UnitOfMeasures.filter(uom => uom.id === tempNewFeature.unitOfMeasureID)
+            tempNewFeature.defaultValue = numberType[0].isFloat? parseFloat(tempNewFeature.defaultValue) : parseInt(tempNewFeature.defaultValue)
             await API.graphql(graphqlOperation(createFeature, { input: tempNewFeature }))
             await this.cleanFeatureOnCreate()
         }
@@ -206,7 +212,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 name: '',
                 description: '',
                 order: 0,
-                defaultValue: null,
+                defaultValue: '',
                 isTemplate: false,
                 isAvailable: true,
             }
@@ -330,12 +336,14 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                         <Form.Select 
                             name='feature.featureType'
                             onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                <option value=''>-</option>
                                 {this.state.featureTypes.map((featureType, idx) => (<option value={featureType.name} key={idx}>{featureType.name}</option>))}
                         </Form.Select>
                         <Form.Label>Unit Of Measure</Form.Label>
                         <Form.Select 
                             name='feature.unitOfMeasure'
                             onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                <option value=''>-</option>
                                 {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (<option value={UnitOfMeasure.id} key={idx}>{UnitOfMeasure.engineeringUnit}</option>))}
                         </Form.Select>
 {/*                         <Form.Label>Is available</Form.Label>
