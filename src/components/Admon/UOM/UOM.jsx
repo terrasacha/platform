@@ -36,7 +36,7 @@ class UOM extends Component {
         await this.loadUnitOfMeasures()
 
         // Subscriptions
-        // OnCreate Category
+        // OnCreate OUM
         let tempUnitOfMeasures = this.state.unitOfMeasures
         this.createUnitOfMeasureListener = API.graphql(graphqlOperation(onCreateUnitOfMeasure))
         .subscribe({
@@ -50,7 +50,7 @@ class UOM extends Component {
             }
         })
 
-        // OnUpdate Category
+        // OnUpdate OUM
         this.updateCategoryListener = API.graphql(graphqlOperation(onUpdateUnitOfMeasure))
         .subscribe({
             next: updatedUnitOfMeasureData => {
@@ -110,7 +110,7 @@ class UOM extends Component {
             delete tempNewUnitOfMeasure.updatedAt
             delete tempNewUnitOfMeasure.formulas
             delete tempNewUnitOfMeasure.features
-            await API.graphql(graphqlOperation(updateUnitOfMeasure, { input: this.state.newUnitOfMeasure }))
+            await API.graphql(graphqlOperation(updateUnitOfMeasure, { input: tempNewUnitOfMeasure }))
             await this.cleanUnitOfMeasureOnCreate()
         }
     }
