@@ -331,7 +331,7 @@ class Products extends Component {
             isSelected: true,
             name: product.category.name,
         }
-        const tempProductsFeatures = product.productFeatures.items
+        const tempProductsFeatures = this.state.listPF.filter(pf => pf.productID === product.id)
         await this.setState({CRUD_Product: tempCRUD_Product, selectedCategory: tempCategory, productFeatures: tempProductsFeatures, CRUDButtonName: 'UPDATE'})
         this.validateCRUDProduct()
     }
@@ -703,7 +703,7 @@ class Products extends Component {
                                 <Row className='mb-1'>
                                 <CRUDProductFeatures 
                                         CRUD_Product={this.state.CRUD_Product} 
-                                        productFeatures={this.state.productFeatures}
+                                        listPF={this.state.listPF}
                                         featuresSelectList={this.state.featuresSelectList}
                                         selectedFeature={this.state.selectedFeature}
                                         valueProductFeature={this.state.valueProductFeature}

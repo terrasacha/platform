@@ -100,6 +100,7 @@ export default class CRUDProductFeatures extends Component {
             delete tempNewProductFeature.productID
             delete tempNewProductFeature.featureID
             delete tempNewProductFeature.feature
+            delete tempNewProductFeature.product
             delete tempNewProductFeature.verifications
             delete tempNewProductFeature.documents
             await API.graphql(graphqlOperation(updateProductFeature, { input: this.state.newProductFeature }))
@@ -133,7 +134,7 @@ export default class CRUDProductFeatures extends Component {
     }
 
   render() {
-    let { featuresSelectList, productFeatures} = this.props
+    let { featuresSelectList, listPF} = this.props
 
     const renderCRUDProductFeatures = () => {
         return (
@@ -208,6 +209,7 @@ export default class CRUDProductFeatures extends Component {
         )
     }
         const renderProductFeatures = () => {
+            let productFeatures = listPF.filter(pf => pf.productID === this.props.CRUD_Product.id);
         if (productFeatures.length > 0) {
             return (
                 <Table striped bordered hover>
@@ -224,7 +226,7 @@ export default class CRUDProductFeatures extends Component {
                     {productFeatures.map(productFeatures => (
                         <tr key={productFeatures.id}>
                             <td>
-                                {productFeatures.feature !== undefined? productFeatures.feature.name : 'Reload'}
+                                {productFeatures.feature.name} 
                             </td>
                             <td>
                                 {productFeatures.value}
