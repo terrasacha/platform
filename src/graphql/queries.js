@@ -639,7 +639,6 @@ export const listProducts = /* GraphQL */ `
             feature {
               id
               name
-              order
               isTemplate
               description
             }
@@ -656,9 +655,6 @@ export const listProducts = /* GraphQL */ `
             }
           }
         }
-        createdAt
-        updatedAt
-      }
         createdAt
         updatedAt
       }

@@ -29,7 +29,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 id: '',
                 name: '',
                 description: '',
-                order: 0,
                 isTemplate: false,
                 defaultValue: '',
                 featureTypeID: '',
@@ -50,15 +49,22 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
             await this.loadFeatureTypes()
         // Subscriptions
         // OnCreate Feature
-        let tempFeatures = this.state.features
         this.createFeatureListener = API.graphql(graphqlOperation(onCreateFeature))
         .subscribe({
             next: createdFeatureData => {
-                let tempOnCreateFeature = createdFeatureData.value.data.onCreateFeature
-                tempFeatures.push(tempOnCreateFeature)
+                let isOnCreateList = false;
+                this.state.features.map((mapFeature) => {
+                    if (createdFeatureData.value.data.onCreateFeature.id === mapFeature.id) {
+                        isOnCreateList = true;
+                    } 
+                    return mapFeature
+                })
+                let tempFeatures = this.state.features
+                if (!isOnCreateList) {
+                    tempFeatures.push(createdFeatureData.value.data.onCreateFeature)
+                }
                 // Ordering Features by name
-                tempFeatures.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                // this.updateStateFeatures(tempFeatures)
+                tempFeatures.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
                 this.setState((state) => ({features: tempFeatures}))
             }
         })
@@ -74,7 +80,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                     }
                 })
                 // Ordering Features by name
-                tempFeatures.sort((a, b) => (a.name > b.name) ? 1 : -1)
+                tempFeatures.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
                 this.setState((state) => ({features: tempFeatures}))
             }
         })
@@ -87,7 +93,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 let tempOnCreateFeatureType = createdFeatureTypeData.value.data.onCreateFeatureType
                 tempFeatureTypes.push(tempOnCreateFeatureType)
                 // Ordering Features by name
-                tempFeatureTypes.sort((a, b) => (a.name > b.name) ? 1 : -1)
+                tempFeatureTypes.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
                 // this.updateStateFeatures(tempFeatures)
                 this.setState((state) => ({featureTypes: tempFeatureTypes}))
             }
@@ -113,18 +119,18 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
 
     async loadFeatures() {
         const listFeaturesResult = await API.graphql(graphqlOperation(listFeatures))
-        listFeaturesResult.data.listFeatures.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        listFeaturesResult.data.listFeatures.items.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
         this.setState({features: listFeaturesResult.data.listFeatures.items})
         }
 
     async loadFeatureTypes() {
         const listFeatureTypesResult = await API.graphql(graphqlOperation(listFeatureTypes))
-        listFeatureTypesResult.data.listFeatureTypes.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        listFeatureTypesResult.data.listFeatureTypes.items.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
         this.setState({featureTypes: listFeatureTypesResult.data.listFeatureTypes.items})
         }
     async loadUnitOfMeasures() {
         const listUnitOfMeasuresResult = await API.graphql(graphqlOperation(listUnitOfMeasures))
-        listUnitOfMeasuresResult.data.listUnitOfMeasures.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        listUnitOfMeasuresResult.data.listUnitOfMeasures.items.sort((a, b) => (a.engineeringUnit.toLowerCase() > b.engineeringUnit.toLowerCase()) ? 1 : -1)
         this.setState({UnitOfMeasures: listUnitOfMeasuresResult.data.listUnitOfMeasures.items})
         }
         
@@ -136,9 +142,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         }
         if (event.target.name === 'feature.description') {
             tempNewFeature.description = event.target.value
-        }
-        if (event.target.name === 'feature.order') {
-            tempNewFeature.order = parseInt(event.target.value)
         }
         if (event.target.name === 'feature.defaultValue') {
             if(!tempNewFeature.unitOfMeasureID){
@@ -220,7 +223,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 id: '',
                 name: '',
                 description: '',
-                order: 0,
                 defaultValue: '',
                 isTemplate: false,
                 isAvailable: true,
@@ -228,8 +230,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         })
     }
     
-    
-        
 
     render() {
         let {features, newFeature, CRUDButtonName,} = this.state
@@ -246,7 +246,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                             <tr>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Order</th>
                                 <th>Default value</th>
                                 <th>Type</th>
                                 <th>Unit of Measure</th>
@@ -265,9 +264,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                                         {features.description}
                                     </td>
                                     <td>
-                                        {features.order}
-                                    </td>
-                                    <td>
                                         {features.defaultValue}
                                     </td>
                                     <td>
@@ -279,14 +275,10 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                                     <td>
                                         {features.isTemplate? 'Si' : 'No'}
                                     </td>
-    {/*                                 <td>
-                                        {features.isAvailable? 'Si' : 'No'}
-                                    </td> */}
                                     <td>
                                         <Button 
                                             variant='primary'
                                             size='lg' 
-                                             
                                             onClick={(e) => this.handleLoadEditFeature(features, e)}
                                         >Editar</Button>
                                     </td>
@@ -302,7 +294,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
 
         return (
             <Container>
-            <h2>{CRUDButtonName} Feature: {newFeature.name}</h2>
+            <h2>{CRUDButtonName} FeatureID: {newFeature.id}</h2>
             <Form>
                 <Row className='mb-2'>
                     <Form.Group as={Col} controlId='formGridNewFeatureName'>
@@ -319,13 +311,6 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                             placeholder='Description...'
                             name='feature.description'
                             value={newFeature.description}
-                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        <Form.Label>Order</Form.Label>
-                        <Form.Control
-                            type='number'
-                            placeholder=''
-                            name='feature.order'
-                            value={newFeature.order}
                             onChange={(e) => this.handleOnChangeInputForm(e)} />
                         <Form.Label>Default value</Form.Label>
                         <Form.Control
