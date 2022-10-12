@@ -206,6 +206,8 @@ export const getVerification = /* GraphQL */ `
         value
         isToBlockChain
         isVerifable
+        order
+        isOnMainCard
         productID
         product {
           id
@@ -225,7 +227,6 @@ export const getVerification = /* GraphQL */ `
           id
           name
           description
-          order
           isTemplate
           defaultValue
           featureTypeID
@@ -289,6 +290,8 @@ export const listVerifications = /* GraphQL */ `
           value
           isToBlockChain
           isVerifable
+          order
+          isOnMainCard
           productID
           featureID
           createdAt
@@ -380,6 +383,8 @@ export const getDocument = /* GraphQL */ `
         value
         isToBlockChain
         isVerifable
+        order
+        isOnMainCard
         productID
         product {
           id
@@ -399,7 +404,6 @@ export const getDocument = /* GraphQL */ `
           id
           name
           description
-          order
           isTemplate
           defaultValue
           featureTypeID
@@ -452,6 +456,8 @@ export const listDocuments = /* GraphQL */ `
           value
           isToBlockChain
           isVerifable
+          order
+          isOnMainCard
           productID
           featureID
           createdAt
@@ -558,6 +564,8 @@ export const getProduct = /* GraphQL */ `
           value
           isToBlockChain
           isVerifable
+          order
+          isOnMainCard
           productID
           featureID
           createdAt
@@ -648,6 +656,9 @@ export const listProducts = /* GraphQL */ `
             }
           }
         }
+        createdAt
+        updatedAt
+      }
         createdAt
         updatedAt
       }
@@ -753,7 +764,6 @@ export const getFeatureType = /* GraphQL */ `
           id
           name
           description
-          order
           isTemplate
           defaultValue
           featureTypeID
@@ -795,7 +805,6 @@ export const getFeature = /* GraphQL */ `
       id
       name
       description
-      order
       isTemplate
       defaultValue
       featureTypeID
@@ -830,6 +839,8 @@ export const getFeature = /* GraphQL */ `
           value
           isToBlockChain
           isVerifable
+          order
+          isOnMainCard
           productID
           featureID
           createdAt
@@ -863,7 +874,6 @@ export const listFeatures = /* GraphQL */ `
         id
         name
         description
-        order
         isTemplate
         defaultValue
         featureTypeID
@@ -908,7 +918,6 @@ export const getUnitOfMeasure = /* GraphQL */ `
           id
           name
           description
-          order
           isTemplate
           defaultValue
           featureTypeID
@@ -1049,7 +1058,6 @@ export const getFeatureFormula = /* GraphQL */ `
         id
         name
         description
-        order
         isTemplate
         defaultValue
         featureTypeID
@@ -1120,7 +1128,6 @@ export const listFeatureFormulas = /* GraphQL */ `
           id
           name
           description
-          order
           isTemplate
           defaultValue
           featureTypeID
@@ -1256,6 +1263,8 @@ export const getProductFeature = /* GraphQL */ `
       value
       isToBlockChain
       isVerifable
+      order
+      isOnMainCard
       productID
       product {
         id
@@ -1291,7 +1300,6 @@ export const getProductFeature = /* GraphQL */ `
         id
         name
         description
-        order
         isTemplate
         defaultValue
         featureTypeID
@@ -1369,6 +1377,8 @@ export const listProductFeatures = /* GraphQL */ `
         value
         isToBlockChain
         isVerifable
+        order
+        isOnMainCard
         productID
         product {
           id
@@ -1388,7 +1398,6 @@ export const listProductFeatures = /* GraphQL */ `
           id
           name
           description
-          order
           isTemplate
           defaultValue
           featureTypeID
