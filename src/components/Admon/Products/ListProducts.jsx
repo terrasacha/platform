@@ -153,6 +153,7 @@ export default class ListProducts extends Component {
                         <tr>
                             <th>Feature ID</th>
                             <th>Value</th>
+                            <th>Main Card</th>
                             <th>Is to BlockChain?</th>
                             <th>Is Verifable?</th>
                             <th>Action</th>
@@ -166,6 +167,9 @@ export default class ListProducts extends Component {
                                 </td>
                                 <td>
                                     {pfeature.value}
+                                </td>
+                                <td>
+                                    {pfeature.isOnMainCard? 'YES' : 'NO'}
                                 </td>
                                 <td>
                                     {pfeature.isToBlockChain? 'YES' : 'NO'}

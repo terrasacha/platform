@@ -7,7 +7,7 @@ import Bootstrap from "../../common/themes";
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
-import { listFormulas, listProducts } from '../../../graphql/queries';
+import { listFormulas, listProductFeatures, listProducts } from '../../../graphql/queries';
 
 
 class Results extends Component {
@@ -24,7 +24,9 @@ class Results extends Component {
             featuresUsed: [],
             canCalculate: '',
             result: '',
-            confirmSave: false
+            PFValue: '',
+            confirmSave: false,
+            assingToPF: false,
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.checkIfVariablesMatchWithPF = this.checkIfVariablesMatchWithPF.bind(this)
@@ -34,6 +36,7 @@ class Results extends Component {
     componentDidMount = async () => {
         await this.loadFormulas()
         await this.loadProducts()
+        await this.loadProductFeatures()
     }
 
     async loadFormulas() {
@@ -46,6 +49,11 @@ class Results extends Component {
         listProductsResult.data.listProducts.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         this.setState({products: listProductsResult.data.listProducts.items})
     }
+    async loadProductFeatures() {
+        const listProductFeaturesResult = await API.graphql(graphqlOperation(listProductFeatures))
+        listProductFeaturesResult.data.listProductFeatures.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        this.setState({productFeatures: listProductFeaturesResult.data.listProductFeatures.items})
+    }
 
     handleOnChangeInputForm = async(e) => {
         if (e.target.name === 'result.selectedProduct') {
@@ -53,8 +61,10 @@ class Results extends Component {
                 canCalculate: '', 
                 result: '',
                 varID: '',
+                PFValue: '',
                 featuresUsed: [],
-                confirmSave: false
+                confirmSave: false,
+                assingToPF: false,
             })  
             let productSelected = this.state.products.filter(product => product.id === e.target.value)
             this.setState({
@@ -70,14 +80,21 @@ class Results extends Component {
                 canCalculate: '',
                 varID: '', 
                 result: '',
+                PFValue: '',
                 featuresUsed: [],
                 confirmSave: false,
+                assingToPF: false,
                 saveButton: true
             }) 
             
         }
         if (e.target.name === 'result.varID') {
             this.setState({varID: e.target.value}) 
+            
+        }
+        if (e.target.name === 'result.selectedProductFeature') {
+            console.log(e.target.value)
+            this.setState({PFValue: e.target.value}) 
             
         }
     }
@@ -129,6 +146,9 @@ class Results extends Component {
     }
     confirmSave = () => {
         this.setState({confirmSave: true})
+    }
+    assingToPF = () => {
+        this.setState({assingToPF: true})
     }
     saveResult = async() => {
 /*         let tempNewResult = {
@@ -236,6 +256,7 @@ class Results extends Component {
         const SaveResult = () => {
             if(this.state.confirmSave !== false){
                 return(
+                    <>
                     <Row className='mb-2'>
                         
                         <Form.Group as={Col}>
@@ -267,6 +288,69 @@ class Results extends Component {
                                 value={this.state.equationSelected}
                                 />
                         </Form.Group>
+                    </Row>
+                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}} >
+                        <h6>Do you want to associate result {this.state.varID} with a productFeature? </h6>
+                        <Button
+                            variant='primary'
+                            size='sm'
+                            style={{marginLeft: '10px',marginRight: '10px'}} 
+                            onClick={(e) => this.assingToPF()}
+                        >Yes</Button> 
+                        <Button
+                            variant='primary'
+                            size='sm' 
+                            onClick={(e) => this.saveResult()}
+                        >No</Button> 
+                    </div>
+                    </>
+                )
+            }
+        }
+        const AsingToProductFeature = () => {
+            if(this.state.assingToPF){
+                let productFeatures = this.state.productFeatures.filter(pf => pf.productID === this.state.selectedProductID)
+                return(
+                    <Row className='mb-2'>
+                        <Form.Group as={Col}>
+                            <Form.Label>Variable ID</Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder=''
+                                name='result.varID'
+                                disabled
+                                value={this.state.varID}
+                                />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Result</Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder=''
+                                name='result.varID'
+                                disabled
+                                value={this.state.result}
+                                />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Formula</Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder=''
+                                name='result.equation'
+                                disabled
+                                value={this.state.equationSelected}
+                                />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Label>Product Features</Form.Label>
+                            <Form.Select 
+                            name='result.selectedProductFeature'
+                            onChange={(e) => this.handleOnChangeInputForm(e,)}>
+                                <option>-</option>
+                                {productFeatures.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.id}</option>))}
+                        </Form.Select>
+                        </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Save</Form.Label>
                             <br></br>
@@ -274,7 +358,7 @@ class Results extends Component {
                                     variant='primary'
                                     size='sm' 
                                     disabled={this.state.varID === ''}
-                                    onClick={(e) => this.saveResult()}
+                                    onClick={(e) => this.confirmAssingToPF()}
                                 >Save</Button> 
                         </Form.Group>
 
@@ -293,6 +377,7 @@ class Results extends Component {
                     {Calculate()}
                     {Result()}
                     {SaveResult()}
+                    {AsingToProductFeature()}
 
         </Container>
     )
