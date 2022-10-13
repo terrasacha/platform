@@ -21,6 +21,7 @@ export default class CRUDProductFeatures extends Component {
                 featureID: '',
                 value: 0,
                 order: '',
+                isOnMainCard: true,
                 isToBlockChain: false,
                 isVerifable: false,
             },
@@ -49,6 +50,24 @@ export default class CRUDProductFeatures extends Component {
                 }
             }))
         }
+        if(e.target.name === 'isOnMainCardProductFeature'){
+            if(e.target.value === 'yes'){
+                this.setState(prevState => ({
+                    newProductFeature: {                   
+                        ...prevState.newProductFeature,   
+                        isOnMainCard: true       
+                    }
+                }))
+            }
+            if(e.target.value === 'no'){
+                this.setState(prevState => ({
+                    newProductFeature: {                   
+                        ...prevState.newProductFeature,   
+                        isOnMainCard: false       
+                    }
+                }))
+            }
+        }
         if(e.target.name === 'isToBlockChain'){
             if(e.target.value === 'yes'){
                 this.setState(prevState => ({
@@ -66,7 +85,6 @@ export default class CRUDProductFeatures extends Component {
                     }
                 }))
             }
-            
         }
         if(e.target.name === 'isVerifiable'){
             if(e.target.value === 'yes'){
@@ -84,8 +102,7 @@ export default class CRUDProductFeatures extends Component {
                         isVerifable: false       
                     }
                 }))
-            }
-            
+            } 
         }
     }
     async handleCRUDProductFeature() {
@@ -129,6 +146,7 @@ export default class CRUDProductFeatures extends Component {
             featureID: '',
             value: 0,
             order: '',
+            isOnMainCard: true,
             isToBlockChain: false,
             isVerifable: false,
         },
@@ -155,6 +173,7 @@ export default class CRUDProductFeatures extends Component {
                     <th>Feature</th>
                     <th>Value</th>
                     <th>Order</th>
+                    <th>Is on Main Card</th>
                     <th>Is to BlockChain</th>
                     <th>Is verifable</th>
                 </tr>
@@ -192,6 +211,18 @@ export default class CRUDProductFeatures extends Component {
                                     value={this.state.newProductFeature.order}
                                     onChange={(e) => this.handleCreateProductFeature(e)} />
                             </Form.Group>
+                        </td>
+                        <td>
+                            <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsActive'>
+                                    <Form.Select  name='isOnMainCardProductFeature' onChange={(e) => this.handleCreateProductFeature(e)} >
+                                        <option>-</option>
+                                        <option value='no'>No</option>
+                                        <option value='yes'>Yes</option>
+                                    </Form.Select>
+                                    <Alert key="idx_key_1" variant='success'>
+                                            {this.state.newProductFeature.isOnMainCard? 'Yes' : 'No'}
+                                        </Alert>
+                                </Form.Group>
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsToBlockChain'>
@@ -239,6 +270,7 @@ export default class CRUDProductFeatures extends Component {
                                 <th>Feature</th>
                                 <th>Order</th>
                                 <th>Value</th>
+                                <th>Main Card</th>
                                 <th>Is to BlockChain</th>
                                 <th>Is verifable</th>
                                 <th>Edit</th>
@@ -255,6 +287,9 @@ export default class CRUDProductFeatures extends Component {
                                     </td>
                                     <td>
                                         {productFeatures.value}
+                                    </td>
+                                    <td>
+                                        {productFeatures.isOnMainCard? 'Yes' : 'No'}
                                     </td>
                                     <td>
                                         {productFeatures.isToBlockChain? 'Yes' : 'No'}
