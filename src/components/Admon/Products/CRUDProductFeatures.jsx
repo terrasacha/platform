@@ -20,6 +20,7 @@ export default class CRUDProductFeatures extends Component {
                 productID: '',
                 featureID: '',
                 value: 0,
+                order: '',
                 isToBlockChain: false,
                 isVerifable: false,
             },
@@ -37,6 +38,14 @@ export default class CRUDProductFeatures extends Component {
                 newProductFeature: {                   
                     ...prevState.newProductFeature,   
                     value: e.target.value       
+                }
+            }))
+        }
+        if(e.target.name === 'orderProductFeature'){
+            this.setState(prevState => ({
+                newProductFeature: {                   
+                    ...prevState.newProductFeature,   
+                    order: e.target.value       
                 }
             }))
         }
@@ -119,6 +128,7 @@ export default class CRUDProductFeatures extends Component {
             productID: '',
             featureID: '',
             value: 0,
+            order: '',
             isToBlockChain: false,
             isVerifable: false,
         },
@@ -144,6 +154,7 @@ export default class CRUDProductFeatures extends Component {
                 <tr>
                     <th>Feature</th>
                     <th>Value</th>
+                    <th>Order</th>
                     <th>Is to BlockChain</th>
                     <th>Is verifable</th>
                 </tr>
@@ -163,12 +174,22 @@ export default class CRUDProductFeatures extends Component {
                             </Form.Group>
                         </td>
                         <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductOrder'>
+                            <Form.Group as={Col} controlId='formGridCRUD_ProductValue'>
                                 <Form.Control
                                     type='number'
                                     placeholder=''
                                     name='valueProductFeature'
                                     value={this.state.newProductFeature.value}
+                                    onChange={(e) => this.handleCreateProductFeature(e)} />
+                            </Form.Group>
+                        </td>
+                        <td>
+                            <Form.Group as={Col} controlId='formGridCRUD_ProductOrder'>
+                                <Form.Control
+                                    type='number'
+                                    placeholder=''
+                                    name='orderProductFeature'
+                                    value={this.state.newProductFeature.order}
                                     onChange={(e) => this.handleCreateProductFeature(e)} />
                             </Form.Group>
                         </td>
@@ -216,6 +237,7 @@ export default class CRUDProductFeatures extends Component {
                             <thead>
                             <tr>
                                 <th>Feature</th>
+                                <th>Order</th>
                                 <th>Value</th>
                                 <th>Is to BlockChain</th>
                                 <th>Is verifable</th>
@@ -227,6 +249,9 @@ export default class CRUDProductFeatures extends Component {
                                 <tr key={productFeatures.id}>
                                     <td>
                                         {productFeatures.feature.name} 
+                                    </td>
+                                    <td>
+                                        {productFeatures.order} 
                                     </td>
                                     <td>
                                         {productFeatures.value}

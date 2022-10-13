@@ -78,7 +78,7 @@ class Products extends Component {
             
             // Subscriptions
             // OnCreate Product
-            this.createProductListener = await API.graphql(graphqlOperation(onCreateProduct))
+            this.createProductListener = API.graphql(graphqlOperation(onCreateProduct))
             .subscribe({
                 next: createdProductData => {
                     let tempProducts = this.state.products
@@ -91,7 +91,7 @@ class Products extends Component {
             })
 
             // OnUpdate Product
-            this.updateProductListener = await API.graphql(graphqlOperation(onUpdateProduct))
+            this.updateProductListener = API.graphql(graphqlOperation(onUpdateProduct))
             .subscribe({
                 next: updatedProductData => {
                     let tempProducts = this.state.products.map((mapProduct) => {
@@ -107,7 +107,7 @@ class Products extends Component {
                 }
             })
             // OnUpdate ProductFeature
-            this.updateProductFeatureListener = await API.graphql(graphqlOperation(onUpdateProductFeature))
+            this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
             .subscribe({
                 next: updatedProductFeatureData => {
                     let tempProductFeatures = this.state.listPF.map((mapPF) => {
@@ -122,7 +122,7 @@ class Products extends Component {
                 }
             })
             // OnCreate ProductFeature
-            this.createProductFeatureListener = await API.graphql(graphqlOperation(onCreateProductFeature))
+            this.createProductFeatureListener = API.graphql(graphqlOperation(onCreateProductFeature))
             .subscribe({
                 next: createdProductFeatureData => {
                     let tempProductFeatures = this.state.listPF
