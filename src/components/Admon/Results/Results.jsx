@@ -4,10 +4,13 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 // Auth css custom
 import Bootstrap from "../../common/themes";
 // Bootstrap
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
-import { listFormulas, listProductFeatures, listProducts } from '../../../graphql/queries';
+import { v4 as uuidv4 } from 'uuid';
+import { createFeatureFormula, createResult, updateProductFeature } from '../../../graphql/mutations';
+import { listFormulas, listProductFeatures, listProducts, listResults } from '../../../graphql/queries';
+import { onCreateResult, onUpdateProductFeature } from '../../../graphql/subscriptions';
 
 
 class Results extends Component {
@@ -16,6 +19,8 @@ class Results extends Component {
         this.state = {
             formulas: [],
             products: [],
+            productFeatures: [],
+            results:[],
             varID: '',
             selectedFormulaID: '',
             equationSelected: '', 
@@ -24,11 +29,12 @@ class Results extends Component {
             featuresUsed: [],
             canCalculate: '',
             result: '',
-            PFValue: '',
+            PFid: '',
             confirmSave: false,
             assingToPF: false,
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
+        this.handleAsignResultToPF = this.handleAsignResultToPF.bind(this)
         this.checkIfVariablesMatchWithPF = this.checkIfVariablesMatchWithPF.bind(this)
         this.resolveFormula = this.resolveFormula.bind(this)
         this.evil = this.evil.bind(this)
@@ -37,6 +43,37 @@ class Results extends Component {
         await this.loadFormulas()
         await this.loadProducts()
         await this.loadProductFeatures()
+        await this.loadResults()
+        
+        // Subscriptions
+        // OnCreate Result
+        this.createResultListener = API.graphql(graphqlOperation(onCreateResult))
+        .subscribe({
+            next: createdResultData => {
+                let tempResults = this.state.results
+                let tempOnCreateResult = createdResultData.value.data.onCreateResult
+                tempResults.push(tempOnCreateResult)
+                // Ordering products by name
+                tempResults.sort((a, b) => (a.id > b.id) ? 1 : -1)
+                this.setState((state) => ({results: tempResults}))
+            }
+        })
+
+        // OnUpdate ProductFeatures
+        this.updateProductFeature2Listener = API.graphql(graphqlOperation(onUpdateProductFeature))
+            .subscribe({
+                next: updatedProductFeatureData => {
+                    let tempProductFeatures = this.state.productFeatures.map((mapPF) => {
+                        if (updatedProductFeatureData.value.data.onUpdateProductFeature.id === mapPF.id) {
+                            return updatedProductFeatureData.value.data.onUpdateProductFeature
+                        } else {
+                            return mapPF
+                        }
+                    })
+                    tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({productFeatures: tempProductFeatures}))
+                }
+            })
     }
 
     async loadFormulas() {
@@ -54,6 +91,12 @@ class Results extends Component {
         listProductFeaturesResult.data.listProductFeatures.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         this.setState({productFeatures: listProductFeaturesResult.data.listProductFeatures.items})
     }
+    async loadResults() {
+        const listResultsResult = await API.graphql(graphqlOperation(listResults))
+        listResultsResult.data.listResults.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
+        this.setState({results: listResultsResult.data.listResults.items})
+    }
+    
 
     handleOnChangeInputForm = async(e) => {
         if (e.target.name === 'result.selectedProduct') {
@@ -61,7 +104,7 @@ class Results extends Component {
                 canCalculate: '', 
                 result: '',
                 varID: '',
-                PFValue: '',
+                PFid: '',
                 featuresUsed: [],
                 confirmSave: false,
                 assingToPF: false,
@@ -80,7 +123,7 @@ class Results extends Component {
                 canCalculate: '',
                 varID: '', 
                 result: '',
-                PFValue: '',
+                PFid: '',
                 featuresUsed: [],
                 confirmSave: false,
                 assingToPF: false,
@@ -93,16 +136,22 @@ class Results extends Component {
             
         }
         if (e.target.name === 'result.selectedProductFeature') {
-            console.log(e.target.value)
-            this.setState({PFValue: e.target.value}) 
+            this.setState({PFid: e.target.value}) 
             
         }
+    }
+    handleAsignResultToPF = async(e, result) =>{
+        let updatePF = {
+            id: e.target.value,
+            value: result
+        }
+        await API.graphql(graphqlOperation(updateProductFeature , { input: updatePF }))
     }
     checkIfVariablesMatchWithPF = () =>{
         let formulaCopy = this.state.equationSelected //copia formula seleccionada
         let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)).filter((v, i, a) => a.indexOf(v) === i) //separa todas las variables y excluye numeros sueltos y variables repetidas
         let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
-        let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
+        let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.id) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let aux = 0
         for (let i = 0;i < formulaArrayVariables.length; i++){
             if(productFeaturesProductSelectedNames.includes(formulaArrayVariables[i])) aux = aux + 1
@@ -122,7 +171,7 @@ class Results extends Component {
         let formulaCopy = this.state.equationSelected //copia formula seleccionada
         let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)).filter((v, i, a) => a.indexOf(v) === i) //separa todas las variables y excluye numeros sueltos y variables repetidas
         let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
-        let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.name) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
+        let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.id) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let productsFeatures = productFeaturesProductSelected[0].productFeatures.items
         let featuresUsed = []
         for(let i = 0; i< formulaArrayVariables.length ; i++){
@@ -151,29 +200,46 @@ class Results extends Component {
         this.setState({assingToPF: true})
     }
     saveResult = async() => {
-/*         let tempNewResult = {
+        let tempNewResult = {
             id: uuidv4().replaceAll('-','_'),
-            varID: this.state,
             productID: this.state.selectedProductID,
             formulaID: this.state.selectedFormulaID,
-            equation: this.state.result,
+            value: this.state.result,
             varID: this.state.varID
         }
         await API.graphql(graphqlOperation(createResult , { input: tempNewResult }))
-
-        for(let i = 0; i < this.state.featuresUsed ; i++){
+        
+        this.state.featuresUsed.map(async(FU) =>{
             let tempNewFeatureFormula = {
                 id: uuidv4().replaceAll('-','_'),
-                featureID: this.state.featuresUsed[i],
+                featureID: FU,
                 formulaID: this.state.selectedFormulaID
             }
-            await API.graphql(graphqlOperation(createFeatureFormula , { input: tempNewFeatureFormula }))
-        } */
-        console.log('se guardo el resultado', this.state.result)
-        console.log('se guardo el ID formula', this.state.selectedFormulaID)
-        console.log('se guardo el ID product', this.state.selectedProductID)
-        console.log('se guardaron estos productFeatures', this.state.featuresUsed)
-        console.log('varID ', this.state.varID)
+            return await API.graphql(graphqlOperation(createFeatureFormula , { input: tempNewFeatureFormula }))
+        })
+        if(this.state.PFid !== ''){
+            let updatePF = {
+                id: this.state.PFid,
+                value: this.state.result
+            }
+            await API.graphql(graphqlOperation(updateProductFeature , { input: updatePF }))
+        }
+        this.clearState()
+    }
+    clearState = () => {
+        this.setState({
+            varID: '',
+            selectedFormulaID: '',
+            equationSelected: '', 
+            selectedProductID: '', 
+            selectedProductName: '',
+            featuresUsed: [],
+            canCalculate: '',
+            result: '',
+            PFid: '',
+            confirmSave: false,
+            assingToPF: false,
+        })
     }
     render() {
         const SelectProductForm = () => {
@@ -346,7 +412,7 @@ class Results extends Component {
                             <Form.Label>Product Features</Form.Label>
                             <Form.Select 
                             name='result.selectedProductFeature'
-                            onChange={(e) => this.handleOnChangeInputForm(e,)}>
+                            onChange={(e) => this.handleOnChangeInputForm(e)}>
                                 <option>-</option>
                                 {productFeatures.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.id}</option>))}
                         </Form.Select>
@@ -358,7 +424,7 @@ class Results extends Component {
                                     variant='primary'
                                     size='sm' 
                                     disabled={this.state.varID === ''}
-                                    onClick={(e) => this.confirmAssingToPF()}
+                                    onClick={(e) => this.saveResult()}
                                 >Save</Button> 
                         </Form.Group>
 
@@ -366,19 +432,87 @@ class Results extends Component {
                 )
             }
         }
+        const renderResults = () => {
+            if (this.state.results.length > 0) {
+                let resultsCopy = this.state.results
+                let productFeaturesCopy = this.state.productFeatures
+                for (let i = 0; i < resultsCopy.length; i++) {
+                    for (let j = 0; j < productFeaturesCopy.length; j++){
+                        if(resultsCopy[i].value == productFeaturesCopy[j].value 
+                            && resultsCopy[i].productID === productFeaturesCopy[j].productID){
+                            resultsCopy[i].productFeature = productFeaturesCopy[j]
+                        }
+                    }
+                }
+                    return (
+                        <>
+                            <h1>Results list</h1>
+                            <Table striped bordered hover>
+                                <thead>
+                                <tr>
+                                    <th>Var ID</th>
+                                    <th>Value</th>
+                                    <th>Formula</th>
+                                    <th>Product</th>
+                                    <th>Asing to</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {resultsCopy.map(results =>{ 
+                                    let productsFeaturesProductID = this.state.productFeatures.filter(pf => pf.productID === results.productID)
+                                    return(
+                                        <tr key={results.id}>
+                                            <td>
+                                                {results.varID} 
+                                            </td>
+                                            <td>
+                                                {results.value} 
+                                            </td>
+                                            <td>
+                                                {results.formula.equation}
+                                            </td>
+                                            <td>
+                                                {results.product.name}
+                                            </td>
+                                            <td>
+                                                {results.productFeature? results.productFeature.feature.id :
+                                                <>
+                                                    <Form.Label>Select to asing</Form.Label>
+                                                    <Form.Select 
+                                                    name=''
+                                                    onChange={(e) => this.handleAsignResultToPF(e, results.value)}>
+                                                        <option>-</option>
+                                                        {productsFeaturesProductID.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.id}</option>))}
+                                                    </Form.Select>
+                                                </>}
+                                            </td>
+                                        </tr>
+                                    )})}
+                                </tbody>
+                            </Table>
+                        </>
+            )
+        }
+    
+    }
         return (
-        <Container>
-            <h2>Calculate Result</h2>            
-            <Form>
-                    {SelectProductForm()}   
-                    {SelectFormulaForm()}
-            </Form>
-                    {CheckVariablesPF()}
-                    {Calculate()}
-                    {Result()}
-                    {SaveResult()}
-                    {AsingToProductFeature()}
-
+        
+        <Container style={{display: 'flex'}}>
+            <Container>
+                <h2>Calculate Result</h2>            
+                <Form>
+                        {SelectProductForm()}   
+                        {SelectFormulaForm()}
+                </Form>
+                        {CheckVariablesPF()}
+                        {Calculate()}
+                        {Result()}
+                        {SaveResult()}
+                        {AsingToProductFeature()}
+            </Container>
+            <Container>
+                {renderResults()}
+            </Container>
         </Container>
     )
   }
