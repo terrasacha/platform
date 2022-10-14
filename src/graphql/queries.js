@@ -240,6 +240,9 @@ export const getVerification = /* GraphQL */ `
         documents {
           nextToken
         }
+        productFeatureResults {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -417,6 +420,9 @@ export const getDocument = /* GraphQL */ `
         documents {
           nextToken
         }
+        productFeatureResults {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -573,18 +579,6 @@ export const getProduct = /* GraphQL */ `
         }
         nextToken
       }
-      results {
-        items {
-          id
-          varID
-          value
-          productID
-          formulaID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
       createdAt
       updatedAt
     }
@@ -642,17 +636,20 @@ export const listProducts = /* GraphQL */ `
               isTemplate
               description
             }
-          }
-        }
-        results {
-          items {
-            id
-            value
-            formula {
-              equation
-              id
-              varID
+            productFeatureResults {
+              items {
+                id
+                isActive
+                result {
+                  id
+                  value
+                  formula {
+                    id
+                    equation
+                  }
+                }
             }
+          }
           }
         }
         createdAt
@@ -697,9 +694,6 @@ export const getImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
-          nextToken
-        }
-        results {
           nextToken
         }
         createdAt
@@ -990,7 +984,6 @@ export const getFormula = /* GraphQL */ `
           id
           varID
           value
-          productID
           formulaID
           createdAt
           updatedAt
@@ -1153,36 +1146,6 @@ export const getResult = /* GraphQL */ `
       id
       varID
       value
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
-        order
-        status
-        categoryID
-        category {
-          id
-          name
-          isSelected
-          createdAt
-          updatedAt
-        }
-        images {
-          nextToken
-        }
-        productFeatures {
-          nextToken
-        }
-        results {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       formulaID
       formula {
         id
@@ -1206,6 +1169,17 @@ export const getResult = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1222,20 +1196,6 @@ export const listResults = /* GraphQL */ `
         id
         varID
         value
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
-          order
-          status
-          categoryID
-          createdAt
-          updatedAt
-        }
         formulaID
         formula {
           id
@@ -1244,6 +1204,9 @@ export const listResults = /* GraphQL */ `
           unitOfMeasureID
           createdAt
           updatedAt
+        }
+        productFeatureResults {
+          nextToken
         }
         createdAt
         updatedAt
@@ -1283,9 +1246,6 @@ export const getProductFeature = /* GraphQL */ `
           nextToken
         }
         productFeatures {
-          nextToken
-        }
-        results {
           nextToken
         }
         createdAt
@@ -1356,6 +1316,17 @@ export const getProductFeature = /* GraphQL */ `
         }
         nextToken
       }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1406,6 +1377,128 @@ export const listProductFeatures = /* GraphQL */ `
         }
         documents {
           nextToken
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getProductFeatureResult = /* GraphQL */ `
+  query GetProductFeatureResult($id: ID!) {
+    getProductFeatureResult(id: $id) {
+      id
+      isActive
+      productFeatureID
+      productFeature {
+        id
+        value
+        isToBlockChain
+        isVerifable
+        order
+        isOnMainCard
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        verifications {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      resultID
+      result {
+        id
+        varID
+        value
+        formulaID
+        formula {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listProductFeatureResults = /* GraphQL */ `
+  query ListProductFeatureResults(
+    $filter: ModelProductFeatureResultFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProductFeatureResults(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        isActive
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        resultID
+        result {
+          id
+          varID
+          value
+          formulaID
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt

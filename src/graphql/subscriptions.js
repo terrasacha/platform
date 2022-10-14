@@ -354,6 +354,9 @@ export const onCreateVerification = /* GraphQL */ `
         documents {
           nextToken
         }
+        productFeatureResults {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -451,6 +454,9 @@ export const onUpdateVerification = /* GraphQL */ `
         documents {
           nextToken
         }
+        productFeatureResults {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -546,6 +552,9 @@ export const onDeleteVerification = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        productFeatureResults {
           nextToken
         }
         createdAt
@@ -706,6 +715,9 @@ export const onCreateDocument = /* GraphQL */ `
         documents {
           nextToken
         }
+        productFeatureResults {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -777,6 +789,9 @@ export const onUpdateDocument = /* GraphQL */ `
         documents {
           nextToken
         }
+        productFeatureResults {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -846,6 +861,9 @@ export const onDeleteDocument = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        productFeatureResults {
           nextToken
         }
         createdAt
@@ -992,18 +1010,6 @@ export const onCreateProduct = /* GraphQL */ `
         }
         nextToken
       }
-      results {
-        items {
-          id
-          varID
-          value
-          productID
-          formulaID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
       createdAt
       updatedAt
     }
@@ -1059,18 +1065,6 @@ export const onUpdateProduct = /* GraphQL */ `
           isOnMainCard
           productID
           featureID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      results {
-        items {
-          id
-          varID
-          value
-          productID
-          formulaID
           createdAt
           updatedAt
         }
@@ -1136,18 +1130,6 @@ export const onDeleteProduct = /* GraphQL */ `
         }
         nextToken
       }
-      results {
-        items {
-          id
-          varID
-          value
-          productID
-          formulaID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
       createdAt
       updatedAt
     }
@@ -1188,9 +1170,6 @@ export const onCreateImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
-          nextToken
-        }
-        results {
           nextToken
         }
         createdAt
@@ -1238,9 +1217,6 @@ export const onUpdateImage = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        results {
-          nextToken
-        }
         createdAt
         updatedAt
       }
@@ -1284,9 +1260,6 @@ export const onDeleteImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
-          nextToken
-        }
-        results {
           nextToken
         }
         createdAt
@@ -1701,7 +1674,6 @@ export const onCreateFormula = /* GraphQL */ `
           id
           varID
           value
-          productID
           formulaID
           createdAt
           updatedAt
@@ -1749,7 +1721,6 @@ export const onUpdateFormula = /* GraphQL */ `
           id
           varID
           value
-          productID
           formulaID
           createdAt
           updatedAt
@@ -1797,7 +1768,6 @@ export const onDeleteFormula = /* GraphQL */ `
           id
           varID
           value
-          productID
           formulaID
           createdAt
           updatedAt
@@ -2020,36 +1990,6 @@ export const onCreateResult = /* GraphQL */ `
       id
       varID
       value
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
-        order
-        status
-        categoryID
-        category {
-          id
-          name
-          isSelected
-          createdAt
-          updatedAt
-        }
-        images {
-          nextToken
-        }
-        productFeatures {
-          nextToken
-        }
-        results {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       formulaID
       formula {
         id
@@ -2072,6 +2012,17 @@ export const onCreateResult = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -2084,36 +2035,6 @@ export const onUpdateResult = /* GraphQL */ `
       id
       varID
       value
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
-        order
-        status
-        categoryID
-        category {
-          id
-          name
-          isSelected
-          createdAt
-          updatedAt
-        }
-        images {
-          nextToken
-        }
-        productFeatures {
-          nextToken
-        }
-        results {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       formulaID
       formula {
         id
@@ -2136,6 +2057,17 @@ export const onUpdateResult = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -2148,36 +2080,6 @@ export const onDeleteResult = /* GraphQL */ `
       id
       varID
       value
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
-        order
-        status
-        categoryID
-        category {
-          id
-          name
-          isSelected
-          createdAt
-          updatedAt
-        }
-        images {
-          nextToken
-        }
-        productFeatures {
-          nextToken
-        }
-        results {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       formulaID
       formula {
         id
@@ -2200,6 +2102,17 @@ export const onDeleteResult = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -2237,9 +2150,6 @@ export const onCreateProductFeature = /* GraphQL */ `
           nextToken
         }
         productFeatures {
-          nextToken
-        }
-        results {
           nextToken
         }
         createdAt
@@ -2305,6 +2215,17 @@ export const onCreateProductFeature = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
           createdAt
           updatedAt
         }
@@ -2348,9 +2269,6 @@ export const onUpdateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        results {
-          nextToken
-        }
         createdAt
         updatedAt
       }
@@ -2414,6 +2332,17 @@ export const onUpdateProductFeature = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
           createdAt
           updatedAt
         }
@@ -2457,9 +2386,6 @@ export const onDeleteProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
-        results {
-          nextToken
-        }
         createdAt
         updatedAt
       }
@@ -2527,6 +2453,245 @@ export const onDeleteProductFeature = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+      productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateProductFeatureResult = /* GraphQL */ `
+  subscription OnCreateProductFeatureResult {
+    onCreateProductFeatureResult {
+      id
+      isActive
+      productFeatureID
+      productFeature {
+        id
+        value
+        isToBlockChain
+        isVerifable
+        order
+        isOnMainCard
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        verifications {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      resultID
+      result {
+        id
+        varID
+        value
+        formulaID
+        formula {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateProductFeatureResult = /* GraphQL */ `
+  subscription OnUpdateProductFeatureResult {
+    onUpdateProductFeatureResult {
+      id
+      isActive
+      productFeatureID
+      productFeature {
+        id
+        value
+        isToBlockChain
+        isVerifable
+        order
+        isOnMainCard
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        verifications {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      resultID
+      result {
+        id
+        varID
+        value
+        formulaID
+        formula {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteProductFeatureResult = /* GraphQL */ `
+  subscription OnDeleteProductFeatureResult {
+    onDeleteProductFeatureResult {
+      id
+      isActive
+      productFeatureID
+      productFeature {
+        id
+        value
+        isToBlockChain
+        isVerifable
+        order
+        isOnMainCard
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        verifications {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      resultID
+      result {
+        id
+        varID
+        value
+        formulaID
+        formula {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
