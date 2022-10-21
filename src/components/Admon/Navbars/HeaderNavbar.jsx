@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-// Auth
-import { Auth } from 'aws-amplify';
 // Bootstrap
 import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // Import React Bootstrap Icons
@@ -14,42 +12,28 @@ export default class HeaderNavbar extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            actualUser: null,
-            isActualUserLogged: false
-        }
-        this.handleChangeNavBar = this.handleChangeNavBar.bind(this)
-        this.handleSignOut = this.handleSignOut.bind(this)
+        this.state = {}
+        this.changeHeaderNavBarRequest = this.props.changeHeaderNavBarRequest.bind(this)
+        this.handleSignOut = this.props.handleSignOut.bind(this)
+        this.handleChangeObjectElement = this.handleChangeObjectElement.bind(this)
     }
     
-    async componentDidMount() { 
-        const tempActualUser =  await Auth.currentAuthenticatedUser()
-        await this.setState({actualUser: tempActualUser})
+    async handleChangeObjectElement() {
+        console.log('handleChangeObjectElement: ')
+        this.props.handleSignOut()
     }
-
-    async componentDidUpdate(prevProps, prevState) {
-        if (prevState.actualUser === null) {
-            console.log('actualUser: ', this.state.actualUser)
-            await this.setState({isActualUserLogged: true})
+    
+    handleOnChangeInputForm = async(event) => {
+        if (event.target.name === 'desiredSubscriptionTopic') {
+            await this.setState({desiredSubscriptionTopic: event.target.value})
         }
-        
-    }
-
-    async handleChangeNavBar(pRequest) {
-    }
-
-    async handleSignOut() {
-        console.log('handleSignOut')
-        try {
-            await Auth.signOut()
-            this.props.changeHeaderNavBarRequest('admon_profile')
-        } catch (error) {
-            console.log('error signing out: ', error)
+        if (event.target.name === 'desiredPublishTopic') {
+            await this.setState({desiredPublishTopic: event.target.value})
         }
     }
-
+    // RENDER
     render() {
-        let {isActualUserLogged} = this.state
+        let {isActualUserLogged} = this.props
         const renderNavBar = () => {
             if (isActualUserLogged) {
                 return (
@@ -71,28 +55,28 @@ export default class HeaderNavbar extends Component {
                                 <Nav.Link href="#products">
                                     <Button 
                                         variant='outline-primary'
-                                        onClick={(e) => this.handleChangeNavBar('products', e)}
+                                        onClick={(e) => this.changeHeaderNavBarRequest('products', e)}
                                     ><InfoCircle></InfoCircle>Projects</Button>
                                 </Nav.Link>
 
                                 <Nav.Link href="#formulas">
                                     <Button 
                                         variant='outline-primary'
-                                        onClick={(e) => this.handleChangeNavBar('formulas', e)}
+                                        onClick={(e) => this.changeHeaderNavBarRequest('formulas', e)}
                                     ><Filter></Filter>Formulas</Button> 
                                 </Nav.Link>
 
                                 <Nav.Link href="#results">
                                     <Button 
                                         variant='outline-primary'
-                                        onClick={(e) => this.handleChangeNavBar('results', e)}
+                                        onClick={(e) => this.changeHeaderNavBarRequest('results', e)}
                                     ><Filter></Filter>Results</Button> 
 
                                 </Nav.Link>
                                 <Nav.Link href="#categorys">
                                     <Button 
                                         variant='outline-primary'
-                                        onClick={(e) => this.handleChangeNavBar('categorys', e)}
+                                        onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}
                                     ><Filter></Filter>Categories</Button> 
 
                                 </Nav.Link>
@@ -100,14 +84,14 @@ export default class HeaderNavbar extends Component {
                                 <Nav.Link href="#features">
                                     <Button
                                         variant='outline-primary'
-                                        onClick={(e) => this.handleChangeNavBar('features', e)}
+                                        onClick={(e) => this.changeHeaderNavBarRequest('features', e)}
                                     ><Filter></Filter>Features</Button>
                                 </Nav.Link>
 
                                 <Nav.Link href="#uom">
                                     <Button
                                         variant='outline-primary'
-                                        onClick={(e) => this.handleChangeNavBar('uom', e)}
+                                        onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}
                                     ><Filter></Filter>OUM</Button>
                                 </Nav.Link>
 
@@ -115,7 +99,7 @@ export default class HeaderNavbar extends Component {
                                     <Button 
                                         variant='primary'
                                         size='sm' 
-                                        onClick={this.handleSignOut}
+                                        onClick={(e) => this.handleChangeObjectElement()}
                                     >SignOut</Button>
                                 </Nav.Link>
                             

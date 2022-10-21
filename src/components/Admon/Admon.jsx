@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+// Auth
+import { Auth } from 'aws-amplify';
 // Bootstrap
 import { Alert, Col, Container, Row } from 'react-bootstrap'
 // Components
@@ -10,7 +12,6 @@ import HeaderNavbar from './Navbars/HeaderNavbar'
 import Products from './Products/Products'
 import Results from './Results/Results'
 import UOM from './UOM/UOM'
-
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { updateUser } from '../../graphql/mutations'
@@ -20,6 +21,8 @@ export default class Admon extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            actualUser: null,
+            isActualUserLogged: false,
             user: {
                 id: '',
                 name: '',
@@ -44,13 +47,40 @@ export default class Admon extends Component {
         this.handleCUUser = this.handleCUUser.bind(this)
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.setUserIDUsingCognitoSignedUser = this.setUserIDUsingCognitoSignedUser.bind(this)
+        this.handleSignOut = this.handleSignOut.bind(this)
     }
 
     async componentDidMount() {
         console.log('componentDidMount')
+        const tempActualUser =  await Auth.currentAuthenticatedUser()
+        await this.setState({actualUser: tempActualUser})
         // if (this.state.user.id === '') {
         //     this.changeHeaderNavBarRequest('admon_profile')
         // }
+    }
+
+    async componentDidUpdate(prevProps, prevState) {
+        if (this.state.actualUser !== prevProps.actualUser) {
+            // this.fetchData(this.props.userID);
+            console.log('actualUser: ', this.state.actualUser)
+            await this.setState({isActualUserLogged: true})
+        }
+
+        // if (prevState.actualUser === null) {
+        //     console.log('actualUser: ', this.state.actualUser)
+        //     await this.setState({isActualUserLogged: true})
+        // }
+        
+    }
+    async handleSignOut() {
+        console.log('handleSignOut')
+        try {
+            await Auth.signOut()
+            this.setState({actualUser: null, isActualUserLogged: false})
+            this.changeHeaderNavBarRequest('admon_profile')
+        } catch (error) {
+            console.log('error signing out: ', error)
+        }
     }
 
     async setUserGraphQLUser(pUser) {
@@ -316,6 +346,9 @@ export default class Admon extends Component {
                     <Col>
                         <HeaderNavbar 
                             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                            handleSignOut={this.handleSignOut}
+                            actualUser={this.state.actualUser}
+                            isActualUserLogged={this.state.isActualUserLogged}
                         ></HeaderNavbar>
                     </Col>
                 </Row>
