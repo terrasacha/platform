@@ -27,6 +27,8 @@ class Results extends Component {
             equationSelected: '', 
             selectedProductID: '', 
             selectedProductName: '',
+            filterByProduct: '',
+            filterByProductFeature: '',
             featuresUsed: [],
             canCalculate: '',
             result: '',
@@ -35,6 +37,7 @@ class Results extends Component {
             assingToPF: false,
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
+        this.handleChangeFilter = this.handleChangeFilter.bind(this)
         this.handleAsignResultToPF = this.handleAsignResultToPF.bind(this)
         this.checkIfVariablesMatchWithPF = this.checkIfVariablesMatchWithPF.bind(this)
         this.handleActiveResult = this.handleActiveResult.bind(this)
@@ -161,6 +164,23 @@ class Results extends Component {
         }
         if (e.target.name === 'result.selectedProductFeature') {
             this.setState({PFid: e.target.value}) 
+            
+        }
+    }
+    handleChangeFilter = async(e) => {
+        if (e.target.name === 'filterProducts') {
+            if(e.target.value !== ''){
+                let copyProducts = this.state.products.filter(p => p.id === e.target.value)
+                copyProducts = copyProducts[0]
+                this.setState({filterByProduct: copyProducts,productFeaturesFiltered: copyProducts.productFeatures.items })       
+            }else{
+                this.setState({filterByProduct: '', filterByProductFeature: ''})    
+            }
+            
+        }
+        if (e.target.name === 'filterProductFeature') {
+            this.setState({filterByProductFeature: e.target.value})    
+
             
         }
     }
@@ -509,11 +529,43 @@ class Results extends Component {
                 )
             }
         }
-        const renderProductFeaturesFormulas = () => {
-            if (this.state.productFeatureResults.length > 0) {
+        const renderProductFeaturesResults = () => {
+            let copyProductFeatureResults = this.state.productFeatureResults
+            let copyFilterByProduct = this.state.filterByProduct
+            let copyFilterByProductFeature = this.state.filterByProductFeature
+            if(copyFilterByProduct !== ''){
+                copyProductFeatureResults = copyProductFeatureResults.filter(pfr => pfr.productFeature.productID === copyFilterByProduct.id)
+                if(copyFilterByProductFeature !== ''){
+                    copyProductFeatureResults = copyProductFeatureResults.filter(pfr => pfr.productFeatureID === copyFilterByProductFeature)
+                }
+            }
                     return (
                         <>
                             <h1>PF who has a result assing</h1>
+                            <Row className='mb-4'>
+                                <Form.Group as={Col}>
+                                <Form.Label>Filter by Product</Form.Label>
+                                <Form.Select 
+                                name='filterProducts'
+                                onChange={(e) => this.handleChangeFilter(e)}>
+                                    <option value=''>-</option>
+                                    {this.state.products.map((product, idx) => (<option value={product.id} key={idx}>{product.name}</option>))}
+                                </Form.Select>
+                                </Form.Group>
+                            </Row>
+                            {this.state.filterByProduct !== ''?
+                                <Row className='mb-4'>
+                                    <Form.Group as={Col}>
+                                    <Form.Label>Filter by Feature</Form.Label>
+                                    <Form.Select 
+                                    name='filterProductFeature'
+                                    onChange={(e) => this.handleChangeFilter(e)}>
+                                        <option value=''>-</option>
+                                        {this.state.filterByProduct.productFeatures.items.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.name}</option>))}
+                                    </Form.Select>
+                                    </Form.Group>
+                                </Row> : ''
+                            }
                             <Table striped bordered hover>
                                 <thead>
                                 <tr>
@@ -527,7 +579,7 @@ class Results extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.productFeatureResults.map(PFR =>{ 
+                                    {copyProductFeatureResults?.map(PFR =>{ 
                                         return(
                                             <tr key={PFR.id}>
                                                 <td>
@@ -557,7 +609,6 @@ class Results extends Component {
                         </>
                 )
             }
-        }
         return (
         <Container>
             <Container style={{display: 'flex', height: '580px'}}>
@@ -574,7 +625,7 @@ class Results extends Component {
                             {AsingToProductFeature()}
                 </Container>
                 <Container style={{overflow: 'auto'}}>
-                    {renderProductFeaturesFormulas()}
+                    {renderProductFeaturesResults()}
                 </Container>
             </Container>
             <Container>
