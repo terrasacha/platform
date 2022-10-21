@@ -596,7 +596,7 @@ class Results extends Component {
                                                 </td>
                                                 <td>
                                                 <Button
-                                                    variant={PFR.isActive?'success' : 'secondary'}
+                                                    variant={PFR.isActive?'secondary' : 'success'}
                                                     size='sm' 
                                                     onClick={(e) => this.handleActiveResult(PFR.productFeatureID, PFR.id)}>
                                                 {PFR.isActive? 'Assingned': 'Assing'}

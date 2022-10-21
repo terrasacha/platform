@@ -34,10 +34,10 @@ class App extends Component{
           <Route path="admon" element={<Admon/>} />
           <Route path="investor_admon" element={<InvestorAdmon/>} />
           <Route path="cardano_connector" element={<CardanoConnector/>} />
-          <Route
+{/*           <Route
               path="/admon"
               element={(props) => <Admon {...props} />}
-          />
+          /> */}
         </Routes>
       </BrowserRouter>
     )
