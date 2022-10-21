@@ -47,6 +47,7 @@ export default class Admon extends Component {
     }
 
     async componentDidMount() {
+        console.log('componentDidMount')
         // if (this.state.user.id === '') {
         //     this.changeHeaderNavBarRequest('admon_profile')
         // }
