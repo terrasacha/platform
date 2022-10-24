@@ -36,72 +36,40 @@ export default class CRUDProductFeatures extends Component {
     handleCreateProductFeature(e){
         if(e.target.name === 'valueProductFeature'){
             this.setState(prevState => ({
-                newProductFeature: {                   
-                    ...prevState.newProductFeature,   
-                    value: e.target.value       
-                }
-            }))
+                newProductFeature: {...prevState.newProductFeature, value: e.target.value}}))
         }
-        if(e.target.name === 'orderProductFeature'){
+        if(e.target.name === 'orderProductFeature'){        
             this.setState(prevState => ({
-                newProductFeature: {                   
-                    ...prevState.newProductFeature,   
-                    order: e.target.value       
-                }
-            }))
+                newProductFeature: {...prevState.newProductFeature, order: e.target.value}}))
         }
         if(e.target.name === 'isOnMainCardProductFeature'){
             if(e.target.value === 'yes'){
                 this.setState(prevState => ({
-                    newProductFeature: {                   
-                        ...prevState.newProductFeature,   
-                        isOnMainCard: true       
-                    }
-                }))
+                    newProductFeature: {...prevState.newProductFeature, isOnMainCard: true}}))
             }
             if(e.target.value === 'no'){
                 this.setState(prevState => ({
-                    newProductFeature: {                   
-                        ...prevState.newProductFeature,   
-                        isOnMainCard: false       
-                    }
-                }))
+                    newProductFeature: {...prevState.newProductFeature, isOnMainCard: false}}))
             }
         }
         if(e.target.name === 'isToBlockChain'){
             if(e.target.value === 'yes'){
                 this.setState(prevState => ({
-                    newProductFeature: {                   
-                        ...prevState.newProductFeature,   
-                        isToBlockChain: true       
-                    }
-                }))
+                    newProductFeature: {...prevState.newProductFeature, isToBlockChain: true}}))
             }
             if(e.target.value === 'no'){
                 this.setState(prevState => ({
-                    newProductFeature: {                   
-                        ...prevState.newProductFeature,   
-                        isToBlockChain: false       
-                    }
-                }))
+                    newProductFeature: {...prevState.newProductFeature, isToBlockChain: false}}))
             }
         }
         if(e.target.name === 'isVerifiable'){
             if(e.target.value === 'yes'){
                 this.setState(prevState => ({
-                    newProductFeature: {                   
-                        ...prevState.newProductFeature,   
-                        isVerifable: true       
-                    }
-                }))
+                    newProductFeature: {...prevState.newProductFeature, isVerifable: true}}))
             }
             if(e.target.value === 'no'){
                 this.setState(prevState => ({
-                    newProductFeature: {                   
-                        ...prevState.newProductFeature,   
-                        isVerifable: false       
-                    }
-                }))
+                    newProductFeature: {...prevState.newProductFeature, isVerifable: false}}))
             } 
         }
     }
@@ -109,6 +77,7 @@ export default class CRUDProductFeatures extends Component {
         let tempNewProductFeature = this.state.newProductFeature
 
         if (this.state.CRUDButtonName === 'ADD') {
+            if(tempNewProductFeature.order === '') tempNewProductFeature.order = 0
             tempNewProductFeature.id = uuidv4().replaceAll('-','_')
             tempNewProductFeature.productID = this.props.CRUD_Product.id
             tempNewProductFeature.featureID = this.props.selectedFeature.id
@@ -253,7 +222,6 @@ export default class CRUDProductFeatures extends Component {
             </Table>
             <Button
             variant='primary'
-             
             onClick={this.handleCRUDProductFeature}
             >{this.state.CRUDButtonName}</Button>
             </>
