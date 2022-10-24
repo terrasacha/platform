@@ -217,8 +217,7 @@ class Products extends Component {
         if ( this.state.selectedCategory !== null && 
              this.state.CRUD_Product.name !== '' && 
              this.state.CRUD_Product.description !== '' && 
-             this.state.CRUD_Product.images.length > 0 &&
-             this.state.productFeatures.length > 0 ) {
+             this.state.CRUD_Product.images.length > 0) {
             this.setState({isCRUDButtonDisable: false})
         }
     }
@@ -480,9 +479,7 @@ class Products extends Component {
             productFeatures: [],
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
-            isImageUploadingFile: false,
-            categorySelectList: [],
-            featuresSelectList: [],
+            isImageUploadingFile: false, //se borraban los features y categorys
             selectedCategory: null,
             selectedFeature: null,
             valueProductFeature: 0,
@@ -506,6 +503,7 @@ class Products extends Component {
             tempCRUD_Product.isActive = !tempCRUD_Product.isActive
         }
         if (event.target.name === 'CRUD_ProductStatus') {
+            console.log(event.target.value)
             tempCRUD_Product.status = event.target.value
         }
         await this.setState({CRUD_Product: tempCRUD_Product})
@@ -677,12 +675,15 @@ class Products extends Component {
                                     </Form.Group>
                                     <Form.Group as={Col} controlId='formGridCRUD_ProductStatus'>
                                         <Form.Label>Status</Form.Label>
-                                        <Form.Control
+                                        <Form.Select
                                             type='text'
-                                            placeholder=''
                                             name='CRUD_ProductStatus'
                                             value={CRUD_Product.status}
-                                            onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                            onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                            {['new', 'new_data', 'on_verification', 'to_testnet', 'to_main_net', 'on_block_chain'].map(
+                                                op => (<option value={op}>{op}</option>)
+                                            )}
+                                        </Form.Select>
                                     </Form.Group>
 
                                     <Form.Group as={Col} controlId='formGridCRUD_ProductName'>
