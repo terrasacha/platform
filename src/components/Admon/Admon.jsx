@@ -22,7 +22,7 @@ export default class Admon extends Component {
         super(props)
         this.state = {
             actualUser: null,
-            isActualUserLogged: false,
+            isActualUserLogged: true,
             user: {
                 id: '',
                 name: '',
@@ -52,19 +52,19 @@ export default class Admon extends Component {
 
     async componentDidMount() {
         console.log('componentDidMount')
-        const tempActualUser =  await Auth.currentAuthenticatedUser()
-        await this.setState({actualUser: tempActualUser})
-        // if (this.state.user.id === '') {
+        // const tempActualUser =  await Auth.currentAuthenticatedUser()
+        // await this.setState({actualUser: tempActualUser})
+        // if (this.state.user.id === '') { // Is not logged
         //     this.changeHeaderNavBarRequest('admon_profile')
         // }
     }
 
     async componentDidUpdate(prevProps, prevState) {
-        if (this.state.actualUser !== prevProps.actualUser) {
-            // this.fetchData(this.props.userID);
-            console.log('actualUser: ', this.state.actualUser)
-            await this.setState({isActualUserLogged: true})
-        }
+        // if (this.state.actualUser !== prevProps.actualUser) {
+        //     // this.fetchData(this.props.userID);
+        //     console.log('actualUser: ', this.state.actualUser)
+        //     await this.setState({isActualUserLogged: true})
+        // }
 
         // if (prevState.actualUser === null) {
         //     console.log('actualUser: ', this.state.actualUser)
