@@ -146,7 +146,16 @@ export default class ListProducts extends Component {
         // Render product features
         const renderProductFeatures = (pProduct) => {
             let productFeatures = listPF.filter(pf => pf.productID === pProduct.id);
-            if(productFeatures[0]){
+            let productFeaturesCopy = productFeatures
+            for(let i = 0; i < productFeaturesCopy.length; i++){
+                if(productFeaturesCopy[i].productFeatureResults?.items.length > 0){
+                    let filteredIsActivePFR = productFeaturesCopy[i].productFeatureResults.items.filter(pfr => pfr.isActive === true)
+                    productFeaturesCopy[i].productFeatureResults.items = filteredIsActivePFR
+                }
+            }
+            console.log(productFeatures, 'productFeatures')
+            console.log(productFeaturesCopy, 'productFeaturesCopy')
+            if(productFeaturesCopy.length > 0){
                 return (
                     <Table striped bordered hover>
                         <thead>
@@ -160,13 +169,14 @@ export default class ListProducts extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {productFeatures?.map(pfeature => (
+                        {productFeaturesCopy?.map(pfeature => (
                             <tr key={pfeature.id}>
                                 <td>
                                     {pfeature.feature.name} / {pfeature.feature.description}
                                 </td>
                                 <td>
-                                    {pfeature.value}
+                                    {pfeature.productFeatureResults.items[0]?   
+                                        pfeature.productFeatureResults.items[0].result.value : pfeature.value}
                                 </td>
                                 <td>
                                     {pfeature.isOnMainCard? 'YES' : 'NO'}
