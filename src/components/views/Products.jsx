@@ -30,7 +30,6 @@ export default class Products extends Component {
             this.setState({isRenderModalProductImages: true, selectedProductToShow: pProduct})
         }
         if (pModal === 'show_modal_product_features') {
-            console.log("modal productFeature", pProduct)
             this.setState({isRenderModalProductFeatures: true, selectedProductToShow: pProduct})
         }
     }
@@ -193,7 +192,7 @@ export default class Products extends Component {
                         <Modal.Body>
                             <ul>
                                 {selectedProductToShow.productFeatures.items.map(productFeature => (
-                                    <li>
+                                    <li key={productFeature.id}>
                                         {productFeature.feature.name}: {productFeature.feature.description}
                                     </li>
                                 ))}

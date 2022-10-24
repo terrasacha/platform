@@ -1379,7 +1379,16 @@ export const listProductFeatures = /* GraphQL */ `
           nextToken
         }
         productFeatureResults {
-          nextToken
+          items {
+            id
+            isActive
+            resultID
+            result {
+              id
+              varID
+              value
+            }
+          }
         }
         createdAt
         updatedAt
@@ -1490,15 +1499,26 @@ export const listProductFeatureResults = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          feature {
+            id
+            name
+          }
+          product {
+            id
+            name
+            order
+          }
         }
-        resultID
         result {
           id
-          varID
-          value
           formulaID
-          createdAt
-          updatedAt
+          value
+          varID
+          formula {
+            equation
+            id
+            varID
+          }
         }
         createdAt
         updatedAt
