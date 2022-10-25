@@ -238,6 +238,19 @@ class Results extends Component {
         let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
         let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.id) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let productsFeatures = productFeaturesProductSelected[0].productFeatures.items
+        for(let i = 0; i < productsFeatures.length; i++){
+            if(productsFeatures[i].productFeatureResults?.items.length > 0){
+                let filteredIsActivePFR = productsFeatures[i].productFeatureResults.items.filter(pfr => pfr.isActive === true)
+                productsFeatures[i].productFeatureResults.items = filteredIsActivePFR
+            }
+        }
+        productsFeatures.map(pf => {
+            if(pf.productFeatureResults.items[0]){
+                pf.value = parseInt(pf.productFeatureResults.items[0].result.value)
+            }
+            return pf
+        })
+        console.log(productsFeatures, 'productFeatures')
         let featuresUsed = []
         for(let i = 0; i< formulaArrayVariables.length ; i++){
             let aux = formulaArrayVariables[i]
