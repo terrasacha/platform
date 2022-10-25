@@ -41,12 +41,21 @@ class Formulas extends Component {
         await this.loadUnitOfMeasures()
         // Subscriptions
         // OnCreate Formula
-        let tempFormulas = this.state.formulas
         this.createFormulaListener = API.graphql(graphqlOperation(onCreateFormula))
         .subscribe({
             next: createdFormulaData => {
+                let isOnCreateList = false;
+                this.state.formulas.map((mapFormulas) => {
+                    if (createdFormulaData.value.data.onCreateFormula.id === mapFormulas.id) {
+                        isOnCreateList = true;
+                    } 
+                    return mapFormulas
+                })
+                let tempFormulas = this.state.formulas
                 let tempOnCreateFormula = createdFormulaData.value.data.onCreateFormula
-                tempFormulas.push(tempOnCreateFormula)
+                if (!isOnCreateList) {
+                    tempFormulas.push(tempOnCreateFormula)
+                }
                 // Ordering categorys by name
                 tempFormulas.sort((a, b) => (a.name > b.name) ? 1 : -1)
                 // this.updateStateCategorys(tempCategorys)

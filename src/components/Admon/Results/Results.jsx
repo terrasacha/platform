@@ -10,7 +10,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
 import { createFeatureFormula, createProductFeatureResult, createResult, updateProductFeature, updateProductFeatureResult } from '../../../graphql/mutations';
 import { listFormulas, listProductFeatureResults, listProductFeatures, listProducts, listResults } from '../../../graphql/queries';
-import { onCreateResult, onUpdateProductFeature, onUpdateProductFeatureResult } from '../../../graphql/subscriptions';
+import { onCreateProductFeatureResult, onCreateResult, onUpdateProductFeature, onUpdateProductFeatureResult } from '../../../graphql/subscriptions';
 
 
 class Results extends Component {
@@ -81,6 +81,18 @@ class Results extends Component {
                     this.setState((state) => ({productFeatures: tempProductFeatures}))
                 }
             })
+        // OnCreate ProductFeatureResult
+        this.createResultListener = API.graphql(graphqlOperation(onCreateProductFeatureResult))
+        .subscribe({
+            next: createdResultData => {
+                let tempProductFeatureResults = this.state.productFeatureResults
+                let tempOnCreateProductFeatureResult = createdResultData.value.data.onCreateProductFeatureResult
+                tempProductFeatureResults.push(tempOnCreateProductFeatureResult)
+                // Ordering products by name
+                tempProductFeatureResults.sort((a, b) => (a.id > b.id) ? 1 : -1)
+                this.setState((state) => ({productFeatureResults: tempProductFeatureResults}))
+            }
+        })
         // OnUpdate ProductFeatureResult
         this.updateProductFeatureResultListener = API.graphql(graphqlOperation(onUpdateProductFeatureResult))
             .subscribe({
