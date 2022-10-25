@@ -97,6 +97,8 @@ export default class CRUDProductFeatures extends Component {
             delete tempNewProductFeature.feature
             delete tempNewProductFeature.product
             delete tempNewProductFeature.verifications
+            delete tempNewProductFeature.productFeatureResults
+            delete tempNewProductFeature.productFeatureResults2
             delete tempNewProductFeature.documents
             await API.graphql(graphqlOperation(updateProductFeature, { input: this.state.newProductFeature }))
             this.handleAddNewFeatureToActualProduct(tempNewProductFeature, 'UPDATE')

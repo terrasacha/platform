@@ -1,18 +1,30 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 // Bootstrap
-import { Button, Image, Table } from 'react-bootstrap'
+import { Button, Image, Table } from 'react-bootstrap';
+// GraphQL
+import { API, graphqlOperation } from 'aws-amplify';
+import { listProductFeatureResults } from '../../../graphql/queries';
 
 
 export default class ListProducts extends Component {
     constructor(props) {
         super(props)
         this.state = {
-
+            PFR: [],
         }
         this.handleShowAreYouSureDeleteProduct = this.props.handleShowAreYouSureDeleteProduct.bind(this)
         this.handleLoadEditProduct = this.props.handleLoadEditProduct.bind(this)
         this.handleDeleteFeatureProduct = this.props.handleDeleteFeatureProduct.bind(this)
         this.handleDeleteImageProduct = this.props.handleDeleteImageProduct.bind(this)
+    }
+    componentDidMount = async () => {
+        await this.loadProductFeatureResults()
+    }
+
+    async loadProductFeatureResults() {
+        const listProductFeatureResultsResult = await API.graphql(graphqlOperation(listProductFeatureResults))
+        listProductFeatureResultsResult.data.listProductFeatureResults.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
+        this.setState({PFR: listProductFeatureResultsResult.data.listProductFeatureResults.items})
     }
     // RENDER
     render() {
@@ -148,13 +160,22 @@ export default class ListProducts extends Component {
             let productFeatures = listPF.filter(pf => pf.productID === pProduct.id);
             let productFeaturesCopy = productFeatures
             for(let i = 0; i < productFeaturesCopy.length; i++){
+                let productFeatureResult = this.state.PFR.filter(pfr => pfr.productFeatureID === productFeaturesCopy[i].id)
+                productFeaturesCopy[i].productFeatureResults2 = productFeatureResult
+            }
+            //No borrar por favor
+/*             for(let i = 0; i < productFeaturesCopy.length; i++){
                 if(productFeaturesCopy[i].productFeatureResults?.items.length > 0){
                     let filteredIsActivePFR = productFeaturesCopy[i].productFeatureResults.items.filter(pfr => pfr.isActive === true)
                     productFeaturesCopy[i].productFeatureResults.items = filteredIsActivePFR
                 }
+            } */
+            for(let i = 0; i < productFeaturesCopy.length; i++){ //renderiza pfr directamente desde pfr porque al hacer update de pf se rompe 
+                if(productFeaturesCopy[i].productFeatureResults2?.length > 0){
+                    let filteredIsActivePFR = productFeaturesCopy[i].productFeatureResults2.filter(pfr => pfr.isActive === true)
+                    productFeaturesCopy[i].productFeatureResults2 = filteredIsActivePFR
+                }
             }
-            console.log(productFeatures, 'productFeatures')
-            console.log(productFeaturesCopy, 'productFeaturesCopy')
             if(productFeaturesCopy.length > 0){
                 return (
                     <Table striped bordered hover>
@@ -162,6 +183,7 @@ export default class ListProducts extends Component {
                         <tr>
                             <th>Feature ID</th>
                             <th>Value</th>
+                            <th>Result Assigned</th>
                             <th>Main Card</th>
                             <th>Is to BlockChain?</th>
                             <th>Is Verifable?</th>
@@ -169,14 +191,17 @@ export default class ListProducts extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {productFeaturesCopy?.map(pfeature => (
+                        {productFeaturesCopy?.map((pfeature, idx) => (
                             <tr key={pfeature.id}>
                                 <td>
                                     {pfeature.feature.name} / {pfeature.feature.description}
                                 </td>
                                 <td>
-                                    {pfeature.productFeatureResults.items[0]?   
-                                        pfeature.productFeatureResults.items[0].result.value : pfeature.value}
+                                    {pfeature.value}
+                                </td>
+                                <td>
+                                    {pfeature.productFeatureResults2[0]?   
+                                        pfeature.productFeatureResults2[0].result.value : ''}
                                 </td>
                                 <td>
                                     {pfeature.isOnMainCard? 'YES' : 'NO'}
