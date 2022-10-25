@@ -71,11 +71,12 @@ class Products extends Component {
     componentDidMount = async () => {
         // if (this.props.user.id !== '') {
         //     if (this.props.user.role === 'admon') {
-            await this.loadProducts()
-            await this.loadCategorysSelectItems()
-            await this.loadFeaturesSelectItems()
-            await this.loadProductFeatures()
-            
+            Promise.all([
+                this.loadProducts(),
+                this.loadCategorysSelectItems(),
+                this.loadFeaturesSelectItems(),
+                this.loadProductFeatures(),
+            ])
             // Subscriptions
             // OnCreate Product
             this.createProductListener = API.graphql(graphqlOperation(onCreateProduct))
@@ -698,7 +699,7 @@ class Products extends Component {
                                             value={CRUD_Product.status}
                                             onChange={(e) => this.handleOnChangeInputForm(e)}>
                                             {['new', 'new_data', 'on_verification', 'to_testnet', 'to_main_net', 'on_block_chain'].map(
-                                                op => (<option value={op}>{op}</option>)
+                                                op => (<option value={op} key={op}>{op}</option>)
                                             )}
                                         </Form.Select>
                                     </Form.Group>
