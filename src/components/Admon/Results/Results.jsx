@@ -85,10 +85,19 @@ class Results extends Component {
         this.createResultListener = API.graphql(graphqlOperation(onCreateProductFeatureResult))
         .subscribe({
             next: createdResultData => {
+                let isOnCreateList = false;
+                this.state.productFeatureResults.map((mapPFR) => {
+                    if (createdResultData.value.data.onCreateProductFeatureResult.id === mapPFR.id) {
+                        isOnCreateList = true;
+                    } 
+                    return mapPFR
+                })
                 let tempProductFeatureResults = this.state.productFeatureResults
                 let tempOnCreateProductFeatureResult = createdResultData.value.data.onCreateProductFeatureResult
-                tempProductFeatureResults.push(tempOnCreateProductFeatureResult)
-                // Ordering products by name
+                if (!isOnCreateList) {
+                    tempProductFeatureResults.push(tempOnCreateProductFeatureResult)
+                }
+                // Ordering products by id
                 tempProductFeatureResults.sort((a, b) => (a.id > b.id) ? 1 : -1)
                 this.setState((state) => ({productFeatureResults: tempProductFeatureResults}))
             }
