@@ -19,7 +19,7 @@ export default class CRUDProductFeatures extends Component {
                 id: '',
                 productID: '',
                 featureID: '',
-                value: 0,
+                value: '',
                 order: '',
                 isOnMainCard: true,
                 isToBlockChain: false,
@@ -166,7 +166,7 @@ export default class CRUDProductFeatures extends Component {
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductValue'>
                                 <Form.Control
-                                    type='number'
+                                    type='text'
                                     placeholder=''
                                     name='valueProductFeature'
                                     value={this.state.newProductFeature.value}
