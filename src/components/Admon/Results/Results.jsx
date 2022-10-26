@@ -311,7 +311,11 @@ class Results extends Component {
         let promiseArray = []
         for(let i = 0; i < productFeaturesFiltered[0].productFeatureResults.items.length ; i++){
             if(productFeaturesFiltered[0].productFeatureResults.items[i].id === PFRid){
-                promiseArray.push(API.graphql(graphqlOperation(updateProductFeatureResult , { input: {id:productFeaturesFiltered[0].productFeatureResults.items[i].id, isActive: true} })))
+                if(productFeaturesFiltered[0].productFeatureResults.items[i].isActive === true){
+                    promiseArray.push(API.graphql(graphqlOperation(updateProductFeatureResult , { input: {id:productFeaturesFiltered[0].productFeatureResults.items[i].id, isActive: false} })))
+                }else{
+                    promiseArray.push(API.graphql(graphqlOperation(updateProductFeatureResult , { input: {id:productFeaturesFiltered[0].productFeatureResults.items[i].id, isActive: true} })))
+                }
             }else{
                 promiseArray.push(API.graphql(graphqlOperation(updateProductFeatureResult , { input: {id:productFeaturesFiltered[0].productFeatureResults.items[i].id, isActive: false} })))
             }
