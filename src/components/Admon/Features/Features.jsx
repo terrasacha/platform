@@ -43,10 +43,12 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         }
         
         componentDidMount = async () => {
-            await this.loadFeatures()
-            await this.loadFeatureTypes()
-            await this.loadUnitOfMeasures()
-            await this.loadFeatureTypes()
+            Promise.all([
+                this.loadFeatures(),
+                this.loadFeatureTypes(),
+                this.loadUnitOfMeasures(),
+                this.loadFeatureTypes(),
+            ])
         // Subscriptions
         // OnCreate Feature
         this.createFeatureListener = API.graphql(graphqlOperation(onCreateFeature))
@@ -239,128 +241,130 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         const renderFeatures = () => {
             if (features.length > 0) {
                 return (
-                    <>
-                    <h2>Features</h2>
-                        <Table striped bordered hover>
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Default value</th>
-                                <th>Type</th>
-                                <th>Unit of Measure</th>
-                                <th>Is template</th>
-                                <th>Editar</th>
-                                {/* <th>Is available</th> */}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {features.map(features => (
-                                <tr key={features.id}>
-                                    <td>
-                                        {features.name}
-                                    </td>
-                                    <td>
-                                        {features.description}
-                                    </td>
-                                    <td>
-                                        {features.defaultValue}
-                                    </td>
-                                    <td>
-                                        {features.featureTypeID}
-                                    </td>
-                                    <td>
-                                        {features.unitOfMeasureID}
-                                    </td>
-                                    <td>
-                                        {features.isTemplate? 'Si' : 'No'}
-                                    </td>
-                                    <td>
-                                        <Button 
-                                            variant='primary'
-                                            size='lg' 
-                                            onClick={(e) => this.handleLoadEditFeature(features, e)}
-                                        >Editar</Button>
-                                    </td>
+                    <Container>
+                        <h2>Features</h2>
+                            <Table striped bordered hover>
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Default value</th>
+                                    <th>Type</th>
+                                    <th>Unit of Measure</th>
+                                    <th>Is template</th>
+                                    <th>Editar</th>
+                                    {/* <th>Is available</th> */}
                                 </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </>
+                                </thead>
+                                <tbody>
+                                {features.map(features => (
+                                    <tr key={features.id}>
+                                        <td>
+                                            {features.name}
+                                        </td>
+                                        <td>
+                                            {features.description}
+                                        </td>
+                                        <td>
+                                            {features.defaultValue}
+                                        </td>
+                                        <td>
+                                            {features.featureTypeID}
+                                        </td>
+                                        <td>
+                                            {features.unitOfMeasureID}
+                                        </td>
+                                        <td>
+                                            {features.isTemplate? 'Si' : 'No'}
+                                        </td>
+                                        <td>
+                                            <Button 
+                                                variant='primary'
+                                                size='sm' 
+                                                onClick={(e) => this.handleLoadEditFeature(features, e)}
+                                            >Editar</Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </Table>
+                    </Container>
                 )
             }
         
         }
 
         return (
-            <Container>
-            <h2>{CRUDButtonName} FeatureID: {newFeature.id}</h2>
-            <Form>
-                <Row className='mb-2'>
-                    <Form.Group as={Col} controlId='formGridNewFeatureName'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            type='text'
-                            placeholder='Name...'
-                            name='feature.name'
-                            value={newFeature.name}
-                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control
-                            type='text'
-                            placeholder='Description...'
-                            name='feature.description'
-                            value={newFeature.description}
-                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        <Form.Label>Default value</Form.Label>
-                        <Form.Control
-                            type='number'
-                            placeholder=''
-                            name='feature.defaultValue'
-                            value={newFeature.defaultValue}
-                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        <Form.Label>Is template</Form.Label>
-                        <Form.Select 
-                            name='feature.isTemplate'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                          <option value="no">No</option>
-                          <option value="yes">Yes</option>
-                        </Form.Select>
-                        <Form.Label>Type</Form.Label>
-                        <Form.Select 
-                            name='feature.featureType'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option value=''>-</option>
-                                {this.state.featureTypes.map((featureType, idx) => (<option value={featureType.name} key={idx}>{featureType.name}</option>))}
-                        </Form.Select>
-                        <Form.Label>Unit Of Measure</Form.Label>
-                        <Form.Select 
-                            name='feature.unitOfMeasure'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option value=''>-</option>
-                                {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (<option value={UnitOfMeasure.id} key={idx}>{UnitOfMeasure.engineeringUnit}</option>))}
-                        </Form.Select>
-{/*                         <Form.Label>Is available</Form.Label>
-                        <Form.Select 
-                            name='feature.isAvailable'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                          <option value="yes">Yes</option>
-                          <option value="no">No</option>
-                        </Form.Select> */}
-                    </Form.Group>
-                </Row>
+            <Container> 
+                <Container>
+                    <h2>{CRUDButtonName} FeatureID: {newFeature.id}</h2>
+                    <Form>
+                        <Row className='mb-2'>
+                            <Form.Group as={Col} controlId='formGridNewFeatureName'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Name...'
+                                    name='feature.name'
+                                    value={newFeature.name}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                <Form.Label>Description</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Description...'
+                                    name='feature.description'
+                                    value={newFeature.description}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                <Form.Label>Default value</Form.Label>
+                                <Form.Control
+                                    type='number'
+                                    placeholder=''
+                                    name='feature.defaultValue'
+                                    value={newFeature.defaultValue}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                <Form.Label>Is template</Form.Label>
+                                <Form.Select 
+                                    name='feature.isTemplate'
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                                </Form.Select>
+                                <Form.Label>Type</Form.Label>
+                                <Form.Select 
+                                    name='feature.featureType'
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                        <option value=''>-</option>
+                                        {this.state.featureTypes.map((featureType, idx) => (<option value={featureType.name} key={idx}>{featureType.name}</option>))}
+                                </Form.Select>
+                                <Form.Label>Unit Of Measure</Form.Label>
+                                <Form.Select 
+                                    name='feature.unitOfMeasure'
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                        <option value=''>-</option>
+                                        {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (<option value={UnitOfMeasure.id} key={idx}>{UnitOfMeasure.engineeringUnit}</option>))}
+                                </Form.Select>
+        {/*                         <Form.Label>Is available</Form.Label>
+                                <Form.Select 
+                                    name='feature.isAvailable'
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                                </Form.Select> */}
+                            </Form.Group>
+                        </Row>
 
-                <Row className='mb-1'>
-                    <Button
-                    variant='primary'
-                     
-                    onClick={this.handleCRUDFeature}
-                    disabled={this.state.isCRUDButtonDisable}
-                    >{CRUDButtonName}</Button>
-                </Row>
-            </Form>
-            <br></br>
-            {renderFeatures()}
+                        <Row className='mb-1'>
+                            <Button
+                            variant='primary'
+                            size='sm'
+                            onClick={this.handleCRUDFeature}
+                            disabled={this.state.isCRUDButtonDisable}
+                            >{CRUDButtonName}</Button>
+                        </Row>
+                    </Form>
+                <br></br>
+                {renderFeatures()}
+            </Container>
             {renderFeaturesType()}
 
         </Container>

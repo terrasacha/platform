@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // Bootstrap
-import { Button, Image, Table } from 'react-bootstrap';
+import { Button, Container, Image, Table } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
@@ -34,66 +34,60 @@ export default class ListProducts extends Component {
         const renderProducts = () => {
             if (products.length > 0) {
                 return (
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Order</th>
-                            <th>Category</th>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Description</th>
-                            <th>Images</th>
-                            <th>Product Features</th>
-                            <th>Is Active</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {products.map(product => (
-                            <tr key={product.id}>
-                                <td>
-                                    {product.order}
-                                </td>
-                                <td>
-                                    {product.category.name}
-                                </td>
-                                <td>
-                                    {product.name}
-                                </td>
-                                <td>
-                                    {product.status}
-                                </td>
-                                <td>
-                                    {product.description}
-                                </td>
-                                <td>
-                                    {renderProductImages(product, product.images.items)}
-                                </td>
-                                <td>
-                                    {/* {renderProductFeatures(product,product.productFeatures.items)} */}
-                                    {renderProductFeatures(product)}
-                                </td>
-                                <td>
-                                    {product.isActive ? 'YES' : 'NO'}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='primary'
-                                        size='md' 
-                                        disabled={product.status === 'on_block_chain'} 
-                                        onClick={(e) => this.handleLoadEditProduct(product, e)}
-                                    >{product.status === 'on_block_chain'? 'Can not Edit' : 'Edit'}</Button>
-                                    <Button 
-                                        variant='danger'
-                                        size='md' 
-                                         
-                                        onClick={(e) => this.handleShowAreYouSureDeleteProduct(product, e)}
-                                    >Delete</Button>
-                                </td>
+                        <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Category</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Images</th>
+                                <th>Product Features</th>
+                                <th>Is Active</th>
+                                <th>Action</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                            {products.map(product => (
+                                <tr key={product.id}>
+                                    <td>
+                                        {product.order}
+                                    </td>
+                                    <td>
+                                        {product.category.name}
+                                    </td>
+                                    <td>
+                                        {product.name}
+                                    </td>
+                                    <td>
+                                        {product.status}
+                                    </td>
+                                    <td>
+                                        {product.description}
+                                    </td>
+                                    <td>
+                                        {renderProductImages(product, product.images.items)}
+                                    </td>
+                                    <td>
+                                        {/* {renderProductFeatures(product,product.productFeatures.items)} */}
+                                        {renderProductFeatures(product)}
+                                    </td>
+                                    <td>
+                                        {product.isActive ? 'YES' : 'NO'}
+                                    </td>
+                                    <td>
+                                        <Button 
+                                            variant='primary'
+                                            size='md' 
+                                            disabled={product.status === 'on_block_chain'} 
+                                            onClick={(e) => this.handleLoadEditProduct(product, e)}
+                                        >{product.status === 'on_block_chain'? 'Can not Edit' : 'Edit'}</Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
                 )
             }
         }
@@ -110,7 +104,6 @@ export default class ListProducts extends Component {
                             <th>Is On Carousel</th>
                             <th>Carousel Label</th>
                             <th>Carousel Description</th>
-                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -137,16 +130,6 @@ export default class ListProducts extends Component {
                                 </td>
                                 <td>
                                     {image.carouselDescription}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='danger'
-                                        size='sm' 
-                                         
-                                        onClick={(e) => this.handleDeleteImageProduct(pProduct, image, e)}
-                                    >
-                                    DELETE
-                                    </Button>
                                 </td>
                             </tr>
                         ))}
@@ -187,7 +170,6 @@ export default class ListProducts extends Component {
                             <th>Main Card</th>
                             <th>Is to BlockChain?</th>
                             <th>Is Verifable?</th>
-                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -211,16 +193,6 @@ export default class ListProducts extends Component {
                                 </td>
                                 <td>
                                     {pfeature.isVerifable? 'YES' : 'NO'}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='danger'
-                                        size='sm' 
-                                         
-                                        onClick={(e) => this.handleDeleteFeatureProduct(pProduct, pfeature, e)}
-                                    >
-                                    DELETE
-                                    </Button>
                                 </td>
                             </tr>
                         ))}

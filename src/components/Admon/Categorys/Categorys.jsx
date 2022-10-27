@@ -134,31 +134,32 @@ class Categorys extends Component {
         const renderCategorys = () => {
             if (categorys.length > 0) {
                 return (
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {categorys.map(category => (
-                            <tr key={category.id}>
-                                <td>
-                                    {category.name}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='primary'
-                                        size='lg' 
-                                         
-                                        onClick={(e) => this.handleLoadEditCategory(category, e)}
-                                    >Editar</Button>
-                                </td>
+                    <Container> 
+                        <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Action</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                            {categorys.map(category => (
+                                <tr key={category.id}>
+                                    <td>
+                                        {category.name}
+                                    </td>
+                                    <td>
+                                        <Button 
+                                            variant='primary'
+                                            size='sm' 
+                                            onClick={(e) => this.handleLoadEditCategory(category, e)}
+                                        >Editar</Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                    </Container>
                 )
             }
         
@@ -167,30 +168,32 @@ class Categorys extends Component {
 
         return (
             
-            <Container>
-                <h2>{CRUDButtonName} Formula: {newCategory.name}</h2>
-                <Form>
-                    <Row className='mb-2'>
-                        <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder='Ex. ANIMALS'
-                                name='category.name'
-                                value={newCategory.name}
-                                onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        </Form.Group>
-                    </Row>
+            <Container style={{display: 'flex', flexDirection: 'column'}}> 
+                <Container>
+                    <h2>{CRUDButtonName} Formula: {newCategory.name}</h2>
+                    <Form>
+                        <Row className='mb-2'>
+                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Ex. ANIMALS'
+                                    name='category.name'
+                                    value={newCategory.name}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            </Form.Group>
+                        </Row>
 
-                    <Row className='mb-1'>
-                        <Button
-                        variant='primary'
-                         
-                        onClick={this.handleCRUDCategory}
-                        disabled={this.state.isCRUDButtonDisable}
-                        >{CRUDButtonName}</Button>
-                    </Row>
-                </Form>
+                        <Row className='mb-1'>
+                            <Button
+                            variant='primary'
+                            size='sm'
+                            onClick={this.handleCRUDCategory}
+                            disabled={this.state.isCRUDButtonDisable}
+                            >{CRUDButtonName}</Button>
+                        </Row>
+                    </Form>
+                </Container>
                 <br></br>
                 {renderCategorys()}
             </Container>
