@@ -201,7 +201,7 @@ export default class ListProducts extends Component {
                                 </td>
                                 <td>
                                     {pfeature.productFeatureResults2[0]?   
-                                        pfeature.productFeatureResults2[0].result.value : ''}
+                                        pfeature.productFeatureResults2[0].result.value : 'no result assigned'}
                                 </td>
                                 <td>
                                     {pfeature.isOnMainCard? 'YES' : 'NO'}
