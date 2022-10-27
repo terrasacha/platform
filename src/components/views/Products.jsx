@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Button, Carousel, Container, Modal } from 'react-bootstrap'
+import { Button, Carousel, Container, Modal, Table } from 'react-bootstrap'
 // Util
 import WebAppConfig from '../common/_conf/WebAppConfig'
 // GraphQL
@@ -176,14 +176,14 @@ export default class Products extends Component {
                         <Modal.Body>
                             <Carousel>
                                 {selectedProductToShow.images.items.map(image => (
-                                    <Carousel.Item>
+                                    <Carousel.Item key={image.id}>
                                         <img
                                         className="d-block w-100"
                                         src={urlS3Image+image.imageURL}
                                         alt="First slide"
                                         />
                                         <Carousel.Caption>
-                                        <h3>First slide label</h3>
+                                        <h3>{image.title}</h3>
                                         <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
                                         </Carousel.Caption>
                                         </Carousel.Item>
@@ -200,6 +200,7 @@ export default class Products extends Component {
         // Render Modal Product Images
         const renderModalProductFeatures = () => {
             if (isRenderModalProductFeatures && selectedProductToShow !== null) {
+                console.log(selectedProductToShow.productFeatures)
                 return (
                     <Modal
                         show={isRenderModalProductFeatures}
@@ -214,13 +215,35 @@ export default class Products extends Component {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <ul>
+                        <Table striped bordered hover>
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
                                 {selectedProductToShow.productFeatures.items.map(productFeature => (
-                                    <li key={productFeature.id}>
-                                        {productFeature.feature.name}: {productFeature.feature.description}
-                                    </li>
+                                    <tr key={productFeature.id}>
+                                        <td>
+                                            {productFeature.feature.featureType.name}
+                                        </td>
+                                        <td>
+                                            {productFeature.feature.name}
+                                        </td>
+                                        <td>
+                                            {productFeature.feature.description}
+                                        </td>
+                                        <td>
+                                            {productFeature.productFeatureResultAssigned? 
+                                            productFeature.productFeatureResultAssigned : productFeature.value}
+                                        </td>
+                                    </tr>
                                 ))}
-                            </ul>
+                                </tbody>
+                            </Table>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button onClick={(e) => this.handleHideModalProductFeatures(e)}>Close</Button>

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // Bootstrap
 import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // Import React Bootstrap Icons
-import { Filter, InfoCircle } from 'react-bootstrap-icons'
+/* import { Filter, InfoCircle } from 'react-bootstrap-icons' */
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
 
 // Import images

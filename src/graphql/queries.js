@@ -635,6 +635,11 @@ export const listProducts = /* GraphQL */ `
               name
               isTemplate
               description
+              featureType {
+                name
+                id
+                description
+              }
             }
             productFeatureResults {
               items {
@@ -648,8 +653,8 @@ export const listProducts = /* GraphQL */ `
                     equation
                   }
                 }
+              }
             }
-          }
           }
         }
         createdAt
