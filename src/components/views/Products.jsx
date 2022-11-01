@@ -141,10 +141,10 @@ export default class Products extends Component {
                                         </div>
                                         <div className='product_buttons_container'>
                                             <div className='product_what_is_include'>
-                                                <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_images')} >More pictures...</button>
+                                                <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_images')} >More pictures</button>
                                             </div>
                                             <div className='product_more_pictures'>
-                                                <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>What is included?</button>
+                                                <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>Features</button>
                                             </div>
                                         </div>
                                     </div>
