@@ -34,7 +34,6 @@ class Results extends Component {
             result: '',
             PFid: '',
             confirmSave: false,
-            assingToPF: false,
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.handleChangeFilter = this.handleChangeFilter.bind(this)
@@ -155,7 +154,7 @@ class Results extends Component {
                 PFid: '',
                 featuresUsed: [],
                 confirmSave: false,
-                assingToPF: false,
+
             })  
             let productSelected = this.state.products.filter(product => product.id === e.target.value)
             this.setState({
@@ -174,7 +173,7 @@ class Results extends Component {
                 PFid: '',
                 featuresUsed: [],
                 confirmSave: false,
-                assingToPF: false,
+
                 saveButton: true
             }) 
             
@@ -214,7 +213,7 @@ class Results extends Component {
     }
     checkIfVariablesMatchWithPF = () =>{
         let formulaCopy = this.state.equationSelected //copia formula seleccionada
-        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-^]/).filter(items => !parseInt(items)).filter((v, i, a) => a.indexOf(v) === i) //separa todas las variables y excluye numeros sueltos y variables repetidas
+        let formulaArrayVariables = formulaCopy.replace(/[()]/g, '').split(/[*/+-]/).filter(items => !parseInt(items)).filter((v, i, a) => a.indexOf(v) === i) //separa todas las variables y excluye numeros sueltos y variables repetidas
         let productFeaturesProductSelected = this.state.products.filter(p => p.id === this.state.selectedProductID) //eligo las productFeatures del producto seleccionado para usar la formula
         let productFeaturesProductSelectedNames = productFeaturesProductSelected[0].productFeatures.items.map(pf => pf.feature.id) //lo convierto en un array con los nombres de las features para comparar con el array de formulaCopyclean
         let aux = 0
@@ -274,9 +273,6 @@ class Results extends Component {
     confirmSave = () => {
         this.setState({confirmSave: true})
     }
-    assingToPF = () => {
-        this.setState({assingToPF: true})
-    }
     saveResult = async() => {
         let tempNewResult = {
             id: uuidv4().replaceAll('-','_'),
@@ -334,7 +330,6 @@ class Results extends Component {
             result: '',
             PFid: '',
             confirmSave: false,
-            assingToPF: false,
         })
     }
     render() {
@@ -417,6 +412,7 @@ class Results extends Component {
         }
         const SaveResult = () => {
             if(this.state.confirmSave !== false){
+                let productFeatures = this.state.productFeatures.filter(pf => pf.productID === this.state.selectedProductID)
                 return(
                     <>
                     <Row className='mb-2'>
@@ -450,60 +446,6 @@ class Results extends Component {
                                 value={this.state.equationSelected}
                                 />
                         </Form.Group>
-                    </Row>
-                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}} >
-                        <h6>Do you want to associate result {this.state.varID} with a productFeature? </h6>
-                        <Button
-                            variant='primary'
-                            size='sm'
-                            style={{marginLeft: '10px',marginRight: '10px'}} 
-                            onClick={(e) => this.assingToPF()}
-                        >Yes</Button> 
-                        <Button
-                            variant='primary'
-                            size='sm' 
-                            onClick={(e) => this.saveResult()}
-                        >No</Button> 
-                    </div>
-                    </>
-                )
-            }
-        }
-        const AsingToProductFeature = () => {
-            if(this.state.assingToPF){
-                let productFeatures = this.state.productFeatures.filter(pf => pf.productID === this.state.selectedProductID)
-                return(
-                    <Row className='mb-2'>
-                        <Form.Group as={Col}>
-                            <Form.Label>Variable ID</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.varID'
-                                disabled
-                                value={this.state.varID}
-                                />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Result</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.varID'
-                                disabled
-                                value={this.state.result}
-                                />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Formula</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.equation'
-                                disabled
-                                value={this.state.equationSelected}
-                                />
-                        </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Product Features</Form.Label>
                             <Form.Select 
@@ -513,18 +455,14 @@ class Results extends Component {
                                 {productFeatures.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.id}</option>))}
                         </Form.Select>
                         </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Save</Form.Label>
-                            <br></br>
-                            <Button
-                                    variant='primary'
-                                    size='sm' 
-                                    disabled={this.state.varID === ''}
-                                    onClick={(e) => this.saveResult()}
-                                >Save</Button> 
-                        </Form.Group>
-
                     </Row>
+                    <Button
+                        variant='primary'
+                        size='sm' 
+                        disabled={this.state.varID === ''}
+                        onClick={(e) => this.saveResult()}
+                        >Save</Button>
+                    </>
                 )
             }
         }
@@ -660,7 +598,6 @@ class Results extends Component {
                             {Calculate()}
                             {Result()}
                             {SaveResult()}
-                            {AsingToProductFeature()}
                 </Container>
                 <Container style={{overflow: 'auto'}}>
                     {renderProductFeaturesResults()}

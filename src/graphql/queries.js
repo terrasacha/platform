@@ -640,6 +640,10 @@ export const listProducts = /* GraphQL */ `
                 id
                 description
               }
+              unitOfMeasure {
+                engineeringUnit
+                id
+              }
             }
             productFeatureResults {
               items {

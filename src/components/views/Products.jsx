@@ -221,6 +221,7 @@ export default class Products extends Component {
                                     <th>Type</th>
                                     <th>Name</th>
                                     <th>Description</th>
+                                    <th>Unit</th>
                                     <th>Value</th>
                                 </tr>
                                 </thead>
@@ -235,6 +236,9 @@ export default class Products extends Component {
                                         </td>
                                         <td>
                                             {productFeature.feature.description}
+                                        </td>
+                                        <td>
+                                            {productFeature.feature.unitOfMeasure.engineeringUnit}
                                         </td>
                                         <td>
                                             {productFeature.productFeatureResultAssigned? 
