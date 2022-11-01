@@ -215,7 +215,7 @@ export default class Products extends Component {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                        <Table striped bordered hover>
+                        <Table striped hover size="sm" borderless>
                                 <thead>
                                 <tr>
                                     <th>Type</th>
