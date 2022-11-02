@@ -170,7 +170,7 @@ export default class Products extends Component {
                         >
                         <Modal.Header closeButton>
                             <Modal.Title id="contained-modal-title-vcenter">
-                            Modal heading
+                                Images
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
@@ -211,7 +211,7 @@ export default class Products extends Component {
                         >
                         <Modal.Header closeButton>
                             <Modal.Title id="contained-modal-title-vcenter">
-                            Modal heading
+                                Features 
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
