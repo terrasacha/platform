@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // Bootstrap
 import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // Import React Bootstrap Icons
-import { Filter, InfoCircle } from 'react-bootstrap-icons'
+/* import { Filter, InfoCircle } from 'react-bootstrap-icons' */
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
 
 // Import images
@@ -55,44 +55,50 @@ export default class HeaderNavbar extends Component {
                                 <Nav.Link href="#products">
                                     <Button 
                                         variant='outline-primary'
+                                        size='sm'
                                         onClick={(e) => this.changeHeaderNavBarRequest('products', e)}
-                                    ><InfoCircle></InfoCircle>Projects</Button>
+                                    >Projects</Button>
                                 </Nav.Link>
 
                                 <Nav.Link href="#formulas">
                                     <Button 
                                         variant='outline-primary'
+                                        size='sm'
                                         onClick={(e) => this.changeHeaderNavBarRequest('formulas', e)}
-                                    ><Filter></Filter>Formulas</Button> 
+                                    >Formulas</Button> 
                                 </Nav.Link>
 
                                 <Nav.Link href="#results">
                                     <Button 
                                         variant='outline-primary'
+                                        size='sm'
                                         onClick={(e) => this.changeHeaderNavBarRequest('results', e)}
-                                    ><Filter></Filter>Results</Button> 
+                                    >Results</Button> 
 
                                 </Nav.Link>
                                 <Nav.Link href="#categorys">
                                     <Button 
                                         variant='outline-primary'
+                                        size='sm'
                                         onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}
-                                    ><Filter></Filter>Categories</Button> 
+                                    >Categories</Button> 
 
                                 </Nav.Link>
 
                                 <Nav.Link href="#features">
                                     <Button
                                         variant='outline-primary'
+                                        size='sm'
                                         onClick={(e) => this.changeHeaderNavBarRequest('features', e)}
-                                    ><Filter></Filter>Features</Button>
+                                    >Features</Button>
                                 </Nav.Link>
 
                                 <Nav.Link href="#uom">
                                     <Button
                                         variant='outline-primary'
+                                        size='sm'
                                         onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}
-                                    ><Filter></Filter>OUM</Button>
+                                    >OUM</Button>
                                 </Nav.Link>
 
                                 <Nav.Link href="#home">

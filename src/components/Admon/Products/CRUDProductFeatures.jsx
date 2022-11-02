@@ -19,7 +19,7 @@ export default class CRUDProductFeatures extends Component {
                 id: '',
                 productID: '',
                 featureID: '',
-                value: 0,
+                value: '',
                 order: '',
                 isOnMainCard: true,
                 isToBlockChain: false,
@@ -97,6 +97,8 @@ export default class CRUDProductFeatures extends Component {
             delete tempNewProductFeature.feature
             delete tempNewProductFeature.product
             delete tempNewProductFeature.verifications
+            delete tempNewProductFeature.productFeatureResults
+            delete tempNewProductFeature.productFeatureResults2
             delete tempNewProductFeature.documents
             await API.graphql(graphqlOperation(updateProductFeature, { input: this.state.newProductFeature }))
             this.handleAddNewFeatureToActualProduct(tempNewProductFeature, 'UPDATE')
@@ -164,7 +166,7 @@ export default class CRUDProductFeatures extends Component {
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductValue'>
                                 <Form.Control
-                                    type='number'
+                                    type='text'
                                     placeholder=''
                                     name='valueProductFeature'
                                     value={this.state.newProductFeature.value}

@@ -31,7 +31,7 @@ class Products extends Component {
                 name: '',
                 description: '',
                 isActive: true,
-                status: '',
+                status: 'new',
                 order: '',
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
@@ -71,19 +71,29 @@ class Products extends Component {
     componentDidMount = async () => {
         // if (this.props.user.id !== '') {
         //     if (this.props.user.role === 'admon') {
-            await this.loadProducts()
-            await this.loadCategorysSelectItems()
-            await this.loadFeaturesSelectItems()
-            await this.loadProductFeatures()
-            
+            Promise.all([
+                this.loadProducts(),
+                this.loadCategorysSelectItems(),
+                this.loadFeaturesSelectItems(),
+                this.loadProductFeatures(),
+            ])
             // Subscriptions
             // OnCreate Product
             this.createProductListener = API.graphql(graphqlOperation(onCreateProduct))
             .subscribe({
                 next: createdProductData => {
+                    let isOnCreateList = false;
+                    this.state.products.map((mapProduct) => {
+                        if (createdProductData.value.data.onCreateProduct.id === mapProduct.id) {
+                            isOnCreateList = true;
+                        } 
+                        return mapProduct
+                    })
                     let tempProducts = this.state.products
                     let tempOnCreateProduct = createdProductData.value.data.onCreateProduct
-                    tempProducts.push(tempOnCreateProduct)
+                    if (!isOnCreateList) {
+                        tempProducts.push(tempOnCreateProduct)
+                    }
                     // Ordering products by name
                     tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({products: tempProducts}))
@@ -125,10 +135,18 @@ class Products extends Component {
             this.createProductFeatureListener = API.graphql(graphqlOperation(onCreateProductFeature))
             .subscribe({
                 next: createdProductFeatureData => {
+                    let isOnCreateList = false;
+                    this.state.listPF.map((mapPF) => {
+                        if (createdProductFeatureData.value.data.onCreateProductFeature.id === mapPF.id) {
+                            isOnCreateList = true;
+                        } 
+                        return mapPF
+                    })
                     let tempProductFeatures = this.state.listPF
                     let tempOnCreateProductFeature = createdProductFeatureData.value.data.onCreateProductFeature
-                    tempProductFeatures.push(tempOnCreateProductFeature)
-
+                    if (!isOnCreateList) {
+                        tempProductFeatures.push(tempOnCreateProductFeature)
+                    }
                     tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({listPF: tempProductFeatures}))
                 }
@@ -471,6 +489,7 @@ class Products extends Component {
                 description: '',
                 isActive: true,
                 order: '',
+                status: 'new',
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
                 categoryID: '',
@@ -681,7 +700,7 @@ class Products extends Component {
                                             value={CRUD_Product.status}
                                             onChange={(e) => this.handleOnChangeInputForm(e)}>
                                             {['new', 'new_data', 'on_verification', 'to_testnet', 'to_main_net', 'on_block_chain'].map(
-                                                op => (<option value={op}>{op}</option>)
+                                                op => (<option value={op} key={op}>{op}</option>)
                                             )}
                                         </Form.Select>
                                     </Form.Group>

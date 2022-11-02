@@ -635,6 +635,15 @@ export const listProducts = /* GraphQL */ `
               name
               isTemplate
               description
+              featureType {
+                name
+                id
+                description
+              }
+              unitOfMeasure {
+                engineeringUnit
+                id
+              }
             }
             productFeatureResults {
               items {
@@ -648,8 +657,8 @@ export const listProducts = /* GraphQL */ `
                     equation
                   }
                 }
+              }
             }
-          }
           }
         }
         createdAt

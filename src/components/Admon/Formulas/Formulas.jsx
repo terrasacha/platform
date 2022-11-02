@@ -41,12 +41,21 @@ class Formulas extends Component {
         await this.loadUnitOfMeasures()
         // Subscriptions
         // OnCreate Formula
-        let tempFormulas = this.state.formulas
         this.createFormulaListener = API.graphql(graphqlOperation(onCreateFormula))
         .subscribe({
             next: createdFormulaData => {
+                let isOnCreateList = false;
+                this.state.formulas.map((mapFormulas) => {
+                    if (createdFormulaData.value.data.onCreateFormula.id === mapFormulas.id) {
+                        isOnCreateList = true;
+                    } 
+                    return mapFormulas
+                })
+                let tempFormulas = this.state.formulas
                 let tempOnCreateFormula = createdFormulaData.value.data.onCreateFormula
-                tempFormulas.push(tempOnCreateFormula)
+                if (!isOnCreateList) {
+                    tempFormulas.push(tempOnCreateFormula)
+                }
                 // Ordering categorys by name
                 tempFormulas.sort((a, b) => (a.name > b.name) ? 1 : -1)
                 // this.updateStateCategorys(tempCategorys)
@@ -170,40 +179,41 @@ class Formulas extends Component {
         const renderFormulas = () => {
             if (formulas.length > 0) {
                 return (
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>Variable ID</th>
-                            <th>Equation</th>
-                            <th>Unit of Measure ID</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {formulas.map(formula => (
-                            <tr key={formula.id}>
-
-                                <td>
-                                    {formula.varID}
-                                </td>
-                                <td>
-                                    {formula.equation}
-                                </td>
-                                <td>
-                                    {formula.unitOfMeasure !== undefined? formula.unitOfMeasure.engineeringUnit : ''}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='primary'
-                                        size='lg' 
-                                         
-                                        onClick={(e) => this.handleLoadEditFormula(formula, e)}
-                                    >Editar</Button>
-                                </td>
+                    <Container>
+                        <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Variable ID</th>
+                                <th>Equation</th>
+                                <th>Unit of Measure ID</th>
+                                <th>Action</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                            {formulas.map(formula => (
+                                <tr key={formula.id}>
+
+                                    <td>
+                                        {formula.varID}
+                                    </td>
+                                    <td>
+                                        {formula.equation}
+                                    </td>
+                                    <td>
+                                        {formula.unitOfMeasure !== undefined? formula.unitOfMeasure.engineeringUnit : ''}
+                                    </td>
+                                    <td>
+                                        <Button 
+                                            variant='primary'
+                                            size='sm'
+                                            onClick={(e) => this.handleLoadEditFormula(formula, e)}
+                                        >Editar</Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                    </Container>
                 )
             }
         
@@ -211,49 +221,50 @@ class Formulas extends Component {
 
 
         return (
-            
-            <Container>
-                <h2>{CRUDButtonName} Formula: {newFormula.name}</h2>
-                <Form>
-                    <Row className='mb-2'>
-                        <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                            <Form.Label>Variable ID</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='formula.varID'
-                                value={newFormula.varID}
-                                onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        </Form.Group>
-                        <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                            <Form.Label>Equation</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder='Ex. ANIMALS'
-                                name='formula.equation'
-                                value={newFormula.equation}
-                                onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        </Form.Group>
-                        <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                            <Form.Label>Unit of Measure</Form.Label>
-                            <Form.Select 
-                                name='formula.unitOfMeasure'
-                                onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                    <option>-</option>
-                                    {this.state.unitOfMeasures.map((uom, idx) => (<option value={uom.id} key={idx}>{uom.engineeringUnit}</option>))}
-                            </Form.Select>
-                        </Form.Group>
-                    </Row>
+            <Container style={{display: 'flex', flexDirection: 'column'}}>
+                <Container>
+                    <h2>{CRUDButtonName} Formula: {newFormula.name}</h2>
+                    <Form>
+                        <Row className='mb-2'>
+                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                                <Form.Label>Variable ID</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder=''
+                                    name='formula.varID'
+                                    value={newFormula.varID}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            </Form.Group>
+                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                                <Form.Label>Equation</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Ex. ANIMALS'
+                                    name='formula.equation'
+                                    value={newFormula.equation}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            </Form.Group>
+                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
+                                <Form.Label>Unit of Measure</Form.Label>
+                                <Form.Select 
+                                    name='formula.unitOfMeasure'
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                        <option>-</option>
+                                        {this.state.unitOfMeasures.map((uom, idx) => (<option value={uom.id} key={idx}>{uom.engineeringUnit}</option>))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Row>
 
-                    <Row className='mb-1'>
-                        <Button
-                        variant='primary'
-                         
-                        onClick={this.handleCRUDFormula}
-                        disabled={this.state.isCRUDButtonDisable}
-                        >{CRUDButtonName}</Button>
-                    </Row>
-                </Form>
+                        <Row className='mb-1'>
+                            <Button
+                            variant='primary'
+                            size='sm'
+                            onClick={this.handleCRUDFormula}
+                            disabled={this.state.isCRUDButtonDisable}
+                            >{CRUDButtonName}</Button>
+                        </Row>
+                    </Form>
+                </Container>
                 <br></br>
                 {renderFormulas()}
             </Container>

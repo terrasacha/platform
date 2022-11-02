@@ -113,7 +113,7 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         const renderFeatureTypes = () => {
             if (featureTypes.length > 0) {
                 return (
-                    <>
+                    <Container>
                     <h2>Features Types</h2>
                         <Table striped bordered hover>
                             <thead>
@@ -134,7 +134,7 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
                                     <td>
                                         <Button 
                                             variant='primary'
-                                            size='lg' 
+                                            size='sm' 
                                              
                                             onClick={(e) => this.handleLoadEditFeatureType(featuresType, e)}
                                         >Editar</Button>
@@ -143,48 +143,50 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
                             ))}
                             </tbody>
                         </Table>
-                    </>
+                    </Container>
                 )
             }
         
         }
 
         return (
-            <>
-            <br></br>
-            <h2>{CRUDButtonName} Feature Type: {newFeatureType.name}</h2>
-            <Form>
-                <Row className='mb-2'>
-                    <Form.Group as={Col} controlId='formGridNewFeatureName'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            type='text'
-                            placeholder='Name...'
-                            name='featureType.name'
-                            value={newFeatureType.name}
-                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control
-                            type='text'
-                            placeholder='Description...'
-                            name='featureType.description'
-                            value={newFeatureType.description}
-                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                    </Form.Group>
-                </Row>
+            <Container>
+                <Container>
+                    <br></br>
+                    <h2>{CRUDButtonName} Feature Type: {newFeatureType.name}</h2>
+                    <Form>
+                        <Row className='mb-2'>
+                            <Form.Group as={Col} controlId='formGridNewFeatureName'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Name...'
+                                    name='featureType.name'
+                                    value={newFeatureType.name}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                <Form.Label>Description</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Description...'
+                                    name='featureType.description'
+                                    value={newFeatureType.description}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            </Form.Group>
+                        </Row>
 
-                <Row className='mb-1'>
-                    <Button
-                    variant='primary'
-                     
-                    onClick={this.handleCRUDFeatureType}
-                    disabled={this.state.isCRUDButtonDisable}
-                    >{CRUDButtonName}</Button>
-                </Row>
-            </Form>
+                        <Row className='mb-1'>
+                            <Button
+                            variant='primary'
+                            size='sm'
+                            onClick={this.handleCRUDFeatureType}
+                            disabled={this.state.isCRUDButtonDisable}
+                            >{CRUDButtonName}</Button>
+                        </Row>
+                    </Form>
+                </Container>
             {renderFeatureTypes()}
 
-        </>
+        </Container>
         )
     }
 }

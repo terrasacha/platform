@@ -159,6 +159,15 @@
     display: flex;
     justify-content: space-evenly;
 }
+.product_buttons_container button{
+    background-color: transparent;
+    border: none;
+    color: #00AAE4;
+    
+}
+.product_buttons_container button:hover{
+    text-decoration:underline;
+}
 
 @media (max-width: 993px) {
     .product_info{
