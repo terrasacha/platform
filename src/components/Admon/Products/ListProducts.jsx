@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // Bootstrap
-import { Button, Container, Image, Modal, Table } from 'react-bootstrap';
+import { Button, Image, Modal, Table } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
@@ -97,7 +97,6 @@ export default class ListProducts extends Component {
                                             >Images</Button>
                                     </td>
                                     <td>
-{/*                                         {renderProductFeatures(product)} */}
                                         <Button 
                                                 variant='outline-primary'
                                                 size='sm' 
