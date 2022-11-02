@@ -323,7 +323,7 @@ class Results extends Component {
                             name='result.selectedFormula'
                             onChange={(e) => this.handleOnChangeInputForm(e)}>
                                 <option>-</option>
-                                {this.state.formulas.map((formula, idx) => (<option value={formula.id} key={idx}>{formula.equation}</option>))}
+                                {this.state.formulas.map((formula, idx) => (<option value={formula.id} key={idx}>{formula.varID}: {formula.equation}</option>))}
                         </Form.Select>
                     </Form.Group>
                 )

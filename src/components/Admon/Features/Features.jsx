@@ -244,6 +244,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                         <Table striped bordered hover>
                             <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Default value</th>
@@ -257,6 +258,9 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                             <tbody>
                             {features.map(features => (
                                 <tr key={features.id}>
+                                    <td>
+                                        {features.id}
+                                    </td>
                                     <td>
                                         {features.name}
                                     </td>

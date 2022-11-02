@@ -17,6 +17,7 @@ type User @model
   wallets: [Wallet] @hasMany(indexName: "byUser", fields: ["id"])
   verifierVerifications: [Verification] @hasMany(indexName: "byVerifierUser", fields: ["id"])
   verifiedVerifications: [Verification] @hasMany(indexName: "byVerifiedUser", fields: ["id"])
+  userProducts: [UserProduct] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Wallet @model 
@@ -90,6 +91,7 @@ type Product @model
   category: Category @belongsTo(fields: ["categoryID"])
   images: [Image] @hasMany(indexName: "byProduct", fields: ["id"])
   productFeatures: [ProductFeature] @hasMany(indexName: "byProduct", fields: ["id"])
+  userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model 
@@ -192,4 +194,26 @@ type ProductFeatureResult @model {
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
   resultID: ID @index(name: "byResult")
   result: Result @belongsTo(fields: ["resultID"])
+}
+
+type UserProduct {
+  id: ID!
+  isFavorite: Boolean
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  orders: [Order] @hasMany(indexName: "byUserProduct", fields: ["id"])
+}
+
+type Order {
+  id: ID! # local order ID 
+  amountOfTokens: Int
+  currencyCode: String
+  fiatTotalAmount: Float
+  statusCode: String
+  externalOrderId: String
+  confirmation: String
+  userProductID: ID! @index(name: "byUserProduct")
+  userProduct: UserProduct @belongsTo(fields: ["userProductID"])
 }
