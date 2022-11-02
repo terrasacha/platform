@@ -196,7 +196,7 @@ type ProductFeatureResult @model {
   result: Result @belongsTo(fields: ["resultID"])
 }
 
-type UserProduct {
+type UserProduct @model {
   id: ID!
   isFavorite: Boolean
   userID: ID! @index(name: "byUser")
@@ -206,7 +206,7 @@ type UserProduct {
   orders: [Order] @hasMany(indexName: "byUserProduct", fields: ["id"])
 }
 
-type Order {
+type Order @model {
   id: ID! # local order ID 
   amountOfTokens: Int
   currencyCode: String

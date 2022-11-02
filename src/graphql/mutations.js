@@ -54,6 +54,17 @@ export const createUser = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -107,6 +118,17 @@ export const updateUser = /* GraphQL */ `
           userVerifierID
           userVerifiedID
           productFeatureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
           createdAt
           updatedAt
         }
@@ -170,6 +192,17 @@ export const deleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -201,6 +234,9 @@ export const createWallet = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -239,6 +275,9 @@ export const updateWallet = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -273,6 +312,9 @@ export const deleteWallet = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -311,6 +353,9 @@ export const createVerification = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -330,6 +375,9 @@ export const createVerification = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -414,6 +462,9 @@ export const updateVerification = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -433,6 +484,9 @@ export const updateVerification = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -517,6 +571,9 @@ export const deleteVerification = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -536,6 +593,9 @@ export const deleteVerification = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -1067,6 +1127,17 @@ export const createProduct = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1125,6 +1196,17 @@ export const updateProduct = /* GraphQL */ `
           isOnMainCard
           productID
           featureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
           createdAt
           updatedAt
         }
@@ -1193,6 +1275,17 @@ export const deleteProduct = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1236,6 +1329,9 @@ export const createImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -1286,6 +1382,9 @@ export const updateImage = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1332,6 +1431,9 @@ export const deleteImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -2281,6 +2383,9 @@ export const createProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2401,6 +2506,9 @@ export const updateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2519,6 +2627,9 @@ export const deleteProductFeature = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -2832,6 +2943,414 @@ export const deleteProductFeatureResult = /* GraphQL */ `
           updatedAt
         }
         productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createUserProduct = /* GraphQL */ `
+  mutation CreateUserProduct(
+    $input: CreateUserProductInput!
+    $condition: ModelUserProductConditionInput
+  ) {
+    createUserProduct(input: $input, condition: $condition) {
+      id
+      isFavorite
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orders {
+        items {
+          id
+          amountOfTokens
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUserProduct = /* GraphQL */ `
+  mutation UpdateUserProduct(
+    $input: UpdateUserProductInput!
+    $condition: ModelUserProductConditionInput
+  ) {
+    updateUserProduct(input: $input, condition: $condition) {
+      id
+      isFavorite
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orders {
+        items {
+          id
+          amountOfTokens
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUserProduct = /* GraphQL */ `
+  mutation DeleteUserProduct(
+    $input: DeleteUserProductInput!
+    $condition: ModelUserProductConditionInput
+  ) {
+    deleteUserProduct(input: $input, condition: $condition) {
+      id
+      isFavorite
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orders {
+        items {
+          id
+          amountOfTokens
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createOrder = /* GraphQL */ `
+  mutation CreateOrder(
+    $input: CreateOrderInput!
+    $condition: ModelOrderConditionInput
+  ) {
+    createOrder(input: $input, condition: $condition) {
+      id
+      amountOfTokens
+      currencyCode
+      fiatTotalAmount
+      statusCode
+      externalOrderId
+      confirmation
+      userProductID
+      userProduct {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateOrder = /* GraphQL */ `
+  mutation UpdateOrder(
+    $input: UpdateOrderInput!
+    $condition: ModelOrderConditionInput
+  ) {
+    updateOrder(input: $input, condition: $condition) {
+      id
+      amountOfTokens
+      currencyCode
+      fiatTotalAmount
+      statusCode
+      externalOrderId
+      confirmation
+      userProductID
+      userProduct {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteOrder = /* GraphQL */ `
+  mutation DeleteOrder(
+    $input: DeleteOrderInput!
+    $condition: ModelOrderConditionInput
+  ) {
+    deleteOrder(input: $input, condition: $condition) {
+      id
+      amountOfTokens
+      currencyCode
+      fiatTotalAmount
+      statusCode
+      externalOrderId
+      confirmation
+      userProductID
+      userProduct {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
           nextToken
         }
         createdAt

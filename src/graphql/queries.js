@@ -51,6 +51,17 @@ export const getUser = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -78,6 +89,9 @@ export const listUsers = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -110,6 +124,9 @@ export const getWallet = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -176,6 +193,9 @@ export const getVerification = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -195,6 +215,9 @@ export const getVerification = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -579,6 +602,17 @@ export const getProduct = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -661,6 +695,9 @@ export const listProducts = /* GraphQL */ `
             }
           }
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -703,6 +740,9 @@ export const getImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -1257,6 +1297,9 @@ export const getProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1508,26 +1551,222 @@ export const listProductFeatureResults = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
-          feature {
-            id
-            name
-          }
-          product {
-            id
-            name
-            order
-          }
         }
+        resultID
         result {
           id
-          formulaID
-          value
           varID
-          formula {
-            equation
-            id
-            varID
-          }
+          value
+          formulaID
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserProduct = /* GraphQL */ `
+  query GetUserProduct($id: ID!) {
+    getUserProduct(id: $id) {
+      id
+      isFavorite
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orders {
+        items {
+          id
+          amountOfTokens
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUserProducts = /* GraphQL */ `
+  query ListUserProducts(
+    $filter: ModelUserProductFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUserProducts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getOrder = /* GraphQL */ `
+  query GetOrder($id: ID!) {
+    getOrder(id: $id) {
+      id
+      amountOfTokens
+      currencyCode
+      fiatTotalAmount
+      statusCode
+      externalOrderId
+      confirmation
+      userProductID
+      userProduct {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listOrders = /* GraphQL */ `
+  query ListOrders(
+    $filter: ModelOrderFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        amountOfTokens
+        currencyCode
+        fiatTotalAmount
+        statusCode
+        externalOrderId
+        confirmation
+        userProductID
+        userProduct {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt

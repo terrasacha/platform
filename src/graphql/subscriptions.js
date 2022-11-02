@@ -51,6 +51,17 @@ export const onCreateUser = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -101,6 +112,17 @@ export const onUpdateUser = /* GraphQL */ `
           userVerifierID
           userVerifiedID
           productFeatureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
           createdAt
           updatedAt
         }
@@ -161,6 +183,17 @@ export const onDeleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -189,6 +222,9 @@ export const onCreateWallet = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -224,6 +260,9 @@ export const onUpdateWallet = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -255,6 +294,9 @@ export const onDeleteWallet = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -290,6 +332,9 @@ export const onCreateVerification = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -309,6 +354,9 @@ export const onCreateVerification = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -390,6 +438,9 @@ export const onUpdateVerification = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -409,6 +460,9 @@ export const onUpdateVerification = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -490,6 +544,9 @@ export const onDeleteVerification = /* GraphQL */ `
         verifiedVerifications {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -509,6 +566,9 @@ export const onDeleteVerification = /* GraphQL */ `
           nextToken
         }
         verifiedVerifications {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -1010,6 +1070,17 @@ export const onCreateProduct = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1065,6 +1136,17 @@ export const onUpdateProduct = /* GraphQL */ `
           isOnMainCard
           productID
           featureID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
           createdAt
           updatedAt
         }
@@ -1130,6 +1212,17 @@ export const onDeleteProduct = /* GraphQL */ `
         }
         nextToken
       }
+      userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1170,6 +1263,9 @@ export const onCreateImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -1217,6 +1313,9 @@ export const onUpdateImage = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1260,6 +1359,9 @@ export const onDeleteImage = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -2152,6 +2254,9 @@ export const onCreateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2269,6 +2374,9 @@ export const onUpdateProductFeature = /* GraphQL */ `
         productFeatures {
           nextToken
         }
+        userProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2384,6 +2492,9 @@ export const onDeleteProductFeature = /* GraphQL */ `
           nextToken
         }
         productFeatures {
+          nextToken
+        }
+        userProducts {
           nextToken
         }
         createdAt
@@ -2688,6 +2799,396 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
           updatedAt
         }
         productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateUserProduct = /* GraphQL */ `
+  subscription OnCreateUserProduct {
+    onCreateUserProduct {
+      id
+      isFavorite
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orders {
+        items {
+          id
+          amountOfTokens
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateUserProduct = /* GraphQL */ `
+  subscription OnUpdateUserProduct {
+    onUpdateUserProduct {
+      id
+      isFavorite
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orders {
+        items {
+          id
+          amountOfTokens
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteUserProduct = /* GraphQL */ `
+  subscription OnDeleteUserProduct {
+    onDeleteUserProduct {
+      id
+      isFavorite
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orders {
+        items {
+          id
+          amountOfTokens
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateOrder = /* GraphQL */ `
+  subscription OnCreateOrder {
+    onCreateOrder {
+      id
+      amountOfTokens
+      currencyCode
+      fiatTotalAmount
+      statusCode
+      externalOrderId
+      confirmation
+      userProductID
+      userProduct {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateOrder = /* GraphQL */ `
+  subscription OnUpdateOrder {
+    onUpdateOrder {
+      id
+      amountOfTokens
+      currencyCode
+      fiatTotalAmount
+      statusCode
+      externalOrderId
+      confirmation
+      userProductID
+      userProduct {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteOrder = /* GraphQL */ `
+  subscription OnDeleteOrder {
+    onDeleteOrder {
+      id
+      amountOfTokens
+      currencyCode
+      fiatTotalAmount
+      statusCode
+      externalOrderId
+      confirmation
+      userProductID
+      userProduct {
+        id
+        isFavorite
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        orders {
           nextToken
         }
         createdAt
