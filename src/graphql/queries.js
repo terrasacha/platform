@@ -1551,6 +1551,27 @@ export const listProductFeatureResults = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          feature {
+                id
+                name
+              }
+              product {
+                id
+                name
+                order
+              }
+            }
+            result {
+              id
+              formulaID
+              value
+              varID
+              formula {
+                equation
+                id
+                varID
+              }
+            }
         }
         resultID
         result {
