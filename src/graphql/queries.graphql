@@ -126,3 +126,135 @@ mutation MyMutationDeleteFeatureType {
     name
   }
 }
+
+
+# Create User
+
+query MyQueryListUsers {
+  listUsers {
+    items {
+      id
+      name
+      role
+    }
+  }
+}
+
+mutation MyMutationCreateUser {
+  createUser(input: {name: "admon_suan", id: "a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934", isProfileUpdated: true, role: "admon"}) {
+    id
+    name
+    role
+    isProfileUpdated
+    addresss
+    cellphone
+    createdAt
+    dateOfBirth
+    updatedAt
+  }
+}
+
+## User Documents
+
+query MyQueryUserDocuments {
+  getUser(id: "a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934") {
+    name
+    id
+    userProducts {
+      items {
+        product {
+          productFeatures {
+            items {
+              feature {
+                id
+                name
+                featureType {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+# User Product
+
+query MyQuery {
+  listProducts {
+    items {
+      id
+      name
+      order
+      status
+    }
+  }
+}
+
+
+{
+  "data": {
+    "listProducts": {
+      "items": [
+        {
+          "id": "2f8effb6_5b95_4e1e_9b0e_ae29d0ceba24",
+          "name": "Edificio 742 Evergreen Terrace",
+          "order": 1,
+          "status": "new"
+        }
+      ]
+    }
+  }
+}
+
+
+
+mutation MyMutationCreateUserProduct {
+  createUserProduct(input: {isFavorite: true, productID: "2f8effb6_5b95_4e1e_9b0e_ae29d0ceba24", userID: "a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934"}) {
+    id
+    isFavorite
+    user {
+      name
+    }
+    product {
+      name
+    }
+  }
+}
+
+query MyQueryUserDocuments {
+  getUser(id: "a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934") {
+    name
+    id
+    userProducts {
+      items {
+        product {
+          productFeatures {
+            items {
+              feature {
+                id
+                name
+                featureType {
+                  id
+                  name
+                }
+              }
+              documents {
+                items {
+                  id
+                  status
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
