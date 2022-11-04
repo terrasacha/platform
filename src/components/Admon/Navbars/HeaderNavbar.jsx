@@ -60,6 +60,14 @@ export default class HeaderNavbar extends Component {
                                     >Projects</Button>
                                 </Nav.Link>
 
+                                <Nav.Link href="#documents">
+                                    <Button 
+                                        variant='outline-primary'
+                                        size='sm'
+                                        onClick={(e) => this.changeHeaderNavBarRequest('documents', e)}
+                                    >Documents</Button>
+                                </Nav.Link>
+
                                 <Nav.Link href="#formulas">
                                     <Button 
                                         variant='outline-primary'

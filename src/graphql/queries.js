@@ -1693,16 +1693,46 @@ export const listUserProducts = /* GraphQL */ `
         productID
         product {
           id
-          name
           description
-          isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
+          name
+          isActive
           status
           categoryID
-          createdAt
-          updatedAt
+          category {
+            name
+          }
+          productFeatures {
+            items {
+              id
+              featureID
+              order
+              value
+              feature {
+                description
+                id
+                name
+                unitOfMeasureID
+                featureTypeID
+                featureType {
+                  id
+                  name
+                  description
+                }
+              }
+              documents {
+                items {
+                  id
+                  status
+                  url
+                  documentType {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          }
         }
         orders {
           nextToken
