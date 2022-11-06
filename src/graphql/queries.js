@@ -57,6 +57,49 @@ export const getUser = /* GraphQL */ `
           isFavorite
           userID
           productID
+          product {
+            id
+            description
+            order
+            name
+            isActive
+            status
+            categoryID
+            category {
+              name
+            }
+            productFeatures {
+              items {
+                id
+                featureID
+                order
+                value
+                feature {
+                  description
+                  id
+                  name
+                  unitOfMeasureID
+                  featureTypeID
+                  featureType {
+                    id
+                    name
+                    description
+                  }
+                }
+                documents {
+                  items {
+                    id
+                    status
+                    url
+                    documentType {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
           createdAt
           updatedAt
         }
