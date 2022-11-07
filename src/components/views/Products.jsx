@@ -200,7 +200,6 @@ export default class Products extends Component {
         // Render Modal Product Images
         const renderModalProductFeatures = () => {
             if (isRenderModalProductFeatures && selectedProductToShow !== null) {
-                console.log(selectedProductToShow.productFeatures)
                 return (
                     <Modal
                         show={isRenderModalProductFeatures}

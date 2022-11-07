@@ -1600,38 +1600,38 @@ export const listProductFeatureResults = /* GraphQL */ `
           createdAt
           updatedAt
           feature {
-                id
-                name
-              }
-              product {
-                id
-                name
-                order
-              }
-            }
-            result {
+            id
+            name
+            featureType {
               id
-              formulaID
-              value
-              varID
-              formula {
-                equation
-                id
-                varID
-              }
+              name
             }
+            unitOfMeasure {
+              id
+              engineeringUnit
+              description
+            }
+          }
+          product {
+            id
+            name
+            order
+          }
         }
         resultID
+        updatedAt
+        createdAt
         result {
           id
-          varID
-          value
           formulaID
-          createdAt
-          updatedAt
+          value
+          varID
+          formula {
+            equation
+            id
+            varID
+          }
         }
-        createdAt
-        updatedAt
       }
       nextToken
     }
