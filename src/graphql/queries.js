@@ -74,6 +74,11 @@ export const getUser = /* GraphQL */ `
                 featureID
                 order
                 value
+                productID
+                product {
+                  id
+                  name
+                }
                 feature {
                   description
                   id

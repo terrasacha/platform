@@ -9,7 +9,6 @@ import { createDocument } from '../../../graphql/mutations'
 import { getUser } from '../../../graphql/queries'
 import { onCreateDocument } from '../../../graphql/subscriptions'
 
-
 export default class Documents extends Component {
     constructor(props) {
         super(props)
@@ -28,8 +27,7 @@ export default class Documents extends Component {
                 documentTypeID: '',
                 productFeatureID: ''
             },
-            userProductWithoutDoc: [],
-            userProducts: [],
+            userProductsDoc: [],
             showAllDocuments: true,
             showProductsWithoutDoc: false,
             productToShow: null,
@@ -45,8 +43,9 @@ export default class Documents extends Component {
     }
 
     componentDidMount = async () => {
+/*         let actualUser = await  Auth.currentAuthenticatedUser()
+        actualUser = actualUser.attributes.sub */
         await this.loadUserProducts()
-
             // Subscriptions
             // OnCreate Document
             this.createDocumentListener = API.graphql(graphqlOperation(onCreateDocument))
@@ -69,28 +68,35 @@ export default class Documents extends Component {
             })
     }
     async loadUserProducts() {
-/*         let actualUser = await  Auth.currentAuthenticatedUser()
-        actualUser = actualUser.attributes.sub */
-        let listUserProductsResult = await API.graphql({ query: getUser, variables: { id: 'a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934' }}) /* actualUser */ 
-        listUserProductsResult = listUserProductsResult.data.getUser.userProducts.items  
-        listUserProductsResult.map(userProduct => userProduct.product)
-        let listUserProductToRender = listUserProductsResult.map(userProduct =>{
+        let userResult = await API.graphql({ query: getUser, variables: { id: 'a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934' }})
+        console.log(userResult) 
+        let profileDocument = userResult.data.getUser.role
+        if(profileDocument === 'admon') profileDocument = 'ADMON_DOCUMENT'
+        if(profileDocument === 'investor') profileDocument = 'INVESTOR_DOCUMENT'
+        if(profileDocument === 'constructor') profileDocument = 'CONSTRUCTOR_DOCUMENT'
+        let listUserProducts = userResult.data.getUser.userProducts.items
+        listUserProducts.map(userProduct => userProduct.product)
+        let listUserProductsDocs = listUserProducts.map(userProduct =>{
             let aux = 0
             for (let i = 0; i < userProduct.product.productFeatures.items.length; i++) {
-                if(userProduct.product.productFeatures.items[i].feature.featureTypeID === 'ADMON_DOCUMENT' && userProduct.product.productFeatures.items[i].documents.items.length === 0) aux++
+                if(userProduct.product.productFeatures.items[i].feature.featureTypeID === profileDocument  ) aux++
             }
             if(aux > 0) return userProduct
             else return ''
 
         }).filter(userProduct => userProduct !== '')
-        this.setState({userProductWithoutDoc: listUserProductToRender, userProducts: listUserProductsResult})
+        listUserProductsDocs.map(up =>{ 
+            let productFeaturesFiltered = up.product.productFeatures.items.filter(productFeature => productFeature.feature.featureTypeID === profileDocument)
+            up.product.productFeatures.items = productFeaturesFiltered
+            return up
+        })
+        this.setState({
+            userProductsDoc: listUserProductsDocs,})
     }
     
     handleLoadUserProduct = (userProduct) => {
-        let productFeaturesFiltered = userProduct.product.productFeatures.items.filter(productFeature => productFeature.feature.featureTypeID === 'ADMON_DOCUMENT' && productFeature.documents.items.length === 0)
-        userProduct.product.productFeatures = productFeaturesFiltered
-        console.log('console log userProduct',userProduct)
-        this.setState({productToShow: userProduct})
+        let userProductCopy = userProduct
+        this.setState({productToShow: userProductCopy})
     }
     handleInputCreateDocument = (e) => {
         if(e.target.name === 'selected_documentType'){
@@ -152,25 +158,39 @@ export default class Documents extends Component {
     }
     
   render() {
-    let {userProductWithoutDoc, userProduct, productToShow, productFeatureToAddDoc, showProductsWithoutDoc, showAllDocuments} = this.state
+    let {userProductsDoc, productToShow, productFeatureToAddDoc, showProductsWithoutDoc, showAllDocuments} = this.state
 
     const listDocumentationStatus = () => {
-        if(showAllDocuments){
+        if(showAllDocuments && userProductsDoc){
             return(
                 <Container>
-                    <Table>
+                    <Table striped hover>
                         <thead>
                             <tr>
-                                <th>Documentation</th>
-                                <th>Documentation</th>
+                                <th>Product</th>
+                                <th>Feature</th>
+                                <th>Document Status</th>      
+                                <th>Upload Document</th>  
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-    
-                                </td>
-                            </tr>
+                            {userProductsDoc.map(userProduct =>(
+                                userProduct.product.productFeatures.items.map(pf => {
+                                    return(
+                                        <tr key={pf.id}>
+                                            <td>{pf.product.name}</td>
+                                            <td>{pf.feature.name}</td>
+                                            <td>{pf.documents.items.length > 0? pf.documents.items[0].status : 'Not document assigned' }</td>
+                                            <td>
+                                                {pf.documents.items.length > 0? 'Alredy upload' :
+                                                <Button variant="primary" size='sm' onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>  }
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                                )
+                            ))}
+
                         </tbody>
                     </Table>
                 </Container>
@@ -179,13 +199,14 @@ export default class Documents extends Component {
     }
     const uploadDocumentation = () => {
         if(showProductsWithoutDoc){
+            let userProductsDocCopy = userProductsDoc
         return (
             <Container className='mt-3'>
               <Row>
                   <Col xs={2}>
                           <h3>Products</h3>
                       <Container className='mt-5'>
-                          {userProductWithoutDoc?.map(userProduct => <Card key={userProduct.id} body className='mb-2' style={{cursor: 'pointer'}} onClick={() => this.handleLoadUserProduct(userProduct)}>{userProduct.product.name}<ArrowRight /></Card>)}
+                          {userProductsDocCopy?.map(userProduct => <Card key={userProduct.id} body className='mb-2' style={{cursor: 'pointer'}} onClick={() => this.handleLoadUserProduct(userProduct)}>{userProduct.product.name}<ArrowRight /></Card>)}
                       </Container>
                   </Col>
                   <Col xs={10}>
@@ -194,18 +215,23 @@ export default class Documents extends Component {
                                 <Card>
                                     <Card.Header as="h5">{productToShow.product.name}</Card.Header>
                                     <Card.Body>
-                                        {productToShow.product.productFeatures.map(pf =>(
-                                        <Card key={pf.id} className='mb-2'>
-                                            <Card.Header>{pf.feature.featureTypeID.replace('_', ' ')}</Card.Header>
-                                            <Card.Body>
-                                                <Card.Title>{pf.feature.name}</Card.Title>
-                                                <Card.Text>
-                                                    {pf.feature.description}
-                                                </Card.Text>
-                                                <Button variant="primary" onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>
-                                            </Card.Body>
-                                        </Card>
-                                        ))}
+                                        {productToShow.product.productFeatures.items.map(pf =>{
+                                        if(pf.documents.items.length > 0){
+                                            return null
+                                        }
+                                        return(
+                                            <Card key={pf.id} className='mb-2'>
+                                                <Card.Header>{pf.feature.featureTypeID.replace('_', ' ')}</Card.Header>
+                                                <Card.Body>
+                                                    <Card.Title>{pf.feature.name}</Card.Title>
+                                                    <Card.Text>
+                                                        {pf.feature.description}
+                                                    </Card.Text>
+                                                    <Button variant="primary" onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>
+                                                </Card.Body>
+                                            </Card> 
+                                        )
+                                        })} 
                                     </Card.Body>
                                 </Card>
                             }
@@ -217,7 +243,7 @@ export default class Documents extends Component {
     }
     const modalDocument = () => {
 
-        if (productToShow && showProductsWithoutDoc && productFeatureToAddDoc !== null) {
+        if (productFeatureToAddDoc !== null) {
         return (
             <Modal
                 show={this.state.showModalDocument}
@@ -265,7 +291,7 @@ export default class Documents extends Component {
     const dropDown = () => {
         return(
         <DropdownButton className='mt-3' title='Documentation'>
-            <Dropdown.Item as="button" onClick={() =>this.setState({showProductsWithoutDoc: false, showAllDocuments: true})}>See your documentation status</Dropdown.Item>
+            <Dropdown.Item as="button" onClick={() =>this.setState({showProductsWithoutDoc: false, showAllDocuments: true, productToShow: null})}>See your documentation status</Dropdown.Item>
             <Dropdown.Item as="button" onClick={() =>this.setState({showProductsWithoutDoc: true, showAllDocuments: false})}>Upload documentation</Dropdown.Item>
           </DropdownButton>
         )
