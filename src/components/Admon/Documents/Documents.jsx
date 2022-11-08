@@ -163,36 +163,41 @@ export default class Documents extends Component {
     const listDocumentationStatus = () => {
         if(showAllDocuments && userProductsDoc){
             return(
-                <Container>
-                    <Table striped hover>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Feature</th>
-                                <th>Document Status</th>      
-                                <th>Upload Document</th>  
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {userProductsDoc.map(userProduct =>(
-                                userProduct.product.productFeatures.items.map(pf => {
-                                    return(
-                                        <tr key={pf.id}>
-                                            <td>{pf.product.name}</td>
-                                            <td>{pf.feature.name}</td>
-                                            <td>{pf.documents.items.length > 0? pf.documents.items[0].status : 'Not document assigned' }</td>
-                                            <td>
-                                                {pf.documents.items.length > 0? 'Alredy upload' :
-                                                <Button variant="primary" size='sm' onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>  }
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                                )
-                            ))}
+                <Container className='mt-4 '>
+                    <h3>Your documentation</h3>
+                    <Row className="justify-content-md-center">
+                        <Col xs lg="9">
+                            <Table striped hover className='mt-4'> 
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Feature</th>
+                                        <th>Document Status</th>      
+                                        <th>Upload Document</th>  
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {userProductsDoc.map(userProduct =>(
+                                        userProduct.product.productFeatures.items.map(pf => {
+                                            return(
+                                                <tr key={pf.id}>
+                                                    <td>{pf.product.name}</td>
+                                                    <td>{pf.feature.name}</td>
+                                                    <td>{pf.documents.items.length > 0? pf.documents.items[0].status : 'Not document assigned' }</td>
+                                                    <td>
+                                                        {pf.documents.items.length > 0? 'Alredy upload' :
+                                                        <Button variant="primary" size='sm' onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>  }
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
+                                        )
+                                    ))}
 
-                        </tbody>
-                    </Table>
+                                </tbody>
+                            </Table>
+                        </Col>
+                    </Row>
                 </Container>
             )
         }

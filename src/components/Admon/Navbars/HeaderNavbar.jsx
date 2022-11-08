@@ -52,69 +52,35 @@ export default class HeaderNavbar extends Component {
                                 style={{ maxHeight: '100px' }}
                                 navbarScroll
                             >
-                                <Nav.Link href="#products">
-                                    <Button 
-                                        variant='outline-primary'
-                                        size='sm'
-                                        onClick={(e) => this.changeHeaderNavBarRequest('products', e)}
-                                    >Projects</Button>
+                                <Nav.Link href="#products" onClick={(e) => this.changeHeaderNavBarRequest('products', e)}>
+                                    Projects
                                 </Nav.Link>
 
-                                <Nav.Link href="#documents">
-                                    <Button 
-                                        variant='outline-primary'
-                                        size='sm'
-                                        onClick={(e) => this.changeHeaderNavBarRequest('documents', e)}
-                                    >Documents</Button>
+                                <Nav.Link href="#documents"onClick={(e) => this.changeHeaderNavBarRequest('documents', e)}>
+                                    Documents
                                 </Nav.Link>
 
-                                <Nav.Link href="#formulas">
-                                    <Button 
-                                        variant='outline-primary'
-                                        size='sm'
-                                        onClick={(e) => this.changeHeaderNavBarRequest('formulas', e)}
-                                    >Formulas</Button> 
+                                <Nav.Link href="#formulas" onClick={(e) => this.changeHeaderNavBarRequest('formulas', e)}>
+                                    Formulas
                                 </Nav.Link>
 
-                                <Nav.Link href="#results">
-                                    <Button 
-                                        variant='outline-primary'
-                                        size='sm'
-                                        onClick={(e) => this.changeHeaderNavBarRequest('results', e)}
-                                    >Results</Button> 
-
+                                <Nav.Link href="#results" onClick={(e) => this.changeHeaderNavBarRequest('results', e)}>
+                                    Results
                                 </Nav.Link>
-                                <Nav.Link href="#categorys">
-                                    <Button 
-                                        variant='outline-primary'
-                                        size='sm'
-                                        onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}
-                                    >Categories</Button> 
-
+                                <Nav.Link href="#categorys" onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}>
+                                    Categories
                                 </Nav.Link>
 
-                                <Nav.Link href="#features">
-                                    <Button
-                                        variant='outline-primary'
-                                        size='sm'
-                                        onClick={(e) => this.changeHeaderNavBarRequest('features', e)}
-                                    >Features</Button>
+                                <Nav.Link href="#features" onClick={(e) => this.changeHeaderNavBarRequest('features', e)}>
+                                    Features
                                 </Nav.Link>
 
-                                <Nav.Link href="#uom">
-                                    <Button
-                                        variant='outline-primary'
-                                        size='sm'
-                                        onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}
-                                    >OUM</Button>
+                                <Nav.Link href="#uom" onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}>
+                                    OUM
                                 </Nav.Link>
 
-                                <Nav.Link href="#home">
-                                    <Button 
-                                        variant='primary'
-                                        size='sm' 
-                                        onClick={(e) => this.handleChangeObjectElement()}
-                                    >SignOut</Button>
+                                <Nav.Link href="#home" style={{color:'#0D6EFD'}} onClick={(e) => this.handleChangeObjectElement()}>
+                                    SignOut
                                 </Nav.Link>
                             
                             </Nav>
