@@ -11,7 +11,7 @@ import LandingPage from "./components/views/LandingPage.jsx";
 // Routing
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
+// import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
 
 class App extends Component{
   
@@ -47,10 +47,10 @@ class App extends Component{
               render={(props) => <InvestorAdmon {...props} />}
             />
 
-            <Route
+            {/* <Route
               path="/cardano_connector"
               render={(props) => <CardanoConnector {...props} />}
-            />
+            /> */}
             
             
           {/* <Route path="landing_page" element={<LandingPage />} /> */}
