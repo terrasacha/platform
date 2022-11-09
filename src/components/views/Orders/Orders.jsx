@@ -39,9 +39,14 @@ export default class Orders extends Component {
     async componentDidMount() {
         const instance = axios.create({
             timeout: 1000,
-            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer 3e5cac39-7e38-4139-8fd6-30adc06a61bd'}
+            headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': 'Bearer 3e5cac39-7e38-4139-8fd6-30adc06a61bd', 
+                'Access-Control-Allow-Origin': '*', 
+                'Access-Control-Allow-Credentials': 'true'},
+            crossDomain: true,
         });
-        const result = instance.post('https://secure.payu.com/api/v2_1/orders',this.state.data)
+        const result = instance.post('https://secure.snd.payu.com/api/v2_1/orders',this.state.data)
         console.log('### result: ', result)
      }
 
