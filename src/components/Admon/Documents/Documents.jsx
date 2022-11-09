@@ -45,9 +45,9 @@ export default class Documents extends Component {
     }
 
     componentDidMount = async () => {
-/*         let actualUser = await  Auth.currentAuthenticatedUser()
-        actualUser = actualUser.attributes.sub */
-        await this.loadUserProducts()
+        let actualUser = await  Auth.currentAuthenticatedUser()
+        actualUser = actualUser.attributes.sub
+        await this.loadUserProducts(actualUser)
         await this.loadDocumentTypes()
         // Subscriptions
         // OnCreate Document
@@ -71,8 +71,9 @@ export default class Documents extends Component {
             }
         })
     }
-    async loadUserProducts() {
-        let userResult = await API.graphql({ query: getUser, variables: { id: 'a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934' }})
+    async loadUserProducts(actualUser) {
+        let userResult = await API.graphql({ query: getUser, variables: { id: 'fc6ed5d7-5043-434b-a567-2bb00999eb91' }})
+        console.log(userResult, 'userResult')
         let profileDocument = userResult.data.getUser.role
         if(profileDocument === 'admon') profileDocument = 'ADMON_DOCUMENT'
         if(profileDocument === 'investor') profileDocument = 'INVESTOR_DOCUMENT'
@@ -129,9 +130,9 @@ export default class Documents extends Component {
           // Getting extension
           let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length-1]
           let imageName = imageId + '.' + imageExtension
-          // Uploading image
+          // Uploading image TO DO  MOVE TO PRIVATE
           uploadImageResult = await Storage.put(imageName, this.state.fileToUpload, {
-            level: "public",
+            level: "public/documents",
             contentType: "image/jpeg",
           });
           
