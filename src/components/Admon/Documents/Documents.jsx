@@ -3,17 +3,19 @@ import React, { Component } from 'react'
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap'
 import { ArrowRight } from 'react-bootstrap-icons'
 // GraphQL
-import { API, Auth, graphqlOperation } from 'aws-amplify'
+import { API, Auth, graphqlOperation, Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
 import { createDocument } from '../../../graphql/mutations'
-import { getUser } from '../../../graphql/queries'
+import { getUser, listDocumentTypes } from '../../../graphql/queries'
 import { onCreateDocument } from '../../../graphql/subscriptions'
+import URL from '../../common/_conf/URL'
 
 export default class Documents extends Component {
     constructor(props) {
         super(props)
         this.state = {
             documents: [],
+            documentTypes: [],
             newDocument: {
                 id: null,
                 data: null,
@@ -46,30 +48,31 @@ export default class Documents extends Component {
 /*         let actualUser = await  Auth.currentAuthenticatedUser()
         actualUser = actualUser.attributes.sub */
         await this.loadUserProducts()
-            // Subscriptions
-            // OnCreate Document
-            this.createDocumentListener = API.graphql(graphqlOperation(onCreateDocument))
-            .subscribe({
-                next: createdDocumentData => {
-                    let isOnCreateList = false;
-                    this.state.documents.map((mapDocument) => {
-                        if (createdDocumentData.value.data.onCreateDocument.id === mapDocument.id) {
-                            isOnCreateList = true;
-                        } 
-                        return mapDocument
-                    })
-                    let tempDocuments = this.state.documents
-                    let tempOnCreateDocument = createdDocumentData.value.data.onCreateDocument
-                    if (!isOnCreateList) {
-                        tempDocuments.push(tempOnCreateDocument)
-                    }
-                    this.setState((state) => ({documents: tempDocuments}))
+        await this.loadDocumentTypes()
+        // Subscriptions
+        // OnCreate Document
+        this.createDocumentListener = API.graphql(graphqlOperation(onCreateDocument))
+        .subscribe({
+            next: async createdDocumentData => {
+                let isOnCreateList = false;
+                this.state.documents.map((mapDocument) => {
+                    if (createdDocumentData.value.data.onCreateDocument.id === mapDocument.id) {
+                        isOnCreateList = true;
+                    } 
+                    return mapDocument
+                })
+                let tempDocuments = this.state.documents
+                let tempOnCreateDocument = createdDocumentData.value.data.onCreateDocument
+                if (!isOnCreateList) {
+                    tempDocuments.push(tempOnCreateDocument)
                 }
-            })
+                this.setState((state) => ({documents: tempDocuments}))
+                await this.loadUserProducts()
+            }
+        })
     }
     async loadUserProducts() {
         let userResult = await API.graphql({ query: getUser, variables: { id: 'a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934' }})
-        console.log(userResult) 
         let profileDocument = userResult.data.getUser.role
         if(profileDocument === 'admon') profileDocument = 'ADMON_DOCUMENT'
         if(profileDocument === 'investor') profileDocument = 'INVESTOR_DOCUMENT'
@@ -93,6 +96,11 @@ export default class Documents extends Component {
         this.setState({
             userProductsDoc: listUserProductsDocs,})
     }
+    async loadDocumentTypes() {
+        const listDocumentTypesResult = await API.graphql(graphqlOperation(listDocumentTypes))
+        listDocumentTypesResult.data.listDocumentTypes.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
+        this.setState({documentTypes: listDocumentTypesResult.data.listDocumentTypes.items})
+        }
     
     handleLoadUserProduct = (userProduct) => {
         let userProductCopy = userProduct
@@ -103,7 +111,12 @@ export default class Documents extends Component {
             this.setState(prevState => ({newDocument: {...prevState.newDocument,documentTypeID: e.target.value}}))
         }
         if(e.target.name === 'selected_file'){
-            this.setState({fileToUpload: e.target.value})
+            const { target: { files } } = e;
+            const [file,] = files || [];
+            if (!file) {
+                return
+            }
+            this.setState({fileToUpload: file})
         }
     }
     handleCreateDocument = async() => {
@@ -119,16 +132,17 @@ export default class Documents extends Component {
           let imageName = imageId + '.' + imageExtension
           // Uploading image
           uploadImageResult = await Storage.put(imageName, this.state.fileToUpload, {
-            level: "public/documents",
+            level: "public",
             contentType: "image/jpeg",
           });
           
           tempNewDocument.id = uuidv4().replaceAll('-','_')
-          tempNewDocument.url = uploadImageResult.key
+          tempNewDocument.url = URL + uploadImageResult.key
+          tempNewDocument.productFeatureID = this.state.productFeatureToAddDoc.id
           tempNewDocument.timeStamp = Date.now()
           tempNewDocument.data = JSON.stringify({empty: ''})
-          console.log(this.state.newDocument)
           await API.graphql(graphqlOperation(createDocument , { input: tempNewDocument }))
+          console.log('document created')
           this.cleanState()
     }
     handleHideModalDocument() {
@@ -183,7 +197,7 @@ export default class Documents extends Component {
                                                 <tr key={pf.id}>
                                                     <td>{pf.product.name}</td>
                                                     <td>{pf.feature.name}</td>
-                                                    <td>{pf.documents.items.length > 0? pf.documents.items[0].status : 'Not document assigned' }</td>
+                                                    <td>{pf.documents.items.length > 0? pf.documents.items[0].status : 'Document not assigned' }</td>
                                                     <td>
                                                         {pf.documents.items.length > 0? 'Alredy upload' :
                                                         <Button variant="primary" size='sm' onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>  }
@@ -271,8 +285,9 @@ export default class Documents extends Component {
                                 name='selected_documentType'
                                 onChange={(e) => this.handleInputCreateDocument(e)}
                                 >
-                                {['-','documentType1', 'documentType2', 'documentType3', 'documentType4', 'documentType5', 'documentType6'].map(
-                                    op => (<option value={op} key={op}>{op}</option>)
+                                <option>-</option>
+                                {this.state.documentTypes.map(
+                                    op => (<option value={op.id} key={op}>{op.name}</option>)
                                 )}
                             </Form.Select>
                         <Form.Group >
@@ -287,7 +302,7 @@ export default class Documents extends Component {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button disabled onClick={(e) => this.handleCreateDocument()}>Upload Document</Button>
+                    <Button onClick={(e) => this.handleCreateDocument()}>Upload Document</Button>
                 </Modal.Footer>
             </Modal>
         )
