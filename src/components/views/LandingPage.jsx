@@ -11,6 +11,7 @@ import Features from './Features'
 import HeaderNavbar from './Navbars/HeaderNavbar'
 import Products from './Products'
 import TermsAndConditions from './TermsAndConditions'
+import Orders from './Orders/Orders'
 
 
 export default class LandingPage extends Component {
@@ -141,6 +142,7 @@ export default class LandingPage extends Component {
         {renderCarousel()}
         {renderProducts()}
         {renderTermAndConditions()}
+        <Orders></Orders>
       </Container>
     )
   }
