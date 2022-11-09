@@ -40,7 +40,7 @@ export default class Orders extends Component {
                         <h2>${product.totalPrice !== undefined? 
                             product.totalPrice.productFeatureResultAssigned? product.totalPrice.productFeatureResultAssigned : product.totalPrice.value 
                             : '!value'}</h2>
-                        <form method="post" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/">
+                        <form method="post" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/" target='blank'>
                             <input name="merchantId"      type="hidden"  value="508029"   />
                             <input name="accountId"       type="hidden"  value="512321" />
                             <input name="description"     type="hidden"  value="Test PAYU"  />
