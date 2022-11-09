@@ -66,8 +66,8 @@ export default class Documents extends Component {
                 if (!isOnCreateList) {
                     tempDocuments.push(tempOnCreateDocument)
                 }
-                this.setState((state) => ({documents: tempDocuments}))
                 await this.loadUserProducts()
+                this.setState((state) => ({documents: tempDocuments}))
             }
         })
     }
@@ -103,8 +103,7 @@ export default class Documents extends Component {
         }
     
     handleLoadUserProduct = (userProduct) => {
-        let userProductCopy = userProduct
-        this.setState({productToShow: userProductCopy})
+        this.setState({productToShow: userProduct})
     }
     handleInputCreateDocument = (e) => {
         if(e.target.name === 'selected_documentType'){
