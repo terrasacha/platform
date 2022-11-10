@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import axios from "axios"
+import axios from "axios";
+import React, { Component } from 'react';
 
 export default class Orders extends Component {
     constructor(props) {
