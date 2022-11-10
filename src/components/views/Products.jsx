@@ -3,9 +3,8 @@ import React, { Component } from 'react'
 import { Button, Carousel, Container, Modal, Table } from 'react-bootstrap'
 // Util
 import WebAppConfig from '../common/_conf/WebAppConfig'
-// GraphQL
-// import { API, graphqlOperation } from 'aws-amplify'
-// import { listProducts } from '../../graphql/queries'
+// Components
+import Orders from './Orders/Orders'
 
 import './Views.css'
 
@@ -13,13 +12,17 @@ export default class Products extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            isRenderProductsOnCards: true,
             isRenderModalProductImages: false,
             isRenderModalProductFeatures: false,
+            isRenderOrderTokens: false,
             selectedProductToShow: null,
+            product: null
         }
         this.handleLoadSelectedProduct = this.handleLoadSelectedProduct.bind(this)
         this.handleHideModalProductImages = this.handleHideModalProductImages.bind(this)
         this.handleHideModalProductFeatures = this.handleHideModalProductFeatures.bind(this)
+        this.handleOrderTokens = this.handleOrderTokens.bind(this)
     }
 
     componentDidMount = async () => {
@@ -51,10 +54,21 @@ export default class Products extends Component {
         }
     }
 
-    // RENDER
+    async handleOrderTokens(event, pProduct) {
+        console.log('handleOrderTokens: ')
+        await this.setState({
+            product: pProduct,
+            isRenderOrderTokens: true,
+            isRenderProductsOnCards: false,
+            isRenderModalProductImages: false,
+            isRenderModalProductFeatures: false,
+        })
+    }
+    
+        // RENDER
     render() {
         // State Varibles
-        let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures} = this.state
+        let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures, isRenderOrderTokens, isRenderProductsOnCards} = this.state
         let {products} = this.props
         let productsActive = products.filter(p => p.isActive)
         productsActive.map(product =>{
@@ -77,7 +91,7 @@ export default class Products extends Component {
         const urlS3Image = WebAppConfig.url_s3_public_images
         // Render Products on Cards
         const renderProductsOnCards = () => {
-            if (products.length > 0) {
+            if (products.length > 0 && isRenderProductsOnCards) {
                 return (
                     <div className=''>
                         {productsActive.map(product => (
@@ -146,6 +160,9 @@ export default class Products extends Component {
                                             <div className='product_more_pictures'>
                                                 <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>Features</button>
                                             </div>
+                                        </div>
+                                        <div>
+                                            <button  onClick={ (e) => this.handleOrderTokens(e, product)}>Buy</button>
                                         </div>
                                     </div>
                                 </div>
@@ -249,9 +266,17 @@ export default class Products extends Component {
                             </Table>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button onClick={(e) => this.handleHideModalProductFeatures(e)}>Close</Button>
+                            <Button onClick={(e) => this.handleOrderTokens(e)}>Close</Button>
                         </Modal.Footer>
                     </Modal>
+                )
+            }
+        }
+        // Render Order Tokens
+        const renderOrderTokens = () => {
+            if (isRenderOrderTokens) {
+                return (
+                    <Orders product={this.state.product}></Orders>
                 )
             }
         }
@@ -261,6 +286,7 @@ export default class Products extends Component {
                 {renderProductsOnCards()}
                 {renderModalProductImages()}
                 {renderModalProductFeatures()}
+                {renderOrderTokens()}
             </Container>
         )
     }
