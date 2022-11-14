@@ -1,101 +1,106 @@
-import React, { Component } from 'react'
-// Bootstrap
-import { Button, Container, Nav, Navbar } from 'react-bootstrap'
-// Import React Bootstrap Icons
-/* import { Filter, InfoCircle } from 'react-bootstrap-icons' */
-// import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
+import React, { Component } from 'react';
+import { Navbar, Nav, Badge } from 'react-bootstrap'
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import { Logger } from 'aws-amplify';
 
-// Import images
-import LOGO from '../../common/_images/logo.png'
+import store from '../../../store';
+import { JSignOut } from '../../_auth';
 
-export default class HeaderNavbar extends Component {
+const HomeItems = props => (
+  <React.Fragment>
+    <Nav.ItemLink href="#/" active>
+      Home
+      <Badge srOnly>(current)</Badge>
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/profile">
+      Profile
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/login">
+      Login
+    </Nav.ItemLink>
+  </React.Fragment>
+)
 
-    constructor(props) {
-        super(props)
-        this.state = {}
-        this.changeHeaderNavBarRequest = this.props.changeHeaderNavBarRequest.bind(this)
-        this.handleSignOut = this.props.handleSignOut.bind(this)
-        this.handleChangeObjectElement = this.handleChangeObjectElement.bind(this)
-    }
-    
-    async handleChangeObjectElement() {
-        console.log('handleChangeObjectElement: ')
-        this.props.handleSignOut()
-    }
-    
-    handleOnChangeInputForm = async(event) => {
-        if (event.target.name === 'desiredSubscriptionTopic') {
-            await this.setState({desiredSubscriptionTopic: event.target.value})
-        }
-        if (event.target.name === 'desiredPublishTopic') {
-            await this.setState({desiredPublishTopic: event.target.value})
-        }
-    }
-    // RENDER
-    render() {
-        let {isActualUserLogged} = this.props
-        const renderNavBar = () => {
-            if (isActualUserLogged) {
-                return (
-                    <Navbar bg="light" variant="light" fixed="top">
-                        <Container>
-                            <Navbar.Brand href="#"><img src={LOGO} 
-                                        width="100"
-                                        height="auto"
-                                        className="d-inline-block align-top"
-                                        alt="ATP"
-                            /></Navbar.Brand>
-                            <Navbar.Toggle aria-controls="navbarScroll" />
-                            <Navbar.Collapse id="navbarScroll">
-                            <Nav
-                                className="me-auto my-2 my-lg-0"
-                                style={{ maxHeight: '100px' }}
-                                navbarScroll
-                            >
-                                <Nav.Link href="#products" onClick={(e) => this.changeHeaderNavBarRequest('products', e)}>
-                                    Projects
-                                </Nav.Link>
+const LoginItems = props => (
+  <React.Fragment>
+    <Nav.ItemLink href="#/">
+      Home
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/profile">
+      Profile
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/login" active>
+      Login
+      <Badge srOnly>(current)</Badge>
+    </Nav.ItemLink>
+  </React.Fragment>
+)
 
-                                <Nav.Link href="#documents"onClick={(e) => this.changeHeaderNavBarRequest('documents', e)}>
-                                    Documents
-                                </Nav.Link>
+const ProfileItems = props => (
+  <React.Fragment>
+    <Nav.ItemLink href="#/">
+      Home
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/profile" active>
+      Profile
+      <Badge srOnly>(current)</Badge>
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/login">
+      Login
+    </Nav.ItemLink>
+  </React.Fragment>
+)
 
-                                <Nav.Link href="#formulas" onClick={(e) => this.changeHeaderNavBarRequest('formulas', e)}>
-                                    Formulas
-                                </Nav.Link>
+const logger = new Logger('Navigator');
 
-                                <Nav.Link href="#results" onClick={(e) => this.changeHeaderNavBarRequest('results', e)}>
-                                    Results
-                                </Nav.Link>
-                                <Nav.Link href="#categorys" onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}>
-                                    Categories
-                                </Nav.Link>
+export default class Navigator extends Component {
+  constructor(props) {
+    super(props);
 
-                                <Nav.Link href="#features" onClick={(e) => this.changeHeaderNavBarRequest('features', e)}>
-                                    Features
-                                </Nav.Link>
+    this.storeListener = this.storeListener.bind(this);
 
-                                <Nav.Link href="#uom" onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}>
-                                    OUM
-                                </Nav.Link>
+    this.state = { user: null, profile: null }
+  }
 
-                                <Nav.Link href="#home" style={{color:'#0D6EFD'}} onClick={(e) => this.handleChangeObjectElement()}>
-                                    SignOut
-                                </Nav.Link>
-                            
-                            </Nav>
-                            </Navbar.Collapse>
-                        </Container>
-                    </Navbar>
-                )
-            }
-        }
+  componentDidMount() {
+    this.unsubscribeStore = store.subscribe(this.storeListener);
+  }
 
-        // RENDER        
-        return (
-            <>
-                {renderNavBar()}   
-            </>
-        )
-    }
+  componentWillUnmount() {
+    this.unsubscribeStore();
+  }
+
+  storeListener() {
+    logger.info('redux notification');
+    const state = store.getState();
+    this.setState({ user: state.user, profile: state.profile });
+  }
+
+  render() {
+    const { user } = this.state;
+    const profile = this.state.profile || {};
+
+    return (
+      <Navbar expand="md" dark bg="dark" fixed="top">
+        <Navbar.Brand href="#">Journal</Navbar.Brand>
+        <Navbar.Toggler target="#navbarsExampleDefault" />
+
+        <Navbar.Collapse id="navbarsExampleDefault">
+          <Navbar.Nav mr="auto">
+            <HashRouter>
+              <Switch>
+                <Route exact path="/" component={HomeItems} />
+                <Route exact path="/profile" component={ProfileItems} />
+                <Route exact path="/login" component={LoginItems} />
+              </Switch>
+            </HashRouter>
+          </Navbar.Nav>
+          <Navbar.Text mr="2">
+            { user? 'Hi ' + (profile.given_name || user.username) : 'Please sign in' }
+          </Navbar.Text>
+          { user && <JSignOut /> }
+        </Navbar.Collapse>
+      </Navbar>
+    )
+  }
 }
