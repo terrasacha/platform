@@ -123,27 +123,49 @@ export const listUsers = /* GraphQL */ `
   ) {
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
+        userProducts {
+          items {
+            id
+            productID
+            product {
+              id
+              name
+              productFeatures {
+                items {
+                  id
+                  documents {
+                    items {
+                      id
+                      status
+                    }
+                  }
+                  feature {
+                    id
+                    name
+                    unitOfMeasureID
+                    unitOfMeasure {
+                      description
+                      engineeringUnit
+                    }
+                  }
+                  featureID
+                  verifications {
+                    items {
+                      id
+                      createdOn
+                      updatedOn
+                      userVerifiedID
+                      userVerifierID
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
         id
         name
-        dateOfBirth
-        isProfileUpdated
-        addresss
-        cellphone
         role
-        wallets {
-          nextToken
-        }
-        verifierVerifications {
-          nextToken
-        }
-        verifiedVerifications {
-          nextToken
-        }
-        userProducts {
-          nextToken
-        }
-        createdAt
-        updatedAt
       }
       nextToken
     }
@@ -511,37 +533,42 @@ export const listDocuments = /* GraphQL */ `
     listDocuments(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        data
-        timeStamp
-        hash
-        url
-        signed
         isApproved
         status
-        isUploadedToBlockChain
-        documentTypeID
-        documentType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        productFeatureID
+        url
+        timeStamp
         productFeature {
           id
-          value
-          isToBlockChain
-          isVerifable
-          order
-          isOnMainCard
-          productID
-          featureID
-          createdAt
-          updatedAt
+          feature {
+            name
+            id
+            description
+            featureType {
+              id
+              name
+            }
+          }
+          product {
+            id
+            name
+          }
+          verifications {
+            items {
+              id
+              userVerifierID
+              userVerifier {
+                name
+              }
+              userVerifiedID
+              userVerified {
+                name
+              }
+              updatedOn
+              sign
+              createdOn
+            }
+          }
         }
-        createdAt
-        updatedAt
       }
       nextToken
     }
