@@ -6,8 +6,8 @@ import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-boo
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
-import { API, graphqlOperation } from 'aws-amplify'
-import { createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
+import { API, graphqlOperation, Auth} from 'aws-amplify'
+import { createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct, createUserProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
 import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
 // Utils 
@@ -270,14 +270,18 @@ class Products extends Component {
                 await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
                 return image
             })
-            // Creating ProductFeatures
-/*             this.state.productFeatures.map(async (productFeature, idx) => {
-                delete productFeature.feature
-                return await API.graphql(graphqlOperation(createProductFeature, { input: productFeature }))
-            }) */
-            // Creating new product
 
             await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
+            // Creating UserProduct
+            let actualUser = await  Auth.currentAuthenticatedUser()
+            let actualUserID = actualUser.attributes.sub
+  
+            const payLoadNewUserProduct = {
+                userID: actualUserID,
+                productID: tempCRUD_Product.id,
+                isFavorite: true
+            }
+            await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
             await this.cleanProductOnCreate()
             /* await this.cleanProductOnCreate() */
         }
