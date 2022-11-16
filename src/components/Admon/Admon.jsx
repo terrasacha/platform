@@ -13,6 +13,7 @@ import HeaderNavbar from './Navbars/HeaderNavbar';
 import Products from './Products/Products';
 import Results from './Results/Results';
 import UOM from './UOM/UOM';
+import Validation from './Validation/Validation';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
@@ -43,6 +44,7 @@ export default class Admon extends Component {
             isShowFormulas:false,
             isShowResults: false,
             isShowDocuments: false,
+            isShowValidation: false,
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
         this.setUserGraphQLUser = this.setUserGraphQLUser.bind(this)
@@ -103,6 +105,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
+                isShowValidation: false,
             })
         }
 
@@ -117,6 +120,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
+                isShowValidation: false,
             })
         }
 
@@ -132,6 +136,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
+                isShowValidation: false,
             })
         }
 
@@ -146,6 +151,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
+                isShowValidation: false,
             })
         }
         if (pRequest === 'features') {
@@ -159,6 +165,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
+                isShowValidation: false,
         })
         }
         if (pRequest === 'uom') {
@@ -172,6 +179,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
+                isShowValidation: false,
         })
         }
         if (pRequest === 'formulas') {
@@ -185,6 +193,7 @@ export default class Admon extends Component {
                 isShowFormulas:true,
                 isShowResults: false,
                 isShowDocuments: false,
+                isShowValidation: false,
         })
         }
         if (pRequest === 'results') {
@@ -198,6 +207,7 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: true,
                 isShowDocuments: false,
+                isShowValidation: false,
         })
         }
         if (pRequest === 'documents') {
@@ -211,6 +221,22 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: true,
+                isShowValidation: false,
+        })
+        }
+        
+        if (pRequest === 'validation') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowFeatures: false,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+                isShowUOM: false,
+                isShowFormulas: false,
+                isShowResults: false,
+                isShowDocuments: false,
+                isShowValidation: true,
         })
         }
         
@@ -265,7 +291,8 @@ export default class Admon extends Component {
             isShowUOM,
             isShowFormulas,
             isShowResults,
-            isShowDocuments
+            isShowDocuments,
+            isShowValidation
         } = this.state
 
         const renderAdmonProfile = () => {
@@ -360,6 +387,17 @@ export default class Admon extends Component {
                 )
             }
         }
+        const renderValidations = () => {
+            if (isShowValidation) {
+                return (
+                    <Validation 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                    ></Validation>
+                )
+            }
+        }
 
        
         const renderUserNoAuthorize = () => {
@@ -396,6 +434,7 @@ export default class Admon extends Component {
                     {renderFormulas()}
                     {renderResults()}
                     {renderDocuments()}
+                    {renderValidations()}
                     {renderAdmonProfile()}
                     {renderUserNoAuthorize()}
                 </Row>
