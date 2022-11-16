@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 //Bootstrap
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap'
-import { ArrowRight } from 'react-bootstrap-icons'
+import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons'
 // GraphQL
 import { API, Auth, graphqlOperation, Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
@@ -181,7 +181,7 @@ export default class Documents extends Component {
                     <h3>Your documentation</h3>
                     <Row className="justify-content-md-center">
                         <Col xs lg="9">
-                            <Table striped hover className='mt-4'> 
+                            <Table hover className='mt-4'> 
                                 <thead>
                                     <tr>
                                         <th>Product</th>
@@ -197,7 +197,10 @@ export default class Documents extends Component {
                                                 <tr key={pf.id}>
                                                     <td>{pf.product.name}</td>
                                                     <td>{pf.feature.name}</td>
-                                                    <td>{pf.documents.items.length > 0? pf.documents.items[0].status : 'Document not assigned' }</td>
+                                                    <td>{pf.documents.items.length > 0? 
+                                                    pf.documents.items[0].status === 'pending'? <HourglassSplit size={25} color='grey'/> : 
+                                                    pf.documents.items[0].status === 'accepted'? <CheckCircle size={25} color='#449E48'/> : <XCircle size={25} color='#CC0000'/>
+                                                     : 'Document not assigned' }</td>
                                                     <td>
                                                         {pf.documents.items.length > 0? 'Alredy upload' :
                                                         <Button variant="primary" size='sm' onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>  }
