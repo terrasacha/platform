@@ -10,13 +10,19 @@ import Amplify, { Auth } from 'aws-amplify';
 import awsconfig from './aws-exports';
 Amplify.configure(awsconfig);
 Auth.configure(awsconfig);
-
+// Redux Store
+// eslint-disable-next-line import/first
+import store from './_store/store'
+// eslint-disable-next-line import/first
+import { Provider } from 'react-redux'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <Provider store={store}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function
