@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
 import LandingPage from "./components/views/LandingPage.jsx";
+// Redux Components
+import Counter from './components/Counter/Counter'
 
 
 
@@ -45,6 +47,11 @@ class App extends Component{
             <Route
               path="/investor_admon"
               render={(props) => <InvestorAdmon {...props} />}
+            />
+
+            <Route
+              path="/counter_redux"
+              render={(props) => <Counter {...props} />}
             />
 
             {/* <Route
