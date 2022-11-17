@@ -46,8 +46,8 @@ export default class Documents extends Component {
 
     componentDidMount = async () => {
         let actualUser = await  Auth.currentAuthenticatedUser()
-        actualUser = actualUser.attributes.sub
-        await this.loadUserProducts(actualUser)
+        const actualUserID = actualUser.attributes.sub
+        await this.loadUserProducts(actualUserID)
         await this.loadDocumentTypes()
         // Subscriptions
         // OnCreate Document
@@ -66,13 +66,13 @@ export default class Documents extends Component {
                 if (!isOnCreateList) {
                     tempDocuments.push(tempOnCreateDocument)
                 }
-                await this.loadUserProducts()
+                await this.loadUserProducts(actualUserID)
                 this.setState((state) => ({documents: tempDocuments}))
             }
         })
     }
-    async loadUserProducts(actualUser) {
-        let userResult = await API.graphql({ query: getUser, variables: { id: 'fc6ed5d7-5043-434b-a567-2bb00999eb91' }})
+    async loadUserProducts(pActualUserID) {
+        let userResult = await API.graphql({ query: getUser, variables: { id: pActualUserID }})
         console.log(userResult, 'userResult')
         let profileDocument = userResult.data.getUser.role
         if(profileDocument === 'admon') profileDocument = 'ADMON_DOCUMENT'
