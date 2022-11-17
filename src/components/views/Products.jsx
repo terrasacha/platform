@@ -87,7 +87,6 @@ export default class Products extends Component {
            
            return product
         })
-        console.log(productsActive)
         const urlS3Image = WebAppConfig.url_s3_public_images
         // Render Products on Cards
         const renderProductsOnCards = () => {

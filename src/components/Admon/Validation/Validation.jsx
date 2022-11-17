@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 //Bootstrap
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
-import { CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
+import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
+import './Validation.css';
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerification, updateDocument } from '../../../graphql/mutations';
@@ -21,6 +22,7 @@ export default class Validation extends Component {
       showModalValidate: false,
       showModalDetailsValidation: false,
       selectedDocument: null,
+      selectedProductValidation: null,
       creatingVerification: false,
       verification: {
         id: '',
@@ -37,6 +39,8 @@ export default class Validation extends Component {
     this.handleHideModalValidate = this.handleHideModalValidate.bind(this)
     this.handleHideModalDetailsValidation = this.handleHideModalDetailsValidation.bind(this)
     this.handleInputValidate = this.handleInputValidate.bind(this)
+    this.handleSelectProduct = this.handleSelectProduct.bind(this)
+    this.handleSelectStatus = this.handleSelectStatus.bind(this)
 }
 
   componentDidMount = async () => {
@@ -44,8 +48,6 @@ export default class Validation extends Component {
     actualUser = actualUser.attributes.sub
     this.setState({actualUser: actualUser})
     await this.loadDocuments()
-    console.log(this.state.otherDocuments, 'otherDocuments')
-    console.log(this.state.documentsPending, 'documentsPending')
     // Subscriptions
     // OnUpdate Document
     this.updateDocumentListener = API.graphql(graphqlOperation(onUpdateDocument))
@@ -86,6 +88,13 @@ export default class Validation extends Component {
   }
   handleHideModalDetailsValidation() {
     this.setState({showModalDetailsValidation: !this.state.showModalDetailsValidation})
+  }
+  handleSelectStatus(data) {
+    if(data === 'pendingDoc') this.setState({showPending: true, showOther: false, selectedProductValidation: null})
+    if(data === 'approveRejectDoc') this.setState({showPending: false, showOther: true, selectedProductValidation: null})
+  }
+  handleSelectProduct(product){
+    this.setState({selectedProductValidation: product})
   }
   handleInputValidate(e) {
     if(e.target.name === 'sign'){
@@ -150,19 +159,35 @@ export default class Validation extends Component {
 
   render() {
     const renderValidations = () => {
-/*       if(this.state.otherDocuments && this.state.documentsPending) */
       let documents = []
       if(this.state.showPending) documents = this.state.documentsPending
       if(this.state.showOther) documents = this.state.otherDocuments
+      let products = documents.map(document => document.productFeature.product.name)
+      products = products.reduce((acc,item)=>{
+        if(!acc.includes(item)){
+          acc.push(item);
+        }
+        return acc;
+      },[])
+      if(this.state.selectedProductValidation){
+        documents = documents.filter(document => document.productFeature.product.name === this.state.selectedProductValidation)
+      }
       return(
         <Container className='mt-4'>
+          
                     <Row className="justify-content-md-center">
-                        <Col xs lg="9">
+                        <Col xs={2}>
+                            <h3>Products</h3>
+                          <Container className='mt-5'>
+                              {products?.map(product => <Card key={product} body className={product === this.state.selectedProductValidation? 'cardContainerSelected': 'cardContainer'} style={{cursor: 'pointer'}} onClick={() => this.handleSelectProduct(product)}>{product}<ArrowRight /></Card>)}
+                          </Container>
+                        </Col>
+                        <Col xs={10}>
                           <div>
                             <h3>Documentation</h3>
                             <DropdownButton size='sm' variant='outline-primary' title='By status'>
-                              <Dropdown.Item as="button" onClick={() =>this.setState({showPending: true, showOther: false})}>Pending Documentation</Dropdown.Item>
-                              <Dropdown.Item as="button" onClick={() =>this.setState({showPending: false, showOther: true})}>Approve/Denied Documentation</Dropdown.Item>
+                              <Dropdown.Item as="button" onClick={() =>this.handleSelectStatus('pendingDoc')}>Pending Documentation</Dropdown.Item>
+                              <Dropdown.Item as="button" onClick={() =>this.handleSelectStatus('approveRejectDoc')}>Approved/Rejected Documentation</Dropdown.Item>
                             </DropdownButton>
                           </div>
                             <Table striped hover className='mt-4'> 

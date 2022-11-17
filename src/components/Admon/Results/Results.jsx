@@ -249,7 +249,6 @@ class Results extends Component {
             }
             return pf
         })
-        console.log(productsFeatures, 'productFeatures')
         let featuresUsed = []
         for(let i = 0; i< formulaArrayVariables.length ; i++){
             let aux = formulaArrayVariables[i]
@@ -517,7 +516,7 @@ class Results extends Component {
             }
                     return (
                         <>
-                            <h1>PF who has a result assing</h1>
+                            <h1>PF who has a result assign</h1>
                             <Row className='mb-4'>
                                 <Form.Group as={Col}>
                                 <Form.Label>Filter by Product</Form.Label>
@@ -575,7 +574,7 @@ class Results extends Component {
                                                     variant={PFR.isActive?'secondary' : 'success'}
                                                     size='sm' 
                                                     onClick={(e) => this.handleActiveResult(PFR.productFeatureID, PFR.id)}>
-                                                {PFR.isActive? 'Assingned': 'Assing'}
+                                                {PFR.isActive? 'Assigned': 'Assign'}
                                                 </Button> 
                                                 </td>
                                             </tr>
