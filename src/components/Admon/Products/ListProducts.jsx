@@ -207,7 +207,6 @@ export default class ListProducts extends Component {
                     productFeaturesCopy[i].productFeatureResults2 = filteredIsActivePFR
                 }
             }
-            console.log(selectedProductToShow.productFeatures)
             if(productFeaturesCopy.length > 0){
             return (
                 <Modal

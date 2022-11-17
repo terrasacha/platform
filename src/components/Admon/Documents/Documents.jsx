@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 //Bootstrap
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap'
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons'
+import './Documents.css'
 // GraphQL
 import { API, Auth, graphqlOperation, Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
@@ -73,7 +74,6 @@ export default class Documents extends Component {
     }
     async loadUserProducts(actualUser) {
         let userResult = await API.graphql({ query: getUser, variables: { id: 'fc6ed5d7-5043-434b-a567-2bb00999eb91' }})
-        console.log(userResult, 'userResult')
         let profileDocument = userResult.data.getUser.role
         if(profileDocument === 'admon') profileDocument = 'ADMON_DOCUMENT'
         if(profileDocument === 'investor') profileDocument = 'INVESTOR_DOCUMENT'
@@ -222,13 +222,15 @@ export default class Documents extends Component {
     const uploadDocumentation = () => {
         if(showProductsWithoutDoc){
             let userProductsDocCopy = userProductsDoc
+            let aux = {id: 'x'}
+            if(this.state.productToShow) aux =  this.state.productToShow.id
         return (
             <Container className='mt-3'>
               <Row>
                   <Col xs={2}>
                           <h3>Products</h3>
                       <Container className='mt-5'>
-                          {userProductsDocCopy?.map(userProduct => <Card key={userProduct.id} body className='mb-2' style={{cursor: 'pointer'}} onClick={() => this.handleLoadUserProduct(userProduct)}>{userProduct.product.name}<ArrowRight /></Card>)}
+                          {userProductsDocCopy?.map(userProduct => <Card key={userProduct.id} body className={userProduct.id === aux? 'cardContainerSelected' : 'cardContainer'} style={{cursor: 'pointer'}} onClick={() => this.handleLoadUserProduct(userProduct)}>{userProduct.product.name}<ArrowRight /></Card>)}
                       </Container>
                   </Col>
                   <Col xs={10}>

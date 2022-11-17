@@ -124,7 +124,6 @@ export default class CRUDProductFeatures extends Component {
        })
    }
    handleLoadEditProductFeature= async(productFeature, event) => {
-    console.log(productFeature)
     this.setState({
             newProductFeature:  productFeature,
             CRUDButtonName: 'UPDATE',

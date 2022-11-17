@@ -522,7 +522,6 @@ class Products extends Component {
             tempCRUD_Product.isActive = !tempCRUD_Product.isActive
         }
         if (event.target.name === 'CRUD_ProductStatus') {
-            console.log(event.target.value)
             tempCRUD_Product.status = event.target.value
         }
         await this.setState({CRUD_Product: tempCRUD_Product})
