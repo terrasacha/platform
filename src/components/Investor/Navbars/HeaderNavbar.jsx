@@ -15,11 +15,16 @@ export default class HeaderNavbar extends Component {
             
         }
         this.handleChangeNavBar = this.handleChangeNavBar.bind(this)
+        this.handleSignOut = this.handleSignOut.bind(this)
     }
     
     async handleChangeNavBar(pRequest) {
         console.log('handleChangeNavBar: ', pRequest)
         this.props.changeHeaderNavBarRequest(pRequest)
+    }
+
+    async handleSignOut() {
+        this.props.handleSignOut()
     }
 
     render() {
@@ -40,19 +45,13 @@ export default class HeaderNavbar extends Component {
                                 <Button 
                                     variant='outline-primary'
                                      
-                                    onClick={(e) => this.handleChangeNavBar('investor_profile', e)}
-                                ><ListTask></ListTask>Profile</Button> 
-
-                            </Nav.Link>
-
-                            <Nav.Link href="#home">
-                                
-                                <Button 
-                                    variant='outline-primary'
-                                     
                                     onClick={(e) => this.handleChangeNavBar('investor_documents', e)}
                                 ><ListTask></ListTask>Documents</Button> 
 
+                            </Nav.Link>
+
+                            <Nav.Link href="#home" style={{color:'#0D6EFD'}} onClick={(e) => this.handleSignOut()}>
+                                    SignOut
                             </Nav.Link>
 
                         </Nav>

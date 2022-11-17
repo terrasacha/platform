@@ -1,12 +1,22 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap'
+// Amplify
+import { Auth } from 'aws-amplify'
+import { withAuthenticator } from '@aws-amplify/ui-react'
+// Auth css custom
+import Bootstrap from "../common/themes"
+// Routing
+// import { useHistory } from 'react-router-dom'
+// GraphQL
+import { API, graphqlOperation } from 'aws-amplify'
+import { getUser } from '../../graphql/queries'
+import { createUser, updateUser, createWallet } from '../../graphql/mutations';
 // Components
 import HeaderNavbar from './Navbars/HeaderNavbar'
 import Documents from './Documents/Documents'
-import InvestorProfile from './Profile/InvestorProfile'
 
-export default class Admon extends Component {
+class InvestorAdmon extends Component {
 
     constructor(props) {
         super(props)
@@ -14,21 +24,57 @@ export default class Admon extends Component {
             user: {
                 id: '',
                 name: '',
-                dateOfBirth: '',
                 isProfileUpdated: false,
-                addresss: '',
-                cellphone: '',
+                walletID: '',
+                walletName: ''
             },
             isShowDocuments: false,
-            isShowInvestorProfile: true
+            isShowInvestorProfile: true,
+            isRenderCompleteOrUpdateProfile: false,
+            isNewUser: false
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
         this.setUserGraphQLUser = this.setUserGraphQLUser.bind(this)
+        this.handleRenderCompleteOrUpdateProfile = this.handleRenderCompleteOrUpdateProfile.bind(this)
+        this.handleCUUser = this.handleCUUser.bind(this)
+        this.handleSignOut = this.handleSignOut.bind(this)
     }
 
     async componentDidMount() { 
         if (this.state.user.id === '') {
-            this.changeHeaderNavBarRequest('investor_profile')
+            this.loadActualLoggedUser()
+        }
+    }
+
+    async loadActualLoggedUser() {
+        const actualUser = await Auth.currentAuthenticatedUser()
+        let tempUser = this.state.user
+        if (actualUser !== undefined) {
+            // Setting ID user from register cognito User
+            const filterByUserID = {
+                id: actualUser.attributes.sub
+            }
+            tempUser.id = actualUser.attributes.sub
+            this.setState({user: tempUser})
+
+            const result = await API.graphql(graphqlOperation(getUser, filterByUserID))
+            if (result.data.getUser === null) {
+                // The user doesn't exists
+                await this.setState({isRenderCompleteOrUpdateProfile: true, isNewUser: true})
+            } else {
+                if (result.data.getUser.isProfileUpdated === null || !result.data.getUser.isProfileUpdated) {
+                    // The user exists but the profile is not completed
+                    await this.setState({isRenderCompleteOrUpdateProfile: true, isNewUser: false})
+                } else {
+                    // The user exists and the profile is complete
+                    await this.setState({
+                        user: result.data.getUser,
+                        isRenderCompleteOrUpdateProfile: false, 
+                        isNewUser: false
+                    })
+                    // await this.props.setUserGraphQLUser(result.data.getUser)
+                }
+            }
         }
     }
 
@@ -55,17 +101,108 @@ export default class Admon extends Component {
         await this.setState({user: pUser})
     }
 
-    render() {
-        let {isShowInvestorProfile, isShowDocuments} = this.state
+    async handleRenderCompleteOrUpdateProfile () {
+        this.setState({isRenderCompleteOrUpdateProfile: !this.state.isRenderCompleteOrUpdateProfile})
+    }
 
-        const renderInvestorProfile = () => {
-            if (isShowInvestorProfile) {
-                return (
-                    <InvestorProfile
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        setUserGraphQLUser={this.setUserGraphQLUser}
-                    ></InvestorProfile>
-                )
+
+    async handleOnChangeInputForm (event) {
+        if (event.target.name === 'user.name') {
+            let tempUser = this.state.user
+            tempUser.name = event.target.value.toUpperCase()
+            await this.setState({user: tempUser })
+        }
+        if (event.target.name === 'user.walletID') {
+            let tempUser = this.state.user
+            tempUser.walletID = event.target.value
+            await this.setState({user: tempUser})
+        }
+        if (event.target.name === 'user.walletName') {
+            let tempUser = this.state.user
+            tempUser.walletName = event.target.value
+            await this.setState({user: tempUser})
+        }
+        // if (event.target.name === 'user.cellphone') {
+        //     let tempUser = this.state.user
+        //     tempUser.cellphone = event.target.value
+        //     await this.setState({user: tempUser})
+        // }
+    }
+
+    async handleCUUser() {
+        let tempUser = this.state.user
+        tempUser.isProfileUpdated = true
+        
+        if (this.state.isNewUser) {
+            const userPayload = {
+                id: tempUser.id,
+                name: tempUser.name,
+                isProfileUpdated: false,
+                role: 'investor'
+            }
+            await API.graphql(graphqlOperation(createUser, { input: userPayload }))
+        } else {
+            const userPayload = {
+                id: tempUser.id,
+                name: tempUser.name,
+                isProfileUpdated: true,
+            }
+            tempUser.dateOfBirth = '2000-10-01'
+            await API.graphql(graphqlOperation(updateUser, { input: userPayload }))
+        }
+        // Creating Wallets
+        const walletPayload = {
+            id: tempUser.walletID,
+            name: tempUser.walletName,
+            userID: tempUser.id,
+            status: 'new'
+        }
+        await API.graphql(graphqlOperation(createWallet, { input: walletPayload }))
+        this.setState({isRenderCompleteOrUpdateProfile: false})
+    }
+
+    async handleSignOut() {
+        console.log('handleSignOut')
+        try {
+            await Auth.signOut()
+            this.setState({
+                            user: {
+                                id: '',
+                                name: '',
+                                isProfileUpdated: false,
+                                walletID: '',
+                                walletName: ''
+                            },
+                            isRenderCompleteOrUpdateProfile: false, 
+                        },
+                        )
+            window.location.href="/investor_admon"
+            // TODO: Check the option with router
+            // const history = new useHistory() 
+            // history.push('/investor_admon')
+            
+        } catch (error) {
+            console.log('error signing out: ', error)
+        }
+    }
+
+    render() {
+        let {isShowDocuments, user, isRenderCompleteOrUpdateProfile} = this.state
+
+        const renderUserWallets = (user) => {
+            if (user.wallets !== undefined && user.wallets.items !== undefined) {
+                if (user.wallets.items.length > 0) {
+                    return (
+                        <Row xs={1} md={2} lg={3}>
+                            {user.wallets.items.map(wallet => (
+                                <Col key={wallet.id}>
+                                    {wallet.name} / {wallet.id}
+                                </Col>
+                            ))}
+                        </Row>
+                    )
+                    
+                }
             }
         }
 
@@ -80,6 +217,87 @@ export default class Admon extends Component {
             }
         }
 
+        const renderCompleteProfile = () => {
+            if (isRenderCompleteOrUpdateProfile) {
+                return (
+                    <Container>
+                        <Form>
+                        
+                        <Row className='mb-3'>
+                            
+                            <Form.Group as={Col} controlId='formGridUserContactName'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Nombre Contacto'
+                                    name='user.name'
+                                    value={user.name}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            </Form.Group>
+
+                            <Form.Group as={Col} controlId='formGridUserWalletName'>
+                                <Form.Label>Wallet Name</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder=''
+                                    name='user.walletName'
+                                    value={user.walletName}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            </Form.Group>
+
+                            <Form.Group as={Col} controlId='formGridUserWalletID'>
+                                <Form.Label>Wallet Address</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    placeholder=''
+                                    name='user.walletID'
+                                    value={user.walletID}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            </Form.Group>
+
+                        </Row>
+                        
+                        <Button
+                            variant='primary'
+                            size='lg'
+                            onClick={this.handleCUUser}
+                            >Actualizar</Button>
+                        </Form>
+                    </Container>
+                )
+            } else {
+                return (
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Wallets</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr key={user.id}>
+                                <td>
+                                    {user.name}
+                                </td>
+                                <td>
+                                    {renderUserWallets(user)}
+                                </td>
+                                <td>
+                                    <Button 
+                                        variant='primary'
+                                        size='sm' 
+                                        onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}
+                                    >Actualizar</Button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                )
+            }
+            
+        }
+
         return (
             <Container fluid style={{paddingTop: 80}}>
 
@@ -89,16 +307,28 @@ export default class Admon extends Component {
                     <Col>
                         <HeaderNavbar 
                             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                            handleSignOut={this.handleSignOut}
                         ></HeaderNavbar>
                     </Col>
                 </Row>
 
                 <Row>
                     {renderOrders()}
-                    {renderInvestorProfile()}
+                    {renderCompleteProfile()}
                 </Row>
 
             </Container>
         )
     }
 }
+
+
+export default withAuthenticator(InvestorAdmon, {
+    theme: Bootstrap,
+    includeGreetings: true,
+    signUpConfig: {
+        hiddenDefaults: ['phone_number'],
+        signUpFields: [
+        { label: 'Name', key: 'name', required: true, type: 'string' }
+    ]
+}})

@@ -4,10 +4,6 @@ import React, { Component } from 'react';
 import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
 import LandingPage from "./components/views/LandingPage.jsx";
-
-
-
-// Routing
 // Routing
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
