@@ -23,6 +23,7 @@ export default class Products extends Component {
         this.handleHideModalProductImages = this.handleHideModalProductImages.bind(this)
         this.handleHideModalProductFeatures = this.handleHideModalProductFeatures.bind(this)
         this.handleOrderTokens = this.handleOrderTokens.bind(this)
+        this.handleGoBackFromProduct = this.handleGoBackFromProduct.bind(this)
     }
 
     componentDidMount = async () => {
@@ -62,6 +63,13 @@ export default class Products extends Component {
             isRenderProductsOnCards: false,
             isRenderModalProductImages: false,
             isRenderModalProductFeatures: false,
+        })
+    }
+    handleGoBackFromProduct(){
+        this.setState({
+            isRenderOrderTokens: false,
+            isRenderProductsOnCards: true,
+            product: null
         })
     }
     
@@ -160,9 +168,7 @@ export default class Products extends Component {
                                                 <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>Features</button>
                                             </div>
                                         </div>
-                                        <div>
-                                            <button  onClick={ (e) => this.handleOrderTokens(e, product)}>Buy</button>
-                                        </div>
+                                            <button  className='container_button_buy' onClick={ (e) => this.handleOrderTokens(e, product)}>Buy</button>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +281,7 @@ export default class Products extends Component {
         const renderOrderTokens = () => {
             if (isRenderOrderTokens) {
                 return (
-                    <Orders product={this.state.product}></Orders>
+                    <Orders product={this.state.product} handleGoBackFromProduct={this.handleGoBackFromProduct}></Orders>
                 )
             }
         }

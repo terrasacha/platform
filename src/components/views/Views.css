@@ -18,7 +18,7 @@
 /* CSS Products.jsx */  
 .card_container{
     width: 100%;
-    height: 400px;
+    height: 450px;
     display: flex;
     flex-direction: column;
     margin: auto;
@@ -104,6 +104,20 @@
     flex-direction: column;
     border-left: 1px solid #f7f7f7;
 }
+
+.container_button_buy{
+    width: 90%;
+    margin: 0 auto;
+    padding: 5px 10px;
+    background-color: #00AAE4;
+    color: white;
+    border: none;
+    margin-top: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
 /* .product_rentability_details{
     border: 1px  solid green;
     display: flex;
