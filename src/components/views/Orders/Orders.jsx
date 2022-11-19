@@ -78,8 +78,8 @@ class Orders extends Component {
                                 <h6 >Details:</h6>
                                 <p>{product.description}</p>
                                 <h5 style={{textAlign:'left'}}>Token Price</h5>
-                                <h3 className='price'>${product.totalPrice !== undefined? 
-                                    product.totalPrice.productFeatureResultAssigned? product.totalPrice.productFeatureResultAssigned : product.totalPrice.value 
+                                <h3 className='price'>${product.tokenPrice !== undefined? 
+                                    product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned : product.tokenPrice.value 
                                     : '!value'}</h3>
                                 <div className='quantity'>
                                     <h5>Quantity:</h5>
@@ -91,7 +91,7 @@ class Orders extends Component {
                                 </div>
                                 <h5 style={{textAlign:'left'}}>Total</h5>
                                 <h3 className='total-price'>${product.totalPrice !== undefined? 
-                                    product.totalPrice.productFeatureResultAssigned? product.totalPrice.productFeatureResultAssigned * quantity: product.totalPrice.value * quantity 
+                                    product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned * quantity: product.tokenPrice.value * quantity 
                                     : '!value'}</h3>
                                 <div className='buttons'>
                                     <form method="post" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/" target='blank'>
