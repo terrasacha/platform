@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
+// Amplify
+import { withAuthenticator } from '@aws-amplify/ui-react';
 //Bootstrap
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
+import Bootstrap from "../../common/themes";
 import './Validation.css';
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerification, updateDocument } from '../../../graphql/mutations';
 import { listDocuments } from '../../../graphql/queries';
 import { onUpdateDocument } from '../../../graphql/subscriptions';
-export default class Validation extends Component {
+
+class Validation extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -353,3 +357,12 @@ export default class Validation extends Component {
     )
   }
 }
+export default withAuthenticator(Validation, {
+  theme: Bootstrap,
+  includeGreetings: true,
+  signUpConfig: {
+      hiddenDefaults: ['phone_number'],
+      signUpFields: [
+      { label: 'Name', key: 'name', required: true, type: 'string' }
+  ]
+}})

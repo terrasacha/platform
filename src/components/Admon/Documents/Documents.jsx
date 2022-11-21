@@ -1,17 +1,20 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+// Amplify
+import { withAuthenticator } from '@aws-amplify/ui-react';
 //Bootstrap
-import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap'
-import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons'
-import './Documents.css'
+import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
+import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
+import Bootstrap from "../../common/themes";
+import './Documents.css';
 // GraphQL
-import { API, Auth, graphqlOperation, Storage } from 'aws-amplify'
-import { v4 as uuidv4 } from 'uuid'
-import { createDocument } from '../../../graphql/mutations'
-import { getUser, listDocumentTypes } from '../../../graphql/queries'
-import { onCreateDocument } from '../../../graphql/subscriptions'
-import URL from '../../common/_conf/URL'
+import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
+import { v4 as uuidv4 } from 'uuid';
+import { createDocument } from '../../../graphql/mutations';
+import { getUser, listDocumentTypes } from '../../../graphql/queries';
+import { onCreateDocument } from '../../../graphql/subscriptions';
+import URL from '../../common/_conf/URL';
 
-export default class Documents extends Component {
+class Documents extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -331,3 +334,12 @@ export default class Documents extends Component {
     )
   }
 }
+export default withAuthenticator(Documents, {
+    theme: Bootstrap,
+    includeGreetings: true,
+    signUpConfig: {
+        hiddenDefaults: ['phone_number'],
+        signUpFields: [
+        { label: 'Name', key: 'name', required: true, type: 'string' }
+    ]
+}})
