@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 // Components
 import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
+import Error from './components/views/Error';
 import LandingPage from "./components/views/LandingPage.jsx";
 // Routing
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
 
@@ -41,6 +42,10 @@ class App extends Component{
             <Route
               path="/investor_admon"
               render={(props) => <InvestorAdmon {...props} />}
+            />
+            <Route
+              path="/*"
+              render={(props) => <Error/>}
             />
 
             {/* <Route

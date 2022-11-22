@@ -18,6 +18,9 @@ class Orders extends Component {
         this.state = {
             index: 0,
             quantity: 0,
+            tokenPrice:this.props.product.tokenPrice !== undefined? 
+            this.props.product.tokenPrice.productFeatureResultAssigned? this.props.product.tokenPrice.productFeatureResultAssigned: this.props.product.tokenPrice.value
+                : '!value'
         }      
     }
 
@@ -37,17 +40,15 @@ class Orders extends Component {
         // console.log('### result: ', result)
      }
     handleChangeQuantity(prop){
-        if(prop === 'minus' && this.state.quantity > 0) this.setState({quantity: this.state.quantity - 1})
-        if(prop === 'plus') this.setState({quantity: this.state.quantity + 1,})
+        if(prop === 'minus' && this.state.quantity > 0) this.setState({quantity: this.state.quantity - 1, tokenPrice: this.state.tokenPrice * (this.state.quantity -1)})
+        if(prop === 'plus') this.setState({quantity: this.state.quantity + 1, tokenPrice: this.state.tokenPrice * (this.state.quantity +1)})
     }
     render() {
         let {product} = this.props
-        let {quantity} = this.state
-        console.log(product)
+        let {quantity, tokenPrice} = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
-        let signature = `4Vj8eK4rloUd272L48hsrarnUA~508029~TestPayU22~${product.tokenPrice !== undefined? 
-            product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned : product.tokenPrice.value 
-            : '!value'}~COP`
+        let signature = `4Vj8eK4rloUd272L48hsrarnUA~508029~TestPayU22~${product.tokenPrice !== undefined?
+            tokenPrice: '!value'}~COP`
         signature = md5(signature)
         const renderProductOrder = () => {
             if (product !== null) {
@@ -99,9 +100,10 @@ class Orders extends Component {
                                         <input name="accountId"       type="hidden"  value="512321" />
                                         <input name="description"     type="hidden"  value={product.name}  />
                                         <input name="referenceCode"   type="hidden"  value="TestPayU22" />
-                                        <input name="amount"          type="hidden"  value={product.tokenPrice !== undefined? 
-                                                                                            product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned : product.tokenPrice.value 
-                                                                                            : '!value'}   />
+{/*                                         <input name="amount"          type="hidden"  value={product.tokenPrice !== undefined? 
+                                                                                            product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned * quantity : product.tokenPrice.value * quantity
+                                                                                            : '!value'}   /> */}
+                                        <input name="amount"          type="hidden"  value={tokenPrice}   />
                                         <input name="tax"             type="hidden"  value="0"  />
                                         <input name="taxReturnBase"   type="hidden"  value='0' />
                                         <input name="currency"        type="hidden"  value="COP" />
@@ -110,7 +112,7 @@ class Orders extends Component {
                                         <input name="buyerEmail"      type="hidden"  value="test@test.com" />
                                         <input name="responseUrl"     type="hidden"  value="http://www.test.com/response" />
                                         <input name="confirmationUrl" type="hidden"  value="http://www.test.com/confirmation" />
-                                        <button type='submit' className='buy-now' value="Send" >Buy now</button>
+                                        <button type='submit' className={quantity !== 0?'buy-now' : 'buy-now-disabled'} value="Send" disabled={quantity === 0? true: false}>Buy now</button>
                                     </form>
                                 </div>
                             </div>

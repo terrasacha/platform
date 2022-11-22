@@ -84,7 +84,8 @@ class Admon extends Component {
         try {
             await Auth.signOut()
             this.setState({actualUser: null, isActualUserLogged: false})
-            this.changeHeaderNavBarRequest('admon_profile')
+            /* this.props.history.push("/") */
+            window.location.href="/admon"
         } catch (error) {
             console.log('error signing out: ', error)
         }

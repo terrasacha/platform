@@ -121,6 +121,18 @@
     .buttons .buy-now:hover{
       transform:scale(1.1,1.1)
     }
+    .buttons .buy-now-disabled{
+      width: 200px;
+    
+      padding: 10px 20px;
+      background-color: #afafaf;
+      color: white;
+      border: none;
+      margin-top: 40px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+    }
     .quantity-desc{
       display: flex;
       align-items: center;
