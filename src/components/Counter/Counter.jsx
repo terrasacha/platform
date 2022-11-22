@@ -1,17 +1,19 @@
-import React, { Component } from 'react'
-import { useDispatch, connect } from 'react-redux'
-import { decrement, increment } from '../../_store/counterSliceReducer'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { decrement, increment } from '../../_store/counterSliceReducer';
 
 // const dispatch = new useDispatch()
 
-const mapDispatchToProps = () => ({ 
-  increment, 
-  decrement
-});
+const mapDispatchToProps = {
+    increment, 
+    decrement
+};
 
-const mapStateToProps = state => ({
-  counter: state.counter
-});
+const mapStateToProps = state => {
+  return{
+    counter: state.counter.value
+  }
+};
 
 class Counter extends Component {
     constructor(props) {
@@ -29,14 +31,14 @@ class Counter extends Component {
               <div>
                 <button
                   aria-label="Increment value"
-                  onClick={() => this.props.dispatch(increment())}
+                  onClick={() => this.props.increment()}
                 >
                   Increment
                 </button>
-                <span>{this.props.count}</span>
+                <span>{this.props.counter}</span>
                 <button
                   aria-label="Decrement value"
-                  // onClick={() => this.state.dispatch(decrement())}
+                  onClick={() => this.props.decrement()}
                 >
                   Decrement
                 </button>
@@ -47,4 +49,4 @@ class Counter extends Component {
 }
 
 
-export default connect(mapDispatchToProps, mapStateToProps)(Counter)
+export default connect(mapStateToProps, mapDispatchToProps )(Counter)
