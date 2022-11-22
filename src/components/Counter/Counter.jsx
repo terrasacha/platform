@@ -1,29 +1,50 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { Component } from 'react'
+import { useDispatch, connect } from 'react-redux'
 import { decrement, increment } from '../../_store/counterSliceReducer'
-// import styles from './Counter.module.css'
 
-export function Counter() {
-  const count = useSelector((state) => state.counter.value)
-  const dispatch = useDispatch()
+// const dispatch = new useDispatch()
 
-  return (
-    <div>
-      <div>
-        <button
-          aria-label="Increment value"
-          onClick={() => dispatch(increment())}
-        >
-          Increment
-        </button>
-        <span>{count}</span>
-        <button
-          aria-label="Decrement value"
-          onClick={() => dispatch(decrement())}
-        >
-          Decrement
-        </button>
-      </div>
-    </div>
-  )
+const mapDispatchToProps = () => ({ 
+  increment, 
+  decrement
+});
+
+const mapStateToProps = state => ({
+  counter: state.counter
+});
+
+class Counter extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            count: null,
+            dispatch: null
+        }
+    }
+
+    // RENDER
+    render() {
+        return (
+            <div>
+              <div>
+                <button
+                  aria-label="Increment value"
+                  onClick={() => this.props.dispatch(increment())}
+                >
+                  Increment
+                </button>
+                <span>{this.props.count}</span>
+                <button
+                  aria-label="Decrement value"
+                  // onClick={() => this.state.dispatch(decrement())}
+                >
+                  Decrement
+                </button>
+              </div>
+            </div>
+          )
+    }
 }
+
+
+export default connect(mapDispatchToProps, mapStateToProps)(Counter)

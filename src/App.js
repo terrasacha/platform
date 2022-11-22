@@ -5,7 +5,7 @@ import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
 import LandingPage from "./components/views/LandingPage.jsx";
 // Redux Components
-import Counter from './components/Counter/CounterClassBck'
+import Counter from './components/Counter/Counter'
 // Routing
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 // Cardano Wallet
