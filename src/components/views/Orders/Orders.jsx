@@ -11,38 +11,73 @@ import { ArrowLeft, DashLg, PlusLg } from 'react-bootstrap-icons'
 import Bootstrap from "../../common/themes"
 import './Orders.css'
 
+import { API, graphqlOperation } from 'aws-amplify'
+import { createUserProduct } from '../../../graphql/mutations'
+import { listUserProducts } from '../../../graphql/queries'
+
 
 class Orders extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            isAlreadyExistUserProduct: false,
             index: 0,
             quantity: 0,
-        }      
+
+        }    
+        
+        this.handleCreateUserProduct = this.handleCreateUserProduct.bind(this)
     }
 
     async componentDidMount() {
-        // const instance = axios.create({
-        //     timeout: 1000,
-        //     headers: {
-        //         'Content-Type': 'application/json', 
-        //         'Authorization': 'Bearer 3e5cac39-7e38-4139-8fd6-30adc06a61bd', 
-        //         'Access-Control-Allow-Origin': '*', 
-        //         'Access-Control-Allow-Credentials': 'true',
-        //         'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-        //     },
-        //     crossDomain: true,
-        // });
-        // const result = await instance.post('https://secure.snd.payu.com/api/v2_1/orders',this.state.data)
-        // console.log('### result: ', result)
+        // Creating UserProduct
+        let actualUser = await  Auth.currentAuthenticatedUser()
+        let actualUserID = actualUser.attributes.sub
+
+        const filterByUserIDAndProductID = {
+            filter: { 
+                productID: {
+                    eq: this.props.product.id
+                },
+                userID: {
+                    eq: actualUserID
+                }
+            },
+            limit: 200
+        }
+        
+        const result = await API.graphql(graphqlOperation(listUserProducts, filterByUserIDAndProductID))
+        // Doesn't exists the relation UserProduct
+        if (result.data.listUserProducts.items.length === 0) {
+            const payLoadNewUserProduct = {
+                userID: actualUserID,
+                productID: this.props.product.id,
+                isFavorite: true
+            }
+            await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
+            await this.setState({isAlreadyExistUserProduct: true})
+        } else {
+            await this.setState({isAlreadyExistUserProduct: false})
+        }
      }
+
+    
+    
+    async handleCreateUserProduct(event, pProduct) {
+        
+
+        
+
+    }
+    
+    
     handleChangeQuantity(prop){
         if(prop === 'minus' && this.state.quantity > 0) this.setState({quantity: this.state.quantity - 1})
         if(prop === 'plus') this.setState({quantity: this.state.quantity + 1,})
     }
     render() {
         let {product} = this.props
-        let {quantity} = this.state
+        let {quantity, isAlreadyExistUserProduct} = this.state
         console.log(product)
         const urlS3Image = WebAppConfig.url_s3_public_images
         let signature = `4Vj8eK4rloUd272L48hsrarnUA~508029~TestPayU22~${product.tokenPrice !== undefined? 
@@ -110,7 +145,7 @@ class Orders extends Component {
                                         <input name="buyerEmail"      type="hidden"  value="test@test.com" />
                                         <input name="responseUrl"     type="hidden"  value="http://www.test.com/response" />
                                         <input name="confirmationUrl" type="hidden"  value="http://www.test.com/confirmation" />
-                                        <button type='submit' className='buy-now' value="Send" >Buy now</button>
+                                        <button type='submit' className='buy-now' value="Send" onClick={(e) => this.handleCreateUserProduct(e, product)} disabled={!isAlreadyExistUserProduct}>Buy now</button>
                                     </form>
                                 </div>
                             </div>
