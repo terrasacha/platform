@@ -96,6 +96,7 @@ export const getUser = /* GraphQL */ `
                     id
                     status
                     url
+                    userID
                     documentType {
                       id
                       name

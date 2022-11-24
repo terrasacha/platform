@@ -52,9 +52,9 @@ class Documents extends Component {
     componentDidMount = async () => {
         let actualUser = await  Auth.currentAuthenticatedUser()
         const actualUserID = actualUser.attributes.sub
-        this.setState({
+/*         this.setState({
             actualUserID: actualUserID
-        })
+        }) */
         await this.loadUserProducts(actualUserID)
         await this.loadDocumentTypes()
         // Subscriptions
