@@ -18,6 +18,7 @@ type User @model
   verifierVerifications: [Verification] @hasMany(indexName: "byVerifierUser", fields: ["id"])
   verifiedVerifications: [Verification] @hasMany(indexName: "byVerifiedUser", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byUser", fields: ["id"])
+  documents: [Document] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Wallet @model 
@@ -65,6 +66,8 @@ type Document @model
   documentType: DocumentType @belongsTo(fields: ["documentTypeID"])
   productFeatureID: ID! @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
 }
 
 # Product Models

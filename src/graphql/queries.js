@@ -110,6 +110,25 @@ export const getUser = /* GraphQL */ `
         }
         nextToken
       }
+      documents {
+        items {
+          id
+          data
+          timeStamp
+          hash
+          url
+          signed
+          isApproved
+          status
+          isUploadedToBlockChain
+          documentTypeID
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -123,6 +142,13 @@ export const listUsers = /* GraphQL */ `
   ) {
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
         userProducts {
           items {
             id
@@ -163,9 +189,23 @@ export const listUsers = /* GraphQL */ `
             }
           }
         }
-        id
-        name
-        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       nextToken
     }
@@ -197,6 +237,9 @@ export const getWallet = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -266,6 +309,9 @@ export const getVerification = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        documents {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -288,6 +334,9 @@ export const getVerification = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -419,6 +468,7 @@ export const getDocumentType = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -519,6 +569,33 @@ export const getDocument = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -533,12 +610,34 @@ export const listDocuments = /* GraphQL */ `
     listDocuments(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        data
+        timeStamp
+        hash
+        url
+        signed
         isApproved
         status
-        url
-        timeStamp
+        isUploadedToBlockChain
+        documentTypeID
+        documentType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        productFeatureID
         productFeature {
           id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
           feature {
             name
             id
@@ -569,6 +668,20 @@ export const listDocuments = /* GraphQL */ `
             }
           }
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
       }
       nextToken
     }
@@ -1438,6 +1551,7 @@ export const getProductFeature = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -1646,8 +1760,6 @@ export const listProductFeatureResults = /* GraphQL */ `
           }
         }
         resultID
-        updatedAt
-        createdAt
         result {
           id
           formulaID
@@ -1659,6 +1771,8 @@ export const listProductFeatureResults = /* GraphQL */ `
             varID
           }
         }
+        createdAt
+        updatedAt
       }
       nextToken
     }
@@ -1688,6 +1802,9 @@ export const getUserProduct = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -1768,12 +1885,16 @@ export const listUserProducts = /* GraphQL */ `
         productID
         product {
           id
-          description
-          order
           name
+          description
           isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
           status
           categoryID
+          createdAt
+          updatedAt
           category {
             name
           }
@@ -1808,6 +1929,7 @@ export const listUserProducts = /* GraphQL */ `
               }
             }
           }
+        }
         }
         orders {
           nextToken
