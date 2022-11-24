@@ -21,7 +21,7 @@ import Validation from './Validation/Validation';
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
 
-class Admon extends Component {
+export default class Admon extends Component {
 
     constructor(props) {
         super(props)
@@ -447,12 +447,3 @@ class Admon extends Component {
         )
     }
 }
-export default withAuthenticator(Admon, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-  }})
