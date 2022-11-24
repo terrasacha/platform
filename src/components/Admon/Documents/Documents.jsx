@@ -20,6 +20,7 @@ class Documents extends Component {
         this.state = {
             documents: [],
             documentTypes: [],
+            actualUserID: null,
             newDocument: {
                 id: null,
                 data: null,
@@ -51,6 +52,9 @@ class Documents extends Component {
     componentDidMount = async () => {
         let actualUser = await  Auth.currentAuthenticatedUser()
         const actualUserID = actualUser.attributes.sub
+        this.setState({
+            actualUserID: actualUserID
+        })
         await this.loadUserProducts(actualUserID)
         await this.loadDocumentTypes()
         // Subscriptions
@@ -144,6 +148,7 @@ class Documents extends Component {
           tempNewDocument.productFeatureID = this.state.productFeatureToAddDoc.id
           tempNewDocument.timeStamp = Date.now()
           tempNewDocument.data = JSON.stringify({empty: ''})
+          tempNewDocument.userID = this.state.actualUserID
           await API.graphql(graphqlOperation(createDocument , { input: tempNewDocument }))
           console.log('document created')
           this.cleanState()
@@ -176,7 +181,7 @@ class Documents extends Component {
     
   render() {
     let {userProductsDoc, productToShow, productFeatureToAddDoc, showProductsWithoutDoc, showAllDocuments} = this.state
-
+    console.log(userProductsDoc,'userProductsDoc')
     const listDocumentationStatus = () => {
         if(showAllDocuments && userProductsDoc){
             return(

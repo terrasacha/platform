@@ -72,6 +72,7 @@ class Orders extends Component {
             limit: 200
         }
         const result = await API.graphql(graphqlOperation(listUserProducts, filterByUserIDAndProductID))
+        console.log(result, 'result')
         if (result.data.listUserProducts.items.length === 0) {
             const payLoadNewUserProduct = {
                 id: userProductID,

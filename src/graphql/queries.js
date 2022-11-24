@@ -1930,7 +1930,6 @@ export const listUserProducts = /* GraphQL */ `
             }
           }
         }
-        }
         orders {
           nextToken
         }
