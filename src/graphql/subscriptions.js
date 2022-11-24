@@ -62,6 +62,25 @@ export const onCreateUser = /* GraphQL */ `
         }
         nextToken
       }
+      documents {
+        items {
+          id
+          data
+          timeStamp
+          hash
+          url
+          signed
+          isApproved
+          status
+          isUploadedToBlockChain
+          documentTypeID
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -123,6 +142,25 @@ export const onUpdateUser = /* GraphQL */ `
           isFavorite
           userID
           productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      documents {
+        items {
+          id
+          data
+          timeStamp
+          hash
+          url
+          signed
+          isApproved
+          status
+          isUploadedToBlockChain
+          documentTypeID
+          productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -194,6 +232,25 @@ export const onDeleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      documents {
+        items {
+          id
+          data
+          timeStamp
+          hash
+          url
+          signed
+          isApproved
+          status
+          isUploadedToBlockChain
+          documentTypeID
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -225,6 +282,9 @@ export const onCreateWallet = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -263,6 +323,9 @@ export const onUpdateWallet = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        documents {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -297,6 +360,9 @@ export const onDeleteWallet = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -335,6 +401,9 @@ export const onCreateVerification = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        documents {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -357,6 +426,9 @@ export const onCreateVerification = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -441,6 +513,9 @@ export const onUpdateVerification = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        documents {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -463,6 +538,9 @@ export const onUpdateVerification = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -547,6 +625,9 @@ export const onDeleteVerification = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        documents {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -569,6 +650,9 @@ export const onDeleteVerification = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -644,6 +728,7 @@ export const onCreateDocumentType = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -673,6 +758,7 @@ export const onUpdateDocumentType = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -702,6 +788,7 @@ export const onDeleteDocumentType = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -781,6 +868,33 @@ export const onCreateDocument = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -855,6 +969,33 @@ export const onUpdateDocument = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -924,6 +1065,33 @@ export const onDeleteDocument = /* GraphQL */ `
           nextToken
         }
         productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
@@ -2320,6 +2488,7 @@ export const onCreateProductFeature = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -2440,6 +2609,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -2560,6 +2730,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
           isUploadedToBlockChain
           documentTypeID
           productFeatureID
+          userID
           createdAt
           updatedAt
         }
@@ -2835,6 +3006,9 @@ export const onCreateUserProduct = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        documents {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2914,6 +3088,9 @@ export const onUpdateUserProduct = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        documents {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2991,6 +3168,9 @@ export const onDeleteUserProduct = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        documents {
           nextToken
         }
         createdAt
