@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Amplify
-import { Auth } from 'aws-amplify'
 import { withAuthenticator } from '@aws-amplify/ui-react'
+import { Auth } from 'aws-amplify'
 // Auth css custom
 import Bootstrap from "../common/themes"
 // Routing
 // import { useHistory } from 'react-router-dom'
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
+import { createUser, createWallet, updateUser } from '../../graphql/mutations'
 import { getUser } from '../../graphql/queries'
-import { createUser, updateUser, createWallet } from '../../graphql/mutations';
 // Components
+import Documents from '../Admon/Documents/Documents'
 import HeaderNavbar from './Navbars/HeaderNavbar'
-import Documents from './Documents/Documents'
 
 class InvestorAdmon extends Component {
 
@@ -41,13 +41,12 @@ class InvestorAdmon extends Component {
     }
 
     async componentDidMount() { 
-        if (this.state.user.id === '') {
-            this.loadActualLoggedUser()
-        }
+        console.log('componentDidMount')
+        const actualUser = await Auth.currentAuthenticatedUser()
+        this.loadActualLoggedUser(actualUser)
     }
 
-    async loadActualLoggedUser() {
-        const actualUser = await Auth.currentAuthenticatedUser()
+    async loadActualLoggedUser(actualUser) {
         let tempUser = this.state.user
         if (actualUser !== undefined) {
             // Setting ID user from register cognito User
@@ -69,7 +68,8 @@ class InvestorAdmon extends Component {
                     // The user exists and the profile is complete
                     await this.setState({
                         user: result.data.getUser,
-                        isRenderCompleteOrUpdateProfile: false, 
+                        isRenderCompleteOrUpdateProfile: false,
+                        isShowDocuments: true,
                         isNewUser: false
                     })
                     // await this.props.setUserGraphQLUser(result.data.getUser)
@@ -85,13 +85,17 @@ class InvestorAdmon extends Component {
             this.setState({
                 isShowDocuments: false,
                 isShowInvestorProfile: true,
+                isRenderCompleteOrUpdateProfile: false
             })
         }
 
         if (pRequest === 'investor_documents') {
+            console.log('isShowDocuments true')
             this.setState({
                 isShowDocuments: true,
                 isShowInvestorProfile: false,
+                isRenderCompleteOrUpdateProfile: false,
+                isNewUser: false
             })
         }
 
@@ -209,10 +213,7 @@ class InvestorAdmon extends Component {
         const renderOrders = () => {
             if (isShowDocuments) {
                 return (
-                    <Documents
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                    ></Documents>
+                    <Documents />
                 )
             }
         }
@@ -260,7 +261,7 @@ class InvestorAdmon extends Component {
                         <Button
                             variant='primary'
                             size='lg'
-                            onClick={this.handleCUUser}
+                            onClick={() => this.handleCUUser()}
                             >Actualizar</Button>
                         </Form>
                     </Container>
@@ -313,8 +314,8 @@ class InvestorAdmon extends Component {
                 </Row>
 
                 <Row>
-                    {renderOrders()}
                     {renderCompleteProfile()}
+                    {renderOrders()}
                 </Row>
 
             </Container>

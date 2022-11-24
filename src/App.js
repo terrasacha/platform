@@ -7,6 +7,7 @@ import Error from './components/views/Error';
 import LandingPage from "./components/views/LandingPage.jsx";
 // Routing
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import SuccessOrder from './components/views/successOrder/SuccessOrder';
 
 // import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
 
@@ -42,6 +43,10 @@ class App extends Component{
             <Route
               path="/investor_admon"
               render={(props) => <InvestorAdmon {...props} />}
+            />
+            <Route
+              path="/success_order"
+              render={(props) => <SuccessOrder/>}
             />
             <Route
               path="/*"

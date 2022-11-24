@@ -10,9 +10,11 @@ import md5 from 'md5'
 import { ArrowLeft, DashLg, PlusLg } from 'react-bootstrap-icons'
 import Bootstrap from "../../common/themes"
 import './Orders.css'
+// Util
+import { v4 as uuidv4 } from 'uuid'
 
 import { API, graphqlOperation } from 'aws-amplify'
-import { createUserProduct } from '../../../graphql/mutations'
+import { createOrder, createUserProduct } from '../../../graphql/mutations'
 import { listUserProducts } from '../../../graphql/queries'
 
 
@@ -20,9 +22,11 @@ class Orders extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            actualUser: null,
             isAlreadyExistUserProduct: false,
             index: 0,
             quantity: 0,
+            refferenceCode: uuidv4().replaceAll('-','_'),
             tokenPrice:this.props.product.tokenPrice !== undefined? 
             this.props.product.tokenPrice.productFeatureResultAssigned? this.props.product.tokenPrice.productFeatureResultAssigned: this.props.product.tokenPrice.value
                 : '!value'
@@ -30,32 +34,62 @@ class Orders extends Component {
     }
 
     async componentDidMount() {
+                let actualUser = await  Auth.currentAuthenticatedUser()
+                let actualUserID = actualUser.attributes.sub
+                this.setState({
+                    actualUser: actualUserID
+                })
+        
+                const filterByUserIDAndProductID = {
+                    filter: { 
+                        productID: {
+                            eq: this.props.product.id
+                        },
+                        userID: {
+                            eq: actualUserID
+                        }
+                    },
+                    limit: 200
+                }
+                const result = await API.graphql(graphqlOperation(listUserProducts, filterByUserIDAndProductID))
+                // Doesn't exists the relation UserProduct
+                if (result.data.listUserProducts.items.length !== 0) {
+                    await this.setState({isAlreadyExistUserProduct: true})
+                }
      }
     async handleCreateUserProduct(event, pProduct) {
         // Creating UserProduct
-        let actualUser = await  Auth.currentAuthenticatedUser()
-        let actualUserID = actualUser.attributes.sub
-
+        let userProductID = uuidv4().replaceAll('-','_')
         const filterByUserIDAndProductID = {
             filter: { 
                 productID: {
                     eq: this.props.product.id
                 },
                 userID: {
-                    eq: actualUserID
+                    eq: this.state.actualUser
                 }
             },
             limit: 200
         }
         const result = await API.graphql(graphqlOperation(listUserProducts, filterByUserIDAndProductID))
-        // Doesn't exists the relation UserProduct
         if (result.data.listUserProducts.items.length === 0) {
             const payLoadNewUserProduct = {
-                userID: actualUserID,
+                id: userProductID,
+                userID: this.state.actualUser,
                 productID: this.props.product.id,
                 isFavorite: true
             }
             await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
+            //Creating Order for NewUserProduct
+            const payloadNewOrder = {
+                id: this.state.refferenceCode,
+                userProductID: userProductID,
+                amountOfTokens: this.state.quantity,
+                statusCode: 'pendding',
+            }
+            await API.graphql(graphqlOperation(createOrder, { input: payloadNewOrder }))
+            
+            // Doesn't exists the relation UserProduct
         } else {
             await this.setState({isAlreadyExistUserProduct: true})
         }
@@ -68,11 +102,12 @@ class Orders extends Component {
     }
     render() {
         let {product} = this.props
-        let {quantity, tokenPrice, isAlreadyExistUserProduct} = this.state
+        let {quantity, tokenPrice, isAlreadyExistUserProduct, actualUser, refferenceCode } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
-        let signature = `4Vj8eK4rloUd272L48hsrarnUA~508029~TestPayU22~${product.tokenPrice !== undefined?
+        let signature = `4Vj8eK4rloUd272L48hsrarnUA~508029~${refferenceCode}~${product.tokenPrice !== undefined?
             tokenPrice: '!value'}~COP`
         signature = md5(signature)
+
         const renderProductOrder = () => {
             if (product !== null) {
                 return (
@@ -122,16 +157,19 @@ class Orders extends Component {
                                         <input name="merchantId"     type="hidden"   value="508029"   />
                                         <input name="accountId"       type="hidden"  value="512321" />
                                         <input name="description"     type="hidden"  value={product.name}  />
-                                        <input name="referenceCode"   type="hidden"  value="TestPayU22" />
+                                        <input name="referenceCode"   type="hidden"  value={refferenceCode} />
                                         <input name="amount"          type="hidden"  value={tokenPrice}   />
                                         <input name="tax"             type="hidden"  value="0"  />
                                         <input name="taxReturnBase"   type="hidden"  value='0' />
                                         <input name="currency"        type="hidden"  value="COP" />
                                         <input name="signature"       type="hidden"  value={signature}/>
                                         <input name="test"            type="hidden"  value="1" />
+                                        <input name="extra1"          type="hidden"  value={actualUser} />
+                                        <input name="extra2"          type="hidden"  value={product.id} />
                                         <input name="buyerEmail"      type="hidden"  value="test@test.com" />
-                                        <input name="responseUrl"     type="hidden"  value="http://www.test.com/response" />
+                                        <input name="responseUrl"     type="hidden"  value="http://localhost:3000/success_order" />
                                         <input name="confirmationUrl" type="hidden"  value="http://www.test.com/confirmation" />
+{/*                                         <button type='submit' className='buy-now' value="Send" onClick={(e) => this.handleCreateUserProduct(e, product)} disabled={!isAlreadyExistUserProduct}>Buy now</button> */}
                                         <button type='submit' className={quantity !== 0 || !isAlreadyExistUserProduct?'buy-now' : 'buy-now-disabled'} value="Send" disabled={quantity === 0? true: false} onClick={(e) => this.handleCreateUserProduct(e, product)}>Buy now</button>
                                     </form>
                                 </div>
