@@ -13,7 +13,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, createWallet, updateUser } from '../../graphql/mutations'
 import { getUser } from '../../graphql/queries'
 // Components
-import Documents from '../Admon/Documents/Documents'
+import Documents from './Documents/Documents'
 import HeaderNavbar from './Navbars/HeaderNavbar'
 
 class InvestorAdmon extends Component {
@@ -69,7 +69,7 @@ class InvestorAdmon extends Component {
                     await this.setState({
                         user: result.data.getUser,
                         isRenderCompleteOrUpdateProfile: false,
-                        isShowDocuments: true,
+                        isShowDocuments: false,
                         isNewUser: false
                     })
                     // await this.props.setUserGraphQLUser(result.data.getUser)
@@ -324,12 +324,4 @@ class InvestorAdmon extends Component {
 }
 
 
-export default withAuthenticator(InvestorAdmon, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-}})
+export default InvestorAdmon
