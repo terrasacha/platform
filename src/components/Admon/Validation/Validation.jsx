@@ -119,7 +119,7 @@ class Validation extends Component {
       tempNewVerification.createdOn = new Date().toISOString()
       tempNewVerification.updatedOn = new Date().toISOString()
       tempNewVerification.userVerifierID = this.state.actualUser
-      tempNewVerification.userVerifiedID = this.state.actualUser
+      tempNewVerification.userVerifiedID = this.state.selectedDocument.userID
       tempNewVerification.productFeatureID = this.state.selectedDocument.productFeature.id
       await API.graphql(graphqlOperation(createVerification , { input: tempNewVerification }))
       if(docStatus === 'Approve'){
@@ -197,6 +197,7 @@ class Validation extends Component {
                             <Table striped hover className='mt-4'> 
                                 <thead>
                                     <tr>
+                                        <th>User</th>
                                         <th>Product</th>
                                         <th>Feature</th>
                                         <th>Status</th>
@@ -207,6 +208,7 @@ class Validation extends Component {
                                 <tbody>
                                   {documents.map(document =>(
                                   <tr key={document.id}>
+                                    <td>{document.user.name}</td>
                                     <td>{document.productFeature.product.name}</td>
                                     <td>{document.productFeature.feature.name}</td>
                                     <td>{document.status === 'pending'? <HourglassSplit size={25} color='grey'/> : 
