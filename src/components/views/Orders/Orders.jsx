@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 // Bootstrap
 import { Container } from 'react-bootstrap'
-// Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react'
+
 import { Auth } from 'aws-amplify'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 // import '@aws-amplify/ui-react/styles.css'
@@ -188,12 +187,4 @@ class Orders extends Component {
         )
     }
 }
-export default withAuthenticator(Orders, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-}})
+export default Orders

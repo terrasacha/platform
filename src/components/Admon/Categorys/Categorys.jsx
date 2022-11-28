@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 // Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react'
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
@@ -202,12 +201,4 @@ class Categorys extends Component {
     }
 }
 
-export default withAuthenticator(Categorys, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-}})
+export default Categorys

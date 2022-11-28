@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react';
 // Auth
 import { Auth } from 'aws-amplify';
 // Bootstrap
@@ -80,12 +78,12 @@ export default class Admon extends Component {
         
     }
     async handleSignOut() {
-        console.log('handleSignOut')
         try {
             await Auth.signOut()
+            localStorage.removeItem('role');
             this.setState({actualUser: null, isActualUserLogged: false})
             /* this.props.history.push("/") */
-            window.location.href="/admon"
+            window.location.href="/"
         } catch (error) {
             console.log('error signing out: ', error)
         }

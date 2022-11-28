@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
-// Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../common/themes"
 // Routing
@@ -166,9 +164,9 @@ class InvestorAdmon extends Component {
     }
 
     async handleSignOut() {
-        console.log('handleSignOut')
         try {
             await Auth.signOut()
+            localStorage.removeItem('role');
             this.setState({
                             user: {
                                 id: '',
@@ -180,7 +178,7 @@ class InvestorAdmon extends Component {
                             isRenderCompleteOrUpdateProfile: false, 
                         },
                         )
-            window.location.href="/investor_admon"
+            window.location.href="/"
             // TODO: Check the option with router
             // const history = new useHistory() 
             // history.push('/investor_admon')

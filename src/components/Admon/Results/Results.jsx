@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react';
 // Auth css custom
 import Bootstrap from "../../common/themes";
 // Bootstrap
@@ -609,12 +607,4 @@ class Results extends Component {
     )
   }
 }
-export default withAuthenticator(Results, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-}})
+export default Results

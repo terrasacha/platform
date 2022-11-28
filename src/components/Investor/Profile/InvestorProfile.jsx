@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-// Amplify
+
 import { Auth } from 'aws-amplify'
-import { withAuthenticator } from '@aws-amplify/ui-react'
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser } from '../../../graphql/mutations'
@@ -9,7 +8,7 @@ import { getUser } from '../../../graphql/queries'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // Bootstrap
-import { Container, Button, Form, Row, Col, Table } from 'react-bootstrap'
+import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Util
 import { v4 as uuidv4 } from 'uuid'
 
@@ -202,12 +201,4 @@ class InvestorProfile extends Component {
 
 }
 
-export default withAuthenticator(InvestorProfile, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-}})
+export default InvestorProfile

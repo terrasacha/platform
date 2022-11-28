@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
-// Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react'
 // Bootstrap
 import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap'
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
-import { API, graphqlOperation, Auth} from 'aws-amplify'
-import { createImage, createProduct, createProductFeature, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct, createUserProduct } from '../../../graphql/mutations'
+import { API, Auth, graphqlOperation } from 'aws-amplify'
+import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
 import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
 // Utils 
@@ -801,12 +799,4 @@ class Products extends Component {
     }
 }
 
-export default withAuthenticator(Products, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-}})
+export default Products

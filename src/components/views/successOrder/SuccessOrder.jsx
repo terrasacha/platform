@@ -1,7 +1,6 @@
 import { API, graphqlOperation } from 'aws-amplify';
 import React, { Component } from 'react';
 import { Button, Container, Nav, Navbar } from 'react-bootstrap';
-import { withRouter } from "react-router";
 import { updateOrder } from '../../../graphql/mutations';
 import './successOrder.css';
 
@@ -50,4 +49,4 @@ class SuccessOrder extends Component {
     )
   }
 }
-export default withRouter(SuccessOrder)
+export default SuccessOrder

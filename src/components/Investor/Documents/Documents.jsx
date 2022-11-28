@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// Amplify
-import { withAuthenticator } from '@aws-amplify/ui-react';
 //Bootstrap
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
@@ -337,12 +335,4 @@ class Documents extends Component {
     )
   }
 }
-export default withAuthenticator(Documents, {
-    theme: Bootstrap,
-    includeGreetings: true,
-    signUpConfig: {
-        hiddenDefaults: ['phone_number'],
-        signUpFields: [
-        { label: 'Name', key: 'name', required: true, type: 'string' }
-    ]
-}})
+export default Documents
