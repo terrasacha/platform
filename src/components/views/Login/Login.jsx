@@ -1,8 +1,8 @@
 import { Auth, Hub } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
-
+import { Button, Card, Form } from "react-bootstrap"
 const initialFormState ={
-    username: '', password: '', email: '', authCode: '', formType: 'signUp', role: ''
+    username: '', password: '', email: '', authCode: '', formType: 'signIn', role: ''
 }
 
 export default function LogIn() {
@@ -60,47 +60,97 @@ export default function LogIn() {
         currentUser = currentUser.attributes['custom:role']
         localStorage.setItem('role', currentUser)
     }
-    async function signOut(){
-        Auth.signOut()
-        localStorage.removeItem('role');
-        window.location.href="/"
-    }
   return (
-    <div>
+    <div className='d-flex align-items-center justify-content-center' 
+    style={{minHeight: "100vh"}}>
         {
             formType === 'signUp' && (
-                <div>
-                    <input name='username' onChange={onChange} placeholder='username'/>
-                    <input name='password' type='password' onChange={onChange} placeholder='password'/>
-                    <input name='email' onChange={onChange} placeholder='email'/>
-                    <select name="role" onChange={onChange}>
-                        <option value="investor">Investor</option>
-                        <option value="admon">Admon</option>
-                        <option value="constructor">Constructor</option>
-                    </select>
-                    <button onClick={signUp}>Sign Up</button>
-                    <button onClick={() => updateFormState(() => ({
+            
+                <div className='w-100' style={{maxWidth: '400px'}}>
+                    <Card>
+                        <Card.Body>
+                            <h2 className='text-center mb-4'>Sign Up</h2>
+                            <Form>
+                                <Form.Group>
+                                    <Form.Label>User Name</Form.Label>
+                                    <Form.Control name='username' onChange={onChange} placeholder='user name' />
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control type='email'name='email' onChange={onChange} placeholder=''/>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control name='password' type='password' onChange={onChange} placeholder='password'/>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Role</Form.Label>
+                                    <Form.Select name="role" onChange={onChange}>
+                                        <option value="investor">Investor</option>
+                                        <option value="admon">Admon</option>
+                                        <option value="constructor">Constructor</option>
+                                    </Form.Select>
+                                </Form.Group>
+                                <Button onClick={signUp} className='w-100 mt-4'>Sign Up</Button>
+                            </Form>
+                        </Card.Body>
+                    </Card>
+                    <div className='w-100 text-center mt-2'>
+                        Already have an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
                         ...formState, formType: 'signIn'
-                    }))}>Sign In</button>
+                    }))}>Log In</span>
+                    </div>
                 </div>
+                
             )
         }
         {
             formType === 'confirmSignUp' && (
-                <div>
-                    <input name='authCode' onChange={onChange} placeholder='Confirmation code'/>
-                    <button onClick={confirmSignUp}>Confirm Sign Up</button>
+                <div className='w-100' style={{maxWidth: '400px'}}>
+                    <Card>
+                    <Card.Body>
+                        <h2 className="text-center mb-4">Confirmation</h2>
+                        <Form>
+                        <Form.Group>
+                            <Form.Label>Confirmation Code</Form.Label>
+                            <Form.Control name='authCode' onChange={onChange}/>
+                        </Form.Group>
+                        <Button onClick={confirmSignUp} className="w-100 mt-4">
+                            Confirm Sign Up
+                        </Button>
+                        </Form>
+                    </Card.Body>
+                    </Card>
                 </div>
             )
         }
         {
             formType === 'signIn' && (
-                <div>
-                    <input name='username' onChange={onChange} placeholder='username'/>
-                    <input name='password' type='password' onChange={onChange} placeholder='password'/>
-
-                    <button onClick={signIn}>Sign In</button>
-                </div>
+                 <div className='w-100' style={{maxWidth: '400px'}}>
+                 <Card>
+                   <Card.Body>
+                     <h2 className="text-center mb-4">Log In</h2>
+                     <Form>
+                       <Form.Group>
+                         <Form.Label>User Name</Form.Label>
+                         <Form.Control name='username' onChange={onChange}/>
+                       </Form.Group>
+                       <Form.Group>
+                         <Form.Label>Password</Form.Label>
+                         <Form.Control type="password" name='password' onChange={onChange}/>
+                       </Form.Group>
+                       <Button className="w-100 mt-4" onClick={signIn} >
+                         Log In
+                       </Button>
+                     </Form>
+                   </Card.Body>
+                 </Card>
+                 <div className="w-100 text-center mt-2">
+                   Need an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
+                        ...formState, formType: 'signUp'
+                    }))}>Sign Up</span>
+                 </div>
+               </div>
             )
         }
         {

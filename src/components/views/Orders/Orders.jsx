@@ -103,6 +103,7 @@ class Orders extends Component {
     render() {
         let {product} = this.props
         let {quantity, tokenPrice, isAlreadyExistUserProduct, actualUser, refferenceCode } = this.state
+        let role = localStorage.getItem('role')
         const urlS3Image = WebAppConfig.url_s3_public_images
         let signature = `4Vj8eK4rloUd272L48hsrarnUA~508029~${refferenceCode}~${product.tokenPrice !== undefined?
             tokenPrice: '!value'}~COP`
@@ -140,39 +141,44 @@ class Orders extends Component {
                                 <h3 className='price'>${product.tokenPrice !== undefined? 
                                     product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned : product.tokenPrice.value 
                                     : '!value'}</h3>
-                                <div className='quantity'>
-                                    <h5>Quantity:</h5>
-                                    <p className='quantity-desc'>
-                                        <span className='minus' onClick={() => this.handleChangeQuantity('minus')}><DashLg/></span>
-                                        <span className='num'>{quantity}</span>
-                                        <span className='plus' onClick={() => this.handleChangeQuantity('plus')}><PlusLg/></span>
-                                    </p>
-                                </div>
-                                <h5 style={{textAlign:'left'}}>Total</h5>
-                                <h3 className='total-price'>${product.totalPrice !== undefined? 
-                                    product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned * quantity: product.tokenPrice.value * quantity 
-                                    : '!value'}</h3>
-                                <div className='buttons'>
-                                    <form method="post" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/" target='blank'>
-                                        <input name="merchantId"     type="hidden"   value="508029"   />
-                                        <input name="accountId"       type="hidden"  value="512321" />
-                                        <input name="description"     type="hidden"  value={product.name}  />
-                                        <input name="referenceCode"   type="hidden"  value={refferenceCode} />
-                                        <input name="amount"          type="hidden"  value={tokenPrice}   />
-                                        <input name="tax"             type="hidden"  value="0"  />
-                                        <input name="taxReturnBase"   type="hidden"  value='0' />
-                                        <input name="currency"        type="hidden"  value="COP" />
-                                        <input name="signature"       type="hidden"  value={signature}/>
-                                        <input name="test"            type="hidden"  value="1" />
-                                        <input name="extra1"          type="hidden"  value={actualUser} />
-                                        <input name="extra2"          type="hidden"  value={product.id} />
-                                        <input name="buyerEmail"      type="hidden"  value="test@test.com" />
-                                        <input name="responseUrl"     type="hidden"  value="http://localhost:3000/success_order" />
-                                        <input name="confirmationUrl" type="hidden"  value="http://www.test.com/confirmation" />
-{/*                                         <button type='submit' className='buy-now' value="Send" onClick={(e) => this.handleCreateUserProduct(e, product)} disabled={!isAlreadyExistUserProduct}>Buy now</button> */}
-                                        <button type='submit' className={quantity !== 0 || !isAlreadyExistUserProduct?'buy-now' : 'buy-now-disabled'} value="Send" disabled={quantity === 0? true: false} onClick={(e) => this.handleCreateUserProduct(e, product)}>Buy now</button>
-                                    </form>
-                                </div>
+                                {role && role === 'investor'? 
+                                    <>
+                                    <div className='quantity'>
+                                        <h5>Quantity:</h5>
+                                        <p className='quantity-desc'>
+                                            <span className='minus' onClick={() => this.handleChangeQuantity('minus')}><DashLg/></span>
+                                            <span className='num'>{quantity}</span>
+                                            <span className='plus' onClick={() => this.handleChangeQuantity('plus')}><PlusLg/></span>
+                                        </p>
+                                    </div>
+                                    <h5 style={{textAlign:'left'}}>Total</h5>
+                                    <h3 className='total-price'>${product.totalPrice !== undefined? 
+                                        product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned * quantity: product.tokenPrice.value * quantity 
+                                        : '!value'}</h3>
+                                    <div className='buttons'>
+                                        <form method="post" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/" target='blank'>
+                                            <input name="merchantId"     type="hidden"   value="508029"   />
+                                            <input name="accountId"       type="hidden"  value="512321" />
+                                            <input name="description"     type="hidden"  value={product.name}  />
+                                            <input name="referenceCode"   type="hidden"  value={refferenceCode} />
+                                            <input name="amount"          type="hidden"  value={tokenPrice}   />
+                                            <input name="tax"             type="hidden"  value="0"  />
+                                            <input name="taxReturnBase"   type="hidden"  value='0' />
+                                            <input name="currency"        type="hidden"  value="COP" />
+                                            <input name="signature"       type="hidden"  value={signature}/>
+                                            <input name="test"            type="hidden"  value="1" />
+                                            <input name="extra1"          type="hidden"  value={actualUser} />
+                                            <input name="extra2"          type="hidden"  value={product.id} />
+                                            <input name="buyerEmail"      type="hidden"  value="test@test.com" />
+                                            <input name="responseUrl"     type="hidden"  value="http://localhost:3000/success_order" />
+                                            <input name="confirmationUrl" type="hidden"  value="http://www.test.com/confirmation" />
+    {/*                                         <button type='submit' className='buy-now' value="Send" onClick={(e) => this.handleCreateUserProduct(e, product)} disabled={!isAlreadyExistUserProduct}>Buy now</button> */}
+                                            <button type='submit' className={quantity !== 0 || !isAlreadyExistUserProduct?'buy-now' : 'buy-now-disabled'} value="Send" disabled={quantity === 0? true: false} onClick={(e) => this.handleCreateUserProduct(e, product)}>Buy now</button>
+                                        </form>
+                                    </div>
+                                    </>:
+                                    ''
+                                }
                             </div>
                         </div>
                     </div>

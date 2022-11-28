@@ -6,6 +6,7 @@ import LOGO from '../../common/_images/logo.png'
 
 export default class HeaderNavbar extends Component {
   render() {
+    let role = localStorage.getItem('role')
     return (
       <Navbar collapseOnSelect expand="lg" bg="light" variant="light" fixed="top">
         <Container>
@@ -23,19 +24,20 @@ export default class HeaderNavbar extends Component {
               <Nav.Link href="#home" onClick={(e) => this.props.handleChangeRenderView('carousel')}>Inicio</Nav.Link>
               <Nav.Link href="#about_us" onClick={(e) => this.props.handleChangeRenderView('about_us')}>Acerca de</Nav.Link>
               <Nav.Link href="#products" onClick={(e) => this.props.handleChangeRenderView('products')}>Proyectos</Nav.Link>
-              {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-              </NavDropdown> */}
+              {role === 'admon'?<Nav.Link onClick={() => window.location.href="/admon"}>ADMIN</Nav.Link>:''}
+              {role === 'investor'?<Nav.Link onClick={() => window.location.href="/investor_admon"}>Profile</Nav.Link>:''}
+
             </Nav>
             <Nav>
+              <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>
               <Nav.Link href="#terms_and_conditions" onClick={(e) => this.props.handleChangeRenderView('terms_and_conditions')}>T&C</Nav.Link>
               <Nav.Link eventKey={2} href="#instagram">
                 Instagram
               </Nav.Link>
+              {localStorage.getItem('role')?
+              <button onClick={() => this.props.logOut()}>Log out</button>:
+              <button onClick={() => window.location.href="/login"}>Log In</button>
+              }
             </Nav>
           </Navbar.Collapse>
         </Container>

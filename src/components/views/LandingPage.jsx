@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 // Bootstrap
 import { Container } from 'react-bootstrap'
 // GraphQL
-import { API, graphqlOperation } from 'aws-amplify'
+import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { listProducts } from '../../graphql/queries'
 // Components
 import Carousels from './Carousels'
@@ -26,6 +26,7 @@ export default class LandingPage extends Component {
       isRenderTermAndConditions: false
     }
     this.handleChangeRenderView = this.handleChangeRenderView.bind(this)
+    this.logOut = this.logOut.bind(this)
   }
 
   componentDidMount = async () => {
@@ -96,7 +97,11 @@ export default class LandingPage extends Component {
         break
     }
   }
-  
+  async logOut(){
+    await Auth.signOut()
+    window.location.href="/"
+    localStorage.removeItem('role')
+  }
 
   render() {
     let {isRenderCarousel, isRenderAboutUs, isRenderProducts, isRenderTermAndConditions} = this.state
@@ -136,7 +141,7 @@ export default class LandingPage extends Component {
 
     return (
       <Container>
-        <HeaderNavbar handleChangeRenderView={this.handleChangeRenderView}></HeaderNavbar>
+        <HeaderNavbar handleChangeRenderView={this.handleChangeRenderView} logOut={this.logOut}></HeaderNavbar>
         {renderAboutUs()}
         {renderCarousel()}
         {renderProducts()}
