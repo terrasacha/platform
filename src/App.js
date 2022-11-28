@@ -5,13 +5,13 @@ import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
 import Error from './components/views/Error';
 import LandingPage from "./components/views/LandingPage.jsx";
-import AdmonMiddleware from './components/views/Login/middlewareRoute/AdmonMiddleware';
-import InvestorMiddleware from './components/views/Login/middlewareRoute/InvestorMiddleware';
 import { AuthProvider } from './context/AuthContext';
 // Routing
 import { Auth } from 'aws-amplify';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LogIn from './components/views/Login/Login';
+import AdmonMiddleware from './components/views/middlewareRoute/AdmonMiddleware';
+import InvestorMiddleware from './components/views/middlewareRoute/InvestorMiddleware';
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
 
 // import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';

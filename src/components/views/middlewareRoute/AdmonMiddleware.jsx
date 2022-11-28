@@ -1,7 +1,6 @@
-import { Auth } from 'aws-amplify';
-import React, { useEffect, useState } from 'react';
+
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import Admon from '../../../Admon/Admon';
 
 export default function AdmonMiddleware({children}) {
     if(!localStorage.getItem('role')){

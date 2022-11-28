@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import InvestorAdmon from '../../../Investor/InvestorAdmon';
 
 export default function InvestorMiddleware({children}) {
     if(!localStorage.getItem('role')){
