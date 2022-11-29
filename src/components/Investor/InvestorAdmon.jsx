@@ -43,6 +43,7 @@ class InvestorAdmon extends Component {
     async componentDidMount() { 
         console.log('componentDidMount')
         const actualUser = await Auth.currentAuthenticatedUser()
+        console.log(actualUser)
         this.loadActualLoggedUser(actualUser)
     }
 

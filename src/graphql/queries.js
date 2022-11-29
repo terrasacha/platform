@@ -63,6 +63,7 @@ export const getUser = /* GraphQL */ `
             order
             name
             isActive
+            counterNumberOfTimesBuyed
             status
             images {
               items {

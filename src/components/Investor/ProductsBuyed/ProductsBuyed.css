@@ -57,6 +57,7 @@
 }
 .product_prices_container{
     display: flex;
+    justify-content: center;
     height: 20%;
 }
 .product_total_price{
@@ -67,16 +68,19 @@
 }
 .product_price_tittle{
     font-size: 1.3em;
+    text-align: center;
     font-weight: 500;
 }
 .product_price_number{
     margin-top: -.4em;
+    text-align: center;
     font-size: 2.3em;
     font-weight: 700;
 }
 .product_price_number_token{
     margin-top: -.4em;
     font-size: 2.3em;
+    text-align: center;
     font-weight: 700;
     color: #C23526
 }
@@ -152,6 +156,7 @@
 }
 .product_buttons_container{
     margin-top: 1em;
+    margin-bottom: 1em;
     display: flex;
     justify-content: space-evenly;
 }

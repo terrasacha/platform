@@ -22,14 +22,12 @@ export default class ProductsBuyed extends Component {
         const actualUser = await Auth.currentAuthenticatedUser()
         const actualUserID = actualUser.attributes.sub
         await this.loadUser(actualUserID)
-        console.log(this.state.products, 'products en investor')
     }
 
     async loadUser(actualUserID) {
-        const userResult = await API.graphql(graphqlOperation(getUser, { id: 'fc3da936-72f9-4ba0-98fa-b9a3a2c14e0d'}))
+        const userResult = await API.graphql(graphqlOperation(getUser, { id: actualUserID}))
         let user = userResult.data.getUser
         let products = user.userProducts.items.map(up => up.product)
-        console.log(products, 'userProducts')
         this.setState({products: products})
     }
     async handleLoadSelectedProduct(event, pProduct, pModal) {
@@ -67,7 +65,10 @@ export default class ProductsBuyed extends Component {
        product.expectedIncome = product.productFeatures.items.filter(item => item.feature.id === 'expected_income')[0]
        product.rentPerToken = product.productFeatures.items.filter(item => item.feature.id === 'rent_per_token')[0]
        product.rentStartDay = product.productFeatures.items.filter(item => item.feature.id === 'rent_start_day')[0]
-       
+       product.progress = product.tokens !== undefined? 
+                            product.tokens.productFeatureResultAssigned? (product.counterNumberOfTimesBuyed/product.tokens.productFeatureResultAssigned) * 100 :
+                            (product.counterNumberOfTimesBuyed/parseInt(product.tokens.value)) * 100
+                                : '!value'   
        return product
     })
     const renderProductsOnCards = () => {
@@ -140,7 +141,9 @@ export default class ProductsBuyed extends Component {
                                             <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>Features</button>
                                         </div>
                                     </div>
-                                        <button  className='container_button_buy' onClick={ (e) => this.handleOrderTokens(e, product)}>Buy</button>
+                                        <div className="progress" style={{height: '25px'}}>
+                                            <div className="progress-bar bg-success" role="progressbar" style={{width: `${product.progress}%`}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
                                 </div>
                             </div>
                         </div>
