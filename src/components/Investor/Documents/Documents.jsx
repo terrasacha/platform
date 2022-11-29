@@ -208,7 +208,10 @@ class Documents extends Component {
                 <Container className='mt-4 '>
                     <Row className="justify-content-md-center">
                         <Col xs >
-                            <h3>Your documentation</h3>
+                            <div style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between'}}>
+                                <h5 className='mr-5'>Your documentation</h5> 
+                                {dropDown()}
+                            </div>
                             <Table hover className='mt-4'> 
                                 <thead>
                                     <tr>
@@ -245,8 +248,11 @@ class Documents extends Component {
         return (
             <Container className='mt-3'>
               <Row>
-                  <Col xs={10}>
-                            <h3>Products Documentation</h3>
+                  <Col xs>
+                            <div style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between'}} className='mb-5'>
+                                <h5>Product documentation</h5> 
+                                {dropDown()}
+                            </div>
                             {listPFWithoutDoc.length === 0? '' : 
                                 listPFWithoutDoc.map(pf =>{
                                     return(
@@ -319,7 +325,7 @@ class Documents extends Component {
     }
     const dropDown = () => {
         return(
-        <DropdownButton className='mt-3' title='Documentation'>
+        <DropdownButton  title='Documentation' size="sm">
             <Dropdown.Item as="button" onClick={() =>this.setState({showProductsWithoutDoc: false, showAllDocuments: true, productToShow: null})}>See your documentation status</Dropdown.Item>
             <Dropdown.Item as="button" onClick={() =>this.setState({showProductsWithoutDoc: true, showAllDocuments: false})}>Upload documentation</Dropdown.Item>
           </DropdownButton>
@@ -328,7 +334,6 @@ class Documents extends Component {
     return (
         <Container>
             <Container>
-                {dropDown()}
                 {listDocumentationStatus()}
                 {uploadDocumentation()}
                 {modalDocument()}

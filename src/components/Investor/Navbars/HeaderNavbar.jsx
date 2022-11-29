@@ -36,15 +36,15 @@ export default class HeaderNavbar extends Component {
                         <Nav className="me-auto">
                             <Nav.Link href="#home">
                                 <img src={LOGO}
-                                    width="100"
+                                    width="80"
                                     height="auto"
                                     className="d-inline-block align-top"
                                     alt="BBT"/>
                             </Nav.Link>
-                            <Nav.Link href="#home" onClick={(e) => this.handleChangeNavBar('investor_documents', e)}>
+                            <Nav.Link onClick={(e) => this.handleChangeNavBar('investor_documents', e)}>
                                 Documents
                             </Nav.Link>
-                            <Nav.Link href="#home" onClick={(e) => this.handleChangeNavBar('products_buyed', e)}>
+                            <Nav.Link onClick={(e) => this.handleChangeNavBar('products_buyed', e)}>
                                 Products
                             </Nav.Link>
                         </Nav>
