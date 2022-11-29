@@ -143,7 +143,8 @@ export default class ProductsBuyed extends Component {
                                             <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>Features</button>
                                         </div>
                                     </div>
-                                        <div className="progress" style={{height: '25px'}}>
+                                        <h6>Progress</h6>
+                                        <div className="progress" style={{height: '30px'}}>
                                             <div className="progress-bar bg-success" role="progressbar" style={{width: `${product.progress}%`}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                 </div>
