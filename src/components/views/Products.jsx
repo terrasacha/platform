@@ -88,6 +88,7 @@ export default class Products extends Component {
             return pf
            })
            product.totalPrice = product.productFeatures.items.filter(item => item.feature.id === 'total_price')[0]
+           product.tokens = product.productFeatures.items.filter(item => item.feature.id === 'tokens')[0]
            product.tokenPrice = product.productFeatures.items.filter(item => item.feature.id === 'token_price')[0]
            product.expectedIncome = product.productFeatures.items.filter(item => item.feature.id === 'expected_income')[0]
            product.rentPerToken = product.productFeatures.items.filter(item => item.feature.id === 'rent_per_token')[0]

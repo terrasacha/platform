@@ -64,6 +64,13 @@ export const getUser = /* GraphQL */ `
             name
             isActive
             status
+            images {
+              items {
+                id
+                imageURL
+                title
+              }
+            }
             categoryID
             category {
               name
@@ -89,6 +96,24 @@ export const getUser = /* GraphQL */ `
                     id
                     name
                     description
+                  }
+                  unitOfMeasure {
+                    engineeringUnit
+                    id
+                  }
+                }
+                productFeatureResults {
+                  items {
+                    id
+                    isActive
+                    result {
+                      id
+                      value
+                      formula {
+                        id
+                        equation
+                      }
+                    }
                   }
                 }
                 documents {

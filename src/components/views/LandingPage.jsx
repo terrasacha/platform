@@ -31,6 +31,7 @@ export default class LandingPage extends Component {
 
   componentDidMount = async () => {
     await this.loadProducts()
+    console.log(this.state.products, 'products en landing')
   }
 
   async loadProducts() {

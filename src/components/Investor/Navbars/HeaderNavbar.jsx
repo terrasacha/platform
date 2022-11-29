@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Container, Navbar, Nav, Button } from 'react-bootstrap'
+import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // Import React Bootstrap Icons
 import { ListTask } from 'react-bootstrap-icons'
 
@@ -35,19 +35,17 @@ export default class HeaderNavbar extends Component {
                     <Container>
                         <Nav className="me-auto">
                             <Nav.Link href="#home">
-                                
-                                <img src={LOGO} className='Logo'alt='test'/>
-
+                                <img src={LOGO}
+                                    width="100"
+                                    height="auto"
+                                    className="d-inline-block align-top"
+                                    alt="BBT"/>
                             </Nav.Link>
-
-                            <Nav.Link href="#home">
-                                
-                                <Button 
-                                    variant='outline-primary'
-                                     
-                                    onClick={(e) => this.handleChangeNavBar('investor_documents', e)}
-                                ><ListTask></ListTask>Documents</Button> 
-
+                            <Nav.Link href="#home" onClick={(e) => this.handleChangeNavBar('investor_documents', e)}>
+                                Documents
+                            </Nav.Link>
+                            <Nav.Link href="#home" onClick={(e) => this.handleChangeNavBar('products_buyed', e)}>
+                                Products
                             </Nav.Link>
 
                             <Nav.Link href="#home" style={{color:'#0D6EFD'}} onClick={(e) => this.handleSignOut()}>

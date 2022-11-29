@@ -13,7 +13,7 @@ import './Orders.css'
 import { v4 as uuidv4 } from 'uuid'
 
 import { API, graphqlOperation } from 'aws-amplify'
-import { createOrder, createUserProduct } from '../../../graphql/mutations'
+import { createOrder, createUserProduct, updateProduct } from '../../../graphql/mutations'
 import { listUserProducts } from '../../../graphql/queries'
 
 
@@ -25,6 +25,7 @@ class Orders extends Component {
             isAlreadyExistUserProduct: false,
             index: 0,
             quantity: 0,
+            maxTokensToBuy: 0,
             refferenceCode: uuidv4().replaceAll('-','_'),
             tokenPrice:this.props.product.tokenPrice !== undefined? 
             this.props.product.tokenPrice.productFeatureResultAssigned? this.props.product.tokenPrice.productFeatureResultAssigned: this.props.product.tokenPrice.value
@@ -51,6 +52,11 @@ class Orders extends Component {
                     limit: 200
                 }
                 const result = await API.graphql(graphqlOperation(listUserProducts, filterByUserIDAndProductID))
+                let tokensToBuy = this.props.product.tokens !== undefined? 
+                this.props.product.tokens.productFeatureResultAssigned? this.props.product.tokens.productFeatureResultAssigned - this.props.product.counterNumberOfTimesBuyed:
+                 this.props.product.tokens.value - this.props.product.counterNumberOfTimesBuyed 
+                    : '!value'
+                this.setState({maxTokensToBuy: tokensToBuy})
                 // Doesn't exists the relation UserProduct
                 if (result.data.listUserProducts.items.length !== 0) {
                     await this.setState({isAlreadyExistUserProduct: true})
@@ -88,17 +94,20 @@ class Orders extends Component {
                 statusCode: 'pendding',
             }
             await API.graphql(graphqlOperation(createOrder, { input: payloadNewOrder }))
+            const payloadProduct = {
+                id: this.props.product.id,
+                counterNumberOfTimesBuyed: this.props.product.counterNumberOfTimesBuyed + this.state.quantity
+            }
+            await API.graphql(graphqlOperation(updateProduct, { input: payloadProduct }))
             
             // Doesn't exists the relation UserProduct
-        } else {
-            await this.setState({isAlreadyExistUserProduct: true})
         }
     }
     
     
     handleChangeQuantity(prop){
         if(prop === 'minus' && this.state.quantity > 0) this.setState({quantity: this.state.quantity - 1, tokenPrice: this.state.tokenPrice * (this.state.quantity -1)})
-        if(prop === 'plus') this.setState({quantity: this.state.quantity + 1, tokenPrice: this.state.tokenPrice * (this.state.quantity +1)})
+        if(prop === 'plus' && this.state.quantity <= this.state.maxTokensToBuy) this.setState({quantity: this.state.quantity + 1, tokenPrice: this.state.tokenPrice * (this.state.quantity +1)})
     }
     render() {
         let {product} = this.props
@@ -173,7 +182,7 @@ class Orders extends Component {
                                             <input name="responseUrl"     type="hidden"  value="http://localhost:3000/success_order" />
                                             <input name="confirmationUrl" type="hidden"  value="http://www.test.com/confirmation" />
     {/*                                         <button type='submit' className='buy-now' value="Send" onClick={(e) => this.handleCreateUserProduct(e, product)} disabled={!isAlreadyExistUserProduct}>Buy now</button> */}
-                                            <button type='submit' className={quantity !== 0 || !isAlreadyExistUserProduct?'buy-now' : 'buy-now-disabled'} value="Send" disabled={quantity === 0? true: false} onClick={(e) => this.handleCreateUserProduct(e, product)}>Buy now</button>
+                                            <button type='submit' className={quantity !== 0 || !isAlreadyExistUserProduct?'buy-now' : 'buy-now-disabled'} value="Send" disabled={quantity === 0 || isAlreadyExistUserProduct? true: false} onClick={(e) => this.handleCreateUserProduct(e, product)}>Buy now</button>
                                         </form>
                                     </div>
                                     </>:

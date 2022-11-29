@@ -13,6 +13,7 @@ import { getUser } from '../../graphql/queries'
 // Components
 import Documents from './Documents/Documents'
 import HeaderNavbar from './Navbars/HeaderNavbar'
+import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
 
 class InvestorAdmon extends Component {
 
@@ -27,6 +28,7 @@ class InvestorAdmon extends Component {
                 walletName: ''
             },
             isShowDocuments: false,
+            isShowProductsBuyed: false,
             isShowInvestorProfile: true,
             isRenderCompleteOrUpdateProfile: false,
             isNewUser: false
@@ -82,21 +84,31 @@ class InvestorAdmon extends Component {
         if (pRequest === 'investor_profile') {
             this.setState({
                 isShowDocuments: false,
+                isShowProductsBuyed: false,
                 isShowInvestorProfile: true,
                 isRenderCompleteOrUpdateProfile: false
             })
         }
 
         if (pRequest === 'investor_documents') {
-            console.log('isShowDocuments true')
             this.setState({
                 isShowDocuments: true,
+                isShowProductsBuyed: false,
                 isShowInvestorProfile: false,
                 isRenderCompleteOrUpdateProfile: false,
                 isNewUser: false
             })
         }
-
+        if (pRequest === 'products_buyed') {
+            this.setState({
+                isShowDocuments: false,
+                isShowProductsBuyed: true,
+                isShowInvestorProfile: false,
+                isRenderCompleteOrUpdateProfile: false,
+                isNewUser: false
+            })
+        }
+        
     }
 
     async setUserGraphQLUser(pUser) {
@@ -189,7 +201,7 @@ class InvestorAdmon extends Component {
     }
 
     render() {
-        let {isShowDocuments, user, isRenderCompleteOrUpdateProfile} = this.state
+        let {isShowDocuments, user, isRenderCompleteOrUpdateProfile, isShowProductsBuyed} = this.state
 
         const renderUserWallets = (user) => {
             if (user.wallets !== undefined && user.wallets.items !== undefined) {
@@ -212,6 +224,13 @@ class InvestorAdmon extends Component {
             if (isShowDocuments) {
                 return (
                     <Documents />
+                )
+            }
+        }
+        const renderProductsBuyed = () => {
+            if (isShowProductsBuyed) {
+                return (
+                    <ProductsBuyed />
                 )
             }
         }
@@ -314,6 +333,7 @@ class InvestorAdmon extends Component {
                 <Row>
                     {renderCompleteProfile()}
                     {renderOrders()}
+                    {renderProductsBuyed()}
                 </Row>
 
             </Container>
