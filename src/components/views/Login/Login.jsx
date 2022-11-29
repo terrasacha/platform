@@ -8,6 +8,7 @@ const initialFormState ={
 export default function LogIn() {
     const [formState, updateFormState] = useState(initialFormState)
     const [user, updateUser] = useState(null)
+    const [loading, setLoading] = useState(false)
     
     useEffect(() => {
         checkUser()
@@ -41,20 +42,26 @@ export default function LogIn() {
     const { formType } = formState
     async function signUp(){
         const { username, email, password, role } = formState
+        setLoading(true)
         await Auth.signUp({ username, password, attributes: {
              email,
              'custom:role': role  
             }})
+            setLoading(false)
         updateFormState(() => ({...formState, formType: 'confirmSignUp' }))
     }
     async function confirmSignUp(){
         const { username, authCode } = formState
+        setLoading(true)
         await Auth.confirmSignUp( username, authCode )
+        setLoading(false)
         updateFormState(() => ({...formState, formType: 'signIn' }))
     }
     async function signIn(){
         const { username, password } = formState
+        setLoading(true)
         await Auth.signIn( username, password  )
+        setLoading(false)
         updateFormState(() => ({...formState, formType: 'signedIn' }))
         let currentUser = await Auth.currentAuthenticatedUser()
         currentUser = currentUser.attributes['custom:role']
@@ -91,7 +98,7 @@ export default function LogIn() {
                                         <option value="constructor">Constructor</option>
                                     </Form.Select>
                                 </Form.Group>
-                                <Button onClick={signUp} className='w-100 mt-4'>Sign Up</Button>
+                                <Button onClick={signUp} disabled={loading} className='w-100 mt-4'>{loading?'Loading': 'Sign Up'}</Button>
                             </Form>
                         </Card.Body>
                     </Card>
@@ -115,8 +122,8 @@ export default function LogIn() {
                             <Form.Label>Confirmation Code</Form.Label>
                             <Form.Control name='authCode' onChange={onChange}/>
                         </Form.Group>
-                        <Button onClick={confirmSignUp} className="w-100 mt-4">
-                            Confirm Sign Up
+                        <Button onClick={confirmSignUp} disabled={loading} className="w-100 mt-4">
+                            {loading?'Loading': 'Confirm Sign Up'}
                         </Button>
                         </Form>
                     </Card.Body>
@@ -139,8 +146,8 @@ export default function LogIn() {
                          <Form.Label>Password</Form.Label>
                          <Form.Control type="password" name='password' onChange={onChange}/>
                        </Form.Group>
-                       <Button className="w-100 mt-4" onClick={signIn} >
-                         Log In
+                       <Button className="w-100 mt-4" disabled={loading} onClick={signIn} >
+                            {loading?'Loading': 'Log In'}
                        </Button>
                      </Form>
                    </Card.Body>

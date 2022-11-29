@@ -12,7 +12,9 @@ import { createUser, createWallet, updateUser } from '../../graphql/mutations'
 import { getUser } from '../../graphql/queries'
 // Components
 import wallet from './assets/crypto-digital-wallet-gID_4.jpg'
+import profile from './assets/PngItem_4042710.png'
 import Documents from './Documents/Documents'
+import s from './InvestorAdmon.module.css'
 import HeaderNavbar from './Navbars/HeaderNavbar'
 import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
 
@@ -291,7 +293,7 @@ class InvestorAdmon extends Component {
                 )
             } else {
                 return (
-                    <Table striped bordered hover>
+/*                     <Table striped bordered hover>
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -316,7 +318,22 @@ class InvestorAdmon extends Component {
                                 </td>
                             </tr>
                         </tbody>
-                    </Table>
+                    </Table> */
+                    <div style={{width: '100%', height: '20%',display: 'flex', justifyContent:'center'}}>
+                    <div className={s.container_profile}>
+                        <div className={s.profile_image_container}>
+                            <img src={profile} alt='profile' className={s.profile_image} />
+                        </div>
+                        <div className={s.profile_info_container}>
+                            <div className={s.profile_info}>
+                                <h4>{user.name}</h4>
+                                <h6>Wallets</h6>
+                                {renderUserWallets(user)}
+                            </div>
+                            <button className={s.button_update_profile} onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}>Update info</button>
+                        </div>
+                    </div>
+                    </div>
                 )
             }
         }

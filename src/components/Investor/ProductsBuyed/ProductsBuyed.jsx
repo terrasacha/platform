@@ -74,6 +74,8 @@ export default class ProductsBuyed extends Component {
     const renderProductsOnCards = () => {
         if (products.length > 0 ) {
             return (
+                <>
+                <h3>Your Products</h3>
                 <div className=''>
                     {productsActive.map(product => (
                     <div className='card_container' key={product.id + '_col'}>
@@ -150,6 +152,7 @@ export default class ProductsBuyed extends Component {
                     </div>
                     ))}
                 </div>
+                </>
 
             )
         }
@@ -253,8 +256,7 @@ export default class ProductsBuyed extends Component {
             }
         }
     return (
-      <Container>
-        <h5>Your Products</h5>
+      <Container className='mt-5'>
         <Container>
             {renderProductsOnCards()}
             {renderModalProductImages()}

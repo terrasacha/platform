@@ -206,9 +206,9 @@ class Documents extends Component {
         if(showAllDocuments && userProductsDoc){
             return(
                 <Container className='mt-4 '>
-                    <h3>Your documentation</h3>
                     <Row className="justify-content-md-center">
-                        <Col xs lg="9">
+                        <Col xs >
+                            <h3>Your documentation</h3>
                             <Table hover className='mt-4'> 
                                 <thead>
                                     <tr>
@@ -326,12 +326,14 @@ class Documents extends Component {
         )
     }
     return (
-        <>
-            {dropDown()}
-            {listDocumentationStatus()}
-            {uploadDocumentation()}
-            {modalDocument()}
-        </>
+        <Container>
+            <Container>
+                {dropDown()}
+                {listDocumentationStatus()}
+                {uploadDocumentation()}
+                {modalDocument()}
+            </Container>
+        </Container>
     )
   }
 }
