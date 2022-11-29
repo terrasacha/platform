@@ -47,11 +47,11 @@ export default class HeaderNavbar extends Component {
                             <Nav.Link href="#home" onClick={(e) => this.handleChangeNavBar('products_buyed', e)}>
                                 Products
                             </Nav.Link>
-
-                            <Nav.Link href="#home" style={{color:'#0D6EFD'}} onClick={(e) => this.handleSignOut()}>
-                                    SignOut
+                        </Nav>
+                        <Nav>
+                            <Nav.Link href="#home" style={{color:'#FE4849'}} onClick={(e) => this.handleSignOut()}>
+                                <button>Sign Out</button>
                             </Nav.Link>
-
                         </Nav>
                     </Container>
                 </Navbar>

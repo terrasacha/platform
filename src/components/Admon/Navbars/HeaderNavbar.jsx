@@ -81,12 +81,12 @@ export default class HeaderNavbar extends Component {
 
                                 <Nav.Link href="#uom" onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}>
                                     OUM
+                                </Nav.Link>                            
+                            </Nav>
+                            <Nav>
+                                <Nav.Link href="#home" onClick={(e) => this.handleChangeObjectElement()}>
+                                    <button>Sign Out</button>
                                 </Nav.Link>
-
-                                <Nav.Link href="#home" style={{color:'#0D6EFD'}} onClick={(e) => this.handleChangeObjectElement()}>
-                                    SignOut
-                                </Nav.Link>
-                            
                             </Nav>
                             </Navbar.Collapse>
                         </Container>
