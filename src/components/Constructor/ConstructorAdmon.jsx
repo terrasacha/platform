@@ -192,7 +192,7 @@ export default class ConstructorAdmon extends Component {
         return(
           <>
             <h2>User Products</h2>
-            <Table  bordered hover style={{cursor: 'pointer'}}>
+            <Table  bordered hover>
               <thead>
               <tr>
                   <th>User</th>
