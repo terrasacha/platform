@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 //Bootstrap
-import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
-import Bootstrap from '../common/themes';
+import { Button, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
 // GraphQL
-import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
 import { createUserProduct, updateUser } from '../../graphql/mutations';
 import { listProducts, listUserProducts, listUsers } from '../../graphql/queries';
-
+import { onCreateUserProduct, onUpdateUser } from '../../graphql/subscriptions';
 
 
 
@@ -39,10 +38,42 @@ export default class ConstructorAdmon extends Component {
       this.loadProducts(),
       this.loadUserProducts()
   ])
-/*     await this.loadUsers()
-    await this.loadProducts()
-    await this.loadUserProducts() */
-  }
+    // OnCreate userProduct
+    this.createUserProductListener = API.graphql(graphqlOperation(onCreateUserProduct))
+    .subscribe({
+        next: async createdUserProductData => {
+            let isOnCreateList = false;
+            this.state.userProducts.map((mapUserProduct) => {
+                if (createdUserProductData.value.data.onCreateUserProduct.id === mapUserProduct.id) {
+                    isOnCreateList = true;
+                } 
+                return mapUserProduct
+            })
+            let tempUserProducts = this.state.userProducts
+            let tempOnCreateUserProduct = createdUserProductData.value.data.onCreateUserProduct
+            if (!isOnCreateList) {
+                tempUserProducts.push(tempOnCreateUserProduct)
+            }
+            this.setState((state) => ({userProducts: tempUserProducts}))
+        }
+    })
+    // OnUpdate User
+    this.updateUserListener = API.graphql(graphqlOperation(onUpdateUser))
+    .subscribe({
+        next: updatedUserData => {
+            let tempUsers = this.state.users.map((mapUsers) => {
+                if (updatedUserData.value.data.onUpdateUser.id === mapUsers.id) {
+                    return updatedUserData.value.data.onUpdateUser
+                } else {
+                    return mapUsers
+                }
+            })
+            // Ordering users by name
+            tempUsers.sort((a, b) => (a.name > b.name) ? 1 : -1)
+            this.setState((state) => ({users: tempUsers}))
+        }
+    })
+}
   async loadUsers() {
   const listUsersResults = await API.graphql(graphqlOperation(listUsers))
   this.setState({users: listUsersResults.data.listUsers.items, usersCopy: listUsersResults.data.listUsers.items})
