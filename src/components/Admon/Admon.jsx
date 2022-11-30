@@ -5,6 +5,7 @@ import { Auth } from 'aws-amplify';
 import { Alert, Col, Container, Row } from 'react-bootstrap';
 import Bootstrap from "../common/themes";
 // Components
+import ConstructorAdmon from '../Constructor/ConstructorAdmon';
 import AdmonProfile from './AdmonProfile/AdmonProfile';
 import Categorys from './Categorys/Categorys';
 import Documents from './Documents/Documents';
@@ -37,7 +38,7 @@ export default class Admon extends Component {
                 cellphone: '',
             },
             isShowAdmonProfile: false,
-            isShowProducts: true,
+            isShowProducts: false, //TODO true
             isShowCategorys: false,
             isShowFeatures: false,
             isShowNotAuthorize: false,
@@ -46,6 +47,7 @@ export default class Admon extends Component {
             isShowResults: false,
             isShowDocuments: false,
             isShowValidation: false,
+            isShowConstructorAdmon: true, //TODO false
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
         this.setUserGraphQLUser = this.setUserGraphQLUser.bind(this)
@@ -108,6 +110,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
             })
         }
 
@@ -123,6 +126,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
             })
         }
 
@@ -139,6 +143,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
             })
         }
 
@@ -154,6 +159,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
             })
         }
         if (pRequest === 'features') {
@@ -168,6 +174,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
         })
         }
         if (pRequest === 'uom') {
@@ -182,6 +189,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
         })
         }
         if (pRequest === 'formulas') {
@@ -196,6 +204,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
         })
         }
         if (pRequest === 'results') {
@@ -210,6 +219,7 @@ export default class Admon extends Component {
                 isShowResults: true,
                 isShowDocuments: false,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
         })
         }
         if (pRequest === 'documents') {
@@ -224,6 +234,22 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: true,
                 isShowValidation: false,
+                isShowConstructorAdmon: false,
+        })
+        }
+        if (pRequest === 'constructor_admon') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowFeatures: false,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+                isShowUOM: false,
+                isShowFormulas: false,
+                isShowResults: false,
+                isShowDocuments: false,
+                isShowValidation: false,
+                isShowConstructorAdmon: true,
         })
         }
         
@@ -239,6 +265,7 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidation: true,
+                isShowConstructorAdmon: false,
         })
         }
         
@@ -294,7 +321,8 @@ export default class Admon extends Component {
             isShowFormulas,
             isShowResults,
             isShowDocuments,
-            isShowValidation
+            isShowValidation,
+            isShowConstructorAdmon
         } = this.state
 
         const renderAdmonProfile = () => {
@@ -411,6 +439,13 @@ export default class Admon extends Component {
                 )
             }
         }
+        const renderConstructorAdmon = () => {
+            if (isShowConstructorAdmon) {
+                return (
+                    <ConstructorAdmon />
+                )
+            }
+        }
 
         return (
             <Container fluid style={{paddingTop: 70}}>
@@ -439,6 +474,7 @@ export default class Admon extends Component {
                     {renderValidations()}
                     {renderAdmonProfile()}
                     {renderUserNoAuthorize()}
+                    {renderConstructorAdmon()}
                 </Row>
 
             </Container>

@@ -84,6 +84,9 @@ export default class HeaderNavbar extends Component {
                                 </Nav.Link>                            
                             </Nav>
                             <Nav>
+                                <Nav.Link href="#constructorAdmon" onClick={(e) => this.changeHeaderNavBarRequest('constructor_admon', e)}>
+                                    Assign Products
+                                </Nav.Link>          
                                 <button onClick={(e) => this.handleChangeObjectElement()}>Sign Out</button>
                             </Nav>
                             </Navbar.Collapse>
