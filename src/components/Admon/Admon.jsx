@@ -38,7 +38,7 @@ export default class Admon extends Component {
                 cellphone: '',
             },
             isShowAdmonProfile: false,
-            isShowProducts: false, //TODO true
+            isShowProducts: true,
             isShowCategorys: false,
             isShowFeatures: false,
             isShowNotAuthorize: false,
@@ -47,7 +47,7 @@ export default class Admon extends Component {
             isShowResults: false,
             isShowDocuments: false,
             isShowValidation: false,
-            isShowConstructorAdmon: true, //TODO false
+            isShowConstructorAdmon: false, 
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
         this.setUserGraphQLUser = this.setUserGraphQLUser.bind(this)
