@@ -117,7 +117,7 @@ export default class ConstructorAdmon extends Component {
         return(
           <>
           <h2>Users</h2> 
-          <Table striped bordered hover style={{cursor: 'pointer'}}>
+          <Table  bordered hover style={{cursor: 'pointer'}}>
               <thead>
               <tr>
                   <th>Name</th>
@@ -158,7 +158,7 @@ export default class ConstructorAdmon extends Component {
         return(
           <>
           <h2>Products</h2> 
-          <Table striped bordered hover style={{cursor: 'pointer'}}>
+          <Table  bordered hover style={{cursor: 'pointer'}}>
               <thead>
               <tr>
                   <th>Name</th>
@@ -192,7 +192,7 @@ export default class ConstructorAdmon extends Component {
         return(
           <>
             <h2>User Products</h2>
-            <Table striped bordered hover style={{cursor: 'pointer'}}>
+            <Table  bordered hover style={{cursor: 'pointer'}}>
               <thead>
               <tr>
                   <th>User</th>
