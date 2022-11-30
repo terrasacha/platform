@@ -16,6 +16,7 @@ export default class ConstructorAdmon extends Component {
     super(props)
     this.state = {
       users: [],
+      usersCopy: [],
       products: [],
       userProducts: [],
       showModalRole: false,
@@ -44,7 +45,7 @@ export default class ConstructorAdmon extends Component {
   }
   async loadUsers() {
   const listUsersResults = await API.graphql(graphqlOperation(listUsers))
-  this.setState({users: listUsersResults.data.listUsers.items})
+  this.setState({users: listUsersResults.data.listUsers.items, usersCopy: listUsersResults.data.listUsers.items})
   }
   async loadProducts() {
     const listProductsResults = await API.graphql(graphqlOperation(listProducts))
@@ -72,6 +73,32 @@ export default class ConstructorAdmon extends Component {
     if(e.target.name === 'select_role'){
       this.setState({roleSelected: e.target.value})
     }
+  }
+  handleSelectUsersToShow(data){
+    let users = this.state.users
+    let filteredUsers = []
+    if(data === 'show_all'){
+      this.setState({usersCopy: this.state.users})
+    }
+    if(data === 'admon'){
+      filteredUsers = users.filter(user => user.role === 'admon')
+      if(filteredUsers.length > 0){
+         this.setState({usersCopy: filteredUsers})
+      }else this.setState({usersCopy: this.state.users})
+      
+    } 
+    if(data === 'constructor'){
+      filteredUsers = users.filter(user => user.role === 'constructor')
+      if(filteredUsers.length > 0){
+        this.setState({usersCopy: filteredUsers})
+     }else this.setState({usersCopy: this.state.users})
+    } 
+    if(data === 'investor'){
+      filteredUsers = users.filter(user => user.role === 'investor')
+      if(filteredUsers.length > 0){
+        this.setState({usersCopy: filteredUsers})
+     }else this.setState({usersCopy: this.state.users})
+    } 
   }
   async handleAssignProduct(){
     let existUP = false
@@ -110,13 +137,16 @@ export default class ConstructorAdmon extends Component {
     })
   }
   render() {
-    let { users, products, userSelected, productSelected, roleSelected, userProducts } = this.state
+    let { usersCopy, products, userSelected, productSelected, roleSelected, userProducts } = this.state
 
     const renderUsers = () => {
-      if(users.length > 0){
+      if(usersCopy.length > 0){
         return(
           <>
-          <h2>Users</h2> 
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+            <h2 className='mr-5'>Users</h2> 
+            {dropDown()}
+          </div>
           <Table  bordered hover style={{cursor: 'pointer'}}>
               <thead>
               <tr>
@@ -126,7 +156,7 @@ export default class ConstructorAdmon extends Component {
               </tr>
               </thead>
               <tbody>
-                  {users?.map(user =>{ 
+                  {usersCopy?.map(user =>{ 
                       return(
                           <tr key={user.id} onClick={(e) => this.handleSelectUser(user)}>
                               <td>
@@ -280,6 +310,16 @@ export default class ConstructorAdmon extends Component {
       )
       }
     }
+    const dropDown = () => {
+      return(
+      <DropdownButton  title='Filter By role' size="sm">
+          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('show_all')}>Show all</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('admon')}>Admins</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('constructor')}>Constructors</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('investor')}>Investors</Dropdown.Item>
+        </DropdownButton>
+      )
+  }
     return (
       <>
       <Container>
