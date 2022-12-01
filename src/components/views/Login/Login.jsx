@@ -1,14 +1,15 @@
 import { Auth, Hub } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Form } from "react-bootstrap"
+import { Alert, Button, Card, Form } from "react-bootstrap"
 const initialFormState ={
-    username: '', password: '', email: '', authCode: '', formType: 'signIn', role: ''
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn', role: ''
 }
 
 export default function LogIn() {
     const [formState, updateFormState] = useState(initialFormState)
     const [user, updateUser] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
     
     useEffect(() => {
         checkUser()
@@ -25,6 +26,7 @@ export default function LogIn() {
             }
           });
     }
+
     async function checkUser(){
         try {
             const user = await Auth.currentAuthenticatedUser()
@@ -34,22 +36,31 @@ export default function LogIn() {
            // updateUser(null)
         }
     }
+
     function onChange(e){
         e.persist()
         updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
 
     }
+
     const { formType } = formState
+
     async function signUp(){
-        const { username, email, password, role } = formState
-        setLoading(true)
-        await Auth.signUp({ username, password, attributes: {
-             email,
-             'custom:role': role  
-            }})
-            setLoading(false)
-        updateFormState(() => ({...formState, formType: 'confirmSignUp' }))
+        const { username, email, password, role, confirmPassword } = formState
+        if(password === confirmPassword){
+            setError("")
+            setLoading(true)
+            await Auth.signUp({ username, password, attributes: {
+                 email,
+                 'custom:role': role  
+                }})
+                setLoading(false)
+            updateFormState(() => ({...formState, formType: 'confirmSignUp' }))
+        }else{
+            setError('passwords does not match')
+        }
     }
+
     async function confirmSignUp(){
         const { username, authCode } = formState
         setLoading(true)
@@ -57,15 +68,21 @@ export default function LogIn() {
         setLoading(false)
         updateFormState(() => ({...formState, formType: 'signIn' }))
     }
+
     async function signIn(){
         const { username, password } = formState
-        setLoading(true)
-        await Auth.signIn( username, password  )
+        try {
+            setError("")
+            setLoading(true)
+            await Auth.signIn( username, password  )
+            updateFormState(() => ({...formState, formType: 'signedIn' }))
+            let currentUser = await Auth.currentAuthenticatedUser()
+            currentUser = currentUser.attributes['custom:role']
+            localStorage.setItem('role', currentUser)    
+        } catch (error) {
+            setError("Combination of account name and user name does not exist.")
+        }
         setLoading(false)
-        updateFormState(() => ({...formState, formType: 'signedIn' }))
-        let currentUser = await Auth.currentAuthenticatedUser()
-        currentUser = currentUser.attributes['custom:role']
-        localStorage.setItem('role', currentUser)
     }
   return (
     <div className='d-flex align-items-center justify-content-center' 
@@ -77,6 +94,7 @@ export default function LogIn() {
                     <Card>
                         <Card.Body>
                             <h2 className='text-center mb-4'>Sign Up</h2>
+                            {error && <Alert variant="danger">{error}</Alert>}
                             <Form>
                                 <Form.Group>
                                     <Form.Label>User Name</Form.Label>
@@ -84,11 +102,15 @@ export default function LogIn() {
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label>Email</Form.Label>
-                                    <Form.Control type='email'name='email' onChange={onChange} placeholder=''/>
+                                    <Form.Control type='email'name='email' onChange={onChange} placeholder='example@example.com'/>
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label>Password</Form.Label>
                                     <Form.Control name='password' type='password' onChange={onChange} placeholder='password'/>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Confirm password</Form.Label>
+                                    <Form.Control name='confirmPassword' type='password' onChange={onChange} placeholder='confirm password'/>
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label>Role</Form.Label>
@@ -117,6 +139,7 @@ export default function LogIn() {
                     <Card>
                     <Card.Body>
                         <h2 className="text-center mb-4">Confirmation</h2>
+                        <Alert>Verification code send to {formState.email}</Alert>
                         <Form>
                         <Form.Group>
                             <Form.Label>Confirmation Code</Form.Label>
@@ -137,6 +160,7 @@ export default function LogIn() {
                  <Card>
                    <Card.Body>
                      <h2 className="text-center mb-4">Log In</h2>
+                     {error && <Alert variant="danger">{error}</Alert>}
                      <Form>
                        <Form.Group>
                          <Form.Label>User Name</Form.Label>
