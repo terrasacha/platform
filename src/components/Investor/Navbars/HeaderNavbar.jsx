@@ -5,7 +5,7 @@ import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 import { ListTask } from 'react-bootstrap-icons'
 
 // Import images
-import LOGO from '../../common/_images/logo.png'
+import LOGO from '../../common/_images/SuanLogo.png'
 
 export default class HeaderNavbar extends Component {
 
@@ -36,7 +36,7 @@ export default class HeaderNavbar extends Component {
                         <Nav className="me-auto">
                             <Nav.Link href="#home">
                                 <img src={LOGO}
-                                    width="80"
+                                    width="50"
                                     height="auto"
                                     className="d-inline-block align-top"
                                     alt="BBT"/>

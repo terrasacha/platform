@@ -6,7 +6,7 @@ import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
 
 // Import images
-import LOGO from '../../common/_images/logo.png'
+import LOGO from '../../common/_images/SuanLogo.png'
 
 export default class HeaderNavbar extends Component {
 
@@ -40,7 +40,7 @@ export default class HeaderNavbar extends Component {
                     <Navbar bg="light" variant="light" fixed="top">
                         <Container>
                             <Navbar.Brand href="#"><img src={LOGO} 
-                                        width="100"
+                                        width="50"
                                         height="auto"
                                         className="d-inline-block align-top"
                                         alt="ATP"
@@ -86,6 +86,9 @@ export default class HeaderNavbar extends Component {
                             <Nav>
                                 <Nav.Link href="#constructorAdmon" onClick={(e) => this.changeHeaderNavBarRequest('constructor_admon', e)}>
                                     Assign Products
+                                </Nav.Link>          
+                                <Nav.Link href="#constructorAdmon" onClick={(e) => this.changeHeaderNavBarRequest('settings', e)}>
+                                    Settings
                                 </Nav.Link>          
                                 <button onClick={(e) => this.handleChangeObjectElement()}>Sign Out</button>
                             </Nav>

@@ -138,7 +138,7 @@ class Documents extends Component {
           let imageName = imageId + '.' + imageExtension
           // Uploading image TO DO  MOVE TO PRIVATE
           uploadImageResult = await Storage.put(imageName, this.state.fileToUpload, {
-            level: "public/documents",
+            level: "public/",
             contentType: "image/jpeg",
           });
           
