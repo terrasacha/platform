@@ -67,7 +67,7 @@ export const onCreateUser = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -152,7 +152,7 @@ export const onUpdateUser = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -237,7 +237,7 @@ export const onDeleteUser = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -720,7 +720,7 @@ export const onCreateDocumentType = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -750,7 +750,7 @@ export const onUpdateDocumentType = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -780,7 +780,7 @@ export const onDeleteDocumentType = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -805,7 +805,7 @@ export const onCreateDocument = /* GraphQL */ `
       id
       data
       timeStamp
-      hash
+      doc_hash
       url
       signed
       isApproved
@@ -906,7 +906,7 @@ export const onUpdateDocument = /* GraphQL */ `
       id
       data
       timeStamp
-      hash
+      doc_hash
       url
       signed
       isApproved
@@ -1007,7 +1007,7 @@ export const onDeleteDocument = /* GraphQL */ `
       id
       data
       timeStamp
-      hash
+      doc_hash
       url
       signed
       isApproved
@@ -2480,7 +2480,7 @@ export const onCreateProductFeature = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -2601,7 +2601,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
@@ -2722,7 +2722,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved

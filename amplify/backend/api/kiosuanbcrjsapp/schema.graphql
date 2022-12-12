@@ -56,7 +56,7 @@ type Document @model
   id: ID!
   data: AWSJSON!
   timeStamp: AWSTimestamp!
-  hash: String
+  doc_hash: String
   url: AWSURL
   signed: String
   isApproved: Boolean

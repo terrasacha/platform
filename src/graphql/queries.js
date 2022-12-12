@@ -142,7 +142,7 @@ export const getUser = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          doc_hash
           url
           signed
           isApproved
