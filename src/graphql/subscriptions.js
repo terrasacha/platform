@@ -67,7 +67,7 @@ export const onCreateUser = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -152,7 +152,7 @@ export const onUpdateUser = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -237,7 +237,7 @@ export const onDeleteUser = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -720,7 +720,7 @@ export const onCreateDocumentType = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -750,7 +750,7 @@ export const onUpdateDocumentType = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -780,7 +780,7 @@ export const onDeleteDocumentType = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -805,7 +805,7 @@ export const onCreateDocument = /* GraphQL */ `
       id
       data
       timeStamp
-      doc_hash
+      docHash
       url
       signed
       isApproved
@@ -906,7 +906,7 @@ export const onUpdateDocument = /* GraphQL */ `
       id
       data
       timeStamp
-      doc_hash
+      docHash
       url
       signed
       isApproved
@@ -1007,7 +1007,7 @@ export const onDeleteDocument = /* GraphQL */ `
       id
       data
       timeStamp
-      doc_hash
+      docHash
       url
       signed
       isApproved
@@ -1249,6 +1249,25 @@ export const onCreateProduct = /* GraphQL */ `
         }
         nextToken
       }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          processed
+          type
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1314,6 +1333,25 @@ export const onUpdateProduct = /* GraphQL */ `
           id
           isFavorite
           userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          processed
+          type
           productID
           createdAt
           updatedAt
@@ -1391,6 +1429,25 @@ export const onDeleteProduct = /* GraphQL */ `
         }
         nextToken
       }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          processed
+          type
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1434,6 +1491,9 @@ export const onCreateImage = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        transactions {
           nextToken
         }
         createdAt
@@ -1484,6 +1544,9 @@ export const onUpdateImage = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1530,6 +1593,9 @@ export const onDeleteImage = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        transactions {
           nextToken
         }
         createdAt
@@ -2425,6 +2491,9 @@ export const onCreateProductFeature = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2480,7 +2549,7 @@ export const onCreateProductFeature = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -2546,6 +2615,9 @@ export const onUpdateProductFeature = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2601,7 +2673,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -2667,6 +2739,9 @@ export const onDeleteProductFeature = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2722,7 +2797,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -3039,6 +3114,9 @@ export const onCreateUserProduct = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -3121,6 +3199,9 @@ export const onUpdateUserProduct = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -3201,6 +3282,9 @@ export const onDeleteUserProduct = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        transactions {
           nextToken
         }
         createdAt
@@ -3369,6 +3453,162 @@ export const onDeleteOrder = /* GraphQL */ `
           updatedAt
         }
         orders {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateTransactions = /* GraphQL */ `
+  subscription OnCreateTransactions {
+    onCreateTransactions {
+      id
+      addressOrigin
+      addressDestination
+      txIn
+      txCborhex
+      txHash
+      metadataUrl
+      fees
+      network
+      processed
+      type
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateTransactions = /* GraphQL */ `
+  subscription OnUpdateTransactions {
+    onUpdateTransactions {
+      id
+      addressOrigin
+      addressDestination
+      txIn
+      txCborhex
+      txHash
+      metadataUrl
+      fees
+      network
+      processed
+      type
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteTransactions = /* GraphQL */ `
+  subscription OnDeleteTransactions {
+    onDeleteTransactions {
+      id
+      addressOrigin
+      addressDestination
+      txIn
+      txCborhex
+      txHash
+      metadataUrl
+      fees
+      network
+      processed
+      type
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
           nextToken
         }
         createdAt

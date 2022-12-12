@@ -56,7 +56,7 @@ type Document @model
   id: ID!
   data: AWSJSON!
   timeStamp: AWSTimestamp!
-  doc_hash: String
+  docHash: String
   url: AWSURL
   signed: String
   isApproved: Boolean
@@ -95,6 +95,7 @@ type Product @model
   images: [Image] @hasMany(indexName: "byProduct", fields: ["id"])
   productFeatures: [ProductFeature] @hasMany(indexName: "byProduct", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
+  transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model 
@@ -219,4 +220,20 @@ type Order @model {
   confirmation: String
   userProductID: ID! @index(name: "byUserProduct")
   userProduct: UserProduct @belongsTo(fields: ["userProductID"])
+}
+
+type Transactions @model {
+  id: ID!
+  addressOrigin: String
+  addressDestination: String
+  txIn: String
+  txCborhex: String 
+  txHash: String
+  metadataUrl: String
+  fees: Float
+  network: String
+  processed: Boolean
+  type: String
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
 }

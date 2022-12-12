@@ -2049,3 +2049,95 @@ export const listOrders = /* GraphQL */ `
     }
   }
 `;
+export const getTransactions = /* GraphQL */ `
+  query GetTransactions($id: ID!) {
+    getTransactions(id: $id) {
+      id
+      addressOrigin
+      addressDestination
+      txIn
+      txCborhex
+      txHash
+      metadataUrl
+      fees
+      network
+      processed
+      type
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listTransactions = /* GraphQL */ `
+  query ListTransactions(
+    $filter: ModelTransactionsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listTransactions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        addressOrigin
+        addressDestination
+        txIn
+        txCborhex
+        txHash
+        metadataUrl
+        fees
+        network
+        processed
+        type
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
