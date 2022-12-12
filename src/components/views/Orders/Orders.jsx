@@ -24,7 +24,7 @@ class Orders extends Component {
             actualUser: null,
             isAlreadyExistUserProduct: false,
             index: 0,
-            quantity: 0,
+            quantity: 1,
             maxTokensToBuy: 0,
             refferenceCode: uuidv4().replaceAll('-','_'),
             tokenPrice:this.props.product.tokenPrice !== undefined? 

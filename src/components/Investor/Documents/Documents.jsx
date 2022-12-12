@@ -317,7 +317,7 @@ class Documents extends Component {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={(e) => this.handleCreateDocument()}>Upload Document</Button>
+                    <Button disabled={this.state.creatingDocument?true:false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument?'Uploading':'Upload Document'}</Button>
                 </Modal.Footer>
             </Modal>
         )

@@ -34,13 +34,13 @@ class Documents extends Component {
                 productFeatureID: ''
             },
             userProductsDoc: [],
+            loadingDocument: false,
             showAllDocuments: true,
             showProductsWithoutDoc: false,
             productToShow: null,
             showModalDocument: false,
             productFeatureToAddDoc: null,
             fileToUpload: null,
-            creatingDocument: false,
         }
         this.handleLoadUserProduct = this.handleLoadUserProduct.bind(this)
         this.handleCreateDocument = this.handleCreateDocument.bind(this)
@@ -127,7 +127,7 @@ class Documents extends Component {
     }
     handleCreateDocument = async() => {
         let tempNewDocument = this.state.newDocument
-          this.setState({creatingDocument: true})
+          this.setState({loadingDocument: true})
           // Creating image ID
           let imageId = ''
           let uploadImageResult = null
@@ -174,7 +174,7 @@ class Documents extends Component {
             showModalDocument: false,
             productFeatureToAddDoc: null,
             fileToUpload: null,
-            creatingDocument: false,
+            loadingDocument: false,
         })
     }
     
@@ -314,7 +314,7 @@ class Documents extends Component {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={(e) => this.handleCreateDocument()}>Upload Document</Button>
+                    <Button disabled={this.state.loadingDocument?true:false} onClick={(e) => this.handleCreateDocument()}>{this.state.loadingDocument?'Uploading':'Upload Document'}</Button>
                 </Modal.Footer>
             </Modal>
         )

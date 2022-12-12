@@ -336,7 +336,7 @@ class Validation extends Component {
                         </Form.Select>
                         <Button
                           variant="primary"
-                          disabled={this.state.creatingVerification}
+                          disabled={this.state.creatingVerification? true: false}
                           style={{marginLeft:'40px'}}
                           onClick={() => this.handleCreateVerification()}
                           >{this.state.creatingVerification?'Creating...': 'Confirm'}</Button>
