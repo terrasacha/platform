@@ -142,7 +142,7 @@ export const getUser = /* GraphQL */ `
           id
           data
           timeStamp
-          doc_hash
+          docHash
           url
           signed
           isApproved
@@ -487,7 +487,7 @@ export const getDocumentType = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          docHash
           url
           signed
           isApproved
@@ -533,7 +533,7 @@ export const getDocument = /* GraphQL */ `
       id
       data
       timeStamp
-      hash
+      docHash
       url
       signed
       isApproved
@@ -639,7 +639,7 @@ export const listDocuments = /* GraphQL */ `
         id
         data
         timeStamp
-        hash
+        docHash
         url
         signed
         isApproved
@@ -1570,7 +1570,7 @@ export const getProductFeature = /* GraphQL */ `
           id
           data
           timeStamp
-          hash
+          docHash
           url
           signed
           isApproved

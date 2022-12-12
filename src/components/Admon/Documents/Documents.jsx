@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 //Bootstrap
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
-import Bootstrap from "../../common/themes";
+// import Bootstrap from "../../common/themes";
 import './Documents.css';
 // GraphQL
 import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
@@ -24,7 +24,7 @@ class Documents extends Component {
                 id: null,
                 data: null,
                 timeStamp: null,
-                hash: '',
+                // docHash: '',
                 url: '',
                 signed: '',
                 isApproved: false,
@@ -161,7 +161,7 @@ class Documents extends Component {
                 id: null,
                 data: null,
                 timeStamp: null,
-                hash: '',
+                docHash: '',
                 url: '',
                 signed: '',
                 isApproved: false,
