@@ -2,7 +2,7 @@ import { Auth, Hub } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 import { Alert, Button, Card, Form } from "react-bootstrap"
 const initialFormState ={
-    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn', role: ''
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn', role: 'investor'
 }
 
 export default function LogIn() {
@@ -116,7 +116,6 @@ export default function LogIn() {
                                     <Form.Label>Role</Form.Label>
                                     <Form.Select name="role" onChange={onChange}>
                                         <option value="investor">Investor</option>
-                                        <option value="admon">Admon</option>
                                         <option value="constructor">Constructor</option>
                                     </Form.Select>
                                 </Form.Group>
