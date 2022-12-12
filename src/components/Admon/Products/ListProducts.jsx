@@ -16,6 +16,7 @@ export default class ListProducts extends Component {
             isRenderModalProductImages: false,
         }
         this.handleShowAreYouSureDeleteProduct = this.props.handleShowAreYouSureDeleteProduct.bind(this)
+        this.handleUpdateProductStatus = this.props.handleUpdateProductStatus.bind(this)
         this.handleLoadEditProduct = this.props.handleLoadEditProduct.bind(this)
         this.handleDeleteFeatureProduct = this.props.handleDeleteFeatureProduct.bind(this)
         this.handleDeleteImageProduct = this.props.handleDeleteImageProduct.bind(this)
@@ -69,6 +70,7 @@ export default class ListProducts extends Component {
                                 <th>Product Features</th>
                                 <th>Is Active</th>
                                 <th>Action</th>
+                                <th>Set status</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -113,6 +115,13 @@ export default class ListProducts extends Component {
                                             disabled={product.status === 'on_block_chain'} 
                                             onClick={(e) => this.handleLoadEditProduct(product, e)}
                                         >{product.status === 'on_block_chain'? 'Can not Edit' : 'Edit'}</Button>
+                                    </td>
+                                    <td>
+                                        <Button 
+                                            variant={product.status !== 'disabled'? 'danger': 'success'}
+                                            size='md' 
+                                            onClick={(e) => this.handleUpdateProductStatus(product)}
+                                        >{product.status !== 'disabled'? 'Disable': 'Activate'}</Button>
                                     </td>
                                 </tr>
                             ))}

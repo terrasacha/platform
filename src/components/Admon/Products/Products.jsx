@@ -56,6 +56,7 @@ class Products extends Component {
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
         this.handleOnSelectFeature = this.handleOnSelectFeature.bind(this)
+        this.handleUpdateProductStatus = this.handleUpdateProductStatus.bind(this)
         this.handleLoadEditProduct = this.handleLoadEditProduct.bind(this)
         this.handleShowAreYouSureDeleteProduct = this.handleShowAreYouSureDeleteProduct.bind(this)
         this.handleDeleteProduct = this.handleDeleteProduct.bind(this)
@@ -366,7 +367,18 @@ class Products extends Component {
         await this.setState({CRUD_Product: tempCRUD_Product, selectedCategory: tempCategory, productFeatures: tempProductsFeatures, CRUDButtonName: 'UPDATE'})
         this.validateCRUDProduct()
     }
+    handleUpdateProductStatus = async(product) => {
+        let tempProduct = {
+            id : product.id,
+            status: ''
+        }
+        if(product.status !== 'disabled') tempProduct.status = 'disabled'
+        if(product.status === 'disabled') tempProduct.status = 'new'
 
+        await API.graphql(graphqlOperation(updateProduct, { input:  tempProduct }))
+
+    }
+    
     handleDeleteImageProduct= async(pProduct, pImage, event) => {
         let tempProducts = []
         let tempImages = []
@@ -793,6 +805,7 @@ class Products extends Component {
                         handleLoadEditProduct={this.handleLoadEditProduct}
                         handleDeleteFeatureProduct={this.handleDeleteFeatureProduct}
                         handleDeleteImageProduct={this.handleDeleteImageProduct}
+                        handleUpdateProductStatus={this.handleUpdateProductStatus}
                         />
                 </Container>
         )

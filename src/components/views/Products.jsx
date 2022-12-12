@@ -78,7 +78,7 @@ export default class Products extends Component {
         // State Varibles
         let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures, isRenderOrderTokens, isRenderProductsOnCards} = this.state
         let {products} = this.props
-        let productsActive = products.filter(p => p.isActive)
+        let productsActive = products.filter(p => p.isActive && p.status !== 'disabled')
         productsActive.map(product =>{
            product.productFeatures.items.map(pf =>{
                 pf.productFeatureResults.items.map(pfr => {
