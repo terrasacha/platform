@@ -140,7 +140,7 @@ export default class LandingPage extends Component {
     }
 
     return (
-      <Container>
+      <Container style={{minHeight: '100vh'}}>
         <HeaderNavbar handleChangeRenderView={this.handleChangeRenderView} logOut={this.logOut}></HeaderNavbar>
         {renderAboutUs()}
         {renderCarousel()}

@@ -489,7 +489,7 @@ export default class Admon extends Component {
         }
 
         return (
-            <Container fluid style={{paddingTop: 70}}>
+            <Container fluid style={{paddingTop: 70}} >
 
                 <h4>Admon Dashboard</h4>
                 
