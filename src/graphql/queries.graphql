@@ -258,3 +258,57 @@ query MyQueryUserDocuments {
     }
   }
 }
+
+
+
+query MyQuery {
+  listUsers {
+    items {
+      wallets {
+        items {
+          id
+          name
+        }
+      }
+      userProducts {
+        items {
+          product {
+            id
+          }
+          orders {
+            items {
+              id
+              amountOfTokens
+            }
+          }
+        }
+      }
+      id
+    }
+  }
+}
+
+query MyQuery2 {
+  getUser(id: "75ed13ee-5825-4df0-b4ac-89ecd1615064") {
+    id
+    name
+    userProducts {
+      items {
+        product {
+          categoryID
+          id
+          name
+        }
+        orders {
+          items {
+            amountOfTokens
+            confirmation
+            id
+            statusCode
+            fiatTotalAmount
+          }
+        }
+      }
+    }
+  }
+}

@@ -8,10 +8,10 @@ export default class Features extends Component {
     return (
       <Container className='feature_block'>
         <h1>
-        Construyamos juntos!
+        Buil a better future together!
         </h1>
         <p >
-          Haz parte del proyecto inmobiliario que mas te guste...
+          Buy a SUANCO 
         </p>
       </Container>
     )
