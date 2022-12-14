@@ -9,10 +9,12 @@ import { AuthProvider } from './context/AuthContext';
 // Routing
 import { Auth } from 'aws-amplify';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ValidatorAdmon from './components/Validator/ValidatorAdmon';
 import Footer from './components/views/Footer/Footer';
 import LogIn from './components/views/Login/Login';
 import AdmonMiddleware from './components/views/middlewareRoute/AdmonMiddleware';
 import InvestorMiddleware from './components/views/middlewareRoute/InvestorMiddleware';
+import ValidatorMiddleware from './components/views/middlewareRoute/ValidatorMiddleware';
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
 
 // import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
@@ -46,6 +48,14 @@ function App(){
               <InvestorMiddleware>
                 <InvestorAdmon />
               </ InvestorMiddleware>
+            }
+          />
+          <Route
+            path="/validator_admon"
+            element={
+              <ValidatorMiddleware>
+                <ValidatorAdmon />
+              </ValidatorMiddleware>
             }
           />
           <Route

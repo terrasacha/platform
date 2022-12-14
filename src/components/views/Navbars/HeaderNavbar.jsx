@@ -10,7 +10,7 @@ export default class HeaderNavbar extends Component {
     return (
       <Navbar collapseOnSelect expand="lg" bg="light" variant="light" fixed="top">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand href="/">
           <img
             src={LOGO}
             width="50"

@@ -29,7 +29,7 @@ class Products extends Component {
                 name: '',
                 description: '',
                 isActive: true,
-                status: 'new',
+                status: 'draft',
                 order: '',
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
@@ -373,7 +373,7 @@ class Products extends Component {
             status: ''
         }
         if(product.status !== 'disabled') tempProduct.status = 'disabled'
-        if(product.status === 'disabled') tempProduct.status = 'new'
+        if(product.status === 'disabled') tempProduct.status = 'draft'
 
         await API.graphql(graphqlOperation(updateProduct, { input:  tempProduct }))
 
@@ -503,7 +503,7 @@ class Products extends Component {
                 description: '',
                 isActive: true,
                 order: '',
-                status: 'new',
+                status: 'draft',
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
                 categoryID: '',
@@ -712,7 +712,7 @@ class Products extends Component {
                                             name='CRUD_ProductStatus'
                                             value={CRUD_Product.status}
                                             onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                            {['new', 'new_data', 'on_verification', 'to_testnet', 'to_main_net', 'on_block_chain'].map(
+                                            {['draft', 'verified', 'in_blockchain'].map(
                                                 op => (<option value={op} key={op}>{op}</option>)
                                             )}
                                         </Form.Select>

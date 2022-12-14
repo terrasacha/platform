@@ -28,13 +28,13 @@ export default class HeaderNavbar extends Component {
     }
 
     render() {
-        
+        let role = localStorage.getItem('role')
         return (
             <>
                 <Navbar bg="light" variant="light" fixed="top">
                     <Container>
                         <Nav className="me-auto">
-                            <Nav.Link href="#home">
+                            <Nav.Link href="/">
                                 <img src={LOGO}
                                     width="50"
                                     height="auto"
@@ -49,6 +49,7 @@ export default class HeaderNavbar extends Component {
                             </Nav.Link>
                         </Nav>
                         <Nav>
+                            <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>
                             <button onClick={(e) => this.handleSignOut()}>Sign Out</button>
                         </Nav>
                     </Container>

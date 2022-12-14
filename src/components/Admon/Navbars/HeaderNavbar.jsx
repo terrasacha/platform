@@ -34,12 +34,13 @@ export default class HeaderNavbar extends Component {
     // RENDER
     render() {
         let {isActualUserLogged} = this.props
+        let role = localStorage.getItem('role')
         const renderNavBar = () => {
             if (isActualUserLogged) {
                 return (
                     <Navbar bg="light" variant="light" fixed="top">
                         <Container>
-                            <Navbar.Brand href="#"><img src={LOGO} 
+                            <Navbar.Brand href="/"><img src={LOGO} 
                                         width="50"
                                         height="auto"
                                         className="d-inline-block align-top"
@@ -84,6 +85,7 @@ export default class HeaderNavbar extends Component {
                                 </Nav.Link>                            
                             </Nav>
                             <Nav>
+                                <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>
                                 <Nav.Link href="#constructorAdmon" onClick={(e) => this.changeHeaderNavBarRequest('constructor_admon', e)}>
                                     Assign Products
                                 </Nav.Link>          
