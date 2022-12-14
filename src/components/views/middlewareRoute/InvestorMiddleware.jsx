@@ -8,10 +8,12 @@ export default function InvestorMiddleware({children}) {
     }else {
         if(localStorage.getItem('role')==='constructor'){
             return <Navigate to='/' replace />
-        } else {
-            if(localStorage.getItem('role')==='admon'){
-                return <Navigate to='/admon' replace />   
-            }
+        }
+        if(localStorage.getItem('role')==='admon'){
+            return <Navigate to='/admon' replace />   
+        }
+        if(localStorage.getItem('role')==='validator'){
+            return <Navigate to='/validator_admon' replace />   
         }
     }
     return children;

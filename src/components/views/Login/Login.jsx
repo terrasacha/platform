@@ -117,6 +117,7 @@ export default function LogIn() {
                                     <Form.Select name="role" onChange={onChange}>
                                         <option value="investor">Investor</option>
                                         <option value="constructor">Constructor</option>
+                                        <option value="validator">Validator</option>
                                     </Form.Select>
                                 </Form.Group>
                                 <Button onClick={signUp} disabled={loading} className='w-100 mt-4'>{loading?'Loading': 'Sign Up'}</Button>
