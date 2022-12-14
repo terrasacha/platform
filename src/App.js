@@ -7,7 +7,7 @@ import Error from './components/views/Error';
 import LandingPage from "./components/views/LandingPage.jsx";
 import { AuthProvider } from './context/AuthContext';
 // Routing
-import { Auth } from 'aws-amplify';
+// import { Auth } from 'aws-amplify';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Footer from './components/views/Footer/Footer';
 import LogIn from './components/views/Login/Login';
@@ -15,7 +15,7 @@ import AdmonMiddleware from './components/views/middlewareRoute/AdmonMiddleware'
 import InvestorMiddleware from './components/views/middlewareRoute/InvestorMiddleware';
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
 
-// import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
+import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
 
 
 function App(){
@@ -54,6 +54,12 @@ function App(){
               <InvestorMiddleware>
                 <SuccessOrder/>
               </ InvestorMiddleware>
+            }
+          />
+          <Route
+            path="/cardano_connector"
+            element={
+                <CardanoConnector/>
             }
           />
           <Route

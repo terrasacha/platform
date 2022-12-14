@@ -2061,7 +2061,7 @@ export const getTransactions = /* GraphQL */ `
       metadataUrl
       fees
       network
-      processed
+      txProcessed
       type
       productID
       product {
@@ -2118,7 +2118,7 @@ export const listTransactions = /* GraphQL */ `
         metadataUrl
         fees
         network
-        processed
+        txProcessed
         type
         productID
         product {

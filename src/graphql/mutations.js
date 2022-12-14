@@ -1317,7 +1317,7 @@ export const createProduct = /* GraphQL */ `
           metadataUrl
           fees
           network
-          processed
+          txProcessed
           type
           productID
           createdAt
@@ -1410,7 +1410,7 @@ export const updateProduct = /* GraphQL */ `
           metadataUrl
           fees
           network
-          processed
+          txProcessed
           type
           productID
           createdAt
@@ -1503,7 +1503,7 @@ export const deleteProduct = /* GraphQL */ `
           metadataUrl
           fees
           network
-          processed
+          txProcessed
           type
           productID
           createdAt
@@ -3640,7 +3640,7 @@ export const createTransactions = /* GraphQL */ `
       metadataUrl
       fees
       network
-      processed
+      txProcessed
       type
       productID
       product {
@@ -3695,7 +3695,7 @@ export const updateTransactions = /* GraphQL */ `
       metadataUrl
       fees
       network
-      processed
+      txProcessed
       type
       productID
       product {
@@ -3750,7 +3750,7 @@ export const deleteTransactions = /* GraphQL */ `
       metadataUrl
       fees
       network
-      processed
+      txProcessed
       type
       productID
       product {

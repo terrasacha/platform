@@ -232,7 +232,7 @@ type Transactions @model {
   metadataUrl: String
   fees: Float
   network: String
-  processed: Boolean
+  txProcessed: Boolean
   type: String
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
