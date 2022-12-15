@@ -56,6 +56,7 @@ class Documents extends Component {
         })
         await this.loadUserProducts(actualUserID)
         await this.loadDocuments(actualUserID)
+        console.log(this.state.documents, 'documents')
         await this.loadDocumentTypes()
         // Subscriptions
         // OnCreate Document
@@ -218,6 +219,8 @@ class Documents extends Component {
                                         <th>Product</th>
                                         <th>Feature</th>
                                         <th>Document Status</th>       
+                                        <th>Hash</th>       
+                                        <th>Metadata</th>       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -231,6 +234,8 @@ class Documents extends Component {
                                                     document.status === 'pending'? <HourglassSplit size={25} color='grey'/> : 
                                                     document.status === 'accepted'? <CheckCircle size={25} color='#449E48'/> : <XCircle size={25} color='#CC0000'/>
                                                     }</td>
+                                                    <td>{document.docHash}</td>
+                                                    <td>{document.docHash}</td>
                                                 </tr>
                                             )
                                         })

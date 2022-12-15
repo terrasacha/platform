@@ -61,10 +61,6 @@ export default class HeaderNavbar extends Component {
                                     Documents
                                 </Nav.Link>
 
-                                <Nav.Link href="#documents"onClick={(e) => this.changeHeaderNavBarRequest('validation', e)}>
-                                    Validation
-                                </Nav.Link>
-
                                 <Nav.Link href="#formulas" onClick={(e) => this.changeHeaderNavBarRequest('formulas', e)}>
                                     Formulas
                                 </Nav.Link>

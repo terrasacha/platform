@@ -26,6 +26,7 @@ export default class HeaderNavbar extends Component {
               <Nav.Link href="#products" onClick={(e) => this.props.handleChangeRenderView('products')}>Proyectos</Nav.Link>
               {role === 'admon'?<Nav.Link onClick={() => window.location.href="/admon"}>ADMIN</Nav.Link>:''}
               {role === 'investor'?<Nav.Link onClick={() => window.location.href="/investor_admon"}>Profile</Nav.Link>:''}
+              {role === 'validator'?<Nav.Link onClick={() => window.location.href="/validator_admon"}>VALIDATOR</Nav.Link>:''}
 
             </Nav>
             <Nav>

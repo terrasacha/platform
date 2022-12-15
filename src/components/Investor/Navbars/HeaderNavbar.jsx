@@ -41,12 +41,6 @@ export default class HeaderNavbar extends Component {
                                     className="d-inline-block align-top"
                                     alt="BBT"/>
                             </Nav.Link>
-                            <Nav.Link onClick={(e) => this.handleChangeNavBar('investor_documents', e)}>
-                                Documents
-                            </Nav.Link>
-                            <Nav.Link onClick={(e) => this.handleChangeNavBar('products_buyed', e)}>
-                                Products
-                            </Nav.Link>
                         </Nav>
                         <Nav>
                             <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>

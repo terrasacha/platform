@@ -16,7 +16,6 @@ import HeaderNavbar from './Navbars/HeaderNavbar';
 import Products from './Products/Products';
 import Results from './Results/Results';
 import UOM from './UOM/UOM';
-import Validation from './Validation/Validation';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
@@ -47,7 +46,7 @@ export default class Admon extends Component {
             isShowFormulas:false,
             isShowResults: false,
             isShowDocuments: false,
-            isShowValidation: false,
+            
             isShowConstructorAdmon: false, 
             isShowConfigure: false, 
         }
@@ -111,7 +110,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
             })
@@ -128,7 +127,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
             })
@@ -146,7 +145,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
             })
@@ -163,7 +162,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
             })
@@ -179,7 +178,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
         })
@@ -195,7 +194,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
         })
@@ -211,7 +210,7 @@ export default class Admon extends Component {
                 isShowFormulas:true,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
         })
@@ -227,7 +226,7 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: true,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
         })
@@ -243,7 +242,7 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: true,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
         })
@@ -259,7 +258,7 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: true,
                 isShowConfigure: false,
         })
@@ -276,7 +275,7 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: true,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
         })
@@ -292,7 +291,7 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                isShowValidation: false,
+                
                 isShowConstructorAdmon: false,
                 isShowConfigure: true,
         })
@@ -350,7 +349,6 @@ export default class Admon extends Component {
             isShowFormulas,
             isShowResults,
             isShowDocuments,
-            isShowValidation,
             isShowConstructorAdmon,
             isShowConfigure
         } = this.state
@@ -447,17 +445,6 @@ export default class Admon extends Component {
                 )
             }
         }
-        const renderValidations = () => {
-            if (isShowValidation) {
-                return (
-                    <Validation 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></Validation>
-                )
-            }
-        }
         const renderConfiguration = () => {
             if (isShowConfigure) {
                 return (
@@ -489,7 +476,7 @@ export default class Admon extends Component {
         }
 
         return (
-            <Container fluid style={{paddingTop: 70}} >
+            <Container fluid style={{paddingTop: 70, minHeight: '100vh'}} >
 
                 <h4>Admon Dashboard</h4>
                 
@@ -512,7 +499,6 @@ export default class Admon extends Component {
                     {renderFormulas()}
                     {renderResults()}
                     {renderDocuments()}
-                    {renderValidations()}
                     {renderAdmonProfile()}
                     {renderUserNoAuthorize()}
                     {renderConstructorAdmon()}
