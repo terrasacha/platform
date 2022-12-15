@@ -62,11 +62,17 @@ export default function LogIn() {
     }
 
     async function confirmSignUp(){
-        const { username, authCode } = formState
-        setLoading(true)
-        await Auth.confirmSignUp( username, authCode )
-        setLoading(false)
-        updateFormState(() => ({...formState, formType: 'signIn' }))
+        try {
+            setError("")
+            const { username, authCode } = formState
+            setLoading(true)
+            await Auth.confirmSignUp( username, authCode )
+            setLoading(false)
+            updateFormState(() => ({...formState, formType: 'signIn' }))
+        } catch (error) {
+            setLoading(false)
+            setError('code does not match')
+        }
     }
 
     async function signIn(){
@@ -140,6 +146,7 @@ export default function LogIn() {
                     <Card.Body>
                         <h2 className="text-center mb-4">Confirmation</h2>
                         <Alert>Verification code send to {formState.email}</Alert>
+                        {error && <Alert variant="danger">{error}</Alert>}
                         <Form>
                         <Form.Group>
                             <Form.Label>Confirmation Code</Form.Label>

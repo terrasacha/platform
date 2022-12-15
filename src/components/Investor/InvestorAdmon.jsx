@@ -156,7 +156,7 @@ class InvestorAdmon extends Component {
             const userPayload = {
                 id: tempUser.id,
                 name: tempUser.name,
-                isProfileUpdated: false,
+                isProfileUpdated: true,
                 role: 'investor'
             }
             await API.graphql(graphqlOperation(createUser, { input: userPayload }))
