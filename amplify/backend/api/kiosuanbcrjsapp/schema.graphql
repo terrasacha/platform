@@ -59,6 +59,7 @@ type Document @model
   docHash: String
   url: AWSURL
   signed: String
+  signedHash: String
   isApproved: Boolean
   status: String
   isUploadedToBlockChain: Boolean
