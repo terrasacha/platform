@@ -73,6 +73,7 @@ export const createUser = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -161,6 +162,7 @@ export const updateUser = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -249,6 +251,7 @@ export const deleteUser = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -753,6 +756,7 @@ export const createDocumentType = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -786,6 +790,7 @@ export const updateDocumentType = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -819,6 +824,7 @@ export const deleteDocumentType = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -847,6 +853,7 @@ export const createDocument = /* GraphQL */ `
       docHash
       url
       signed
+      signedHash
       isApproved
       status
       isUploadedToBlockChain
@@ -951,6 +958,7 @@ export const updateDocument = /* GraphQL */ `
       docHash
       url
       signed
+      signedHash
       isApproved
       status
       isUploadedToBlockChain
@@ -1055,6 +1063,7 @@ export const deleteDocument = /* GraphQL */ `
       docHash
       url
       signed
+      signedHash
       isApproved
       status
       isUploadedToBlockChain
@@ -2681,6 +2690,7 @@ export const createProductFeature = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -2808,6 +2818,7 @@ export const updateProductFeature = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -2935,6 +2946,7 @@ export const deleteProductFeature = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain

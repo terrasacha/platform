@@ -145,6 +145,7 @@ export const getUser = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -490,6 +491,7 @@ export const getDocumentType = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
@@ -536,6 +538,7 @@ export const getDocument = /* GraphQL */ `
       docHash
       url
       signed
+      signedHash
       isApproved
       status
       isUploadedToBlockChain
@@ -642,6 +645,7 @@ export const listDocuments = /* GraphQL */ `
         docHash
         url
         signed
+        signedHash
         isApproved
         status
         isUploadedToBlockChain
@@ -1573,6 +1577,7 @@ export const getProductFeature = /* GraphQL */ `
           docHash
           url
           signed
+          signedHash
           isApproved
           status
           isUploadedToBlockChain
