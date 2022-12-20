@@ -24,9 +24,10 @@ class Documents extends Component {
                 id: null,
                 data: null,
                 timeStamp: null,
-                // docHash: '',
+                docHash: '',
                 url: '',
                 signed: '',
+                signedHash: '',
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
@@ -164,6 +165,7 @@ class Documents extends Component {
                 docHash: '',
                 url: '',
                 signed: '',
+                signedHash: '',
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
@@ -193,7 +195,10 @@ class Documents extends Component {
                                     <tr>
                                         <th>Product</th>
                                         <th>Feature</th>
-                                        <th>Document Status</th>      
+                                        <th>Document Status</th>    
+                                        <th>Doc Hash</th>       
+                                        <th>Sign</th>       
+                                        <th>Sign Hash</th>    
                                         <th>Upload Document</th>  
                                     </tr>
                                 </thead>
@@ -212,6 +217,9 @@ class Documents extends Component {
                                                         {pf.documents.items.length > 0? 'Alredy upload' :
                                                         <Button variant="primary" size='sm' onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>  }
                                                     </td>
+                                                    <td>{pf.document.items[0].docHash? document.docHash : ''}</td>
+                                                    <td>{pf.document.items[0].signed?document.signed : ''}</td>
+                                                    <td>{pf.document.items[0].signedHash? document.signedHash : ''}</td>
                                                 </tr>
                                             )
                                         }

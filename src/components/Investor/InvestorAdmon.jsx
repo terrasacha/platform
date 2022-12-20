@@ -293,32 +293,6 @@ class InvestorAdmon extends Component {
                 )
             } else {
                 return (
-/*                     <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Wallets</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr key={user.id}>
-                                <td>
-                                    {user.name}
-                                </td>
-                                <td>
-                                    {renderUserWallets(user)}
-                                </td>
-                                <td>
-                                    <Button 
-                                        variant='primary'
-                                        size='sm' 
-                                        onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}
-                                    >Actualizar</Button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table> */
                     <div style={{width: '100%', height: '20%',display: 'flex', justifyContent:'center'}}>
                     <div className={s.container_profile}>
                         <div className={s.profile_image_container}>
