@@ -41,16 +41,9 @@ export default class HeaderNavbar extends Component {
                                     className="d-inline-block align-top"
                                     alt="BBT"/>
                             </Nav.Link>
-                            <Nav.Link onClick={(e) => this.changeHeaderNavBarRequest('investor_profile', e)}>
-                                Profile
-                            </Nav.Link>
-
-                            <Nav.Link onClick={(e) => this.changeHeaderNavBarRequest('investor_documents', e)}>
-                                Documents
-                            </Nav.Link>
-                            <Nav.Link onClick={(e) => this.changeHeaderNavBarRequest('products_buyed', e)}>
-                                Products
-                            </Nav.Link>
+                            <Nav.Link href="#profile" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_profile')}>Profile</Nav.Link>
+                            <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documents</Nav.Link>
+                            <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link>
                         </Nav>
                         <Nav>
                             <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>

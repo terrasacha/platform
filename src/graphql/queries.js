@@ -643,6 +643,8 @@ export const listDocuments = /* GraphQL */ `
         data
         timeStamp
         docHash
+        signedHash
+        signed
         url
         signed
         signedHash
