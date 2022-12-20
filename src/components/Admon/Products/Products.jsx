@@ -712,7 +712,7 @@ class Products extends Component {
                                             name='CRUD_ProductStatus'
                                             value={CRUD_Product.status}
                                             onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                            {['draft', 'verified', 'in_blockchain'].map(
+                                            {['draft', 'verified', 'in_blockchain', 'in_equilibrium'].map(
                                                 op => (<option value={op} key={op}>{op}</option>)
                                             )}
                                         </Form.Select>

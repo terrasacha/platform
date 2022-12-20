@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // Bootstrap
 import { Container, Nav, Navbar } from 'react-bootstrap'
 // Import images
-import LOGO from '../../common/_images/logo.png'
+import LOGO from '../../common/_images/SuanLogo.png'
 
 export default class HeaderNavbar extends Component {
   render() {
@@ -13,7 +13,7 @@ export default class HeaderNavbar extends Component {
           <Navbar.Brand href="/">
           <img
             src={LOGO}
-            width="80"
+            width="50"
             height="auto"
             className="d-inline-block align-top"
             alt="BBT"

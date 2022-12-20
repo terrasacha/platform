@@ -426,7 +426,7 @@ class InvestorAdmon extends Component {
         }
 
         return (
-            <Container fluid style={{paddingTop: 80, minHeight: '100vh'}}>
+            <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>
 
                 <h4>Investor Dashboard</h4>
                 
