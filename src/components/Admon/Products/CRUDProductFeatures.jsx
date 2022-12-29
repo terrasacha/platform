@@ -267,12 +267,11 @@ export default class CRUDProductFeatures extends Component {
                                         {productFeatures.isVerifable? 'Yes' : 'No'}
                                     </td>
                                     <td>
-                                    {!productFeatures.isToBlockChain?
                                         <Button
                                             variant='primary'
                                             size='sm' 
                                             onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
-                                        >Editar</Button> : ''}
+                                        >Editar</Button>
                                     </td>
                                 </tr>
                             ))}

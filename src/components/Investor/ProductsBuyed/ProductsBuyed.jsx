@@ -27,7 +27,11 @@ export default class ProductsBuyed extends Component {
     async loadUser(actualUserID) {
         const userResult = await API.graphql(graphqlOperation(getUser, { id: actualUserID}))
         let user = userResult.data.getUser
-        let products = user.userProducts.items.map(up => up.product)
+        let products = user.userProducts.items.map(up =>{
+            up.product.orders = up.orders
+           return up.product
+        })
+        console.log(products, 'products ')
         this.setState({products: products})
     }
     async handleLoadSelectedProduct(event, pProduct, pModal) {
@@ -135,17 +139,23 @@ export default class ProductsBuyed extends Component {
                                                     : 'not confirmed'}
                                         </span>
                                     </div>
-                                    <div className='product_buttons_container'>
+                                    <div className='product_rent_per_token'>
+                                        <span>Tokens Buyed</span>
+                                        <span className='rent_number'>
+                                            {product.orders?.items[0].amountOfTokens}
+                                        </span>
+                                    </div>
+{/*                                     <div className='product_buttons_container'>
                                         <div className='product_what_is_include'>
                                             <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_images')} >More pictures</button>
                                         </div>
                                         <div className='product_more_pictures'>
                                             <button  onClick={ (e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}>Features</button>
                                         </div>
-                                    </div>
+                                    </div> */}
                                         <h6>Progress</h6>
                                         <div className="progress" style={{height: '30px'}}>
-                                            <div className="progress-bar bg-success" role="progressbar" style={{width: `${product.progress}%`}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div className="progress-bar bg-success" role="progressbar" style={{width: `${product.progress}%`}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{product.progress}%</div>
                                         </div>
                                 </div>
                             </div>
