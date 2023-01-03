@@ -48,14 +48,19 @@ export default function LogIn() {
     async function signUp(){
         const { username, email, password, role, confirmPassword } = formState
         if(password === confirmPassword){
-            setError("")
-            setLoading(true)
-            await Auth.signUp({ username, password, attributes: {
-                 email,
-                 'custom:role': role  
-                }})
+            try {
+                setError("")
+                setLoading(true)
+                await Auth.signUp({ username, password, attributes: {
+                        email,
+                        'custom:role': role  
+                    }})
+                    setLoading(false)
+                updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
+            } catch (error) {
                 setLoading(false)
-            updateFormState(() => ({...formState, formType: 'confirmSignUp' }))
+                setError('A user for that e-mail address already exists. Please use a different e-mail address')    
+            }
         }else{
             setError('passwords does not match')
         }
