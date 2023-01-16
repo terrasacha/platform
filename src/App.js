@@ -9,7 +9,7 @@ import { AuthProvider } from './context/AuthContext';
 // Routing
 // import { Auth } from 'aws-amplify';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ValidatorAdmon from './components/Validator/ValidatorAdmon';
+import ValidatorAdmon from './components/Validator/Validation/ValidatorAdmon.jsx';
 import Footer from './components/views/Footer/Footer';
 import LogIn from './components/views/Login/Login';
 import AdmonMiddleware from './components/views/middlewareRoute/AdmonMiddleware';

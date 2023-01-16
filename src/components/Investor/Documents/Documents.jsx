@@ -22,7 +22,7 @@ class Documents extends Component {
                 id: null,
                 data: null,
                 timeStamp: null,
-                hash: '',
+                docHash: '',
                 url: '',
                 signed: '',
                 isApproved: false,
@@ -50,12 +50,13 @@ class Documents extends Component {
     componentDidMount = async () => {
         let actualUser = await  Auth.currentAuthenticatedUser()
         const actualUserID = actualUser.attributes.sub
-        console.log(actualUserID)
+        console.log(actualUserID, 'actualUserID')
         this.setState({
             actualUserID: actualUserID
         })
         await this.loadUserProducts(actualUserID)
         await this.loadDocuments(actualUserID)
+        console.log(this.state.documents, 'documents')
         await this.loadDocumentTypes()
         // Subscriptions
         // OnCreate Document
@@ -183,7 +184,7 @@ class Documents extends Component {
                 id: null,
                 data: null,
                 timeStamp: null,
-                hash: '',
+                docHash: '',
                 url: '',
                 signed: '',
                 isApproved: false,
@@ -218,6 +219,9 @@ class Documents extends Component {
                                         <th>Product</th>
                                         <th>Feature</th>
                                         <th>Document Status</th>       
+                                        <th>Doc Hash</th>       
+                                        <th>Sign</th>       
+                                        <th>Sign Hash</th>       
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -231,6 +235,9 @@ class Documents extends Component {
                                                     document.status === 'pending'? <HourglassSplit size={25} color='grey'/> : 
                                                     document.status === 'accepted'? <CheckCircle size={25} color='#449E48'/> : <XCircle size={25} color='#CC0000'/>
                                                     }</td>
+                                                    <td>{document.docHash? document.docHash : ''}</td>
+                                                    <td>{document.signed?document.signed : ''}</td>
+                                                    <td>{document.signedHash? document.signedHash : ''}</td>
                                                 </tr>
                                             )
                                         })

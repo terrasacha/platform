@@ -5,6 +5,7 @@ import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Ro
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
 import Bootstrap from "../../common/themes";
+import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
 import './Validation.css';
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify';
@@ -12,7 +13,7 @@ import { createVerification, updateDocument } from '../../../graphql/mutations';
 import { listDocuments } from '../../../graphql/queries';
 import { onUpdateDocument } from '../../../graphql/subscriptions';
 
-class Validation extends Component {
+class ValidatorAdmon extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -44,6 +45,7 @@ class Validation extends Component {
     this.handleInputValidate = this.handleInputValidate.bind(this)
     this.handleSelectProduct = this.handleSelectProduct.bind(this)
     this.handleSelectStatus = this.handleSelectStatus.bind(this)
+    this.logOut = this.logOut.bind(this)
 }
 
   componentDidMount = async () => {
@@ -140,6 +142,11 @@ class Validation extends Component {
           } }))  
     }
     this.cleanState()
+  }
+  async logOut(){
+    await Auth.signOut()
+    window.location.href="/"
+    localStorage.removeItem('role')
   }
   cleanState = () => {
     this.setState({
@@ -349,13 +356,14 @@ class Validation extends Component {
     }  
   }
     return (
-      <>
+      <Container style={{paddingTop: 70, minHeight: '100vh'}}>
+      <HeaderNavbar  logOut={this.logOut}></HeaderNavbar>
       {renderValidations()}
       {modalDocument()}
       {modalVerification()}
       {modalDetailsValidation()}
-      </>
+      </Container>
     )
   }
 }
-export default Validation
+export default ValidatorAdmon

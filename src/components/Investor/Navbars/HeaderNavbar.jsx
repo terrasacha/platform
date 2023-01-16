@@ -5,7 +5,7 @@ import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 import { ListTask } from 'react-bootstrap-icons'
 
 // Import images
-import LOGO from '../../common/_images/logo.png'
+import LOGO from '../../common/_images/SuanLogo.png'
 
 export default class HeaderNavbar extends Component {
 
@@ -36,17 +36,14 @@ export default class HeaderNavbar extends Component {
                         <Nav className="me-auto">
                             <Nav.Link href="/">
                                 <img src={LOGO}
-                                    width="80"
+                                    width="50"
                                     height="auto"
                                     className="d-inline-block align-top"
                                     alt="BBT"/>
                             </Nav.Link>
-                            <Nav.Link onClick={(e) => this.handleChangeNavBar('investor_documents', e)}>
-                                Documents
-                            </Nav.Link>
-                            <Nav.Link onClick={(e) => this.handleChangeNavBar('products_buyed', e)}>
-                                Products
-                            </Nav.Link>
+                            <Nav.Link href="#profile" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_profile')}>Profile</Nav.Link>
+                            <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documents</Nav.Link>
+                            <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link>
                         </Nav>
                         <Nav>
                             <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>

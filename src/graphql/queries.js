@@ -53,6 +53,13 @@ export const getUser = /* GraphQL */ `
       }
       userProducts {
         items {
+          orders {
+            items {
+              amountOfTokens
+              userProductID
+              id
+            }
+          }
           id
           isFavorite
           userID
@@ -123,6 +130,9 @@ export const getUser = /* GraphQL */ `
                     status
                     url
                     userID
+                    docHash
+                    signed
+                    signedHash
                     documentType {
                       id
                       name
@@ -643,6 +653,8 @@ export const listDocuments = /* GraphQL */ `
         data
         timeStamp
         docHash
+        signedHash
+        signed
         url
         signed
         signedHash

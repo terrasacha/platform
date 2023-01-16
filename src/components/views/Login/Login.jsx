@@ -48,25 +48,36 @@ export default function LogIn() {
     async function signUp(){
         const { username, email, password, role, confirmPassword } = formState
         if(password === confirmPassword){
-            setError("")
-            setLoading(true)
-            await Auth.signUp({ username, password, attributes: {
-                 email,
-                 'custom:role': role  
-                }})
+            try {
+                setError("")
+                setLoading(true)
+                await Auth.signUp({ username, password, attributes: {
+                        email,
+                        'custom:role': role  
+                    }})
+                    setLoading(false)
+                updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
+            } catch (error) {
                 setLoading(false)
-            updateFormState(() => ({...formState, formType: 'confirmSignUp' }))
+                setError('A user for that e-mail address already exists. Please use a different e-mail address')    
+            }
         }else{
             setError('passwords does not match')
         }
     }
 
     async function confirmSignUp(){
-        const { username, authCode } = formState
-        setLoading(true)
-        await Auth.confirmSignUp( username, authCode )
-        setLoading(false)
-        updateFormState(() => ({...formState, formType: 'signIn' }))
+        try {
+            setError("")
+            const { username, authCode } = formState
+            setLoading(true)
+            await Auth.confirmSignUp( username, authCode )
+            setLoading(false)
+            updateFormState(() => ({...formState, formType: 'signIn' }))
+        } catch (error) {
+            setLoading(false)
+            setError('code does not match')
+        }
     }
 
     async function signIn(){
@@ -140,6 +151,7 @@ export default function LogIn() {
                     <Card.Body>
                         <h2 className="text-center mb-4">Confirmation</h2>
                         <Alert>Verification code send to {formState.email}</Alert>
+                        {error && <Alert variant="danger">{error}</Alert>}
                         <Form>
                         <Form.Group>
                             <Form.Label>Confirmation Code</Form.Label>

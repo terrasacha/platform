@@ -672,7 +672,7 @@ class Products extends Component {
                     <Form>
                         <Card>
                             <Card.Body>
-                                <Card.Title>PROJECT-B PROPERTIES on {CRUDButtonName}</Card.Title>
+                                <Card.Title>PROJECT PROPERTIES on {CRUDButtonName}</Card.Title>
                                 <Row className='mb-2'>
                                     <Form.Group as={Col} controlId='formGridCategorySelectList'>
                                         <Form.Label>Category</Form.Label>
@@ -712,7 +712,7 @@ class Products extends Component {
                                             name='CRUD_ProductStatus'
                                             value={CRUD_Product.status}
                                             onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                            {['draft', 'verified', 'in_blockchain'].map(
+                                            {['draft', 'verified', 'in_blockchain', 'in_equilibrium'].map(
                                                 op => (<option value={op} key={op}>{op}</option>)
                                             )}
                                         </Form.Select>
@@ -744,7 +744,7 @@ class Products extends Component {
                         
                         <Card style={{paddingTop: 20}}>
                             <Card.Body>
-                                <Card.Title>PROJECT-B Features</Card.Title>
+                                <Card.Title>PROJECT Features</Card.Title>
                                 <Row className='mb-1'>
                                 <CRUDProductFeatures 
                                         CRUD_Product={this.state.CRUD_Product} 
@@ -763,7 +763,7 @@ class Products extends Component {
                         </Card>
                         <Card style={{paddingTop: 20}}>
                             <Card.Body>
-                                <Card.Title>PROJECT-B Images</Card.Title>
+                                <Card.Title>PROJECT Images</Card.Title>
                                 <Row className='mb-1'>
                                     <Button 
                                         variant='primary'
@@ -771,7 +771,7 @@ class Products extends Component {
                                          
                                         onClick={(e) => this.handleAddNewImageToActualProduct(e)}
                                     >
-                                    ADD IMAGE TO ACTUAL PROJECT-B
+                                    ADD IMAGE TO ACTUAL PROJECT
                                     </Button>
                                     <CRUDProductImages 
                                         CRUD_Product={CRUD_Product}
