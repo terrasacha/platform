@@ -5,10 +5,13 @@ import { Container } from 'react-bootstrap'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { listProducts } from '../../../graphql/queries'
+// Util
+import WebAppConfig from '../../common/_conf/WebAppConfig'
 // Components
 import HeaderNavbar from '../Navbars/HeaderNavbar'
 import Products from '../Products'
 import s from './LandingPage.module.css'
+import ProductCard from '../../productCard/ProductCard'
 
 export default class LandingPage extends Component {
 
@@ -16,6 +19,7 @@ export default class LandingPage extends Component {
     super(props)
     this.state = {
       products: [],
+      productsLanding: [],
       isRenderProducts: false,
     }
     this.handleChangeRenderView = this.handleChangeRenderView.bind(this)
@@ -32,17 +36,10 @@ export default class LandingPage extends Component {
     let tempListProductsResult = listProductsResult.data.listProducts.items.map((product) => {
         // Ordering images
         product.images.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
-        // Adding is on carousel images
-        product.images.items.map( (image) => {
-          if (image.isOnCarousel) { 
-            tempProductsImagesIsOnCarousel.push(image)
-          }
-          return image
-        })
-        return product
     })
+    let firstSixProducts = tempListProductsResult.slice(0,6)
     tempListProductsResult.sort((a, b) => (a.order > b.order) ? 1 : -1)
-    this.setState({products: tempListProductsResult, productsImagesIsOnCarousel: tempProductsImagesIsOnCarousel})
+    this.setState({products: tempListProductsResult, productsLanding: firstSixProducts})
 }
 
   async handleChangeRenderView(pView) {
@@ -68,7 +65,7 @@ export default class LandingPage extends Component {
 
   render() {
     let { isRenderProducts } = this.state
-
+    const urlS3Image = WebAppConfig.url_s3_public_images
     // Render About us
     const renderProducts = () => {
       if (isRenderProducts) {
@@ -92,6 +89,9 @@ export default class LandingPage extends Component {
         <div className={s.titleContainerProducts}>
             <h3>Featured Projects</h3>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore quidem nulla blanditiis odio dolorem exercitationem culpa nobis ea nam deleniti accusamus corporis, animi hic magnam a illum </p>
+        </div>
+        <div  className={s.containerFeaturedProducts}>
+          {this.state.productsLanding.map(product => <ProductCard product={product} urlS3Image={urlS3Image}/>)}
         </div>
         {renderProducts()}
         <div className={s.contactContainer}>

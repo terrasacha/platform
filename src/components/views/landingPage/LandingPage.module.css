@@ -47,9 +47,18 @@
 }
 .titleContainerProducts p{
     text-align: center;
-    width: 70%;
+    width: 60%;
     padding-top: 2%;
     font-size: 1.2em;
+}
+.containerFeaturedProducts{
+    width: 95%;
+    margin: 2% auto;
+    display: grid;
+    grid-template-columns: 30% 30% 30%;
+    justify-content: center;
+    row-gap: 3%;
+    overflow-wrap: normal;
 }
 .contactContainer{
     width: 100%;
