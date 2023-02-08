@@ -4,14 +4,11 @@ import React, { Component } from 'react'
 import { Container } from 'react-bootstrap'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { listProducts } from '../../graphql/queries'
+import { listProducts } from '../../../graphql/queries'
 // Components
-import Carousels from './Carousels'
-import Features from './Features'
-import HeaderNavbar from './Navbars/HeaderNavbar'
-import Products from './Products'
-import TermsAndConditions from './TermsAndConditions'
-
+import HeaderNavbar from '../Navbars/HeaderNavbar'
+import Products from '../Products'
+import s from './LandingPage.module.css'
 
 export default class LandingPage extends Component {
 
@@ -19,11 +16,7 @@ export default class LandingPage extends Component {
     super(props)
     this.state = {
       products: [],
-      productsImagesIsOnCarousel: [],
-      isRenderCarousel: true,
-      isRenderAboutUs: true,
       isRenderProducts: false,
-      isRenderTermAndConditions: false
     }
     this.handleChangeRenderView = this.handleChangeRenderView.bind(this)
     this.logOut = this.logOut.bind(this)
@@ -55,44 +48,14 @@ export default class LandingPage extends Component {
   async handleChangeRenderView(pView) {
     console.log('handleChangeRenderView: ')
     switch(pView) {
-      case 'carousel':
-        this.setState({
-          isRenderCarousel: true,
-          isRenderAboutUs: false,
-          isRenderProducts: false,
-          isRenderTermAndConditions: false
-        })
-        break
-      case 'about_us':
-        this.setState({
-          isRenderCarousel: false,
-          isRenderAboutUs: true,
-          isRenderProducts: false,
-          isRenderTermAndConditions: false
-        })
-        break
       case 'products':
         this.setState({
-          isRenderCarousel: false,
-          isRenderAboutUs: false,
           isRenderProducts: true,
-          isRenderTermAndConditions: false
-        })
-        break
-      case 'terms_and_conditions':
-        this.setState({
-          isRenderCarousel: false,
-          isRenderAboutUs: false,
-          isRenderProducts: false,
-          isRenderTermAndConditions: true
         })
         break
       default:
         this.setState({
-          isRenderCarousel: true,
-          isRenderAboutUs: false,
           isRenderProducts: false,
-          isRenderTermAndConditions: false
         })
         break
     }
@@ -104,24 +67,8 @@ export default class LandingPage extends Component {
   }
 
   render() {
-    let {isRenderCarousel, isRenderAboutUs, isRenderProducts, isRenderTermAndConditions} = this.state
+    let { isRenderProducts } = this.state
 
-    // Render Carousel
-    const renderCarousel = () => {
-      if (isRenderCarousel) {
-        return (
-          <Carousels productsImagesIsOnCarousel={this.state.productsImagesIsOnCarousel}></Carousels>
-        )
-      }
-    }
-    // Render About us
-    const renderAboutUs = () => {
-      if (isRenderAboutUs) {
-        return (
-          <Features></Features>
-        )
-      }
-    }
     // Render About us
     const renderProducts = () => {
       if (isRenderProducts) {
@@ -130,23 +77,28 @@ export default class LandingPage extends Component {
         )
       }
     }
-    // Render Terms and Conditions
-    const renderTermAndConditions = () => {
-      if (isRenderTermAndConditions) {
-        return (
-          <TermsAndConditions />
-        )
-      }
-    }
 
     return (
-      <Container style={{minHeight: '100vh'}}>
+      <div style={{minHeight: '100vh'}}>
         <HeaderNavbar handleChangeRenderView={this.handleChangeRenderView} logOut={this.logOut}></HeaderNavbar>
-        {renderAboutUs()}
-        {renderCarousel()}
+        <div className={s.container}>
+          <h3>Lorem ipsum dolor</h3>
+          <h3>sit amet consectetur</h3>
+          <h1>adipisicing elit Ducimus</h1>
+          <p>Una plataforma para invertir en activos  ambientales en desarrollo ,
+              fácil, rápido y seguro.</p>
+          <button>EXPLORE TOKENS</button>
+        </div>
+        <div className={s.titleContainerProducts}>
+            <h3>Featured Projects</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore quidem nulla blanditiis odio dolorem exercitationem culpa nobis ea nam deleniti accusamus corporis, animi hic magnam a illum </p>
+        </div>
         {renderProducts()}
-        {renderTermAndConditions()}
-      </Container>
+        <div className={s.contactContainer}>
+            <h2>Ponte en contacto</h2>
+            <button>Contact Us</button>
+        </div>
+      </div>
     )
   }
 }

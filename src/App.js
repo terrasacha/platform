@@ -4,7 +4,7 @@ import React, { Component, useEffect, useState } from 'react';
 import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
 import Error from './components/views/Error';
-import LandingPage from "./components/views/LandingPage.jsx";
+import LandingPage from "./components/views/landingPage/LandingPage.jsx";
 import { AuthProvider } from './context/AuthContext';
 // Routing
 // import { Auth } from 'aws-amplify';
@@ -66,12 +66,12 @@ function App(){
               </ InvestorMiddleware>
             }
           />
-          <Route
+{/*           <Route
             path="/cardano_connector"
             element={
                 <CardanoConnector/>
             }
-          />
+          /> */}
           <Route
             path="/login"
             element={
