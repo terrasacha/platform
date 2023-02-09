@@ -18,6 +18,7 @@ import ValidatorMiddleware from './components/views/middlewareRoute/ValidatorMid
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
 
 import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
+import Orders from './components/views/Orders/Orders';
 
 
 function App(){
@@ -32,7 +33,19 @@ function App(){
             }
             exact
           />
-
+          <Route
+            path="/products"
+            element={
+              <LandingPage />
+            }
+            exact
+          />
+          <Route
+            path="/products/:id"
+            element={
+              <Orders />
+            }
+          />
           <Route
             path="/admon"
             element={
