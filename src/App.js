@@ -19,6 +19,7 @@ import SuccessOrder from './components/views/successOrder/SuccessOrder';
 
 import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
 import Orders from './components/views/Orders/Orders';
+import Products from './components/views/Products';
 
 
 function App(){
@@ -36,9 +37,8 @@ function App(){
           <Route
             path="/products"
             element={
-              <LandingPage />
+              <Products />
             }
-            exact
           />
           <Route
             path="/products/:id"

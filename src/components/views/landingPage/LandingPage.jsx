@@ -18,11 +18,8 @@ export default class LandingPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      products: [],
       productsLanding: [],
-      isRenderProducts: false,
     }
-    this.handleChangeRenderView = this.handleChangeRenderView.bind(this)
     this.logOut = this.logOut.bind(this)
   }
 
@@ -31,32 +28,28 @@ export default class LandingPage extends Component {
   }
 
   async loadProducts() {
-    const listProductsResult = await API.graphql(graphqlOperation(listProducts))
-    let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel
+    const limit = 6;
+    const query = `query ListProducts($limit: Int) {
+      listProducts(limit: $limit) {
+        items {
+          id
+          name
+          description
+        }
+      }
+    }`;
+
+    const variables = { limit };
+
+    const listProductsResult = await API.graphql(graphqlOperation(query, variables));
+    /* const listProductsResult = await API.graphql(graphqlOperation(listProducts)) */
     let tempListProductsResult = listProductsResult.data.listProducts.items.map((product) => {
         // Ordering images
         product.images.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
     })
-    let firstSixProducts = tempListProductsResult.slice(0,6)
     tempListProductsResult.sort((a, b) => (a.order > b.order) ? 1 : -1)
-    this.setState({products: tempListProductsResult, productsLanding: firstSixProducts})
+    this.setState({ productsLanding: tempListProductsResult})
 }
-
-  async handleChangeRenderView(pView) {
-    console.log('handleChangeRenderView: ')
-    switch(pView) {
-      case 'products':
-        this.setState({
-          isRenderProducts: true,
-        })
-        break
-      default:
-        this.setState({
-          isRenderProducts: false,
-        })
-        break
-    }
-  }
   async logOut(){
     await Auth.signOut()
     window.location.href="/"
@@ -64,20 +57,10 @@ export default class LandingPage extends Component {
   }
 
   render() {
-    let { isRenderProducts } = this.state
     const urlS3Image = WebAppConfig.url_s3_public_images
-    // Render About us
-    const renderProducts = () => {
-      if (isRenderProducts) {
-        return (
-          <Products products={this.state.products}></Products>
-        )
-      }
-    }
-
     return (
       <div style={{minHeight: '100vh'}}>
-        <HeaderNavbar handleChangeRenderView={this.handleChangeRenderView} logOut={this.logOut}></HeaderNavbar>
+        <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
         <div className={s.container}>
           <h3>Lorem ipsum dolor</h3>
           <h3>sit amet consectetur</h3>
@@ -93,7 +76,6 @@ export default class LandingPage extends Component {
         <div  className={s.containerFeaturedProducts}>
           {this.state.productsLanding.map(product => <ProductCard product={product} urlS3Image={urlS3Image}/>)}
         </div>
-        {renderProducts()}
         <div className={s.contactContainer}>
             <h2>Ponte en contacto</h2>
             <button>Contact Us</button>
