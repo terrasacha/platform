@@ -17,7 +17,6 @@ import InvestorMiddleware from './components/views/middlewareRoute/InvestorMiddl
 import ValidatorMiddleware from './components/views/middlewareRoute/ValidatorMiddleware';
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
 
-import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
 
 
 function App(){
@@ -64,12 +63,6 @@ function App(){
               <InvestorMiddleware>
                 <SuccessOrder/>
               </ InvestorMiddleware>
-            }
-          />
-          <Route
-            path="/cardano_connector"
-            element={
-                <CardanoConnector/>
             }
           />
           <Route
