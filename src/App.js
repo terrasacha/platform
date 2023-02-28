@@ -16,8 +16,6 @@ import AdmonMiddleware from './components/views/middlewareRoute/AdmonMiddleware'
 import InvestorMiddleware from './components/views/middlewareRoute/InvestorMiddleware';
 import ValidatorMiddleware from './components/views/middlewareRoute/ValidatorMiddleware';
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
-
-import CardanoConnector from './components/views/CardanoConnector/CardanoConnector';
 import Orders from './components/views/Orders/Orders';
 import Products from './components/views/Products';
 
@@ -79,12 +77,6 @@ function App(){
               </ InvestorMiddleware>
             }
           />
-{/*           <Route
-            path="/cardano_connector"
-            element={
-                <CardanoConnector/>
-            }
-          /> */}
           <Route
             path="/login"
             element={
