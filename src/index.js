@@ -5,7 +5,6 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 // Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css';
 // AWS amplify modules
 import '@aws-amplify/ui-react/styles.css';
 import Amplify, { Auth } from 'aws-amplify';

@@ -2,19 +2,18 @@
     background-image: url('../_images/tnc_55933050 1.jpg');
     background-repeat: no-repeat;   
     background-size: cover;
-    height: 85%;
+    height: 90%;
     display: flex;
     flex-direction: column;
     padding-top: 8%;
     color: white;
     padding-left: 2%;
 }
-.container h3{
-    font-size: 5em;
-}
 .container h1{
+    font-family: 'Merriweather', serif;
     font-size: 6em;
     font-weight: 700;
+    width: 100%;
 }
 .container p{
     font-size: 1.4em;
@@ -42,13 +41,14 @@
     align-items: center;
 }
 .titleContainerProducts h3{
+    font-family: 'Catamaran', sans-serif;
     font-size: 3em;
     font-weight: 700;
 }
 .titleContainerProducts p{
     text-align: center;
     width: 60%;
-    padding-top: 2%;
+    padding-top: 1%;
     font-size: 1.2em;
 }
 .containerFeaturedProducts{
@@ -71,8 +71,9 @@
     align-items: center;
 }
 .contactContainer h2{
-    padding: 3% 0 3% 0;
-    font-size: 2.7em;
+    font-family: 'Catamaran', sans-serif;
+    padding: 3% 0 1% 0;
+    font-size: 3em;
     font-weight: 700;
     color: #4E4E4E
 }
@@ -86,3 +87,61 @@
     background: rgb(77,188,94);
     background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
 }
+@media (max-width: 600px) {
+    .container{
+        padding-top: 30%;
+    }
+    .container h1{
+        font-size: 3.5em;
+    }
+    .container p{
+        padding-top: 6%;
+        font-size: 1em;
+        width: 100%;
+    }
+    .container button{
+        margin-bottom: 10%;
+        padding: 2% 4%;
+        width: 70%;
+        font-size: .9em;
+    }
+    .titleContainerProducts{
+        padding-top: 3%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .titleContainerProducts h3{
+        margin-top: 2%;
+        font-size: 2em;
+    }
+    .titleContainerProducts p{
+        width: 95%;
+        font-size: .9em;
+    }
+    .containerFeaturedProducts{
+        width: 95%;
+        margin: 2% auto;
+        display: grid;
+        grid-template-columns: 30% 30% 30%;
+        justify-content: center;
+        row-gap: 3%;
+        overflow-wrap: normal;
+    }
+    .contactContainer h2{
+        font-size: 2em;
+    }
+    .contactContainer button{
+        padding: 2% 4%;
+        font-size: .9em;
+    }
+  }
+  
+  /* Estilos para pantallas medianas */
+  @media (min-width: 601px) and (max-width: 1024px) {
+  }
+  
+  /* Estilos para pantallas grandes */
+  @media (min-width: 1025px) {
+    /* Estilos CSS aquí */
+  }

@@ -62,12 +62,11 @@ export default class LandingPage extends Component {
       <div style={{minHeight: '100vh'}}>
         <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
         <div className={s.container}>
-          <h3>Lorem ipsum dolor</h3>
-          <h3>sit amet consectetur</h3>
-          <h1>adipisicing elit Ducimus</h1>
+          
+          <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit Ducimus</h1>
           <p>Una plataforma para invertir en activos  ambientales en desarrollo ,
               fácil, rápido y seguro.</p>
-          <button>EXPLORE TOKENS</button>
+          <button>EXPLORE MARKET</button>
         </div>
         <div className={s.titleContainerProducts}>
             <h3>Featured Projects</h3>
