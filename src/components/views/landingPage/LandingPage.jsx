@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 // Bootstrap
-import { Container } from 'react-bootstrap'
+import { Carousel } from 'react-bootstrap'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { listProducts } from '../../../graphql/queries'
@@ -19,6 +19,7 @@ export default class LandingPage extends Component {
     super(props)
     this.state = {
       productsLanding: [],
+      productsImagesIsOnCarousel: []
     }
     this.logOut = this.logOut.bind(this)
   }
@@ -42,13 +43,21 @@ export default class LandingPage extends Component {
     const variables = { limit };
 
     const listProductsResult = await API.graphql(graphqlOperation(query, variables));
-    /* const listProductsResult = await API.graphql(graphqlOperation(listProducts)) */
+    let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel
     let tempListProductsResult = listProductsResult.data.listProducts.items.map((product) => {
         // Ordering images
         product.images.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        // Adding is on carousel images
+        product.images.items.map( (image) => {
+          if (image.isOnCarousel) { 
+            tempProductsImagesIsOnCarousel.push(image)
+          }
+          return image
+        })
+        return product
     })
     tempListProductsResult.sort((a, b) => (a.order > b.order) ? 1 : -1)
-    this.setState({ productsLanding: tempListProductsResult})
+    this.setState({productsLanding: tempListProductsResult, productsImagesIsOnCarousel: tempProductsImagesIsOnCarousel})
 }
   async logOut(){
     await Auth.signOut()
@@ -61,8 +70,22 @@ export default class LandingPage extends Component {
     return (
       <div style={{minHeight: '100vh'}}>
         <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
+        <Carousel>
+        {this.state.productsImagesIsOnCarousel.map((image, idx) => (
+            <Carousel.Item key={idx}>
+                <img
+                className="d-block w-100"
+                src={urlS3Image+image.imageURL}
+                alt="First slide"
+                />
+                <Carousel.Caption>
+                <h3>{image.carouselLabel}</h3>
+                <p>{image.carouselDescription}</p>
+                </Carousel.Caption>
+                </Carousel.Item>
+        ))}
+        </Carousel>
         <div className={s.container}>
-          
           <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit Ducimus</h1>
           <p>Una plataforma para invertir en activos  ambientales en desarrollo ,
               fácil, rápido y seguro.</p>
