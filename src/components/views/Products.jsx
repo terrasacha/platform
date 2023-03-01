@@ -289,7 +289,7 @@ export default class Products extends Component {
         // RENDER */
         return (
             <Container className='feature_block'>
-                <h1>HOLA HOLA HOLA</h1>
+                <h1>En desarrollo</h1>
 {/*                 {renderProductsOnCards()}
                 {renderModalProductImages()}
                 {renderModalProductFeatures()}

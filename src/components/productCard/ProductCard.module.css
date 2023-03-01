@@ -1,8 +1,9 @@
 .cardContainer{
     width: 30%;
-    height: 100%;
+    height: 27rem;
     display: flex;
     flex-direction: column;
+    margin: 4% 2%;
     align-items: center;
     border: 1px solid #CFCFCF;
     border-radius: 3px;
@@ -12,7 +13,8 @@
 }
 .imageContainer{
     width: 100%;
-    height: 30%;
+    height: 50%;
+    overflow: hidden;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
 }
@@ -20,7 +22,7 @@
     width: 100%;
 }
 .infoContainer{
-    height: 60%;
+    height: 50%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -79,3 +81,22 @@
     background: rgb(77,188,94);
     background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
 }
+@media (max-width: 600px) {
+    .cardContainer{
+        width: 100%;
+        margin-bottom: 4%;
+    }
+  }
+  
+  /* Estilos para pantallas medianas */
+  @media (min-width: 601px) and (max-width: 1024px) {
+    .cardContainer{
+        width: 45%;
+
+    }
+  }
+  
+  /* Estilos para pantallas grandes */
+  @media (min-width: 1025px) {
+    /* Estilos CSS aquí */
+  }

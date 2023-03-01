@@ -159,7 +159,10 @@ export default class LandingPage extends Component {
         ))}
         </Carousel>
         <div className={s.container}>
-          <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit Ducimus</h1>
+          <h1>Aceleramos la
+              transición hacia un
+              mundo de
+              carbono neutral</h1>
           <p>Una plataforma para invertir en activos  ambientales en desarrollo ,
               fácil, rápido y seguro.</p>
           <button>EXPLORE MARKET</button>
@@ -173,7 +176,7 @@ export default class LandingPage extends Component {
         </div>
         <div className={s.contactContainer}>
             <h2>Ponte en contacto</h2>
-            <button>Contact Us</button>
+            <button>Contáctanos</button>
         </div>
       </div>
     )

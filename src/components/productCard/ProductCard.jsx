@@ -21,7 +21,7 @@ function ProductCard({product, urlS3Image}) {
                     <div className={s.text}>PRICE</div>
                     <div className={s.value}>${product.tokenPrice !== undefined? 
                                                     product.tokenPrice.productFeatureResultAssigned? product.tokenPrice.productFeatureResultAssigned : product.tokenPrice.value 
-                                                    : '!value'}</div>
+                                                    : '12.77'}</div>
                 </div>
                 <div className={s.tokens}>
                     <div className={s.text}>TOKENS AVAILABLE</div>

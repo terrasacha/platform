@@ -119,11 +119,7 @@
     .containerFeaturedProducts{
         width: 95%;
         margin: 2% auto;
-        display: grid;
-        grid-template-columns: 30% 30% 30%;
-        justify-content: center;
-        row-gap: 3%;
-        overflow-wrap: normal;
+        flex-direction: column;
     }
     .contactContainer h2{
         font-size: 2em;
