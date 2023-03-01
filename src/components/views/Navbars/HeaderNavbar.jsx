@@ -50,6 +50,7 @@ export default class HeaderNavbar extends Component {
               {role === 'admon'?<Nav.Link onClick={() => window.location.href="/admon"}>ADMIN</Nav.Link>:''}
               {role === 'investor'?<Nav.Link onClick={() => window.location.href="/investor_admon"}>Profile</Nav.Link>:''}
               {role === 'validator'?<Nav.Link onClick={() => window.location.href="/validator_admon"}>VALIDATOR</Nav.Link>:''}
+              {role === 'constructor'?<Nav.Link onClick={() => window.location.href="/constructor"}>Profile</Nav.Link>:''}
 
             </Nav>
             <Nav className={s.navGroup}>
