@@ -33,8 +33,8 @@ class ConstructorAdmon extends Component {
             },
             isShowDocuments: false,
             isShowProductsBuyed: false,
-            uploadNewProduct:true, //false
-            isShowInvestorProfile: false, //true
+            uploadNewProduct:false, //false
+            isShowInvestorProfile: true, //true
             showModalDocument: false,
             isRenderCompleteOrUpdateProfile: false,
             isNewUser: false
