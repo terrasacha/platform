@@ -11,7 +11,7 @@ function ProductCard({product, urlS3Image}) {
                 src={urlS3Image+product.images.items[0].imageURL} 
                 alt={product.name} />
         </div>
-        <div className={s.infoContainer}></div>
+        <div className={s.infoContainer}>
             <div className={s.titleContainer}>
                 <div className={s.title}>{product.name}</div>
                 <div className={s.location}><Icon.GeoAltFill color="#4DBC5E" /><div>742 de Evergreen Terrace | 2.1 ha.</div></div>
@@ -28,7 +28,8 @@ function ProductCard({product, urlS3Image}) {
                     <div className={s.value}>{product.amountToBuy}</div>
                 </div>
             </div>
-            <button>BUY TOKENS</button>          
+            <button>BUY TOKENS</button>
+        </div>          
         </div>
     );
   }
