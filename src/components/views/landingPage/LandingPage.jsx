@@ -36,16 +36,89 @@ export default class LandingPage extends Component {
           id
           name
           description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          category {
+            id
+            name
+            isSelected
+            createdAt
+            updatedAt
+          }
+          images {
+            nextToken
+            items {
+              id
+              imageURL
+              carouselDescription
+              carouselLabel
+              format
+              isOnCarousel
+              isActive
+              imageURLToDisplay
+              title
+              productID
+              order
+            }
+          }
+          productFeatures {
+            items {
+              id
+              isToBlockChain
+              isVerifable
+              value
+              feature {
+                id
+                name
+                isTemplate
+                description
+                featureType {
+                  name
+                  id
+                  description
+                }
+                unitOfMeasure {
+                  engineeringUnit
+                  id
+                }
+              }
+              productFeatureResults {
+                items {
+                  id
+                  isActive
+                  result {
+                    id
+                    value
+                    formula {
+                      id
+                      equation
+                    }
+                  }
+                }
+              }
+            }
+          }
+          userProducts {
+            nextToken
+          }
+          createdAt
+          updatedAt
         }
+        nextToken 
       }
     }`;
 
     const variables = { limit };
 
     const listProductsResult = await API.graphql(graphqlOperation(query, variables));
-    let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel
+    console.log(listProductsResult, 'listProductsResult')
+    /* let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel */
     let tempListProductsResult = listProductsResult.data.listProducts.items.map((product) => {
-        // Ordering images
+/*         // Ordering images
         product.images.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
         // Adding is on carousel images
         product.images.items.map( (image) => {
@@ -53,11 +126,11 @@ export default class LandingPage extends Component {
             tempProductsImagesIsOnCarousel.push(image)
           }
           return image
-        })
+        }) */
         return product
     })
     tempListProductsResult.sort((a, b) => (a.order > b.order) ? 1 : -1)
-    this.setState({productsLanding: tempListProductsResult, productsImagesIsOnCarousel: tempProductsImagesIsOnCarousel})
+    this.setState({productsLanding: tempListProductsResult/* , productsImagesIsOnCarousel: tempProductsImagesIsOnCarousel */})
 }
   async logOut(){
     await Auth.signOut()

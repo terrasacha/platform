@@ -42,7 +42,7 @@
 .location div{
     margin-left: .3em;
 }
-.infoContainer{
+.info{
     display: flex;
     width: 85%;
     padding-top: 6%;
