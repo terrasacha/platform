@@ -3,8 +3,9 @@ import React, { Component, useEffect, useState } from 'react';
 // Components
 import Admon from "./components/Admon/Admon";
 import InvestorAdmon from "./components/Investor/InvestorAdmon";
+import ConstructorAdmon from "./components/Constructor/ConstructorAdmon";
 import Error from './components/views/Error';
-import LandingPage from "./components/views/LandingPage.jsx";
+import LandingPage from "./components/views/landingPage/LandingPage.jsx";
 import { AuthProvider } from './context/AuthContext';
 // Routing
 // import { Auth } from 'aws-amplify';
@@ -15,8 +16,10 @@ import LogIn from './components/views/Login/Login';
 import AdmonMiddleware from './components/views/middlewareRoute/AdmonMiddleware';
 import InvestorMiddleware from './components/views/middlewareRoute/InvestorMiddleware';
 import ValidatorMiddleware from './components/views/middlewareRoute/ValidatorMiddleware';
+import ConstructorMiddleware from './components/views/middlewareRoute/ConstructorMiddleware';
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
-
+import Orders from './components/views/Orders/Orders';
+import Products from './components/views/Products';
 
 
 function App(){
@@ -31,7 +34,18 @@ function App(){
             }
             exact
           />
-
+          <Route
+            path="/products"
+            element={
+              <Products />
+            }
+          />
+          <Route
+            path="/products/:id"
+            element={
+              <Orders />
+            }
+          />
           <Route
             path="/admon"
             element={
@@ -47,6 +61,14 @@ function App(){
               <InvestorMiddleware>
                 <InvestorAdmon />
               </ InvestorMiddleware>
+            }
+          />
+          <Route
+            path="/constructor"
+            element={
+              <ConstructorMiddleware>
+                <ConstructorAdmon />
+              </ConstructorMiddleware>
             }
           />
           <Route

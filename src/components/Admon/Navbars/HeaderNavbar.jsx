@@ -6,7 +6,7 @@ import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
 
 // Import images
-import LOGO from '../../common/_images/SuanLogo.png'
+import LOGO from '../../common/_images/SuanLogoName.svg'
 
 export default class HeaderNavbar extends Component {
 
@@ -38,10 +38,10 @@ export default class HeaderNavbar extends Component {
         const renderNavBar = () => {
             if (isActualUserLogged) {
                 return (
-                    <Navbar bg="light" variant="light" fixed="top">
+                    <Navbar style={{backgroundColor: '#fff'}} fixed="top">
                         <Container>
                             <Navbar.Brand href="/"><img src={LOGO} 
-                                        width="50"
+                                        width="80"
                                         height="auto"
                                         className="d-inline-block align-top"
                                         alt="ATP"

@@ -9,7 +9,7 @@ import Orders from './Orders/Orders'
 import './Views.css'
 
 export default class Products extends Component {
-    constructor(props) {
+/*     constructor(props) {
         super(props)
         this.state = {
             isRenderProductsOnCards: true,
@@ -73,9 +73,9 @@ export default class Products extends Component {
         })
     }
     
-        // RENDER
+        // RENDER */
     render() {
-        // State Varibles
+/*         // State Varibles
         let {isRenderModalProductImages, selectedProductToShow, isRenderModalProductFeatures, isRenderOrderTokens, isRenderProductsOnCards} = this.state
         let {products} = this.props
         let productsActive = products.filter(p => p.isActive && p.status !== 'disabled')
@@ -286,13 +286,14 @@ export default class Products extends Component {
                 )
             }
         }
-        // RENDER
+        // RENDER */
         return (
             <Container className='feature_block'>
-                {renderProductsOnCards()}
+                <h1>HOLA HOLA HOLA</h1>
+{/*                 {renderProductsOnCards()}
                 {renderModalProductImages()}
                 {renderModalProductFeatures()}
-                {renderOrderTokens()}
+                {renderOrderTokens()} */}
             </Container>
         )
     }
