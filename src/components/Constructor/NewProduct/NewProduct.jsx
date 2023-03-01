@@ -27,7 +27,7 @@ class Products extends Component {
                 description: '',
                 isActive: true,
                 status: 'draft',
-                order: '',
+                order: 0,
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
                 categoryID: '',
@@ -50,28 +50,6 @@ class Products extends Component {
             Promise.all([
                 this.loadCategorysSelectItems(),
             ])
-            // Subscriptions
-            // OnCreate Product
-            this.createProductListener = API.graphql(graphqlOperation(onCreateProduct))
-            .subscribe({
-                next: createdProductData => {
-                    let isOnCreateList = false;
-                    this.state.products.map((mapProduct) => {
-                        if (createdProductData.value.data.onCreateProduct.id === mapProduct.id) {
-                            isOnCreateList = true;
-                        } 
-                        return mapProduct
-                    })
-                    let tempProducts = this.state.products
-                    let tempOnCreateProduct = createdProductData.value.data.onCreateProduct
-                    if (!isOnCreateList) {
-                        tempProducts.push(tempOnCreateProduct)
-                    }
-                    // Ordering products by name
-                    tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
-                    this.setState((state) => ({products: tempProducts}))
-                }
-            })
     }
 
     async addNewImageToActualProductImages() {

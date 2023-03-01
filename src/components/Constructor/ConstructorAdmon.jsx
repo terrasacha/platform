@@ -19,7 +19,7 @@ import HeaderNavbar from './Navbar/HeaderNavbar'
 import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
 import NewProduct from './NewProduct/NewProduct'
 
-class InvestorAdmon extends Component {
+class ConstructorAdmon extends Component {
 
     constructor(props) {
         super(props)
@@ -361,4 +361,4 @@ class InvestorAdmon extends Component {
 }
 
 
-export default InvestorAdmon
+export default ConstructorAdmon
