@@ -54,11 +54,8 @@
 .containerFeaturedProducts{
     width: 90%;
     margin: 2% auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 90%;
-    gap: 1em;
-    overflow-wrap: normal;
+    display: flex;
+    flex-wrap: wrap;
 }
 .contactContainer{
     width: 100%;
