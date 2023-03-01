@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 // Bootstrap
 import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap'
 // Auth css custom
-import Bootstrap from "../../common/themes"
+import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
+import DragArea from './dragArea/DragArea'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -16,7 +16,7 @@ import CRUDProductImages from './CRUDProductImages'
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
 
-class Products extends Component {
+class NewProduct extends Component {
 
     constructor(props) {
         super(props)
@@ -47,11 +47,10 @@ class Products extends Component {
     }
 
     componentDidMount = async () => {
-            Promise.all([
-                this.loadCategorysSelectItems(),
-            ])
+        Promise.all([
+            this.loadCategorysSelectItems(),
+        ])
     }
-
     async addNewImageToActualProductImages() {
         let tempCRUD_Product = this.state.CRUD_Product
         let newProductImage = {
@@ -274,90 +273,60 @@ class Products extends Component {
     }
 
     render() {
-        // State Varibles
         let {CRUD_Product, CRUDButtonName, selectedCategory } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
         return (
-                <Container>
-                    <Form>
-                        <Card>
-                            <Card.Body>
-                                <Card.Title>PROJECT PROPERTIES on {CRUDButtonName}</Card.Title>
-                                <Row className='mb-2'>
-                                    <Form.Group as={Col} controlId='formGridCategorySelectList'>
-                                        <Form.Label>Category</Form.Label>
-                                        <Select options={this.state.categorySelectList} onChange={this.handleOnSelectCategory} />
-                                        <Alert key="idx_key_1" variant='success'>
-                                            {selectedCategory === null ? 'Not selected' : selectedCategory.name}
-                                        </Alert>
-                                    </Form.Group>
-
-                                    <Form.Group as={Col} controlId='formGridCRUD_ProductName'>
-                                        <Form.Label>Name</Form.Label>
-                                        <Form.Control
-                                            type='text'
-                                            placeholder='Ex. Proyecto B'
-                                            name='CRUD_ProductName'
-                                            value={CRUD_Product.name}
-                                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                    </Form.Group>
-
-                                </Row>
-
-                                <Row className='mb-3'>
-
-                                    <Form.Group as={Col} controlId='formGridCRUD_ProductDescription'>
-                                        <Form.Label>Description</Form.Label>
-                                        <Form.Control
-                                            type='text'
-                                            placeholder='Ex. Amazing Project B'
-                                            name='CRUD_ProductDescription'
-                                            value={CRUD_Product.description}
-                                            onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                    </Form.Group>
-
-
-                                </Row>
-                                </Card.Body>
-                        </Card>
-                        <Card style={{paddingTop: 20}}>
-                            <Card.Body>
-                                <Card.Title>PROJECT Images</Card.Title>
-                                <Row className='mb-1'>
-                                    <Button 
-                                        variant='primary'
-                                        size='sm' 
-                                         
-                                        onClick={(e) => this.handleAddNewImageToActualProduct(e)}
-                                    >
-                                    ADD IMAGE TO ACTUAL PROJECT
-                                    </Button>
-                                    <CRUDProductImages 
-                                        CRUD_Product={CRUD_Product}
-                                        isImageUploadingFile={this.state.isImageUploadingFile}
-                                        urlS3Image={urlS3Image}
-                                        handleChangeProductImageProperty={this.handleChangeProductImageProperty}
-                                        />
-
-                                </Row>
-                            </Card.Body>
-                        </Card>
-                        
-
-                        <Row className='mb-1'>
-                            <Button
-                            variant='primary'
-                             
-                            onClick={this.handleCRUDProduct}
-                            disabled={this.state.isCRUDButtonDisable}
-                            >{CRUDButtonName}</Button>
-                        </Row>
-                        
-                    </Form>
-                </Container>
+            <div className={s.container}>
+                <div className={s.titleContainer}>
+                    <h2>Creación de un nuevo proyecto</h2>
+                    <p>Para crear un proyecto en nuestra plataforma, es necesario que completes el siguiente formulario. 
+                        Es importante que ingreses toda la información requerida de manera precisa y detallada para que podamos evaluar tu solicitud.
+                    </p>
+                    <p>
+                        Una vez que hayas completado el formulario, nuestro equipo revisará la información proporcionada y te informaremos si tu proyecto ha sido aprobado o no. 
+                        Si es aprobado, el equipo de Suan te enviará un contrato en el que se te especificará como continuar el proceso.
+                    </p>
+                </div>
+                <div className={s.formContainer}>
+                    <h2>Información de proyecto</h2>
+                    <form className={s.formInputs1}>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Título del proyecto</legend>
+                            <input type="text"
+                                    name='CRUD_ProductName'
+                                    value={CRUD_Product.name}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='Título' />
+                        </fieldset>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Categoría</legend>
+                            <select placeholder='Categoría' options={this.state.categorySelectList} onChange={this.handleOnSelectCategory} />
+                        </fieldset>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Tamaño del predio</legend>
+                            <input type="number" name="radio" id="radio" placeholder='Número de hectáreas' />
+                        </fieldset>
+                    </form>
+                    <form className={s.formInputs2}>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Descripción</legend>
+                            <textarea 
+                            name='CRUD_ProductDescription'
+                                    value={CRUD_Product.description}
+                                    placeholder='Es importante que nos proporcione la mayor cantidad de información posible. En caso de ser necesaria mayor información se le solicitará después de crear la solicitud.'
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
+                        </fieldset>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Imágenes</legend>
+                            {/* <input type="text" name="radio" id="radio" placeholder='Imagen' /> */}
+                            <DragArea />
+                        </fieldset>
+                    </form>
+                    <button className={s.solicitudButton}>CREAR SOLICITUD</button>
+                </div>
+            </div>
         )
     }
 }
 
-export default Products
+export default NewProduct
 

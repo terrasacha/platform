@@ -33,8 +33,8 @@ class ConstructorAdmon extends Component {
             },
             isShowDocuments: false,
             isShowProductsBuyed: false,
-            uploadNewProduct:false,
-            isShowInvestorProfile: true,
+            uploadNewProduct:true, //false
+            isShowInvestorProfile: false, //true
             showModalDocument: false,
             isRenderCompleteOrUpdateProfile: false,
             isNewUser: false
@@ -266,79 +266,134 @@ class ConstructorAdmon extends Component {
         }
 
         const renderCompleteProfile = () => {
+            if(!uploadNewProduct){
+                if (isRenderCompleteOrUpdateProfile) {
+                    return (
+                        <Container>
+                            <Form>
+                            
+                            <Row className='mb-3'>
+                                
+                                <Form.Group as={Col} controlId='formGridUserContactName'>
+                                    <Form.Label>Name</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        placeholder='Nombre Contacto'
+                                        name='user.name'
+                                        value={user.name}
+                                        onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                </Form.Group>
+
+                                <Form.Group as={Col} controlId='formGridUserWalletName'>
+                                    <Form.Label>Wallet Name</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        placeholder=''
+                                        name='user.walletName'
+                                        value={user.walletName}
+                                        onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                </Form.Group>
+
+                                <Form.Group as={Col} controlId='formGridUserWalletID'>
+                                    <Form.Label>Wallet Address</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        placeholder=''
+                                        name='user.walletID'
+                                        value={user.walletID}
+                                        onChange={(e) => this.handleOnChangeInputForm(e)} />
+                                </Form.Group>
+
+                            </Row>
+                            
+                            <Button
+                                variant='primary'
+                                size='lg'
+                                onClick={() => this.handleCUUser()}
+                                >Actualizar</Button>
+                            </Form>
+                        </Container>
+                    )
+                } else {
+                    return (
+                        <div style={{width: '100%', height: '20%',display: 'flex', justifyContent:'center'}}>
+                        <div className={s.container_profile}>
+                            <div className={s.profile_image_container}>
+                                <img src={profile} alt='profile' className={s.profile_image} />
+                            </div>
+                            <div className={s.profile_info_container}>
+                                <div className={s.profile_info}>
+                                    <h4>{user.name}</h4>
+                                    <h6>Wallets</h6>
+                                    {renderUserWallets(user)}
+                                </div>
+                                <div className={s.button_container}>
+                                    <button className={s.button_update_profile} onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}>Update info</button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    )
+                }
+            }
+        }
+        const renderModalWallet = () => {
             if (isRenderCompleteOrUpdateProfile) {
                 return (
-                    <Container>
-                        <Form>
-                        
-                        <Row className='mb-3'>
-                            
-                            <Form.Group as={Col} controlId='formGridUserContactName'>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Nombre Contacto'
-                                    name='user.name'
-                                    value={user.name}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-
-                            <Form.Group as={Col} controlId='formGridUserWalletName'>
-                                <Form.Label>Wallet Name</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder=''
-                                    name='user.walletName'
-                                    value={user.walletName}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-
-                            <Form.Group as={Col} controlId='formGridUserWalletID'>
-                                <Form.Label>Wallet Address</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder=''
-                                    name='user.walletID'
-                                    value={user.walletID}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-
-                        </Row>
-                        
-                        <Button
-                            variant='primary'
-                            size='lg'
-                            onClick={() => this.handleCUUser()}
-                            >Actualizar</Button>
-                        </Form>
-                    </Container>
-                )
-            } else {
-                return (
-                    <div style={{width: '100%', height: '20%',display: 'flex', justifyContent:'center'}}>
-                    <div className={s.container_profile}>
-                        <div className={s.profile_image_container}>
-                            <img src={profile} alt='profile' className={s.profile_image} />
-                        </div>
-                        <div className={s.profile_info_container}>
-                            <div className={s.profile_info}>
-                                <h4>{user.name}</h4>
-                                <h6>Wallets</h6>
-                                {renderUserWallets(user)}
-                            </div>
-                            <button className={s.button_update_profile} onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}>Update info</button>
-                        </div>
-                    </div>
-                    </div>
+                    <Modal
+                        show={this.state.showModalDocument}
+                        onHide={(e) => this.handleHideModalDocument()}
+                        size="lg"
+                        aria-labelledby="contained-modal-title-vcenter"
+                        centered
+                        >
+                        <Modal.Body>
+                            <Card border="light">
+                                <Card.Img variant="top" src={wallet} />
+                                <Card.Body>
+                                    <Card.Title as="h2">Paso para crear billetera en Cardano</Card.Title>
+                                    <Accordion flush alwaysOpen>
+                                    <Accordion.Item eventKey="0">
+                                        <Accordion.Header>Paso 1: Obtener billetera</Accordion.Header>
+                                        <Accordion.Body>
+                                        Su billetera en Cardano es la herramienta principal utilizada para interactuar con la Blockchain. 
+                                        En ella, lo más importante son las llaves privadas, que en el caso de la mayoría de billeteras están representadas 
+                                        por una combinación de palabras ó frase de recuperación las cuales deben ser guardadas fuera de línea en un sitio seguro. 
+                                        Ver más acerca de la seguridad en Cardano y cómo guardar de forma segura unas llaves privadas. 
+                                        Las billeteras más populares en Cardano son:
+                                        https://eternl.io/, https://gerowallet.io, https://namiwallet.io, https://yoroi-wallet.com.
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                    <Accordion.Item eventKey="1">
+                                        <Accordion.Header>Paso 2: Pendiente</Accordion.Header>
+                                        <Accordion.Body>
+                                        La billetera recién creada es el sitio donde se van a guardar sus tokens de inversión.
+                                         Cualquier movimiento, o transacción en la blockchain tiene un costo asociado que en el caso de Cardano se paga en la 
+                                         moneda nativa llamada ADA. Si ya invirtió, como inversionista simplemente recibirá una cantidad de tokens proporcional a su 
+                                         inversión con un número mínimo de ADAs como valor necesario mínimo para mover los tokens durante la transacción inicial. 
+                                         Si posteriormente desea mover los tokens ya sea cambiarlos de billetera o venderlos necesitará tener un saldo adicional en
+                                        ADAs para pagar los fees de transacción. Existen múltiples opciones para adquirir ADAs a partir de dinero fiduciario en casas 
+                                        de cambio conocidas en línea. Si presenta alguna inquietud en este proceso, por favor contacte a soporte. 
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                    <Accordion.Item eventKey="2">
+                                        <Accordion.Header>Paso 3: Pendiente</Accordion.Header>
+                                        <Accordion.Body>
+                                        Conectar la billetera a la plataforma Suan: Una vez creada su billetera puede conectarla de forma segura al sitio web de Suan. 
+                                        En este caso, un botón de conectar se encuentra disponible en la parte superior derecha. 
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                                </Card.Body>
+                            </Card>
+                        </Modal.Body>
+                    </Modal>
                 )
             }
         }
 
         return (
             <Container fluid style={{paddingTop: 60, minHeight: '100vh'}}>
-
-                <h4>Investor Dashboard</h4>
-                
                 <Row>
                     <Col>
                         <HeaderNavbar 
@@ -353,6 +408,7 @@ class ConstructorAdmon extends Component {
                     {renderOrders()}
                     {renderProductsBuyed()}
                     {renderNewProduct()}
+                    {renderModalWallet()}
                 </Row>
 
             </Container>

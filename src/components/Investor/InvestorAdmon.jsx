@@ -325,69 +325,36 @@ class InvestorAdmon extends Component {
                             <Card border="light">
                                 <Card.Img variant="top" src={wallet} />
                                 <Card.Body>
-                                    <Card.Title as="h2">Para continuar es obligatorio crear tu Billetera de Cardano,para que tengas tus tokens</Card.Title>
+                                    <Card.Title as="h2">Paso para crear billetera en Cardano</Card.Title>
                                     <Accordion flush alwaysOpen>
                                     <Accordion.Item eventKey="0">
-                                        <Accordion.Header>Paso 1: Descargar el monedero MetaMask</Accordion.Header>
+                                        <Accordion.Header>Paso 1: Obtener billetera</Accordion.Header>
                                         <Accordion.Body>
-                                        Lo primero que debes hacer es entrar en <a href='https://metamask.io/'>metamask</a> y haz clic en "Descargar".
-
-                                        Elige tu navegador o aplicación móvil preferida e instala la extensión de MetaMask.
-
-                                        El wallet MetaMask es compatible con las apps nativas de iOS y Android, así como con las extensiones
-
-                                        del navegador Chrome, Firefox, Brave y Edge.
-                                        
-                                        Si el proceso te parece muy complejo, siempre puedes consultar un gestor de criptomonedas.
+                                        Su billetera en Cardano es la herramienta principal utilizada para interactuar con la Blockchain. 
+                                        En ella, lo más importante son las llaves privadas, que en el caso de la mayoría de billeteras están representadas 
+                                        por una combinación de palabras ó frase de recuperación las cuales deben ser guardadas fuera de línea en un sitio seguro. 
+                                        Ver más acerca de la seguridad en Cardano y cómo guardar de forma segura unas llaves privadas. 
+                                        Las billeteras más populares en Cardano son:
+                                        https://eternl.io/, https://gerowallet.io, https://namiwallet.io, https://yoroi-wallet.com.
                                         </Accordion.Body>
                                     </Accordion.Item>
                                     <Accordion.Item eventKey="1">
-                                        <Accordion.Header>Paso 2: Instalación del monedero MetaMask</Accordion.Header>
+                                        <Accordion.Header>Paso 2: Pendiente</Accordion.Header>
                                         <Accordion.Body>
-                                        Haz clic en la extensiön MetaMask y haz clic en "Get Started".
-                                        Puedes importar un monedero ya existente utilizando la frase de inicio o crear uno nuevo.
+                                        La billetera recién creada es el sitio donde se van a guardar sus tokens de inversión.
+                                         Cualquier movimiento, o transacción en la blockchain tiene un costo asociado que en el caso de Cardano se paga en la 
+                                         moneda nativa llamada ADA. Si ya invirtió, como inversionista simplemente recibirá una cantidad de tokens proporcional a su 
+                                         inversión con un número mínimo de ADAs como valor necesario mínimo para mover los tokens durante la transacción inicial. 
+                                         Si posteriormente desea mover los tokens ya sea cambiarlos de billetera o venderlos necesitará tener un saldo adicional en
+                                        ADAs para pagar los fees de transacción. Existen múltiples opciones para adquirir ADAs a partir de dinero fiduciario en casas 
+                                        de cambio conocidas en línea. Si presenta alguna inquietud en este proceso, por favor contacte a soporte. 
                                         </Accordion.Body>
                                     </Accordion.Item>
                                     <Accordion.Item eventKey="2">
-                                        <Accordion.Header>Paso 3: Cómo crear una nueva cartera MetaMask</Accordion.Header>
+                                        <Accordion.Header>Paso 3: Pendiente</Accordion.Header>
                                         <Accordion.Body>
-                                        Haz clic en "Crear una cartera" y en la siguiente ventana haz clic en "Estoy de acuerdo" si quieres ayudar
-                                        a mejorar MetaMask o haz clic en "No gracias" para continuar.
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                    <Accordion.Item eventKey="3">
-                                        <Accordion.Header>Paso 4: Crea una contraseña segura para tu wallet.</Accordion.Header>
-                                        <Accordion.Body>
-                                        Haz clic en la extensiön MetaMask y haz clic en "Get Started".
-                                        Puedes importar un monedero ya existente utilizando la frase de inicio o crear uno nuevo.
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                    <Accordion.Item eventKey="4">
-                                        <Accordion.Header>Paso 5: Almacenar de forma segura la frase de recuperación para tu monedero</Accordion.Header>
-                                        <Accordion.Body>
-                                        Haz clic en "Clic aquí para revelar las palabras secretas" para mostrar la frase.
-                                        MetaMask requiere que guardes tu frase en un lugar seguro.
-                                        Es la única manera de recuperar tus fondos en caso de que tu dispositivo se estropee o tu navegador se
-                                        reinicie.
-                                        Te recomendamos que la escribas. El método más común es escribir tu frase de 12 palabras en un papel
-                                        y guardarla en un lugar seguro al que sólo tú tengas acceso.
-                                        Nota: si pierdes tu frase, MetaMask no podrá ayudarte a recuperar tu monedero y tus fondos se perderán
-                                        para siempre.
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                    <Accordion.Item eventKey="5">
-                                        <Accordion.Header>Paso 6: Confirmación de la frase secreta</Accordion.Header>
-                                        <Accordion.Body>
-                                        Confirma tu frase secreta de recuperación haciendo clic en cada palabra en el orden en que se
-                                        presentaron las palabras en la pantalla anterior.
-                                        Hz clic en "Confirmar" para continuar.
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                    <Accordion.Item eventKey="6">
-                                        <Accordion.Header>¡Enhorabuena! Tu monedero MetaMask ha sido configurado con éxito.</Accordion.Header>
-                                        <Accordion.Body>
-                                        Ahora puedes acceder a tu monedero haciendo clic en el icono de MetaMask en la esquina superior
-                                        derecha de tu navegador preferido.
+                                        Conectar la billetera a la plataforma Suan: Una vez creada su billetera puede conectarla de forma segura al sitio web de Suan. 
+                                        En este caso, un botón de conectar se encuentra disponible en la parte superior derecha. 
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 </Accordion>
