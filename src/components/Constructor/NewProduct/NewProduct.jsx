@@ -33,17 +33,16 @@ class NewProduct extends Component {
                 categoryID: '',
                 images: [],
             },
+            files: [],
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false,
             selectedCategory: null,
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
-        this.handleChangeProductImageProperty = this.handleChangeProductImageProperty.bind(this)
-        this.handleAddNewImageToActualProduct = this.handleAddNewImageToActualProduct.bind(this)
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
-        this.goToTop = this.goToTop = this.goToTop.bind(this)
+        this.handleFiles = this.handleFiles.bind(this)
     }
 
     componentDidMount = async () => {
@@ -70,16 +69,45 @@ class NewProduct extends Component {
 
 
     handleOnSelectCategory(event) {
-        this.setState({selectedCategory: event.value})
+        this.setState({selectedCategory: event.target.value})
         this.validateCRUDProduct()
     }
+    async handleFiles(e){
+        let uploadImageResult = null
+        let imageId = ''
+            const { target: { files } } = e;
+            const [file,] = files || [];
+            if (!file) {
+                return
+            }
+            // Creating image ID
+            let fileNameSplitByDotfileArray = file.name.split('.')
+            imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-','_')
+            // Getting extension
+            let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length-1]
+            let imageName = imageId + '.' + imageExtension
+            this.setState({isImageUploadingFile: true})
+            uploadImageResult = await Storage.put(imageName, file, {
+                level: "public",
+                contentType: "image/jpeg",
+              });
+        const newImagePayLoad = {
+            productID: this.state.CRUD_Product.id,
+            id: imageName,
+            imageURL: uploadImageResult.key,
+            format: uploadImageResult.key.split('.')[1],
+            title: imageName,
+            isOnCarousel: false,
+            carouselLabel: '',
+            carouselDescription: '',
+            isActive: false,
+            order: 0,
+        }
+        console.log(newImagePayLoad, 'newImagePayLoad')
+        await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
+        this.setState({isImageUploadingFile: false})
 
-    goToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-    };
+    }
 
     async loadCategorysSelectItems() {
         let categorysSelectItems = []
@@ -98,8 +126,7 @@ class NewProduct extends Component {
     async validateCRUDProduct() {
         if ( this.state.selectedCategory !== null && 
              this.state.CRUD_Product.name !== '' && 
-             this.state.CRUD_Product.description !== '' && 
-             this.state.CRUD_Product.images.length > 0) {
+             this.state.CRUD_Product.description !== '') {
             this.setState({isCRUDButtonDisable: false})
         }
     }
@@ -111,30 +138,12 @@ class NewProduct extends Component {
                 id: tempCRUD_Product.id,
                 name: tempCRUD_Product.name,
                 description: tempCRUD_Product.description,
-                isActive: true, //Por que se manda true??
+                isActive: false, //Por que se manda true??
                 status: tempCRUD_Product.status,
                 counterNumberOfTimesBuyed: 0,
-                categoryID: this.state.selectedCategory.id,
-                order: tempCRUD_Product.order,
+                categoryID: this.state.selectedCategory,
+                order: 0,
             }
-            // Creating Product=>images
-            tempCRUD_Product.images.map( async(image) => {
-                const newImagePayLoad = {
-                    productID: tempCRUD_Product.id,
-                    id: image.id,
-                    imageURL: image.imageURL,
-                    format: image.format,
-                    title: image.title,
-                    isOnCarousel: image.isOnCarousel,
-                    carouselLabel: image.carouselLabel,
-                    carouselDescription: image.carouselDescription,
-                    isActive: true,
-                    order: image.order,
-                }
-                await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
-                return image
-            })
-
             await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
             // Creating UserProduct
             let actualUser = await  Auth.currentAuthenticatedUser()
@@ -150,21 +159,6 @@ class NewProduct extends Component {
             /* await this.cleanProductOnCreate() */
         }
     }
-    
-    setProductImageAndDownloadURL = async (product) => {
-        Storage.get(product.image, { expires: 600 })
-            .then(result => {
-                this.setState({productImageURLToDisplay: result})
-            })
-            .catch(err => console.log(err))
-        
-    }
-
-    async handleAddNewImageToActualProduct(event) {
-        this.addNewImageToActualProductImages()
-        this.validateCRUDProduct()
-    }
-
     async cleanProductOnCreate() {
          this.setState({
             CRUD_Product: {
@@ -207,70 +201,10 @@ class NewProduct extends Component {
         if (event.target.name === 'CRUD_ProductStatus') {
             tempCRUD_Product.status = event.target.value
         }
-        await this.setState({CRUD_Product: tempCRUD_Product})
+        this.setState({CRUD_Product: tempCRUD_Product})
         this.validateCRUDProduct()
     }
 
-    async handleChangeProductImageProperty(event, pImage, pProperty) {
-        let uploadImageResult = null
-        let imageId = ''
-        if (pProperty === 'carouselImage') {
-            const { target: { files } } = event;
-            const [file,] = files || [];
-            if (!file) {
-                return
-            }
-            // Creating image ID
-            let fileNameSplitByDotfileArray = file.name.split('.')
-            imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-','_')
-            // Getting extension
-            let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length-1]
-            let imageName = imageId + '.' + imageExtension
-            // Uploading image
-            this.setState({isImageUploadingFile: true})
-            uploadImageResult = await Storage.put(imageName, file, {
-                level: "public",
-                contentType: "image/jpeg",
-              });
-            this.setState({isImageUploadingFile: false})
-        }
-
-        let tempCRUD_Product = this.state.CRUD_Product;
-        let tempImages = tempCRUD_Product.images.map( (image) => {
-            if (image.id === pImage.id) {
-                if (pProperty === 'newProductImageTitle') {
-                    image.title = event.target.value
-                }
-                if (pProperty === 'newProductImageOrder') {
-                    image.order = event.target.value
-                }
-                if (pProperty === 'isOnCarousel') {
-                    image.isOnCarousel = !image.isOnCarousel
-                }
-                if (pProperty === 'carouselLabel') {
-                    image.carouselLabel = event.target.value.toUpperCase()
-                }
-                if (pProperty === 'carouselDescription') {
-                    image.carouselDescription = event.target.value.toUpperCase()
-                }
-                if (pProperty === 'carouselImage') {
-                    if (uploadImageResult !== null) {
-                        image.imageURL = uploadImageResult.key
-                        image.format = uploadImageResult.key.split('.')[1]
-                    } 
-                }
-            }
-            return image
-        })
-        tempCRUD_Product.images = tempImages     
-        await this.setState({CRUD_Product: tempCRUD_Product})
-        this.validateCRUDProduct()
-    }
-
-    async getSignedImageURL(image) {
-        const signedURL = await Storage.get(image.imageURL)
-        return signedURL
-    }
 
     render() {
         let {CRUD_Product, CRUDButtonName, selectedCategory } = this.state
@@ -299,7 +233,9 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Categoría</legend>
-                            <select placeholder='Categoría' options={this.state.categorySelectList} onChange={this.handleOnSelectCategory} />
+                            <select placeholder='Categoría'  onChange={this.handleOnSelectCategory}>
+                                {this.state.categorySelectList?.map(category=> <option value={category.value.id} key={category.id}>{category.value.name}</option>)}
+                            </select>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Tamaño del predio</legend>
@@ -318,10 +254,14 @@ class NewProduct extends Component {
                         <fieldset className={s.inputContainer}>
                             <legend>Imágenes</legend>
                             {/* <input type="text" name="radio" id="radio" placeholder='Imagen' /> */}
-                            <DragArea />
+                            <DragArea 
+                                handleFiles={this.handleFiles}
+                            />
                         </fieldset>
                     </form>
-                    <button className={s.solicitudButton}>CREAR SOLICITUD</button>
+                    {this.state.isImageUploadingFile?<button className={s.solicitudButtonDisabled} disabled>CREANDO</button>:
+                    <button className={s.solicitudButton} onClick={this.handleCRUDProduct}>CREAR SOLICITUD</button>}
+                    
                 </div>
             </div>
         )
