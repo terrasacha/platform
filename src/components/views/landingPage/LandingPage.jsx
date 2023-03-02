@@ -143,7 +143,7 @@ export default class LandingPage extends Component {
     return (
       <div style={{minHeight: '100vh'}}>
         <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
-        <Carousel>
+{/*         <Carousel>
         {this.state.productsImagesIsOnCarousel.map((image, idx) => (
             <Carousel.Item key={idx}>
                 <img
@@ -157,7 +157,7 @@ export default class LandingPage extends Component {
                 </Carousel.Caption>
                 </Carousel.Item>
         ))}
-        </Carousel>
+        </Carousel> */}
         <div className={s.container}>
           <h1>Aceleramos la
               transición hacia un
@@ -165,18 +165,19 @@ export default class LandingPage extends Component {
               carbono neutral</h1>
           <p>Una plataforma para invertir en activos  ambientales en desarrollo ,
               fácil, rápido y seguro.</p>
-          <button>EXPLORE MARKET</button>
+          {/* <button>EXPLORE MARKET</button> */}
         </div>
         <div className={s.titleContainerProducts}>
-            <h3>Featured Projects</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore quidem nulla blanditiis odio dolorem exercitationem culpa nobis ea nam deleniti accusamus corporis, animi hic magnam a illum </p>
+          <h1 className={s.title}>Proyectos que puedes apoyar</h1>
+            {/* <h3>Featured Projects</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore quidem nulla blanditiis odio dolorem exercitationem culpa nobis ea nam deleniti accusamus corporis, animi hic magnam a illum </p> */}
         </div>
         <div  className={s.containerFeaturedProducts}>
-          {this.state.productsLanding.map(product => <ProductCard product={product} urlS3Image={urlS3Image}/>)}
+          {this.state.productsLanding.map(product => <ProductCard product={product} urlS3Image={urlS3Image} key={product.id}/>)}
         </div>
         <div className={s.contactContainer}>
-            <h2>Ponte en contacto</h2>
-            <button>Contáctanos</button>
+            <h2>Conoce más acerca de Suan</h2>
+            <a href='https://suan.global/about_us'><button>Conocer más</button></a>
         </div>
       </div>
     )

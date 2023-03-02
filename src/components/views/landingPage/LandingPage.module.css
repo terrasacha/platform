@@ -2,7 +2,7 @@
     background-image: url('../_images/tnc_55933050 1.jpg');
     background-repeat: no-repeat;   
     background-size: cover;
-    height: 90%;
+    height: 50vh;
     display: flex;
     flex-direction: column;
     padding-top: 8%;
@@ -40,7 +40,12 @@
     flex-direction: column;
     align-items: center;
 }
-.titleContainerProducts h3{
+.title{
+    font-size: 4em;
+    font-family: 'Catamaran', sans-serif;
+    color: #207E2E;
+}
+/* .titleContainerProducts h3{
     font-family: 'Catamaran', sans-serif;
     font-size: 3em;
     font-weight: 700;
@@ -50,10 +55,10 @@
     width: 60%;
     padding-top: 1%;
     font-size: 1.2em;
-}
+} */
 .containerFeaturedProducts{
     width: 90%;
-    margin: 2% auto;
+    margin: 1% auto;
     display: flex;
     flex-wrap: wrap;
 }
@@ -74,9 +79,14 @@
     font-weight: 700;
     color: #4E4E4E
 }
+.contactContainer a{
+    width: 10%;
+    margin-bottom: 3%;
+}
 .contactContainer button{
-    padding: .6% 2%;
-    margin-bottom: 4%;
+    padding: 4% 2%;
+    width: 100%;
+    
     border-radius: 6px;
     border: none;
     font-size: 1.1em;
@@ -89,7 +99,7 @@
         padding-top: 30%;
     }
     .container h1{
-        font-size: 3.5em;
+        font-size: 2.2em;
     }
     .container p{
         padding-top: 6%;
@@ -108,21 +118,29 @@
         flex-direction: column;
         align-items: center;
     }
-    .titleContainerProducts h3{
+    .title{
+        margin-top: 2%;
+        font-size: 1.7em;
+    }
+    /* .titleContainerProducts h3{
         margin-top: 2%;
         font-size: 2em;
     }
     .titleContainerProducts p{
         width: 95%;
         font-size: .9em;
-    }
+    } */
     .containerFeaturedProducts{
         width: 95%;
         margin: 2% auto;
         flex-direction: column;
     }
     .contactContainer h2{
-        font-size: 2em;
+        font-size: 1.7em;
+    }
+    .contactContainer a{
+        width: 30%;
+        margin-bottom: 3%;
     }
     .contactContainer button{
         padding: 2% 4%;

@@ -10,14 +10,14 @@ class DragArea extends Component{
   }
 
   changeImage = (e) => {
-    console.log(e.target.files);
+    const file = e.target.files[0];
     this.handleFiles(e) // le damos el binario de la imagen para mostrarla en pantalla
     if (e.target.files[0] !== undefined) {
       const reader = new FileReader();
       reader.readAsDataURL(e.target.files[0]);
       reader.onload = (e) => {
         e.preventDefault();
-        this.setState({ImageSelectedPrevious: e.target.result})
+        this.setState({ImageSelectedPrevious: file.name})
       };
     }
   };
@@ -37,7 +37,7 @@ class DragArea extends Component{
               }}
             />
             <div className={s.text_information}>
-              <h3>Drag and drop a file or select add Image</h3>
+              <h3>{this.state.ImageSelectedPrevious !== null?`File ${this.state.ImageSelectedPrevious} added`: "Drag and drop a file or select add Image"}</h3>
             </div>
           </div>
         </div >

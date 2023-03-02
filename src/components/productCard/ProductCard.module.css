@@ -33,11 +33,13 @@
     font-size: 1.2em;
     font-weight: 400;
     border-bottom: 1px solid #CFCFCF;
+    overflow: hidden;
 }
 .title{
     padding-top: 1%;
     font-size: 1.2em;
     font-weight: 600;
+    white-space: nowrap;
 }
 .location{
     display: flex;
