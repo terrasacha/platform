@@ -1,6 +1,9 @@
 import { Auth, Hub } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 import { Alert, Button, Card, Form } from "react-bootstrap"
+// GraphQL
+import { API, graphqlOperation } from 'aws-amplify'
+import { createUser } from '../../../graphql/mutations'
 const initialFormState ={
     username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn', role: 'investor'
 }
@@ -51,10 +54,18 @@ export default function LogIn() {
             try {
                 setError("")
                 setLoading(true)
-                await Auth.signUp({ username, password, attributes: {
+                let response = await Auth.signUp({ username, password, attributes: {
                         email,
                         'custom:role': role  
                     }})
+                console.log(response, 'response')
+                const userPayload = {
+                    id: response.userSub,
+                    name: username,
+                    isProfileUpdated: true,
+                    role: role
+                }
+                await API.graphql(graphqlOperation(createUser, { input: userPayload }))
                     setLoading(false)
                 updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
             } catch (error) {

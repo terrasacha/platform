@@ -404,11 +404,12 @@ class ConstructorAdmon extends Component {
                 </Row>
 
                 <Row>
-                    {renderCompleteProfile()}
+                    {/* {renderCompleteProfile()}
                     {renderOrders()}
                     {renderProductsBuyed()}
                     {renderNewProduct()}
-                    {renderModalWallet()}
+                    {renderModalWallet()} */}
+                    <NewProduct />
                 </Row>
 
             </Container>

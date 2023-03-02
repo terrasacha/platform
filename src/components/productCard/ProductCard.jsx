@@ -14,7 +14,7 @@ function ProductCard({product, urlS3Image}) {
         <div className={s.infoContainer}>
             <div className={s.titleContainer}>
                 <div className={s.title}>{product.name}</div>
-                <div className={s.location}><Icon.GeoAltFill color="#4DBC5E" /><div>742 de Evergreen Terrace | 2.1 ha.</div></div>
+                <div className={s.location}>{/* <Icon.GeoAltFill color="#4DBC5E" /><div>742 de Evergreen Terrace | 2.1 ha.</div> */}{product.category.name}</div>
             </div>
             <div className={s.info}>
                 <div className={s.price}>
