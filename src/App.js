@@ -47,6 +47,12 @@ function App(){
             }
           />
           <Route
+            path="/creating_wallet"
+            element={
+              <Orders />
+            }
+          />
+          <Route
             path="/admon"
             element={
               <AdmonMiddleware>
