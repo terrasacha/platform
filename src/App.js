@@ -20,7 +20,7 @@ import ConstructorMiddleware from './components/views/middlewareRoute/Constructo
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
 import Orders from './components/views/Orders/Orders';
 import Products from './components/views/Products';
-
+import CreateWallet from './components/views/createWallet/CreateWallet'
 
 function App(){
   return(
@@ -49,7 +49,7 @@ function App(){
           <Route
             path="/creating_wallet"
             element={
-              <Orders />
+              <CreateWallet />
             }
           />
           <Route

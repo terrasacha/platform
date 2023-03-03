@@ -1,0 +1,33 @@
+.container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.steps{
+    width: 20%;
+    border: 1px solid red;
+    margin-right: 5%;
+}
+.containerSteps{
+    width: 60%;
+    border: 1px solid red;
+
+}
+.titleContainer{
+    width: 90%;
+    margin-top: 1%;
+    padding: 2% 0;
+    border-bottom: 1px solid rgb(190, 190, 190);
+}
+.titleContainer h2{
+    font-weight: 700;
+    color: #4DBC5E;
+}
+.titleContainer p{
+    width: 80%;
+    font-size: 1.1em;
+    color: #292929;
+}
+img{
+    width: 100%;
+}
