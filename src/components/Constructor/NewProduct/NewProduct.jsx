@@ -1,17 +1,14 @@
 import React, { Component } from 'react'
-// Bootstrap
-import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap'
-// Auth css custom
 import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
-import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
+import { createImage, createProduct, createUserProduct } from '../../../graphql/mutations'
+import { listCategories } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // Utils 
-import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
-import CRUDProductImages from './CRUDProductImages'
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
@@ -50,7 +47,6 @@ class NewProduct extends Component {
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
         this.selectImage = this.selectImage.bind(this)
     }
-
     componentDidMount = async () => {
         Promise.all([
             this.loadCategorysSelectItems(),
@@ -77,7 +73,7 @@ class NewProduct extends Component {
     selectImage(e){
         this.setState({imageToUpload: e})
     }
-    async handleFiles(e){
+    async handleFiles(e, productID){
         let uploadImageResult = null
         let imageId = ''
         const { target: { files } } = e;
@@ -97,7 +93,7 @@ class NewProduct extends Component {
                 contentType: "image/jpeg",
             });
             const newImagePayLoad = {
-                productID: this.state.CRUD_Product.id,
+                productID: productID,
                 id: imageName,
                 imageURL: uploadImageResult.key,
                 format: uploadImageResult.key.split('.')[1],
@@ -149,7 +145,7 @@ class NewProduct extends Component {
                     categoryID: this.state.selectedCategory,
                     order: 0,
                 }
-                this.handleFiles(this.state.imageToUpload)
+                this.handleFiles(this.state.imageToUpload, payLoadNewProduct.id)
                 await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
                 // Creating UserProduct
                 let actualUser = await  Auth.currentAuthenticatedUser()
@@ -162,7 +158,7 @@ class NewProduct extends Component {
             }
             await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
             await this.cleanProductOnCreate()
-            /* await this.cleanProductOnCreate() */
+            this.notify()
         }else{
             console.log('errors')
         }
@@ -222,13 +218,24 @@ class NewProduct extends Component {
         this.setState({CRUD_Product: tempCRUD_Product})
         this.validateCRUDProduct()
     }
-
-
+    notify = () =>{
+        toast.success('🦄 Wow so easy!', {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+    }
     render() {
         let {CRUD_Product, CRUDButtonName, selectedCategory } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
         return (
             <div className={s.container}>
+                <ToastContainer />
                 <div className={s.titleContainer}>
                     <h2>Creación de un nuevo proyecto</h2>
                     <p>Para crear un proyecto en nuestra plataforma, es necesario que completes el siguiente formulario. 
