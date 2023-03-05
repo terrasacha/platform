@@ -7,6 +7,7 @@ import { listCategories } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import WebAppConfig from '../../common/_conf/WebAppConfig'
 // Utils 
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 // AWS S3 Storage
@@ -23,7 +24,7 @@ class NewProduct extends Component {
                 name: '',
                 description: '',
                 isActive: true,
-                status: 'draft',
+                status: 'new',
                 order: 0,
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
@@ -155,10 +156,16 @@ class NewProduct extends Component {
                 userID: actualUserID,
                 productID: tempCRUD_Product.id,
                 isFavorite: true
-            }
-            await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
-            await this.cleanProductOnCreate()
-            this.notify()
+                }
+                const payLoadAdmonProduct = {
+                userID: WebAppConfig.admon,
+                productID: tempCRUD_Product.id,
+                isFavorite: true
+                }
+                await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
+                await API.graphql(graphqlOperation(createUserProduct, { input: payLoadAdmonProduct }))
+                await this.cleanProductOnCreate()
+                this.notify()
         }else{
             console.log('errors')
         }
@@ -219,7 +226,7 @@ class NewProduct extends Component {
         this.validateCRUDProduct()
     }
     notify = () =>{
-        toast.success('🦄 Wow so easy!', {
+        toast.success('Formulario enviado', {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,

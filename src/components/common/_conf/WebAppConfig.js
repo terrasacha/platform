@@ -3,6 +3,7 @@
 
 const WebAppConfig = {
     "url_s3_public_images": "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/",
+    "admon": "a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934"
 };
 
 
