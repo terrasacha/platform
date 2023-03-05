@@ -8,19 +8,24 @@ import image4 from '../_images/paso_F_creacion_wallet.png'
 import image5 from '../_images/paso_G_creacion_wallet.png'
 import image6 from '../_images/paso_H_creacion_wallet.png'
 import image7 from '../_images/paso_I_creacion_wallet.png'
-export default function LogIn() {
+import arrowSteps from '../_images/chevron-forward-outline.svg'
+
+export default function LogIn() {   
+
   return (
+    <>
+    <HeaderNavbar></HeaderNavbar>
     <div className={s.container}>
         <div className={s.steps}>
             <ul>
-                <li>Obtener billetera</li>
-                <li>Obtener fondos mínimos</li>
-                <li>Conectar la billetera a la plataforma Suan</li>
+                <li><span>Obtener billetera</span><a href="#obtener_billetera"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>Obtener fondos mínimos</span><a href="#obtener_fondos_minimos"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>Conectar la billetera a la plataforma Suan</span><a href="#conectar_la_billetera"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
             </ul>
         </div>
         <div className={s.containerSteps}>
             <div className={s.titleContainer}>
-                <h2>Obtener billetera</h2>
+                <h2 id='#obtener_billetera'>Obtener billetera</h2>
                 <p>Su billetera en Cardano es la herramienta principal utilizada para interactuar con la Blockchain.
                     En ella, lo más importante son las llaves privadas, que en el caso de la mayoría de billeteras están 
                     representadas por una combinación de palabras o frase de recuperación las cuales deben ser guardadas fuera de línea en un sitio seguro. 
@@ -79,7 +84,7 @@ export default function LogIn() {
                 </li>
             </ul>
             <div className={s.titleContainer}>
-                <h2>Obtener fondos mínimos</h2>
+                <h2 id="obtener_fondos_minimos">Obtener fondos mínimos</h2>
                 <p>La billetera recién creada es el sitio donde se van a guardar sus tokens de inversión. 
                     Cualquier movimiento, o transacción en la blockchain tiene un costo asociado que en el caso de Cardano se paga en la moneda nativa llamada ADA. 
                     Si ya invirtió, como inversionista simplemente recibirá una cantidad de tokens proporcional a su inversión con un número mínimo de ADAs como valor necesario mínimo para mover los tokens durante la transacción inicial. 
@@ -91,10 +96,11 @@ export default function LogIn() {
                 </p>
             </div>
             <div className={s.titleContainer}>
-                <h2>Conectar la billetera a la plataforma Suan</h2>
+                <h2 id='conectar_la_billetera'>Conectar la billetera a la plataforma Suan</h2>
                 <p>Una vez creada su billetera puede conectarla de forma segura al sitio web de Suan. En este caso, un botón de conectar se encuentra disponible en la parte superior derecha. </p>
             </div>
         </div>
     </div>
+    </>
   )
 }

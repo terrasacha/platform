@@ -36,8 +36,8 @@ export default class HeaderNavbar extends Component {
             <Container fluid>
                 <Navbar.Brand href="/" style={{marginLeft: '2%'}}>
                 <img src={LOGO} 
-                width="40"
-                height="auto"
+                height="40"
+                width="auto"
                 className="d-inline-block align-top"
                 alt="ATP"
                 />
