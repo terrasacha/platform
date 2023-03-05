@@ -33,7 +33,13 @@ class NewProduct extends Component {
                 categoryID: '',
                 images: [],
             },
+            errors:{
+                title:'no error',
+                category:'no error',
+                description:'no error'
+            },
             files: [],
+            imageToUpload: '',
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false,
@@ -42,7 +48,7 @@ class NewProduct extends Component {
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
-        this.handleFiles = this.handleFiles.bind(this)
+        this.selectImage = this.selectImage.bind(this)
     }
 
     componentDidMount = async () => {
@@ -68,21 +74,20 @@ class NewProduct extends Component {
     }
 
 
-    handleOnSelectCategory(event) {
-        this.setState({selectedCategory: event.target.value})
-        this.validateCRUDProduct()
+    selectImage(e){
+        this.setState({imageToUpload: e})
     }
     async handleFiles(e){
         let uploadImageResult = null
         let imageId = ''
-            const { target: { files } } = e;
-            const [file,] = files || [];
-            if (!file) {
-                return
-            }
-            // Creating image ID
-            let fileNameSplitByDotfileArray = file.name.split('.')
-            imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-','_')
+        const { target: { files } } = e;
+        const [file,] = files || [];
+        if (!file) {
+            return
+        }
+        // Creating image ID
+        let fileNameSplitByDotfileArray = file.name.split('.')
+        imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-','_')
             // Getting extension
             let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length-1]
             let imageName = imageId + '.' + imageExtension
@@ -90,31 +95,31 @@ class NewProduct extends Component {
             uploadImageResult = await Storage.put(imageName, file, {
                 level: "public",
                 contentType: "image/jpeg",
-              });
-        const newImagePayLoad = {
-            productID: this.state.CRUD_Product.id,
-            id: imageName,
-            imageURL: uploadImageResult.key,
-            format: uploadImageResult.key.split('.')[1],
-            title: imageName,
-            isOnCarousel: false,
-            carouselLabel: '',
-            carouselDescription: '',
-            isActive: false,
-            order: 0,
+            });
+            const newImagePayLoad = {
+                productID: this.state.CRUD_Product.id,
+                id: imageName,
+                imageURL: uploadImageResult.key,
+                format: uploadImageResult.key.split('.')[1],
+                title: imageName,
+                isOnCarousel: false,
+                carouselLabel: '',
+                carouselDescription: '',
+                isActive: false,
+                order: 0,
+            }
+            console.log(newImagePayLoad, 'newImagePayLoad')
+            await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
+            this.setState({isImageUploadingFile: false})
+            
         }
-        console.log(newImagePayLoad, 'newImagePayLoad')
-        await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
-        this.setState({isImageUploadingFile: false})
-
-    }
-
-    async loadCategorysSelectItems() {
-        let categorysSelectItems = []
-        const listCategoriesResult = await API.graphql(graphqlOperation(listCategories))
-        if (listCategoriesResult.data.listCategories.items.length > 0) {
-            let tempCategorys = listCategoriesResult.data.listCategories.items
-            // Ordering categorys by name
+        
+        async loadCategorysSelectItems() {
+            let categorysSelectItems = []
+            const listCategoriesResult = await API.graphql(graphqlOperation(listCategories))
+            if (listCategoriesResult.data.listCategories.items.length > 0) {
+                let tempCategorys = listCategoriesResult.data.listCategories.items
+                // Ordering categorys by name
             tempCategorys.sort((a, b) => (a.name > b.name) ? 1 : -1)
             tempCategorys.map( (category) => {
                 categorysSelectItems.push( {value: category, label: category.name})
@@ -125,31 +130,32 @@ class NewProduct extends Component {
     }
     async validateCRUDProduct() {
         if ( this.state.selectedCategory !== null && 
-             this.state.CRUD_Product.name !== '' && 
-             this.state.CRUD_Product.description !== '') {
-            this.setState({isCRUDButtonDisable: false})
-        }
-    }
-    
-    async handleCRUDProduct() {
-        const tempCRUD_Product = this.state.CRUD_Product
-        if (this.state.CRUDButtonName === 'CREATE') {
-            const payLoadNewProduct = {
-                id: tempCRUD_Product.id,
-                name: tempCRUD_Product.name,
-                description: tempCRUD_Product.description,
-                isActive: false, //Por que se manda true??
-                status: tempCRUD_Product.status,
-                counterNumberOfTimesBuyed: 0,
-                categoryID: this.state.selectedCategory,
-                order: 0,
+            this.state.CRUD_Product.name !== '' && 
+            this.state.CRUD_Product.description !== '') {
+                this.setState({isCRUDButtonDisable: false})
             }
-            await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
-            // Creating UserProduct
-            let actualUser = await  Auth.currentAuthenticatedUser()
-            let actualUserID = actualUser.attributes.sub
-  
-            const payLoadNewUserProduct = {
+        }
+        
+        async handleCRUDProduct() {
+            const tempCRUD_Product = this.state.CRUD_Product
+            if (this.state.errors.title !== '' && this.state.errors.description !== '') {
+                const payLoadNewProduct = {
+                    id: tempCRUD_Product.id,
+                    name: tempCRUD_Product.name,
+                    description: tempCRUD_Product.description,
+                    isActive: false, //Por que se manda true??
+                    status: tempCRUD_Product.status,
+                    counterNumberOfTimesBuyed: 0,
+                    categoryID: this.state.selectedCategory,
+                    order: 0,
+                }
+                this.handleFiles(this.state.imageToUpload)
+                await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
+                // Creating UserProduct
+                let actualUser = await  Auth.currentAuthenticatedUser()
+                let actualUserID = actualUser.attributes.sub
+                
+                const payLoadNewUserProduct = {
                 userID: actualUserID,
                 productID: tempCRUD_Product.id,
                 isFavorite: true
@@ -157,10 +163,12 @@ class NewProduct extends Component {
             await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
             await this.cleanProductOnCreate()
             /* await this.cleanProductOnCreate() */
+        }else{
+            console.log('errors')
         }
     }
     async cleanProductOnCreate() {
-         this.setState({
+        this.setState({
             CRUD_Product: {
                 id: uuidv4().replaceAll('-','_'),
                 name: '',
@@ -173,24 +181,34 @@ class NewProduct extends Component {
                 categoryID: '',
                 images: [],
             },
+            errors:{
+                title:'no error',
+                category:'no error',
+                description:'no error'
+            },
+            imageToUpload: '',
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false, //se borraban los features y categorys
             selectedCategory: null,
-            selectedFeature: null,
-            valueProductFeature: 0,
-            isShowModalAreYouSureDeleteProduct: false,
-            productToDelete: null,
         })
     }
-
+    
+    handleOnSelectCategory(event) {
+        this.setState({selectedCategory: event.target.value})
+        this.validateCRUDProduct()
+    }
     handleOnChangeInputForm = async(event, pProperty) => {
         let tempCRUD_Product = this.state.CRUD_Product
         if (event.target.name === 'CRUD_ProductName') {
             tempCRUD_Product.name = event.target.value
+            this.setState(prevState => ({
+                errors: {...prevState.errors, title: event.target.value}}))
         }
         if (event.target.name === 'CRUD_ProductDescription') {
             tempCRUD_Product.description = event.target.value
+            this.setState(prevState => ({
+                errors: {...prevState.errors, description: event.target.value }}))
         }
         if (event.target.name === 'CRUD_ProductOrder') {
             tempCRUD_Product.order = parseInt(event.target.value)
@@ -230,12 +248,14 @@ class NewProduct extends Component {
                                     name='CRUD_ProductName'
                                     value={CRUD_Product.name}
                                     onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='Título' />
+                            {this.state.errors.title.length < 1?<span style={{color:'red'}}>Completar Titulo</span> : <span> </span>}
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Categoría</legend>
                             <select placeholder='Categoría'  onChange={this.handleOnSelectCategory}>
                                 {this.state.categorySelectList?.map(category=> <option value={category.value.id} key={category.id}>{category.value.name}</option>)}
                             </select>
+                            {this.state.errors.category.length < 1?<span style={{color:'red'}}>Completar Titulo</span> : <span> </span>}
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Tamaño del predio</legend>
@@ -250,12 +270,12 @@ class NewProduct extends Component {
                                     value={CRUD_Product.description}
                                     placeholder='Es importante que nos proporcione la mayor cantidad de información posible. En caso de ser necesaria mayor información se le solicitará después de crear la solicitud.'
                                     onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            {this.state.errors.description.length < 1?<span style={{color:'red'}}>Completar Titulo</span> : <span> </span>}
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Imágenes</legend>
-                            {/* <input type="text" name="radio" id="radio" placeholder='Imagen' /> */}
                             <DragArea 
-                                handleFiles={this.handleFiles}
+                                selectImage={this.selectImage}
                             />
                         </fieldset>
                     </form>

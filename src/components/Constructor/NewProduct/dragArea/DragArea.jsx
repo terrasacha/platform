@@ -4,22 +4,28 @@ class DragArea extends Component{
   constructor(props) {
     super(props)
     this.state = {
-      ImageSelectedPrevious: null
+      ImageSelectedPrevious: null,
+      imageError: ''
     }
-    this.handleFiles = this.props.handleFiles.bind(this)
+    this.selectImage = this.props.selectImage.bind(this)
   }
 
   changeImage = (e) => {
     const file = e.target.files[0];
-    this.handleFiles(e) // le damos el binario de la imagen para mostrarla en pantalla
-    if (e.target.files[0] !== undefined) {
-      const reader = new FileReader();
-      reader.readAsDataURL(e.target.files[0]);
-      reader.onload = (e) => {
-        e.preventDefault();
-        this.setState({ImageSelectedPrevious: file.name})
-      };
+    if (file.size > 5000000) { // limite de 5 MB
+      this.setState({ imageError: 'La imagen excede el límite de tamaño. Tamaño máximo 5mb'})
+    } else {
+      if (e.target.files[0] !== undefined) {
+        const reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = (e) => {
+          e.preventDefault();
+          this.setState({ImageSelectedPrevious: file.name})
+        };
+        this.selectImage(e)
+      }
     }
+    
   };
   render(){
     return (
@@ -37,7 +43,8 @@ class DragArea extends Component{
               }}
             />
             <div className={s.text_information}>
-              <h3>{this.state.ImageSelectedPrevious !== null?`File ${this.state.ImageSelectedPrevious} added`: "Drag and drop a file or select add Image"}</h3>
+              
+              {this.state.imageError.length > 0?<h3>{this.state.imageError}</h3>: <h3>{this.state.ImageSelectedPrevious !== null?`File ${this.state.ImageSelectedPrevious} added`: "Drag and drop a file or select add Image"}</h3>}
             </div>
           </div>
         </div >
