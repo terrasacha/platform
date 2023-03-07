@@ -115,7 +115,7 @@ export default class CRUDProductFeatures extends Component {
             id: '',
             productID: '',
             featureID: '',
-            value: 0,
+            value: '',
             order: '',
             isOnMainCard: true,
             isToBlockChain: false,

@@ -25,7 +25,7 @@ export default function LogIn() {
         </div>
         <div className={s.containerSteps}>
             <div className={s.titleContainer}>
-                <h2 id='#obtener_billetera'>Obtener billetera</h2>
+                <h2 id='obtener_billetera'>Obtener billetera</h2>
                 <p>Su billetera en Cardano es la herramienta principal utilizada para interactuar con la Blockchain.
                     En ella, lo más importante son las llaves privadas, que en el caso de la mayoría de billeteras están 
                     representadas por una combinación de palabras o frase de recuperación las cuales deben ser guardadas fuera de línea en un sitio seguro. 

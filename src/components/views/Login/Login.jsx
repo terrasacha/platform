@@ -87,6 +87,7 @@ export default function LogIn() {
             updateFormState(() => ({...formState, formType: 'signIn' }))
         } catch (error) {
             setLoading(false)
+            updateFormState({...formState, authCode: ''})
             setError('code does not match')
         }
     }

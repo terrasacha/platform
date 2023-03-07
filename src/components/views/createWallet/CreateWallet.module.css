@@ -4,8 +4,10 @@
     padding-top: 2%;
     justify-content: center;
     margin-bottom: 20%;
+    font-family: 'Mulish', sans-serif;
 }
 .steps{
+    position: relative;
     width: 20%;
     margin-right: 5%;
 }
@@ -13,6 +15,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    position: sticky;
+    top: 4rem;
 }
 .steps ul li{
     display: flex;
@@ -34,6 +38,10 @@
     height: 2rem;
     width: 10%;
     cursor: pointer;
+    transition: .3s;
+}
+.steps ul li a:hover{
+    transform: scale(1.15);
 }
 .containerSteps{
     width: 60%;
@@ -45,6 +53,7 @@
     border-bottom: 1px solid rgb(190, 190, 190);
 }
 .titleContainer h2{
+    font-family: 'Catamaran', sans-serif;
     font-weight: 700;
     color: #4DBC5E;
 }
