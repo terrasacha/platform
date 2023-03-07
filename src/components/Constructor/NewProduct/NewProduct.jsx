@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createImage, createProduct, createUserProduct } from '../../../graphql/mutations'
+import { createImage, createProduct, createUserProduct, createProductFeature } from '../../../graphql/mutations'
 import { listCategories } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import { ToastContainer, toast } from 'react-toastify';
@@ -30,10 +30,18 @@ class NewProduct extends Component {
                 categoryID: '',
                 images: [],
             },
+            productFeature:{
+                ha_tot: '',
+                fecha_inscripcion: '',
+                ubicacion: '',
+            },
             errors:{
                 title:'no error',
                 category:'no error',
-                description:'no error'
+                description:'no error',
+                ha_tot:'no error',
+                fecha_inscripcion:'no error',
+                ubicacion:'no error',
             },
             files: [],
             imageToUpload: '',
@@ -134,7 +142,9 @@ class NewProduct extends Component {
         
         async handleCRUDProduct() {
             const tempCRUD_Product = this.state.CRUD_Product
-            if (this.state.errors.title !== '' && this.state.errors.description !== '') {
+            if (this.state.errors.title !== '' && this.state.errors.description !== ''
+                && this.state.errors.ubicacion !== '' && this.state.errors.ha_tot !== ''
+                && this.state.errors.ha_tot !== '') {
                 const payLoadNewProduct = {
                     id: tempCRUD_Product.id,
                     name: tempCRUD_Product.name,
@@ -161,6 +171,10 @@ class NewProduct extends Component {
                 productID: tempCRUD_Product.id,
                 isFavorite: true
                 }
+                
+                await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'ha_tot', productID: tempCRUD_Product.id, value: this.state.productFeature.ha_tot } }))
+                await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'ubicacion', productID: tempCRUD_Product.id, value: this.state.productFeature.ubicacion } }))
+                await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'fecha_inscripcion', productID: tempCRUD_Product.id, value: Date.parse(this.state.productFeature.fecha_inscripcion) } }))
                 await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
                 await API.graphql(graphqlOperation(createUserProduct, { input: payLoadAdmonProduct }))
                 await this.cleanProductOnCreate()
@@ -183,10 +197,18 @@ class NewProduct extends Component {
                 categoryID: '',
                 images: [],
             },
+            productFeature:{
+                ha_tot: '',
+                fecha_inscripcion: '',
+                ubicacion: '',
+            },
             errors:{
                 title:'no error',
                 category:'no error',
-                description:'no error'
+                description:'no error',
+                ha_tot:'no error',
+                fecha_inscripcion:'no error',
+                ubicacion:'no error',
             },
             imageToUpload: '',
             CRUDButtonName: 'CREATE',
@@ -202,6 +224,7 @@ class NewProduct extends Component {
     }
     handleOnChangeInputForm = async(event, pProperty) => {
         let tempCRUD_Product = this.state.CRUD_Product
+        let tempCRUD_productFeature = this.state.productFeature
         if (event.target.name === 'CRUD_ProductName') {
             tempCRUD_Product.name = event.target.value
             this.setState(prevState => ({
@@ -212,16 +235,22 @@ class NewProduct extends Component {
             this.setState(prevState => ({
                 errors: {...prevState.errors, description: event.target.value }}))
         }
-        if (event.target.name === 'CRUD_ProductOrder') {
-            tempCRUD_Product.order = parseInt(event.target.value)
+        if (event.target.name === 'productFeature_ha_tot') {
+            tempCRUD_productFeature.ha_tot = event.target.value
+            this.setState(prevState => ({
+                errors: {...prevState.errors, ha_tot: event.target.value}}))
         }
-        if (pProperty === 'productIsActive') {
-            tempCRUD_Product.isActive = !tempCRUD_Product.isActive
+        if (event.target.name === 'productFeature_fecha') {
+            tempCRUD_productFeature.fecha_inscripcion =  event.target.value
+            this.setState(prevState => ({
+                errors: {...prevState.errors, fecha_inscripcion: event.target.value}}))
         }
-        if (event.target.name === 'CRUD_ProductStatus') {
-            tempCRUD_Product.status = event.target.value
+        if (event.target.name === 'productFeature_ubicacion') {
+            tempCRUD_productFeature.ubicacion = event.target.value
+            this.setState(prevState => ({
+                errors: {...prevState.errors, ubicacion: event.target.value}}))
         }
-        this.setState({CRUD_Product: tempCRUD_Product})
+        this.setState({CRUD_Product: tempCRUD_Product, productFeature: tempCRUD_productFeature})
         this.validateCRUDProduct()
     }
     notify = () =>{
@@ -237,7 +266,7 @@ class NewProduct extends Component {
             });
     }
     render() {
-        let {CRUD_Product, CRUDButtonName, selectedCategory } = this.state
+        let {CRUD_Product, CRUDButtonName, selectedCategory, productFeature } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
         return (
             <div className={s.container}>
@@ -266,13 +295,33 @@ class NewProduct extends Component {
                         <fieldset className={s.inputContainer}>
                             <legend>Categoría</legend>
                             <select placeholder='Categoría'  onChange={this.handleOnSelectCategory}>
-                                {this.state.categorySelectList?.map(category=> <option value={category.value.id} key={category.id}>{category.value.name}</option>)}
+                                {this.state.categorySelectList?.map(category=> <option value={category.value.id} key={category.value.id}>{category.value.name}</option>)}
                             </select>
                             {this.state.errors.category.length < 1?<span style={{color:'red'}}>Completar Titulo</span> : <span> </span>}
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Tamaño del predio</legend>
-                            <input type="number" name="radio" id="radio" placeholder='Número de hectáreas' />
+                            <input type="text"
+                                name='productFeature_ha_tot'
+                                value={productFeature.ha_tot}
+                                onChange={(e) => this.handleOnChangeInputForm(e)}
+                                placeholder='Número de hectáreas' />
+                            {this.state.errors.ha_tot.length < 1?<span style={{color:'red'}}>Completar Tamaño del predio</span> : <span> </span>}
+                        </fieldset>
+                    </form>
+                    <form className={s.formInputs3}>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Ubicación</legend>
+                            <input type="text"
+                                    name='productFeature_ubicacion'
+                                    value={productFeature.ubicacion}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='742 Evergreen Terrace' />
+                            {this.state.errors.ubicacion.length < 1?<span style={{color:'red'}}>Completar Ubicación</span> : <span> </span>}
+                        </fieldset>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Fecha de inscripción</legend>
+                            <input type='date' placeholder='Fecha' name='productFeature_fecha' value={productFeature.fecha_inscripcion} onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            {this.state.errors.fecha_inscripcion.length < 1?<span style={{color:'red'}}>Completar fecha de inscripción</span> : <span> </span>}
                         </fieldset>
                     </form>
                     <form className={s.formInputs2}>

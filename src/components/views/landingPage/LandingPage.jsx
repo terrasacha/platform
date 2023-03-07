@@ -115,7 +115,6 @@ export default class LandingPage extends Component {
     const variables = { limit };
 
     const listProductsResult = await API.graphql(graphqlOperation(query, variables));
-    console.log(listProductsResult, 'listProductsResult')
     /* let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel */
     let tempListProductsResult = listProductsResult.data.listProducts.items.map((product) => {
 /*         // Ordering images
