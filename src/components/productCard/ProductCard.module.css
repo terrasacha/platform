@@ -1,104 +1,153 @@
 .cardContainer{
-    width: 25%;
-    height: 25rem;
     display: flex;
-    flex-direction: column;
-    margin: 4% 1%;
-    align-items: center;
+    width: 80%;
+    height: 25rem;
+    margin-bottom: 3%;
+    cursor: pointer; 
     border: 1px solid #CFCFCF;
     border-radius: 3px;
     box-shadow: 0px 4px 5px -3px rgba(156,156,156,0.76);
     -webkit-box-shadow: 0px 4px 5px -3px rgba(156,156,156,0.76);
     -moz-box-shadow: 0px 4px 5px -3px rgba(156,156,156,0.76);
+    transition: .5s;
 }
-.imageContainer{
-    width: 100%;
-    height: 50%;
-    overflow: hidden;
-    border-top-right-radius: 3px;
-    border-top-left-radius: 3px;
-}
-.imageContainer img{
-    width: 100%;
+.cardContainer:hover{
+    transform: scale(1.02);
 }
 .infoContainer{
-    height: 50%;
-    width: 100%;
+    width: 50%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
 }
-.titleContainer{
-    width: 90%;
-    font-size: 1.2em;
-    font-weight: 400;
-    border-bottom: 1px solid #CFCFCF;
+.imageContainer{
+    position: relative;
+    width: 50%;
     overflow: hidden;
 }
+.imageContainer img{
+    position: absolute; /* para que la imagen se posicione en la esquina superior izquierda del contenedor */
+  width: 100%; /* para que la imagen ocupe todo el ancho disponible del contenedor */
+  height: 100%; /* para que la imagen ocupe todo el alto disponible del contenedor */
+  object-fit: cover;
+}
+.titleContainer{
+    width: 95%;
+    margin: 0 auto;
+    
+}
 .title{
-    padding-top: 1%;
-    font-size: 1.2em;
-    font-weight: 600;
-    white-space: nowrap;
+    width: 95%;
+    font-size: 2em;
+    font-weight: 700;
+    color: #1d1d1d;
+    padding-bottom: 1%;
 }
 .location{
     display: flex;
     align-items: center;
-    font-size: .7em;
+    font-size: .8em;
     font-weight: 400;
+    padding: 0 0 1% 0;
 }
 .location div{
     margin-left: .3em;
 }
+.description{
+    max-height: 5.2rem;
+    overflow-y: scroll;
+    width: 95%;
+    margin: 0 auto;
+    font-size: 1em;
+    color: #797979;
+    padding: 1% 0 1% 0;
+    border-bottom: 1px solid #CFCFCF;
+}
+.description::-webkit-scrollbar {
+    display: none;
+  }
 .info{
-    display: flex;
-    width: 85%;
-    padding-top: 3%;
-    justify-content: space-between;
-    margin-bottom: 5%;
+    width: 95%;
+    margin: 0 auto;
+    padding: 2% 0 0 0 ;
+}
+.infoProduct{
+    padding: 1% 0;
 }
 .text{
-    color: #797979;
-    font-size: .7em;
-    font-weight: 700;
-    padding-bottom: .7em;
+    font-size: 1em;
+    font-weight: 600;
 }
 .value{
-    font-size: 1em;
-    font-weight: 700;
-}
-.cardContainer button{
-    padding: 1% 0;
-    margin-bottom: 3%;
-    cursor: pointer;
-    width: 90%;
-    border: 1px solid rgb(77,188,94);
     font-size: .9em;
-    color: rgb(77,188,94);
-    background: #fff;
-    transition: .3s;
+    font-weight: 600;
+    color: #797979;
+    width: 98%;
+    margin: 0 auto;
 }
-.cardContainer button:hover{
-    color: white;
-    background: rgb(77,188,94);
-    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
+.tokensInfo{
+    /* padding: 3% 0 0; */
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
 }
-@media (max-width: 600px) {
+.textTokensInfo{
+    font-size: 1em;
+    font-weight: 600;
+}
+.valueTokensInfo{
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #207E2E;
+    width: 98%;
+    margin: 0 auto;
+}
+
+@media (max-width: 800px) {
     .cardContainer{
         width: 100%;
-        margin-bottom: 4%;
+        flex-direction: column-reverse;
+        height: 37rem;
+    }
+    .infoContainer{
+        width: 100%;
+        height: 50%;
+    }
+    .imageContainer{
+        width: 100%;
+        height: 50%;
+    }
+    .tokensInfo{
+        width: 100%;
     }
   }
   
   /* Estilos para pantallas medianas */
-  @media (min-width: 601px) and (max-width: 1024px) {
+  @media (min-width: 601px) and (max-width: 1200px) {
     .cardContainer{
-        width: 45%;
-
+        width: 100%;
+    }
+    .tokensInfo{
+        /* padding: 3% 0 0; */
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
+    }
+    .textTokensInfo{
+        font-size: 1em;
+        font-weight: 600;
+    }
+    .valueTokensInfo{
+        font-size: 1.3em;
+        font-weight: 700;
+        color: #207E2E;
+        width: 98%;
+        margin: 0 auto;
     }
   }
   
   /* Estilos para pantallas grandes */
-  @media (min-width: 1025px) {
+  @media (min-width: 1200px) {
     /* Estilos CSS aquí */
   }
