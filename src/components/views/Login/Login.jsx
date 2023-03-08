@@ -4,6 +4,8 @@ import { Alert, Button, Card, Form } from "react-bootstrap"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser } from '../../../graphql/mutations'
+import s from './Login.module.css'
+import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
     username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn', role: 'investor'
 }
@@ -108,49 +110,56 @@ export default function LogIn() {
         setLoading(false)
     }
   return (
-    <div className='d-flex align-items-center justify-content-center' 
-    style={{minHeight: "100vh"}}>
+    <div className={s.container} >
+        <div className={s.firstContainer}>
+            <div className={s.info}>
+                <h2>Aceleramos la transición hacia un mundo de carbono neutral</h2>
+                <p>Somos un motor alternativo para facilitar el desarrollo, financiación e implementación de proyectos de mitigación de cambio climático</p>
+            </div>
+        </div>
+        <div className={s.secondContainer}>
         {
             formType === 'signUp' && (
             
-                <div className='w-100' style={{maxWidth: '400px'}}>
-                    <Card>
-                        <Card.Body>
-                            <h2 className='text-center mb-4'>Sign Up</h2>
+                <div className={s.containerLogin}>
+                    <div className={s.containerCard}>
+                        <div className={s.containerTitle}>
+                            <img src={LOGO} style={{width:'150px'}}/>
+                            <h2 className="text-center mb-4">Sign up</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
-                            <Form>
-                                <Form.Group>
-                                    <Form.Label>User Name</Form.Label>
-                                    <Form.Control name='username' onChange={onChange} placeholder='user name' />
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control type='email'name='email' onChange={onChange} placeholder='example@example.com'/>
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Label>Password</Form.Label>
-                                    <Form.Control name='password' type='password' onChange={onChange} placeholder='password'/>
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Label>Confirm password</Form.Label>
-                                    <Form.Control name='confirmPassword' type='password' onChange={onChange} placeholder='confirm password'/>
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Label>Role</Form.Label>
-                                    <Form.Select name="role" onChange={onChange}>
-                                        <option value="investor">Investor</option>
-                                        <option value="constructor">Constructor</option>
-                                        <option value="validator">Validator</option>
-                                    </Form.Select>
-                                </Form.Group>
-                                <Button onClick={signUp} disabled={loading} className='w-100 mt-4'>{loading?'Loading': 'Sign Up'}</Button>
-                            </Form>
-                        </Card.Body>
-                    </Card>
-                    <div className='w-100 text-center mt-2'>
-                        Already have an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
-                        ...formState, formType: 'signIn'
-                    }))}>Log In</span>
+                        </div>
+                        <form className={s.inputContainer}>
+                            <fieldset>
+                                <legend>User Name</legend>
+                                <input name='username' onChange={onChange} placeholder='user name' />
+                            </fieldset>
+                            <fieldset>
+                                <legend>Email</legend>
+                                <input type='email'name='email' onChange={onChange} placeholder='example@example.com'/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Password</legend>
+                                <input name='password' type='password' onChange={onChange} placeholder='password'/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Confirm password</legend>
+                                <input name='confirmPassword' type='password' onChange={onChange} placeholder='confirm password'/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Role</legend>
+                                <select name="role" onChange={onChange}>
+                                    <option value="investor">Investor</option>
+                                    <option value="constructor">Constructor</option>
+                                    <option value="validator">Validator</option>
+                                </select>
+                            </fieldset>
+                            <button onClick={signUp} disabled={loading}>{loading?'Loading': 'Sign Up'}</button>
+                        </form>
+                        <div className={s.needAccount}>
+                            Already have an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
+                            ...formState, formType: 'signIn'
+                        }))}>Log In</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -158,54 +167,56 @@ export default function LogIn() {
         }
         {
             formType === 'confirmSignUp' && (
-                <div className='w-100' style={{maxWidth: '400px'}}>
-                    <Card>
-                    <Card.Body>
-                        <h2 className="text-center mb-4">Confirmation</h2>
-                        <Alert>Verification code send to {formState.email}</Alert>
-                        {error && <Alert variant="danger">{error}</Alert>}
-                        <Form>
-                        <Form.Group>
-                            <Form.Label>Confirmation Code</Form.Label>
-                            <Form.Control name='authCode' onChange={onChange}/>
-                        </Form.Group>
-                        <Button onClick={confirmSignUp} disabled={loading} className="w-100 mt-4">
-                            {loading?'Loading': 'Confirm Sign Up'}
-                        </Button>
-                        </Form>
-                    </Card.Body>
-                    </Card>
+                <div className={s.containerLogin}>
+                    <div className={s.containerCard}>
+                            <div className={s.containerTitle}>
+                                <img src={LOGO} style={{width:'150px'}}/>
+                                <h2 className="text-center mb-4">Confirmation</h2>
+                            </div>
+                            <Alert>Verification code send to {formState.email}</Alert>
+                            {error && <Alert variant="danger">{error}</Alert>}
+                            <form className={s.inputContainer}>
+                                <fieldset>
+                                    <legend>Confirmation Code</legend>
+                                    <input name='authCode' onChange={onChange}/>
+                                </fieldset>
+                                <button onClick={confirmSignUp} disabled={loading}>
+                                    {loading?'Loading': 'Confirm Sign Up'}
+                                </button>
+                            </form>
+                    </div>
                 </div>
             )
         }
         {
             formType === 'signIn' && (
-                 <div className='w-100' style={{maxWidth: '400px'}}>
-                 <Card>
-                   <Card.Body>
-                     <h2 className="text-center mb-4">Log In</h2>
-                     {error && <Alert variant="danger">{error}</Alert>}
-                     <Form>
-                       <Form.Group>
-                         <Form.Label>User Name</Form.Label>
-                         <Form.Control name='username' onChange={onChange}/>
-                       </Form.Group>
-                       <Form.Group>
-                         <Form.Label>Password</Form.Label>
-                         <Form.Control type="password" name='password' onChange={onChange}/>
-                       </Form.Group>
-                       <Button className="w-100 mt-4" disabled={loading} onClick={signIn} >
+            <div className={s.containerLogin}>
+                <div className={s.containerCard}>
+                    <div className={s.containerTitle}>
+                        <img src={LOGO} style={{width:'150px'}}/>
+                        <h2 className="text-center mb-4">Log In</h2>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                    </div>
+                    <form className={s.inputContainer}>
+                        <fieldset>
+                            <legend>User Name</legend>
+                            <input name='username' onChange={onChange}/>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Password</legend>
+                            <input type="password" name='password' onChange={onChange}/>
+                        </fieldset>
+                        <button disabled={loading} onClick={signIn} >
                             {loading?'Loading': 'Log In'}
-                       </Button>
-                     </Form>
-                   </Card.Body>
-                 </Card>
-                 <div className="w-100 text-center mt-2">
-                   Need an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
-                        ...formState, formType: 'signUp'
-                    }))}>Sign Up</span>
-                 </div>
-               </div>
+                        </button>
+                    </form>
+                    <div className={s.needAccount}>
+                        Need an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
+                            ...formState, formType: 'signUp'
+                        }))}>Sign Up</span>
+                    </div>
+                </div>
+            </div>
             )
         }
         {
@@ -213,6 +224,8 @@ export default function LogIn() {
                 window.location.href="/"
                 )
         }
+        </div>
+        
     </div>
   )
 }
