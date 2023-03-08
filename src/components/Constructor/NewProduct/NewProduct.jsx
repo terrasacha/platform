@@ -34,6 +34,8 @@ class NewProduct extends Component {
                 ha_tot: '',
                 fecha_inscripcion: '',
                 ubicacion: '',
+                coord: '',
+                periodo_permanencia: '',
             },
             errors:{
                 title:'no error',
@@ -42,6 +44,8 @@ class NewProduct extends Component {
                 ha_tot:'no error',
                 fecha_inscripcion:'no error',
                 ubicacion:'no error',
+                coord:'no error',
+                periodo_permanencia:'no error',
             },
             files: [],
             imageToUpload: '',
@@ -175,6 +179,8 @@ class NewProduct extends Component {
                 await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'ha_tot', productID: tempCRUD_Product.id, value: this.state.productFeature.ha_tot } }))
                 await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'ubicacion', productID: tempCRUD_Product.id, value: this.state.productFeature.ubicacion } }))
                 await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'fecha_inscripcion', productID: tempCRUD_Product.id, value: Date.parse(this.state.productFeature.fecha_inscripcion) } }))
+                await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'coordenadas', productID: tempCRUD_Product.id, value: this.state.productFeature.coord } }))
+                await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'periodo_permanencia', productID: tempCRUD_Product.id, value: this.state.productFeature.periodo_permanencia } }))
                 await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
                 await API.graphql(graphqlOperation(createUserProduct, { input: payLoadAdmonProduct }))
                 await this.cleanProductOnCreate()
@@ -201,6 +207,8 @@ class NewProduct extends Component {
                 ha_tot: '',
                 fecha_inscripcion: '',
                 ubicacion: '',
+                coord: '',
+                periodo_permanencia: '',
             },
             errors:{
                 title:'no error',
@@ -209,6 +217,8 @@ class NewProduct extends Component {
                 ha_tot:'no error',
                 fecha_inscripcion:'no error',
                 ubicacion:'no error',
+                coord:'no error',
+                periodo_permanencia:'no error',
             },
             imageToUpload: '',
             CRUDButtonName: 'CREATE',
@@ -249,6 +259,16 @@ class NewProduct extends Component {
             tempCRUD_productFeature.ubicacion = event.target.value
             this.setState(prevState => ({
                 errors: {...prevState.errors, ubicacion: event.target.value}}))
+        }
+        if (event.target.name === 'productFeature_coord') {
+            tempCRUD_productFeature.coord = event.target.value
+            this.setState(prevState => ({
+                errors: {...prevState.errors, coord: event.target.value}}))
+        }
+        if (event.target.name === 'productFeature_periodo_permanencia') {
+            tempCRUD_productFeature.periodo_permanencia = event.target.value
+            this.setState(prevState => ({
+                errors: {...prevState.errors, periodo_permanencia: event.target.value}}))
         }
         this.setState({CRUD_Product: tempCRUD_Product, productFeature: tempCRUD_productFeature})
         this.validateCRUDProduct()
@@ -315,13 +335,29 @@ class NewProduct extends Component {
                             <input type="text"
                                     name='productFeature_ubicacion'
                                     value={productFeature.ubicacion}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='742 Evergreen Terrace' />
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} 
+                                    placeholder='Ciudad, Departamento, País' />
                             {this.state.errors.ubicacion.length < 1?<span style={{color:'red'}}>Completar Ubicación</span> : <span> </span>}
+                        </fieldset>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Coordenadas</legend>
+                            <input type='text' placeholder='lat, lng. Ej: 4.710990, -74.072037' name='productFeature_coord' value={productFeature.coord} onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            {this.state.errors.coord.length < 1?<span style={{color:'red'}}>Completar coordenadas</span> : <span> </span>}
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Fecha de inscripción</legend>
                             <input type='date' placeholder='Fecha' name='productFeature_fecha' value={productFeature.fecha_inscripcion} onChange={(e) => this.handleOnChangeInputForm(e)} />
                             {this.state.errors.fecha_inscripcion.length < 1?<span style={{color:'red'}}>Completar fecha de inscripción</span> : <span> </span>}
+                        </fieldset>
+                    </form>
+                    <form className={s.formInputs3}>
+                        <fieldset className={s.inputContainer}>
+                            <legend>Periodo de permanencia</legend>
+                            <input type="text"
+                                    name='productFeature_periodo_permanencia'
+                                    value={productFeature.periodo_permanencia}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='Proyección de tiempo del proyecto en años' />
+                            {this.state.errors.ubicacion.length < 1?<span style={{color:'red'}}>Completar periodo de permanencia</span> : <span> </span>}
                         </fieldset>
                     </form>
                     <form className={s.formInputs2}>
