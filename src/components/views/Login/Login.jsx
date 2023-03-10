@@ -7,7 +7,7 @@ import { createUser } from '../../../graphql/mutations'
 import s from './Login.module.css'
 import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
-    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn', role: 'investor'
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn',terms: false, role: 'investor'
 }
 
 export default function LogIn() {
@@ -44,15 +44,36 @@ export default function LogIn() {
 
     function onChange(e){
         e.persist()
-        updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
+        updateFormState(() => ({...formState, [e.target.name]: !formState.terms}))
 
     }
 
     const { formType } = formState
 
     async function signUp(){
-        const { username, email, password, role, confirmPassword } = formState
-        if(password === confirmPassword){
+        const { username, email, password, role, confirmPassword, terms } = formState
+        let aux = 0
+        if(!terms){
+            setError("Debe acertar los términos y condiciones")
+            aux += 1
+            return
+        }
+        if(password.length < 8){
+            setError("Debe introducir una contraseña")
+            aux += 1
+            return
+        }
+        if(username.length < 1){
+            setError("Debe introducir un nombre de usuario")
+            aux += 1
+            return
+        }
+        if(email.email < 1){
+            setError("Debe introducir un mail")
+            aux += 1
+            return
+        }
+        if(password === confirmPassword && aux === 0){
             try {
                 setError("")
                 setLoading(true)
@@ -152,6 +173,10 @@ export default function LogIn() {
                                     <option value="constructor">Constructor</option>
                                     <option value="validator">Validator</option>
                                 </select>
+                            </fieldset>
+                            <fieldset className={s.checkbox}>
+                                <input type="checkbox"  name="terms" onChange={onChange}/>
+                                <label>Acepto los <a href='/terms_&_conditions' target="_blank">términos y condiciones</a></label>
                             </fieldset>
                             <button onClick={signUp} disabled={loading}>{loading?'Loading': 'Sign Up'}</button>
                         </form>
