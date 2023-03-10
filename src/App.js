@@ -21,6 +21,7 @@ import SuccessOrder from './components/views/successOrder/SuccessOrder';
 import Product from './components/views/Orders/Product';
 import Products from './components/views/Products';
 import CreateWallet from './components/views/createWallet/CreateWallet'
+import TermCondition from './components/views/terms&conditions/TermCondition'
 
 function App(){
   return(
@@ -50,6 +51,12 @@ function App(){
             path="/creating_wallet"
             element={
               <CreateWallet />
+            }
+          />
+          <Route
+            path="/terms_&_conditions"
+            element={
+              <TermCondition />
             }
           />
           <Route

@@ -5,19 +5,19 @@
     height: 70vh;
     display: flex;
     flex-direction: column;
-    padding-top: 8%;
+    padding-top: 2%;
     color: white;
     padding-left: 2%;
 }
 .container h1{
     font-family: 'Merriweather', serif;
-    font-size: 6em;
+    font-size: 5em;
     font-weight: 700;
     width: 60%;
 }
 .container p{
     font-size: 1.4em;
-    width: 50%;
+    width: 80%;
 }
 .container button{
     margin-bottom: 5%;
