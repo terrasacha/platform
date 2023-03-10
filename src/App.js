@@ -18,7 +18,7 @@ import InvestorMiddleware from './components/views/middlewareRoute/InvestorMiddl
 import ValidatorMiddleware from './components/views/middlewareRoute/ValidatorMiddleware';
 import ConstructorMiddleware from './components/views/middlewareRoute/ConstructorMiddleware';
 import SuccessOrder from './components/views/successOrder/SuccessOrder';
-import Orders from './components/views/Orders/Orders';
+import Product from './components/views/Orders/Product';
 import Products from './components/views/Products';
 import CreateWallet from './components/views/createWallet/CreateWallet'
 
@@ -43,7 +43,7 @@ function App(){
           <Route
             path="/products/:id"
             element={
-              <Orders />
+              <Product />
             }
           />
           <Route

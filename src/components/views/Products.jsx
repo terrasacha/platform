@@ -4,7 +4,7 @@ import { Button, Carousel, Container, Modal, Table } from 'react-bootstrap'
 // Util
 import WebAppConfig from '../common/_conf/WebAppConfig'
 // Components
-import Orders from './Orders/Orders'
+import Orders from './Orders/Product'
 
 import './Views.css'
 

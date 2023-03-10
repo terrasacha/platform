@@ -114,11 +114,32 @@
         height: 50%;
     }
     .imageContainer{
+        position: relative;
         width: 100%;
-        height: 50%;
+        height: 15rem;
     }
     .tokensInfo{
         width: 100%;
+    }
+    .title{
+        font-size: 1.4em;
+    }
+    .description{
+        font-size: .9em;
+    }
+
+    .value{
+        font-size: .9em;
+        font-weight: 600;
+        color: #797979;
+        width: 98%;
+        margin: 0 auto;
+    }
+    .tokensInfo{
+        /* padding: 3% 0 0; */
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
     }
   }
   

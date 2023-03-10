@@ -1,23 +1,85 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 // Bootstrap
 import { Container } from 'react-bootstrap'
-
+import { useParams } from 'react-router-dom';
 import { Auth } from 'aws-amplify'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 // import '@aws-amplify/ui-react/styles.css'
 import md5 from 'md5'
 import { ArrowLeft, DashLg, PlusLg } from 'react-bootstrap-icons'
 import Bootstrap from "../../common/themes"
-import './Orders.css'
+import s from './Product.module.css'
 // Util
 import { v4 as uuidv4 } from 'uuid'
-
+import HeaderNavbar from '../Navbars/HeaderNavbar';
 import { API, graphqlOperation } from 'aws-amplify'
 import { createOrder, createUserProduct, updateProduct } from '../../../graphql/mutations'
-import { listUserProducts } from '../../../graphql/queries'
+import { listUserProducts, getProduct } from '../../../graphql/queries'
 
 
-class Orders extends Component {
+function Product() {
+    const { id } = useParams();
+    const [product, setProduct] = useState('')
+    const urlS3Image = WebAppConfig.url_s3_public_images
+
+    
+    useEffect(() => {
+        const getInfo = async () => {
+            const info = await infoProduct();
+            setProduct(info.data.getProduct)
+        };
+        getInfo();
+    }, [])
+    const infoProduct = async() =>{
+        const result = await API.graphql(graphqlOperation(getProduct, {id: id}))
+        return result
+    }
+    return(
+        <div className={s.container}>
+            <HeaderNavbar ></HeaderNavbar>
+            {product !== ''?
+              <div className={s.content}>
+              <div className={s.mainInfo}>
+                  <div className={s.imageContainer}>
+                    <img src={urlS3Image+product.images.items[0].imageURL} alt=''/>
+                  </div>
+                  <div className={s.description}>
+                    <h4>Descripción</h4>
+                    <p>
+                        {product.description}
+                    </p>
+                  </div>
+              </div>
+              <div className={s.summary}>
+                  <h4 className={s.summaryTitle}>Información</h4>
+                  <ul>
+                      <li>
+                          <h5>NOMBRE</h5>
+                          <p>{product.name}</p>
+                      </li>
+                      {product.productFeatures?.items.map(pf =>{
+                        if(pf.featureID === 'fecha_inscripcion'){
+                            let date = Date(pf.value)
+                            date = date.split(' ')
+                            pf.value = `${date[2]}/${date[1]}/${date[3]}`
+                        }   
+                          return(
+                              <li key={pf.id}>
+                                  <h5>{pf.featureID}</h5>
+                                  <p>{pf.value}</p>
+                              </li>
+                          )
+                      })}
+                  </ul>
+              </div>
+          </div> 
+             :''}
+           
+        </div>
+    )
+}
+export default Product;
+/* class Orders extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -100,7 +162,6 @@ class Orders extends Component {
             }
             await API.graphql(graphqlOperation(updateProduct, { input: payloadProduct }))
             
-            // Doesn't exists the relation UserProduct
         }
     }
     
@@ -181,7 +242,7 @@ class Orders extends Component {
                                             <input name="buyerEmail"      type="hidden"  value="test@test.com" />
                                             <input name="responseUrl"     type="hidden"  value="http://localhost:3000/success_order" />
                                             <input name="confirmationUrl" type="hidden"  value="http://www.test.com/confirmation" />
-    {/*                                         <button type='submit' className='buy-now' value="Send" onClick={(e) => this.handleCreateUserProduct(e, product)} disabled={!isAlreadyExistUserProduct}>Buy now</button> */}
+                                            <button type='submit' className='buy-now' value="Send" onClick={(e) => this.handleCreateUserProduct(e, product)} disabled={!isAlreadyExistUserProduct}>Buy now</button>
                                             <button type='submit' className={quantity !== 0 || !isAlreadyExistUserProduct?'buy-now' : 'buy-now-disabled'} value="Send" disabled={quantity === 0 || isAlreadyExistUserProduct? true: false} onClick={(e) => this.handleCreateUserProduct(e, product)}>Buy now</button>
                                         </form>
                                     </div>
@@ -201,5 +262,4 @@ class Orders extends Component {
             </Container>
         )
     }
-}
-export default Orders
+} */
