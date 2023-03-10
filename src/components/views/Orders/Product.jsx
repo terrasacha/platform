@@ -36,7 +36,7 @@ function Product() {
     }
     return(
         <div className={s.container}>
-            <HeaderNavbar ></HeaderNavbar>
+            <HeaderNavbar />
             {product !== ''?
               <div className={s.content}>
               <div className={s.mainInfo}>
