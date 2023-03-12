@@ -28,28 +28,6 @@
     align-items: center;
     color: #4e4e4e;
 }
-.formContainercompany{
-    width: 90%; 
-    margin-top: 2%;
-    padding-bottom: 2%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #4e4e4e;
-}
-.formContainercompany h2{
-    width: 60%;
-}
-.formcompany{
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    width: 100%;
-}
-.formcompany .inputContainer input{
-    width: 90%;
-    height: 2rem;
-}
 .formContainer h2{
     width: 100%;
     margin-bottom: 2%;
