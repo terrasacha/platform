@@ -14,7 +14,9 @@ export default function LogIn() {
     const [formState, updateFormState] = useState(initialFormState)
     const [user, updateUser] = useState(null)
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState({
+        username: '', password: '',confirmPassword: '', email: '', authCode: '',terms: false
+    })
     
     useEffect(() => {
         checkUser()
@@ -52,30 +54,41 @@ export default function LogIn() {
 
     async function signUp(){
         const { username, email, password, role, confirmPassword, terms } = formState
-        let aux = 0
         if(!terms){
-            setError("Debe acertar los términos y condiciones")
-            aux += 1
+            setError({...error, terms: "Debe acertar los términos y condiciones"})
             return
         }
         if(password.length < 8){
-            setError("Debe introducir una contraseña")
-            aux += 1
+            setError({...error, password: "Debe introducir una contraseña"})
             return
         }
         if(username.length < 1){
-            setError("Debe introducir un nombre de usuario")
-            aux += 1
+            setError({...error, username: "Debe introducir un nombre de usuario"})
             return
         }
         if(email.email < 1){
-            setError("Debe introducir un mail")
-            aux += 1
+            setError({...error, email: "Debe introducir un mail"})
             return
         }
-        if(password === confirmPassword && aux === 0){
+        if(password === confirmPassword){
             try {
                 setError("")
+                setLoading(true)
+                await Auth.signUp({ username, password, attributes: {
+                        email,
+                        'custom:role': role  
+                    }})
+                    setLoading(false)
+                updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
+            } catch (error) {
+                setLoading(false)
+                setError('A user for that e-mail address already exists. Please use a different e-mail address')    
+            }
+        }else{
+            setError('passwords does not match')
+        }
+        /* if(password === confirmPassword && error.terms !== '' && error.password !== '' && error.username !== ''&& error.email !== ''){
+            try {
                 setLoading(true)
                 let response = await Auth.signUp({ username, password, attributes: {
                         email,
@@ -89,15 +102,15 @@ export default function LogIn() {
                     role: role
                 }
                 await API.graphql(graphqlOperation(createUser, { input: userPayload }))
-                    setLoading(false)
+                setLoading(false)
                 updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
             } catch (error) {
                 setLoading(false)
-                setError('A user for that e-mail address already exists. Please use a different e-mail address')    
+                console.log('A user for that e-mail address already exists. Please use a different e-mail address')    
             }
         }else{
-            setError('passwords does not match')
-        }
+            console.log('debe completar los campos')
+        } */
     }
 
     async function confirmSignUp(){
@@ -147,20 +160,23 @@ export default function LogIn() {
                         <div className={s.containerTitle}>
                             <img src={LOGO} style={{width:'150px'}}/>
                             <h2 className="text-center mb-4">Sign up</h2>
-                            {error && <Alert variant="danger">{error}</Alert>}
+                            
                         </div>
                         <form className={s.inputContainer}>
                             <fieldset>
                                 <legend>User Name</legend>
                                 <input name='username' onChange={onChange} placeholder='user name' />
+                                {error.username? <span style={{color:'red'}}>{error.username}</span>: ''}
                             </fieldset>
                             <fieldset>
                                 <legend>Email</legend>
                                 <input type='email'name='email' onChange={onChange} placeholder='example@example.com'/>
+                                {error.email? <span style={{color:'red'}}>{error.email}</span>: ''}
                             </fieldset>
                             <fieldset>
                                 <legend>Password</legend>
                                 <input name='password' type='password' onChange={onChange} placeholder='password'/>
+                                {error.password? <span style={{color:'red'}}>{error.password}</span>: ''}
                             </fieldset>
                             <fieldset>
                                 <legend>Confirm password</legend>
@@ -177,6 +193,7 @@ export default function LogIn() {
                             <fieldset className={s.checkbox}>
                                 <input type="checkbox"  name="terms" onChange={onChange}/>
                                 <label>Acepto los <a href='/terms_&_conditions' target="_blank">términos y condiciones</a></label>
+                                {error.terms? <span style={{color:'red'}}>{error.terms}</span>: ''}
                             </fieldset>
                             <button onClick={signUp} disabled={loading}>{loading?'Loading': 'Sign Up'}</button>
                         </form>
@@ -199,7 +216,7 @@ export default function LogIn() {
                                 <h2 className="text-center mb-4">Confirmation</h2>
                             </div>
                             <Alert>Verification code send to {formState.email}</Alert>
-                            {error && <Alert variant="danger">{error}</Alert>}
+                            
                             <form className={s.inputContainer}>
                                 <fieldset>
                                     <legend>Confirmation Code</legend>
@@ -220,7 +237,7 @@ export default function LogIn() {
                     <div className={s.containerTitle}>
                         <img src={LOGO} style={{width:'150px'}}/>
                         <h2 className="text-center mb-4">Log In</h2>
-                        {error && <Alert variant="danger">{error}</Alert>}
+                        
                     </div>
                     <form className={s.inputContainer}>
                         <fieldset>
