@@ -119,7 +119,7 @@ class CompanyInformation extends Component {
                                 placeholder='Ciudad' />
                         </fieldset>
                     </form>
-                    <form className={s.formInput1}>
+                    <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
                             <legend>Departamento</legend>
                             <input type="text"
