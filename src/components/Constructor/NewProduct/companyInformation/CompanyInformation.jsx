@@ -122,7 +122,7 @@ class CompanyInformation extends Component {
                                 placeholder='Ciudad' />
                         </fieldset>
                     </form>
-                    <form className={s.formInputs3}>
+                    <form className={s.formInput1}>
                         <fieldset className={s.inputContainer}>
                             <legend>Departamento</legend>
                             <input type="text"
@@ -141,7 +141,7 @@ class CompanyInformation extends Component {
                             <input type='number' placeholder='' name='company_CP' disabled={inputsBlocked} value={company.cp}  onChange={(e) => this.handleOnChangeInputFormCompany(e)} />
                         </fieldset>
                     </form>
-                    <form className={s.formInputs3}>
+                    <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
                             <legend>Teléfono</legend>
                             <input type="numbre"

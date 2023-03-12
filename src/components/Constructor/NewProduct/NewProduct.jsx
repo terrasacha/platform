@@ -94,6 +94,7 @@ class NewProduct extends Component {
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
             isImageUploadingFile: false,
+            loading: false,
             selectedCategory: null,
             selectedCompany: '',
         }
@@ -225,6 +226,7 @@ class NewProduct extends Component {
         }
         
     async handleCRUDProduct() {
+        this.setState({loading: true})
         const tempCRUD_Product = this.state.CRUD_Product
         if (this.state.errors.title !== '' && this.state.errors.description !== ''
             && this.state.errors.ubicacion !== '' && this.state.errors.ha_tot !== ''
@@ -266,6 +268,7 @@ class NewProduct extends Component {
             await this.handleCRUDCompany(tempCRUD_Product.id)
             console.log('sos picante')
             await this.cleanProductOnCreate()
+            this.setState({loading: false})
             this.notify()
         }else{
             console.log('errors')
@@ -545,7 +548,7 @@ class NewProduct extends Component {
                             {this.state.errors.ha_tot.length < 1?<span style={{color:'red'}}>Completar Tamaño del predio</span> : <span> </span>}
                         </fieldset>
                     </form>
-                    <form className={s.formInputs3}>
+                    <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
                             <legend>Ubicación</legend>
                             <input type="text"
@@ -593,7 +596,7 @@ class NewProduct extends Component {
                             />
                         </fieldset>
                     </form>
-                    {this.state.isImageUploadingFile?<button className={s.solicitudButtonDisabled} disabled>CREANDO</button>:
+                    {this.state.loading?<button className={s.solicitudButtonDisabled} disabled>CREANDO</button>:
                     <button className={s.solicitudButton} onClick={this.handleCRUDProduct}>CREAR SOLICITUD</button>}
                     
                 </div>

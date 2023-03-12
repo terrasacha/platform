@@ -31,7 +31,6 @@
 .formContainercompany{
     width: 90%; 
     margin-top: 2%;
-    padding-bottom: 2%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -153,6 +152,12 @@
     .formContainer{
         width: 95%; 
         margin-top: 2%;
+    }
+    .formContainercompany{
+        flex-direction: column;
+    }
+    .formContainercompany h2{
+        width: 100%;
     }
     .formContainer h2{
         margin-bottom: 4%;
