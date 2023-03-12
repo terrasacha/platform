@@ -135,7 +135,6 @@ class NewProduct extends Component {
             let filteredFeatureTypes = uniqueFeatureTypes.filter(featureTypeID => {
                 return featureTypeID.includes('CONSTRUCTOR_ORGANIZATION_INFORMATION');
               })
-            console.log(filteredFeatureTypes, 'filteredFeatureTypes')
             let featureTypeIds = filteredFeatureTypes.map(featureTypeID => {
             return featureTypeID.split('CONSTRUCTOR_ORGANIZATION_INFORMATION_')[1];
             });
@@ -196,7 +195,6 @@ class NewProduct extends Component {
                 isActive: false,
                 order: 0,
             }
-            console.log(newImagePayLoad, 'newImagePayLoad')
             await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
             this.setState({isImageUploadingFile: false})
             
@@ -266,7 +264,6 @@ class NewProduct extends Component {
             await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
             await API.graphql(graphqlOperation(createUserProduct, { input: payLoadAdmonProduct }))
             await this.handleCRUDCompany(tempCRUD_Product.id)
-            console.log('sos picante')
             await this.cleanProductOnCreate()
             this.setState({loading: false})
             this.notify()
@@ -310,7 +307,6 @@ class NewProduct extends Component {
             }
             await this.cleanProductOnCreate()
         }else{
-            console.log('companyerrors')
         }
     }
     async cleanProductOnCreate() {

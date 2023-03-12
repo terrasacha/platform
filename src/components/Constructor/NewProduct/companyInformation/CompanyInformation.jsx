@@ -59,15 +59,12 @@ class CompanyInformation extends Component {
                 }, {});
                 let listProductFeaturesfiltered = Object.values(filteredData)
                 this.setState({inputs: listProductFeaturesfiltered})
-                console.log(listProductFeaturesfiltered, 'filteredData' );
                 const obj = listProductFeaturesfiltered.reduce((acc, { feature: { name }, value }) => {
                     acc[name] = value;
                     return acc;
                   }, {});
                 this.handleSetStateCompany(obj)
-                console.log(obj);
                 /* const filteredData = listProductFeatures.filter(item => item.feature.featureTypeID === `CONSTRUCTOR_ORGANIZATION_INFORMATION_${this.props.selectedCompany}`); */
-                /* console.log(filteredData, 'filteredData') */
             } catch (err) {
               console.log('error fetching user products', err);
             }
