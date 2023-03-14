@@ -7,7 +7,7 @@ import { createUser } from '../../../graphql/mutations'
 import s from './Login.module.css'
 import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
-    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signUp',terms: false, role: 'investor'
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signUp',terms: false,privacy_policy:false, role: 'investor'
 }
 
 export default function LogIn() {
@@ -51,8 +51,9 @@ export default function LogIn() {
     const { formType } = formState
 
     async function signUp(){
-        const { username, email, password, role, confirmPassword, terms } = formState
+        const { username, email, password, role, confirmPassword, terms, privacy_policy } = formState
         if(!terms) setError('Debe aceptar términos y condiciones')
+        if(!privacy_policy) setError('Debe aceptar la politica de privacidad')
         if(username.length < 1) setError('Debe ingresar un nombre de usuario')
         if(email.length < 1) setError('Debe ingresar un email')
         if(password === confirmPassword && password.length > 2 && confirmPassword.length > 2){
@@ -158,9 +159,13 @@ export default function LogIn() {
                             </fieldset>
                             <fieldset className={s.checkbox}>
                                 <input type="checkbox"  name="terms" onChange={() => updateFormState(() => ({...formState, terms: !formState.terms}))}/>
-                                <label>Acepto los <a href='/terms_&_conditions' target="_blank">términos y condiciones</a></label>
+                                <label>Acepto los <a href='/use_terms' target="_blank">términos de uso</a></label>
                             </fieldset>
-                            <button onClick={signUp} disabled={loading || !formState.terms}>{loading?'Loading': 'Sign Up'}</button>
+                            <fieldset className={s.checkbox}>
+                                <input type="checkbox"  name="privacy_policy" onChange={() => updateFormState(() => ({...formState, privacy_policy: !formState.privacy_policy}))}/>
+                                <label>Acepto la <a href='/privacy_policy' target="_blank">Politica de privacidad</a></label>
+                            </fieldset>
+                            <button onClick={signUp} disabled={loading || !formState.terms || !formState.privacy_policy}>{loading?'Loading': 'Sign Up'}</button>
                         </form>
                         <div className={s.needAccount}>
                             Already have an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({

@@ -22,6 +22,8 @@ import Product from './components/views/Orders/Product';
 import Products from './components/views/Products';
 import CreateWallet from './components/views/createWallet/CreateWallet'
 import TermCondition from './components/views/terms&conditions/TermCondition'
+import PrivacyPolicy from './components/views/privacyPolicy/PrivacyPolicy'
+import UseTerms from './components/views/useTerms/UseTerms';
 
 function App(){
   return(
@@ -57,6 +59,18 @@ function App(){
             path="/terms_&_conditions"
             element={
               <TermCondition />
+            }
+          />
+          <Route
+            path="/use_terms"
+            element={
+              <UseTerms />
+            }
+          />
+          <Route
+            path="/privacy_policy"
+            element={
+              <PrivacyPolicy />
             }
           />
           <Route
