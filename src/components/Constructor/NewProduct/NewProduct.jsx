@@ -422,7 +422,8 @@ class NewProduct extends Component {
     handleOnChangeInputFormCompany = async(event, pProperty) => {
         let tempCRUD_Company = this.state.company
         if (event.target.name === 'company_name') {
-            tempCRUD_Company.name = event.target.value
+            
+            tempCRUD_Company.name = event.target.value.toUpperCase().replace(/ /g, "_")
             this.setState(prevState => ({
                 companyerrors: {...prevState.companyerrors, name: event.target.value}}))
         }
