@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import s from './CompanyInformation.module.css'
+import { InfoCircle } from 'react-bootstrap-icons'
+
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createFeatureType, createProductFeature, createFeature } from '../../../../graphql/mutations'
 import 'react-toastify/dist/ReactToastify.css';
 import WebAppConfig from '../../../common/_conf/WebAppConfig'
 // Utils 
@@ -44,7 +45,7 @@ class CompanyInformation extends Component {
         }
       }
     async fetchfeatureTypeIDS() {
-        if(this.props.selectedCompany !== ''){
+        if(this.props.selectedCompany !== 'nueva empresa' && this.props.selectedCompany !== 'persona natural' && this.props.selectedCompany !== 'no company'){
             try {
                 this.setState({inputsBlocked: true})
                 const userProductsData = await API.graphql(graphqlOperation(query));
@@ -72,7 +73,7 @@ class CompanyInformation extends Component {
             this.setState({inputsBlocked: false})
             this.handleSetStateCompany({
                 name:'',
-                direction:'',
+                id: '',                direction:'',
                 city:'',
                 department:'',
                 country:'',
@@ -87,21 +88,37 @@ class CompanyInformation extends Component {
         let { company } = this.props
         let { inputsBlocked } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
+        let id 
+        if(this.props.selectedCompany === 'nueva empresa') id = 'N.I.T.'
+        if(this.props.selectedCompany === 'persona natural') id = 'C.C.'
         return (
             <div className={s.container}>
                 <div className={s.formContainer}>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
-                            <legend>Nombre de la Compañía</legend>
+                            <legend>
+                                Nombre de Contacto*
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>No se aceptan números</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                     disabled={inputsBlocked}
                                     name='company_name'
                                     value={company.name}
                                     onChange={(e) => this.handleOnChangeInputFormCompany(e)} 
                                     placeholder='Nombre' />
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.props.companyerrors.name}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Dirección</legend>  
+                            <legend>
+                                Dirección
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Ej: Av Colón 123</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                     name='company_direction'
                                     disabled={inputsBlocked}
@@ -110,7 +127,13 @@ class CompanyInformation extends Component {
                                     placeholder='Dirección' />
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Ciudad</legend>
+                            <legend>
+                                Ciudad
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Ej: Bogotá</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                 name='company_city'
                                 disabled={inputsBlocked}
@@ -121,7 +144,13 @@ class CompanyInformation extends Component {
                     </form>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
-                            <legend>Departamento</legend>
+                            <legend>
+                                Departamento
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Ej: Cundinamarca</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                     name='company_department'
                                     disabled={inputsBlocked}
@@ -130,32 +159,85 @@ class CompanyInformation extends Component {
                                     placeholder='Departamento' />
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>País</legend>
+                            <legend>
+                                País
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Ej: Colombia</span>
+                                </div>
+                            </legend>
                             <input type='text' placeholder='País' name='company_country' disabled={inputsBlocked} value={company.country} onChange={(e) => this.handleOnChangeInputFormCompany(e)} />
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Código postal</legend>
+                            <legend>
+                                Código postal*
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Sólo números</span>
+                                </div>
+                            </legend>
                             <input type='number' placeholder='' name='company_CP' disabled={inputsBlocked} value={company.cp}  onChange={(e) => this.handleOnChangeInputFormCompany(e)} />
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.props.companyerrors.cp}</span>
                         </fieldset>
                     </form>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
-                            <legend>Teléfono</legend>
+                            <legend>
+                                Teléfono*
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Sólo numeros</span>
+                                </div>
+                            </legend>
                             <input type="numbre"
                                     name='company_phone'
                                     disabled={inputsBlocked}
                                     value={company.phone}
                                     onChange={(e) => this.handleOnChangeInputFormCompany(e)} 
                                     placeholder='' />
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.props.companyerrors.phone}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Email corporativo</legend>
+                            <legend>
+                                Email*
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Ej: example@example.com</span>
+                                </div>
+                            </legend>
                             <input type='text' placeholder='' name='company_email' disabled={inputsBlocked} value={company.email} onChange={(e) => this.handleOnChangeInputFormCompany(e)} />
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.props.companyerrors.email}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Sitio web</legend>
-                            <input type='text' placeholder='' name='company_website' disabled={inputsBlocked} value={company.website}  onChange={(e) => this.handleOnChangeInputFormCompany(e)} />
+                            <legend>
+                                {id}*
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Sólo números</span>
+                                </div>
+                            </legend>
+                            <input type="numbre"
+                                    name='company_id'
+                                    disabled={inputsBlocked}
+                                    value={company.id}
+                                    onChange={(e) => this.handleOnChangeInputFormCompany(e)} 
+                                    placeholder='' />
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.props.companyerrors.id}</span>
                         </fieldset>
+                    </form>           
+                    <form className={s.formInputs1}>
+                        {this.props.selectedCompany === 'nueva empresa'?<fieldset className={s.inputContainer}>
+                            <legend>
+                                Sitio web
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Ej: www.example.com</span>
+                                </div>
+                            </legend>
+                            <input type='text' placeholder='' name='company_website' disabled={inputsBlocked} value={company.website}  onChange={(e) => this.handleOnChangeInputFormCompany(e)} />
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.props.companyerrors.website}</span>
+                        </fieldset> : ''}
+                       
                     </form>           
                 </div>
             </div>

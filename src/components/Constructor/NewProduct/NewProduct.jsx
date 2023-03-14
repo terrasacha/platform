@@ -7,6 +7,8 @@ import { listCategories } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import { ToastContainer, toast } from 'react-toastify';
+import { InfoCircle } from 'react-bootstrap-icons'
+import { validarString } from '../functions/functions'
 import 'react-toastify/dist/ReactToastify.css';
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 // Utils 
@@ -31,6 +33,12 @@ const getUserProducts = `
     }
   }
 `;
+const regexInputName = /^[A-Za-z\s]+$/
+const regexInputNumber = /^[0-9]+$/
+const regexInputWebSite = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-z]{2,}(\/[a-zA-Z0-9#?=&%.]*)*$/
+const regexInputUbic = /^([a-zA-Z0-9]+\s*,\s*)*[a-zA-Z0-9]+$/
+const regexInputCoord = /^-?\d{1,3}(.\d+)?,\s*-?\d{1,3}(.\d+)?$/
+const regexInputEmail = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
 class NewProduct extends Component {
 
     constructor(props) {
@@ -50,6 +58,7 @@ class NewProduct extends Component {
             },
             company:{
                 name:'',
+                id: '',
                 direction:'',
                 city:'',
                 department:'',
@@ -61,10 +70,7 @@ class NewProduct extends Component {
             },
             companyerrors:{
                 name:'',
-                direction:'',
-                city:'',
-                department:'',
-                country:'',
+                id:'',
                 cp:'',
                 phone:'',
                 email:'',
@@ -78,25 +84,20 @@ class NewProduct extends Component {
                 periodo_permanencia: '',
             },
             errors:{
-                title:'no error',
-                category:'no error',
-                description:'no error',
-                ha_tot:'no error',
-                fecha_inscripcion:'no error',
-                ubicacion:'no error',
-                coord:'no error',
-                periodo_permanencia:'no error',
+                title:'',
+                ha_tot:'',
+                ubicacion:'',
+                coord:'',
+                periodo_permanencia:'',
             },
             mostrarFormInfodeEmpresa: false,
             empresas:[],
             files: [],
             imageToUpload: '',
-            CRUDButtonName: 'CREATE',
-            isCRUDButtonDisable: true,
             isImageUploadingFile: false,
             loading: false,
             selectedCategory: null,
-            selectedCompany: '',
+            selectedCompany: 'no company',
         }
         this.handleOnChangeInputForm = this.handleOnChangeInputForm.bind(this)
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
@@ -213,22 +214,14 @@ class NewProduct extends Component {
             })
         }
         this.setState({categorySelectList: categorysSelectItems})
-    }
-    
-    async validateCRUDProduct() {
-        if ( this.state.selectedCategory !== null && 
-            this.state.CRUD_Product.name !== '' && 
-            this.state.CRUD_Product.description !== '') {
-                this.setState({isCRUDButtonDisable: false})
-            }
-        }
-        
+    }   
     async handleCRUDProduct() {
         this.setState({loading: true})
         const tempCRUD_Product = this.state.CRUD_Product
-        if (this.state.errors.title !== '' && this.state.errors.description !== ''
-            && this.state.errors.ubicacion !== '' && this.state.errors.ha_tot !== ''
-            && this.state.errors.ha_tot !== '') {
+        if (this.state.errors.title === '' && this.state.errors.ubicacion === '' && this.state.errors.ha_tot === ''
+            && this.state.errors.coord === '' && this.state.companyerrors.name === '' &&  this.state.companyerrors.cp === ''
+            && this.state.companyerrors.phone === '' && this.state.companyerrors.email === ''
+            && this.state.companyerrors.website === '') {
             const payLoadNewProduct = {
                 id: tempCRUD_Product.id,
                 name: tempCRUD_Product.name,
@@ -269,16 +262,12 @@ class NewProduct extends Component {
             this.notify()
         }else{
             console.log('errors')
+            this.notifyError()
         }
     }
     async handleCRUDCompany(tempCRUD_Product) {
-        const tempCRUD_Company = this.state.company
-        if (this.state.companyerrors.name !== '' && this.state.companyerrors.direction !== ''
-            && this.state.companyerrors.city !== '' && this.state.companyerrors.department !== ''
-            && this.state.companyerrors.country !== '' && this.state.companyerrors.cp !== ''
-            && this.state.companyerrors.phone !== '' && this.state.companyerrors.email !== ''
-            && this.state.companyerrors.website !== '') {
-            
+        const tempCRUD_Company = this.state.company      
+        if(this.state.selectedCompany !== 'no company'){
             //Creo la FT CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME>
             if(this.state.selectedCompany === ''){
                 const payloadNewFeatureType = {
@@ -306,7 +295,6 @@ class NewProduct extends Component {
                 await API.graphql(graphqlOperation(createProductFeature, { input: payloadNewProductFeature }))
             }
             await this.cleanProductOnCreate()
-        }else{
         }
     }
     async cleanProductOnCreate() {
@@ -325,6 +313,7 @@ class NewProduct extends Component {
             },
             company:{
                 name:'',
+                id: '',
                 direction:'',
                 city:'',
                 department:'',
@@ -336,10 +325,7 @@ class NewProduct extends Component {
             },
             companyerrors:{
                 name:'',
-                direction:'',
-                city:'',
-                department:'',
-                country:'',
+                id: '',
                 cp:'',
                 phone:'',
                 email:'',
@@ -353,119 +339,132 @@ class NewProduct extends Component {
                 periodo_permanencia: '',
             },
             errors:{
-                title:'no error',
-                category:'no error',
-                description:'no error',
-                ha_tot:'no error',
-                fecha_inscripcion:'no error',
-                ubicacion:'no error',
-                coord:'no error',
-                periodo_permanencia:'no error',
+                title:'',
+                ha_tot:'',
+                ubicacion:'',
+                coord:'',
+                periodo_permanencia:'',
             },
             imageToUpload: '',
-            CRUDButtonName: 'CREATE',
-            isCRUDButtonDisable: true,
             isImageUploadingFile: false, //se borraban los features y categorys
             selectedCategory: null,
-            selectedCompany: '',
+            selectedCompany: 'no company',
         })
     }
     
     handleOnSelectCategory(event) {
         this.setState({selectedCategory: event.target.value})
-        this.validateCRUDProduct()
     }
     handleOnSelectCompany(event) {
-        this.setState({selectedCompany: event.target.value, mostrarFormInfodeEmpresa: true})
+        if(event.target.value === 'no company'){
+            this.setState({mostrarFormInfodeEmpresa: false,
+            company:{
+                name:'',
+                id: '',
+                direction:'',
+                city:'',
+                department:'',
+                country:'',
+                cp:'',
+                phone:'',
+                email:'',
+                website:'',
+            }
+            })
+        } 
+            
+        if(event.target.value !== 'no company') this.setState({selectedCompany: event.target.value, mostrarFormInfodeEmpresa: true, })
     }
     handleOnChangeInputForm = async(event, pProperty) => {
         let tempCRUD_Product = this.state.CRUD_Product
         let tempCRUD_productFeature = this.state.productFeature
         if (event.target.name === 'CRUD_ProductName') {
             tempCRUD_Product.name = event.target.value
+            let error = validarString(event.target.value, regexInputName)
             this.setState(prevState => ({
-                errors: {...prevState.errors, title: event.target.value}}))
+                errors: {...prevState.errors, title: error}}))
         }
         if (event.target.name === 'CRUD_ProductDescription') {
             tempCRUD_Product.description = event.target.value
-            this.setState(prevState => ({
-                errors: {...prevState.errors, description: event.target.value }}))
         }
         if (event.target.name === 'productFeature_ha_tot') {
             tempCRUD_productFeature.ha_tot = event.target.value
+            let error = validarString(event.target.value, regexInputNumber)
             this.setState(prevState => ({
-                errors: {...prevState.errors, ha_tot: event.target.value}}))
+                errors: {...prevState.errors, ha_tot: error}}))
         }
         if (event.target.name === 'productFeature_fecha') {
             tempCRUD_productFeature.fecha_inscripcion =  event.target.value
-            this.setState(prevState => ({
-                errors: {...prevState.errors, fecha_inscripcion: event.target.value}}))
         }
         if (event.target.name === 'productFeature_ubicacion') {
             tempCRUD_productFeature.ubicacion = event.target.value
+            let error = validarString(event.target.value, regexInputUbic)
             this.setState(prevState => ({
-                errors: {...prevState.errors, ubicacion: event.target.value}}))
+                errors: {...prevState.errors, ubicacion: error}}))
         }
         if (event.target.name === 'productFeature_coord') {
             tempCRUD_productFeature.coord = event.target.value
+            let error = validarString(event.target.value, regexInputCoord)
             this.setState(prevState => ({
-                errors: {...prevState.errors, coord: event.target.value}}))
+                errors: {...prevState.errors, coord: error}}))
         }
         if (event.target.name === 'productFeature_periodo_permanencia') {
             tempCRUD_productFeature.periodo_permanencia = event.target.value
+            let error = validarString(event.target.value, regexInputNumber)
             this.setState(prevState => ({
-                errors: {...prevState.errors, periodo_permanencia: event.target.value}}))
+                errors: {...prevState.errors, periodo_permanencia: error}}))
         }
         this.setState({CRUD_Product: tempCRUD_Product, productFeature: tempCRUD_productFeature})
-        this.validateCRUDProduct()
     }
     handleOnChangeInputFormCompany = async(event, pProperty) => {
         let tempCRUD_Company = this.state.company
         if (event.target.name === 'company_name') {
-            
             tempCRUD_Company.name = event.target.value.toUpperCase().replace(/ /g, "_")
+            let error = validarString(event.target.value, regexInputName)
             this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, name: event.target.value}}))
+                companyerrors: {...prevState.companyerrors, name: error}}))
+        }
+        if (event.target.name === 'company_id') {
+            tempCRUD_Company.id = event.target.value
+            let error = validarString(event.target.value, regexInputNumber)
+            this.setState(prevState => ({
+                companyerrors: {...prevState.companyerrors, id: error}}))
         }
         if (event.target.name === 'company_direction') {
             tempCRUD_Company.direction = event.target.value
-            this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, direction: event.target.value }}))
         }
         if (event.target.name === 'company_city') {
             tempCRUD_Company.city = event.target.value
-            this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, city: event.target.value}}))
         }
         if (event.target.name === 'company_department') {
             tempCRUD_Company.department =  event.target.value
-            this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, department: event.target.value}}))
         }
         if (event.target.name === 'company_country') {
             tempCRUD_Company.country = event.target.value
-            this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, country: event.target.value}}))
         }
         if (event.target.name === 'company_CP') {
             tempCRUD_Company.cp = event.target.value
+            let error = validarString(event.target.value, regexInputNumber)
             this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, cp: event.target.value}}))
+                companyerrors: {...prevState.companyerrors, cp: error}}))
         }
         if (event.target.name === 'company_phone') {
             tempCRUD_Company.phone = event.target.value
+            let error = validarString(event.target.value, regexInputNumber)
             this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, phone: event.target.value}}))
+                companyerrors: {...prevState.companyerrors, phone: error}}))
         }
         if (event.target.name === 'company_email') {
             tempCRUD_Company.email = event.target.value
+            let error = validarString(event.target.value, regexInputEmail)
             this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, email: event.target.value}}))
+                companyerrors: {...prevState.companyerrors, email: error}}))
         }
         if (event.target.name === 'company_website') {
             tempCRUD_Company.website = event.target.value
+            let error = validarString(event.target.value, regexInputWebSite)
             this.setState(prevState => ({
-                companyerrors: {...prevState.companyerrors, website: event.target.value}}))
+                companyerrors: {...prevState.companyerrors, website: error}}))
         }
         this.setState({company: tempCRUD_Company})
     }
@@ -486,8 +485,20 @@ class NewProduct extends Component {
             theme: "light",
             });
     }
+    notifyError = () =>{
+        toast.error('Tu formulario contiene campos vacíos o campos con valores erroneos', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+    }
     render() {
-        let {CRUD_Product, CRUDButtonName, selectedCategory, productFeature } = this.state
+        let {CRUD_Product, selectedCategory, productFeature } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
         return (
             <div className={s.container}>
@@ -507,84 +518,134 @@ class NewProduct extends Component {
                     <form className={s.formcompany}>
                         <fieldset className={s.inputContainer}>
                             <select placeholder=''  onChange={this.handleOnSelectCompany}>
-                                <option value='' >Asociar Producto a </option>
+                                <option value='no company' >No asociar</option>
                                 {this.state.empresas.map(empresa => <option key={empresa} value={empresa}>{empresa}</option>)}
-                                <option value=''> Nueva empresa </option>
+                                <option value='nueva empresa'>Nueva empresa</option>
+                                <option value='persona natural'>Persona natural</option>
                             </select>
                         </fieldset>
                     </form>    
                 </div>
                 {this.state.mostrarFormInfodeEmpresa?
-                    <CompanyInformation productID={this.state.CRUD_Product.id} handleOnChangeInputFormCompany={this.handleOnChangeInputFormCompany} 
-                    company={this.state.company} selectedCompany={this.state.selectedCompany} handleSetStateCompany={this.handleSetStateCompany}/> : ''}
+                    <CompanyInformation 
+                            productID={this.state.CRUD_Product.id} handleOnChangeInputFormCompany={this.handleOnChangeInputFormCompany} 
+                            company={this.state.company} selectedCompany={this.state.selectedCompany} 
+                            handleSetStateCompany={this.handleSetStateCompany} companyerrors={this.state.companyerrors}
+                            /> : ''}
                 <div className={s.formContainer}>
                     <h2>Información de proyecto</h2>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
-                            <legend>Título del proyecto</legend>
+                            <legend>
+                                Título del proyecto 
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>No se acepta números</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                     name='CRUD_ProductName'
                                     value={CRUD_Product.name}
                                     onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='Título' />
-                            {this.state.errors.title.length < 1?<span style={{color:'red'}}>Completar Titulo</span> : <span> </span>}
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.state.errors.title}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Categoría</legend>
+                            <legend>
+                                Categoría 
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Seleccione una categoría</span>
+                                </div>
+                            </legend>
                             <select placeholder='Categoría'  onChange={this.handleOnSelectCategory}>
                                 {this.state.categorySelectList?.map(category=> <option value={category.value.id} key={category.value.id}>{category.value.name}</option>)}
                             </select>
-                            {this.state.errors.category.length < 1?<span style={{color:'red'}}>Completar Titulo</span> : <span> </span>}
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Tamaño del predio</legend>
+                            <legend>
+                                Tamaño del predio
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Sólo números</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                 name='productFeature_ha_tot'
                                 value={productFeature.ha_tot}
                                 onChange={(e) => this.handleOnChangeInputForm(e)}
                                 placeholder='Número de hectáreas' />
-                            {this.state.errors.ha_tot.length < 1?<span style={{color:'red'}}>Completar Tamaño del predio</span> : <span> </span>}
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.state.errors.ha_tot}</span>
                         </fieldset>
                     </form>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
-                            <legend>Ubicación</legend>
+                            
+                            <legend>
+                                Ubicación
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Ej: Bogotá, Cundinamarca, Colombia</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                     name='productFeature_ubicacion'
                                     value={productFeature.ubicacion}
                                     onChange={(e) => this.handleOnChangeInputForm(e)} 
                                     placeholder='Ciudad, Departamento, País' />
-                            {this.state.errors.ubicacion.length < 1?<span style={{color:'red'}}>Completar Ubicación</span> : <span> </span>}
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.state.errors.ubicacion}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Coordenadas</legend>
+                            <legend>
+                                Coordenadas
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Sólo números. Ej: -34.23553, -2.43256</span>
+                                </div>
+                            </legend>
                             <input type='text' placeholder='lat, lng. Ej: 4.710990, -74.072037' name='productFeature_coord' value={productFeature.coord} onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            {this.state.errors.coord.length < 1?<span style={{color:'red'}}>Completar coordenadas</span> : <span> </span>}
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.state.errors.coord}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Fecha de inscripción</legend>
+                            <legend>
+                                Fecha de inscripción
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Seleccione una fecha</span>
+                                </div>
+                            </legend>
                             <input type='date' placeholder='Fecha' name='productFeature_fecha' value={productFeature.fecha_inscripcion} onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            {this.state.errors.fecha_inscripcion.length < 1?<span style={{color:'red'}}>Completar fecha de inscripción</span> : <span> </span>}
                         </fieldset>
                     </form>
                     <form className={s.formInputs3}>
                         <fieldset className={s.inputContainer}>
-                            <legend>Periodo de permanencia</legend>
+                            <legend>
+                                Periodo de permanencia
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Sólo números. Años aproximado</span>
+                                </div>
+                            </legend>
                             <input type="text"
                                     name='productFeature_periodo_permanencia'
                                     value={productFeature.periodo_permanencia}
                                     onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='Proyección de tiempo del proyecto en años' />
-                            {this.state.errors.ubicacion.length < 1?<span style={{color:'red'}}>Completar periodo de permanencia</span> : <span> </span>}
+                            <span style={{color:'red', fontSize:'.6em'}}>{this.state.errors.periodo_permanencia}</span>
                         </fieldset>
                     </form>
                     <form className={s.formInputs2}>
                         <fieldset className={s.inputContainer}>
-                            <legend>Descripción</legend>
+                            <legend>
+                                Descripción
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle}/>
+                                    <span className={s["tooltip"]}>Introduzca una descripción del proyecto</span>
+                                </div>
+                            </legend>
                             <textarea 
                             name='CRUD_ProductDescription'
                                     value={CRUD_Product.description}
                                     placeholder='Es importante que nos proporcione la mayor cantidad de información posible. En caso de ser necesaria mayor información se le solicitará después de crear la solicitud.'
                                     onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            {this.state.errors.description.length < 1?<span style={{color:'red'}}>Completar Titulo</span> : <span> </span>}
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Imágenes</legend>

@@ -46,8 +46,11 @@
 }
 .inputContainer{
     width: 30%;
+    display: flex;
+    flex-direction: column;
 }
 .inputContainer legend{
+    display: flex;
     font-size: 1.2em;
 }
 .inputContainer input{
@@ -117,6 +120,31 @@
 .dropzoneClass{
     border: 1px solid red;
 }
+.infoCircle{
+    width: 14px;
+
+}
+.tooltip {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 2em;
+    width: 10rem;
+    font-size: .6em;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+.tooltip-text{
+    display: flex;
+    position: relative;
+    padding-left: .2em;
+    align-items: center;
+}
+  
+  .tooltip-text:hover .tooltip {
+    display: inline-block;
+  }
 
 /* Estilos para pantallas pequeñas */
 @media (max-width: 600px) {
