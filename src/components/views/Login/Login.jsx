@@ -154,7 +154,6 @@ export default function LogIn() {
                                 <select name="role" onChange={onChange}>
                                     <option value="investor">Investor</option>
                                     <option value="constructor">Constructor</option>
-                                    <option value="validator">Validator</option>
                                 </select>
                             </fieldset>
                             <fieldset className={s.checkbox}>

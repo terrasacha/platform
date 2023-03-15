@@ -85,8 +85,8 @@ export default class HeaderNavbar extends Component {
                                 <Nav.Link href="#constructorAdmon" onClick={(e) => this.changeHeaderNavBarRequest('constructor_admon', e)}>
                                     Assign Products
                                 </Nav.Link>          
-                                <Nav.Link href="#constructorAdmon" onClick={(e) => this.changeHeaderNavBarRequest('settings', e)}>
-                                    Settings
+                                <Nav.Link href="#validators" onClick={(e) => this.changeHeaderNavBarRequest('validators', e)}>
+                                    Validators
                                 </Nav.Link>          
                                 <button onClick={(e) => this.handleChangeObjectElement()}>Sign Out</button>
                             </Nav>

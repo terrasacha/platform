@@ -13,6 +13,7 @@ import Documents from './Documents/Documents';
 import Features from './Features/Features';
 import Formulas from './Formulas/Formulas';
 import HeaderNavbar from './Navbars/HeaderNavbar';
+import Validators from './Validators/Validators';
 import Products from './Products/Products';
 import Results from './Results/Results';
 import UOM from './UOM/UOM';
@@ -44,6 +45,7 @@ export default class Admon extends Component {
             isShowNotAuthorize: false,
             isShowUOM: false,
             isShowFormulas:false,
+            isShowValidators: false,
             isShowResults: false,
             isShowDocuments: false,
             
@@ -127,7 +129,7 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                
+                isShowValidators: false,
                 isShowConstructorAdmon: false,
                 isShowConfigure: false,
             })
@@ -143,6 +145,7 @@ export default class Admon extends Component {
                 isShowNotAuthorize: false,
                 isShowUOM: false,
                 isShowFormulas:false,
+                isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
                 
@@ -160,6 +163,7 @@ export default class Admon extends Component {
                 isShowNotAuthorize: false,
                 isShowUOM: false,
                 isShowFormulas:false,
+                isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
                 
@@ -176,6 +180,7 @@ export default class Admon extends Component {
                 isShowNotAuthorize: false,
                 isShowUOM: false,
                 isShowFormulas:false,
+                isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
                 
@@ -192,6 +197,7 @@ export default class Admon extends Component {
                 isShowNotAuthorize: false,
                 isShowUOM: true,
                 isShowFormulas:false,
+                isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
                 
@@ -208,6 +214,7 @@ export default class Admon extends Component {
                 isShowNotAuthorize: false,
                 isShowUOM: false,
                 isShowFormulas:true,
+                isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
                 
@@ -224,6 +231,7 @@ export default class Admon extends Component {
                 isShowNotAuthorize: false,
                 isShowUOM: false,
                 isShowFormulas: false,
+                isShowValidators: false,
                 isShowResults: true,
                 isShowDocuments: false,
                 
@@ -238,6 +246,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
+                isShowValidators: false,
                 isShowUOM: false,
                 isShowFormulas: false,
                 isShowResults: false,
@@ -254,6 +263,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
+                isShowValidators: false,
                 isShowUOM: false,
                 isShowFormulas: false,
                 isShowResults: false,
@@ -271,6 +281,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
+                isShowValidators: false,
                 isShowUOM: false,
                 isShowFormulas: false,
                 isShowResults: false,
@@ -287,6 +298,7 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
+                isShowValidators: false,
                 isShowUOM: false,
                 isShowFormulas: false,
                 isShowResults: false,
@@ -294,6 +306,23 @@ export default class Admon extends Component {
                 
                 isShowConstructorAdmon: false,
                 isShowConfigure: true,
+        })
+        }
+        if (pRequest === 'validators') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowFeatures: false,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+                isShowValidators: false,
+                isShowUOM: false,
+                isShowFormulas: false,
+                isShowResults: false,
+                isShowDocuments: false,
+                isShowValidators: true,
+                isShowConstructorAdmon: false,
+                isShowConfigure: false,
         })
         }
         
@@ -349,6 +378,7 @@ export default class Admon extends Component {
             isShowFormulas,
             isShowResults,
             isShowDocuments,
+            isShowValidators,
             isShowConstructorAdmon,
             isShowConfigure
         } = this.state
@@ -474,6 +504,13 @@ export default class Admon extends Component {
                 )
             }
         }
+        const renderValidator = () => {
+            if (isShowValidators) {
+                return (
+                    <Validators />
+                )
+            }
+        }
 
         return (
             <Container fluid style={{paddingTop: 70, minHeight: '100vh'}} >
@@ -502,6 +539,7 @@ export default class Admon extends Component {
                     {renderAdmonProfile()}
                     {renderUserNoAuthorize()}
                     {renderConstructorAdmon()}
+                    {renderValidator()}
                     {renderConfiguration()}
                 </Row>
 
