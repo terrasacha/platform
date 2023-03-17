@@ -21,7 +21,7 @@
     color: #292929;
 }
 .formContainer{
-    width: 90%; 
+    width: 100%; 
     margin-top: 2%;
     display: flex;
     flex-direction: column;
@@ -34,8 +34,8 @@
 }
 .formInputs1{
     display: flex;
-    justify-content: start;
-    width: 90%;
+    justify-content: center;
+    width: 100%;
     margin-bottom: 3%;
 }
 .formInputs3{
@@ -51,7 +51,7 @@
 }
 .inputContainer legend{
     display: flex;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 .inputContainer input{
     width: 90%;

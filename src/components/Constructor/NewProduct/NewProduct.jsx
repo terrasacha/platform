@@ -3,7 +3,7 @@ import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature } from '../../../graphql/mutations'
-import { listCategories } from '../../../graphql/queries'
+import { listCategories, listFeatures } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import { ToastContainer, toast } from 'react-toastify';
@@ -16,24 +16,7 @@ import WebAppConfig from '../../common/_conf/WebAppConfig'
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
 
-const getUserProducts = `
-  query MyQuery($userID: ID!) {
-    listUserProducts(filter: {userID: {eq: $userID}}) {
-        items {
-            product {
-              productFeatures {
-                items {
-                  feature {
-                    featureTypeID
-                  }
-                }
-              }
-            }
-          } 
-    }
-  }
-`;
-const regexInputName = /^[A-Za-z\s]+$/
+const regexInputName = /^[a-zA-Z_]+$/
 const regexInputNumber = /^[0-9]+$/
 const regexInputWebSite = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-z]{2,}(\/[a-zA-Z0-9#?=&%.]*)*$/
 const regexInputUbic = /^([a-zA-Z0-9]+\s*,\s*)*[a-zA-Z0-9]+$/
@@ -90,6 +73,7 @@ class NewProduct extends Component {
                 coord:'',
                 periodo_permanencia:'',
             },
+            renderModalInformation: false,
             mostrarFormInfodeEmpresa: false,
             empresas:[],
             files: [],
@@ -108,40 +92,36 @@ class NewProduct extends Component {
         this.selectImage = this.selectImage.bind(this)
         this.fetchfeatureTypeIDS = this.fetchfeatureTypeIDS.bind(this)
         this.handleSetStateCompany = this.handleSetStateCompany.bind(this)
+        this.onHideModalInformation = this.onHideModalInformation.bind(this)
     }
     componentDidMount = async () => {
-        Promise.all([
-            this.loadCategorysSelectItems(),
-        ])
+
+        await this.loadCategorysSelectItems()
         await this.fetchfeatureTypeIDS()
     }
     async fetchfeatureTypeIDS() {
         const actualUser = await Auth.currentAuthenticatedUser()
         const userID = actualUser.attributes.sub;   
         try {
-          const userProductsData = await API.graphql(graphqlOperation(getUserProducts, { userID }));
-          let productFeatures =  userProductsData.data.listUserProducts.items.map( up => up.product.productFeatures.items)
-          let uniqueFeatureTypes = []
-            for (let i = 0; i < productFeatures.length; i++) {
-                const subArray = productFeatures[i];
-            
-                for (let j = 0; j < subArray.length; j++) {
-                const featureTypeID = subArray[j].feature.featureTypeID;
-            
-                if (!uniqueFeatureTypes.includes(featureTypeID)) {
-                    uniqueFeatureTypes.push(featureTypeID);
+            let filter = {
+                id: {
+                  contains: userID
                 }
-                }
-            }
-            let filteredFeatureTypes = uniqueFeatureTypes.filter(featureTypeID => {
-                return featureTypeID.includes('CONSTRUCTOR_ORGANIZATION_INFORMATION');
-              })
-            let featureTypeIds = filteredFeatureTypes.map(featureTypeID => {
-            return featureTypeID.split('CONSTRUCTOR_ORGANIZATION_INFORMATION_')[1];
-            });
-            this.setState({empresas: featureTypeIds})
-        } catch (err) {
-          console.log('error fetching user products', err);
+              };
+              
+              const featuresData = await API.graphql({
+                query: listFeatures,
+                variables: { filter }
+              });
+            let featuresCompany = featuresData.data.listFeatures.items.map(f =>{
+                let feature = f.id.split('_')
+                let feature_info = feature.slice(1, -1).join("_");
+                return feature_info
+            } )
+            let valoresUnicos = [...new Set(featuresCompany)];
+            this.setState({empresas: valoresUnicos})
+        } catch (error) {
+            console.log(error)
         }
       }
     async addNewImageToActualProductImages() {
@@ -217,6 +197,8 @@ class NewProduct extends Component {
     }   
     async handleCRUDProduct() {
         this.setState({loading: true})
+        const actualUser = await Auth.currentAuthenticatedUser()
+        const userID = actualUser.attributes.sub; 
         const tempCRUD_Product = this.state.CRUD_Product
         if (this.state.errors.title === '' && this.state.errors.ubicacion === '' && this.state.errors.ha_tot === ''
             && this.state.errors.coord === '' && this.state.companyerrors.name === '' &&  this.state.companyerrors.cp === ''
@@ -256,7 +238,8 @@ class NewProduct extends Component {
             await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: 'periodo_permanencia', productID: tempCRUD_Product.id, value: this.state.productFeature.periodo_permanencia } }))
             await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
             await API.graphql(graphqlOperation(createUserProduct, { input: payLoadAdmonProduct }))
-            await this.handleCRUDCompany(tempCRUD_Product.id)
+            await API.graphql(graphqlOperation(createProductFeature, { input: {featureID: `${userID}_${this.state.company.name}_name`, productID: tempCRUD_Product.id } }))
+            /* await this.handleCRUDCompany(tempCRUD_Product.id) */
             await this.cleanProductOnCreate()
             this.setState({loading: false})
             this.notify()
@@ -267,35 +250,40 @@ class NewProduct extends Component {
     }
     async handleCRUDCompany(tempCRUD_Product) {
         const tempCRUD_Company = this.state.company      
-        if(this.state.selectedCompany !== 'no company'){
-            //Creo la FT CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME>
-            if(this.state.selectedCompany === ''){
-                const payloadNewFeatureType = {
-                    id: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${tempCRUD_Company.name}`,
-                    name: tempCRUD_Company.name,
-                }
-                await API.graphql(graphqlOperation(createFeatureType, { input: payloadNewFeatureType }))
-            }
-
-            //Creo las Features para CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME> y sus valores los guardo en la PF
-            for( let info in this.state.company ){
-                let id = uuidv4().replaceAll('-','_')
-                const payloadNewFeature = {
-                    id: id,
-                    name: info,
-                    featureTypeID: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${tempCRUD_Company.name}`,
-                    unitOfMeasureID: 'no_unit'
-                }
-                await API.graphql(graphqlOperation(createFeature, { input: payloadNewFeature }))
-                const payloadNewProductFeature = {
-                    value: this.state.company[`${info}`],
-                    productID: tempCRUD_Product,
-                    featureID: id
-                }
-                await API.graphql(graphqlOperation(createProductFeature, { input: payloadNewProductFeature }))
-            }
-            await this.cleanProductOnCreate()
+        const actualUser = await Auth.currentAuthenticatedUser()
+        const userID = actualUser.attributes.sub; 
+        //Creo la FT CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME>
+        const payloadNewFeatureType = {
+            id: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${tempCRUD_Company.name}`,
+            name: tempCRUD_Company.name,
         }
+        await API.graphql(graphqlOperation(createFeatureType, { input: payloadNewFeatureType }))
+        //Creo las Features para CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME> y sus valores los guardo en la PF
+        for( let info in this.state.company ){
+            let id = `${userID}_${this.state.company.name}_${info}`
+            
+            /* let id = uuidv4().replaceAll('-','_') */
+            const payloadNewFeature = {
+                id: id,
+                name: info,
+                description: this.state.company[`${info}`],
+                featureTypeID: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${tempCRUD_Company.name}`,
+                unitOfMeasureID: 'no_unit'
+            }
+            await API.graphql(graphqlOperation(createFeature, { input: payloadNewFeature }))
+            /* const payloadNewProductFeature = {
+                value: this.state.company[`${info}`],
+                productID: tempCRUD_Product,
+                featureID: id
+            }
+            await API.graphql(graphqlOperation(createProductFeature, { input: payloadNewProductFeature })) */
+        }
+            this.setState({
+                renderModalInformation:false,
+
+            })
+            this.notify()
+            await this.cleanProductOnCreate()
     }
     async cleanProductOnCreate() {
         this.setState({
@@ -355,7 +343,7 @@ class NewProduct extends Component {
     handleOnSelectCategory(event) {
         this.setState({selectedCategory: event.target.value})
     }
-    handleOnSelectCompany(event) {
+    async handleOnSelectCompany(event) {
         if(event.target.value === 'no company'){
             this.setState({mostrarFormInfodeEmpresa: false,
             company:{
@@ -372,8 +360,7 @@ class NewProduct extends Component {
             }
             })
         } 
-            
-        if(event.target.value !== 'no company') this.setState({selectedCompany: event.target.value, mostrarFormInfodeEmpresa: true, })
+        if(event.target.value !== 'no company') this.setState({selectedCompany: event.target.value, mostrarFormInfodeEmpresa: true, renderModalInformation:true })  
     }
     handleOnChangeInputForm = async(event, pProperty) => {
         let tempCRUD_Product = this.state.CRUD_Product
@@ -497,6 +484,11 @@ class NewProduct extends Component {
             theme: "light",
             });
     }
+    onHideModalInformation(){
+        this.setState({
+            renderModalInformation: false,
+        })
+    }
     render() {
         let {CRUD_Product, selectedCategory, productFeature } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
@@ -517,8 +509,9 @@ class NewProduct extends Component {
                     <h2>Información de Contacto</h2>
                     <form className={s.formcompany}>
                         <fieldset className={s.inputContainer}>
+                            <legend>Asociar producto a:</legend>
                             <select placeholder=''  onChange={this.handleOnSelectCompany}>
-                                <option value='no company' >No asociar</option>
+                                <option value='no company' >-</option>
                                 {this.state.empresas.map(empresa => <option key={empresa} value={empresa}>{empresa}</option>)}
                                 <option value='nueva empresa'>Nueva empresa</option>
                                 <option value='persona natural'>Persona natural</option>
@@ -531,6 +524,9 @@ class NewProduct extends Component {
                             productID={this.state.CRUD_Product.id} handleOnChangeInputFormCompany={this.handleOnChangeInputFormCompany} 
                             company={this.state.company} selectedCompany={this.state.selectedCompany} 
                             handleSetStateCompany={this.handleSetStateCompany} companyerrors={this.state.companyerrors}
+                            renderModalInformation={this.state.renderModalInformation}
+                            onHideModalInformation={this.onHideModalInformation}
+                            handleCRUDCompany={this.handleCRUDCompany}
                             /> : ''}
                 <div className={s.formContainer}>
                     <h2>Información de proyecto</h2>
