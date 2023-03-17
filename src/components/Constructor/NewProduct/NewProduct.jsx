@@ -200,6 +200,7 @@ class NewProduct extends Component {
         const actualUser = await Auth.currentAuthenticatedUser()
         const userID = actualUser.attributes.sub; 
         const tempCRUD_Product = this.state.CRUD_Product
+        if(this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
         if (this.state.errors.title === '' && this.state.errors.ubicacion === '' && this.state.errors.ha_tot === ''
             && this.state.errors.coord === '' && this.state.companyerrors.name === '' &&  this.state.companyerrors.cp === ''
             && this.state.companyerrors.phone === '' && this.state.companyerrors.email === ''
@@ -245,7 +246,7 @@ class NewProduct extends Component {
             this.notify()
         }else{
             console.log('errors')
-            this.notifyError()
+            this.notifyError('Tu formulario contiene campos vacíos o campos con valores erroneos')
         }
     }
     async handleCRUDCompany(tempCRUD_Product) {
@@ -472,8 +473,8 @@ class NewProduct extends Component {
             theme: "light",
             });
     }
-    notifyError = () =>{
-        toast.error('Tu formulario contiene campos vacíos o campos con valores erroneos', {
+    notifyError = (e) =>{
+        toast.error( e, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -483,6 +484,7 @@ class NewProduct extends Component {
             progress: undefined,
             theme: "light",
             });
+        this.setState({loading: false})
     }
     onHideModalInformation(){
         this.setState({
