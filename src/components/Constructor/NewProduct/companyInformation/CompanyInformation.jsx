@@ -53,7 +53,7 @@ class CompanyInformation extends Component {
                 const userID = actualUser.attributes.sub;   
                 let filter = {
                     id: {
-                      contains: userID
+                      contains: `${userID}_${this.props.selectedCompany}`
                     }
                   };
                   
