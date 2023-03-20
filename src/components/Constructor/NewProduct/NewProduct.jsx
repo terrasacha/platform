@@ -6,6 +6,7 @@ import { createImage, createProduct, createUserProduct, createProductFeature, cr
 import { listCategories, listFeatures } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import CompanyInformation from './companyInformation/CompanyInformation'
+import TyC from './TyC/TyC'
 import { ToastContainer, toast } from 'react-toastify';
 import { InfoCircle } from 'react-bootstrap-icons'
 import { validarString } from '../functions/functions'
@@ -74,6 +75,7 @@ class NewProduct extends Component {
                 periodo_permanencia:'',
             },
             renderModalInformation: false,
+            renderModalTyC: false,
             mostrarFormInfodeEmpresa: false,
             empresas:[],
             files: [],
@@ -93,6 +95,7 @@ class NewProduct extends Component {
         this.fetchfeatureTypeIDS = this.fetchfeatureTypeIDS.bind(this)
         this.handleSetStateCompany = this.handleSetStateCompany.bind(this)
         this.onHideModalInformation = this.onHideModalInformation.bind(this)
+        this.onHideModalTyC = this.onHideModalTyC.bind(this)
     }
     componentDidMount = async () => {
 
@@ -196,7 +199,8 @@ class NewProduct extends Component {
         this.setState({categorySelectList: categorysSelectItems})
     }   
     async handleCRUDProduct() {
-        this.setState({loading: true})
+        
+        this.setState({loading: true, renderModalTyC: false})
         const actualUser = await Auth.currentAuthenticatedUser()
         const userID = actualUser.attributes.sub; 
         const tempCRUD_Product = this.state.CRUD_Product
@@ -286,6 +290,15 @@ class NewProduct extends Component {
             this.notify()
             await this.cleanProductOnCreate()
     }
+    checkFormStatus(){
+        if(this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
+        if (this.state.CRUD_Product.name !== '' && this.state.CRUD_Product.description !== '' && this.state.productFeature.ha_tot !== ''
+            && this.state.productFeature.coord !== '' && this.state.company.name !== ''){
+                this.setState({renderModalTyC: true})
+            }else{
+                return this.notifyError('Asegurese de completar los campos necesarios antes de continuar')
+            }
+    }
     async cleanProductOnCreate() {
         this.setState({
             CRUD_Product: {
@@ -338,6 +351,10 @@ class NewProduct extends Component {
             isImageUploadingFile: false, //se borraban los features y categorys
             selectedCategory: null,
             selectedCompany: 'no company',
+            renderModalInformation: false,
+            renderModalTyC: false,
+            mostrarFormInfodeEmpresa: false,
+            loading: false,
         })
     }
     
@@ -494,6 +511,11 @@ class NewProduct extends Component {
     onHideModalInformation(){
         this.setState({
             renderModalInformation: false,
+        })
+    }
+    onHideModalTyC(){
+        this.setState({
+            renderModalTyC: false,
         })
     }
     render() {
@@ -658,9 +680,14 @@ class NewProduct extends Component {
                         </fieldset>
                     </form>
                     {this.state.loading?<button className={s.solicitudButtonDisabled} disabled>CREANDO</button>:
-                    <button className={s.solicitudButton} onClick={this.handleCRUDProduct}>CREAR SOLICITUD</button>}
+                    <button className={s.solicitudButton} onClick={() => this.checkFormStatus()}>CREAR SOLICITUD</button>}
                     
                 </div>
+                <TyC 
+                    renderModalTyC={this.state.renderModalTyC}
+                    onHideModalTyC={this.onHideModalTyC}
+                    handleCRUDProduct={this.handleCRUDProduct}
+                />
             </div>
         )
     }
