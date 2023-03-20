@@ -360,8 +360,13 @@ class NewProduct extends Component {
                 website:'',
             }
             })
+        }
+        if(event.target.value !== 'no company'){
+            if(event.target.value === 'nueva empresa' || event.target.value === 'persona natural'){
+                this.setState({ renderModalInformation:true })
+            }
+            this.setState({selectedCompany: event.target.value, mostrarFormInfodeEmpresa: true })
         } 
-        if(event.target.value !== 'no company') this.setState({selectedCompany: event.target.value, mostrarFormInfodeEmpresa: true, renderModalInformation:true })  
     }
     handleOnChangeInputForm = async(event, pProperty) => {
         let tempCRUD_Product = this.state.CRUD_Product
