@@ -46,6 +46,12 @@
     font-size: .9em;
     color: #797979;
 }
+span{
+    width: 90%;
+    font-size: .8em;
+    color: red;
+    text-align: center;
+}
 .checkbox{
     display: flex;
     width: 90%;

@@ -13,7 +13,7 @@ class TyC extends Component {
             error: ''
         }
         this.handleCRUDProduct = this.props.handleCRUDProduct.bind(this)
-        this.notifyError = this.props.notifyError.bind(this)
+        this.checkTyC = this.checkTyC.bind(this)
     }
 
     componentDidMount = async () => {
@@ -443,11 +443,11 @@ afiliación con una persona o entidad.
                      Por favor, asegúrese de leer cuidadosamente todos los términos y condiciones antes de seleccionar la casilla. 
                      Si tiene alguna pregunta o inquietud, por favor contáctenos antes de continuar.</p>
                 <fieldset className={s.checkbox}>
-                                <input type="checkbox"  name="terms" onChange={() => this.setState({acceptTyC: !this.state.acceptTyC})}/>
-                                <label>Acepto los <a href='/use_terms' target="_blank">Términos y Condiciones</a></label>
-                                <span style={{color: 'red'}}>{this.state.error}</span>
-                            </fieldset>
+                    <input type="checkbox"  name="terms" onChange={() => this.setState({acceptTyC: !this.state.acceptTyC})}/>
+                    <label>Acepto los <a href='/use_terms' target="_blank">Términos y Condiciones</a></label>
+                </fieldset>
                 <button className={s.sendButton} onClick={this.checkTyC}>ENVIAR SOLICITUD</button>
+                <span style={{color: 'red'}}>{this.state.error}</span>
             </Modal.Body>
         </Modal>
 
