@@ -20,7 +20,6 @@ export default function UseTerms() {
                 <h2 id='t_c'>CONOCE TUS DERECHOS AQUÍ</h2>
                 <p>El equipo de  SUAN GLOBAL como responsable del tratamiento de datos personales te da la bienvenida a su sitio web (en adelante, La Plataforma) para que puedas hacer uso de nuestros productos y servicios.
 
-SUAN GLOBAL es una empresa localizada en la XXXXX, XXXXXX, Colombia, que está identificada con el NIT XXXXXX. Para cualquier inquietud el correo electrónico XXXXX está disponible para atender toda duda que pueda surgir.
 
 
 DERECHOS DEL TITULAR

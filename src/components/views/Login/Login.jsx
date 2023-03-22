@@ -15,6 +15,7 @@ export default function LogIn() {
     const [user, updateUser] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+    const [explain, setExplain] = useState('Como inversionista, usted podrá adquirir activos en nuestro marketplace')
     
     useEffect(() => {
         checkUser()
@@ -45,7 +46,8 @@ export default function LogIn() {
     function onChange(e){
         e.persist()
         updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
-
+        if(e.target.value === 'investor') setExplain('Como inversionista, usted podrá adquirir activos en nuestro marketplace')
+        if(e.target.value === 'constructor') setExplain('Como propietario, usted podrá crear proyectos y ver su evolución')
     }
 
     const { formType } = formState
@@ -76,6 +78,7 @@ export default function LogIn() {
                 updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
             } catch (error) {
                 setLoading(false)
+                setExplain('Como inversionista, usted podrá adquirir activos en nuestro marketplace')
                 setError('A user for that e-mail address already exists. Please use a different e-mail address')    
             }
         }else{
@@ -152,10 +155,11 @@ export default function LogIn() {
                             <fieldset>
                                 <legend>Role</legend>
                                 <select name="role" onChange={onChange}>
-                                    <option value="investor">Investor</option>
-                                    <option value="constructor">Constructor</option>
+                                    <option value="investor">Inversionista</option>
+                                    <option value="constructor">Propietario</option>
                                 </select>
                             </fieldset>
+                            {<p style={{color: '#797979', fontSize:'.8em'}}>{explain}</p>}
                             <fieldset className={s.checkbox}>
                                 <input type="checkbox"  name="terms" onChange={() => updateFormState(() => ({...formState, terms: !formState.terms}))}/>
                                 <label>Acepto los <a href='/use_terms' target="_blank">términos de uso</a></label>

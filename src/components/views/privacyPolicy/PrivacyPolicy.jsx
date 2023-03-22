@@ -150,9 +150,7 @@ cuando lo permita o exija la ley.
             <div className={s.titleContainer}>
             <h2 id="materiales_uso">ALMACENAMIENTO Y SEGURIDAD DE SU INFORMACIÓN PERSONAL</h2>
                 <p>Suan se esforzará por tomar todas las medidas razonables para mantener segura
-la información del usuario y mantener esta información precisa y actualizada. La
-información se almacena en servidores seguros en los XXXXXXXXX que están
-protegidos en instalaciones controladas. Exigimos a nuestros empleados y
+la información del usuario y mantener esta información precisa y actualizada.Exigimos a nuestros empleados y
 procesadores de datos que respeten la confidencialidad de cualquier información
 personal en poder de Suan.
                 </p>
