@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 // Bootstrap
 import { Auth } from 'aws-amplify'
 import { Accordion, Button, Card, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap'
-// Auth css custom
-import Bootstrap from "../common/themes"
-// Routing
-// import { useHistory } from 'react-router-dom'
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, createWallet, updateUser } from '../../graphql/mutations'
@@ -15,8 +11,9 @@ import wallet from './assets/crypto-digital-wallet-gID_4.jpg'
 import profile from './assets/PngItem_4042710.png'
 import Documents from './Documents/Documents'
 import s from './InvestorAdmon.module.css'
-import HeaderNavbar from './Navbars/HeaderNavbar'
+import HeaderNavbar2 from './Navbars/HeaderNavbar2'
 import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
+import InfoInvestor from './infoInvestor/InfoInvestor'
 
 class InvestorAdmon extends Component {
 
@@ -369,22 +366,22 @@ class InvestorAdmon extends Component {
         return (
             <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>
 
-                <h4>Investor Dashboard</h4>
                 
                 <Row>
                     <Col>
-                        <HeaderNavbar 
+                        <HeaderNavbar2 
                             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                             handleSignOut={this.handleSignOut}
-                        ></HeaderNavbar>
+                        ></HeaderNavbar2>
                     </Col>
                 </Row>
 
                 <Row>
-                    {renderCompleteProfile()}
+{/*                     {renderCompleteProfile()}
                     {renderOrders()}
                     {renderProductsBuyed()}
-                    {renderModalWallet()}
+                    {renderModalWallet()} */}
+                    <InfoInvestor />
                 </Row>
 
             </Container>
