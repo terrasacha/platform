@@ -3,6 +3,7 @@ import s from './InfoInvestor.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createFeatureType, createFeature } from '../../../graphql/mutations'
+import { listFeatureTypes, listFeatures } from '../../../graphql/queries'
 import { ToastContainer, toast } from 'react-toastify';
 import { InfoCircle } from 'react-bootstrap-icons'
 import 'react-toastify/dist/ReactToastify.css';
@@ -39,6 +40,7 @@ class InfoInvestor extends Component {
                 phone:'',
                 email:'',
             },
+            inputBlocked: false,
             loading: false,
         }
         this.handleOnChangeInputFormcontact = this.handleOnChangeInputFormcontact.bind(this)
@@ -47,7 +49,7 @@ class InfoInvestor extends Component {
 
     }
     componentDidMount = async () => {
-
+        this.fetchfeatureTypeIDS()
     }
     async handleCRUDcontact() {
         let errors = this.state.contacterrors
@@ -132,6 +134,51 @@ class InfoInvestor extends Component {
         }
         this.setState({contact: tempCRUD_contact})
     }
+    async fetchfeatureTypeIDS() {
+        try {
+            const actualUser = await Auth.currentAuthenticatedUser()
+            const userID = actualUser.attributes.sub;   
+            let filter = {
+                id: {
+                    contains: `INVESTOR_ORGANIZATION_INFORMATION_${userID}`
+                }
+                };
+                
+            const featureTypesData = await API.graphql({
+            query: listFeatureTypes,
+            variables: { filter }
+            });
+
+            if(featureTypesData.data.listFeatureTypes.items.length > 0){
+                let filter = {
+                    id: {
+                      contains: `${userID}`
+                    }
+                  };
+                  
+                  const featuresData = await API.graphql({
+                    query: listFeatures,
+                    variables: { filter }
+                  });
+                  console.log(featuresData)
+                let initialState = featuresData.data.listFeatures.items.reduce((acc, { name, description }) => {
+                return {
+                    ...acc,
+                    [name]: description,
+                };
+                }, {});
+                this.handleSetStatecontact(initialState)
+                this.setState({inputBlocked: true})
+            }
+        } catch (error) {
+            console.log(error)
+        }
+      }
+      handleSetStatecontact (tempcontact){
+        this.setState({
+            contact: tempcontact
+        })
+    }
     async cleanProductOnCreate() {
         this.setState({
             contact:{
@@ -153,6 +200,7 @@ class InfoInvestor extends Component {
                 email:'',
             },
             loading: false,
+            inputBlocked: false,
         })
     }
     notify = () =>{
@@ -181,7 +229,7 @@ class InfoInvestor extends Component {
         this.setState({loading: false})
     }
     render() {
-        let {  contact } = this.state
+        let {  contact, inputBlocked } = this.state
         return (
             <div className={s.container}>
                 <ToastContainer />
@@ -207,7 +255,7 @@ class InfoInvestor extends Component {
                                         </div>
                                     </legend>
                                     <input type="text"
-                                             
+                                           disabled={inputBlocked}  
                                             name='contact_name'
                                             value={contact.name}
                                             onChange={(e) => this.handleOnChangeInputFormcontact(e)} 
@@ -224,7 +272,7 @@ class InfoInvestor extends Component {
                                     </legend>
                                     <input type="text"
                                             name='contact_direction'
-                                             
+                                            disabled={inputBlocked}
                                             value={contact.direction}
                                             onChange={(e) => this.handleOnChangeInputFormcontact(e)} 
                                             placeholder='Dirección' />
@@ -239,7 +287,7 @@ class InfoInvestor extends Component {
                                     </legend>
                                     <input type="text"
                                         name='contact_city'
-                                         
+                                        disabled={inputBlocked}
                                         value={contact.city}
                                         onChange={(e) => this.handleOnChangeInputFormcontact(e)} 
                                         placeholder='Ciudad' />
@@ -256,7 +304,7 @@ class InfoInvestor extends Component {
                                     </legend>
                                     <input type="text"
                                             name='contact_department'
-                                             
+                                            disabled={inputBlocked}
                                             value={contact.department}
                                             onChange={(e) => this.handleOnChangeInputFormcontact(e)} 
                                             placeholder='Departamento' />
@@ -269,7 +317,7 @@ class InfoInvestor extends Component {
                                             <span className={s["tooltip"]}>Ej: Colombia</span>
                                         </div>
                                     </legend>
-                                    <input type='text' placeholder='País' name='contact_country'   value={contact.country} onChange={(e) => this.handleOnChangeInputFormcontact(e)} />
+                                    <input type='text' placeholder='País' name='contact_country' disabled={inputBlocked}  value={contact.country} onChange={(e) => this.handleOnChangeInputFormcontact(e)} />
                                 </fieldset>
                                 <fieldset className={s.inputContainer}>
                                     <legend>
@@ -279,7 +327,7 @@ class InfoInvestor extends Component {
                                             <span className={s["tooltip"]}>Sólo números</span>
                                         </div>
                                     </legend>
-                                    <input type='number' placeholder='' name='contact_CP'   value={contact.cp}  onChange={(e) => this.handleOnChangeInputFormcontact(e)} />
+                                    <input type='number' placeholder='' name='contact_CP' disabled={inputBlocked}  value={contact.cp}  onChange={(e) => this.handleOnChangeInputFormcontact(e)} />
                                     <span style={{color:'red', fontSize:'.6em'}}>{this.state.contacterrors.cp}</span>
                                 </fieldset>
                             </form>
@@ -294,7 +342,7 @@ class InfoInvestor extends Component {
                                     </legend>
                                     <input type="numbre"
                                             name='contact_phone'
-                                             
+                                            disabled={inputBlocked}
                                             value={contact.phone}
                                             onChange={(e) => this.handleOnChangeInputFormcontact(e)} 
                                             placeholder='' />
@@ -308,7 +356,7 @@ class InfoInvestor extends Component {
                                             <span className={s["tooltip"]}>Ej: example@example.com</span>
                                         </div>
                                     </legend>
-                                    <input type='text' placeholder='' name='contact_email'   value={contact.email} onChange={(e) => this.handleOnChangeInputFormcontact(e)} />
+                                    <input type='text' placeholder='' name='contact_email' disabled={inputBlocked}  value={contact.email} onChange={(e) => this.handleOnChangeInputFormcontact(e)} />
                                     <span style={{color:'red', fontSize:'.6em'}}>{this.state.contacterrors.email}</span>
                                 </fieldset>
                                 <fieldset className={s.inputContainer}>
@@ -321,14 +369,15 @@ class InfoInvestor extends Component {
                                     </legend>
                                     <input type="numbre"
                                             name='contact_id'
-                                             
+                                            disabled={inputBlocked} 
                                             value={contact.id}
                                             onChange={(e) => this.handleOnChangeInputFormcontact(e)} 
                                             placeholder='' />
                                     <span style={{color:'red', fontSize:'.6em'}}>{this.state.contacterrors.id}</span>
                                 </fieldset>
-                            </form>           
-                    {this.state.loading?<button className={s.solicitudButtonDisabled} disabled>CREANDO</button>:
+                            </form>    
+
+                    {inputBlocked?'':this.state.loading?<button className={s.solicitudButtonDisabled} disabled>CREANDO</button>:
                     <button className={s.solicitudButton} onClick={() => this.handleCRUDcontact()}>GUARDAR INFORMACIÓN</button>}
                     
                 </div>
