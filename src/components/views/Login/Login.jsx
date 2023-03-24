@@ -1,6 +1,6 @@
 import { Auth, Hub } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
-import { Alert, Button, Card, Form } from "react-bootstrap"
+import { Alert } from "react-bootstrap"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser } from '../../../graphql/mutations'
@@ -15,7 +15,7 @@ export default function LogIn() {
     const [user, updateUser] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
-    const [explain, setExplain] = useState('Como inversionista, usted podrá adquirir activos en nuestro marketplace')
+    const [explain, setExplain] = useState('Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente')
     
     useEffect(() => {
         checkUser()
@@ -46,8 +46,8 @@ export default function LogIn() {
     function onChange(e){
         e.persist()
         updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
-        if(e.target.value === 'investor') setExplain('Como inversionista, usted podrá adquirir activos en nuestro marketplace')
-        if(e.target.value === 'constructor') setExplain('Como propietario, usted podrá crear proyectos y ver su evolución')
+        if(e.target.value === 'investor') setExplain('Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente')
+        if(e.target.value === 'constructor') setExplain('Dueño de un predio interesado en transformar un predio en un activo ambiental monetizable')
     }
 
     const { formType } = formState
@@ -78,7 +78,7 @@ export default function LogIn() {
                 updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
             } catch (error) {
                 setLoading(false)
-                setExplain('Como inversionista, usted podrá adquirir activos en nuestro marketplace')
+                setExplain('Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente')
                 setError('A user for that e-mail address already exists. Please use a different e-mail address')    
             }
         }else{
