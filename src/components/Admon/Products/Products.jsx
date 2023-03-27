@@ -700,7 +700,7 @@ class Products extends Component {
                                         <Form.Label>Description</Form.Label>
                                         <Form.Control
                                             type='text'
-                                            placeholder='Ex. Amazing Project B'
+                                            placeholder='Ex. Descripción'
                                             name='CRUD_ProductDescription'
                                             value={CRUD_Product.description}
                                             onChange={(e) => this.handleOnChangeInputForm(e)} />
