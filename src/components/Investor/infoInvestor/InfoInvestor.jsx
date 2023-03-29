@@ -171,6 +171,9 @@ class InfoInvestor extends Component {
                 }, {});
                 this.handleSetStatecontact(initialState)
                 this.setState({inputBlocked: true, loadingComponent: false})
+            }else{
+                this.setState({inputBlocked: false, loadingComponent: false})
+                
             }
         } catch (error) {
             console.log(error)
