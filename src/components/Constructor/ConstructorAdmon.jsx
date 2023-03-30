@@ -33,8 +33,8 @@ class ConstructorAdmon extends Component {
             },
             isShowDocuments: false,
             isShowProductsBuyed: false,
-            uploadNewProduct:false, //false
-            isShowInvestorProfile: true, //true
+            uploadNewProduct:true, //false
+            isShowInvestorProfile: false, //true
             showModalDocument: false,
             isRenderCompleteOrUpdateProfile: false,
             isNewUser: false
@@ -404,12 +404,12 @@ class ConstructorAdmon extends Component {
                 </Row>
 
                 <Row>
-                    {/* {renderCompleteProfile()}
+                    {/* {renderCompleteProfile()} */}
                     {renderOrders()}
                     {renderProductsBuyed()}
                     {renderNewProduct()}
-                    {renderModalWallet()} */}
-                    <NewProduct />
+                    {/* {renderModalWallet()} */}
+                    {/* <NewProduct /> */}
                 </Row>
 
             </Container>
