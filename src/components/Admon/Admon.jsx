@@ -5,7 +5,7 @@ import { Auth } from 'aws-amplify';
 import { Alert, Col, Container, Row } from 'react-bootstrap';
 import Bootstrap from "../common/themes";
 // Components
-import ConstructorAdmon from '../Constructor/ConstructorAdmon';
+import UserProducts from './UserProducts/UserProducts';
 import AdmonProfile from './AdmonProfile/AdmonProfile';
 import Categorys from './Categorys/Categorys';
 import Configure from './Configure/Configure';
@@ -500,7 +500,7 @@ export default class Admon extends Component {
         const renderConstructorAdmon = () => {
             if (isShowConstructorAdmon) {
                 return (
-                    <ConstructorAdmon />
+                    <UserProducts />
                 )
             }
         }
