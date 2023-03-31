@@ -24,7 +24,7 @@ export default class HeaderNavbar extends Component {
     }
 
     async handleSignOut() {
-        this.props.handleSignOut()
+        this.props.logOut()
     }
 
     render() {

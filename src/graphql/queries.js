@@ -895,6 +895,15 @@ export const listProducts = /* GraphQL */ `
             isToBlockChain
             isVerifable
             value
+            featureID
+            documents {
+              items {
+                id
+                isApproved
+                signed
+                status
+              }
+            }
             feature {
               id
               name

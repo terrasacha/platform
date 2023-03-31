@@ -56,6 +56,7 @@ class Products extends Component {
         this.handleCRUDProduct = this.handleCRUDProduct.bind(this)
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
         this.handleOnSelectFeature = this.handleOnSelectFeature.bind(this)
+        this.handleUpdateProductIsActive = this.handleUpdateProductIsActive.bind(this)
         this.handleUpdateProductStatus = this.handleUpdateProductStatus.bind(this)
         this.handleLoadEditProduct = this.handleLoadEditProduct.bind(this)
         this.handleShowAreYouSureDeleteProduct = this.handleShowAreYouSureDeleteProduct.bind(this)
@@ -367,14 +368,20 @@ class Products extends Component {
         await this.setState({CRUD_Product: tempCRUD_Product, selectedCategory: tempCategory, productFeatures: tempProductsFeatures, CRUDButtonName: 'UPDATE'})
         this.validateCRUDProduct()
     }
-    handleUpdateProductStatus = async(product) => {
+    handleUpdateProductIsActive = async(product) => {
         let tempProduct = {
             id : product.id,
-            status: ''
+            isActive: false
         }
-        if(product.status !== 'disabled') tempProduct.status = 'disabled'
-        if(product.status === 'disabled') tempProduct.status = 'draft'
+        tempProduct.isActive = !product.isActive
+        await API.graphql(graphqlOperation(updateProduct, { input:  tempProduct }))
 
+    }
+    handleUpdateProductStatus = async(product, status) => {
+        let tempProduct = {
+            id : product.id,
+            status: status
+        }
         await API.graphql(graphqlOperation(updateProduct, { input:  tempProduct }))
 
     }
@@ -805,6 +812,7 @@ class Products extends Component {
                         handleLoadEditProduct={this.handleLoadEditProduct}
                         handleDeleteFeatureProduct={this.handleDeleteFeatureProduct}
                         handleDeleteImageProduct={this.handleDeleteImageProduct}
+                        handleUpdateProductIsActive={this.handleUpdateProductIsActive}
                         handleUpdateProductStatus={this.handleUpdateProductStatus}
                         />
                 </Container>

@@ -406,7 +406,7 @@ class ConstructorAdmon extends Component {
                 <Row>
                     {/* {renderCompleteProfile()} */}
                     {renderOrders()}
-                    {renderProductsBuyed()}
+                    {/* {renderProductsBuyed()} */}
                     {renderNewProduct()}
                     {/* {renderModalWallet()} */}
                     {/* <NewProduct /> */}
