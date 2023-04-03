@@ -12,15 +12,20 @@
       "AmplifyAppId": "db3zbcxaygrmf"
     },
     "categories": {
+      "auth": {
+        "kiosuanbcrjsappa6accc93": {}
+      },
       "hosting": {
         "amplifyhosting": {
           "appId": "db3zbcxaygrmf",
           "type": "cicd"
         }
       },
-      "auth": {
-        "kiosuanbcrjsappa6accc93": {},
-        "true": {}
+      "storage": {
+        "s37845b3b9": {}
+      },
+      "api": {
+        "kiosuanbcrjsapp": {}
       }
     }
   }
