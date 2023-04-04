@@ -116,7 +116,12 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         })
     
     }
-
+    componentWillUnmount() {
+        this.createFeatureListener.unsubscribe();
+        this.updateFeatureListener.unsubscribe();
+        this.createFeatureTypeListener.unsubscribe();
+        this.updateFeatureTypeListener.unsubscribe();
+      }
     async loadFeatures() {
         const listFeaturesResult = await API.graphql(graphqlOperation(listFeatures))
         listFeaturesResult.data.listFeatures.items.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)

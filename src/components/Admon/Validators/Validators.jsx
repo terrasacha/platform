@@ -62,6 +62,10 @@ class Validators extends Component {
             }
         })
     }
+    componentWillUnmount() {
+        this.createValidatorListener.unsubscribe();
+        this.updateUserListener.unsubscribe();
+      }
     async loadValidatorUsers() {
         let filter = {
             role: {

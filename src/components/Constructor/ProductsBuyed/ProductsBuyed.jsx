@@ -93,7 +93,7 @@ export default class ProductsBuyed extends Component {
                             <div className='product_details'>
                                 <div className='product_details_wrapper'>
                                     <div className='product_name'><h3>{product.name}</h3></div>
-                                    <div className='product_description'><p>{product.description}</p></div>
+                                    <div className='product_description'><p>{product.description.slice(0,100)}</p></div>
                                     <div className='product_prices_container'>
                                         <div className='product_total_price'>
                                             <span className='product_price_tittle'>TOTAL PRICE</span>
@@ -140,10 +140,10 @@ export default class ProductsBuyed extends Component {
                                         </span>
                                     </div>
                                     <div className='product_rent_per_token'>
-                                        <span>Tokens Buyed</span>
+{/*                                         <span>Tokens Buyed</span>
                                         <span className='rent_number'>
                                             {product.orders?.items[0].amountOfTokens}
-                                        </span>
+                                        </span> */}
                                     </div>
 {/*                                     <div className='product_buttons_container'>
                                         <div className='product_what_is_include'>

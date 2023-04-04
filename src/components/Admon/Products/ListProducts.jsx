@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 // Bootstrap
-import { Button, Image, Modal, Table } from 'react-bootstrap';
+import { Button, Image, Modal, Table, Form, Col } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
-
-
+import { updateProduct } from '../../../graphql/mutations';
 export default class ListProducts extends Component {
     constructor(props) {
         super(props)
         this.state = {
             PFR: [],
             isRenderModalProductFeatures: false,
+            isRenderModalProductDescription: false,
             selectedProductToShow: null,
             isRenderModalProductImages: false,
         }
         this.handleShowAreYouSureDeleteProduct = this.props.handleShowAreYouSureDeleteProduct.bind(this)
-        this.handleUpdateProductStatus = this.props.handleUpdateProductStatus.bind(this)
+        this.handleUpdateProductIsActive = this.props.handleUpdateProductIsActive.bind(this)
         this.handleLoadEditProduct = this.props.handleLoadEditProduct.bind(this)
         this.handleDeleteFeatureProduct = this.props.handleDeleteFeatureProduct.bind(this)
         this.handleDeleteImageProduct = this.props.handleDeleteImageProduct.bind(this)
@@ -40,6 +40,16 @@ export default class ListProducts extends Component {
         if (pModal === 'show_modal_product_features') {
             this.setState({isRenderModalProductFeatures: true, selectedProductToShow: pProduct})
         }
+        if (pModal === 'show_modal_product_description') {
+            this.setState({isRenderModalProductDescription: true, selectedProductToShow: pProduct})
+        }
+    }
+    async certifyProduct(product){
+        let updateInfo ={
+            id: product.id,
+            status: 'certified'
+        }
+        await API.graphql(graphqlOperation(updateProduct , { input:  updateInfo }))
     }
     async handleHideModalProductImages(event) {
         this.setState({isRenderModalProductImages: !this.state.isRenderModalProductImages})
@@ -47,30 +57,41 @@ export default class ListProducts extends Component {
     async handleHideModalProductFeatures(event) {
         this.setState({isRenderModalProductFeatures: !this.state.isRenderModalProductFeatures})
     }
+    async handleHideModalProductDescription(event) {
+        this.setState({isRenderModalProductDescription: !this.state.isRenderModalProductDescription})
+    }
+
     
 
     // RENDER
     render() {
         let {products, urlS3Image, listPF} = this.props
-        let { selectedProductToShow, isRenderModalProductFeatures, isRenderModalProductImages } = this.state
-
+        let { selectedProductToShow, isRenderModalProductFeatures, isRenderModalProductImages, isRenderModalProductDescription} = this.state
         // Render Products
+        let productsData = products.map(product=>{
+            product.toCertified = false
+            let pfFiltered = product.productFeatures.items.filter(pf => pf.featureID === "CERTIFICACION_3TH_PARTY") 
+            pfFiltered.map(pff =>{
+              if( pff.documents.items[0]?.status === 'accepted' && pff.documents.items[0]?.isApproved) product.toCertified = true 
+            })
+            return product
+          })
         const renderProducts = () => {
-            if (products.length > 0) {
+            if (productsData.length > 0) {
                 return (
                         <Table striped bordered hover>
                             <thead>
                             <tr>
                                 <th>Order</th>
-                                <th>Category</th>
                                 <th>Name</th>
+                                <th>Category</th>
                                 <th>Status</th>
                                 <th>Description</th>
                                 <th>Images</th>
                                 <th>Product Features</th>
                                 <th>Is Active</th>
                                 <th>Action</th>
-                                <th>Set status</th>
+                                <th>Certify</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -80,16 +101,36 @@ export default class ListProducts extends Component {
                                         {product.order}
                                     </td>
                                     <td>
-                                        {product.category.name}
-                                    </td>
-                                    <td>
                                         {product.name}
                                     </td>
                                     <td>
-                                        {product.status}
+                                        {product.category.name}
                                     </td>
                                     <td>
-                                        {product.description}
+                                        {/* <Button 
+                                            variant={product.status !== 'disabled'? 'danger': 'success'}
+                                            size='md' 
+                                            onClick={(e) => this.handleUpdateProductIsActive(product)}
+                                        >{product.status !== 'disabled'? 'Disable': 'Activate'}</Button> */}
+                                        <Form.Group >
+                                            <Form.Select
+                                                type='text'
+                                                size='sm'
+                                                value={product.status}
+                                                onChange={(e) => this.props.handleUpdateProductStatus(product, e.target.value)}>
+                                                {['draft', 'verified', 'in_blockchain', 'in_equilibrium'].map(
+                                                    op => (<option value={op} key={op}>{op}</option>)
+                                                )}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </td>
+                                    <td>
+                                        <Button 
+                                                variant='outline-primary'
+                                                size='sm' 
+                                                onClick={(e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_description')}
+                                            >Description</Button>
+                                        {/* {product.description} */}
                                     </td>
                                     <td>
                                         <Button 
@@ -106,22 +147,29 @@ export default class ListProducts extends Component {
                                             >Product Features</Button>
                                     </td>
                                     <td>
-                                        {product.isActive ? 'YES' : 'NO'}
+                                        <Button 
+                                            variant={product.isActive? 'danger': 'success'}
+                                            size='sm' 
+                                            onClick={(e) => this.handleUpdateProductIsActive(product)}
+                                        >{product.isActive? 'Disable': 'Activate'}</Button>
                                     </td>
                                     <td>
                                         <Button 
                                             variant='primary'
-                                            size='md' 
+                                            size='sm' 
                                             disabled={product.status === 'on_block_chain'} 
                                             onClick={(e) => this.handleLoadEditProduct(product, e)}
                                         >{product.status === 'on_block_chain'? 'Can not Edit' : 'Edit'}</Button>
                                     </td>
                                     <td>
-                                        <Button 
-                                            variant={product.status !== 'disabled'? 'danger': 'success'}
-                                            size='md' 
-                                            onClick={(e) => this.handleUpdateProductStatus(product)}
-                                        >{product.status !== 'disabled'? 'Disable': 'Activate'}</Button>
+                                        {product.toCertified?
+                                            product.status !== 'certified'?
+                                                <Button 
+                                                variant='outline-success'
+                                                size='sm' 
+                                                onClick={() => this.certifyProduct(product)}
+                                                >Certificar</Button>: "Certificado"
+                                                : "Falta certificación"}
                                     </td>
                                 </tr>
                             ))}
@@ -203,13 +251,6 @@ export default class ListProducts extends Component {
                 let productFeatureResult = this.state.PFR.filter(pfr => pfr.productFeatureID === productFeaturesCopy[i].id)
                 productFeaturesCopy[i].productFeatureResults2 = productFeatureResult
             }
-            //No borrar por favor
-/*             for(let i = 0; i < productFeaturesCopy.length; i++){
-                if(productFeaturesCopy[i].productFeatureResults?.items.length > 0){
-                    let filteredIsActivePFR = productFeaturesCopy[i].productFeatureResults.items.filter(pfr => pfr.isActive === true)
-                    productFeaturesCopy[i].productFeatureResults.items = filteredIsActivePFR
-                }
-            } */
             for(let i = 0; i < productFeaturesCopy.length; i++){ //renderiza pfr directamente desde pfr porque al hacer update de pf se rompe 
                 if(productFeaturesCopy[i].productFeatureResults2?.length > 0){
                     let filteredIsActivePFR = productFeaturesCopy[i].productFeatureResults2.filter(pfr => pfr.isActive === true)
@@ -276,12 +317,38 @@ export default class ListProducts extends Component {
             )}
         }
     }
+    const modalProductDescription = () => {
+        if (isRenderModalProductDescription && selectedProductToShow !== null) {
+            return (
+                <Modal
+                    show={isRenderModalProductDescription}
+                    onHide={(e) => this.handleHideModalProductDescription(e)}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    >
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Description
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{selectedProductToShow.description}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={(e) => this.handleHideModalProductDescription(e)}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
+            )
+        }
+    }
         return (
             <> 
                 <h1>Product List</h1>
                 {renderProducts()}
                 {modalProductImages()}
                 {modalProductFeatures()}
+                {modalProductDescription()}
             </>
         )
     }

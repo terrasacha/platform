@@ -63,6 +63,9 @@ class ValidatorAdmon extends Component {
         }
     })
   }
+  componentWillUnmount() {
+    this.updateDocumentListener.unsubscribe();
+  }
   async loadDocuments() {
     let filter1 = {
       status: {
