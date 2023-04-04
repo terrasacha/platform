@@ -66,6 +66,10 @@ class UOM extends Component {
         })
 
     }
+    componentWillUnmount() {
+        this.createUnitOfMeasureListener.unsubscribe();
+        this.updateCategoryListener.unsubscribe();
+      }
 
     async loadUnitOfMeasures() {
         const listUnitOfMeasuresResult = await API.graphql(graphqlOperation(listUnitOfMeasures))

@@ -80,6 +80,9 @@ class Documents extends Component {
             }
         })
     }
+    componentWillUnmount() {
+        this.createDocumentListener.unsubscribe();
+      }
     async loadUserProducts(pActualUserID) {
         let userResult = await API.graphql({ query: getUser, variables: { id: pActualUserID }})
         let profileDocument = userResult.data.getUser.role

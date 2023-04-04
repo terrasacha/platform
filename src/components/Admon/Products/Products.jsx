@@ -114,23 +114,6 @@ class Products extends Component {
                     });
                 }
             });
-            /* // OnUpdate Product
-            this.updateProductListener = API.graphql(graphqlOperation(onUpdateProduct))
-            .subscribe({
-                next: updatedProductData => {
-                    let tempProducts = this.state.products.map((mapProduct) => {
-                        if (updatedProductData.value.data.onUpdateProduct.id === mapProduct.id) {
-                            console.log(updatedProductData.value.data.onUpdateProduct, 'updatedProductData.value.data.onUpdateProduct')
-                            return updatedProductData.value.data.onUpdateProduct
-                        } else {
-                            return mapProduct
-                        }
-                    })
-                    // Ordering products by name
-                    tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
-                    this.setState((state) => ({products: tempProducts}))
-                }
-            }) */
             // OnUpdate ProductFeature
             this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
             .subscribe({
@@ -171,7 +154,12 @@ class Products extends Component {
         //     this.props.changeHeaderNavBarRequest('admon_profile')
         // }
     }
-
+    componentWillUnmount() {
+        this.createProductListener.unsubscribe();
+        this.updateProductListener.unsubscribe();
+        this.updateProductFeatureListener.unsubscribe();
+        this.createProductFeatureListener.unsubscribe();
+      }
     async addNewImageToActualProductImages() {
         let tempCRUD_Product = this.state.CRUD_Product
         let newProductImage = {

@@ -115,7 +115,12 @@ class Results extends Component {
                 }
             })
     }
-
+    componentWillUnmount() {
+        this.createResultListener.unsubscribe();
+        this.updateProductFeature2Listener.unsubscribe();
+        this.createResultListener.unsubscribe();
+        this.updateProductFeatureResultListener.unsubscribe();
+      }
     async loadFormulas() {
         const listFormulasResult = await API.graphql(graphqlOperation(listFormulas))
         listFormulasResult.data.listFormulas.items.sort((a, b) => (a.name > b.name) ? 1 : -1)

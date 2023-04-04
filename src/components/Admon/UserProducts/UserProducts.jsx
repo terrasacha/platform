@@ -74,6 +74,10 @@ export default class UserProducts extends Component {
         }
     })
 }
+componentWillUnmount() {
+  this.createUserProductListener.unsubscribe();
+  this.updateUserListener.unsubscribe();
+}
   async loadUsers() {
   const listUsersResults = await API.graphql(graphqlOperation(listUsers))
   this.setState({users: listUsersResults.data.listUsers.items, usersCopy: listUsersResults.data.listUsers.items})
