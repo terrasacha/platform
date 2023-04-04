@@ -2,8 +2,8 @@
 // this is an auto generated file. This will be overwritten
 
 export const onCreateUser = /* GraphQL */ `
-  subscription OnCreateUser {
-    onCreateUser {
+  subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
+    onCreateUser(filter: $filter) {
       id
       name
       dateOfBirth
@@ -11,6 +11,7 @@ export const onCreateUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      status
       wallets {
         items {
           id
@@ -88,8 +89,8 @@ export const onCreateUser = /* GraphQL */ `
   }
 `;
 export const onUpdateUser = /* GraphQL */ `
-  subscription OnUpdateUser {
-    onUpdateUser {
+  subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
+    onUpdateUser(filter: $filter) {
       id
       name
       dateOfBirth
@@ -97,6 +98,7 @@ export const onUpdateUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      status
       wallets {
         items {
           id
@@ -174,8 +176,8 @@ export const onUpdateUser = /* GraphQL */ `
   }
 `;
 export const onDeleteUser = /* GraphQL */ `
-  subscription OnDeleteUser {
-    onDeleteUser {
+  subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
+    onDeleteUser(filter: $filter) {
       id
       name
       dateOfBirth
@@ -183,6 +185,7 @@ export const onDeleteUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      status
       wallets {
         items {
           id
@@ -260,8 +263,8 @@ export const onDeleteUser = /* GraphQL */ `
   }
 `;
 export const onCreateWallet = /* GraphQL */ `
-  subscription OnCreateWallet {
-    onCreateWallet {
+  subscription OnCreateWallet($filter: ModelSubscriptionWalletFilterInput) {
+    onCreateWallet(filter: $filter) {
       id
       name
       status
@@ -275,6 +278,7 @@ export const onCreateWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -299,8 +303,8 @@ export const onCreateWallet = /* GraphQL */ `
   }
 `;
 export const onUpdateWallet = /* GraphQL */ `
-  subscription OnUpdateWallet {
-    onUpdateWallet {
+  subscription OnUpdateWallet($filter: ModelSubscriptionWalletFilterInput) {
+    onUpdateWallet(filter: $filter) {
       id
       name
       status
@@ -314,6 +318,7 @@ export const onUpdateWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -338,8 +343,8 @@ export const onUpdateWallet = /* GraphQL */ `
   }
 `;
 export const onDeleteWallet = /* GraphQL */ `
-  subscription OnDeleteWallet {
-    onDeleteWallet {
+  subscription OnDeleteWallet($filter: ModelSubscriptionWalletFilterInput) {
+    onDeleteWallet(filter: $filter) {
       id
       name
       status
@@ -353,6 +358,7 @@ export const onDeleteWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -377,8 +383,10 @@ export const onDeleteWallet = /* GraphQL */ `
   }
 `;
 export const onCreateVerification = /* GraphQL */ `
-  subscription OnCreateVerification {
-    onCreateVerification {
+  subscription OnCreateVerification(
+    $filter: ModelSubscriptionVerificationFilterInput
+  ) {
+    onCreateVerification(filter: $filter) {
       id
       createdOn
       updatedOn
@@ -392,6 +400,7 @@ export const onCreateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -419,6 +428,7 @@ export const onCreateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -482,6 +492,16 @@ export const onCreateVerification = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      verificationComments {
+        items {
+          id
+          comment
+          verificationID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -489,8 +509,10 @@ export const onCreateVerification = /* GraphQL */ `
   }
 `;
 export const onUpdateVerification = /* GraphQL */ `
-  subscription OnUpdateVerification {
-    onUpdateVerification {
+  subscription OnUpdateVerification(
+    $filter: ModelSubscriptionVerificationFilterInput
+  ) {
+    onUpdateVerification(filter: $filter) {
       id
       createdOn
       updatedOn
@@ -504,6 +526,7 @@ export const onUpdateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -531,6 +554,7 @@ export const onUpdateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -590,6 +614,205 @@ export const onUpdateVerification = /* GraphQL */ `
           nextToken
         }
         productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      verificationComments {
+        items {
+          id
+          comment
+          verificationID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteVerification = /* GraphQL */ `
+  subscription OnDeleteVerification(
+    $filter: ModelSubscriptionVerificationFilterInput
+  ) {
+    onDeleteVerification(filter: $filter) {
+      id
+      createdOn
+      updatedOn
+      sign
+      userVerifierID
+      userVerifier {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        status
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      userVerifiedID
+      userVerified {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        status
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productFeatureID
+      productFeature {
+        id
+        value
+        isToBlockChain
+        isVerifable
+        order
+        isOnMainCard
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          createdAt
+          updatedAt
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          defaultValue
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+        }
+        verifications {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      verificationComments {
+        items {
+          id
+          comment
+          verificationID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateVerificationComment = /* GraphQL */ `
+  subscription OnCreateVerificationComment(
+    $filter: ModelSubscriptionVerificationCommentFilterInput
+  ) {
+    onCreateVerificationComment(filter: $filter) {
+      id
+      comment
+      verificationID
+      verification {
+        id
+        createdOn
+        updatedOn
+        sign
+        userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
           nextToken
         }
         createdAt
@@ -600,108 +823,122 @@ export const onUpdateVerification = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteVerification = /* GraphQL */ `
-  subscription OnDeleteVerification {
-    onDeleteVerification {
+export const onUpdateVerificationComment = /* GraphQL */ `
+  subscription OnUpdateVerificationComment(
+    $filter: ModelSubscriptionVerificationCommentFilterInput
+  ) {
+    onUpdateVerificationComment(filter: $filter) {
       id
-      createdOn
-      updatedOn
-      sign
-      userVerifierID
-      userVerifier {
+      comment
+      verificationID
+      verification {
         id
-        name
-        dateOfBirth
-        isProfileUpdated
-        addresss
-        cellphone
-        role
-        wallets {
-          nextToken
-        }
-        verifierVerifications {
-          nextToken
-        }
-        verifiedVerifications {
-          nextToken
-        }
-        userProducts {
-          nextToken
-        }
-        documents {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      userVerifiedID
-      userVerified {
-        id
-        name
-        dateOfBirth
-        isProfileUpdated
-        addresss
-        cellphone
-        role
-        wallets {
-          nextToken
-        }
-        verifierVerifications {
-          nextToken
-        }
-        verifiedVerifications {
-          nextToken
-        }
-        userProducts {
-          nextToken
-        }
-        documents {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      productFeatureID
-      productFeature {
-        id
-        value
-        isToBlockChain
-        isVerifable
-        order
-        isOnMainCard
-        productID
-        product {
+        createdOn
+        updatedOn
+        sign
+        userVerifierID
+        userVerifier {
           id
           name
-          description
-          isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
-          order
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
           status
-          categoryID
           createdAt
           updatedAt
         }
-        featureID
-        feature {
+        userVerifiedID
+        userVerified {
           id
           name
-          description
-          isTemplate
-          defaultValue
-          featureTypeID
-          unitOfMeasureID
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
           createdAt
           updatedAt
         }
-        verifications {
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
           nextToken
         }
-        documents {
-          nextToken
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteVerificationComment = /* GraphQL */ `
+  subscription OnDeleteVerificationComment(
+    $filter: ModelSubscriptionVerificationCommentFilterInput
+  ) {
+    onDeleteVerificationComment(filter: $filter) {
+      id
+      comment
+      verificationID
+      verification {
+        id
+        createdOn
+        updatedOn
+        sign
+        userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
         }
-        productFeatureResults {
+        userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
           nextToken
         }
         createdAt
@@ -713,8 +950,10 @@ export const onDeleteVerification = /* GraphQL */ `
   }
 `;
 export const onCreateDocumentType = /* GraphQL */ `
-  subscription OnCreateDocumentType {
-    onCreateDocumentType {
+  subscription OnCreateDocumentType(
+    $filter: ModelSubscriptionDocumentTypeFilterInput
+  ) {
+    onCreateDocumentType(filter: $filter) {
       id
       name
       description
@@ -744,8 +983,10 @@ export const onCreateDocumentType = /* GraphQL */ `
   }
 `;
 export const onUpdateDocumentType = /* GraphQL */ `
-  subscription OnUpdateDocumentType {
-    onUpdateDocumentType {
+  subscription OnUpdateDocumentType(
+    $filter: ModelSubscriptionDocumentTypeFilterInput
+  ) {
+    onUpdateDocumentType(filter: $filter) {
       id
       name
       description
@@ -775,8 +1016,10 @@ export const onUpdateDocumentType = /* GraphQL */ `
   }
 `;
 export const onDeleteDocumentType = /* GraphQL */ `
-  subscription OnDeleteDocumentType {
-    onDeleteDocumentType {
+  subscription OnDeleteDocumentType(
+    $filter: ModelSubscriptionDocumentTypeFilterInput
+  ) {
+    onDeleteDocumentType(filter: $filter) {
       id
       name
       description
@@ -806,8 +1049,8 @@ export const onDeleteDocumentType = /* GraphQL */ `
   }
 `;
 export const onCreateDocument = /* GraphQL */ `
-  subscription OnCreateDocument {
-    onCreateDocument {
+  subscription OnCreateDocument($filter: ModelSubscriptionDocumentFilterInput) {
+    onCreateDocument(filter: $filter) {
       id
       data
       timeStamp
@@ -884,6 +1127,7 @@ export const onCreateDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -908,8 +1152,8 @@ export const onCreateDocument = /* GraphQL */ `
   }
 `;
 export const onUpdateDocument = /* GraphQL */ `
-  subscription OnUpdateDocument {
-    onUpdateDocument {
+  subscription OnUpdateDocument($filter: ModelSubscriptionDocumentFilterInput) {
+    onUpdateDocument(filter: $filter) {
       id
       data
       timeStamp
@@ -986,6 +1230,7 @@ export const onUpdateDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -1010,8 +1255,8 @@ export const onUpdateDocument = /* GraphQL */ `
   }
 `;
 export const onDeleteDocument = /* GraphQL */ `
-  subscription OnDeleteDocument {
-    onDeleteDocument {
+  subscription OnDeleteDocument($filter: ModelSubscriptionDocumentFilterInput) {
+    onDeleteDocument(filter: $filter) {
       id
       data
       timeStamp
@@ -1088,6 +1333,7 @@ export const onDeleteDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -1112,8 +1358,8 @@ export const onDeleteDocument = /* GraphQL */ `
   }
 `;
 export const onCreateCategory = /* GraphQL */ `
-  subscription OnCreateCategory {
-    onCreateCategory {
+  subscription OnCreateCategory($filter: ModelSubscriptionCategoryFilterInput) {
+    onCreateCategory(filter: $filter) {
       id
       name
       products {
@@ -1139,8 +1385,8 @@ export const onCreateCategory = /* GraphQL */ `
   }
 `;
 export const onUpdateCategory = /* GraphQL */ `
-  subscription OnUpdateCategory {
-    onUpdateCategory {
+  subscription OnUpdateCategory($filter: ModelSubscriptionCategoryFilterInput) {
+    onUpdateCategory(filter: $filter) {
       id
       name
       products {
@@ -1166,8 +1412,8 @@ export const onUpdateCategory = /* GraphQL */ `
   }
 `;
 export const onDeleteCategory = /* GraphQL */ `
-  subscription OnDeleteCategory {
-    onDeleteCategory {
+  subscription OnDeleteCategory($filter: ModelSubscriptionCategoryFilterInput) {
+    onDeleteCategory(filter: $filter) {
       id
       name
       products {
@@ -1193,8 +1439,8 @@ export const onDeleteCategory = /* GraphQL */ `
   }
 `;
 export const onCreateProduct = /* GraphQL */ `
-  subscription OnCreateProduct {
-    onCreateProduct {
+  subscription OnCreateProduct($filter: ModelSubscriptionProductFilterInput) {
+    onCreateProduct(filter: $filter) {
       id
       name
       description
@@ -1283,8 +1529,8 @@ export const onCreateProduct = /* GraphQL */ `
   }
 `;
 export const onUpdateProduct = /* GraphQL */ `
-  subscription OnUpdateProduct {
-    onUpdateProduct {
+  subscription OnUpdateProduct($filter: ModelSubscriptionProductFilterInput) {
+    onUpdateProduct(filter: $filter) {
       id
       name
       description
@@ -1373,8 +1619,8 @@ export const onUpdateProduct = /* GraphQL */ `
   }
 `;
 export const onDeleteProduct = /* GraphQL */ `
-  subscription OnDeleteProduct {
-    onDeleteProduct {
+  subscription OnDeleteProduct($filter: ModelSubscriptionProductFilterInput) {
+    onDeleteProduct(filter: $filter) {
       id
       name
       description
@@ -1463,8 +1709,8 @@ export const onDeleteProduct = /* GraphQL */ `
   }
 `;
 export const onCreateImage = /* GraphQL */ `
-  subscription OnCreateImage {
-    onCreateImage {
+  subscription OnCreateImage($filter: ModelSubscriptionImageFilterInput) {
+    onCreateImage(filter: $filter) {
       id
       imageURL
       format
@@ -1514,8 +1760,8 @@ export const onCreateImage = /* GraphQL */ `
   }
 `;
 export const onUpdateImage = /* GraphQL */ `
-  subscription OnUpdateImage {
-    onUpdateImage {
+  subscription OnUpdateImage($filter: ModelSubscriptionImageFilterInput) {
+    onUpdateImage(filter: $filter) {
       id
       imageURL
       format
@@ -1565,8 +1811,8 @@ export const onUpdateImage = /* GraphQL */ `
   }
 `;
 export const onDeleteImage = /* GraphQL */ `
-  subscription OnDeleteImage {
-    onDeleteImage {
+  subscription OnDeleteImage($filter: ModelSubscriptionImageFilterInput) {
+    onDeleteImage(filter: $filter) {
       id
       imageURL
       format
@@ -1616,8 +1862,10 @@ export const onDeleteImage = /* GraphQL */ `
   }
 `;
 export const onCreateFeatureType = /* GraphQL */ `
-  subscription OnCreateFeatureType {
-    onCreateFeatureType {
+  subscription OnCreateFeatureType(
+    $filter: ModelSubscriptionFeatureTypeFilterInput
+  ) {
+    onCreateFeatureType(filter: $filter) {
       id
       name
       description
@@ -1641,8 +1889,10 @@ export const onCreateFeatureType = /* GraphQL */ `
   }
 `;
 export const onUpdateFeatureType = /* GraphQL */ `
-  subscription OnUpdateFeatureType {
-    onUpdateFeatureType {
+  subscription OnUpdateFeatureType(
+    $filter: ModelSubscriptionFeatureTypeFilterInput
+  ) {
+    onUpdateFeatureType(filter: $filter) {
       id
       name
       description
@@ -1666,8 +1916,10 @@ export const onUpdateFeatureType = /* GraphQL */ `
   }
 `;
 export const onDeleteFeatureType = /* GraphQL */ `
-  subscription OnDeleteFeatureType {
-    onDeleteFeatureType {
+  subscription OnDeleteFeatureType(
+    $filter: ModelSubscriptionFeatureTypeFilterInput
+  ) {
+    onDeleteFeatureType(filter: $filter) {
       id
       name
       description
@@ -1691,8 +1943,8 @@ export const onDeleteFeatureType = /* GraphQL */ `
   }
 `;
 export const onCreateFeature = /* GraphQL */ `
-  subscription OnCreateFeature {
-    onCreateFeature {
+  subscription OnCreateFeature($filter: ModelSubscriptionFeatureFilterInput) {
+    onCreateFeature(filter: $filter) {
       id
       name
       description
@@ -1755,8 +2007,8 @@ export const onCreateFeature = /* GraphQL */ `
   }
 `;
 export const onUpdateFeature = /* GraphQL */ `
-  subscription OnUpdateFeature {
-    onUpdateFeature {
+  subscription OnUpdateFeature($filter: ModelSubscriptionFeatureFilterInput) {
+    onUpdateFeature(filter: $filter) {
       id
       name
       description
@@ -1819,8 +2071,8 @@ export const onUpdateFeature = /* GraphQL */ `
   }
 `;
 export const onDeleteFeature = /* GraphQL */ `
-  subscription OnDeleteFeature {
-    onDeleteFeature {
+  subscription OnDeleteFeature($filter: ModelSubscriptionFeatureFilterInput) {
+    onDeleteFeature(filter: $filter) {
       id
       name
       description
@@ -1883,8 +2135,10 @@ export const onDeleteFeature = /* GraphQL */ `
   }
 `;
 export const onCreateUnitOfMeasure = /* GraphQL */ `
-  subscription OnCreateUnitOfMeasure {
-    onCreateUnitOfMeasure {
+  subscription OnCreateUnitOfMeasure(
+    $filter: ModelSubscriptionUnitOfMeasureFilterInput
+  ) {
+    onCreateUnitOfMeasure(filter: $filter) {
       id
       engineeringUnit
       description
@@ -1920,8 +2174,10 @@ export const onCreateUnitOfMeasure = /* GraphQL */ `
   }
 `;
 export const onUpdateUnitOfMeasure = /* GraphQL */ `
-  subscription OnUpdateUnitOfMeasure {
-    onUpdateUnitOfMeasure {
+  subscription OnUpdateUnitOfMeasure(
+    $filter: ModelSubscriptionUnitOfMeasureFilterInput
+  ) {
+    onUpdateUnitOfMeasure(filter: $filter) {
       id
       engineeringUnit
       description
@@ -1957,8 +2213,10 @@ export const onUpdateUnitOfMeasure = /* GraphQL */ `
   }
 `;
 export const onDeleteUnitOfMeasure = /* GraphQL */ `
-  subscription OnDeleteUnitOfMeasure {
-    onDeleteUnitOfMeasure {
+  subscription OnDeleteUnitOfMeasure(
+    $filter: ModelSubscriptionUnitOfMeasureFilterInput
+  ) {
+    onDeleteUnitOfMeasure(filter: $filter) {
       id
       engineeringUnit
       description
@@ -1994,8 +2252,8 @@ export const onDeleteUnitOfMeasure = /* GraphQL */ `
   }
 `;
 export const onCreateFormula = /* GraphQL */ `
-  subscription OnCreateFormula {
-    onCreateFormula {
+  subscription OnCreateFormula($filter: ModelSubscriptionFormulaFilterInput) {
+    onCreateFormula(filter: $filter) {
       id
       varID
       equation
@@ -2041,8 +2299,8 @@ export const onCreateFormula = /* GraphQL */ `
   }
 `;
 export const onUpdateFormula = /* GraphQL */ `
-  subscription OnUpdateFormula {
-    onUpdateFormula {
+  subscription OnUpdateFormula($filter: ModelSubscriptionFormulaFilterInput) {
+    onUpdateFormula(filter: $filter) {
       id
       varID
       equation
@@ -2088,8 +2346,8 @@ export const onUpdateFormula = /* GraphQL */ `
   }
 `;
 export const onDeleteFormula = /* GraphQL */ `
-  subscription OnDeleteFormula {
-    onDeleteFormula {
+  subscription OnDeleteFormula($filter: ModelSubscriptionFormulaFilterInput) {
+    onDeleteFormula(filter: $filter) {
       id
       varID
       equation
@@ -2135,8 +2393,10 @@ export const onDeleteFormula = /* GraphQL */ `
   }
 `;
 export const onCreateFeatureFormula = /* GraphQL */ `
-  subscription OnCreateFeatureFormula {
-    onCreateFeatureFormula {
+  subscription OnCreateFeatureFormula(
+    $filter: ModelSubscriptionFeatureFormulaFilterInput
+  ) {
+    onCreateFeatureFormula(filter: $filter) {
       id
       featureID
       feature {
@@ -2200,8 +2460,10 @@ export const onCreateFeatureFormula = /* GraphQL */ `
   }
 `;
 export const onUpdateFeatureFormula = /* GraphQL */ `
-  subscription OnUpdateFeatureFormula {
-    onUpdateFeatureFormula {
+  subscription OnUpdateFeatureFormula(
+    $filter: ModelSubscriptionFeatureFormulaFilterInput
+  ) {
+    onUpdateFeatureFormula(filter: $filter) {
       id
       featureID
       feature {
@@ -2265,8 +2527,10 @@ export const onUpdateFeatureFormula = /* GraphQL */ `
   }
 `;
 export const onDeleteFeatureFormula = /* GraphQL */ `
-  subscription OnDeleteFeatureFormula {
-    onDeleteFeatureFormula {
+  subscription OnDeleteFeatureFormula(
+    $filter: ModelSubscriptionFeatureFormulaFilterInput
+  ) {
+    onDeleteFeatureFormula(filter: $filter) {
       id
       featureID
       feature {
@@ -2330,8 +2594,8 @@ export const onDeleteFeatureFormula = /* GraphQL */ `
   }
 `;
 export const onCreateResult = /* GraphQL */ `
-  subscription OnCreateResult {
-    onCreateResult {
+  subscription OnCreateResult($filter: ModelSubscriptionResultFilterInput) {
+    onCreateResult(filter: $filter) {
       id
       varID
       value
@@ -2375,8 +2639,8 @@ export const onCreateResult = /* GraphQL */ `
   }
 `;
 export const onUpdateResult = /* GraphQL */ `
-  subscription OnUpdateResult {
-    onUpdateResult {
+  subscription OnUpdateResult($filter: ModelSubscriptionResultFilterInput) {
+    onUpdateResult(filter: $filter) {
       id
       varID
       value
@@ -2420,8 +2684,8 @@ export const onUpdateResult = /* GraphQL */ `
   }
 `;
 export const onDeleteResult = /* GraphQL */ `
-  subscription OnDeleteResult {
-    onDeleteResult {
+  subscription OnDeleteResult($filter: ModelSubscriptionResultFilterInput) {
+    onDeleteResult(filter: $filter) {
       id
       varID
       value
@@ -2465,8 +2729,10 @@ export const onDeleteResult = /* GraphQL */ `
   }
 `;
 export const onCreateProductFeature = /* GraphQL */ `
-  subscription OnCreateProductFeature {
-    onCreateProductFeature {
+  subscription OnCreateProductFeature(
+    $filter: ModelSubscriptionProductFeatureFilterInput
+  ) {
+    onCreateProductFeature(filter: $filter) {
       id
       value
       isToBlockChain
@@ -2590,8 +2856,10 @@ export const onCreateProductFeature = /* GraphQL */ `
   }
 `;
 export const onUpdateProductFeature = /* GraphQL */ `
-  subscription OnUpdateProductFeature {
-    onUpdateProductFeature {
+  subscription OnUpdateProductFeature(
+    $filter: ModelSubscriptionProductFeatureFilterInput
+  ) {
+    onUpdateProductFeature(filter: $filter) {
       id
       value
       isToBlockChain
@@ -2715,8 +2983,10 @@ export const onUpdateProductFeature = /* GraphQL */ `
   }
 `;
 export const onDeleteProductFeature = /* GraphQL */ `
-  subscription OnDeleteProductFeature {
-    onDeleteProductFeature {
+  subscription OnDeleteProductFeature(
+    $filter: ModelSubscriptionProductFeatureFilterInput
+  ) {
+    onDeleteProductFeature(filter: $filter) {
       id
       value
       isToBlockChain
@@ -2840,8 +3110,10 @@ export const onDeleteProductFeature = /* GraphQL */ `
   }
 `;
 export const onCreateProductFeatureResult = /* GraphQL */ `
-  subscription OnCreateProductFeatureResult {
-    onCreateProductFeatureResult {
+  subscription OnCreateProductFeatureResult(
+    $filter: ModelSubscriptionProductFeatureResultFilterInput
+  ) {
+    onCreateProductFeatureResult(filter: $filter) {
       id
       isActive
       productFeatureID
@@ -2916,8 +3188,10 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
   }
 `;
 export const onUpdateProductFeatureResult = /* GraphQL */ `
-  subscription OnUpdateProductFeatureResult {
-    onUpdateProductFeatureResult {
+  subscription OnUpdateProductFeatureResult(
+    $filter: ModelSubscriptionProductFeatureResultFilterInput
+  ) {
+    onUpdateProductFeatureResult(filter: $filter) {
       id
       isActive
       productFeatureID
@@ -2992,8 +3266,10 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
   }
 `;
 export const onDeleteProductFeatureResult = /* GraphQL */ `
-  subscription OnDeleteProductFeatureResult {
-    onDeleteProductFeatureResult {
+  subscription OnDeleteProductFeatureResult(
+    $filter: ModelSubscriptionProductFeatureResultFilterInput
+  ) {
+    onDeleteProductFeatureResult(filter: $filter) {
       id
       isActive
       productFeatureID
@@ -3068,8 +3344,10 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
   }
 `;
 export const onCreateUserProduct = /* GraphQL */ `
-  subscription OnCreateUserProduct {
-    onCreateUserProduct {
+  subscription OnCreateUserProduct(
+    $filter: ModelSubscriptionUserProductFilterInput
+  ) {
+    onCreateUserProduct(filter: $filter) {
       id
       isFavorite
       userID
@@ -3081,6 +3359,7 @@ export const onCreateUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -3153,8 +3432,10 @@ export const onCreateUserProduct = /* GraphQL */ `
   }
 `;
 export const onUpdateUserProduct = /* GraphQL */ `
-  subscription OnUpdateUserProduct {
-    onUpdateUserProduct {
+  subscription OnUpdateUserProduct(
+    $filter: ModelSubscriptionUserProductFilterInput
+  ) {
+    onUpdateUserProduct(filter: $filter) {
       id
       isFavorite
       userID
@@ -3166,6 +3447,7 @@ export const onUpdateUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -3238,8 +3520,10 @@ export const onUpdateUserProduct = /* GraphQL */ `
   }
 `;
 export const onDeleteUserProduct = /* GraphQL */ `
-  subscription OnDeleteUserProduct {
-    onDeleteUserProduct {
+  subscription OnDeleteUserProduct(
+    $filter: ModelSubscriptionUserProductFilterInput
+  ) {
+    onDeleteUserProduct(filter: $filter) {
       id
       isFavorite
       userID
@@ -3251,6 +3535,7 @@ export const onDeleteUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -3323,8 +3608,8 @@ export const onDeleteUserProduct = /* GraphQL */ `
   }
 `;
 export const onCreateOrder = /* GraphQL */ `
-  subscription OnCreateOrder {
-    onCreateOrder {
+  subscription OnCreateOrder($filter: ModelSubscriptionOrderFilterInput) {
+    onCreateOrder(filter: $filter) {
       id
       amountOfTokens
       currencyCode
@@ -3345,6 +3630,7 @@ export const onCreateOrder = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -3374,8 +3660,8 @@ export const onCreateOrder = /* GraphQL */ `
   }
 `;
 export const onUpdateOrder = /* GraphQL */ `
-  subscription OnUpdateOrder {
-    onUpdateOrder {
+  subscription OnUpdateOrder($filter: ModelSubscriptionOrderFilterInput) {
+    onUpdateOrder(filter: $filter) {
       id
       amountOfTokens
       currencyCode
@@ -3396,6 +3682,7 @@ export const onUpdateOrder = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -3425,8 +3712,8 @@ export const onUpdateOrder = /* GraphQL */ `
   }
 `;
 export const onDeleteOrder = /* GraphQL */ `
-  subscription OnDeleteOrder {
-    onDeleteOrder {
+  subscription OnDeleteOrder($filter: ModelSubscriptionOrderFilterInput) {
+    onDeleteOrder(filter: $filter) {
       id
       amountOfTokens
       currencyCode
@@ -3447,6 +3734,7 @@ export const onDeleteOrder = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -3476,8 +3764,10 @@ export const onDeleteOrder = /* GraphQL */ `
   }
 `;
 export const onCreateTransactions = /* GraphQL */ `
-  subscription OnCreateTransactions {
-    onCreateTransactions {
+  subscription OnCreateTransactions(
+    $filter: ModelSubscriptionTransactionsFilterInput
+  ) {
+    onCreateTransactions(filter: $filter) {
       id
       addressOrigin
       addressDestination
@@ -3528,8 +3818,10 @@ export const onCreateTransactions = /* GraphQL */ `
   }
 `;
 export const onUpdateTransactions = /* GraphQL */ `
-  subscription OnUpdateTransactions {
-    onUpdateTransactions {
+  subscription OnUpdateTransactions(
+    $filter: ModelSubscriptionTransactionsFilterInput
+  ) {
+    onUpdateTransactions(filter: $filter) {
       id
       addressOrigin
       addressDestination
@@ -3580,8 +3872,10 @@ export const onUpdateTransactions = /* GraphQL */ `
   }
 `;
 export const onDeleteTransactions = /* GraphQL */ `
-  subscription OnDeleteTransactions {
-    onDeleteTransactions {
+  subscription OnDeleteTransactions(
+    $filter: ModelSubscriptionTransactionsFilterInput
+  ) {
+    onDeleteTransactions(filter: $filter) {
       id
       addressOrigin
       addressDestination

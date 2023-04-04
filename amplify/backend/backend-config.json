@@ -1,59 +1,77 @@
 {
-  "hosting": {
-    "amplifyhosting": {
-      "service": "amplifyhosting",
-      "type": "cicd",
-      "lastPushTimeStamp": "2022-09-09T20:29:54.119Z"
+  "api": {
+    "kiosuanbcrjsapp": {
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
     }
   },
   "auth": {
     "kiosuanbcrjsappa6accc93": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
       "customAuth": false,
+      "dependsOn": [],
       "frontendAuthConfig": {
-        "socialProviders": [],
-        "usernameAttributes": [],
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": []
-        },
         "mfaConfiguration": "OFF",
         "mfaTypes": [
           "SMS"
         ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]
-      }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
     }
   },
-  "api": {
-    "kiosuanbcrjsapp": {
-      "service": "AppSync",
-      "providerPlugin": "awscloudformation",
-      "output": {
-        "authConfig": {
-          "defaultAuthentication": {
-            "authenticationType": "API_KEY",
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
-            }
-          },
-          "additionalAuthenticationProviders": []
+  "hosting": {
+    "amplifyhosting": {
+      "lastPushTimeStamp": "2022-09-09T20:29:54.119Z",
+      "service": "amplifyhosting",
+      "type": "cicd"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
         }
-      }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
     }
   },
   "storage": {
     "s37845b3b9": {
-      "service": "S3",
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "dependsOn": []
+      "service": "S3"
     }
   }
 }

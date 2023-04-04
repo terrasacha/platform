@@ -11,6 +11,7 @@ export const getUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      status
       wallets {
         items {
           id
@@ -201,7 +202,7 @@ export const listUsers = /* GraphQL */ `
                     items {
                       id
                       status
-                    }
+                      }
                   }
                   feature {
                     id
@@ -265,6 +266,7 @@ export const getWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -309,6 +311,7 @@ export const listWallets = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -335,6 +338,7 @@ export const getVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -362,6 +366,7 @@ export const getVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -426,6 +431,16 @@ export const getVerification = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      verificationComments {
+        items {
+          id
+          comment
+          verificationID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -452,6 +467,7 @@ export const listVerifications = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -464,6 +480,7 @@ export const listVerifications = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -477,6 +494,103 @@ export const listVerifications = /* GraphQL */ `
           isOnMainCard
           productID
           featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getVerificationComment = /* GraphQL */ `
+  query GetVerificationComment($id: ID!) {
+    getVerificationComment(id: $id) {
+      id
+      comment
+      verificationID
+      verification {
+        id
+        createdOn
+        updatedOn
+        sign
+        userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listVerificationComments = /* GraphQL */ `
+  query ListVerificationComments(
+    $filter: ModelVerificationCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listVerificationComments(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        comment
+        verificationID
+        verification {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
           createdAt
           updatedAt
         }
@@ -618,6 +732,7 @@ export const getDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -720,6 +835,7 @@ export const listDocuments = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -844,6 +960,25 @@ export const getProduct = /* GraphQL */ `
         }
         nextToken
       }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -890,6 +1025,7 @@ export const listProducts = /* GraphQL */ `
           }
         }
         productFeatures {
+          nextToken
           items {
             id
             isToBlockChain
@@ -938,6 +1074,9 @@ export const listProducts = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -983,6 +1122,9 @@ export const getImage = /* GraphQL */ `
           nextToken
         }
         userProducts {
+          nextToken
+        }
+        transactions {
           nextToken
         }
         createdAt
@@ -1540,6 +1682,9 @@ export const getProductFeature = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1673,6 +1818,7 @@ export const listProductFeatures = /* GraphQL */ `
           nextToken
         }
         productFeatureResults {
+          nextToken
           items {
             id
             isActive
@@ -1815,14 +1961,16 @@ export const listProductFeatureResults = /* GraphQL */ `
         resultID
         result {
           id
-          formulaID
-          value
           varID
+          value
+          formulaID
           formula {
             equation
             id
             varID
           }
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -1845,6 +1993,7 @@ export const getUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -1890,6 +2039,9 @@ export const getUserProduct = /* GraphQL */ `
         userProducts {
           nextToken
         }
+        transactions {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1932,6 +2084,7 @@ export const listUserProducts = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -2016,6 +2169,7 @@ export const getOrder = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
