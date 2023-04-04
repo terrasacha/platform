@@ -99,13 +99,28 @@ class Products extends Component {
                     this.setState((state) => ({products: tempProducts}))
                 }
             })
-
             // OnUpdate Product
+            this.updateProductListener = API.graphql(graphqlOperation(onUpdateProduct))
+            .subscribe({
+                next: updatedProductData => {
+                API.graphql(graphqlOperation(listProducts))
+                    .then(response => {
+                    let products = response.data.listProducts.items;
+                    products.sort((a, b) => (a.order > b.order) ? 1 : -1);
+                    this.setState({ products: products });
+                    })
+                    .catch(error => {
+                    console.log(error);
+                    });
+                }
+            });
+            /* // OnUpdate Product
             this.updateProductListener = API.graphql(graphqlOperation(onUpdateProduct))
             .subscribe({
                 next: updatedProductData => {
                     let tempProducts = this.state.products.map((mapProduct) => {
                         if (updatedProductData.value.data.onUpdateProduct.id === mapProduct.id) {
+                            console.log(updatedProductData.value.data.onUpdateProduct, 'updatedProductData.value.data.onUpdateProduct')
                             return updatedProductData.value.data.onUpdateProduct
                         } else {
                             return mapProduct
@@ -115,7 +130,7 @@ class Products extends Component {
                     tempProducts.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({products: tempProducts}))
                 }
-            })
+            }) */
             // OnUpdate ProductFeature
             this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
             .subscribe({

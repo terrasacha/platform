@@ -4,35 +4,7 @@ import { Button, Image, Modal, Table, Form, Col } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
-
-const DocumentQuery = `
-query MyQuery {
-    listProducts {
-      items {
-        name
-        status
-        productFeatures {
-          items {
-            id
-            value
-            documents {
-              items {
-                id
-                isApproved
-                status
-              }
-            }
-            featureID
-          }
-        }
-        userProducts {
-          nextToken
-        }
-        updatedAt
-      }
-    }
-  }
-  `
+import { updateProduct } from '../../../graphql/mutations';
 export default class ListProducts extends Component {
     constructor(props) {
         super(props)
@@ -54,7 +26,6 @@ export default class ListProducts extends Component {
     }
     componentDidMount = async () => {
         await this.loadProductFeatureResults()
-        const result = await API.graphql(graphqlOperation(DocumentQuery))
     }
 
     async loadProductFeatureResults() {
@@ -72,6 +43,13 @@ export default class ListProducts extends Component {
         if (pModal === 'show_modal_product_description') {
             this.setState({isRenderModalProductDescription: true, selectedProductToShow: pProduct})
         }
+    }
+    async certifyProduct(product){
+        let updateInfo ={
+            id: product.id,
+            status: 'certified'
+        }
+        await API.graphql(graphqlOperation(updateProduct , { input:  updateInfo }))
     }
     async handleHideModalProductImages(event) {
         this.setState({isRenderModalProductImages: !this.state.isRenderModalProductImages})
@@ -92,7 +70,7 @@ export default class ListProducts extends Component {
         // Render Products
         let productsData = products.map(product=>{
             product.toCertified = false
-            let pfFiltered = product.productFeatures.items.filter(pf => pf.featureID === "CERTIFICACION_3TH_PARTY")  
+            let pfFiltered = product.productFeatures.items.filter(pf => pf.featureID === "CERTIFICACION_3TH_PARTY") 
             pfFiltered.map(pff =>{
               if( pff.documents.items[0]?.status === 'accepted' && pff.documents.items[0]?.isApproved) product.toCertified = true 
             })
@@ -189,6 +167,7 @@ export default class ListProducts extends Component {
                                                 <Button 
                                                 variant='outline-success'
                                                 size='sm' 
+                                                onClick={() => this.certifyProduct(product)}
                                                 >Certificar</Button>: "Certificado"
                                                 : "Falta certificación"}
                                     </td>
