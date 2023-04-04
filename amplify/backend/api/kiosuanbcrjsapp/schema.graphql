@@ -14,6 +14,7 @@ type User @model
   addresss: String
   cellphone: AWSPhone
   role: String!
+  status: String
   wallets: [Wallet] @hasMany(indexName: "byUser", fields: ["id"])
   verifierVerifications: [Verification] @hasMany(indexName: "byVerifierUser", fields: ["id"])
   verifiedVerifications: [Verification] @hasMany(indexName: "byVerifiedUser", fields: ["id"])
@@ -42,6 +43,14 @@ type Verification @model {
   userVerified: User @belongsTo(fields: ["userVerifiedID"])
   productFeatureID: ID! @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+  verificationComments: [VerificationComment] @hasMany(indexName: "byVerification", fields: ["id"])
+}
+
+type VerificationComment @model {
+  id: ID!
+  comment: String
+  verificationID: ID! @index(name: "byVerification")
+  verification: Verification @belongsTo(fields: ["verificationID"])
 }
 
 type DocumentType @model {

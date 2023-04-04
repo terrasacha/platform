@@ -14,6 +14,7 @@ export const createUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      status
       wallets {
         items {
           id
@@ -103,6 +104,7 @@ export const updateUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      status
       wallets {
         items {
           id
@@ -192,6 +194,7 @@ export const deleteUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      status
       wallets {
         items {
           id
@@ -287,6 +290,7 @@ export const createWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -329,6 +333,7 @@ export const updateWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -371,6 +376,7 @@ export const deleteWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -413,6 +419,7 @@ export const createVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -440,6 +447,7 @@ export const createVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -503,6 +511,16 @@ export const createVerification = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      verificationComments {
+        items {
+          id
+          comment
+          verificationID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -528,6 +546,7 @@ export const updateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -555,6 +574,7 @@ export const updateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -618,6 +638,16 @@ export const updateVerification = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      verificationComments {
+        items {
+          id
+          comment
+          verificationID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -643,6 +673,7 @@ export const deleteVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -670,6 +701,7 @@ export const deleteVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -729,6 +761,208 @@ export const deleteVerification = /* GraphQL */ `
           nextToken
         }
         productFeatureResults {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      verificationComments {
+        items {
+          id
+          comment
+          verificationID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createVerificationComment = /* GraphQL */ `
+  mutation CreateVerificationComment(
+    $input: CreateVerificationCommentInput!
+    $condition: ModelVerificationCommentConditionInput
+  ) {
+    createVerificationComment(input: $input, condition: $condition) {
+      id
+      comment
+      verificationID
+      verification {
+        id
+        createdOn
+        updatedOn
+        sign
+        userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateVerificationComment = /* GraphQL */ `
+  mutation UpdateVerificationComment(
+    $input: UpdateVerificationCommentInput!
+    $condition: ModelVerificationCommentConditionInput
+  ) {
+    updateVerificationComment(input: $input, condition: $condition) {
+      id
+      comment
+      verificationID
+      verification {
+        id
+        createdOn
+        updatedOn
+        sign
+        userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteVerificationComment = /* GraphQL */ `
+  mutation DeleteVerificationComment(
+    $input: DeleteVerificationCommentInput!
+    $condition: ModelVerificationCommentConditionInput
+  ) {
+    deleteVerificationComment(input: $input, condition: $condition) {
+      id
+      comment
+      verificationID
+      verification {
+        id
+        createdOn
+        updatedOn
+        sign
+        userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          createdAt
+          updatedAt
+        }
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+        }
+        verificationComments {
           nextToken
         }
         createdAt
@@ -923,6 +1157,7 @@ export const createDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -1028,6 +1263,7 @@ export const updateDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -1133,6 +1369,7 @@ export const deleteDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -3228,6 +3465,7 @@ export const createUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -3316,6 +3554,7 @@ export const updateUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -3404,6 +3643,7 @@ export const deleteUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        status
         wallets {
           nextToken
         }
@@ -3501,6 +3741,7 @@ export const createOrder = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -3555,6 +3796,7 @@ export const updateOrder = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
@@ -3609,6 +3851,7 @@ export const deleteOrder = /* GraphQL */ `
           addresss
           cellphone
           role
+          status
           createdAt
           updatedAt
         }
