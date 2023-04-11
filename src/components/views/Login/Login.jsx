@@ -76,10 +76,12 @@ export default function LogIn() {
                 const inputFeature = {
                     id: `${response.userSub}_VALIDATION`,
                     name: `${username}_VALIDATION`,
+                    featureTypeID: `USER_TO_VALIDATE`
                 } 
                 const inputProductFeature = {
                     featureID: `${response.userSub}_VALIDATION`,
                     productID: `PRODUCT_USER_VALIDATION`,
+                    value: `pending validation`
                 } 
                 await API.graphql(graphqlOperation(createUser, { input: userPayload }))
                 await API.graphql(graphqlOperation(createFeature, { input: inputFeature }))
