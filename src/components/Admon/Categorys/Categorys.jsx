@@ -65,8 +65,6 @@ class Categorys extends Component {
 
     }
     componentWillUnmount() {
-        this.createCategoryListener.unsubscribe();
-        this.updateCategoryListener.unsubscribe();
       }
 
     async loadCategorys() {

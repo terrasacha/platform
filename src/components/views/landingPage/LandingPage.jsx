@@ -30,8 +30,11 @@ export default class LandingPage extends Component {
 
   async loadProducts() {
     const limit = 6;
-    const query = `query ListProducts($limit: Int) {
-      listProducts(limit: $limit) {
+    const filter = {
+    isActive: {eq: true}
+    }
+    const query = `query ListProducts($limit: Int, $filter: ModelProductFilterInput) {
+      listProducts(limit: $limit, filter: $filter) {
         items {
           id
           name
@@ -113,7 +116,7 @@ export default class LandingPage extends Component {
       }
     }`;
 
-    const variables = { limit };
+    const variables = { limit, filter };
 
     const listProductsResult = await API.graphql(graphqlOperation(query, variables));
     /* let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel */
