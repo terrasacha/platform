@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Alert } from "react-bootstrap"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { createUser } from '../../../graphql/mutations'
+import { createFeature, createProductFeature, createUser } from '../../../graphql/mutations'
 import s from './Login.module.css'
 import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
@@ -73,8 +73,18 @@ export default function LogIn() {
                     isProfileUpdated: true,
                     role: role
                 }
+                const inputFeature = {
+                    id: `${response.userSub}_VALIDATION`,
+                    name: `${username}_VALIDATION`,
+                } 
+                const inputProductFeature = {
+                    featureID: `${response.userSub}_VALIDATION`,
+                    productID: `PRODUCT_USER_VALIDATION`,
+                } 
                 await API.graphql(graphqlOperation(createUser, { input: userPayload }))
-                    setLoading(false)
+                await API.graphql(graphqlOperation(createFeature, { input: inputFeature }))
+                await API.graphql(graphqlOperation(createProductFeature, { input: inputProductFeature }))
+                setLoading(false)
                 updateFormState(() => ({...formState, formType: 'confirmSignUp' }))    
             } catch (error) {
                 setLoading(false)
