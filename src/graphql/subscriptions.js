@@ -12,6 +12,7 @@ export const onCreateUser = /* GraphQL */ `
       cellphone
       role
       status
+      email
       wallets {
         items {
           id
@@ -99,6 +100,7 @@ export const onUpdateUser = /* GraphQL */ `
       cellphone
       role
       status
+      email
       wallets {
         items {
           id
@@ -186,6 +188,7 @@ export const onDeleteUser = /* GraphQL */ `
       cellphone
       role
       status
+      email
       wallets {
         items {
           id
@@ -279,6 +282,7 @@ export const onCreateWallet = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -319,6 +323,7 @@ export const onUpdateWallet = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -359,6 +364,7 @@ export const onDeleteWallet = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -401,6 +407,7 @@ export const onCreateVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -429,6 +436,7 @@ export const onCreateVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -497,6 +505,7 @@ export const onCreateVerification = /* GraphQL */ `
         items {
           id
           comment
+          isCommentByVerifier
           verificationID
           createdAt
           updatedAt
@@ -527,6 +536,7 @@ export const onUpdateVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -555,6 +565,7 @@ export const onUpdateVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -623,6 +634,7 @@ export const onUpdateVerification = /* GraphQL */ `
         items {
           id
           comment
+          isCommentByVerifier
           verificationID
           createdAt
           updatedAt
@@ -653,6 +665,7 @@ export const onDeleteVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -681,6 +694,7 @@ export const onDeleteVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -749,6 +763,7 @@ export const onDeleteVerification = /* GraphQL */ `
         items {
           id
           comment
+          isCommentByVerifier
           verificationID
           createdAt
           updatedAt
@@ -767,6 +782,7 @@ export const onCreateVerificationComment = /* GraphQL */ `
     onCreateVerificationComment(filter: $filter) {
       id
       comment
+      isCommentByVerifier
       verificationID
       verification {
         id
@@ -783,6 +799,7 @@ export const onCreateVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -796,6 +813,7 @@ export const onCreateVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -830,6 +848,7 @@ export const onUpdateVerificationComment = /* GraphQL */ `
     onUpdateVerificationComment(filter: $filter) {
       id
       comment
+      isCommentByVerifier
       verificationID
       verification {
         id
@@ -846,6 +865,7 @@ export const onUpdateVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -859,6 +879,7 @@ export const onUpdateVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -893,6 +914,7 @@ export const onDeleteVerificationComment = /* GraphQL */ `
     onDeleteVerificationComment(filter: $filter) {
       id
       comment
+      isCommentByVerifier
       verificationID
       verification {
         id
@@ -909,6 +931,7 @@ export const onDeleteVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -922,6 +945,7 @@ export const onDeleteVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -1128,6 +1152,7 @@ export const onCreateDocument = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -1231,6 +1256,7 @@ export const onUpdateDocument = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -1334,6 +1360,7 @@ export const onDeleteDocument = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -3360,6 +3387,7 @@ export const onCreateUserProduct = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -3448,6 +3476,7 @@ export const onUpdateUserProduct = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -3536,6 +3565,7 @@ export const onDeleteUserProduct = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -3631,6 +3661,7 @@ export const onCreateOrder = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -3683,6 +3714,7 @@ export const onUpdateOrder = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -3735,6 +3767,7 @@ export const onDeleteOrder = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
