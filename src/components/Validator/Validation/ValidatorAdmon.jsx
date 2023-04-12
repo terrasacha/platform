@@ -12,7 +12,48 @@ import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerification, updateDocument } from '../../../graphql/mutations';
 import { listDocuments } from '../../../graphql/queries';
 import { onUpdateDocument } from '../../../graphql/subscriptions';
-
+const queryUsers = `query GetProduct($id: ID!) {
+  getProduct(id: $id) {
+    id
+    productFeatures {
+      items {
+        id
+        value
+        featureID
+        feature {
+          id
+          name
+          description
+          defaultValue
+          featureTypeID
+        }
+        verifications {
+          items {
+            id
+            sign
+            userVerifiedID
+            userVerifierID
+          }
+        }
+      }
+      nextToken
+    }
+    userProducts {
+      items {
+        id
+        isFavorite
+        userID
+        productID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+`
 class ValidatorAdmon extends Component {
   constructor(props) {
     super(props)
@@ -22,12 +63,15 @@ class ValidatorAdmon extends Component {
       otherDocuments: [],
       showPending: true,
       showOther: false,
+      isShowProductDocuments: true,
+      isShowUsers: false,
       showModalDocument: false,
       showModalValidate: false,
       showModalDetailsValidation: false,
       selectedDocument: null,
       selectedProductValidation: null,
       creatingVerification: false,
+      users: [],
       verification: {
         id: '',
         createdOn: '',
@@ -39,6 +83,7 @@ class ValidatorAdmon extends Component {
         documentStatus: '',
       }
     }
+    this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
     this.handleHideModalDocument = this.handleHideModalDocument.bind(this)
     this.handleHideModalValidate = this.handleHideModalValidate.bind(this)
     this.handleHideModalDetailsValidation = this.handleHideModalDetailsValidation.bind(this)
@@ -53,6 +98,7 @@ class ValidatorAdmon extends Component {
     actualUser = actualUser.attributes.sub
     this.setState({actualUser: actualUser})
     await this.loadDocuments()
+    await this.loadUsers()
     // Subscriptions
     // OnUpdate Document
     this.updateDocumentListener = API.graphql(graphqlOperation(onUpdateDocument))
@@ -62,8 +108,6 @@ class ValidatorAdmon extends Component {
             
         }
     })
-  }
-  componentWillUnmount() {
   }
   async loadDocuments() {
     let filter1 = {
@@ -86,6 +130,28 @@ class ValidatorAdmon extends Component {
     this.setState({
       otherDocuments: listDocumentsResult2.data.listDocuments.items,
       })
+  }
+  async loadUsers(){
+    const id = 'PRODUCT_USER_VALIDATION';
+    const variables = { id };
+
+    const listUsersResult = await API.graphql(graphqlOperation(queryUsers, variables));
+    console.log(listUsersResult)
+    this.setState({users: listUsersResult.data.getProduct.productFeatures.items})
+  }
+  async changeHeaderNavBarRequest(pRequest) {
+    if (pRequest === 'product_documents') {
+        this.setState({
+          isShowProductDocuments: true,
+          isShowUsers: false
+        })
+    }
+    if (pRequest === 'users') {
+        this.setState({
+          isShowProductDocuments: false,
+          isShowUsers: true
+        })
+    }
   }
   handleHideModalDocument() {
     this.setState({showModalDocument: !this.state.showModalDocument})
@@ -184,6 +250,7 @@ class ValidatorAdmon extends Component {
       if(this.state.selectedProductValidation){
         documents = documents.filter(document => document.productFeature.product.name === this.state.selectedProductValidation)
       }
+      if (this.state.isShowProductDocuments) {
       return(
         <Container className='mt-4'>
           
@@ -240,6 +307,23 @@ class ValidatorAdmon extends Component {
                     </Row>
                 </Container>
       )
+      }
+    }
+    const renderUsers = () => {
+      if (this.state.isShowUsers) {
+      return(
+        <Container className='mt-4'>
+          
+                    <Row className="justify-content-md-center">
+                        <Col xs={2}>
+                            <h3>Users</h3>
+                          <Container className='mt-5'>
+                          </Container>
+                        </Col>
+                    </Row>
+                </Container>
+      )
+      }
     }
     const modalDocument = () => {
       if(this.state.showModalDocument){
@@ -359,8 +443,9 @@ class ValidatorAdmon extends Component {
   }
     return (
       <Container style={{paddingTop: 70, minHeight: '100vh'}}>
-      <HeaderNavbar  logOut={this.logOut}></HeaderNavbar>
+      <HeaderNavbar  logOut={this.logOut} changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}></HeaderNavbar>
       {renderValidations()}
+      {renderUsers()}
       {modalDocument()}
       {modalVerification()}
       {modalDetailsValidation()}
