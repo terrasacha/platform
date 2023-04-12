@@ -9,9 +9,9 @@ import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
 import './Validation.css';
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createVerification, updateDocument } from '../../../graphql/mutations';
+import { createVerification, updateDocument, updateProductFeature } from '../../../graphql/mutations';
 import { listDocuments } from '../../../graphql/queries';
-import { onUpdateDocument } from '../../../graphql/subscriptions';
+import { onUpdateDocument, onUpdateProductFeature } from '../../../graphql/subscriptions';
 const queryUsers = `query GetProduct($id: ID!) {
   getProduct(id: $id) {
     id
@@ -105,6 +105,14 @@ class ValidatorAdmon extends Component {
     .subscribe({
         next: async updatedDocumentData => {
           await this.loadDocuments()
+            
+        }
+    })
+    // OnUpdate ProductFeature
+    this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
+    .subscribe({
+        next: async updatedDocumentData => {
+          await this.loadUsers()
             
         }
     })
@@ -211,6 +219,23 @@ class ValidatorAdmon extends Component {
     }
     this.cleanState()
   }
+  validateInfoUser = async(pfID, userVerifiedID) => {
+      let tempNewVerification = {}
+      tempNewVerification.id = uuidv4().replaceAll('-','_')
+      tempNewVerification.createdOn = new Date().toISOString()
+      tempNewVerification.updatedOn = new Date().toISOString()
+      tempNewVerification.userVerifierID = this.state.actualUser
+      tempNewVerification.userVerifiedID = userVerifiedID
+      tempNewVerification.productFeatureID = pfID
+      await API.graphql(graphqlOperation(createVerification , { input: tempNewVerification }))
+      let tempProductFeature = {
+        id: pfID,
+        value: 'verified'
+      }
+      await API.graphql(graphqlOperation(updateProductFeature , { input: tempProductFeature } ))
+    
+    this.cleanState()
+  }
   async logOut(){
     await Auth.signOut()
     window.location.href="/"
@@ -314,14 +339,37 @@ class ValidatorAdmon extends Component {
       return(
         <Container className='mt-4'>
           
-                    <Row className="justify-content-md-center">
+          <Row className="justify-content-md-center">
                         <Col xs={2}>
+                        </Col>
+                        <Col xs={10}>
+                          <div>
                             <h3>Users</h3>
-                          <Container className='mt-5'>
-                          </Container>
+                          </div>
+                            <Table striped hover className='mt-4'> 
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Status</th>
+                                        <th>Validate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  {this.state.users.map(user =>(
+                                  <tr key={user.id}>
+                                    <td>{user.feature.name.slice(0, -"_VALIDATION".length)}</td>
+                                    <td>{user.value}</td>
+                                    <td>
+                                      <Button disabled={user.value === 'verified'} onClick={() => this.validateInfoUser(user.id, user.feature.name.slice(0, -"_VALIDATION".length))}>
+                                        Validate
+                                      </Button></td>
+                                  </tr>
+                                  ))}
+                                </tbody>
+                            </Table>
                         </Col>
                     </Row>
-                </Container>
+        </Container>
       )
       }
     }
