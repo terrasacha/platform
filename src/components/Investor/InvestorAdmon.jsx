@@ -5,7 +5,7 @@ import { Accordion, Button, Card, Col, Container, Form, Modal, Row, Table } from
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, createWallet, updateUser } from '../../graphql/mutations'
-import { getUser } from '../../graphql/queries'
+import { getUser, getProduct } from '../../graphql/queries'
 // Components
 import wallet from './assets/crypto-digital-wallet-gID_4.jpg'
 import profile from './assets/PngItem_4042710.png'
@@ -14,6 +14,8 @@ import s from './InvestorAdmon.module.css'
 import HeaderNavbar2 from './Navbars/HeaderNavbar2'
 import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
 import InfoInvestor from './infoInvestor/InfoInvestor'
+import { queryUserStatus } from './querys.js'
+import ValidationError from '../validationError/ValidationError'
 
 class InvestorAdmon extends Component {
 
@@ -27,6 +29,7 @@ class InvestorAdmon extends Component {
                 walletID: '',
                 walletName: ''
             },
+            checkUserStatus: null,
             isShowDocuments: false,
             isShowProductsBuyed: false,
             isShowInvestorProfile: true,
@@ -45,9 +48,27 @@ class InvestorAdmon extends Component {
     async componentDidMount() { 
         console.log('componentDidMount')
         const actualUser = await Auth.currentAuthenticatedUser()
+        let idUser = actualUser.attributes.sub
+        const variables = {
+            id: 'PRODUCT_USER_VALIDATION',
+            featureID: `${idUser}_VALIDATION`
+            /* featureID: `0b803098-3834-4b1a-a326-db2fde4db615_VALIDATION` */
+        }
+        const result = await API.graphql(graphqlOperation(queryUserStatus, variables))
+        let checkUserStatusValue = this.checkUser(result.data)
+        this.setState({checkUserStatus: checkUserStatusValue})
         this.loadActualLoggedUser(actualUser)
     }
-
+    checkUser(data){
+        console.log(data)
+        if(data.getProduct.productFeatures.items.length > 0){
+            if(data.getProduct.productFeatures.items[0].value === undefined) return false
+            if(data.getProduct.productFeatures.items[0].value !== 'verified') return false
+            if(data.getProduct.productFeatures.items[0].value === 'verified') return true
+        }else{
+            return false
+        }
+    }
     async loadActualLoggedUser(actualUser) {
         let tempUser = this.state.user
         if (actualUser !== undefined) {
@@ -362,30 +383,66 @@ class InvestorAdmon extends Component {
                 )
             }
         }
-
-        return (
-            <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>
-
-                
-                <Row>
-                    <Col>
-                        <HeaderNavbar2 
-                            changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                            handleSignOut={this.handleSignOut}
-                        ></HeaderNavbar2>
-                    </Col>
-                </Row>
-
-                <Row>
-{/*                     {renderCompleteProfile()}
-                    {renderOrders()}
-                    {renderProductsBuyed()}
-                    {renderModalWallet()} */}
-                    <InfoInvestor />
-                </Row>
-
-            </Container>
-        )
+        if(this.state.checkUserStatus === null){
+            return(
+                <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>
+                    <Row>
+                        <Col>
+                            <HeaderNavbar2 
+                                changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                                handleSignOut={this.handleSignOut}
+                            ></HeaderNavbar2>
+                        </Col>
+                    </Row>
+                    <div style={{marginTop: '1%'}}>Cargando...</div>
+                </Container>
+            )
+        }
+        if(this.state.checkUserStatus){
+            return (
+                <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>
+    
+                    
+                    <Row>
+                        <Col>
+                            <HeaderNavbar2 
+                                changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                                handleSignOut={this.handleSignOut}
+                            ></HeaderNavbar2>
+                        </Col>
+                    </Row>
+    
+                    <Row>
+    {/*                     {renderCompleteProfile()}
+                        {renderOrders()}
+                        {renderProductsBuyed()}
+                        {renderModalWallet()} */}
+                        <InfoInvestor />
+                    </Row>
+    
+                </Container>
+            )
+        }else{
+            console.log('null')
+            return(
+                <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>                
+                    <Row>
+                        <Col>
+                            <HeaderNavbar2 
+                                changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                                handleSignOut={this.handleSignOut}
+                            ></HeaderNavbar2>
+                        </Col>
+                    </Row>
+    
+                    <Row>
+                        <ValidationError />
+                    </Row>
+    
+                </Container>
+            )
+        }
+        
     }
 }
 
