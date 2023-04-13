@@ -51,8 +51,8 @@ class InvestorAdmon extends Component {
         let idUser = actualUser.attributes.sub
         const variables = {
             id: 'PRODUCT_USER_VALIDATION',
-            featureID: `${idUser}_VALIDATION`
-            /* featureID: `0b803098-3834-4b1a-a326-db2fde4db615_VALIDATION` */
+            /* featureID: `${idUser}_VALIDATION` */
+            featureID: `0b803098-3834-4b1a-a326-db2fde4db615_VALIDATION`
         }
         const result = await API.graphql(graphqlOperation(queryUserStatus, variables))
         let checkUserStatusValue = this.checkUser(result.data)
