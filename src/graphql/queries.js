@@ -12,6 +12,7 @@ export const getUser = /* GraphQL */ `
       cellphone
       role
       status
+      email
       wallets {
         items {
           id
@@ -267,6 +268,7 @@ export const getWallet = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -312,6 +314,7 @@ export const listWallets = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -339,6 +342,7 @@ export const getVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -367,6 +371,7 @@ export const getVerification = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -435,6 +440,7 @@ export const getVerification = /* GraphQL */ `
         items {
           id
           comment
+          isCommentByVerifier
           verificationID
           createdAt
           updatedAt
@@ -468,6 +474,7 @@ export const listVerifications = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -481,6 +488,7 @@ export const listVerifications = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -512,6 +520,7 @@ export const getVerificationComment = /* GraphQL */ `
     getVerificationComment(id: $id) {
       id
       comment
+      isCommentByVerifier
       verificationID
       verification {
         id
@@ -528,6 +537,7 @@ export const getVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -541,6 +551,7 @@ export const getVerificationComment = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -582,6 +593,7 @@ export const listVerificationComments = /* GraphQL */ `
       items {
         id
         comment
+        isCommentByVerifier
         verificationID
         verification {
           id
@@ -733,6 +745,7 @@ export const getDocument = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -836,6 +849,7 @@ export const listDocuments = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -1994,6 +2008,7 @@ export const getUserProduct = /* GraphQL */ `
         cellphone
         role
         status
+        email
         wallets {
           nextToken
         }
@@ -2085,6 +2100,7 @@ export const listUserProducts = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }
@@ -2170,6 +2186,7 @@ export const getOrder = /* GraphQL */ `
           cellphone
           role
           status
+          email
           createdAt
           updatedAt
         }

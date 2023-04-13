@@ -1,6 +1,7 @@
 # This "input" configures a global authorization rule to enable public access to
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 # Data Types https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
+# https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 # Auth Models
@@ -15,6 +16,7 @@ type User @model
   cellphone: AWSPhone
   role: String!
   status: String
+  email: AWSEmail
   wallets: [Wallet] @hasMany(indexName: "byUser", fields: ["id"])
   verifierVerifications: [Verification] @hasMany(indexName: "byVerifierUser", fields: ["id"])
   verifiedVerifications: [Verification] @hasMany(indexName: "byVerifiedUser", fields: ["id"])
@@ -49,6 +51,7 @@ type Verification @model {
 type VerificationComment @model {
   id: ID!
   comment: String
+  isCommentByVerifier: Boolean 
   verificationID: ID! @index(name: "byVerification")
   verification: Verification @belongsTo(fields: ["verificationID"])
 }

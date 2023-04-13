@@ -42,6 +42,23 @@
       "service": "Cognito"
     }
   },
+  "function": {
+    "kiosuanbcrjsapp58b48a41": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "hosting": {
     "amplifyhosting": {
       "lastPushTimeStamp": "2022-09-09T20:29:54.119Z",
@@ -50,6 +67,30 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsapp58b48a41"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsapp58b48a41"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_sesEmail": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsapp58b48a41"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {
