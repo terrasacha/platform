@@ -18,8 +18,9 @@ const aws = require('aws-sdk')
 const ses = new aws.SES()
 
 exports.handler = async (event) => {
+  console.log(event)
   for (const streamedItem of event.Records) {
-    if (streamedItem.eventName === 'UPDATE') {
+    if (streamedItem.eventName === 'MODIFY') {
       //pull off items from stream
       const candidateName = 'streamedItem.dynamodb.NewImage.name.S'
       const candidateEmail = 'streamedItem.dynamodb.NewImage.email.S'
@@ -27,7 +28,7 @@ exports.handler = async (event) => {
       await ses
           .sendEmail({
             Destination: {
-              ToAddresses: [process.env.SES_EMAIL],
+              ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
             },
             Source: process.env.SES_EMAIL,
             Message: {
