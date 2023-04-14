@@ -112,7 +112,7 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         const renderFeatureTypes = () => {
             if (featureTypes.length > 0) {
                 return (
-                    <Container>
+                    <Container style={{maxHeight: '30rem', overflowY: 'scroll'}}>
                     <h2>Features Types</h2>
                         <Table striped bordered hover>
                             <thead>

@@ -11,6 +11,8 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { createFeature, updateFeature } from '../../../graphql/mutations'
 import { listFeatures, listFeatureTypes, listUnitOfMeasures } from '../../../graphql/queries'
 import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureType } from '../../../graphql/subscriptions'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
  class Features extends Component {
@@ -28,7 +30,7 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                 name: '',
                 description: '',
                 isTemplate: false,
-                defaultValue: '',
+                defaultValue: '1',
                 featureTypeID: '',
                 unitOfMeasureID: ''
                /*  isAvailable: true, */
@@ -182,11 +184,16 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
     
     async handleCRUDFeature() {
         let tempNewFeature = this.state.newFeature
-
+        if(tempNewFeature.unitOfMeasureID === '') return this.notifyError('Asegurese de Seleccionar una unidad de medida')
         if (this.state.CRUDButtonName === 'CREATE') {
             let numberType = this.state.UnitOfMeasures.filter(uom => uom.id === tempNewFeature.unitOfMeasureID)
             tempNewFeature.defaultValue = numberType[0].isFloat? parseFloat(tempNewFeature.defaultValue) : parseInt(tempNewFeature.defaultValue)
-            await API.graphql(graphqlOperation(createFeature, { input: tempNewFeature }))
+            try {
+                await API.graphql(graphqlOperation(createFeature, { input: tempNewFeature }))
+                this.notify()
+            } catch (error) {
+                return this.notifyError('Asegurese de completar los campos obligatorios para crear la Feature')
+            }
             await this.cleanFeatureOnCreate()
         }
 
@@ -219,19 +226,45 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
             behavior: 'smooth',
         });
     };
-
+    notify = () =>{
+        toast.success('Feature creada', {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+    }
+    notifyError = (e) =>{
+        toast.error( e, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        this.setState({loading: false})
+    }
     async cleanFeatureOnCreate() {
          this.setState({
             CRUDButtonName: 'CREATE',
             isCRUDButtonDisable: true,
-            newFeature: {   
+            newFeature:{
                 id: '',
                 name: '',
                 description: '',
-                defaultValue: '',
                 isTemplate: false,
-                isAvailable: true,
-            }
+                defaultValue: '1',
+                featureTypeID: '',
+                unitOfMeasureID: ''
+               /*  isAvailable: true, */
+            },
         })
     }
     
@@ -244,9 +277,9 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
         const renderFeatures = () => {
             if (features.length > 0) {
                 return (
-                    <Container>
+                    <Container style={{maxHeight: '30rem', overflowY: 'scroll'}}>
                         <h2>Features</h2>
-                            <Table striped bordered hover>
+                            <Table striped bordered hover >
                                 <thead>
                                 <tr>
                                     <th>ID</th>
@@ -303,12 +336,13 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
 
         return (
             <Container> 
+                <ToastContainer />
                 <Container>
                     <h2>{CRUDButtonName} FeatureID: {newFeature.id}</h2>
                     <Form>
                         <Row className='mb-2'>
                             <Form.Group as={Col} controlId='formGridNewFeatureName'>
-                                <Form.Label>Name</Form.Label>
+                                <Form.Label>Name*</Form.Label>
                                 <Form.Control
                                     type='text'
                                     placeholder='Name...'
@@ -336,14 +370,14 @@ import { onCreateFeature, onCreateFeatureType, onUpdateFeature, onUpdateFeatureT
                                 <option value="no">No</option>
                                 <option value="yes">Yes</option>
                                 </Form.Select>
-                                <Form.Label>Type</Form.Label>
+                                <Form.Label>Type*</Form.Label>
                                 <Form.Select 
                                     name='feature.featureType'
                                     onChange={(e) => this.handleOnChangeInputForm(e)}>
                                         <option value=''>-</option>
                                         {this.state.featureTypes.map((featureType, idx) => (<option value={featureType.name} key={idx}>{featureType.name}</option>))}
                                 </Form.Select>
-                                <Form.Label>Unit Of Measure</Form.Label>
+                                <Form.Label>Unit Of Measure*</Form.Label>
                                 <Form.Select 
                                     name='feature.unitOfMeasure'
                                     onChange={(e) => this.handleOnChangeInputForm(e)}>
