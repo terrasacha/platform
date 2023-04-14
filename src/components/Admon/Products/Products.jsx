@@ -225,6 +225,7 @@ class Products extends Component {
     async loadProducts() {
         const listProductsResult = await API.graphql(graphqlOperation(listProducts))
         listProductsResult.data.listProducts.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        console.log(listProductsResult.data.listProducts.items,'listProductsResult.data.listProducts.items')
         this.setState({products: listProductsResult.data.listProducts.items})
     }
     async loadProductFeatures() {

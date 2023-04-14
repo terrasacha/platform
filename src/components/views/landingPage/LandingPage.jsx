@@ -133,6 +133,7 @@ export default class LandingPage extends Component {
         return product
     })
     tempListProductsResult.sort((a, b) => (a.order > b.order) ? 1 : -1)
+    tempListProductsResult = tempListProductsResult.filter(product => product.images.items.length > 0 && product.productFeatures.items.length > 0)
     this.setState({productsLanding: tempListProductsResult/* , productsImagesIsOnCarousel: tempProductsImagesIsOnCarousel */})
 }
   async logOut(){

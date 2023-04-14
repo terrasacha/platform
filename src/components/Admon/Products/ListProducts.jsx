@@ -101,10 +101,10 @@ export default class ListProducts extends Component {
                                         {product.order}
                                     </td>
                                     <td>
-                                        {product.name}
+                                        {product.name?product.name : ""}
                                     </td>
                                     <td>
-                                        {product.category.name}
+                                        {product.category? product.category.name: ""}
                                     </td>
                                     <td>
                                         {/* <Button 
