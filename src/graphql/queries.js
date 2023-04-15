@@ -88,6 +88,7 @@ export const getUser = /* GraphQL */ `
               items {
                 id
                 featureID
+                isVerifable
                 order
                 value
                 productID
@@ -109,6 +110,23 @@ export const getUser = /* GraphQL */ `
                   unitOfMeasure {
                     engineeringUnit
                     id
+                  }
+                }
+                verifications {
+                  items {
+                    verificationComments {
+                      items {
+                        comment
+                        createdAt
+                        id
+                        isCommentByVerifier
+                        verificationID
+                      }
+                    }
+                    id
+                    userVerifierID
+                    userVerifiedID
+                    createdAt
                   }
                 }
                 productFeatureResults {

@@ -14,6 +14,7 @@ import { getUser } from '../../graphql/queries'
 import wallet from './assets/crypto-digital-wallet-gID_4.jpg'
 import profile from './assets/PngItem_4042710.png'
 import Documents from './Documents/Documents'
+import ProductsList from './ProductsList/ProductsList'
 import s from './ConstructorAdmon.module.css'
 import HeaderNavbar from './Navbar/HeaderNavbar'
 import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
@@ -33,7 +34,8 @@ class ConstructorAdmon extends Component {
             },
             isShowDocuments: false,
             isShowProductsBuyed: false,
-            uploadNewProduct:true, //false
+            isShowProductsList:true,
+            uploadNewProduct:false, //false
             isShowInvestorProfile: false, //true
             showModalDocument: false,
             isRenderCompleteOrUpdateProfile: false,
@@ -76,6 +78,7 @@ class ConstructorAdmon extends Component {
                     await this.setState({
                         user: result.data.getUser,
                         isRenderCompleteOrUpdateProfile: false,
+                        isShowProductsList:true,
                         isShowDocuments: false,
                         isNewUser: false
                     })
@@ -95,6 +98,7 @@ class ConstructorAdmon extends Component {
                 isShowInvestorProfile: true,
                 isRenderCompleteOrUpdateProfile: false,
                 uploadNewProduct: false,
+                isShowProductsList: false
             })
         }
 
@@ -105,7 +109,8 @@ class ConstructorAdmon extends Component {
                 isShowInvestorProfile: false,
                 isRenderCompleteOrUpdateProfile: false,
                 uploadNewProduct: false,
-                isNewUser: false
+                isNewUser: false,
+                isShowProductsList: false
             })
         }
         if (pRequest === 'products_buyed') {
@@ -115,7 +120,8 @@ class ConstructorAdmon extends Component {
                 isShowInvestorProfile: false,
                 isRenderCompleteOrUpdateProfile: false,
                 uploadNewProduct: false,
-                isNewUser: false
+                isNewUser: false,
+                isShowProductsList: false
             })
         }
         if (pRequest === 'upload_product') {
@@ -125,7 +131,19 @@ class ConstructorAdmon extends Component {
                 isShowInvestorProfile: false,
                 isRenderCompleteOrUpdateProfile: false,
                 uploadNewProduct: true,
-                isNewUser: false
+                isNewUser: false,
+                isShowProductsList: false
+            })
+        }
+        if (pRequest === 'investor_products') {
+            this.setState({
+                isShowDocuments: false,
+                isShowProductsBuyed: false,
+                isShowInvestorProfile: false,
+                isRenderCompleteOrUpdateProfile: false,
+                uploadNewProduct: false,
+                isNewUser: false,
+                isShowProductsList: true
             })
         }
         
@@ -224,8 +242,7 @@ class ConstructorAdmon extends Component {
     }
 
     render() {
-        let {isShowDocuments, user, isRenderCompleteOrUpdateProfile, isShowProductsBuyed, uploadNewProduct} = this.state
-
+        let {isShowDocuments, user, isRenderCompleteOrUpdateProfile, isShowProductsBuyed, uploadNewProduct, isShowProductsList} = this.state
         const renderUserWallets = (user) => {
             if (user.wallets !== undefined && user.wallets.items !== undefined) {
                 if (user.wallets.items.length > 0) {
@@ -247,6 +264,13 @@ class ConstructorAdmon extends Component {
             if (isShowDocuments) {
                 return (
                     <Documents />
+                )
+            }
+        }
+        const renderProductsList = () => {
+            if (isShowProductsList) {
+                return (
+                    <ProductsList />
                 )
             }
         }
@@ -408,6 +432,7 @@ class ConstructorAdmon extends Component {
                     {renderOrders()}
                     {/* {renderProductsBuyed()} */}
                     {renderNewProduct()}
+                    {renderProductsList()}
                     {/* {renderModalWallet()} */}
                     {/* <NewProduct /> */}
                 </Row>
