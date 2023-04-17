@@ -7,6 +7,7 @@ import { listCategories, listFeatures } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import TyC from './TyC/TyC'
+import Button from './components/Button/Button'
 import { ToastContainer, toast } from 'react-toastify';
 import { InfoCircle } from 'react-bootstrap-icons'
 import { validarString } from '../functions/functions'
@@ -75,6 +76,7 @@ class NewProduct extends Component {
                 periodo_permanencia: '',
             },
             renderModalInformation: false,
+            activeButton: '',
             renderModalTyC: false,
             mostrarFormInfodeEmpresa: false,
             empresas: [],
@@ -96,6 +98,7 @@ class NewProduct extends Component {
         this.handleSetStateCompany = this.handleSetStateCompany.bind(this)
         this.onHideModalInformation = this.onHideModalInformation.bind(this)
         this.onHideModalTyC = this.onHideModalTyC.bind(this)
+        this.handleButtonClick = this.handleButtonClick.bind(this)
     }
     componentDidMount = async () => {
 
@@ -495,6 +498,10 @@ class NewProduct extends Component {
             company: tempCompany
         })
     }
+    handleButtonClick(buttonId){
+        console.log(buttonId, 'buttonid')
+        this.setState({activeButton: buttonId /* === this.state.activeButton ? null : buttonId */});
+      };
     notify = () => {
         toast.success('Formulario enviado', {
             position: "bottom-right",
@@ -531,7 +538,7 @@ class NewProduct extends Component {
         })
     }
     render() {
-        let { CRUD_Product, selectedCategory, productFeature } = this.state
+        let { CRUD_Product, selectedCategory, productFeature, activeButton } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
         return (
             <div className={s.container}>
@@ -571,6 +578,20 @@ class NewProduct extends Component {
                     /> : ''}
                 <div className={s.formContainer}>
                     <h2>Información de proyecto</h2>
+                    <div className={s.selectTypeProyect}>
+                        <Button
+                            id="proyecto_plantaciones"
+                            label="Proyecto Plantaciones"
+                            activeButton={this.state.activeButton}
+                            handleButtonClick={this.handleButtonClick}
+                        />
+                        <Button
+                            id="proyecto_redd"
+                            label="Proyecto REDD"
+                            activeButton={this.state.activeButton}
+                            handleButtonClick={this.handleButtonClick}
+                        />
+                    </div>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
                             <legend>

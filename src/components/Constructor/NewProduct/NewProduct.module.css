@@ -20,6 +20,24 @@
     font-size: 1.1em;
     color: #292929;
 }
+.selectTypeProyect{
+    width: 80%;
+    display: flex;
+}
+/* .selectTypeProyect button{
+    width: 50%;
+    height: 3rem;
+    border: 1px solid rgb(77,188,94);
+    font-size: .9em;
+    color: rgb(77,188,94);
+    background: #fff;
+    transition: .3s;
+}
+.selectTypeProyect button:hover{
+    color: white;
+    background: rgb(77,188,94);
+    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
+} */
 .formContainer{
     width: 90%; 
     margin-top: 2%;
