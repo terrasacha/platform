@@ -6,6 +6,8 @@ import { createImage, createProduct, createUserProduct, createProductFeature, cr
 import { listCategories, listFeatures } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import CompanyInformation from './companyInformation/CompanyInformation'
+import FromPlantaciones from './FormPlantaciones/FormPlantaciones'
+import FormRedd from './FormRedd/FormRedd'
 import TyC from './TyC/TyC'
 import Button from './components/Button/Button'
 import { ToastContainer, toast } from 'react-toastify';
@@ -578,20 +580,6 @@ class NewProduct extends Component {
                     /> : ''}
                 <div className={s.formContainer}>
                     <h2>Información de proyecto</h2>
-                    <div className={s.selectTypeProyect}>
-                        <Button
-                            id="proyecto_plantaciones"
-                            label="Proyecto Plantaciones"
-                            activeButton={this.state.activeButton}
-                            handleButtonClick={this.handleButtonClick}
-                        />
-                        <Button
-                            id="proyecto_redd"
-                            label="Proyecto REDD"
-                            activeButton={this.state.activeButton}
-                            handleButtonClick={this.handleButtonClick}
-                        />
-                    </div>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
                             <legend>
@@ -690,6 +678,7 @@ class NewProduct extends Component {
                             <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.periodo_permanencia}</span>
                         </fieldset>
                     </form>
+                    
                     <form className={s.formInputs2}>
                         <fieldset className={s.inputContainer}>
                             <legend>
@@ -712,10 +701,37 @@ class NewProduct extends Component {
                             />
                         </fieldset>
                     </form>
-                    {this.state.loading ? <button className={s.solicitudButtonDisabled} disabled>CREANDO</button> :
-                        <button className={s.solicitudButton} onClick={() => this.checkFormStatus()}>CREAR SOLICITUD</button>}
+                    <div className={s.selectTypeProyect}>
+                        <Button
+                            id="proyecto_plantaciones"
+                            label="Proyecto Plantaciones"
+                            activeButton={this.state.activeButton}
+                            handleButtonClick={this.handleButtonClick}
+                        />
+                        <Button
+                            id="proyecto_redd"
+                            label="Proyecto REDD"
+                            activeButton={this.state.activeButton}
+                            handleButtonClick={this.handleButtonClick}
+                        />
+                    </div>
+                    {this.state.activeButton === 'proyecto_plantaciones'?
+                    <FromPlantaciones 
+                        handleOnChangeInputForm={this.handleOnChangeInputForm}
+                    />
+                    :
+                    this.state.activeButton === 'proyecto_redd'?
+                    <FormRedd 
+                        handleOnChangeInputForm={this.handleOnChangeInputForm}
+                    />
+                    :
+                    ''
+                    }
+                    {this.state.loading && this.state.activeButton? <button className={s.solicitudButtonDisabled} disabled>CREANDO</button> :
+                        this.state.activeButton? <button className={s.solicitudButton} onClick={() => this.checkFormStatus()}>CREAR SOLICITUD</button>: ''}
 
                 </div>
+                
                 <TyC
                     renderModalTyC={this.state.renderModalTyC}
                     onHideModalTyC={this.onHideModalTyC}
