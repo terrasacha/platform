@@ -5,24 +5,29 @@ import { ArrowRight, CheckCircle, HourglassSplit, XCircle, Server, Water } from 
 import Bootstrap from "../../common/themes";
 // GraphQL
 import { API, Auth } from 'aws-amplify';
-import { getUser } from '../../../graphql/queries';
+import { getUser, getVerificationComment } from '../../../graphql/queries';
 
 class ProductsList extends Component {
     constructor(props) {
         super(props)
         this.state = {
             products: [],
+            vertificationComments: [],
             actualUserID: null,
             productToShow: null,
             isRenderModalProductAttachments: false,
-            selectedProductToShow: null,
+            selectedIDProductToShow: null,
             selectedVerificableProductFeaturesToShow: null,
             productFeaturesVerificables: null,
-            verificationComment: {
-
+            newVerificationComment: {
+                verificationID: null,
+                isCommentByVerifier: false,
+                comment: 'hola',
             }
         }
         this.handleHideModal = this.handleHideModal.bind(this)
+        this.handleInputCreateVerificationComment = this.handleInputCreateVerificationComment.bind(this)
+        this.handleCreateVerificaionComment = this.handleCreateVerificaionComment.bind(this)
     }
 
     componentDidMount = async () => {
@@ -40,77 +45,55 @@ class ProductsList extends Component {
         let userResult = await API.graphql({ query: getUser, variables: { id: ActualUserID } })
         let listUserProducts = userResult.data.getUser.userProducts.items
         this.setState({ products: listUserProducts, productFeaturesVerificables: listUserProducts })
-
     }
-
+    
     async handleHideModal(event, pModal) {
         if  (pModal === 'hide_modal_product_attatchments') {
             this.setState({isRenderModalProductAttachments: !this.state.isRenderModalProductAttachments})
         }
     }
 
-    async handleLoadModal(event, pProduct, pModal) {
+    async handleLoadModal(event, productID, pModal) {
         if (pModal === 'show_modal_product_attatchments') {
-            this.setState({isRenderModalProductAttachments: true, selectedProductToShow: pProduct})
+            this.setState({isRenderModalProductAttachments: true, selectedIDProductToShow: productID})
         }
     }
 
-    async handleCreateVerificationComment(e) {
+    async handleInputCreateVerificationComment(e) {
         if(e.target.name === 'verificationComment'){
             this.setState(prevState => ({
-                newVerificationComment: {...prevState.newProductFeature, value: e.target.value}}))
+                newVerificationComment: {...prevState.newVerificationComment, comment: e.target.value}}))
         }
     }
+    
+    handleCreateVerificaionComment = async (productFeature) => {
+
+        if (productFeature.verifications.items.length > 0) {
+            let verificationID = productFeature.verifications.items[0].id
+            this.setState(prevState => ({
+                newVerificationComment: {...prevState.newVerificationComment, verificationID: verificationID}}))
+        }
+
+        let tempNewVerificationComment = this.state.newVerificationComment
+        console.log(tempNewVerificationComment, 'vc')
+        console.log(this.state.newVerificationComment.verificationID)
+        this.cleanState()
+    }
+
+    cleanState = () => {
+        this.setState({
+            newVerificationComment: {
+                verificationID: null,
+                isCommentByVerifier: false,
+                comment: '',
+            },
+        })
+    }
+
+
 
     render() {
-        let { products, selectedProductToShow, isRenderModalProductAttachments } = this.state
-        const listAllUserProducts = () => {
-            if (products) {
-                return (
-                    <Container className='mt-4 '>
-                        <Row className="justify-content-md-center">
-                            <Col xs >
-                                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                                    <h5 className='mr-5'>Your products</h5>
-                                </div>
-                                <Table hover className='mt-4'>
-                                    <thead>
-                                        <tr>
-                                            <th>Proyecto</th>
-                                            <th>Categoria</th>
-                                            <th>Descripcion</th>
-                                            <th>Estado</th>
-                                            <th>Fecha de inscripcion</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            products.map(product => {
-                                                return (
-                                                    <tr key={product.productID}>
-                                                        <td>{product.product.name}</td>
-                                                        <td>{product.product.category.name}</td>
-                                                        <td>{product.product.description}</td>
-                                                        <td>{
-                                                            product.product.status === 'draft' ? <HourglassSplit size={25} color='grey' /> :
-                                                            product.product.status === 'verified' ? <CheckCircle size={25} color='#449E48' /> : 
-                                                            product.product.status === 'in_blockchain' ? <Server size={25} color='yellow' /> : 
-                                                            product.product.status === 'in_equilibrium' ? <Water size={25} color='#449E48' /> : 
-                                                            <XCircle size={25} color='#CC0000' />
-                                                        }</td>
-                                                        <td>{product.createdAt}</td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
-                            </Col>
-                        </Row>
-                    </Container>
-                )
-            }
-        }
+        let { products, selectedIDProductToShow, isRenderModalProductAttachments, newVerificationComment } = this.state
 
         const cardTextStyle = {
             textAlign: "justify",
@@ -121,7 +104,7 @@ class ProductsList extends Component {
             height:'150px',
         }
 
-        const listAllUserProductsv2 = () => {
+        const listAllUserProducts = () => {
             if (products) {
                 return (
                     <Container className='mt-4 '>
@@ -159,7 +142,7 @@ class ProductsList extends Component {
                                                 </div>
                                                 
                                                 <Row className="mt-3 px-2">
-                                                    <Button onClick={(e) => this.handleLoadModal(e, product, 'show_modal_product_attatchments')} variant="secondary">Verificables</Button>
+                                                    <Button onClick={(e) => this.handleLoadModal(e, product.productID, 'show_modal_product_attatchments')} variant="secondary">Verificables</Button>
                                                 </Row>
                                             </Card.Body>
                                             <Card.Footer>
@@ -178,8 +161,8 @@ class ProductsList extends Component {
         }
 
         const modalProductAttachments = () => {
-            if (isRenderModalProductAttachments && selectedProductToShow !== null) {
-
+            if (isRenderModalProductAttachments && selectedIDProductToShow !== null) {
+                let product = products.filter(product => product.productID === selectedIDProductToShow)[0]
                 return (
                     <Modal
                         show={this.state.isRenderModalProductAttachments}
@@ -190,13 +173,14 @@ class ProductsList extends Component {
                     >
                         <Modal.Header closeButton>
                             <Modal.Title id="contained-modal-title-vcenter">
-                                {selectedProductToShow.product.name}
+                                {product.product.name}
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                         <Accordion defaultActiveKey="0">
                             {
-                                selectedProductToShow.product.productFeatures.items.filter( productFeature => productFeature.isVerifable == true ).map( pf => {
+                                product.product.productFeatures.items.filter( productFeature => productFeature.isVerifable == true ).map( pf => {
+                                    let validationID 
                                     return (
                                         <Accordion.Item key={pf.featureID} eventKey={pf.featureID}>
                                             <Accordion.Header>{pf.feature.name}</Accordion.Header>
@@ -210,16 +194,25 @@ class ProductsList extends Component {
                                                     )
                                                 }))
                                             }
-                                            <Stack direction="horizontal" gap={3}>
-                                                <Form.Control className="me-auto" placeholder="Escribe un comentario aqui ..." />
+                                            <Stack direction="horizontal" gap={2}>
                                                 <Form.Control
                                                 className="me-auto"
                                                 type='text'
                                                 placeholder='Escribe un comentario aqui ...'
                                                 name='verificationComment'
-                                                onChange={(e) => this.handleCreateVerificationComment(e)} />
+                                                value={newVerificationComment.comment}
+                                                onChange={(e) => this.handleInputCreateVerificationComment(e)} />
                                                 <div className="vr" />
-                                                <Button variant="secondary">Enviar comentario</Button>
+                                                <Form.Control
+                                                    className="me-auto"
+                                                    type='text'
+                                                    placeholder='Escribe un comentario aqui ...'
+                                                    name='verificationComment'
+                                                    value={newVerificationComment.comment}
+                                                    onChange={(e) => this.setState({  })} />
+                                                <Button
+                                                    variant="secondary"
+                                                    onClick={(e) => this.handleCreateVerificaionComment(pf)}>Enviar comentario</Button>
                                             </Stack>
                                             </Accordion.Body>
                                         </Accordion.Item>
@@ -240,7 +233,7 @@ class ProductsList extends Component {
         return (
             <Container>
                 <Container>
-                    {listAllUserProductsv2()}
+                    {listAllUserProducts()}
                     {modalProductAttachments()}
                 </Container>
             </Container>
