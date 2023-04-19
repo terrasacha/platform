@@ -17,11 +17,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 import URL from '../../common/_conf/URL';
 // Utils 
+import randomWords from 'random-words';
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
 
 const regexInputName = /^[a-zA-Z_]+$/
+const regexInputTokenName = /^[a-zA-Z0-9_]{1,32}$/
 const regexInputNumber = /^[0-9]+$/
 const regexInputWebSite = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-z]{2,}(\/[a-zA-Z0-9#?=&%.]*)*$/
 const regexInputUbic = /^([a-zA-Z0-9]+\s*,\s*)*[a-zA-Z0-9]+$/
@@ -70,6 +72,7 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
+                token_name: randomWords({ exactly: 3, join: '_' }),
                 redd:{
                     redd_map: '',
                     redd_loc_pro: '',
@@ -100,6 +103,7 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
+                token_name: ''
             },
             renderModalInformation: false,
             activeButton: '',
@@ -127,7 +131,8 @@ class NewProduct extends Component {
         this.handleButtonClick = this.handleButtonClick.bind(this)
     }
     componentDidMount = async () => {
-
+        const tokenName = randomWords({ exactly: 3, join: '_' });
+        console.log(tokenName); // Output: "arca_bad_carro"
         await this.loadCategorysSelectItems()
         await this.fetchfeatureTypeIDS()
     }
@@ -249,7 +254,7 @@ class NewProduct extends Component {
             let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
             uploadImageResult = await Storage.put(imageName, file, {
                 level: "public",
-                contentType: "image/jpeg",
+                contentType: 'image/jpeg, application/pdf',
             });
             const newDocPayLoad = {
                 id: imageName,
@@ -327,6 +332,7 @@ class NewProduct extends Component {
                 { featureID: 'fecha_inscripcion', value: Date.parse(this.state.productFeature.fecha_inscripcion) },
                 { featureID: 'coordenadas', value: this.state.productFeature.coord },
                 { featureID: 'periodo_permanencia', value: this.state.productFeature.periodo_permanencia },
+                { featureID: 'token_name', value: this.state.productFeature.token_name },
               ];
               
             const userProducts = [payLoadNewUserProduct, payLoadAdmonProduct];
@@ -458,6 +464,7 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
+                token_name: randomWords({ exactly: 3, join: '_' }),
                 redd:{
                     redd_map: '',
                     redd_loc_pro: '',
@@ -488,6 +495,7 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
+                token_name: ''
             },
             imageToUpload: '',
             isImageUploadingFile: false, //se borraban los features y categorys
@@ -570,6 +578,13 @@ class NewProduct extends Component {
             let error = validarString(event.target.value, regexInputNumber)
             this.setState(prevState => ({
                 errors: { ...prevState.errors, periodo_permanencia: error }
+            }))
+        }
+        if (event.target.name === 'productFeature_token_name') {
+            tempCRUD_productFeature.token_name = event.target.value
+            let error = validarString(event.target.value, regexInputTokenName)
+            this.setState(prevState => ({
+                errors: { ...prevState.errors, token_name: error }
             }))
         }
         if (event.target.name === 'PP_for_ten_tie') {
@@ -836,6 +851,20 @@ class NewProduct extends Component {
                                 value={productFeature.periodo_permanencia}
                                 onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='Proyección de tiempo del proyecto en años' />
                             <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.periodo_permanencia}</span>
+                        </fieldset>
+                        <fieldset className={s.inputContainer}>
+                            <legend>
+                                Token name
+                                <div className={s["tooltip-text"]}>
+                                    <InfoCircle className={s.infoCircle} />
+                                    <span className={s["tooltip"]}>Palabras separadas por "_". Máximo 32 caracteres</span>
+                                </div>
+                            </legend>
+                            <input type="text"
+                                name='productFeature_token_name'
+                                value={productFeature.token_name}
+                                onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.token_name}</span>
                         </fieldset>
                     </form>
                     
