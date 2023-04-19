@@ -259,10 +259,10 @@ import 'react-toastify/dist/ReactToastify.css';
                 id: '',
                 name: '',
                 description: '',
-                isTemplate: false,
+                isTemplate: this.state.newFeature.isTemplate,
                 defaultValue: '1',
-                featureTypeID: '',
-                unitOfMeasureID: ''
+                featureTypeID: this.state.newFeature.featureTypeID,
+                unitOfMeasureID: this.state.newFeature.unitOfMeasureID
                /*  isAvailable: true, */
             },
         })

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature } from '../../../graphql/mutations'
+import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature, createDocument } from '../../../graphql/mutations'
 import { listCategories, listFeatures } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
 import CompanyInformation from './companyInformation/CompanyInformation'
@@ -15,6 +15,7 @@ import { InfoCircle } from 'react-bootstrap-icons'
 import { validarString } from '../functions/functions'
 import 'react-toastify/dist/ReactToastify.css';
 import WebAppConfig from '../../common/_conf/WebAppConfig'
+import URL from '../../common/_conf/URL';
 // Utils 
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
@@ -174,17 +175,21 @@ class NewProduct extends Component {
 
 
     selectImage(e, id) {
-        let documentType = id.split('_')[0]
-        this.setState(prevState => ({
-            ...prevState,
-            productFeature: {
-              ...prevState.productFeature,
-              [documentType]: {
-                ...prevState.productFeature[documentType],
-                [id]: e
-              }
-            }
-          }));
+        if(id){
+            let documentType = id.split('_')[0]
+            this.setState(prevState => ({
+                ...prevState,
+                productFeature: {
+                  ...prevState.productFeature,
+                  [documentType]: {
+                    ...prevState.productFeature[documentType],
+                    [id]: e
+                  }
+                }
+              }));
+        }else{
+            this.setState({imageToUpload: e})
+        }
     }
     async handleFiles(e, productID) {
         let uploadImageResult = null
@@ -219,6 +224,49 @@ class NewProduct extends Component {
         }
         await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
         this.setState({ isImageUploadingFile: false })
+
+    }
+    //Crea productFeatures y documentacion de PP o REDD
+    async handleDocuments(e,featureID, productID, userID) {
+        let idProductFeature = uuidv4().replaceAll('-', '_')
+        //creo pf
+        if (typeof e === "string") {
+            await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: e } }))
+          } else {
+            let uploadImageResult = null
+            let imageId = ''
+            const { target: { files } } = e;
+            const [file,] = files || [];
+            if (!file) {
+                return
+            }
+            await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: '' } }))
+            // Creating image ID
+            let fileNameSplitByDotfileArray = file.name.split('.')
+            imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
+            // Getting extension
+            let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
+            let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
+            uploadImageResult = await Storage.put(imageName, file, {
+                level: "public",
+                contentType: "image/jpeg",
+            });
+            const newDocPayLoad = {
+                id: imageName,
+                productFeatureID: idProductFeature,
+                userID: userID,
+                data: JSON.stringify({empty: ''}),
+                timeStamp: Date.now(),
+                url: URL + uploadImageResult.key,
+                signed: '',
+                signedHash: '',
+                isApproved: false,
+                status: '',
+                isUploadedToBlockChain: false,
+                documentTypeID: '1',
+            }
+            await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad }))
+          }
 
     }
 
@@ -273,16 +321,49 @@ class NewProduct extends Component {
                 productID: tempCRUD_Product.id,
                 isFavorite: true
             }
+            const productFeatures = [
+                { featureID: 'ha_tot', value: this.state.productFeature.ha_tot },
+                { featureID: 'ubicacion', value: this.state.productFeature.ubicacion },
+                { featureID: 'fecha_inscripcion', value: Date.parse(this.state.productFeature.fecha_inscripcion) },
+                { featureID: 'coordenadas', value: this.state.productFeature.coord },
+                { featureID: 'periodo_permanencia', value: this.state.productFeature.periodo_permanencia },
+              ];
+              
+            const userProducts = [payLoadNewUserProduct, payLoadAdmonProduct];
+            
+            const productFeaturePromises = productFeatures.map((feature) =>
+            API.graphql(graphqlOperation(createProductFeature, { input: { featureID: feature.featureID, productID: tempCRUD_Product.id, value: feature.value } }))
+            );
+            
+            const userProductPromises = userProducts.map((payload) =>
+            API.graphql(graphqlOperation(createUserProduct, { input: payload }))
+            );
+            
+            const createUserProductFeaturePromise = API.graphql(graphqlOperation(createProductFeature, { input: { featureID: `${userID}_${this.state.company.name}_name`, productID: tempCRUD_Product.id } }));
 
-            await API.graphql(graphqlOperation(createProductFeature, { input: { featureID: 'ha_tot', productID: tempCRUD_Product.id, value: this.state.productFeature.ha_tot } }))
-            await API.graphql(graphqlOperation(createProductFeature, { input: { featureID: 'ubicacion', productID: tempCRUD_Product.id, value: this.state.productFeature.ubicacion } }))
-            await API.graphql(graphqlOperation(createProductFeature, { input: { featureID: 'fecha_inscripcion', productID: tempCRUD_Product.id, value: Date.parse(this.state.productFeature.fecha_inscripcion) } }))
-            await API.graphql(graphqlOperation(createProductFeature, { input: { featureID: 'coordenadas', productID: tempCRUD_Product.id, value: this.state.productFeature.coord } }))
-            await API.graphql(graphqlOperation(createProductFeature, { input: { featureID: 'periodo_permanencia', productID: tempCRUD_Product.id, value: this.state.productFeature.periodo_permanencia } }))
-            await API.graphql(graphqlOperation(createUserProduct, { input: payLoadNewUserProduct }))
-            await API.graphql(graphqlOperation(createUserProduct, { input: payLoadAdmonProduct }))
-            await API.graphql(graphqlOperation(createProductFeature, { input: { featureID: `${userID}_${this.state.company.name}_name`, productID: tempCRUD_Product.id } }))
-            /* await this.handleCRUDCompany(tempCRUD_Product.id) */
+            if(this.state.activeButton === 'proyecto_plantaciones'){
+                const PPFeatures = Object.entries(this.state.productFeature.PP).map(([key, value]) => ({
+                    featureID: key,
+                    value,
+                    }));
+                PPFeatures.map((feature) =>  
+                    this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
+                );
+                
+            }   
+            if(this.state.activeButton === 'proyecto_redd'){
+                const REDDFeatures = Object.entries(this.state.productFeature.redd).map(([key, value]) => ({
+                    featureID: key,
+                    value,
+                    }));
+                REDDFeatures.map((feature) =>
+                    this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
+                );
+                
+            } 
+            const allPromises = [...productFeaturePromises, ...userProductPromises, createUserProductFeaturePromise];
+            
+            await Promise.all(allPromises);
             await this.cleanProductOnCreate()
             this.setState({ loading: false })
             this.notify()
@@ -581,8 +662,7 @@ class NewProduct extends Component {
         })
     }
     handleButtonClick(buttonId){
-        console.log(buttonId, 'buttonid')
-        this.setState({activeButton: buttonId /* === this.state.activeButton ? null : buttonId */});
+        this.setState({activeButton: buttonId});
       };
     notify = () => {
         toast.success('Formulario enviado', {
