@@ -31,7 +31,6 @@ export default class ProductsBuyed extends Component {
             up.product.orders = up.orders
            return up.product
         })
-        console.log(products, 'products ')
         this.setState({products: products})
     }
     async handleLoadSelectedProduct(event, pProduct, pModal) {

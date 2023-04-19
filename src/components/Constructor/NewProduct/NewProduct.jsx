@@ -69,6 +69,29 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
+                redd:{
+                    redd_map: '',
+                    redd_loc_pro: '',
+                    redd_gob: '',
+                    redd_act_pro: '',
+                    redd_tur: '',
+                    redd_esc_sin_pro: '',
+                    redd_cre_car: '',
+                    redd_par_ben: '',
+                    redd_con_loc: '',
+                },
+                PP:{
+                    PP_rep: '',
+                    PP_for_ten_tie: '',
+                    PP_pre_sue_tie: '',
+                    PP_vin: '',
+                    PP_reg_pla: '',
+                    PP_pla_man_for: '',
+                    PP_pol_del: '',
+                    PP_pla_sie: '',
+                    PP_mon: '',
+                    PP_pert: '',
+                }
             },
             errors: {
                 title: '',
@@ -150,8 +173,18 @@ class NewProduct extends Component {
     }
 
 
-    selectImage(e) {
-        this.setState({ imageToUpload: e })
+    selectImage(e, id) {
+        let documentType = id.split('_')[0]
+        this.setState(prevState => ({
+            ...prevState,
+            productFeature: {
+              ...prevState.productFeature,
+              [documentType]: {
+                ...prevState.productFeature[documentType],
+                [id]: e
+              }
+            }
+          }));
     }
     async handleFiles(e, productID) {
         let uploadImageResult = null
@@ -344,6 +377,29 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
+                redd:{
+                    redd_map: '',
+                    redd_loc_pro: '',
+                    redd_gob: '',
+                    redd_act_pro: '',
+                    redd_tur: '',
+                    redd_esc_sin_pro: '',
+                    redd_cre_car: '',
+                    redd_par_ben: '',
+                    redd_con_loc: '',
+                },
+                PP:{
+                    PP_rep: '',
+                    PP_for_ten_tie: '',
+                    PP_pre_sue_tie: '',
+                    PP_vin: '',
+                    PP_reg_pla: '',
+                    PP_pla_man_for: '',
+                    PP_pol_del: '',
+                    PP_pla_sie: '',
+                    PP_mon: '',
+                    PP_pert: '',
+                }
             },
             errors: {
                 title: '',
@@ -434,6 +490,30 @@ class NewProduct extends Component {
             this.setState(prevState => ({
                 errors: { ...prevState.errors, periodo_permanencia: error }
             }))
+        }
+        if (event.target.name === 'PP_for_ten_tie') {
+            tempCRUD_productFeature.PP.PP_for_ten_tie = event.target.value
+        }
+        if (event.target.name === 'PP_pert') {
+            tempCRUD_productFeature.PP.PP_pert = event.target.value
+        }
+        if (event.target.name === 'redd_loc_pro') {
+            tempCRUD_productFeature.redd.redd_loc_pro = event.target.value
+        }
+        if (event.target.name === 'redd_act_pro') {
+            tempCRUD_productFeature.redd.redd_act_pro = event.target.value
+        }
+        if (event.target.name === 'redd_tur') {
+            tempCRUD_productFeature.redd.redd_tur = event.target.value
+        }
+        if (event.target.name === 'redd_esc_sin_pro') {
+            tempCRUD_productFeature.redd.redd_esc_sin_pro = event.target.value
+        }
+        if (event.target.name === 'redd_par_ben') {
+            tempCRUD_productFeature.redd.redd_par_ben = event.target.value
+        }
+        if (event.target.name === 'redd_con_loc') {
+            tempCRUD_productFeature.redd.redd_con_loc = event.target.value
         }
         this.setState({ CRUD_Product: tempCRUD_Product, productFeature: tempCRUD_productFeature })
     }
@@ -717,11 +797,15 @@ class NewProduct extends Component {
                     </div>
                     {this.state.activeButton === 'proyecto_plantaciones'?
                     <FromPlantaciones 
+                        selectImage={this.selectImage}
+                        productFeature = {this.state.productFeature}
                         handleOnChangeInputForm={this.handleOnChangeInputForm}
                     />
                     :
                     this.state.activeButton === 'proyecto_redd'?
-                    <FormRedd 
+                    <FormRedd
+                        selectImage={this.selectImage}
+                        productFeature = {this.state.productFeature}
                         handleOnChangeInputForm={this.handleOnChangeInputForm}
                     />
                     :

@@ -8,10 +8,7 @@ class FormRedd extends Component {
         this.state = {
             imageToUpload: ''
         }
-        this.selectImage = this.selectImage.bind(this)
-    }
-    selectImage(e) {
-        this.setState({ imageToUpload: e })
+        this.selectImage = this.props.selectImage.bind(this)
     }
     render(){
 
@@ -21,6 +18,7 @@ class FormRedd extends Component {
                     <legend>Mapa</legend>
                     <p>Mapa del territorio ( en archivo shapefiles o kmz) con coordenadas en donde se desarrollara el proyecto REDD</p>
                     <DragArea
+                        id='redd_map'
                         selectImage={this.selectImage}
                     />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.ubicacion} */}</span>
@@ -29,8 +27,8 @@ class FormRedd extends Component {
                     <legend>Localización del Proyecto</legend>
                     <p>Localización con cooordenadas del perimetro del predio</p>
                     <textarea
-                        name='PP_form_ten_tie'
-                        value={''}
+                        name='redd_loc_pro'
+                        value={this.props.productFeature.redd_loc_pro}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
@@ -38,6 +36,7 @@ class FormRedd extends Component {
                     <legend>Gobernanza</legend>
                     <p>Tipo de propiedad de la tierra (incluir certificados de propiedad)</p>
                     <DragArea
+                        id='redd_gob'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -45,8 +44,8 @@ class FormRedd extends Component {
                     <legend>Actividades Proyecto </legend>
                     <p>Actividades a desarrollar como parte del esquema REDD. Iniciativas que tengran como objetivo evitar la deforestacion.</p>
                     <textarea
-                        name='PP_form_ten_tie'
-                        value={''}
+                        name='redd_act_pro'
+                        value={this.props.productFeature.redd_act_pro}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
@@ -54,8 +53,8 @@ class FormRedd extends Component {
                     <legend>Turberas</legend>
                     <p>¿Existen en el área suelos orgánicos (turberas) que serán drenados? Explique</p>
                     <textarea
-                        name='PP_form_ten_tie'
-                        value={''}
+                        name='redd_tur'
+                        value={this.props.productFeature.redd_tur}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
@@ -63,8 +62,8 @@ class FormRedd extends Component {
                     <legend>Escenario sin proyecto</legend>
                     <p>¿Qué le hubiera pasado al área del proyecto en ausencia de su proyecto propuesto? Ha tenido otras alternativas de uso de tierra?</p>
                     <textarea
-                        name='PP_form_ten_tie'
-                        value={''}
+                        name='redd_esc_sin_pro'
+                        value={this.props.productFeature.redd_esc_sin_pro}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
@@ -72,6 +71,7 @@ class FormRedd extends Component {
                     <legend>Créditos de carbono considerado desde el inicio de la concepción del proyecto</legend>
                     <p>Documento que mencione que el aporte extra de los créditos de carbono ha sido considerado desde el inicio de la concepción del proyecto. El documento debe estar fechado antes del inicio de proyecto o del primer recibo relativo a la inversión.</p>
                     <DragArea
+                        id='redd_cre_car'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -79,8 +79,8 @@ class FormRedd extends Component {
                     <legend>Participantes/Beneficios</legend>
                     <p>Quienes son los participantes del proyecto? Cual es el mecanismo de distribucion de beneficios?</p>
                     <textarea
-                        name='PP_form_ten_tie'
-                        value={''}
+                        name='redd_par_ben'
+                        value={this.props.productFeature.redd_par_ben}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
@@ -88,8 +88,8 @@ class FormRedd extends Component {
                     <legend>Consultas locales, o procesos de localización</legend>
                     <p>¿Se han llevado a cabo consultas locales o procesos de socialización del proyecto? ¿Cuales? Se puede soportar con actas de asistencia, etc. Explique.</p>
                     <textarea
-                        name='PP_form_ten_tie'
-                        value={''}
+                        name='redd_con_loc'
+                        value={this.props.productFeature.redd_con_loc}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>

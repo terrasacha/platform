@@ -18,7 +18,6 @@ class Button extends Component {
         if(prevProps.activeButton !== this.props.activeButton){
             const isActive = this.props.activeButton === this.props.id;
             if(isActive){
-                console.log('active true')
                 return this.setState({isActive: true})
             }else{
                 return this.setState({isActive: false})

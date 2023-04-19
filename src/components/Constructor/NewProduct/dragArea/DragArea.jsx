@@ -10,7 +10,7 @@ class DragArea extends Component{
     this.selectImage = this.props.selectImage.bind(this)
   }
 
-  changeImage = (e) => {
+  changeImage = (e, id) => {
     const file = e.target.files[0];
     if (file.size > 5000000) { // limite de 5 MB
       this.setState({ imageError: 'La imagen excede el límite de tamaño. Tamaño máximo 5mb'})
@@ -22,7 +22,7 @@ class DragArea extends Component{
           e.preventDefault();
           this.setState({ImageSelectedPrevious: file.name})
         };
-        this.selectImage(e)
+        this.selectImage(e, id)
       }
     }
     
@@ -39,7 +39,7 @@ class DragArea extends Component{
               accept="image/*"
               multiple
               onChange={(e) => {
-                this.changeImage(e);
+                this.changeImage(e, this.props.id);
               }}
             />
             <div className={s.text_information}>

@@ -8,11 +8,9 @@ class FromPlantaciones extends Component {
         this.state = {
             imageToUpload: ''
         }
-        this.selectImage = this.selectImage.bind(this)
+        this.selectImage = this.props.selectImage.bind(this)
     }
-    selectImage(e) {
-        this.setState({ imageToUpload: e })
-    }
+
     render(){
 
         return(
@@ -21,6 +19,7 @@ class FromPlantaciones extends Component {
                     <legend>Representación</legend>
                     <p>Certificado de existencia y representación </p>
                     <DragArea
+                        id='PP_rep'
                         selectImage={this.selectImage}
                     />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.ubicacion} */}</span>
@@ -29,8 +28,8 @@ class FromPlantaciones extends Component {
                     <legend>Forma de tenecia de la tierra</legend>
                     <p>Contrato de arriendo o comodato, etc...(En caso de ser un predio que no es propio)</p>
                     <textarea
-                        name='PP_form_ten_tie'
-                        value={''}
+                        name='PP_for_ten_tie'
+                        value={this.props.productFeature.PP.PP_for_ten_tie}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
@@ -38,6 +37,7 @@ class FromPlantaciones extends Component {
                     <legend>Preparación de suelos y tierra</legend>
                     <p>Documento que evidencie la fecha de inicio del proyecto forestal (contrato de preparación de suelos o siembras</p>
                     <DragArea
+                        id='PP_pre_sue_tie'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -45,6 +45,7 @@ class FromPlantaciones extends Component {
                     <legend>Vinculaciones</legend>
                     <p>Contrato de vinculación firmado </p>
                     <DragArea
+                        id='PP_vin'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -54,6 +55,7 @@ class FromPlantaciones extends Component {
                     </legend>
                     <p>Registro ICA de las plantaciones</p>
                     <DragArea
+                        id='PP_reg_pla'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -61,6 +63,7 @@ class FromPlantaciones extends Component {
                     <legend>Plan de manejo forestal</legend>
                     <p>Plan de establecimiento y manejo forestal PEMF </p>
                     <DragArea
+                        id='PP_pla_man_for'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -68,6 +71,7 @@ class FromPlantaciones extends Component {
                     <legend>Polígonos de delimitación</legend>
                     <p>Información geografica del proyecto: Poligonos de la delimitación del predio y de los lotes de siembra (en formato shp, kmz, gdb, dwg o gpx). </p>
                     <DragArea
+                        id='PP_pol_del'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -75,6 +79,7 @@ class FromPlantaciones extends Component {
                     <legend>Plan de siembras</legend>
                     <p>Plan de siembras ( area plantada o por platar por especie cada año) Tabla de excel </p>
                     <DragArea
+                        id='PP_pla_sie'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -82,6 +87,7 @@ class FromPlantaciones extends Component {
                     <legend>Monitoreo</legend>
                     <p>Establecimiento de parcelas de monitoreo</p>
                     <DragArea
+                        id='PP_mon'
                         selectImage={this.selectImage}
                     />
                 </fieldset>
@@ -90,7 +96,7 @@ class FromPlantaciones extends Component {
                     <p>Formato de nuevas plantaciones y eventos de perturbación </p>
                     <textarea
                         name='PP_pert'
-                        value={''}
+                        value={this.props.productFeature.PP.PP_pert}
                         onChange={(e) =>  this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
