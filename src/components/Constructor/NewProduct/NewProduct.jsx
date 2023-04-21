@@ -23,7 +23,7 @@ import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
 
 const regexInputName = /^[a-zA-Z_]+$/
-const regexInputTokenName = /^[a-zA-Z0-9_]{1,32}$/
+const regexInputTokenName = /^[a-zA-Z0-9]{1,32}$/
 const regexInputNumber = /^[0-9]+$/
 const regexInputWebSite = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-z]{2,}(\/[a-zA-Z0-9#?=&%.]*)*$/
 const regexInputUbic = /^([a-zA-Z0-9]+\s*,\s*)*[a-zA-Z0-9]+$/
@@ -72,7 +72,7 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
-                token_name: randomWords({ exactly: 3, join: '_' }),
+                token_name: randomWords({ exactly: 3, join: '' }),
                 redd:{
                     redd_map: '',
                     redd_loc_pro: '',
