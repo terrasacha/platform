@@ -7,7 +7,7 @@ import { createFeature, createProductFeature, createUser } from '../../../graphq
 import s from './Login.module.css'
 import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
-    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signUp',terms: false,privacy_policy:false, role: 'investor'
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signUp' ,terms: false,privacy_policy:false, role: 'investor', code: ''
 }
 
 export default function LogIn() {
@@ -128,6 +128,33 @@ export default function LogIn() {
         }
         setLoading(false)
     }
+    
+    async function forgotPassword(){
+        const { username } = formState
+        try {
+            setError("")
+            setLoading(true)
+            // Send confirmation code to user's email
+            await Auth.forgotPassword(username)
+            updateFormState(() => ({...formState, formType: 'confirmFPcode' }))
+        } catch (error) {
+            setError("User name does not exist.")
+        }
+        setLoading(false)
+    }
+    async function confirmNewPassword(){
+        const { username, code, password} = formState
+        try {
+            setError("")
+            setLoading(true)
+            // Send confirmation code to user's email
+            await Auth.forgotPasswordSubmit(username, code, password)
+            updateFormState(() => ({...formState, formType: 'signIn' }))
+        } catch (error) {
+            setError("El código no es válido.")
+        }
+        setLoading(false)
+    }
   return (
     <div className={s.container} >
         <div className={s.firstContainer}>
@@ -143,7 +170,7 @@ export default function LogIn() {
                 <div className={s.containerLogin}>
                     <div className={s.containerCard}>
                         <div className={s.containerTitle}>
-                            <img src={LOGO} style={{width:'150px'}}/>
+                            <img src={LOGO} style={{width:'150px'}} alt='logo'/>
                             <h2 className="text-center mb-4">Sign up</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
                         </div>
@@ -197,7 +224,7 @@ export default function LogIn() {
                 <div className={s.containerLogin}>
                     <div className={s.containerCard}>
                             <div className={s.containerTitle}>
-                                <img src={LOGO} style={{width:'150px'}}/>
+                                <img src={LOGO} style={{width:'150px'}} alt='logo'/>
                                 <h2 className="text-center mb-4">Confirmation</h2>
                             </div>
                             <Alert>Verification code send to {formState.email}</Alert>
@@ -220,7 +247,7 @@ export default function LogIn() {
             <div className={s.containerLogin}>
                 <div className={s.containerCard}>
                     <div className={s.containerTitle}>
-                        <img src={LOGO} style={{width:'150px'}}/>
+                        <img src={LOGO} style={{width:'150px'}} alt='logo'/>
                         <h2 className="text-center mb-4">Log In</h2>
                         {error && <Alert variant="danger">{error}</Alert>}
                     </div>
@@ -233,6 +260,11 @@ export default function LogIn() {
                             <legend>Password</legend>
                             <input type="password" name='password' onChange={onChange}/>
                         </fieldset>
+                        <span 
+                            style={{cursor: 'pointer',width: '100%',fontSize: '.9em',color:'rgba(77,188,94,1)',textAlign: 'end'}}
+                            onClick={() => updateFormState(() => ({
+                                    ...formState, formType: 'ForgotPassword'
+                                }))}>Forgot your password?</span>
                         <button disabled={loading} onClick={signIn} >
                             {loading?'Loading': 'Log In'}
                         </button>
@@ -244,6 +276,64 @@ export default function LogIn() {
                     </div>
                 </div>
             </div>
+            )
+        }
+        {
+            formType === 'ForgotPassword' && (
+                <div>
+                    <div className={s.containerCard}>
+                        <div className={s.containerTitle}>
+                            <img src={LOGO} style={{width:'150px'}} alt='logo'/>
+                            <h2 className="text-center mb-4">Forgot Password</h2>
+                            {error && <Alert variant="danger">{error}</Alert>}
+                        </div>
+                        <form className={s.inputContainer}>
+                            <fieldset>
+                                <legend>User Name</legend>
+                                <input name='username' onChange={onChange}/>
+                            </fieldset>
+                            <span className={s.forgotPasswordSpan}>The password will be sent to the email address associated with the user</span>
+                            <button disabled={loading} onClick={forgotPassword} >
+                                {loading?'Sending': 'Send new code'}
+                            </button>
+                        </form>
+                        <div className={s.needAccount}>
+                            Need an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
+                                ...formState, formType: 'signUp'
+                            }))}>Sign Up</span>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+        {
+            formType === 'confirmFPcode' && (
+                <div>
+                    <div className={s.containerCard}>
+                        <div className={s.containerTitle}>
+                            <img src={LOGO} style={{width:'150px'}} alt='logo'/>
+                            <h2 className="text-center mb-4">Confirm code</h2>
+                            {error && <Alert variant="danger">{error}</Alert>}
+                        </div>
+                        <form className={s.inputContainer}>
+                            <fieldset>
+                                <legend>User Name</legend>
+                                <input name='username' onChange={onChange}/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Code</legend>
+                                <input name='code' onChange={onChange}/>
+                            </fieldset>
+                            <fieldset>
+                                <legend>New Password</legend>
+                                <input type="password" name='password' onChange={onChange}/>
+                            </fieldset>
+                            <button disabled={loading} onClick={confirmNewPassword} >
+                                {loading?'Loading': 'Confirm new password'}
+                            </button>
+                        </form>
+                    </div>
+                </div>
             )
         }
         {

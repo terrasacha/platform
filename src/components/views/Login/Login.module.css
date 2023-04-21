@@ -67,6 +67,11 @@
     height: 2.5rem;
     font-size: .9em;
 }
+.forgotPasswordSpan{
+    width: 100%;
+    font-size: .7em;
+    color: #a1a1a1;
+}
 .checkbox{
     display: flex;
     align-items: center;
