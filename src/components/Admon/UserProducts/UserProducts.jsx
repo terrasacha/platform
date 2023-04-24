@@ -134,6 +134,12 @@ componentWillUnmount() {
         this.setState({usersCopy: filteredUsers})
      }else this.setState({usersCopy: this.state.users})
     } 
+    if(data === 'validator'){
+      filteredUsers = users.filter(user => user.role === 'validator')
+      if(filteredUsers.length > 0){
+        this.setState({usersCopy: filteredUsers})
+     }else this.setState({usersCopy: this.state.users})
+    } 
   }
   async handleAssignProduct(){
     let existUP = false
@@ -239,7 +245,7 @@ componentWillUnmount() {
                                   {product.name} 
                               </td>
                               <td>
-                                  {product.description.slice(0,100)} 
+                                  {product.description?.slice(0,100)} 
                               </td>
                               <td>
                                   {product.categoryID} 
@@ -352,6 +358,7 @@ componentWillUnmount() {
           <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('admon')}>Admins</Dropdown.Item>
           <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('constructor')}>Constructors</Dropdown.Item>
           <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('investor')}>Investors</Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('validator')}>Validators</Dropdown.Item>
         </DropdownButton>
       )
   }
