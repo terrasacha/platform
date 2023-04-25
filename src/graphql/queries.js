@@ -854,6 +854,15 @@ export const listDocuments = /* GraphQL */ `
               updatedOn
               sign
               createdOn
+              verificationComments {
+                items {
+                  comment
+                  createdAt
+                  id
+                  isCommentByVerifier
+                  verificationID
+                }
+              }
             }
           }
         }

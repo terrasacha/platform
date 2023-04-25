@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Alert, Button, Col, Form, Table } from 'react-bootstrap'
 //GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
-import { createProductFeature, updateProductFeature } from '../../../graphql/mutations'
+import { createProductFeature, updateProductFeature, createVerification } from '../../../graphql/mutations'
 //Utils
 import Select from 'react-select'
 import { v4 as uuidv4 } from 'uuid'
@@ -24,6 +24,15 @@ export default class CRUDProductFeatures extends Component {
                 isOnMainCard: true,
                 isToBlockChain: false,
                 isVerifable: false,
+            },
+            newVerification: {
+                id: '',
+                createdOn: '',
+                updatedOn: '',
+                sign: '',
+                userVerifierID: '',
+                userVerifiedID: '',
+                productFeatureID: '',
             },
         }
         this.handleOnSelectFeature = this.props.handleOnSelectFeature.bind(this)
@@ -83,12 +92,21 @@ export default class CRUDProductFeatures extends Component {
             tempNewProductFeature.featureID = this.props.selectedFeature.id
             
             await API.graphql(graphqlOperation(createProductFeature, { input: tempNewProductFeature }))
+
+            if (tempNewProductFeature.isVerifable === true) {
+                let tempNewVerification = this.state.newVerification
+                tempNewVerification.id = uuidv4().replaceAll('-', '_')
+                tempNewVerification.createdOn = new Date().toISOString()
+                tempNewVerification.updatedOn = new Date().toISOString()
+                tempNewVerification.productFeatureID = tempNewProductFeature.id
+                await API.graphql(graphqlOperation(createVerification, { input: tempNewVerification }))
+                await this.cleanVerificationCreate()
+
+            }
+
             await this.cleanProductFeatureCreate()
         }
         
-        
-        
-
         if (this.state.CRUDButtonName === 'UPDATE') {
             delete tempNewProductFeature.createdAt
             delete tempNewProductFeature.updatedAt
@@ -106,23 +124,37 @@ export default class CRUDProductFeatures extends Component {
         }
     }
 
-
     async cleanProductFeatureCreate() {
         this.setState({
-           CRUDButtonName: 'ADD',
-           isCRUDButtonDisable: true,
-           newProductFeature: {
-            id: '',
-            productID: '',
-            featureID: '',
-            value: '',
-            order: '',
-            isOnMainCard: true,
-            isToBlockChain: false,
-            isVerifable: false,
-        },
+            CRUDButtonName: 'ADD',
+            isCRUDButtonDisable: true,
+            newProductFeature: {
+                id: '',
+                productID: '',
+                featureID: '',
+                value: '',
+                order: '',
+                isOnMainCard: true,
+                isToBlockChain: false,
+                isVerifable: false,
+            },
        })
-   }
+    }
+
+    async cleanVerificationCreate() {
+        this.setState({
+            newVerification: {
+                id: '',
+                createdOn: '',
+                updatedOn: '',
+                sign: '',
+                userVerifierID: '',
+                userVerifiedID: '',
+                productFeatureID: '',
+            },
+        })
+    }
+
    handleLoadEditProductFeature= async(productFeature, event) => {
     this.setState({
             newProductFeature:  productFeature,

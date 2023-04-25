@@ -46,6 +46,16 @@ class NewProduct extends Component {
                 categoryID: '',
                 images: [],
             },
+            newVerification: {
+                id: '',
+                createdOn: '',
+                updatedOn: '',
+                sign: '',
+                userVerifierID: '',
+                userVerifiedID: '',
+                productFeatureID: '',
+                documentStatus: '',
+            },
             company: {
                 name: '',
                 id: '',
