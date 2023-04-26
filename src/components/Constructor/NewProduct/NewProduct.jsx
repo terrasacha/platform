@@ -248,39 +248,50 @@ class NewProduct extends Component {
         if (typeof e === "string") {
             await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: e } }))
           } else {
-            let uploadImageResult = null
-            let imageId = ''
-            const { target: { files } } = e;
-            const [file,] = files || [];
-            if (!file) {
-                return
+            try {
+                let imageId = ''
+                const { target: { files } } = e;
+                const [file,] = files || [];
+                if (!file) {
+                    return
+                }
+                await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: '' } }))
+                // Creating image ID
+                let fileNameSplitByDotfileArray = file.name.split('.')
+                imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
+                // Getting extension
+                let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
+                let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
+                /* let uploadImageResult = await Storage.put(imageName, file, {
+                    level: "public",
+                    contentType: 'image/jpeg, application/pdf',
+                }) */
+                Storage.put(imageName, file, {
+                    level: "public",
+                    contentType: 'image/jpeg, application/pdf',
+                }).then(async (data)=>{
+
+                    const newDocPayLoad = {
+                        id: imageName,
+                        productFeatureID: idProductFeature,
+                        userID: userID,
+                        data: JSON.stringify({empty: ''}),
+                        timeStamp: Date.now(),
+                        url: `${URL}${data.key}`,
+                        signed: '',
+                        signedHash: '',
+                        isApproved: false,
+                        status: '',
+                        isUploadedToBlockChain: false,
+                        documentTypeID: '1',
+                    }
+                    console.log(`url de ${newDocPayLoad.id}`, newDocPayLoad.url)
+                    await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad }))
+                })
+                
+            } catch (error) {
+                
             }
-            await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: '' } }))
-            // Creating image ID
-            let fileNameSplitByDotfileArray = file.name.split('.')
-            imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
-            // Getting extension
-            let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
-            let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
-            uploadImageResult = await Storage.put(imageName, file, {
-                level: "public",
-                contentType: 'image/jpeg, application/pdf',
-            });
-            const newDocPayLoad = {
-                id: imageName,
-                productFeatureID: idProductFeature,
-                userID: userID,
-                data: JSON.stringify({empty: ''}),
-                timeStamp: Date.now(),
-                url: URL + uploadImageResult.key,
-                signed: '',
-                signedHash: '',
-                isApproved: false,
-                status: '',
-                isUploadedToBlockChain: false,
-                documentTypeID: '1',
-            }
-            await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad }))
           }
 
     }
