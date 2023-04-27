@@ -15,6 +15,7 @@ export default function LogIn() {
     const [user, updateUser] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+    const [inputError, setInputError] = useState({username: ''})
     const [explain, setExplain] = useState('Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente')
     
     useEffect(() => {
@@ -46,9 +47,16 @@ export default function LogIn() {
     function onChange(e){
         e.persist()
         updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
+        if(e.target.name === 'username') setInputError(prevState => ({...prevState, username: validarString(e.target.value, /^[a-zA-Z_]+$/) }));
         if(e.target.value === 'investor') setExplain('Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente')
         if(e.target.value === 'constructor') setExplain('Dueño de un predio interesado en transformar un predio en un activo ambiental monetizable')
     }
+    function validarString(str, regex) {
+        if (!regex.test(str)) {
+            return 'Espacios no permitidos'
+        }
+        return ''
+      }
 
     const { formType } = formState
 
@@ -178,6 +186,7 @@ export default function LogIn() {
                             <fieldset>
                                 <legend>User Name</legend>
                                 <input name='username' onChange={onChange} placeholder='user name' />
+                                {inputError.username && <span style={{color:'red', fontSize:'.8em'}}>{inputError.username}</span>}
                             </fieldset>
                             <fieldset>
                                 <legend>Email</legend>
