@@ -44,10 +44,11 @@ class FromPlantaciones extends Component {
                 <fieldset className={s.inputContainer}>
                     <legend>Vinculaciones</legend>
                     <p>Contrato de vinculación firmado </p>
-                    <DragArea
-                        id='PP_vin'
-                        selectImage={this.selectImage}
-                    />
+                    <textarea
+                        name='PP_vin'
+                        value={this.props.productFeature.PP.PP_vin}
+                        onChange={(e) => this.props.handleOnChangeInputForm(e)} />
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>

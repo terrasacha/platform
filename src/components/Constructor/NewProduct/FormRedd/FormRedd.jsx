@@ -24,10 +24,10 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.ubicacion} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Localización del Proyecto</legend>
-                    <p>Localización con cooordenadas del perimetro del predio</p>
+                    <legend>Amenaza de deforestación</legend>
+                    <p>¿Existen amenazas de deforestación para el área del proyecto? ¿Cuáles?</p>
                     <textarea
-                        name='redd_loc_pro'
+                        name='redd_ame_def'
                         value={this.props.productFeature.redd_loc_pro}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
@@ -89,6 +89,15 @@ class FormRedd extends Component {
                     <p>¿Se han llevado a cabo consultas locales o procesos de socialización del proyecto? ¿Cuales? Se puede soportar con actas de asistencia, etc. Explique.</p>
                     <textarea
                         name='redd_con_loc'
+                        value={this.props.productFeature.redd_con_loc}
+                        onChange={(e) => this.props.handleOnChangeInputForm(e)} />
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                </fieldset>
+                <fieldset className={s.inputContainer}>
+                    <legend>Documento que contenga la descripción general del área del proyecto y las actividades</legend>
+                    <p>¿Cuenta con un documento que contenga la descripción general del área del proyecto y las actividades?</p>
+                    <textarea
+                        name='red_doc_des_gen_pro_act'
                         value={this.props.productFeature.redd_con_loc}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>

@@ -85,8 +85,9 @@ class NewProduct extends Component {
                 token_name: randomWords({ exactly: 3, join: '' }),
                 redd:{
                     redd_map: '',
-                    redd_loc_pro: '',
                     redd_gob: '',
+                    redd_ame_def: '',
+                    red_doc_des_gen_pro_act:'',
                     redd_act_pro: '',
                     redd_tur: '',
                     redd_esc_sin_pro: '',
@@ -488,8 +489,9 @@ class NewProduct extends Component {
                 token_name: randomWords({ exactly: 3, join: '_' }),
                 redd:{
                     redd_map: '',
-                    redd_loc_pro: '',
                     redd_gob: '',
+                    redd_ame_def:'',
+                    red_doc_des_gen_pro_act:'',
                     redd_act_pro: '',
                     redd_tur: '',
                     redd_esc_sin_pro: '',
@@ -614,11 +616,17 @@ class NewProduct extends Component {
         if (event.target.name === 'PP_pert') {
             tempCRUD_productFeature.PP.PP_pert = event.target.value
         }
-        if (event.target.name === 'redd_loc_pro') {
-            tempCRUD_productFeature.redd.redd_loc_pro = event.target.value
+        if (event.target.name === 'PP_vin') {
+            tempCRUD_productFeature.PP.PP_vin = event.target.value
         }
         if (event.target.name === 'redd_act_pro') {
             tempCRUD_productFeature.redd.redd_act_pro = event.target.value
+        }
+        if (event.target.name === 'redd_ame_def') {
+            tempCRUD_productFeature.redd.redd_ame_def = event.target.value
+        }
+        if (event.target.name === 'red_doc_des_gen_pro_act') {
+            tempCRUD_productFeature.redd.red_doc_des_gen_pro_act = event.target.value
         }
         if (event.target.name === 'redd_tur') {
             tempCRUD_productFeature.redd.redd_tur = event.target.value
