@@ -4,7 +4,7 @@ import { Button, Image, Modal, Table, Form, Col } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
-import { updateProduct } from '../../../graphql/mutations';
+import { deleteProductFeatureResult, deleteVerification, deleteVerificationComment, updateProduct, deleteProductFeature } from '../../../graphql/mutations';
 export default class ListProducts extends Component {
     constructor(props) {
         super(props)
@@ -12,7 +12,9 @@ export default class ListProducts extends Component {
             PFR: [],
             isRenderModalProductFeatures: false,
             isRenderModalProductDescription: false,
+            isRenderModalDeleteProductFeatureConfirmation: false,
             selectedProductToShow: null,
+            selectedProductFeatureToDelete: null,
             isRenderModalProductImages: false,
         }
         this.handleShowAreYouSureDeleteProduct = this.props.handleShowAreYouSureDeleteProduct.bind(this)
@@ -21,8 +23,11 @@ export default class ListProducts extends Component {
         this.handleDeleteFeatureProduct = this.props.handleDeleteFeatureProduct.bind(this)
         this.handleDeleteImageProduct = this.props.handleDeleteImageProduct.bind(this)
         this.handleLoadSelectedProduct = this.handleLoadSelectedProduct.bind(this)
+        this.handleLoadSelectedProduct = this.handleLoadSelectedProduct.bind(this)
+        this.handleShowModalDeteleProductFeatureConfirmation = this.handleShowModalDeteleProductFeatureConfirmation.bind(this)
+        this.handleHideModalDeleteProductFeatureConfirmation = this.handleHideModalDeleteProductFeatureConfirmation.bind(this)
         this.handleHideModalProductImages = this.handleHideModalProductImages.bind(this)
-        this.handleHideModalProductFeatures = this.handleHideModalProductFeatures.bind(this)
+        this.handleDeleteProductFeature = this.handleDeleteProductFeature.bind(this)
     }
     componentDidMount = async () => {
         await this.loadProductFeatureResults()
@@ -44,6 +49,10 @@ export default class ListProducts extends Component {
             this.setState({isRenderModalProductDescription: true, selectedProductToShow: pProduct})
         }
     }
+
+    async handleShowModalDeteleProductFeatureConfirmation(event, pProductFeature) {
+        this.setState({isRenderModalDeleteProductFeatureConfirmation: !this.state.isRenderModalDeleteProductFeatureConfirmation, selectedProductFeatureToDelete: pProductFeature})
+    }
     async certifyProduct(product){
         let updateInfo ={
             id: product.id,
@@ -60,13 +69,68 @@ export default class ListProducts extends Component {
     async handleHideModalProductDescription(event) {
         this.setState({isRenderModalProductDescription: !this.state.isRenderModalProductDescription})
     }
+    async handleHideModalDeleteProductFeatureConfirmation() {
+        this.setState({isRenderModalDeleteProductFeatureConfirmation: !this.state.isRenderModalDeleteProductFeatureConfirmation, selectedProductFeatureToDelete: null})
+    }
 
-    
+    handleDeleteProductFeature = async() => {
+
+        let productFeature = this.state.selectedProductFeatureToDelete
+
+        if (productFeature != null) {
+            let isPossibleToDelete = true
+
+            if (productFeature.product.status === 'in_blockchain' || productFeature.product.status === 'rejected') isPossibleToDelete = false
+            if (productFeature.documents.items.length > 0) isPossibleToDelete = false
+
+            if (isPossibleToDelete) {
+
+                // Delete Verifications
+                productFeature.verifications.items.map( (verification) => {
+                    const inputVerificationToDelete = {
+                        id: verification.id
+                    }
+                    API.graphql(graphqlOperation(deleteVerification, { input: inputVerificationToDelete }))
+                })
+
+                // Delete Verification Comments
+                productFeature.verifications.items
+                .map((verification) => verification.verificationComments.items)
+                .map((verificationComment) => {
+                    const inputVerificationCommentToDelete = {
+                        id: verificationComment.id
+                    }
+                    API.graphql(graphqlOperation(deleteVerificationComment, { input: inputVerificationCommentToDelete }))
+                })
+
+                // Delete Results
+                productFeature.productFeatureResults.items.map( (result) => {
+                    const inputResultsToDelete = {
+                        id: result.id
+                    }
+                    API.graphql(graphqlOperation(deleteProductFeatureResult, { input: inputResultsToDelete }))
+                })
+                
+                // Delete Product Feature Relation
+                API.graphql(graphqlOperation(deleteProductFeature, { input: {id : productFeature.id} }))
+
+            }
+        }
+        
+        this.handleHideModalDeleteProductFeatureConfirmation()
+    }
 
     // RENDER
     render() {
         let {products, urlS3Image, listPF} = this.props
-        let { selectedProductToShow, isRenderModalProductFeatures, isRenderModalProductImages, isRenderModalProductDescription} = this.state
+        let {   
+                selectedProductToShow,
+                isRenderModalProductFeatures,
+                isRenderModalProductImages,
+                isRenderModalProductDescription,
+                isRenderModalDeleteProductFeatureConfirmation,
+                selectedProductFeatureToDelete,
+            } = this.state
         // Render Products
         let productsData = products.map(product=>{
             product.toCertified = false
@@ -281,6 +345,7 @@ export default class ListProducts extends Component {
                             <th>Main Card</th>
                             <th>Is to BlockChain?</th>
                             <th>Is Verifable?</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -304,6 +369,13 @@ export default class ListProducts extends Component {
                                 </td>
                                 <td>
                                     {pfeature.isVerifable? 'YES' : 'NO'}
+                                </td>
+                                <td>
+                                <Button 
+                                    variant='danger'
+                                    size='sm'
+                                    onClick={(e) => this.handleShowModalDeteleProductFeatureConfirmation(e, pfeature)}
+                                    >Delete</Button>
                                 </td>
                             </tr>
                         ))}
@@ -342,6 +414,39 @@ export default class ListProducts extends Component {
             )
         }
     }
+    const modalDeleteProductFeatureConfirmation = () => {
+        if (isRenderModalDeleteProductFeatureConfirmation && selectedProductFeatureToDelete !== null) {
+            return (
+                <Modal
+                    show={isRenderModalDeleteProductFeatureConfirmation}
+                    onHide={() => this.handleHideModalDeleteProductFeatureConfirmation()}
+                    size="sm"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    >
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Confirmacion
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Estas de acuerdo con borrar el ProductFeature: {selectedProductFeatureToDelete.feature.name} ?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            size='sm'
+                            onClick={() => this.handleHideModalDeleteProductFeatureConfirmation()}
+                            >Cancelar</Button>
+                        <Button 
+                            variant='danger'
+                            size='sm'
+                            onClick={(e) => this.handleDeleteProductFeature(e)}
+                        >Eliminar</Button>
+                    </Modal.Footer>
+                </Modal>
+            )
+        }
+    }
         return (
             <> 
                 <h1>Product List</h1>
@@ -349,6 +454,7 @@ export default class ListProducts extends Component {
                 {modalProductImages()}
                 {modalProductFeatures()}
                 {modalProductDescription()}
+                {modalDeleteProductFeatureConfirmation()}
             </>
         )
     }

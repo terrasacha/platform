@@ -11,7 +11,7 @@ import './Validation.css';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerification, updateDocument, updateProductFeature, createVerificationComment } from '../../../graphql/mutations';
 import { listDocuments } from '../../../graphql/queries';
-import { onUpdateDocument, onUpdateProductFeature } from '../../../graphql/subscriptions';
+import { onUpdateDocument, onUpdateProductFeature, onCreateVerificationComment } from '../../../graphql/subscriptions';
 const queryUsers = `query GetProduct($id: ID!) {
   getProduct(id: $id) {
     id
@@ -59,6 +59,7 @@ class ValidatorAdmon extends Component {
     super(props)
     this.state = {
       actualUser: '',
+      documents: [],
       documentsPending: [],
       otherDocuments: [],
       showPending: true,
@@ -70,6 +71,7 @@ class ValidatorAdmon extends Component {
       showModalValidate: false,
       showModalDetailsValidation: false,
       selectedDocument: null,
+      selectedDocumentID: null,
       selectedProductValidation: null,
       selectedProductVerificationID: null,
       creatingVerification: false,
@@ -86,7 +88,7 @@ class ValidatorAdmon extends Component {
       },
       newVerificationComment: {
         verificationID: '',
-        isCommentByVerifier: false,
+        isCommentByVerifier: true,
         comment: '',
       }
     }
@@ -99,6 +101,7 @@ class ValidatorAdmon extends Component {
     this.handleInputValidate = this.handleInputValidate.bind(this)
     this.handleSelectProduct = this.handleSelectProduct.bind(this)
     this.handleSelectStatus = this.handleSelectStatus.bind(this)
+    this.getVerificationId = this.getVerificationId.bind(this)
     this.logOut = this.logOut.bind(this)
   }
 
@@ -125,6 +128,14 @@ class ValidatorAdmon extends Component {
 
         }
       })
+
+    // OnCerate VerificationComment
+    this.createDocumentListener = API.graphql(graphqlOperation(onCreateVerificationComment))
+      .subscribe({
+        next: async createdVerificationComment => {
+          await this.loadDocuments()
+        }
+      })
   }
   async loadDocuments() {
     let filter1 = {
@@ -137,6 +148,11 @@ class ValidatorAdmon extends Component {
         notContains: 'pending'
       }
     }
+    const listDocumentsResultAll = await API.graphql({ query: listDocuments})
+    listDocumentsResultAll.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
+    this.setState({
+      documents: listDocumentsResultAll.data.listDocuments.items,
+    })
     const listDocumentsResult = await API.graphql({ query: listDocuments, variables: { filter: filter1 } })
     listDocumentsResult.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
     this.setState({
@@ -242,15 +258,32 @@ class ValidatorAdmon extends Component {
     }
   }
 
-  async handleCreateVerificaionComment(verificationID) {
+  async handleCreateVerificaionComment(e) {
 
     await this.setState(prevState => ({
-      newVerificationComment: { ...prevState.newVerificationComment, verificationID: verificationID }
+      newVerificationComment: { ...prevState.newVerificationComment, verificationID: this.state.selectedProductVerificationID }
     }))
 
     let tempNewVerificationComment = this.state.newVerificationComment
-    await API.graphql(graphqlOperation(createVerificationComment, { input: tempNewVerificationComment }))
-    await this.cleanState()
+    if (tempNewVerificationComment.comment != '') {
+      await API.graphql(graphqlOperation(createVerificationComment, { input: tempNewVerificationComment }))
+      await this.cleanNewVerificationComment()
+    }
+  }
+  
+  getVerificationId(document) {
+    
+    let verificationID = ''
+    if (document.productFeature.verifications.items.length > 0) {
+      document.productFeature.verifications.items.map(v => {
+        if(v.userVerifierID === this.state.actualUser) {
+          verificationID = v.id
+          return
+        }
+      })
+    }
+
+    return verificationID
   }
 
   validateInfoUser = async (pfID, userVerifiedID) => {
@@ -291,6 +324,16 @@ class ValidatorAdmon extends Component {
         userVerifiedID: '',
         productFeatureID: '',
         documentStatus: '',
+      }
+    })
+  }
+
+  cleanNewVerificationComment = () => {
+    this.setState({
+      newVerificationComment: {
+        verificationID: '',
+        isCommentByVerifier: true,
+        comment: '',
       }
     })
   }
@@ -355,7 +398,7 @@ class ValidatorAdmon extends Component {
                           <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalDocument: true, selectedDocument: document })}>See documentation</Button>
                         </td>
                         <td>
-                          <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalComments: true, selectedDocument: document })}>See comments</Button>
+                          <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalComments: true, selectedDocument: document, selectedDocumentID: document.id, selectedProductVerificationID: this.getVerificationId(document) })}>See comments</Button>
                         </td>
                         <td>
                           {this.state.showPending ?
@@ -437,9 +480,13 @@ class ValidatorAdmon extends Component {
         )
       }
     }
+
     const modalComments = () => {
       console.log(this.state.selectedDocument, 'Documento seleccionado')
+      console.log(this.state.selectedProductVerificationID, 'Verification ID')
       console.log(this.state.actualUser)
+      let document = this.state.documents.filter(document => document.id === this.state.selectedDocumentID)[0]
+
       if (this.state.showModalComments) {
         return (
           <Modal
@@ -451,12 +498,12 @@ class ValidatorAdmon extends Component {
           >
             <Modal.Header closeButton>
               <Modal.Title id="contained-modal-title-vcenter">
-                {this.state.selectedDocument.productFeature.feature.name}
+                {document.productFeature.feature.name}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               {
-                this.state.selectedDocument.productFeature.verifications.items.length > 0 ? this.state.selectedDocument.productFeature.verifications.items.filter(v => v.userVerifierID == this.state.actualUser)[0].verificationComments.items.sort(function (a, b) {
+                document.productFeature.verifications.items.length > 0 ? document.productFeature.verifications.items.filter(v => v.userVerifierID == this.state.actualUser)[0].verificationComments.items.sort(function (a, b) {
                   return new Date(a.createdAt) - new Date(b.createdAt);
                 }).map(vc => {
                   return (
@@ -476,6 +523,7 @@ class ValidatorAdmon extends Component {
                 <div className="vr" />
                 <Button
                   variant="secondary"
+                  onClick={(e) => this.handleCreateVerificaionComment(e)}
                 >Enviar comentario</Button>
               </Stack>
             </Modal.Body>

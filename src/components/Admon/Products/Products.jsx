@@ -7,7 +7,7 @@ import Bootstrap from "../../common/themes"
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature } from '../../../graphql/subscriptions'
+import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -129,6 +129,21 @@ class Products extends Component {
                     this.setState((state) => ({listPF: tempProductFeatures}))
                 }
             })
+            // OnDelete ProductFeature
+            this.deleteProductFeatureListener = API.graphql(graphqlOperation(onDeleteProductFeature))
+            .subscribe({
+                next: deletedProductFeatureData => {
+                    let tempProductFeatures = this.state.listPF.map((mapPF) => {
+                        if (deletedProductFeatureData.value.data.onDeleteProductFeature.id === mapPF.id) {
+                            return {}
+                        } else {
+                            return mapPF
+                        }
+                    })
+                    tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({listPF: tempProductFeatures}))
+                }
+            })
             // OnCreate ProductFeature
             this.createProductFeatureListener = API.graphql(graphqlOperation(onCreateProductFeature))
             .subscribe({
@@ -158,6 +173,7 @@ class Products extends Component {
         this.createProductListener.unsubscribe();
         this.updateProductListener.unsubscribe();
         this.updateProductFeatureListener.unsubscribe();
+        this.deleteProductFeatureListener.unsubscribe();
         this.createProductFeatureListener.unsubscribe();
       }
     async addNewImageToActualProductImages() {
