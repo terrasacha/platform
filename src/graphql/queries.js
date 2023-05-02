@@ -1853,13 +1853,34 @@ export const listProductFeatures = /* GraphQL */ `
           updatedAt
         }
         verifications {
-          nextToken
+          items {
+            verificationComments {
+              items {
+                comment
+                createdAt
+                id
+                isCommentByVerifier
+                verificationID
+              }
+            }
+            id
+            userVerifierID
+            userVerifiedID
+            createdAt
+          }
         }
         documents {
-          nextToken
+          items {
+            id
+            status
+            url
+            documentType {
+              id
+              name
+            }
+          }
         }
         productFeatureResults {
-          nextToken
           items {
             id
             isActive
@@ -2153,6 +2174,7 @@ export const listUserProducts = /* GraphQL */ `
               featureID
               order
               value
+              isVerifable
               feature {
                 description
                 id
@@ -2163,6 +2185,23 @@ export const listUserProducts = /* GraphQL */ `
                   id
                   name
                   description
+                }
+              }
+              verifications {
+                items {
+                  verificationComments {
+                    items {
+                      comment
+                      createdAt
+                      id
+                      isCommentByVerifier
+                      verificationID
+                    }
+                  }
+                  id
+                  userVerifierID
+                  userVerifiedID
+                  createdAt
                 }
               }
               documents {
