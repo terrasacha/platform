@@ -1,7 +1,10 @@
+// References
 // https://repost.aws/knowledge-center/lambda-send-email-ses
 // https://dev.to/aws-builders/signing-requests-with-aws-sdk-in-lambda-functions-476
 // https://aws.amazon.com/blogs/mobile/amplify-framework-local-mocking/
 // https://aws.amazon.com/es/blogs/compute/using-node-js-es-modules-and-top-level-await-in-aws-lambda/
+// https://docs.amplify.aws/guides/functions/graphql-from-lambda/q/platform/js/
+// https://dev.to/mtliendo/serverless-contact-form-using-aws-amplify-1e9m
 
 // /**
 //  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
@@ -43,26 +46,56 @@ const query = /* GraphQL */ `
 export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
-  for (const streamedItem of event.Records) {
-    if (streamedItem.eventName === 'MODIFY') {
-      //pull off items from stream
-      // const candidateName = 'streamedItem.dynamodb.NewImage.name.S'
-      // const candidateEmail = 'streamedItem.dynamodb.NewImage.email.S'
+  // for (const streamedItem of event.Records) {
+  //   if (streamedItem.eventName === 'MODIFY') {
+  //     //pull off items from stream
+  //     // const candidateName = 'streamedItem.dynamodb.NewImage.name.S'
+  //     // const candidateEmail = 'streamedItem.dynamodb.NewImage.email.S'
 
-      // await ses
-          // .sendEmail({
-          //   Destination: {
-          //     ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
-          //   },
-          //   Source: process.env.SES_EMAIL,
-          //   Message: {
-          //     Subject: { Data: 'Candidate Submission' },
-          //     Body: {
-          //       Text: { Data: `My name is ${candidateName}. You can reach me at ${candidateEmail}` },
-          //     },
-          //   },
-          // })
-          // .promise()
+  //     // await ses
+  //         // .sendEmail({
+  //         //   Destination: {
+  //         //     ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
+  //         //   },
+  //         //   Source: process.env.SES_EMAIL,
+  //         //   Message: {
+  //         //     Subject: { Data: 'Candidate Submission' },
+  //         //     Body: {
+  //         //       Text: { Data: `My name is ${candidateName}. You can reach me at ${candidateEmail}` },
+  //         //     },
+  //         //   },
+  //         // })
+  //         // .promise()
+
+  //     const command = new SendEmailCommand({
+  //       Destination: {
+  //         ToAddresses: ["robin@suan.global"],
+  //       },
+  //       Message: {
+  //         Body: {
+  //           Text: { Data: "Test" },
+  //         },
+    
+  //         Subject: { Data: "Test Email" },
+  //       },
+  //       Source: process.env.SES_EMAIL,
+  //     });
+
+  //     try {
+  //       let response = await ses.send(command);
+  //       console.log('### SES response: ', response)
+  //       // process data.
+  //       return response;
+  //     }
+  //     catch (error) {
+  //       // error handling.
+  //     }
+  //     finally {
+  //       // finally.
+  //     }
+          
+  //   }
+  // }
 
       const command = new SendEmailCommand({
         Destination: {
@@ -90,9 +123,6 @@ export const handler = async (event) => {
       finally {
         // finally.
       }
-          
-    }
-  }
 
   
   const options = {
