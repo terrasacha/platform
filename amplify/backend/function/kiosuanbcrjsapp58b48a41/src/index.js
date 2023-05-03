@@ -19,8 +19,8 @@ import { default as fetch, Request } from 'node-fetch';
 // import { SESClient } from "@aws-sdk/client-ses";
 // const ses = new SESClient({ region: "us-east-1" });
 
-const GRAPHQL_ENDPOINT = process.env.API_d6sfnut2zrdljfaz3ysbjfhvke_GRAPHQLAPIENDPOINTOUTPUT;
-const GRAPHQL_API_KEY = process.env.API_d6sfnut2zrdljfaz3ysbjfhvke_GRAPHQLAPIKEYOUTPUT;
+const GRAPHQL_ENDPOINT = "https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql";
+const GRAPHQL_API_KEY = "da2-zmafzaqndbc5blfoqw4kqddtlq";
 
 const query = /* GraphQL */ `
   query LIST_PRODUCTS {
