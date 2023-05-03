@@ -17,8 +17,8 @@
 
 
 import { default as fetch, Request } from 'node-fetch';
-// import { SESClient } from "@aws-sdk/client-ses";
-// const ses = new SESClient({ region: "us-east-1" });
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+const ses = new SESClient({ region: "us-east-1" });
 
 const GRAPHQL_ENDPOINT = "https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql";
 const GRAPHQL_API_KEY = "da2-zmafzaqndbc5blfoqw4kqddtlq";
@@ -35,32 +35,60 @@ const query = /* GraphQL */ `
   }
 `;
 
-// const aws = require('aws-sdk')
-// const ses = new aws.SES()
 
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
 export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
   for (const streamedItem of event.Records) {
     if (streamedItem.eventName === 'MODIFY') {
       //pull off items from stream
-      const candidateName = 'streamedItem.dynamodb.NewImage.name.S'
-      const candidateEmail = 'streamedItem.dynamodb.NewImage.email.S'
+      // const candidateName = 'streamedItem.dynamodb.NewImage.name.S'
+      // const candidateEmail = 'streamedItem.dynamodb.NewImage.email.S'
 
-      // await ses
-      //     .sendEmail({
-      //       Destination: {
-      //         ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
-      //       },
-      //       Source: process.env.SES_EMAIL,
-      //       Message: {
-      //         Subject: { Data: 'Candidate Submission' },
-      //         Body: {
-      //           Text: { Data: `My name is ${candidateName}. You can reach me at ${candidateEmail}` },
-      //         },
-      //       },
-      //     })
-      //     .promise()
+      await ses
+          // .sendEmail({
+          //   Destination: {
+          //     ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
+          //   },
+          //   Source: process.env.SES_EMAIL,
+          //   Message: {
+          //     Subject: { Data: 'Candidate Submission' },
+          //     Body: {
+          //       Text: { Data: `My name is ${candidateName}. You can reach me at ${candidateEmail}` },
+          //     },
+          //   },
+          // })
+          // .promise()
+      
+          const command = new SendEmailCommand({
+            Destination: {
+              ToAddresses: ["robin@suan.global"],
+            },
+            Message: {
+              Body: {
+                Text: { Data: "Test" },
+              },
+        
+              Subject: { Data: "Test Email" },
+            },
+            Source: process.env.SES_EMAIL,
+          });
+
+          try {
+            let response = await ses.send(command);
+            console.log('### SES response: ', response)
+            // process data.
+            return response;
+          }
+          catch (error) {
+            // error handling.
+          }
+          finally {
+            // finally.
+          }
     }
   }
 

@@ -31,7 +31,7 @@
         "kiosuanbcrjsapp58b48a41": {
           "sesEmail": "notificaciones@suan.global",
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-696b47686d484956494d-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-4e4a336e55497734656a-build.zip"
         }
       }
     }

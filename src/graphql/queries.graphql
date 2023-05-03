@@ -321,6 +321,11 @@ mutation CreateProduct {
   }
 }
 
+mutation UpdateProduct {
+  updateProduct(input: {id: "borrar", name: "borrar_1"})
+}
+
+
 mutation DeleteProduct {
   deleteProduct(input: {id: "borrar"}) {
     id
