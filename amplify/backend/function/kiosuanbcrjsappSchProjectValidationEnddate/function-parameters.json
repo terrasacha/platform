@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "api": {
+      "kiosuanbcrjsapp": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "auth": {
+      "kiosuanbcrjsappa6accc93": [
+        "create",
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "sesEmail",
+      "environmentVariableName": "SES_EMAIL"
+    }
+  ]
+}
