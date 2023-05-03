@@ -1,4 +1,5 @@
-
+// https://repost.aws/knowledge-center/lambda-send-email-ses
+// https://dev.to/aws-builders/signing-requests-with-aws-sdk-in-lambda-functions-476
 
 // /**
 //  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
@@ -15,8 +16,8 @@
 
 
 import { default as fetch, Request } from 'node-fetch';
-import { SESClient } from "@aws-sdk/client-ses";
-const ses = new SESClient({ region: "us-east-1" });
+// import { SESClient } from "@aws-sdk/client-ses";
+// const ses = new SESClient({ region: "us-east-1" });
 
 const GRAPHQL_ENDPOINT = process.env.API_d6sfnut2zrdljfaz3ysbjfhvke_GRAPHQLAPIENDPOINTOUTPUT;
 const GRAPHQL_API_KEY = process.env.API_d6sfnut2zrdljfaz3ysbjfhvke_GRAPHQLAPIKEYOUTPUT;
@@ -36,7 +37,7 @@ const query = /* GraphQL */ `
 // const aws = require('aws-sdk')
 // const ses = new aws.SES()
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
   for (const streamedItem of event.Records) {
@@ -45,20 +46,20 @@ exports.handler = async (event) => {
       const candidateName = 'streamedItem.dynamodb.NewImage.name.S'
       const candidateEmail = 'streamedItem.dynamodb.NewImage.email.S'
 
-      await ses
-          .sendEmail({
-            Destination: {
-              ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
-            },
-            Source: process.env.SES_EMAIL,
-            Message: {
-              Subject: { Data: 'Candidate Submission' },
-              Body: {
-                Text: { Data: `My name is ${candidateName}. You can reach me at ${candidateEmail}` },
-              },
-            },
-          })
-          .promise()
+      // await ses
+      //     .sendEmail({
+      //       Destination: {
+      //         ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
+      //       },
+      //       Source: process.env.SES_EMAIL,
+      //       Message: {
+      //         Subject: { Data: 'Candidate Submission' },
+      //         Body: {
+      //           Text: { Data: `My name is ${candidateName}. You can reach me at ${candidateEmail}` },
+      //         },
+      //       },
+      //     })
+      //     .promise()
     }
   }
 

@@ -6,7 +6,8 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "node-fetch": "^3.2.3"
+    "node-fetch": "^3.2.3",
+    "@aws-sdk/client-ses": "^3.325.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92"
