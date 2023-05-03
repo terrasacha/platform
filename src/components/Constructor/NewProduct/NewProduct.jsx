@@ -287,7 +287,7 @@ class NewProduct extends Component {
                         userID: userID,
                         data: JSON.stringify({empty: ''}),
                         timeStamp: Date.now(),
-                        url: `${URL}${data.key}`,
+                        url: encodeURI(`${URL}${data.key}`),
                         signed: '',
                         signedHash: '',
                         isApproved: false,
@@ -383,8 +383,8 @@ class NewProduct extends Component {
                     featureID: key,
                     value,
                     }));
-                PPFeatures.map((feature) =>  
-                    this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
+                PPFeatures.map(async (feature) =>  
+                    await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
                 );
                 
             }   
@@ -393,8 +393,8 @@ class NewProduct extends Component {
                     featureID: key,
                     value,
                     }));
-                REDDFeatures.map((feature) =>
-                    this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
+                REDDFeatures.map(async (feature) =>
+                    await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
                 );
                 
             } 
@@ -793,11 +793,11 @@ class NewProduct extends Component {
                         handleCRUDCompany={this.handleCRUDCompany}
                     /> : ''}
                 <div className={s.formContainer}>
-                    <h2>Información de proyecto</h2>
+                    <h2>Información de proyecto*</h2>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Título del proyecto
+                                Título del proyecto*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>No se acepta números</span>
@@ -811,7 +811,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Token name
+                                Token name*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Mayúsculas. Máximo 32 caracteres</span>
@@ -825,7 +825,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Tamaño del predio
+                                Tamaño del predio*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Sólo números</span>
@@ -843,7 +843,7 @@ class NewProduct extends Component {
                         <fieldset className={s.inputContainer}>
 
                             <legend>
-                                Ubicación
+                                Ubicación*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Ej: Bogotá, Cundinamarca, Colombia</span>
@@ -858,7 +858,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Coordenadas
+                                Coordenadas*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Sólo números. Ej: -34.23553, -2.43256</span>
@@ -869,7 +869,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Fecha de inscripción
+                                Fecha de inscripción*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Seleccione una fecha</span>
@@ -881,7 +881,7 @@ class NewProduct extends Component {
                     <form className={s.formInputs3}>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Periodo de permanencia
+                                Periodo de permanencia*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Sólo números. Años aproximado</span>

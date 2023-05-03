@@ -35,13 +35,10 @@ class ProductsList extends Component {
     componentDidMount = async () => {
         let actualUser = await Auth.currentAuthenticatedUser()
         const actualUserID = actualUser.attributes.sub
-        console.log(actualUserID, 'actualUserID')
         this.setState({
             actualUserID: actualUserID
         })
         await this.loadUserProducts(actualUserID)
-        console.log(this.state.products, 'proyectos')
-
 
         this.createDocumentListener = API.graphql(graphqlOperation(onCreateVerificationComment))
             .subscribe({

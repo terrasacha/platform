@@ -15,7 +15,7 @@ class FormRedd extends Component {
         return(
             <form className={s.formInputs1}>
                 <fieldset className={s.inputContainer}>
-                    <legend>Mapa</legend>
+                    <legend>Mapa*</legend>
                     <p>Mapa del territorio ( en archivo shapefiles o kmz) con coordenadas en donde se desarrollara el proyecto REDD</p>
                     <DragArea
                         id='redd_map'
@@ -24,7 +24,7 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.ubicacion} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Amenaza de deforestación</legend>
+                    <legend>Amenaza de deforestación*</legend>
                     <p>¿Existen amenazas de deforestación para el área del proyecto? ¿Cuáles?</p>
                     <textarea
                         name='redd_ame_def'
@@ -33,7 +33,7 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Gobernanza</legend>
+                    <legend>Gobernanza*</legend>
                     <p>Tipo de propiedad de la tierra (incluir certificados de propiedad)</p>
                     <DragArea
                         id='redd_gob'
@@ -41,7 +41,7 @@ class FormRedd extends Component {
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Actividades Proyecto </legend>
+                    <legend>Actividades Proyecto*</legend>
                     <p>Actividades a desarrollar como parte del esquema REDD. Iniciativas que tengran como objetivo evitar la deforestacion.</p>
                     <textarea
                         name='redd_act_pro'
@@ -50,7 +50,7 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Turberas</legend>
+                    <legend>Turberas*</legend>
                     <p>¿Existen en el área suelos orgánicos (turberas) que serán drenados? Explique</p>
                     <textarea
                         name='redd_tur'
@@ -59,7 +59,7 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Escenario sin proyecto</legend>
+                    <legend>Escenario sin proyecto*</legend>
                     <p>¿Qué le hubiera pasado al área del proyecto en ausencia de su proyecto propuesto? Ha tenido otras alternativas de uso de tierra?</p>
                     <textarea
                         name='redd_esc_sin_pro'
@@ -68,7 +68,7 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Créditos de carbono considerado desde el inicio de la concepción del proyecto</legend>
+                    <legend>Créditos de carbono considerado desde el inicio de la concepción del proyecto*</legend>
                     <p>Documento que mencione que el aporte extra de los créditos de carbono ha sido considerado desde el inicio de la concepción del proyecto. El documento debe estar fechado antes del inicio de proyecto o del primer recibo relativo a la inversión.</p>
                     <DragArea
                         id='redd_cre_car'
@@ -76,7 +76,7 @@ class FormRedd extends Component {
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Participantes/Beneficios</legend>
+                    <legend>Participantes/Beneficios*</legend>
                     <p>Quienes son los participantes del proyecto? Cual es el mecanismo de distribucion de beneficios?</p>
                     <textarea
                         name='redd_par_ben'
@@ -85,7 +85,7 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Consultas locales, o procesos de localización</legend>
+                    <legend>Consultas locales, o procesos de localización*</legend>
                     <p>¿Se han llevado a cabo consultas locales o procesos de socialización del proyecto? ¿Cuales? Se puede soportar con actas de asistencia, etc. Explique.</p>
                     <textarea
                         name='redd_con_loc'
@@ -94,7 +94,7 @@ class FormRedd extends Component {
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
-                    <legend>Documento que contenga la descripción general del área del proyecto y las actividades</legend>
+                    <legend>Documento que contenga la descripción general del área del proyecto y las actividades*</legend>
                     <p>¿Cuenta con un documento que contenga la descripción general del área del proyecto y las actividades?</p>
                     <textarea
                         name='red_doc_des_gen_pro_act'
