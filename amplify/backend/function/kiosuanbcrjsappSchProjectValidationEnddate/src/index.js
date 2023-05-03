@@ -8,10 +8,13 @@
     SES_EMAIL
 Amplify Params - DO NOT EDIT */
 
-const fetch = require('node-fetch')
+import { default as fetch, Request } from 'node-fetch';
+
+const GRAPHQL_ENDPOINT = process.env.API_KIOSUANBCRJSAPP_GRAPHQLAPIENDPOINTOUTPUT;
+const GRAPHQL_API_KEY = process.env.API_KIOSUANBCRJSAPP_GRAPHQLAPIKEYOUTPUT;
 
 const query = /* GraphQL */ `
-  query LIST_PRODUCTS {
+query LIST_PRODUCTS {
     listProducts {
       items {
         id
@@ -22,24 +25,23 @@ const query = /* GraphQL */ `
   }
 `;
 
-
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
-exports.handler = async (event) => {
+export const handler = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event)}`);
 
-
+    /** @type {import('node-fetch').RequestInit} */
     const options = {
         method: 'POST',
         headers: {
-            'x-api-key': process.env.API_KIOSUANBCRJSAPP_GRAPHQLAPIKEYOUTPUT,
+            'x-api-key': GRAPHQL_API_KEY,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ query })
     };
 
-    const request = new Request(process.env.API_KIOSUANBCRJSAPP_GRAPHQLAPIENDPOINTOUTPUT, options);
+    const request = new Request(GRAPHQL_ENDPOINT, options);
 
     let statusCode = 200;
     let body;
@@ -63,12 +65,7 @@ exports.handler = async (event) => {
     }
 
     return {
-        statusCode: 200,
-        //  Uncomment below to enable CORS requests
-        //  headers: {
-        //      "Access-Control-Allow-Origin": "*",
-        //      "Access-Control-Allow-Headers": "*"
-        //  }, 
-        body: JSON.stringify('Hello from Lambda!'),
+        statusCode,
+        body: JSON.stringify(body)
     };
 };
