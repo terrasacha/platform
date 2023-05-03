@@ -1,6 +1,7 @@
 // https://repost.aws/knowledge-center/lambda-send-email-ses
 // https://dev.to/aws-builders/signing-requests-with-aws-sdk-in-lambda-functions-476
-// /https://aws.amazon.com/blogs/mobile/amplify-framework-local-mocking/
+// https://aws.amazon.com/blogs/mobile/amplify-framework-local-mocking/
+// https://aws.amazon.com/es/blogs/compute/using-node-js-es-modules-and-top-level-await-in-aws-lambda/
 
 // /**
 //  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
