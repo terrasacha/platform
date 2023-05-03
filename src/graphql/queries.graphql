@@ -312,3 +312,18 @@ query MyQuery2 {
     }
   }
 }
+
+
+# Testing Lambda SES 
+mutation CreateProduct {
+  createProduct(input: {id: "borrar", categoryID: "borrar", name: "borrar", isActive: false}) {
+    id
+  }
+}
+
+mutation DeleteProduct {
+  deleteProduct(input: {id: "borrar"}) {
+    id
+    name
+  }
+}

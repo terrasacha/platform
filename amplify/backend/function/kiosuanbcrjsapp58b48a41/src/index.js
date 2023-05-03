@@ -1,5 +1,6 @@
 // https://repost.aws/knowledge-center/lambda-send-email-ses
 // https://dev.to/aws-builders/signing-requests-with-aws-sdk-in-lambda-functions-476
+// /https://aws.amazon.com/blogs/mobile/amplify-framework-local-mocking/
 
 // /**
 //  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
@@ -95,6 +96,8 @@ export const handler = async (event) => {
       ]
     };
   }
+
+  console.log("### body: ", JSON.stringify(body))
 
   return {
     statusCode,
