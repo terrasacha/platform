@@ -114,6 +114,22 @@
         }
       ]
     },
+    "AMPLIFY_function_kiosuanbcrjsappSchProjectValidationEnddate_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSchProjectValidationEnddate"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSchProjectValidationEnddate_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSchProjectValidationEnddate"
+        }
+      ]
+    },
     "AMPLIFY_function_kiosuanbcrjsappSchProjectValidationEnddate_sesEmail": {
       "usedBy": [
         {
