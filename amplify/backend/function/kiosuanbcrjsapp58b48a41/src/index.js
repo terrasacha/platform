@@ -48,7 +48,7 @@ export const handler = async (event) => {
       // const candidateName = 'streamedItem.dynamodb.NewImage.name.S'
       // const candidateEmail = 'streamedItem.dynamodb.NewImage.email.S'
 
-      await ses
+      // await ses
           // .sendEmail({
           //   Destination: {
           //     ToAddresses: ['robin@suan.global'], //ToAddresses: [process.env.SES_EMAIL],
@@ -62,33 +62,34 @@ export const handler = async (event) => {
           //   },
           // })
           // .promise()
-      
-          const command = new SendEmailCommand({
-            Destination: {
-              ToAddresses: ["robin@suan.global"],
-            },
-            Message: {
-              Body: {
-                Text: { Data: "Test" },
-              },
-        
-              Subject: { Data: "Test Email" },
-            },
-            Source: process.env.SES_EMAIL,
-          });
 
-          try {
-            let response = await ses.send(command);
-            console.log('### SES response: ', response)
-            // process data.
-            return response;
-          }
-          catch (error) {
-            // error handling.
-          }
-          finally {
-            // finally.
-          }
+      const command = new SendEmailCommand({
+        Destination: {
+          ToAddresses: ["robin@suan.global"],
+        },
+        Message: {
+          Body: {
+            Text: { Data: "Test" },
+          },
+    
+          Subject: { Data: "Test Email" },
+        },
+        Source: process.env.SES_EMAIL,
+      });
+
+      try {
+        let response = await ses.send(command);
+        console.log('### SES response: ', response)
+        // process data.
+        return response;
+      }
+      catch (error) {
+        // error handling.
+      }
+      finally {
+        // finally.
+      }
+          
     }
   }
 
