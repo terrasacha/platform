@@ -37,6 +37,46 @@
           "sesEmail": "notificaciones@suan.global",
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanbcrjsappSchProjectValidationEnddate-71694b526e5055345233-build.zip"
+        },
+        "kiosuanbcrjsapp": {},
+        "kiosuanbcrjsappa6accc93": {}
+      }
+    }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-kiosuanbcrjsapp-prod-90339-authRole",
+      "UnauthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-prod-90339-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-prod-90339-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+      "UnauthRoleName": "amplify-kiosuanbcrjsapp-prod-90339-unauthRole",
+      "StackName": "amplify-kiosuanbcrjsapp-prod-90339",
+      "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-kiosuanbcrjsapp-prod-90339/79c7e700-ea84-11ed-8fcd-0af3233c316f",
+      "AmplifyAppId": "db3zbcxaygrmf"
+    },
+    "categories": {
+      "auth": {
+        "kiosuanbcrjsappa6accc93": {}
+      },
+      "function": {
+        "kiosuanbcrjsapp58b48a41": {
+          "sesEmail": "notificaciones@suan.global",
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-477743776b58774c3654-build.zip"
+        },
+        "kiosuanbcrjsappSchProjectValidationEnddate": {
+          "sesEmail": "notificaciones@suan.global",
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappSchProjectValidationEnddate-71694b526e5055345233-build.zip"
+        },
+        "kiosuanbcrjsapp": {},
+        "kiosuanbcrjsappa6accc93": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "db3zbcxaygrmf",
+          "type": "cicd"
         }
       }
     }
