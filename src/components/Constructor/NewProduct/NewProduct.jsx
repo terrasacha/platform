@@ -23,12 +23,12 @@ import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
 import { onUpdateFeature } from '../../../graphql/subscriptions'
 
-const regexInputName = /^[a-zA-Z_]+$/
+const regexInputName = /^[a-zA-Z ]+$/
 const regexInputTokenName = /^[a-zA-Z0-9]{1,32}$/
-const regexInputNumber = /^[0-9]+$/
+const regexInputNumber = /^\d+(?:.\d+)?$/
 const regexInputWebSite = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-z]{2,}(\/[a-zA-Z0-9#?=&%.]*)*$/
-const regexInputUbic = /^([a-zA-Z0-9]+\s*,\s*)*[a-zA-Z0-9]+$/
-const regexInputCoord = /^-?\d{1,3}(.\d+)?,\s*-?\d{1,3}(.\d+)?$/
+const regexInputUbic = /^[a-zA-Z0-9, ]*$/
+const regexInputCoord = /^-?\d{1,3}(.\d+)?,?\s*-?\d{1,3}(.\d+)?$/
 const regexInputEmail = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
 class NewProduct extends Component {
 
@@ -88,7 +88,7 @@ class NewProduct extends Component {
                     redd_map: '',
                     redd_gob: '',
                     redd_ame_def: '',
-                    red_doc_des_gen_pro_act:'',
+                    redd_doc_des_gen_pro_act:'',
                     redd_act_pro: '',
                     redd_tur: '',
                     redd_esc_sin_pro: '',
@@ -145,16 +145,6 @@ class NewProduct extends Component {
     componentDidMount = async () => {  
         await this.loadCategorysSelectItems()
         await this.fetchfeatureTypeIDS()
-        //listener update new company
-        this.onUpdateCompanyListener = API.graphql(graphqlOperation(onUpdateFeature))
-        .subscribe({
-            next: async (updateCompanyData) => {
-                await this.fetchfeatureTypeIDS()
-            }
-        })
-    }
-    componentDidUpdate = async () => {
-
     }
     async fetchfeatureTypeIDS() {
         const actualUser = await Auth.currentAuthenticatedUser()
@@ -500,7 +490,7 @@ class NewProduct extends Component {
                     redd_map: '',
                     redd_gob: '',
                     redd_ame_def:'',
-                    red_doc_des_gen_pro_act:'',
+                    redd_doc_des_gen_pro_act:'',
                     redd_act_pro: '',
                     redd_tur: '',
                     redd_esc_sin_pro: '',
@@ -635,8 +625,8 @@ class NewProduct extends Component {
         if (event.target.name === 'redd_ame_def') {
             tempCRUD_productFeature.redd.redd_ame_def = event.target.value
         }
-        if (event.target.name === 'red_doc_des_gen_pro_act') {
-            tempCRUD_productFeature.redd.red_doc_des_gen_pro_act = event.target.value
+        if (event.target.name === 'redd_doc_des_gen_pro_act') {
+            tempCRUD_productFeature.redd.redd_doc_des_gen_pro_act = event.target.value
         }
         if (event.target.name === 'redd_tur') {
             tempCRUD_productFeature.redd.redd_tur = event.target.value
@@ -828,7 +818,7 @@ class NewProduct extends Component {
                                 Tamaño del predio*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
-                                    <span className={s["tooltip"]}>Sólo números</span>
+                                    <span className={s["tooltip"]}>Sólo números. Se aceptan decimales. Separación de parte entera y decimal con "."(punto).</span>
                                 </div>
                             </legend>
                             <input type="text"
@@ -861,7 +851,7 @@ class NewProduct extends Component {
                                 Coordenadas*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
-                                    <span className={s["tooltip"]}>Sólo números. Ej: -34.23553, -2.43256</span>
+                                    <span className={s["tooltip"]}>Las coordenadas deben ir en orden "latitud, longitud". Si el número contiene parte decimal esta deben ir precedida por ".". Las coordenadas deben ir separadas por "," Ej: -34.23553, -2.43256</span>
                                 </div>
                             </legend>
                             <input type='text' placeholder='lat, lng. Ej: 4.710990, -74.072037' name='productFeature_coord' value={productFeature.coord} onChange={(e) => this.handleOnChangeInputForm(e)} />

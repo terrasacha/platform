@@ -258,6 +258,7 @@ export default class ListProducts extends Component {
                 }
             }
             if(productFeaturesCopy.length > 0){
+                console.log(productFeaturesCopy, 'productFeaturesCopy')
             return (
                 <Modal
                     show={isRenderModalProductFeatures}

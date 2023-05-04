@@ -97,7 +97,7 @@ class FormRedd extends Component {
                     <legend>Documento que contenga la descripción general del área del proyecto y las actividades*</legend>
                     <p>¿Cuenta con un documento que contenga la descripción general del área del proyecto y las actividades?</p>
                     <textarea
-                        name='red_doc_des_gen_pro_act'
+                        name='redd_doc_des_gen_pro_act'
                         value={this.props.productFeature.redd_con_loc}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
