@@ -21,7 +21,6 @@ import randomWords from 'random-words';
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
-import { onUpdateFeature } from '../../../graphql/subscriptions'
 
 const regexInputName = /^[a-zA-Z ]+$/
 const regexInputTokenName = /^[a-zA-Z0-9]{1,32}$/
@@ -262,13 +261,10 @@ class NewProduct extends Component {
                 // Getting extension
                 let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
                 let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
-                /* let uploadImageResult = await Storage.put(imageName, file, {
-                    level: "public",
-                    contentType: 'image/jpeg, application/pdf',
-                }) */
+
                 Storage.put(imageName, file, {
                     level: "public",
-                    contentType: 'image/jpeg, application/pdf',
+                    contentType: '*/*',
                 }).then(async (data)=>{
 
                     const newDocPayLoad = {
@@ -391,15 +387,15 @@ class NewProduct extends Component {
             const allPromises = [...productFeaturePromises, ...userProductPromises, createUserProductFeaturePromise];
             
             await Promise.all(allPromises);
-            await this.cleanProductOnCreate()
+            await this.cleanProductOnCreate('no company')
             this.setState({ loading: false })
-            this.notify()
+            this.notify('Formulario enviado')
         } else {
             console.log('errors')
             this.notifyError('Tu formulario contiene campos vacíos o campos con valores erroneos')
         }
     }
-    async handleCRUDCompany(tempCRUD_Product) {
+/*     async handleCRUDCompany(tempCRUD_Product) {
         const tempCRUD_Company = this.state.company
         const actualUser = await Auth.currentAuthenticatedUser()
         const userID = actualUser.attributes.sub;
@@ -412,8 +408,6 @@ class NewProduct extends Component {
         //Creo las Features para CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME> y sus valores los guardo en la PF
         for (let info in this.state.company) {
             let id = `${userID}_${this.state.company.name}_${info}`
-
-            /* let id = uuidv4().replaceAll('-','_') */
             const payloadNewFeature = {
                 id: id,
                 name: info,
@@ -422,20 +416,50 @@ class NewProduct extends Component {
                 unitOfMeasureID: 'no_unit'
             }
             await API.graphql(graphqlOperation(createFeature, { input: payloadNewFeature }))
-            /* const payloadNewProductFeature = {
-                value: this.state.company[`${info}`],
-                productID: tempCRUD_Product,
-                featureID: id
-            }
-            await API.graphql(graphqlOperation(createProductFeature, { input: payloadNewProductFeature })) */
         }
         this.setState({
             renderModalInformation: false,
-
+            selectedCompany: `${tempCRUD_Company.name}`
         })
         this.notify()
-        await this.cleanProductOnCreate()
-    }
+        await this.cleanProductOnCreate(tempCRUD_Company.name)
+    } */
+    async handleCRUDCompany(tempCRUD_Product) {
+        const tempCRUD_Company = this.state.company;
+        const actualUser = await Auth.currentAuthenticatedUser();
+        const userID = actualUser.attributes.sub;
+        //Creo la FT CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME>
+        const payloadNewFeatureType = {
+          id: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${userID}_${tempCRUD_Company.name}`,
+          name: tempCRUD_Company.name,
+        };
+        await API.graphql(graphqlOperation(createFeatureType, { input: payloadNewFeatureType }));
+        //Crear array de promesas
+        const promises = [];
+        for (let info in this.state.company) {
+          let id = `${userID}_${this.state.company.name}_${info}`;
+      
+          const payloadNewFeature = {
+            id: id,
+            name: info,
+            description: this.state.company[`${info}`],
+            featureTypeID: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${userID}_${tempCRUD_Company.name}`,
+            unitOfMeasureID: 'no_unit'
+          };
+      
+          const promise = API.graphql(graphqlOperation(createFeature, { input: payloadNewFeature }));
+          promises.push(promise);
+        }
+        //Esperar a que todas las promesas se resuelvan
+        await Promise.all(promises);
+      
+        this.setState({
+          renderModalInformation: false,
+          selectedCompany: `${tempCRUD_Company.name}`
+        });
+        this.notify(`Formulario enviado. La información del proyecto estará asociada a ${tempCRUD_Company.name}`);
+        await this.fetchfeatureTypeIDS()
+      }
     checkFormStatus() {
         if (this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
         if (this.state.CRUD_Product.name !== '' && this.state.CRUD_Product.description !== '' && this.state.productFeature.ha_tot !== ''
@@ -445,7 +469,7 @@ class NewProduct extends Component {
             return this.notifyError('Asegurese de completar los campos necesarios antes de continuar')
         }
     }
-    async cleanProductOnCreate() {
+    async cleanProductOnCreate(company) {
         this.setState({
             CRUD_Product: {
                 id: uuidv4().replaceAll('-', '_'),
@@ -523,7 +547,7 @@ class NewProduct extends Component {
             activeButton: '',
             isImageUploadingFile: false, //se borraban los features y categorys
             selectedCategory: null,
-            selectedCompany: 'no company',
+            selectedCompany: company,
             renderModalInformation: false,
             renderModalTyC: false,
             mostrarFormInfodeEmpresa: false,
@@ -708,8 +732,8 @@ class NewProduct extends Component {
     handleButtonClick(buttonId){
         this.setState({activeButton: buttonId});
       };
-    notify = () => {
-        toast.success('Formulario enviado', {
+    notify = (e) => {
+        toast.success(e, {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -764,7 +788,7 @@ class NewProduct extends Component {
                     <form className={s.formcompany}>
                         <fieldset className={s.inputContainer}>
                             <legend>Asociar producto a:</legend>
-                            <select placeholder='' onChange={this.handleOnSelectCompany}>
+                            <select placeholder='' onChange={this.handleOnSelectCompany} value={this.state.selectedCompany}>
                                 <option value='no company' >-</option>
                                 {this.state.empresas.map(empresa => <option key={empresa} value={empresa}>{empresa}</option>)}
                                 <option value='nueva empresa'>Nueva empresa</option>
