@@ -21,6 +21,7 @@ import randomWords from 'random-words';
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
+import { onUpdateFeature } from '../../../graphql/subscriptions'
 
 const regexInputName = /^[a-zA-Z_]+$/
 const regexInputTokenName = /^[a-zA-Z0-9]{1,32}$/
@@ -82,11 +83,12 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
-                token_name: randomWords({ exactly: 3, join: '' }),
+                token_name: randomWords({ exactly: 3, join: '' }).toUpperCase(),
                 redd:{
                     redd_map: '',
-                    redd_loc_pro: '',
                     redd_gob: '',
+                    redd_ame_def: '',
+                    red_doc_des_gen_pro_act:'',
                     redd_act_pro: '',
                     redd_tur: '',
                     redd_esc_sin_pro: '',
@@ -140,11 +142,19 @@ class NewProduct extends Component {
         this.onHideModalTyC = this.onHideModalTyC.bind(this)
         this.handleButtonClick = this.handleButtonClick.bind(this)
     }
-    componentDidMount = async () => {
-        const tokenName = randomWords({ exactly: 3, join: '_' });
-        console.log(tokenName); // Output: "arca_bad_carro"
+    componentDidMount = async () => {  
         await this.loadCategorysSelectItems()
         await this.fetchfeatureTypeIDS()
+        //listener update new company
+        this.onUpdateCompanyListener = API.graphql(graphqlOperation(onUpdateFeature))
+        .subscribe({
+            next: async (updateCompanyData) => {
+                await this.fetchfeatureTypeIDS()
+            }
+        })
+    }
+    componentDidUpdate = async () => {
+
     }
     async fetchfeatureTypeIDS() {
         const actualUser = await Auth.currentAuthenticatedUser()
@@ -248,39 +258,50 @@ class NewProduct extends Component {
         if (typeof e === "string") {
             await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: e } }))
           } else {
-            let uploadImageResult = null
-            let imageId = ''
-            const { target: { files } } = e;
-            const [file,] = files || [];
-            if (!file) {
-                return
+            try {
+                let imageId = ''
+                const { target: { files } } = e;
+                const [file,] = files || [];
+                if (!file) {
+                    return
+                }
+                await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: '' } }))
+                // Creating image ID
+                let fileNameSplitByDotfileArray = file.name.split('.')
+                imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
+                // Getting extension
+                let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
+                let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
+                /* let uploadImageResult = await Storage.put(imageName, file, {
+                    level: "public",
+                    contentType: 'image/jpeg, application/pdf',
+                }) */
+                Storage.put(imageName, file, {
+                    level: "public",
+                    contentType: 'image/jpeg, application/pdf',
+                }).then(async (data)=>{
+
+                    const newDocPayLoad = {
+                        id: imageName,
+                        productFeatureID: idProductFeature,
+                        userID: userID,
+                        data: JSON.stringify({empty: ''}),
+                        timeStamp: Date.now(),
+                        url: encodeURI(`${URL}${data.key}`),
+                        signed: '',
+                        signedHash: '',
+                        isApproved: false,
+                        status: '',
+                        isUploadedToBlockChain: false,
+                        documentTypeID: '1',
+                    }
+                    console.log(`url de ${newDocPayLoad.id}`, newDocPayLoad.url)
+                    await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad }))
+                })
+                
+            } catch (error) {
+                
             }
-            await API.graphql(graphqlOperation(createProductFeature, { input: { id: idProductFeature, featureID: featureID, productID: productID, value: '' } }))
-            // Creating image ID
-            let fileNameSplitByDotfileArray = file.name.split('.')
-            imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
-            // Getting extension
-            let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
-            let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
-            uploadImageResult = await Storage.put(imageName, file, {
-                level: "public",
-                contentType: 'image/jpeg, application/pdf',
-            });
-            const newDocPayLoad = {
-                id: imageName,
-                productFeatureID: idProductFeature,
-                userID: userID,
-                data: JSON.stringify({empty: ''}),
-                timeStamp: Date.now(),
-                url: URL + uploadImageResult.key,
-                signed: '',
-                signedHash: '',
-                isApproved: false,
-                status: '',
-                isUploadedToBlockChain: false,
-                documentTypeID: '1',
-            }
-            await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad }))
           }
 
     }
@@ -317,7 +338,7 @@ class NewProduct extends Component {
                 isActive: false, //Por que se manda true??
                 status: tempCRUD_Product.status,
                 counterNumberOfTimesBuyed: 0,
-                categoryID: this.state.selectedCategory,
+                categoryID: this.state.activeButton,
                 order: 0,
             }
             this.handleFiles(this.state.imageToUpload, payLoadNewProduct.id)
@@ -357,23 +378,23 @@ class NewProduct extends Component {
             
             const createUserProductFeaturePromise = API.graphql(graphqlOperation(createProductFeature, { input: { featureID: `${userID}_${this.state.company.name}_name`, productID: tempCRUD_Product.id } }));
 
-            if(this.state.activeButton === 'proyecto_plantaciones'){
+            if(this.state.activeButton === 'PROYECTO_PLANTACIONES'){
                 const PPFeatures = Object.entries(this.state.productFeature.PP).map(([key, value]) => ({
                     featureID: key,
                     value,
                     }));
-                PPFeatures.map((feature) =>  
-                    this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
+                PPFeatures.map(async (feature) =>  
+                    await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
                 );
                 
             }   
-            if(this.state.activeButton === 'proyecto_redd'){
+            if(this.state.activeButton === 'REDD+'){
                 const REDDFeatures = Object.entries(this.state.productFeature.redd).map(([key, value]) => ({
                     featureID: key,
                     value,
                     }));
-                REDDFeatures.map((feature) =>
-                    this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
+                REDDFeatures.map(async (feature) =>
+                    await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
                 );
                 
             } 
@@ -474,11 +495,12 @@ class NewProduct extends Component {
                 ubicacion: '',
                 coord: '',
                 periodo_permanencia: '',
-                token_name: randomWords({ exactly: 3, join: '_' }),
+                token_name: randomWords({ exactly: 3, join: '_' }).toUpperCase(),
                 redd:{
                     redd_map: '',
-                    redd_loc_pro: '',
                     redd_gob: '',
+                    redd_ame_def:'',
+                    red_doc_des_gen_pro_act:'',
                     redd_act_pro: '',
                     redd_tur: '',
                     redd_esc_sin_pro: '',
@@ -508,6 +530,7 @@ class NewProduct extends Component {
                 token_name: ''
             },
             imageToUpload: '',
+            activeButton: '',
             isImageUploadingFile: false, //se borraban los features y categorys
             selectedCategory: null,
             selectedCompany: 'no company',
@@ -591,7 +614,7 @@ class NewProduct extends Component {
             }))
         }
         if (event.target.name === 'productFeature_token_name') {
-            tempCRUD_productFeature.token_name = event.target.value
+            tempCRUD_productFeature.token_name = event.target.value.toUpperCase()
             let error = validarString(event.target.value, regexInputTokenName)
             this.setState(prevState => ({
                 errors: { ...prevState.errors, token_name: error }
@@ -603,11 +626,17 @@ class NewProduct extends Component {
         if (event.target.name === 'PP_pert') {
             tempCRUD_productFeature.PP.PP_pert = event.target.value
         }
-        if (event.target.name === 'redd_loc_pro') {
-            tempCRUD_productFeature.redd.redd_loc_pro = event.target.value
+        if (event.target.name === 'PP_vin') {
+            tempCRUD_productFeature.PP.PP_vin = event.target.value
         }
         if (event.target.name === 'redd_act_pro') {
             tempCRUD_productFeature.redd.redd_act_pro = event.target.value
+        }
+        if (event.target.name === 'redd_ame_def') {
+            tempCRUD_productFeature.redd.redd_ame_def = event.target.value
+        }
+        if (event.target.name === 'red_doc_des_gen_pro_act') {
+            tempCRUD_productFeature.redd.red_doc_des_gen_pro_act = event.target.value
         }
         if (event.target.name === 'redd_tur') {
             tempCRUD_productFeature.redd.redd_tur = event.target.value
@@ -764,11 +793,11 @@ class NewProduct extends Component {
                         handleCRUDCompany={this.handleCRUDCompany}
                     /> : ''}
                 <div className={s.formContainer}>
-                    <h2>Información de proyecto</h2>
+                    <h2>Información de proyecto*</h2>
                     <form className={s.formInputs1}>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Título del proyecto
+                                Título del proyecto*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>No se acepta números</span>
@@ -782,19 +811,21 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Categoría
+                                Token name*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
-                                    <span className={s["tooltip"]}>Seleccione una categoría</span>
+                                    <span className={s["tooltip"]}>Mayúsculas. Máximo 32 caracteres</span>
                                 </div>
                             </legend>
-                            <select placeholder='Categoría' onChange={this.handleOnSelectCategory}>
-                                {this.state.categorySelectList?.map(category => <option value={category.value.id} key={category.value.id}>{category.value.name}</option>)}
-                            </select>
+                            <input type="text"
+                                name='productFeature_token_name'
+                                value={productFeature.token_name}
+                                onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.token_name}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Tamaño del predio
+                                Tamaño del predio*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Sólo números</span>
@@ -812,7 +843,7 @@ class NewProduct extends Component {
                         <fieldset className={s.inputContainer}>
 
                             <legend>
-                                Ubicación
+                                Ubicación*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Ej: Bogotá, Cundinamarca, Colombia</span>
@@ -827,7 +858,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Coordenadas
+                                Coordenadas*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Sólo números. Ej: -34.23553, -2.43256</span>
@@ -838,7 +869,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Fecha de inscripción
+                                Fecha de inscripción*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Seleccione una fecha</span>
@@ -850,31 +881,18 @@ class NewProduct extends Component {
                     <form className={s.formInputs3}>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Periodo de permanencia
+                                Periodo de permanencia*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Sólo números. Años aproximado</span>
                                 </div>
                             </legend>
-                            <input type="text"
+                            <textarea
                                 name='productFeature_periodo_permanencia'
                                 value={productFeature.periodo_permanencia}
-                                onChange={(e) => this.handleOnChangeInputForm(e)} placeholder='Proyección de tiempo del proyecto en años' />
-                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.periodo_permanencia}</span>
-                        </fieldset>
-                        <fieldset className={s.inputContainer}>
-                            <legend>
-                                Token name
-                                <div className={s["tooltip-text"]}>
-                                    <InfoCircle className={s.infoCircle} />
-                                    <span className={s["tooltip"]}>Palabras separadas por "_". Máximo 32 caracteres</span>
-                                </div>
-                            </legend>
-                            <input type="text"
-                                name='productFeature_token_name'
-                                value={productFeature.token_name}
+                                placeholder='Proyección de tiempo del proyecto en años'
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.token_name}</span>
+                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.periodo_permanencia}</span>
                         </fieldset>
                     </form>
                     
@@ -902,26 +920,26 @@ class NewProduct extends Component {
                     </form>
                     <div className={s.selectTypeProyect}>
                         <Button
-                            id="proyecto_plantaciones"
+                            id="PROYECTO_PLANTACIONES"
                             label="Proyecto Plantaciones"
                             activeButton={this.state.activeButton}
                             handleButtonClick={this.handleButtonClick}
                         />
                         <Button
-                            id="proyecto_redd"
+                            id="REDD+"
                             label="Proyecto REDD"
                             activeButton={this.state.activeButton}
                             handleButtonClick={this.handleButtonClick}
                         />
                     </div>
-                    {this.state.activeButton === 'proyecto_plantaciones'?
+                    {this.state.activeButton === 'PROYECTO_PLANTACIONES'?
                     <FromPlantaciones 
                         selectImage={this.selectImage}
                         productFeature = {this.state.productFeature}
                         handleOnChangeInputForm={this.handleOnChangeInputForm}
                     />
                     :
-                    this.state.activeButton === 'proyecto_redd'?
+                    this.state.activeButton === 'REDD+'?
                     <FormRedd
                         selectImage={this.selectImage}
                         productFeature = {this.state.productFeature}

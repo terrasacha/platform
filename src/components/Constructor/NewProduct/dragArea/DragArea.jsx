@@ -36,8 +36,8 @@ class DragArea extends Component{
             <input
               className={s.file_upload_input}
               type="file"
-              accept="image/*"
-              multiple
+              accept="image/*, application/pdf"
+              /* multiple */
               onChange={(e) => {
                 this.changeImage(e, this.props.id);
               }}
