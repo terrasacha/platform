@@ -9,6 +9,7 @@ class FromPlantaciones extends Component {
             imageToUpload: ''
         }
         this.selectImage = this.props.selectImage.bind(this)
+        this.cleanDragArea = this.props.cleanDragArea.bind(this)
     }
 
     render(){
@@ -21,6 +22,7 @@ class FromPlantaciones extends Component {
                     <DragArea
                         id='PP_rep'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.ubicacion} */}</span>
                 </fieldset>
@@ -39,6 +41,7 @@ class FromPlantaciones extends Component {
                     <DragArea
                         id='PP_pre_sue_tie'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
@@ -58,6 +61,7 @@ class FromPlantaciones extends Component {
                     <DragArea
                         id='PP_reg_pla'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
@@ -66,6 +70,7 @@ class FromPlantaciones extends Component {
                     <DragArea
                         id='PP_pla_man_for'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
@@ -74,6 +79,7 @@ class FromPlantaciones extends Component {
                     <DragArea
                         id='PP_pol_del'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
@@ -82,6 +88,7 @@ class FromPlantaciones extends Component {
                     <DragArea
                         id='PP_pla_sie'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
@@ -90,6 +97,7 @@ class FromPlantaciones extends Component {
                     <DragArea
                         id='PP_mon'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>

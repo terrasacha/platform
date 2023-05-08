@@ -9,6 +9,7 @@ class FormRedd extends Component {
             imageToUpload: ''
         }
         this.selectImage = this.props.selectImage.bind(this)
+        this.cleanDragArea = this.props.cleanDragArea.bind(this)
     }
     render(){
 
@@ -20,6 +21,7 @@ class FormRedd extends Component {
                     <DragArea
                         id='redd_map'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                     <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.ubicacion} */}</span>
                 </fieldset>
@@ -38,6 +40,7 @@ class FormRedd extends Component {
                     <DragArea
                         id='redd_gob'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>
@@ -73,6 +76,7 @@ class FormRedd extends Component {
                     <DragArea
                         id='redd_cre_car'
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                     />
                 </fieldset>
                 <fieldset className={s.inputContainer}>

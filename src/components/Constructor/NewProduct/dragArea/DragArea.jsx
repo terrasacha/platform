@@ -8,6 +8,7 @@ class DragArea extends Component{
       imageError: ''
     }
     this.selectImage = this.props.selectImage.bind(this)
+    this.cleanDragArea = this.props.cleanDragArea.bind(this)
   }
 
   changeImage = (e, id) => {
@@ -27,6 +28,13 @@ class DragArea extends Component{
     }
     
   };
+  deleteFile = () =>{
+    this.setState({
+      ImageSelectedPrevious: null,
+      imageError: ''
+    })
+    this.cleanDragArea(this.props.id)
+  }
   render(){
     return (
       <div className={s.container}>
@@ -44,7 +52,9 @@ class DragArea extends Component{
             />
             <div className={s.text_information}>
               
-              {this.state.imageError.length > 0?<h3>{this.state.imageError}</h3>: <h3>{this.state.ImageSelectedPrevious !== null?`File ${this.state.ImageSelectedPrevious} added`: "Drag and drop a file or select add Image"}</h3>}
+              {this.state.imageError.length > 0?<h3>{this.state.imageError}</h3>: <h3>{this.state.ImageSelectedPrevious !== null?
+              <div className={s.fileAdded}>File {this.state.ImageSelectedPrevious} added<button onClick={() => {this.deleteFile()}}>Delete</button></div>
+              : "Drag and drop a file or select add Image"}</h3>}
             </div>
           </div>
         </div >

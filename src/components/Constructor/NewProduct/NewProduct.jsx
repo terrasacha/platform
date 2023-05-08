@@ -140,6 +140,7 @@ class NewProduct extends Component {
         this.onHideModalInformation = this.onHideModalInformation.bind(this)
         this.onHideModalTyC = this.onHideModalTyC.bind(this)
         this.handleButtonClick = this.handleButtonClick.bind(this)
+        this.cleanDragArea = this.cleanDragArea.bind(this)
     }
     componentDidMount = async () => {  
         await this.loadCategorysSelectItems()
@@ -468,6 +469,24 @@ class NewProduct extends Component {
         } else {
             return this.notifyError('Asegurese de completar los campos necesarios antes de continuar')
         }
+    }
+    cleanDragArea(id){
+        if(id){
+            let documentType = id.split('_')[0]
+            this.setState(prevState => ({
+                ...prevState,
+                productFeature: {
+                  ...prevState.productFeature,
+                  [documentType]: {
+                    ...prevState.productFeature[documentType],
+                    [id]: ''
+                  }
+                }
+              }));
+        }else{
+            this.setState({imageToUpload: ''})
+        }
+
     }
     async cleanProductOnCreate(company) {
         this.setState({
@@ -929,17 +948,20 @@ class NewProduct extends Component {
                             <legend>Imágenes</legend>
                             <DragArea
                                 selectImage={this.selectImage}
+                                cleanDragArea={this.cleanDragArea}
                             />
                         </fieldset>
                     </form>
                     <div className={s.selectTypeProyect}>
                         <Button
+                            className={s.buttonSelectProyectCategory}
                             id="PROYECTO_PLANTACIONES"
                             label="Proyecto Plantaciones"
                             activeButton={this.state.activeButton}
                             handleButtonClick={this.handleButtonClick}
                         />
                         <Button
+                            className={s.buttonSelectProyectCategory}
                             id="REDD+"
                             label="Proyecto REDD"
                             activeButton={this.state.activeButton}
@@ -949,12 +971,14 @@ class NewProduct extends Component {
                     {this.state.activeButton === 'PROYECTO_PLANTACIONES'?
                     <FromPlantaciones 
                         selectImage={this.selectImage}
+                        cleanDragArea={this.cleanDragArea}
                         productFeature = {this.state.productFeature}
                         handleOnChangeInputForm={this.handleOnChangeInputForm}
                     />
                     :
                     this.state.activeButton === 'REDD+'?
                     <FormRedd
+                        cleanDragArea={this.cleanDragArea}
                         selectImage={this.selectImage}
                         productFeature = {this.state.productFeature}
                         handleOnChangeInputForm={this.handleOnChangeInputForm}
