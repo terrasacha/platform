@@ -5,6 +5,7 @@ import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature, createDocument } from '../../../graphql/mutations'
 import { listCategories, listFeatures } from '../../../graphql/queries'
 import DragArea from './dragArea/DragArea'
+import DragAreaJustImages from './dragArea/DragAreaJustImages'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import FromPlantaciones from './FormPlantaciones/FormPlantaciones'
 import FormRedd from './FormRedd/FormRedd'
@@ -946,7 +947,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>Imágenes</legend>
-                            <DragArea
+                            <DragAreaJustImages
                                 selectImage={this.selectImage}
                                 cleanDragArea={this.cleanDragArea}
                             />

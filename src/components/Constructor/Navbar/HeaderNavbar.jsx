@@ -52,7 +52,7 @@ export default class HeaderNavbar extends Component {
                         <Offcanvas.Title id={`offcanvasNavbarLabel-expand-$'sm'`}>
                             <a href='/'><img src={LOGO} 
                                 width="40"
-                                height="auto"
+                                height="40"
                                 className="d-inline-block align-top"
                                 alt="ATP"
                             /></a>

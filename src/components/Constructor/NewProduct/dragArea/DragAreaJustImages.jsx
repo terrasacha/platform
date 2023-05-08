@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import s from './DragArea.module.css'
-class DragArea extends Component{
+class DragAreaJustImages extends Component{
   constructor(props) {
     super(props)
     this.state = {
@@ -44,7 +44,7 @@ class DragArea extends Component{
             <input
               className={s.file_upload_input}
               type="file"
-              accept="*/*"
+              accept="image/*"
               /* multiple */
               onChange={(e) => {
                 this.changeImage(e, this.props.id);
@@ -64,4 +64,4 @@ class DragArea extends Component{
   
 }
 
-export default DragArea;
+export default DragAreaJustImages;
