@@ -39,7 +39,7 @@ class NewProduct extends Component {
                 name: '',
                 description: '',
                 isActive: true,
-                status: 'new',
+                status: 'draft',
                 order: 0,
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
