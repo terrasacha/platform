@@ -40,5 +40,12 @@
         }
       }
     }
+  },
+  "prod": {
+    "categories": {
+      "auth": {
+        "kiosuanbcrjsappa6accc93": {}
+      }
+    }
   }
 }
