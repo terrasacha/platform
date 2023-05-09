@@ -7,7 +7,7 @@ import { createFeature, createProductFeature, createUser } from '../../../graphq
 import s from './Login.module.css'
 import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
-    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signUp' ,terms: false,privacy_policy:false, role: 'investor', code: ''
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn' ,terms: false,privacy_policy:false, role: 'investor', code: ''
 }
 
 export default function LogIn() {
