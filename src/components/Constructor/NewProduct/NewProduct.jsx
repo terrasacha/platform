@@ -23,11 +23,11 @@ import randomWords from 'random-words';
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
 
-const regexInputName = /^[a-zA-Z ]+$/
+const regexInputName = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/
 const regexInputTokenName = /^[a-zA-Z0-9]{1,32}$/
 const regexInputNumber = /^\d+(?:.\d+)?$/
 const regexInputWebSite = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-z]{2,}(\/[a-zA-Z0-9#?=&%.]*)*$/
-const regexInputUbic = /^[a-zA-Z0-9, ]*$/
+const regexInputUbic = /^[a-zA-Z0-9,áéíóúÁÉÍÓÚñÑüÜ ]*$/
 const regexInputCoord = /^-?\d{1,3}(.\d+)?,?\s*-?\d{1,3}(.\d+)?$/
 const regexInputEmail = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
 class NewProduct extends Component {
@@ -848,7 +848,7 @@ class NewProduct extends Component {
                                 Token name*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
-                                    <span className={s["tooltip"]}>Mayúsculas. Máximo 32 caracteres</span>
+                                    <span className={s["tooltip"]}>Nombre que va a tener el token de su proyecto en la blockchain.Mayúsculas. Máximo 32 caracteres</span>
                                 </div>
                             </legend>
                             <input type="text"
@@ -859,10 +859,10 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Tamaño del predio*
+                                Tamaño del predio(ha)*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
-                                    <span className={s["tooltip"]}>Sólo números. Se aceptan decimales. Separación de parte entera y decimal con "."(punto).</span>
+                                    <span className={s["tooltip"]}>Número de hectáreas. Sólo números. Se aceptan decimales. Separación de parte entera y decimal con "."(punto).</span>
                                 </div>
                             </legend>
                             <input type="text"
@@ -915,7 +915,7 @@ class NewProduct extends Component {
                     <form className={s.formInputs3}>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Periodo de permanencia*
+                                Periodo de permanencia* 
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Sólo números. Años aproximado</span>

@@ -16,6 +16,7 @@ class DragArea extends Component{
     if (file.size > 5000000) { // limite de 5 MB
       this.setState({ imageError: 'La imagen excede el límite de tamaño. Tamaño máximo 5mb'})
     } else {
+      this.setState({imageError:''})
       if (e.target.files[0] !== undefined) {
         const reader = new FileReader();
         reader.readAsDataURL(e.target.files[0]);
