@@ -7,7 +7,7 @@ import Bootstrap from "../../common/themes"
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature } from '../../../graphql/subscriptions'
+import { onCreateProduct, onCreateVerification, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -162,6 +162,13 @@ class Products extends Component {
                     }
                     tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({listPF: tempProductFeatures}))
+                }
+            })
+            // OnCreate Verification
+            this.createProductFeatureListener = API.graphql(graphqlOperation(onCreateVerification))
+            .subscribe({
+                next: createdVerification => {
+                    this.loadProductFeatures()
                 }
             })
         //     }
