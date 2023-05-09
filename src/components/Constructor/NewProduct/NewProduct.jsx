@@ -997,6 +997,8 @@ class NewProduct extends Component {
                     onHideModalTyC={this.onHideModalTyC}
                     handleCRUDProduct={this.handleCRUDProduct}
                 />
+                {CRUD_Product.name && this.state.activeButton &&
+                    <button className={s.saveButton} onClick={()=> console.log('guardar')}>Guardar</button>}
             </div>
         )
     }

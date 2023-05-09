@@ -182,7 +182,24 @@
   .tooltip-text:hover .tooltip {
     display: inline-block;
   }
-
+.saveButton{
+    position: fixed;
+    padding: .7% 0;
+    cursor: pointer;
+    width: 8rem;
+    border: 1px solid rgb(77,188,94);
+    font-size: 1em;
+    color: rgb(77,188,94);
+    background: #fff;
+    transition: .3s;
+    bottom: 3.5rem;
+    right: 3rem;
+}
+.saveButton:hover{
+    color: white;
+    background: rgb(77,188,94);
+    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
+}
 /* Estilos para pantallas pequeñas */
 @media (max-width: 600px) {
     .titleContainer{
@@ -255,6 +272,23 @@
     .selectTypeProyect{
         width: 95%;
         font-size: .8em;
+    }
+    .saveButton{
+        padding: 2% 0;
+        cursor: pointer;
+        width: 8rem;
+        border: 1px solid rgb(77,188,94);
+        font-size: 1em;
+        color: rgb(77,188,94);
+        background: #fff;
+        transition: .3s;
+        bottom: 3.5rem;
+        right: 1rem;
+    }
+    .saveButton:hover{
+        color: white;
+        background: rgb(77,188,94);
+        background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
     }
 
   }
