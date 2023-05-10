@@ -2891,7 +2891,12 @@ export const createProductFeature = /* GraphQL */ `
           nextToken
         }
         userProducts {
-          nextToken
+          items {
+            user {
+              role
+              id
+            }
+          }
         }
         transactions {
           nextToken
