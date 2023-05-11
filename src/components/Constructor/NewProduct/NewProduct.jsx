@@ -3,8 +3,7 @@ import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature, createDocument } from '../../../graphql/mutations'
-import { listCategories, listFeatures } from '../../../graphql/queries'
-import DragArea from './dragArea/DragArea'
+import { getProduct, listCategories, listFeatures, listUserProducts } from '../../../graphql/queries'
 import DragAreaJustImages from './dragArea/DragAreaJustImages'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import FromPlantaciones from './FormPlantaciones/FormPlantaciones'
@@ -22,6 +21,8 @@ import randomWords from 'random-words';
 // AWS S3 Storage
 import { Storage } from 'aws-amplify'
 import { v4 as uuidv4 } from 'uuid'
+import GuardarParcialmente from './GuardarParcialmente/GuardarParcialmente'
+import ProductOnDraft from './ProductOnDraft/ProductOnDraft'
 
 const regexInputName = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/
 const regexInputTokenName = /^[a-zA-Z0-9]{1,32}$/
@@ -40,7 +41,7 @@ class NewProduct extends Component {
                 name: '',
                 description: '',
                 isActive: true,
-                status: 'draft',
+                status: '',
                 order: 0,
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
@@ -118,9 +119,12 @@ class NewProduct extends Component {
                 token_name: ''
             },
             renderModalInformation: false,
+            renderModalProductOnDraft: false,
+            renderGuardarParcialmente: false,
             activeButton: '',
             renderModalTyC: false,
             mostrarFormInfodeEmpresa: false,
+            productOnDraft: '',
             empresas: [],
             files: [],
             imageToUpload: '',
@@ -140,12 +144,41 @@ class NewProduct extends Component {
         this.handleSetStateCompany = this.handleSetStateCompany.bind(this)
         this.onHideModalInformation = this.onHideModalInformation.bind(this)
         this.onHideModalTyC = this.onHideModalTyC.bind(this)
+        this.onHideModalGuardarP = this.onHideModalGuardarP.bind(this)
         this.handleButtonClick = this.handleButtonClick.bind(this)
         this.cleanDragArea = this.cleanDragArea.bind(this)
     }
-    componentDidMount = async () => {  
+    componentDidMount = async () => { 
+        await this.checkIfUserHasDraftProduct() 
         await this.loadCategorysSelectItems()
         await this.fetchfeatureTypeIDS()
+
+    }
+    async checkIfUserHasDraftProduct(){
+        const actualUser = await Auth.currentAuthenticatedUser()
+        const userID = actualUser.attributes.sub;
+        try {
+            let filter = { userID: { eq : userID }};
+            const userProductdata = await API.graphql({ query: listUserProducts, variables: { filter }});
+            let productIDDraft = null;
+            userProductdata.data.listUserProducts.items.map(up => {
+                if(up.product.status === 'draft') return productIDDraft = up.product.id 
+            })
+            
+            productIDDraft !== null && this.proyectDraftFounded(productIDDraft)
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+    async proyectDraftFounded(productIDDraft){
+        try {
+            const product = {id: productIDDraft}
+            const result = await API.graphql(graphqlOperation(getProduct, product))
+            this.setState({productOnDraft: result.data.getProduct, renderModalProductOnDraft: true})
+        } catch (error) {
+            console.log(error)
+        }
     }
     async fetchfeatureTypeIDS() {
         const actualUser = await Auth.currentAuthenticatedUser()
@@ -315,21 +348,21 @@ class NewProduct extends Component {
         const userID = actualUser.attributes.sub;
         const tempCRUD_Product = this.state.CRUD_Product
         if (this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
-        if (this.state.errors.title === '' && this.state.errors.ubicacion === '' && this.state.errors.ha_tot === ''
+        if ((this.state.errors.title === '' && this.state.errors.ubicacion === '' && this.state.errors.ha_tot === ''
             && this.state.errors.coord === '' && this.state.companyerrors.name === '' && this.state.companyerrors.cp === ''
             && this.state.companyerrors.phone === '' && this.state.companyerrors.email === ''
-            && this.state.companyerrors.website === '') {
+            && this.state.companyerrors.website === '') || this.state.renderGuardarParcialmente) {
             const payLoadNewProduct = {
                 id: tempCRUD_Product.id,
                 name: tempCRUD_Product.name,
                 description: tempCRUD_Product.description,
-                isActive: false, //Por que se manda true??
-                status: tempCRUD_Product.status,
+                isActive: false,
+                status: this.state.renderGuardarParcialmente? 'draft': 'on_verification',
                 counterNumberOfTimesBuyed: 0,
                 categoryID: this.state.activeButton,
                 order: 0,
             }
-            this.handleFiles(this.state.imageToUpload, payLoadNewProduct.id)
+            this.state.imageToUpload !== '' && this.handleFiles(this.state.imageToUpload, payLoadNewProduct.id)
             await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
             // Creating UserProduct
             let actualUser = await Auth.currentAuthenticatedUser()
@@ -397,35 +430,6 @@ class NewProduct extends Component {
             this.notifyError('Tu formulario contiene campos vacíos o campos con valores erroneos')
         }
     }
-/*     async handleCRUDCompany(tempCRUD_Product) {
-        const tempCRUD_Company = this.state.company
-        const actualUser = await Auth.currentAuthenticatedUser()
-        const userID = actualUser.attributes.sub;
-        //Creo la FT CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME>
-        const payloadNewFeatureType = {
-            id: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${tempCRUD_Company.name}`,
-            name: tempCRUD_Company.name,
-        }
-        await API.graphql(graphqlOperation(createFeatureType, { input: payloadNewFeatureType }))
-        //Creo las Features para CONSTRUCTOR_ORGANIZATION_INFORMATION_<COMPANY.NAME> y sus valores los guardo en la PF
-        for (let info in this.state.company) {
-            let id = `${userID}_${this.state.company.name}_${info}`
-            const payloadNewFeature = {
-                id: id,
-                name: info,
-                description: this.state.company[`${info}`],
-                featureTypeID: `CONSTRUCTOR_ORGANIZATION_INFORMATION_${tempCRUD_Company.name}`,
-                unitOfMeasureID: 'no_unit'
-            }
-            await API.graphql(graphqlOperation(createFeature, { input: payloadNewFeature }))
-        }
-        this.setState({
-            renderModalInformation: false,
-            selectedCompany: `${tempCRUD_Company.name}`
-        })
-        this.notify()
-        await this.cleanProductOnCreate(tempCRUD_Company.name)
-    } */
     async handleCRUDCompany(tempCRUD_Product) {
         const tempCRUD_Company = this.state.company;
         const actualUser = await Auth.currentAuthenticatedUser();
@@ -497,7 +501,7 @@ class NewProduct extends Component {
                 description: '',
                 isActive: true,
                 order: '',
-                status: 'draft',
+                status: '',
                 counterNumberOfTimesBuyed: 0,
                 amountToBuy: 0.0,
                 categoryID: '',
@@ -569,7 +573,10 @@ class NewProduct extends Component {
             selectedCategory: null,
             selectedCompany: company,
             renderModalInformation: false,
+            renderModalProductOnDraft: false,
+            renderGuardarParcialmente: false,
             renderModalTyC: false,
+            productOnDraft: '',
             mostrarFormInfodeEmpresa: false,
             loading: false,
         })
@@ -787,6 +794,16 @@ class NewProduct extends Component {
             renderModalTyC: false,
         })
     }
+    onHideModalGuardarP() {
+        this.setState({
+            renderGuardarParcialmente: false,
+        })
+    }
+    onHideModalProductOnDraft() {
+        this.setState({
+            renderModalProductOnDraft: false,
+        })
+    }
     render() {
         let { CRUD_Product, selectedCategory, productFeature, activeButton } = this.state
         const urlS3Image = WebAppConfig.url_s3_public_images
@@ -859,7 +876,7 @@ class NewProduct extends Component {
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
-                                Tamaño del predio(ha)*
+                                Tamaño del predio(Has)*
                                 <div className={s["tooltip-text"]}>
                                     <InfoCircle className={s.infoCircle} />
                                     <span className={s["tooltip"]}>Número de hectáreas. Sólo números. Se aceptan decimales. Separación de parte entera y decimal con "."(punto).</span>
@@ -997,8 +1014,23 @@ class NewProduct extends Component {
                     onHideModalTyC={this.onHideModalTyC}
                     handleCRUDProduct={this.handleCRUDProduct}
                 />
+                {this.state.renderGuardarParcialmente && 
+                    <GuardarParcialmente 
+                        renderGuardarParcialmente={this.state.renderGuardarParcialmente}
+                        onHideModalGuardarP={this.onHideModalGuardarP}    
+                        handleCRUDProduct={this.handleCRUDProduct}
+                        loading={this.state.loading}
+                        />
+                }
+                {this.state.renderModalProductOnDraft && this.state.productOnDraft !== '' &&
+                    <ProductOnDraft 
+                        renderModalProductOnDraft={this.state.renderModalProductOnDraft}
+                        productOnDraft={this.state.productOnDraft}
+                        onHideModalProductOnDraft={this.onHideModalProductOnDraft}    
+                        />
+                }
                 {CRUD_Product.name && this.state.activeButton &&
-                    <button className={s.saveButton} onClick={()=> console.log('guardar')}>Guardar</button>}
+                    <button className={s.saveButton} onClick={()=> this.setState({renderGuardarParcialmente: true})}>Guardar</button>}
             </div>
         )
     }
