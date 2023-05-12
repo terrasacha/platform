@@ -145,6 +145,7 @@ class NewProduct extends Component {
         this.onHideModalInformation = this.onHideModalInformation.bind(this)
         this.onHideModalTyC = this.onHideModalTyC.bind(this)
         this.onHideModalGuardarP = this.onHideModalGuardarP.bind(this)
+        this.onHideModalProductOnDraft = this.onHideModalProductOnDraft.bind(this)
         this.handleButtonClick = this.handleButtonClick.bind(this)
         this.cleanDragArea = this.cleanDragArea.bind(this)
     }
