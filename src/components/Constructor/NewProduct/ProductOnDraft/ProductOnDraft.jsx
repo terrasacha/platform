@@ -38,7 +38,7 @@ export default class ProductOnDraft extends Component {
             <div className={s.buttonContainer}>
                 <button className={deleting? s.deleting :s.eliminarButton} disabled={deleting} 
                             onClick={() => this.deleteFormInfo(this.props.productOnDraft.id)}>{deleting?'ELIMINANDO':'ELIMINAR'}</button>
-                <button className={s.continuarButton} onClick={() => console.log(this.props.productOnDraft)}>CONTINUAR</button>
+                <button className={s.continuarButton} onClick={() => this.props.fillFormWithProductOnDraft()}>CONTINUAR</button>
             </div>
         </Modal.Body>
     </Modal>

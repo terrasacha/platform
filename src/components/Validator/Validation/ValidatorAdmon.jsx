@@ -456,11 +456,11 @@ class ValidatorAdmon extends Component {
             </Modal.Header>
             <Modal.Body>
               {
-                this.state.selectedDocument.productFeature.verifications.items.length > 0 ? this.state.selectedDocument.productFeature.verifications.items.filter(v => v.userVerifierID == this.state.actualUser)[0].verificationComments.items.sort(function (a, b) {
+                this.state.selectedDocument.productFeature.verifications.items.length > 0 ? this.state.selectedDocument.productFeature.verifications.items.filter(v => v.userVerifierID === this.state.actualUser)[0].verificationComments.items.sort(function (a, b) {
                   return new Date(a.createdAt) - new Date(b.createdAt);
                 }).map(vc => {
                   return (
-                    <p key={vc.id}>{vc.createdAt} ({vc.isCommentByVerifier == true ? "Tu" : "Constructor"}) {vc.comment}</p>
+                    <p key={vc.id}>{vc.createdAt} ({vc.isCommentByVerifier === true ? "Tu" : "Constructor"}) {vc.comment}</p>
                   )
                 }) : <p>Este documento aun no registra comentarios</p>
 

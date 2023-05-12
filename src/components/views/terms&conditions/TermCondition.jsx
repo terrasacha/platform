@@ -11,22 +11,22 @@ export default function LogIn() {
     <div className={s.container}>
         <div className={s.steps}>
             <ul>
-                <li><span>TÉRMINOS Y CONDICIONES DE USO</span><a href="#t_c"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>ENMIENDA</span><a href="#enmienda"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>SU USO DEL SITIO WEB</span><a href="#uso"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>DISPONIBILIDAD DEL SITIO WEB</span><a href="#disponibilidad"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>MATERIALES DEL SITIO WEB</span><a href="#materiales_uso"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>PROPIEDAD INTELECTUAL</span><a href="#prop_intelectual"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>NINGÚN CONSEJO</span><a href="#ningun_consejo"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>ENLACES A SITIOS WEB DE TERCEROS</span><a href="#enlaces_terceros"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>ENLACES A SITIO WEB</span><a href="#enlaces_web"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>ACCESO</span><a href="#acceso"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>INFORMACIÓN PERSONAL</span><a href="#info_personal"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>SIN GARANTÍA</span><a href="#sin_garantia"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>ACCESO</span><a href="#acceso"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>RESPONSABILIDAD</span><a href="#responsabilidad"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>GENERAL</span><a href="#general"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
-                <li><span>CONTÁCTENOS</span><a href="#contacto"><img src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>TÉRMINOS Y CONDICIONES DE USO</span><a href="#t_c"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>ENMIENDA</span><a href="#enmienda"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>SU USO DEL SITIO WEB</span><a href="#uso"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>DISPONIBILIDAD DEL SITIO WEB</span><a href="#disponibilidad"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>MATERIALES DEL SITIO WEB</span><a href="#materiales_uso"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>PROPIEDAD INTELECTUAL</span><a href="#prop_intelectual"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>NINGÚN CONSEJO</span><a href="#ningun_consejo"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>ENLACES A SITIOS WEB DE TERCEROS</span><a href="#enlaces_terceros"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>ENLACES A SITIO WEB</span><a href="#enlaces_web"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>ACCESO</span><a href="#acceso"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>INFORMACIÓN PERSONAL</span><a href="#info_personal"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>SIN GARANTÍA</span><a href="#sin_garantia"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>ACCESO</span><a href="#acceso"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>RESPONSABILIDAD</span><a href="#responsabilidad"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>GENERAL</span><a href="#general"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
+                <li><span>CONTÁCTENOS</span><a href="#contacto"><img alt='' src={arrowSteps} className={s.arrowSteps}/></a></li>
             </ul>
         </div>
         <div className={s.containerSteps}>

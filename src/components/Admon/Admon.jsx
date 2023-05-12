@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Auth } from 'aws-amplify';
 // Bootstrap
 import { Alert, Col, Container, Row } from 'react-bootstrap';
-import Bootstrap from "../common/themes";
 // Components
 import UserProducts from './UserProducts/UserProducts';
 import AdmonProfile from './AdmonProfile/AdmonProfile';
@@ -315,7 +314,6 @@ export default class Admon extends Component {
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
-                isShowValidators: false,
                 isShowUOM: false,
                 isShowFormulas: false,
                 isShowResults: false,

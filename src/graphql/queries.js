@@ -2365,3 +2365,40 @@ export const listTransactions = /* GraphQL */ `
     }
   }
 `;
+export const getProductDraft = /* GraphQL */ `
+  query GetProduct($id: ID!) {
+    getProduct(id: $id) {
+      id
+      name
+      description
+      status
+      categoryID
+      images {
+        items {
+          id
+          imageURL
+          title
+        }
+      }
+      productFeatures {
+        items {
+          id
+          featureID
+          value
+          feature {
+            id
+            name
+            featureTypeID
+          }
+          documents {
+            items {
+              id
+            }
+          }
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;

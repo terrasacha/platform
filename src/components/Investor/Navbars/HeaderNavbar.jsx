@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Button, Container, Nav, Navbar } from 'react-bootstrap'
-// Import React Bootstrap Icons
-import { ListTask } from 'react-bootstrap-icons'
+import {  Container, Nav, Navbar } from 'react-bootstrap'
 
 // Import images
 import LOGO from '../../common/_images/SuanLogoName.svg'

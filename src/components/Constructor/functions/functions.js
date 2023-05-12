@@ -43,7 +43,6 @@ export function validarString(str, regex) {
 export async function deleteAllProduct(productID){
     const result = await API.graphql(graphqlOperation(getProductQuery, { id: productID }))
     const product = result.data.getProduct
-    console.log(product)
     const imagesToDelete = product.images.items.map(image => image.id)
     const productFeaturesToDelete = product.productFeatures.items.map(pf => pf.id)
     const userProductsToDelete = product.userProducts.items.map(up => up.id)
@@ -70,4 +69,55 @@ export async function deleteAllProduct(productID){
     } catch (error) {
         console.log(error)
     } 
+}
+export async function fillForm(product){
+    let tempState = {
+            CRUD_Product: {
+              id: product.id,
+              name: product.name,
+              description: product.description,
+              status: product.status,
+              order: 0,
+              counterNumberOfTimesBuyed: 0,
+              amountToBuy: 0.0,
+              categoryID: '',
+              images: [],
+          },
+          productFeature: {
+              ha_tot: '',
+              fecha_inscripcion: '',
+              ubicacion: '',
+              coord: '',
+              periodo_permanencia: '',
+              token_name: '',
+              redd:{
+                  redd_map: '',
+                  redd_gob: '',
+                  redd_ame_def: '',
+                  redd_doc_des_gen_pro_act:'',
+                  redd_act_pro: '',
+                  redd_tur: '',
+                  redd_esc_sin_pro: '',
+                  redd_cre_car: '',
+                  redd_par_ben: '',
+                  redd_con_loc: '',
+              },
+              PP:{
+                  PP_rep: '',
+                  PP_for_ten_tie: '',
+                  PP_pre_sue_tie: '',
+                  PP_vin: '',
+                  PP_reg_pla: '',
+                  PP_pla_man_for: '',
+                  PP_pol_del: '',
+                  PP_pla_sie: '',
+                  PP_mon: '',
+                  PP_pert: '',
+              }
+          },
+          selectedCompany: ''
+    }
+    product.productFeatures.items.map(pf =>{
+      
+    })
 }

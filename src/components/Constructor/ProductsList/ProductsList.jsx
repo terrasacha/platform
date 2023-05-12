@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 //Bootstrap
-import { Button, Badge, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, ListGroup, Tabs, Tab, Accordion, Stack } from 'react-bootstrap';
-import { ArrowRight, CheckCircle, HourglassSplit, XCircle, Server, Water } from 'react-bootstrap-icons';
-import Bootstrap from "../../common/themes";
+import { Button, Badge, Card, Col, Container, Form, Modal, Row, Tabs, Tab, Accordion, Stack } from 'react-bootstrap';
+import {  XCircle } from 'react-bootstrap-icons';
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerificationComment } from '../../../graphql/mutations';
@@ -184,7 +183,7 @@ class ProductsList extends Component {
                         <Modal.Body>
                             <Accordion defaultActiveKey="0">
                                 {
-                                    product.product.productFeatures.items.filter(productFeature => productFeature.isVerifable == true).map(pf => {
+                                    product.product.productFeatures.items.filter(productFeature => productFeature.isVerifable === true).map(pf => {
                                         return (
                                             <Accordion.Item key={pf.featureID} eventKey={pf.featureID}>
                                                 <Accordion.Header>{pf.feature.name}</Accordion.Header>
@@ -204,7 +203,7 @@ class ProductsList extends Component {
                                                                                 return new Date(a.createdAt) - new Date(b.createdAt);
                                                                             }).map(vc => {
                                                                                 return (
-                                                                                    <p key={vc.id}>{vc.createdAt} ({vc.isCommentByVerifier == true ? "Verificador" : "Tu"}) {vc.comment}</p>
+                                                                                    <p key={vc.id}>{vc.createdAt} ({vc.isCommentByVerifier === true ? "Verificador" : "Tu"}) {vc.comment}</p>
                                                                                 )
                                                                             })
                                                                         }

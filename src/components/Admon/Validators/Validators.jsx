@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Container, Form, Row, Table, Modal } from 'react-bootstrap';
 
-import { Auth, Hub } from 'aws-amplify'
+import { Auth } from 'aws-amplify'
 import { API, graphqlOperation } from 'aws-amplify'
 import { onCreateUser, onUpdateUser } from '../../../graphql/subscriptions';
 import { createUser, updateUser } from '../../../graphql/mutations';

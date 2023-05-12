@@ -3,7 +3,7 @@ import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature, createDocument } from '../../../graphql/mutations'
-import { getProduct, listCategories, listFeatures, listUserProducts } from '../../../graphql/queries'
+import { getProductDraft, listCategories, listFeatures, listUserProducts } from '../../../graphql/queries'
 import DragAreaJustImages from './dragArea/DragAreaJustImages'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import FromPlantaciones from './FormPlantaciones/FormPlantaciones'
@@ -12,7 +12,7 @@ import TyC from './TyC/TyC'
 import Button from './components/Button/Button'
 import { ToastContainer, toast } from 'react-toastify';
 import { InfoCircle } from 'react-bootstrap-icons'
-import { validarString } from '../functions/functions'
+import { fillForm, validarString } from '../functions/functions'
 import 'react-toastify/dist/ReactToastify.css';
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 import URL from '../../common/_conf/URL';
@@ -143,6 +143,7 @@ class NewProduct extends Component {
         this.fetchfeatureTypeIDS = this.fetchfeatureTypeIDS.bind(this)
         this.handleSetStateCompany = this.handleSetStateCompany.bind(this)
         this.onHideModalInformation = this.onHideModalInformation.bind(this)
+        this.fillFormWithProductOnDraft = this.fillFormWithProductOnDraft.bind(this)
         this.onHideModalTyC = this.onHideModalTyC.bind(this)
         this.onHideModalGuardarP = this.onHideModalGuardarP.bind(this)
         this.onHideModalProductOnDraft = this.onHideModalProductOnDraft.bind(this)
@@ -175,11 +176,19 @@ class NewProduct extends Component {
     async proyectDraftFounded(productIDDraft){
         try {
             const product = {id: productIDDraft}
-            const result = await API.graphql(graphqlOperation(getProduct, product))
+            const result = await API.graphql(graphqlOperation(getProductDraft, product))
+            console.log(result.data.getProduct, 'result.data.getProductDraft')
             this.setState({productOnDraft: result.data.getProduct, renderModalProductOnDraft: true})
         } catch (error) {
             console.log(error)
         }
+    }
+    async fillFormWithProductOnDraft(){
+        this.setState(prevState => ({
+            CRUD_Product: { ...prevState.CRUD_Product, name: this.state.productOnDraft.name }
+        }))
+        this.onHideModalProductOnDraft()
+        /* fillForm(this.state.productOnDraft) */
     }
     async fetchfeatureTypeIDS() {
         const actualUser = await Auth.currentAuthenticatedUser()
@@ -1027,6 +1036,7 @@ class NewProduct extends Component {
                     <ProductOnDraft 
                         renderModalProductOnDraft={this.state.renderModalProductOnDraft}
                         productOnDraft={this.state.productOnDraft}
+                        fillFormWithProductOnDraft={this.fillFormWithProductOnDraft}
                         onHideModalProductOnDraft={this.onHideModalProductOnDraft}    
                         />
                 }
