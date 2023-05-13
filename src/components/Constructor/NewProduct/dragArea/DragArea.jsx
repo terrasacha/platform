@@ -10,7 +10,11 @@ class DragArea extends Component{
     this.selectImage = this.props.selectImage.bind(this)
     this.cleanDragArea = this.props.cleanDragArea.bind(this)
   }
-
+  componentDidMount(){
+    if(this.props.idFile !== ''){
+      this.setState({ImageSelectedPrevious: this.props.idFile})
+    }
+  }
   changeImage = (e, id) => {
     const file = e.target.files[0];
     if (file.size > 5000000) { // limite de 5 MB
