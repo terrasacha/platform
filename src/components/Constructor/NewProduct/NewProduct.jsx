@@ -185,11 +185,9 @@ class NewProduct extends Component {
     async fillFormWithProductOnDraft(){
         const actualUser = await Auth.currentAuthenticatedUser()
         const userID = actualUser.attributes.sub;
-        this.setState(prevState => ({
-            CRUD_Product: { ...prevState.CRUD_Product, name: this.state.productOnDraft.name }
-        }))
         this.onHideModalProductOnDraft()
         let result = await fillForm(this.state.productOnDraft, userID)
+        this.setState(result)
         console.log(result, '192')
 
     }
@@ -1043,8 +1041,8 @@ class NewProduct extends Component {
                         onHideModalProductOnDraft={this.onHideModalProductOnDraft}    
                         />
                 }
-                {/* {CRUD_Product.name && this.state.activeButton &&
-                    <button className={s.saveButton} onClick={()=> this.setState({renderGuardarParcialmente: true})}>Guardar</button>} */}
+                {CRUD_Product.name && this.state.activeButton &&
+                    <button className={s.saveButton} onClick={()=> this.setState({renderGuardarParcialmente: true})}>Guardar</button>}
             </div>
         )
     }

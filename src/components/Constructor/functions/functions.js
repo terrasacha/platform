@@ -178,9 +178,11 @@ export async function fillForm(product, userID){
       return pfs.push(pf)
     })
     if(reddOrPP[0].featureID.includes('redd')){
+      tempState.activeButton = 'REDD+'
       reddOrPP.map(redd => tempState.productFeature.redd[redd.featureID] = redd.documents.items.length > 0? redd.documents.items[0].id : redd.value)
     }
     if(reddOrPP[0].featureID.includes('PP')){
+      tempState.activeButton = 'PROYECTO_PLANTACIONES'
       reddOrPP.map(PP => tempState.productFeature.PP[PP.featureID] = PP.documents.items.length > 0? PP.documents.items[0].id : PP.value)
     }
     pfs.map(pf => tempState.productFeature[pf.featureID] = pf.value)
