@@ -177,18 +177,21 @@ class NewProduct extends Component {
         try {
             const product = {id: productIDDraft}
             const result = await API.graphql(graphqlOperation(getProductDraft, product))
-            console.log(result.data.getProduct, 'result.data.getProductDraft')
             this.setState({productOnDraft: result.data.getProduct, renderModalProductOnDraft: true})
         } catch (error) {
             console.log(error)
         }
     }
     async fillFormWithProductOnDraft(){
+        const actualUser = await Auth.currentAuthenticatedUser()
+        const userID = actualUser.attributes.sub;
         this.setState(prevState => ({
             CRUD_Product: { ...prevState.CRUD_Product, name: this.state.productOnDraft.name }
         }))
         this.onHideModalProductOnDraft()
-        /* fillForm(this.state.productOnDraft) */
+        let result = await fillForm(this.state.productOnDraft, userID)
+        console.log(result, '192')
+
     }
     async fetchfeatureTypeIDS() {
         const actualUser = await Auth.currentAuthenticatedUser()
@@ -1040,8 +1043,8 @@ class NewProduct extends Component {
                         onHideModalProductOnDraft={this.onHideModalProductOnDraft}    
                         />
                 }
-                {CRUD_Product.name && this.state.activeButton &&
-                    <button className={s.saveButton} onClick={()=> this.setState({renderGuardarParcialmente: true})}>Guardar</button>}
+                {/* {CRUD_Product.name && this.state.activeButton &&
+                    <button className={s.saveButton} onClick={()=> this.setState({renderGuardarParcialmente: true})}>Guardar</button>} */}
             </div>
         )
     }
