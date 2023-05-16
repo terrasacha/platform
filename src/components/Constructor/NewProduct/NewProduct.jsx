@@ -3,7 +3,7 @@ import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature, createDocument } from '../../../graphql/mutations'
-import { getProductDraft, listCategories, listFeatures, listUserProducts } from '../../../graphql/queries'
+import { getProductDraft, listCategories, listFeatures, listUserProducts, listProductFeatures } from '../../../graphql/queries'
 import DragAreaJustImages from './dragArea/DragAreaJustImages'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import FromPlantaciones from './FormPlantaciones/FormPlantaciones'
@@ -12,7 +12,7 @@ import TyC from './TyC/TyC'
 import Button from './components/Button/Button'
 import { ToastContainer, toast } from 'react-toastify';
 import { InfoCircle } from 'react-bootstrap-icons'
-import { fillForm, validarString } from '../functions/functions'
+import { fillForm, validarString, updateProyectForm } from '../functions/functions'
 import 'react-toastify/dist/ReactToastify.css';
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 import URL from '../../common/_conf/URL';
@@ -31,8 +31,24 @@ const regexInputWebSite = /[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*\.[a-z]{2,}(\/[a-zA-Z0-9
 const regexInputUbic = /^[a-zA-Z0-9,áéíóúÁÉÍÓÚñÑüÜ ]*$/
 const regexInputCoord = /^-?\d{1,3}(.\d+)?,?\s*-?\d{1,3}(.\d+)?$/
 const regexInputEmail = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
+export const listProductFeaturesUpdate = /* GraphQL */ `
+  query ListProductFeatures(
+    $filter: ModelProductFeatureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProductFeatures(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        value
+        productID
+        featureID
+      }
+      nextToken
+    }
+  }
+`;
 class NewProduct extends Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -151,9 +167,9 @@ class NewProduct extends Component {
         this.cleanDragArea = this.cleanDragArea.bind(this)
     }
     componentDidMount = async () => { 
-        await this.checkIfUserHasDraftProduct() 
-        await this.loadCategorysSelectItems()
+        await this.checkIfUserHasDraftProduct()
         await this.fetchfeatureTypeIDS()
+        await this.loadCategorysSelectItems()
 
     }
     async checkIfUserHasDraftProduct(){
@@ -188,7 +204,7 @@ class NewProduct extends Component {
         this.onHideModalProductOnDraft()
         let result = await fillForm(this.state.productOnDraft, userID)
         this.setState(result)
-        console.log(result, '192')
+        
 
     }
     async fetchfeatureTypeIDS() {
@@ -264,7 +280,7 @@ class NewProduct extends Component {
         imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
         // Getting extension
         let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
-        let imageName = imageId + '.' + imageExtension
+        let imageName = `${imageId}_${productID}.${imageExtension}`
         this.setState({ isImageUploadingFile: true })
         uploadImageResult = await Storage.put(imageName, file, {
             level: "public",
@@ -306,30 +322,28 @@ class NewProduct extends Component {
                 imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
                 // Getting extension
                 let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
-                let imageName = `${productID}_${idProductFeature}_${imageId}.${imageExtension}`
+                let imageName = `${idProductFeature}_${imageId}.${imageExtension}`
 
-                Storage.put(imageName, file, {
+               let result = await Storage.put(imageName, file, {
                     level: "public",
                     contentType: '*/*',
-                }).then(async (data)=>{
-
-                    const newDocPayLoad = {
-                        id: imageName,
-                        productFeatureID: idProductFeature,
-                        userID: userID,
-                        data: JSON.stringify({empty: ''}),
-                        timeStamp: Date.now(),
-                        url: encodeURI(`${URL}${data.key}`),
-                        signed: '',
-                        signedHash: '',
-                        isApproved: false,
-                        status: '',
-                        isUploadedToBlockChain: false,
-                        documentTypeID: '1',
-                    }
-                    console.log(`url de ${newDocPayLoad.id}`, newDocPayLoad.url)
-                    await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad }))
                 })
+                const newDocPayLoad = {
+                    id: `${idProductFeature}_${imageId}`,
+                    productFeatureID: idProductFeature,
+                    userID: userID,
+                    data: JSON.stringify({empty: ''}),
+                    timeStamp: Date.now(),
+                    url: encodeURI(`${URL}${result.key}`),
+                    signed: '',
+                    signedHash: '',
+                    isApproved: false,
+                    status: '',
+                    isUploadedToBlockChain: false,
+                    documentTypeID: '1',
+                }
+                    console.log(`url de ${newDocPayLoad.id}`, newDocPayLoad.url)
+                    await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad })).then(()=> console.log('documento creado'))
                 
             } catch (error) {
                 
@@ -363,79 +377,86 @@ class NewProduct extends Component {
             && this.state.errors.coord === '' && this.state.companyerrors.name === '' && this.state.companyerrors.cp === ''
             && this.state.companyerrors.phone === '' && this.state.companyerrors.email === ''
             && this.state.companyerrors.website === '') || this.state.renderGuardarParcialmente) {
-            const payLoadNewProduct = {
-                id: tempCRUD_Product.id,
-                name: tempCRUD_Product.name,
-                description: tempCRUD_Product.description,
-                isActive: false,
-                status: this.state.renderGuardarParcialmente? 'draft': 'on_verification',
-                counterNumberOfTimesBuyed: 0,
-                categoryID: this.state.activeButton,
-                order: 0,
-            }
-            this.state.imageToUpload !== '' && this.handleFiles(this.state.imageToUpload, payLoadNewProduct.id)
-            await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
-            // Creating UserProduct
-            let actualUser = await Auth.currentAuthenticatedUser()
-            let actualUserID = actualUser.attributes.sub
-
-            const payLoadNewUserProduct = {
-                userID: actualUserID,
-                productID: tempCRUD_Product.id,
-                isFavorite: true
-            }
-            const payLoadAdmonProduct = {
-                userID: WebAppConfig.admon,
-                productID: tempCRUD_Product.id,
-                isFavorite: true
-            }
-            const productFeatures = [
-                { featureID: 'ha_tot', value: this.state.productFeature.ha_tot },
-                { featureID: 'ubicacion', value: this.state.productFeature.ubicacion },
-                { featureID: 'fecha_inscripcion', value: Date.parse(this.state.productFeature.fecha_inscripcion) },
-                { featureID: 'coordenadas', value: this.state.productFeature.coord },
-                { featureID: 'periodo_permanencia', value: this.state.productFeature.periodo_permanencia },
-                { featureID: 'token_name', value: this.state.productFeature.token_name },
-              ];
-              
-            const userProducts = [payLoadNewUserProduct, payLoadAdmonProduct];
-            
-            const productFeaturePromises = productFeatures.map((feature) =>
-            API.graphql(graphqlOperation(createProductFeature, { input: { featureID: feature.featureID, productID: tempCRUD_Product.id, value: feature.value } }))
-            );
-            
-            const userProductPromises = userProducts.map((payload) =>
-            API.graphql(graphqlOperation(createUserProduct, { input: payload }))
-            );
-            
-            const createUserProductFeaturePromise = API.graphql(graphqlOperation(createProductFeature, { input: { featureID: `${userID}_${this.state.company.name}_name`, productID: tempCRUD_Product.id } }));
-
-            if(this.state.activeButton === 'PROYECTO_PLANTACIONES'){
-                const PPFeatures = Object.entries(this.state.productFeature.PP).map(([key, value]) => ({
-                    featureID: key,
-                    value,
-                    }));
-                PPFeatures.map(async (feature) =>  
-                    await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
-                );
-                
-            }   
-            if(this.state.activeButton === 'REDD+'){
-                const REDDFeatures = Object.entries(this.state.productFeature.redd).map(([key, value]) => ({
-                    featureID: key,
-                    value,
-                    }));
-                REDDFeatures.map(async (feature) =>
-                    await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
-                );
-                
-            } 
-            const allPromises = [...productFeaturePromises, ...userProductPromises, createUserProductFeaturePromise];
-            
-            await Promise.all(allPromises);
-            await this.cleanProductOnCreate('no company')
-            this.setState({ loading: false })
-            this.notify('Formulario enviado')
+                if(this.state.productOnDraft === ''){
+                    const payLoadNewProduct = {
+                        id: tempCRUD_Product.id,
+                        name: tempCRUD_Product.name,
+                        description: tempCRUD_Product.description,
+                        isActive: false,
+                        status: this.state.renderGuardarParcialmente? 'draft': 'on_verification',
+                        counterNumberOfTimesBuyed: 0,
+                        categoryID: this.state.activeButton,
+                        order: 0,
+                    }
+                    this.state.imageToUpload !== '' && this.handleFiles(this.state.imageToUpload, payLoadNewProduct.id)
+                    await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
+                    // Creating UserProduct
+                    let actualUser = await Auth.currentAuthenticatedUser()
+                    let actualUserID = actualUser.attributes.sub
+        
+                    const payLoadNewUserProduct = {
+                        userID: actualUserID,
+                        productID: tempCRUD_Product.id,
+                        isFavorite: true
+                    }
+                    const payLoadAdmonProduct = {
+                        userID: WebAppConfig.admon,
+                        productID: tempCRUD_Product.id,
+                        isFavorite: true
+                    }
+                    const productFeatures = [
+                        { featureID: 'ha_tot', value: this.state.productFeature.ha_tot },
+                        { featureID: 'ubicacion', value: this.state.productFeature.ubicacion },
+                        { featureID: 'fecha_inscripcion', value: Date.parse(this.state.productFeature.fecha_inscripcion) },
+                        { featureID: 'coordenadas', value: this.state.productFeature.coord },
+                        { featureID: 'periodo_permanencia', value: this.state.productFeature.periodo_permanencia },
+                        { featureID: 'token_name', value: this.state.productFeature.token_name },
+                      ];
+                      
+                    const userProducts = [payLoadNewUserProduct, payLoadAdmonProduct];
+                    
+                    const productFeaturePromises = productFeatures.map((feature) =>
+                    API.graphql(graphqlOperation(createProductFeature, { input: { featureID: feature.featureID, productID: tempCRUD_Product.id, value: feature.value } }))
+                    );
+                    
+                    const userProductPromises = userProducts.map((payload) =>
+                    API.graphql(graphqlOperation(createUserProduct, { input: payload }))
+                    );
+                    
+                    const createUserProductFeaturePromise = API.graphql(graphqlOperation(createProductFeature, { input: { featureID: `${userID}_${this.state.company.name}_name`, productID: tempCRUD_Product.id } }));
+        
+                    if(this.state.activeButton === 'PROYECTO_PLANTACIONES'){
+                        const PPFeatures = Object.entries(this.state.productFeature.PP).map(([key, value]) => ({
+                            featureID: key,
+                            value,
+                            }));
+                        PPFeatures.map(async (feature) =>  
+                            await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID),
+                        );
+                        
+                    }   
+                    if(this.state.activeButton === 'REDD+'){
+                        const REDDFeatures = Object.entries(this.state.productFeature.redd).map(([key, value]) => ({
+                            featureID: key,
+                            value,
+                            }));
+                        REDDFeatures.map(async (feature) =>
+                            await this.handleDocuments(feature.value,feature.featureID, tempCRUD_Product.id, userID)
+                        );
+                        
+                    } 
+                    const allPromises = [...productFeaturePromises, ...userProductPromises, createUserProductFeaturePromise];
+                    
+                    await Promise.all(allPromises);
+                    await this.cleanProductOnCreate('no company')
+                    this.setState({ loading: false })
+                    this.notify('Formulario enviado')
+                }else{
+                    updateProyectForm(this.state.productOnDraft, this.state, userID)
+                    await this.cleanProductOnCreate('no company')
+                    this.setState({ loading: false })
+                    this.notify('Formulario enviado')
+                }
         } else {
             console.log('errors')
             this.notifyError('Tu formulario contiene campos vacíos o campos con valores erroneos')
@@ -480,14 +501,13 @@ class NewProduct extends Component {
     checkFormStatus() {
         if (this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
         if (this.state.CRUD_Product.name !== '' && this.state.CRUD_Product.description !== '' && this.state.productFeature.ha_tot !== ''
-            && this.state.productFeature.coord !== '' && this.state.company.name !== '') {
+            && this.state.productFeature.coord !== '' && this.state.selectedCompany !== '') {
             this.setState({ renderModalTyC: true })
         } else {
             return this.notifyError('Asegurese de completar los campos necesarios antes de continuar')
         }
     }
     cleanDragArea(id){
-        if(id){
             let documentType = id.split('_')[0]
             this.setState(prevState => ({
                 ...prevState,
@@ -499,9 +519,10 @@ class NewProduct extends Component {
                   }
                 }
               }));
-        }else{
+
+    }
+    cleanDragAreaJustImages(id){
             this.setState({imageToUpload: ''})
-        }
 
     }
     async cleanProductOnCreate(company) {
@@ -976,8 +997,9 @@ class NewProduct extends Component {
                         <fieldset className={s.inputContainer}>
                             <legend>Imágenes</legend>
                             <DragAreaJustImages
+                                idFile={this.state.CRUD_Product.images?.items?.length > 0? this.state.CRUD_Product.images.items[0].id: ''}
                                 selectImage={this.selectImage}
-                                cleanDragArea={this.cleanDragArea}
+                                cleanDragArea={this.cleanDragAreaJustImages}
                             />
                         </fieldset>
                     </form>
@@ -1041,7 +1063,7 @@ class NewProduct extends Component {
                         onHideModalProductOnDraft={this.onHideModalProductOnDraft}    
                         />
                 }
-                {CRUD_Product.name && this.state.activeButton &&
+                {CRUD_Product.name && this.state.activeButton && this.state.productOnDraft === '' &&
                     <button className={s.saveButton} onClick={()=> this.setState({renderGuardarParcialmente: true})}>Guardar</button>}
             </div>
         )

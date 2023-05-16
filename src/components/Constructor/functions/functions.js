@@ -1,6 +1,6 @@
-import { deleteProduct, deleteProductFeature, deleteImage, deleteDocument, deleteVerification, deleteUserProduct  } from "../../../graphql/mutations"
-import { API, graphqlOperation } from "aws-amplify"
-
+import { deleteProduct, deleteProductFeature, deleteImage, deleteDocument, deleteVerification, deleteUserProduct, updateProduct, createImage, updateProductFeature, createDocument } from "../../../graphql/mutations"
+import { API, graphqlOperation, Storage} from "aws-amplify"
+import URL from '../../common/_conf/URL';
 const getProductQuery = /* GraphQL */ `
   query GetProduct($id: ID!) {
     getProduct(id: $id) {
@@ -33,13 +33,104 @@ const getProductQuery = /* GraphQL */ `
     }
   }
 `;
+export const listProductFeaturesUpdate = /* GraphQL */ `
+  query ListProductFeatures(
+    $filter: ModelProductFeatureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProductFeatures(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        value
+        productID
+        featureID
+      }
+      nextToken
+    }
+  }
+`;
+async function handleFiles(e, productID) {
+  let uploadImageResult = null
+  let imageId = ''
+  const { target: { files } } = e;
+  const [file,] = files || [];
+  if (!file) {
+      return
+  }
+  // Creating image ID
+  let fileNameSplitByDotfileArray = file.name.split('.')
+  imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
+  // Getting extension
+  let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
+  let imageName = `${imageId}_${productID}.${imageExtension}`
+  uploadImageResult = await Storage.put(imageName, file, {
+      level: "public",
+      contentType: "image/jpeg",
+  });
+  const newImagePayLoad = {
+      productID: productID,
+      id: imageName,
+      imageURL: uploadImageResult.key,
+      format: uploadImageResult.key.split('.')[1],
+      title: imageName,
+      isOnCarousel: false,
+      carouselLabel: '',
+      carouselDescription: '',
+      isActive: false,
+      order: 0,
+  }
+  await API.graphql(graphqlOperation(createImage, { input: newImagePayLoad }))
+
+}
 export function validarString(str, regex) {
     if (!regex.test(str)) {
         return 'Caracteres no permitidos'
     }
     return ''
   }
+async function handleDocuments(e , productFeatureID, userID) {
+      try {
+          let imageId = ''
+          const { target: { files } } = e;
+          const [file,] = files || [];
+          if (!file) {
+              return
+          }
+          let fileNameSplitByDotfileArray = file.name.split('.')
+          imageId = fileNameSplitByDotfileArray[0].replaceAll(' ', '_').replaceAll('-', '_')
+          // Getting extension
+          let imageExtension = fileNameSplitByDotfileArray[fileNameSplitByDotfileArray.length - 1]
+          let imageName = `${productFeatureID}_${imageId}.${imageExtension}`
 
+          Storage.put(imageName, file, {
+              level: "public",
+              contentType: '*/*',
+          }).then(async (data)=>{
+
+              const newDocPayLoad = {
+                  id: `${productFeatureID}_${imageId}`,
+                  productFeatureID: productFeatureID,
+                  userID: userID,
+                  data: JSON.stringify({empty: ''}),
+                  timeStamp: Date.now(),
+                  url: encodeURI(`${URL}${data.key}`),
+                  signed: '',
+                  signedHash: '',
+                  isApproved: false,
+                  status: '',
+                  isUploadedToBlockChain: false,
+                  documentTypeID: '1',
+              }
+              console.log(`url de ${newDocPayLoad.id}`, newDocPayLoad.url)
+              await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad })).then(()=> console.log('documento creado'))
+          })
+          
+      } catch (error) {
+          console.log(error)
+    }
+
+}
 export async function deleteAllProduct(productID){
     const result = await API.graphql(graphqlOperation(getProductQuery, { id: productID }))
     const product = result.data.getProduct
@@ -81,7 +172,7 @@ export async function fillForm(product, userID){
           counterNumberOfTimesBuyed: 0,
           amountToBuy: 0.0,
           categoryID: '',
-          images: [],
+          images: product.images.items,
       },
       newVerification: {
           id: '',
@@ -159,7 +250,7 @@ export async function fillForm(product, userID){
       activeButton: '',
       renderModalTyC: false,
       mostrarFormInfodeEmpresa: false,
-      productOnDraft: '',
+      productOnDraft: product,
       empresas: [],
       files: [],
       imageToUpload: '',
@@ -195,6 +286,63 @@ export async function fillForm(product, userID){
       resultado = resultado.replace(expresionRegular, "");
     });
     tempState.selectedCompany = resultado
+    //fecha
+    const fecha = new Date(parseInt(tempState.productFeature.fecha_inscripcion))
+    const year = fecha.getFullYear()
+    const month = (fecha.getMonth() + 1).toString().padStart(2, '0')
+    const day = fecha.getDate().toString().padStart(2, '0')
+    const fechaFormateada = `${year}-${month}-${day}`
+
+    tempState.productFeature.fecha_inscripcion = fechaFormateada
     //hasta aqui
     return tempState
+}
+export async function updateProyectForm(productOnDraft, state, userID){
+
+  //Info proyecto
+  let tempUpdateProduct = {
+            id: productOnDraft.id,
+            name: state.CRUD_Product.name,
+            description: state.CRUD_Product.description,
+            status: 'on_verification',
+            categoryID: state.activeButton
+        }
+
+  await API.graphql(graphqlOperation(updateProduct , { input: tempUpdateProduct }))
+  //Info image
+  if(state.imageToUpload !== ''){
+    handleFiles(state.imageToUpload, productOnDraft.id)
+    productOnDraft.images?.items?.length > 0 && await API.graphql(graphqlOperation(deleteImage , {input:{id: productOnDraft.images.items[0].id}}))
+
+  }
+  //Info ProductFeatures comunes a todos los proyectos
+  let productFeatures = ['ha_tot','ubicacion','fecha_inscripcion','coordenadas','periodo_permanencia','token_name']
+  productFeatures.map(async (pfeature) =>{
+    if(state.productFeature[pfeature] !== productOnDraft.productFeatures[pfeature]){
+      let productFeatureID
+      let filterpf = { productID: { eq : productOnDraft.id }, featureID: { eq: pfeature }};
+      let result = await API.graphql({ query: listProductFeaturesUpdate, variables: { filter: filterpf }})
+        productFeatureID = result.data.listProductFeatures.items[0].id
+      await API.graphql(graphqlOperation(updateProductFeature, { input: { id: productFeatureID, value: state.productFeature[pfeature]}}))
+    }
+  })
+  //Info producFeatures REDD o PP
+  state.activeButton === 'REDD+' && Object.entries(state.productFeature.redd).map(async ([key, value]) => {
+    let pfrProductOnDraft = productOnDraft.productFeatures.items.filter(pf => pf.featureID === key )
+    if(typeof value === 'string' && value !== pfrProductOnDraft[0].value) return  await API.graphql(graphqlOperation(updateProductFeature, { input: { id: pfrProductOnDraft[0].id, value: value}}))
+    if(typeof value !== 'string'){
+      pfrProductOnDraft[0].documents.items.length > 0 && await API.graphql(graphqlOperation(deleteDocument, { input: { id: pfrProductOnDraft[0].documents.items[0].id}})).then(()=> console.log('doc deleted', pfrProductOnDraft[0].documents.items[0].id))
+      await handleDocuments(value, pfrProductOnDraft[0].id, userID)
+    } 
+  });
+  state.activeButton === 'PROYECTO_PLANTACIONES' && Object.entries(state.productFeature.PP).map(async ([key, value]) => {
+    let pfrProductOnDraft = productOnDraft.productFeatures.items.filter(pf => pf.featureID === key )
+    if(typeof value === 'string' && value !== pfrProductOnDraft[0].value && pfrProductOnDraft[0].documents?.items?.length < 1) return  await API.graphql(graphqlOperation(updateProductFeature, { input: { id: pfrProductOnDraft[0].id, value: value}}))
+    if(typeof value !== 'string'){
+      pfrProductOnDraft[0].documents.items.length > 0 && await API.graphql(graphqlOperation(deleteDocument, { input: { id: pfrProductOnDraft[0].documents.items[0].id}}))
+      console.log('doc deleted', pfrProductOnDraft[0].documents.items[0].id)
+      await handleDocuments(value, pfrProductOnDraft[0].id, userID)
+    } 
+  });
+  console.log('done')
 }
