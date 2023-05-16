@@ -31,12 +31,19 @@
         "kiosuanbcrjsapp58b48a41": {
           "sesEmail": "notificaciones@suan.global",
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-477743776b58774c3654-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-70746b2f713064453964-build.zip"
         },
         "kiosuanbcrjsappSchProjectValidationEnddate": {
           "sesEmail": "notificaciones@suan.global",
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappSchProjectValidationEnddate-71694b526e5055345233-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappSchProjectValidationEnddate-7a61624b386253575257-build.zip"
+        },
+        "kiosuanbcrjsappSendMailNotByComment": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappSendMailNotByComment-7753594a6d57554a3279-build.zip",
+          "graphqlEndpoint": "https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql",
+          "graphqlApiKey": "da2-zmafzaqndbc5blfoqw4kqddtlq",
+          "sesEmail": "notificaciones@suan.global"
         }
       }
     }

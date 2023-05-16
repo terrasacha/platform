@@ -58,24 +58,16 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "kiosuanbcrjsappSchProjectValidationEnddate": {
+    "kiosuanbcrjsappSendMailNotByComment": {
       "build": true,
       "dependsOn": [
         {
           "attributes": [
             "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput",
-            "GraphQLAPIKeyOutput"
+            "GraphQLAPIEndpointOutput"
           ],
           "category": "api",
           "resourceName": "kiosuanbcrjsapp"
-        },
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "kiosuanbcrjsappa6accc93"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -135,6 +127,46 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappSchProjectValidationEnddate"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_graphqlApiKey": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_graphqlEndpoint": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_sesEmail": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
         }
       ]
     },

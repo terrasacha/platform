@@ -1,0 +1,46 @@
+{
+    "Records": [
+        {
+            "eventID": "5996540b93db0d8e8b4c66bc4b9ed7fe",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1683821146,
+                "Keys": {
+                    "id": {
+                        "S": "87e93449-c368-46b5-ae51-77614f29a115"
+                    }
+                },
+                "NewImage": {
+                    "createdAt": {
+                        "S": "2023-05-11T16:05:46.462Z"
+                    },
+                    "isCommentByVerifier": {
+                        "BOOL": false
+                    },
+                    "__typename": {
+                        "S": "VerificationComment"
+                    },
+                    "comment": {
+                        "S": "Comentario"
+                    },
+                    "id": {
+                        "S": "87e93449-c368-46b5-ae51-77614f29a115"
+                    },
+                    "verificationID": {
+                        "S": "14409378_158b_4a39_9ddf_b4b6877e3525"
+                    },
+                    "updatedAt": {
+                        "S": "2023-05-11T16:05:46.462Z"
+                    }
+                },
+                "SequenceNumber": "179988700000000039294051232",
+                "SizeBytes": 258,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-east-1:036134507423:table/VerificationComment-d6sfnut2zrdljfaz3ysbjfhvke-dev/stream/2023-04-03T20:22:13.244"
+        }
+    ]
+}
