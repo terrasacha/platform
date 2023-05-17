@@ -50,6 +50,14 @@ export const listProductFeaturesUpdate = /* GraphQL */ `
     }
   }
 `;
+export const getFeatureJustTemplate = /* GraphQL */ `
+  query GetFeature($id: ID!) {
+    getFeature(id: $id) {
+      id
+      isTemplate
+    }
+  }
+`;
 async function handleFiles(e, productID) {
   let uploadImageResult = null
   let imageId = ''
@@ -208,7 +216,7 @@ export async function fillForm(product, userID){
           ha_tot: '',
           fecha_inscripcion: '',
           ubicacion: '',
-          coord: '',
+          coordenadas: '',
           periodo_permanencia: '',
           token_name: '',
           redd:{
@@ -240,7 +248,7 @@ export async function fillForm(product, userID){
           title: '',
           ha_tot: '',
           ubicacion: '',
-          coord: '',
+          coordenadas: '',
           periodo_permanencia: '',
           token_name: ''
       },
@@ -298,7 +306,6 @@ export async function fillForm(product, userID){
     return tempState
 }
 export async function updateProyectForm(productOnDraft, state, userID){
-
   //Info proyecto
   let tempUpdateProduct = {
             id: productOnDraft.id,
@@ -318,12 +325,16 @@ export async function updateProyectForm(productOnDraft, state, userID){
   //Info ProductFeatures comunes a todos los proyectos
   let productFeatures = ['ha_tot','ubicacion','fecha_inscripcion','coordenadas','periodo_permanencia','token_name']
   productFeatures.map(async (pfeature) =>{
+    let productFeatureID
     if(state.productFeature[pfeature] !== productOnDraft.productFeatures[pfeature]){
-      let productFeatureID
       let filterpf = { productID: { eq : productOnDraft.id }, featureID: { eq: pfeature }};
       let result = await API.graphql({ query: listProductFeaturesUpdate, variables: { filter: filterpf }})
         productFeatureID = result.data.listProductFeatures.items[0].id
       await API.graphql(graphqlOperation(updateProductFeature, { input: { id: productFeatureID, value: state.productFeature[pfeature]}}))
+    }
+    let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: pfeature }))
+    if(createVerification.data.getFeature.isTemplate){
+      await API.graphql(graphqlOperation(createVerification, { input: { userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b', userVerifiedID: userID, productFeatureID: productFeatureID} }))
     }
   })
   //Info producFeatures REDD o PP
@@ -334,15 +345,25 @@ export async function updateProyectForm(productOnDraft, state, userID){
       pfrProductOnDraft[0].documents.items.length > 0 && await API.graphql(graphqlOperation(deleteDocument, { input: { id: pfrProductOnDraft[0].documents.items[0].id}})).then(()=> console.log('doc deleted', pfrProductOnDraft[0].documents.items[0].id))
       await handleDocuments(value, pfrProductOnDraft[0].id, userID)
     } 
+    let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: key }))
+    if(createVerification.data.getFeature.isTemplate){
+      await API.graphql(graphqlOperation(createVerification, { input: { userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b', userVerifiedID: userID, productFeatureID: pfrProductOnDraft[0].id} }))
+    }
+    
   });
   state.activeButton === 'PROYECTO_PLANTACIONES' && Object.entries(state.productFeature.PP).map(async ([key, value]) => {
-    let pfrProductOnDraft = productOnDraft.productFeatures.items.filter(pf => pf.featureID === key )
-    if(typeof value === 'string' && value !== pfrProductOnDraft[0].value && pfrProductOnDraft[0].documents?.items?.length < 1) return  await API.graphql(graphqlOperation(updateProductFeature, { input: { id: pfrProductOnDraft[0].id, value: value}}))
-    if(typeof value !== 'string'){
-      pfrProductOnDraft[0].documents.items.length > 0 && await API.graphql(graphqlOperation(deleteDocument, { input: { id: pfrProductOnDraft[0].documents.items[0].id}}))
-      console.log('doc deleted', pfrProductOnDraft[0].documents.items[0].id)
-      await handleDocuments(value, pfrProductOnDraft[0].id, userID)
+    let pfPPProductOnDraft = productOnDraft.productFeatures.items.filter(pf => pf.featureID === key )
+    if(typeof value === 'string' && value !== pfPPProductOnDraft[0].value && pfPPProductOnDraft[0].documents?.items?.length < 1){
+      await API.graphql(graphqlOperation(updateProductFeature, { input: { id: pfPPProductOnDraft[0].id, value: value}}))
     } 
+    if(typeof value !== 'string'){
+      pfPPProductOnDraft[0].documents.items.length > 0 && await API.graphql(graphqlOperation(deleteDocument, { input: { id: pfPPProductOnDraft[0].documents.items[0].id}}))
+      await handleDocuments(value, pfPPProductOnDraft[0].id, userID)
+    } 
+    let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: key }))
+    if(createVerification.data.getFeature.isTemplate){
+      await API.graphql(graphqlOperation(createVerification, { input: { userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b', userVerifiedID: userID, productFeatureID: pfPPProductOnDraft[0].id} }))
+    }
   });
   console.log('done')
 }

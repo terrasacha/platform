@@ -98,7 +98,7 @@ class NewProduct extends Component {
                 ha_tot: '',
                 fecha_inscripcion: '',
                 ubicacion: '',
-                coord: '',
+                coordenadas: '',
                 periodo_permanencia: '',
                 token_name: randomWords({ exactly: 3, join: '' }).toUpperCase(),
                 redd:{
@@ -130,7 +130,7 @@ class NewProduct extends Component {
                 title: '',
                 ha_tot: '',
                 ubicacion: '',
-                coord: '',
+                coordenadas: '',
                 periodo_permanencia: '',
                 token_name: ''
             },
@@ -374,7 +374,7 @@ class NewProduct extends Component {
         const tempCRUD_Product = this.state.CRUD_Product
         if (this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
         if ((this.state.errors.title === '' && this.state.errors.ubicacion === '' && this.state.errors.ha_tot === ''
-            && this.state.errors.coord === '' && this.state.companyerrors.name === '' && this.state.companyerrors.cp === ''
+            && this.state.errors.coordenadas === '' && this.state.companyerrors.name === '' && this.state.companyerrors.cp === ''
             && this.state.companyerrors.phone === '' && this.state.companyerrors.email === ''
             && this.state.companyerrors.website === '') || this.state.renderGuardarParcialmente) {
                 if(this.state.productOnDraft === ''){
@@ -408,7 +408,7 @@ class NewProduct extends Component {
                         { featureID: 'ha_tot', value: this.state.productFeature.ha_tot },
                         { featureID: 'ubicacion', value: this.state.productFeature.ubicacion },
                         { featureID: 'fecha_inscripcion', value: Date.parse(this.state.productFeature.fecha_inscripcion) },
-                        { featureID: 'coordenadas', value: this.state.productFeature.coord },
+                        { featureID: 'coordenadas', value: this.state.productFeature.coordenadas },
                         { featureID: 'periodo_permanencia', value: this.state.productFeature.periodo_permanencia },
                         { featureID: 'token_name', value: this.state.productFeature.token_name },
                       ];
@@ -501,7 +501,7 @@ class NewProduct extends Component {
     checkFormStatus() {
         if (this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
         if (this.state.CRUD_Product.name !== '' && this.state.CRUD_Product.description !== '' && this.state.productFeature.ha_tot !== ''
-            && this.state.productFeature.coord !== '' && this.state.selectedCompany !== '') {
+            && this.state.productFeature.coordenadas !== '' && this.state.selectedCompany !== '') {
             this.setState({ renderModalTyC: true })
         } else {
             return this.notifyError('Asegurese de completar los campos necesarios antes de continuar')
@@ -563,7 +563,7 @@ class NewProduct extends Component {
                 ha_tot: '',
                 fecha_inscripcion: '',
                 ubicacion: '',
-                coord: '',
+                coordenadas: '',
                 periodo_permanencia: '',
                 token_name: randomWords({ exactly: 3, join: '_' }).toUpperCase(),
                 redd:{
@@ -595,7 +595,7 @@ class NewProduct extends Component {
                 title: '',
                 ha_tot: '',
                 ubicacion: '',
-                coord: '',
+                coordenadas: '',
                 periodo_permanencia: '',
                 token_name: ''
             },
@@ -673,10 +673,10 @@ class NewProduct extends Component {
             }))
         }
         if (event.target.name === 'productFeature_coord') {
-            tempCRUD_productFeature.coord = event.target.value
+            tempCRUD_productFeature.coordenadas = event.target.value
             let error = validarString(event.target.value, regexInputCoord)
             this.setState(prevState => ({
-                errors: { ...prevState.errors, coord: error }
+                errors: { ...prevState.errors, coordenadas: error }
             }))
         }
         if (event.target.name === 'productFeature_periodo_permanencia') {
@@ -947,8 +947,8 @@ class NewProduct extends Component {
                                     <span className={s["tooltip"]}>Las coordenadas deben ir en orden "latitud, longitud". Si el número contiene parte decimal esta deben ir precedida por ".". Las coordenadas deben ir separadas por "," Ej: -34.23553, -2.43256</span>
                                 </div>
                             </legend>
-                            <input type='text' placeholder='lat, lng. Ej: 4.710990, -74.072037' name='productFeature_coord' value={productFeature.coord} onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.coord}</span>
+                            <input type='text' placeholder='lat, lng. Ej: 4.710990, -74.072037' name='productFeature_coord' value={productFeature.coordenadas} onChange={(e) => this.handleOnChangeInputForm(e)} />
+                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.coordenadas}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
@@ -997,7 +997,7 @@ class NewProduct extends Component {
                         <fieldset className={s.inputContainer}>
                             <legend>Imágenes</legend>
                             <DragAreaJustImages
-                                idFile={this.state.CRUD_Product.images?.items?.length > 0? this.state.CRUD_Product.images.items[0].id: ''}
+                                idFile={this.state.productOnDraft.images?.items?.length > 0? this.state.productOnDraft.images.items[0].id: ''}
                                 selectImage={this.selectImage}
                                 cleanDragArea={this.cleanDragAreaJustImages}
                             />

@@ -34,7 +34,7 @@ class FromPlantaciones extends Component {
                         name='PP_for_ten_tie'
                         value={this.props.productFeature.PP.PP_for_ten_tie}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>Preparación de suelos y tierra*</legend>
@@ -53,7 +53,7 @@ class FromPlantaciones extends Component {
                         name='PP_vin'
                         value={this.props.productFeature.PP.PP_vin}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>
@@ -114,7 +114,7 @@ class FromPlantaciones extends Component {
                         name='PP_pert'
                         value={this.props.productFeature.PP.PP_pert}
                         onChange={(e) =>  this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
             </form>
         )

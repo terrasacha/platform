@@ -11,8 +11,14 @@ class DragAreaJustImages extends Component{
     this.cleanDragArea = this.props.cleanDragArea.bind(this)
   }
   componentDidMount(){
+    console.log('idfile', this.props.idFile)
     if(this.props.idFile !== ''){
       this.setState({ImageSelectedPrevious: this.props.idFile})
+    }
+  }
+  componentDidUpdate(prevProps, prevState){
+    if(this.props.idFile !== prevProps.idFile){
+    this.setState({ImageSelectedPrevious: this.props.idFile})
     }
   }
 

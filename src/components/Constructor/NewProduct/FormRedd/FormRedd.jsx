@@ -33,7 +33,7 @@ class FormRedd extends Component {
                         name='redd_ame_def'
                         value={this.props.productFeature.redd.redd_ame_def}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>Gobernanza*</legend>
@@ -52,7 +52,7 @@ class FormRedd extends Component {
                         name='redd_act_pro'
                         value={this.props.productFeature.redd.redd_act_pro}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>Turberas*</legend>
@@ -61,7 +61,7 @@ class FormRedd extends Component {
                         name='redd_tur'
                         value={this.props.productFeature.redd.redd_tur}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>Escenario sin proyecto*</legend>
@@ -70,7 +70,7 @@ class FormRedd extends Component {
                         name='redd_esc_sin_pro'
                         value={this.props.productFeature.redd.redd_esc_sin_pro}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>Créditos de carbono considerado desde el inicio de la concepción del proyecto*</legend>
@@ -89,7 +89,7 @@ class FormRedd extends Component {
                         name='redd_par_ben'
                         value={this.props.productFeature.redd.redd_par_ben}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>Consultas locales, o procesos de localización*</legend>
@@ -98,7 +98,7 @@ class FormRedd extends Component {
                         name='redd_con_loc'
                         value={this.props.productFeature.redd.redd_con_loc}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
                 <fieldset className={s.inputContainer}>
                     <legend>Documento que contenga la descripción general del área del proyecto y las actividades*</legend>
@@ -107,7 +107,7 @@ class FormRedd extends Component {
                         name='redd_doc_des_gen_pro_act'
                         value={this.props.productFeature.redd.redd_doc_des_gen_pro_act}
                         onChange={(e) => this.props.handleOnChangeInputForm(e)} />
-                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coord} */}</span>
+                    <span style={{ color: 'red', fontSize: '.6em' }}>{/* {this.state.errors.coordenadas} */}</span>
                 </fieldset>
             </form>
         )
