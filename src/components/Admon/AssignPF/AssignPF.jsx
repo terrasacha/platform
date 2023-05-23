@@ -4,79 +4,94 @@ import { Button, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Tab
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
-import { createUserProduct, updateUser } from '../../../graphql/mutations';
-import { listProducts, listUserProducts, listUsers, listProductFeatures } from '../../../graphql/queries';
-import { onCreateUserProduct, onUpdateUser } from '../../../graphql/subscriptions';
+import { createUserProduct, updateUser, createVerification } from '../../../graphql/mutations';
+import { onCreateVerification } from '../../../graphql/subscriptions';
+import { listUsers } from '../../../graphql/queries';
+import { graphql } from 'graphql';
 
 
-
+export const listProductFeaturesAssignPF = /* GraphQL */ `
+  query ListProductFeatures(
+    $filter: ModelProductFeatureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProductFeatures(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        isVerifable
+        product {
+          name
+          description
+          userProducts {
+            items {
+              id
+              user {
+                name
+                role
+                id
+              }
+            }
+          }
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          featureTypeID
+        }
+        documents {
+        items {
+          status
+            }
+        }
+        verifications {
+            items {
+              id
+              userVerifiedID
+              userVerifierID
+              userVerifier {
+                name
+              }
+            }
+          }
+      }
+      nextToken
+    }
+  }
+`;
 export default class AssignPF extends Component {
   constructor(props) {
     super(props)
     this.state = {
       users: [],
       usersCopy: [],
-      products: [],
-      userProducts: [],
+      productFeatures: [],
       showModalRole: false,
       userSelected: null,
-      productSelected: null,
-      roleSelected: '',
+      productFeatureSelected: null,
     }
     this.loadUsers = this.loadUsers.bind(this)
     this.loadProductFeatures = this.loadProductFeatures.bind(this)
-    this.loadUserProducts = this.loadUserProducts.bind(this)
     this.handleSelectUser = this.handleSelectUser.bind(this)
     this.handleSelectProduct = this.handleSelectProduct.bind(this)
     this.handleAssignProduct = this.handleAssignProduct.bind(this)
-    this.handleAssignRole = this.handleAssignRole.bind(this)
-    this.handleHideModalProductFeatures = this.handleHideModalProductFeatures.bind(this)
   }
   componentDidMount = async() => {
     Promise.all([
       this.loadUsers(),
       this.loadProductFeatures(),
-      this.loadUserProducts()
   ])
-    // OnCreate userProduct
-    this.createUserProductListener = API.graphql(graphqlOperation(onCreateUserProduct))
+
+    // OnCreate Category
+    this.createVerificationListener = API.graphql(graphqlOperation(onCreateVerification))
     .subscribe({
-        next: async createdUserProductData => {
-            let isOnCreateList = false;
-            this.state.userProducts.map((mapUserProduct) => {
-                if (createdUserProductData.value.data.onCreateUserProduct.id === mapUserProduct.id) {
-                    isOnCreateList = true;
-                } 
-                return mapUserProduct
-            })
-            let tempUserProducts = this.state.userProducts
-            let tempOnCreateUserProduct = createdUserProductData.value.data.onCreateUserProduct
-            if (!isOnCreateList) {
-                tempUserProducts.push(tempOnCreateUserProduct)
-            }
-            this.setState((state) => ({userProducts: tempUserProducts}))
+        next: createdCategoryData => {
+            this.loadProductFeatures()
         }
     })
-    // OnUpdate User
-    this.updateUserListener = API.graphql(graphqlOperation(onUpdateUser))
-    .subscribe({
-        next: updatedUserData => {
-            let tempUsers = this.state.users.map((mapUsers) => {
-                if (updatedUserData.value.data.onUpdateUser.id === mapUsers.id) {
-                    return updatedUserData.value.data.onUpdateUser
-                } else {
-                    return mapUsers
-                }
-            })
-            // Ordering users by name
-            tempUsers.sort((a, b) => (a.name > b.name) ? 1 : -1)
-            this.setState((state) => ({users: tempUsers}))
-        }
-    })
-}
-componentWillUnmount() {
-  this.createUserProductListener.unsubscribe();
-  this.updateUserListener.unsubscribe();
 }
   async loadUsers() {
     let filter = {
@@ -88,78 +103,74 @@ componentWillUnmount() {
     this.setState({users: listUsersResults.data.listUsers.items, usersCopy: listUsersResults.data.listUsers.items})
   }
   async loadProductFeatures() {
-    let filter = {
-        feature: {
-          isTemplate: {
-            eq: true
-          }
+    const listProductFeaturesResults = await API.graphql({ query: listProductFeaturesAssignPF})
+    let pfTemplates = listProductFeaturesResults.data.listProductFeatures.items.filter(pf => pf.feature.isTemplate)
+    pfTemplates.sort((a, b) => {
+        let nameA = a.product.name.toUpperCase();
+        let nameB = b.product.name.toUpperCase();
+        if (nameA < nameB) {
+          return -1;
         }
-      };
-    const listProductFeaturesResults = await API.graphql({ query: listProductFeatures , variables: { filter: filter}})
-    console.log(listProductFeaturesResults)
-    this.setState({products: listProductFeaturesResults.data.listProductFeatures.items})
-    }
-  async loadUserProducts() {
-    const listUserProductsResults = await API.graphql(graphqlOperation(listUserProducts))
-    listUserProductsResults.data.listUserProducts.items.sort((a, b) => (a.user.id > b.user.id) ? 1 : -1)
-    this.setState({userProducts: listUserProductsResults.data.listUserProducts.items})
+        if (nameA > nameB) {
+          return 1;
+        }
+        return 0;
+      })
+    this.setState({productFeatures: pfTemplates})
     }
   handleSelectUser(user){
     this.setState({userSelected: user})
   }
   handleSelectProduct(product){
-    this.setState({productSelected: product})
+    this.setState({productFeatureSelected: product})
   }
   assignRole(user){
     this.handleSelectUser(user)
     this.setState({showModalRole: true})
   }
-  handleHideModalProductFeatures() {
-    this.setState({showModalRole: !this.state.showModalRole,})
-  }
-  handleInputChange(e){
-    if(e.target.name === 'select_role'){
-      this.setState({roleSelected: e.target.value})
-    }
-  }
   async handleAssignProduct(){
     let existUP = false
-    const userProducts = this.state.userProducts
-    for(let i = 0; i < userProducts.length; i++){
-      if(userProducts[i].userID === this.state.userSelected.id && userProducts[i].productID === this.state.productSelected.id){
-        existUP = true
-      }
-    }
+    this.state.productFeatureSelected.verifications?.items?.map(v =>{
+        if(v.userVerifier.name === this.state.userSelected.name) existUP = true
+    } )
     if(!existUP){
-      let payloadUserProduct = {
-        id: uuidv4().replaceAll('-','_'),
-        userID: this.state.userSelected.id,
-        productID: this.state.productSelected.id
-      }
-      await API.graphql(graphqlOperation(createUserProduct, { input: payloadUserProduct }))
+        /* type Verification @model {
+            id: ID!
+            createdOn: AWSDateTime
+            updatedOn: AWSDateTime
+            sign: String
+            userVerifierID: ID @index(name: "byVerifierUser")
+            userVerifier: User @belongsTo(fields: ["userVerifierID"])
+            userVerifiedID: ID @index(name: "byVerifiedUser")
+            userVerified: User @belongsTo(fields: ["userVerifiedID"])
+            productFeatureID: ID! @index(name: "byProductFeature")
+            productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+            verificationComments: [VerificationComment] @hasMany(indexName: "byVerification", fields: ["id"])
+          }
+           */
+    
+        let tempUserVerified
+        this.state.productFeatureSelected.product.userProducts.items.map(up =>{ if(up.user.role === 'constructor') tempUserVerified = up.user.id })
+        let tempVerification = {
+            userVerifierID: this.state.userSelected.id,
+            userVerifiedID: tempUserVerified,
+            productFeatureID: this.state.productFeatureSelected.id
+        }
+        await API.graphql(graphqlOperation(createVerification, { input: tempVerification }))
     }else{
-      alert('Ya exite una Relación entre Producto y Usuario')
+      alert('El validador ya tiene asignado ese Product feature')
     }
-    this.cleanState()
-  }
-  async handleAssignRole(){
-    let payloadUser = {
-      id: this.state.userSelected.id,
-      role: this.state.roleSelected
-    }
-    await API.graphql(graphqlOperation(updateUser, { input: payloadUser }))
     this.cleanState()
   }
   cleanState(){
     this.setState({
       showModalRole: false,
       userSelected: null,
-      productSelected: null,
-      roleSelected: '',
+      productFeatureSelected: null,
     })
   }
   render() {
-    let { usersCopy, products, userSelected, productSelected, roleSelected, userProducts } = this.state
+    let { usersCopy, productFeatures, userSelected, productFeatureSelected } = this.state
 
     const renderUsers = () => {
       if(usersCopy.length > 0){
@@ -201,30 +212,36 @@ componentWillUnmount() {
       }
     }
     const renderProducts = () => {
-      if(products.length > 0){
+      if(productFeatures.length > 0){
         return(
           <>
           <h2>Product Features</h2> 
           <Table  bordered hover style={{cursor: 'pointer'}}>
               <thead>
               <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Category</th>
+                  <th>Proyect</th>
+                  <th>Feature</th>
+                  <th>Tipo</th>
+                  <th>Verificadores</th>
               </tr>
               </thead>
               <tbody>
-                  {products?.map(product =>{ 
+                  {productFeatures?.map(pf =>{ 
                       return(
-                          <tr key={product.id} onClick={(e) => this.handleSelectProduct(product)}>
+                          <tr key={pf.id} onClick={(e) => this.handleSelectProduct(pf)}>
                               <td>
-                                  {product.name} 
+                                  {pf.product.name} 
                               </td>
                               <td>
-                                  {product.description?.slice(0,100)} 
+                                  {pf.feature.description.split('.')[0]} 
                               </td>
                               <td>
-                                  {product.categoryID} 
+                                  {pf.feature.featureTypeID} 
+                              </td>
+                              <td>
+                                <ul style={{listStyle: 'none', padding: '0'}}>
+                                    {pf.verifications.items.length > 0? pf.verifications.items.map(v => <li>{v.userVerifier.name}</li>): 'Sin Asignar'}
+                                </ul>
                               </td>
                           </tr>
                       )})}
@@ -235,34 +252,32 @@ componentWillUnmount() {
       }
     }
     const renderUserProducts = () => {
-      if(userProducts.length > 0){
+      if(this.state.productFeatures.length > 0){
         return(
           <>
-            <h2>User Products</h2>
+            <h2>User productFeatures</h2>
             <Table  bordered hover>
               <thead>
               <tr>
-                  <th>User</th>
                   <th>Product</th>
                   <th>Description</th>
-                  <th>Category</th>
+                  <th>Verificadores</th>
               </tr>
               </thead>
               <tbody>
-                  {userProducts?.map(up =>{ 
+                  {this.state.productFeatures?.map(pf =>{ 
                       return(
-                          <tr key={up.id}>
+                          <tr key={pf.id}>
                               <td>
-                                  {up.user.name} 
+                                  {pf.product.name} 
                               </td>
                               <td>
-                                  {up.product.name} 
+                                  {pf.feature.description.split('.')[0]} 
                               </td>
                               <td>
-                                  {up.product.description.slice(0,100)} 
-                              </td>
-                              <td>
-                                  {up.product.category.name} 
+                                <ul style={{listStyle: 'none', padding: '0'}}>
+                                    {pf.verifications.items.length > 0? pf.verifications.items.map(v => <li>{v.userVerifier.name}</li>): 'Sin Asignar'}
+                                </ul>
                               </td>
                           </tr>
                       )})}
@@ -271,60 +286,6 @@ componentWillUnmount() {
           </>
           
         )
-      }
-    }
-    const renderModalRole = () => {
-      if(this.state.showModalRole){
-        return (
-          <Modal
-              show={this.state.showModalRole}
-              onHide={(e) => this.handleHideModalProductFeatures(e)}
-              size="lg"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-              >
-              <Modal.Header closeButton>
-                  <Modal.Title id="contained-modal-title-vcenter">
-                      Assign Role
-                  </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form>
-                    <Row className='mb-2'>
-                        <Form.Group as={Col}>
-                            <Form.Label>User</Form.Label>
-                            <Form.Control
-                                type='text'
-                                disabled
-                                value={this.state.userSelected !== null? this.state.userSelected.name : ''}
-                                onChange={() => ''}
-                                />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Product</Form.Label>
-                            <Form.Select
-                                value={roleSelected}
-                                name='select_role'
-                                onChange={(e) => this.handleInputChange(e)} 
-                                >
-                                <option value=''>-</option>
-                              {['admon','investor','constructor'].map(op => <option value={op} key={op}>{op}</option>)}
-                            </Form.Select>
-                        </Form.Group>
-                    </Row>
-
-                    <Row className='mb-1'>
-                        <Button
-                        variant='primary'
-                        size='sm'
-                        disabled={userSelected === null || roleSelected === ''? true : false}
-                        onClick={() => this.handleAssignRole()}
-                        >Assign Role</Button>
-                    </Row>
-                </Form>
-              </Modal.Body>
-          </Modal>
-      )
       }
     }
     return (
@@ -338,17 +299,17 @@ componentWillUnmount() {
                           <Form.Label>User</Form.Label>
                           <Form.Control
                               type='text'
-                              placeholder='Select one User'
+                              placeholder='Seleccionar un usuario'
                               value={this.state.userSelected !== null? this.state.userSelected.name : ''}
                               onChange={() => ''}
                                />
                       </Form.Group>
                       <Form.Group as={Col}>
-                          <Form.Label>Product</Form.Label>
+                          <Form.Label>Product Feature</Form.Label>
                           <Form.Control
                               type='text'
-                              placeholder='Select one Product'
-                              value={this.state.productSelected !== null? this.state.productSelected.name : ''}
+                              placeholder='Seleccionar un product feature'
+                              value={this.state.productFeatureSelected !== null? `${this.state.productFeatureSelected.feature.description.split('.')[0]} | ${this.state.productFeatureSelected.product.name} ` : ''}
                               onChange={() => ''} 
                               />
                       </Form.Group>
@@ -358,9 +319,9 @@ componentWillUnmount() {
                       <Button
                       variant='primary'
                       size='sm'
-                      disabled={userSelected === null || productSelected === null? true : false}
+                      disabled={userSelected === null || productFeatureSelected === null? true : false}
                       onClick={() => this.handleAssignProduct()}
-                      >AssignProduct</Button>
+                      >ASIGNAR VERIFICADOR</Button>
                   </Row>
               </Form>
           </Container>
@@ -373,11 +334,9 @@ componentWillUnmount() {
                 </Container>
           </Container>
           <Container>
-            
             {renderUserProducts()}
           </Container>
       </Container>
-      {renderModalRole()}
       </>
     )
   }
