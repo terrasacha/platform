@@ -19,6 +19,7 @@ import UOM from './UOM/UOM';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
+import AssignPF from './AssignPF/AssignPF';
 
 export default class Admon extends Component {
 
@@ -47,8 +48,8 @@ export default class Admon extends Component {
             isShowValidators: false,
             isShowResults: false,
             isShowDocuments: false,
-            
-            isShowConstructorAdmon: false, 
+            isShowAPF: false,
+            isShowAProducts: false, 
             isShowConfigure: false, 
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
@@ -111,9 +112,9 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowResults: false,
                 isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
             })
         }
 
@@ -129,8 +130,9 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidators: false,
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
             })
         }
 
@@ -146,10 +148,10 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowValidators: false,
                 isShowResults: false,
-                isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowDocuments: false,  
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
             })
         }
 
@@ -165,9 +167,9 @@ export default class Admon extends Component {
                 isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
             })
         }
         if (pRequest === 'features') {
@@ -182,9 +184,9 @@ export default class Admon extends Component {
                 isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
         })
         }
         if (pRequest === 'uom') {
@@ -198,10 +200,10 @@ export default class Admon extends Component {
                 isShowFormulas:false,
                 isShowValidators: false,
                 isShowResults: false,
-                isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowDocuments: false,      
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
         })
         }
         if (pRequest === 'formulas') {
@@ -216,9 +218,9 @@ export default class Admon extends Component {
                 isShowValidators: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
         })
         }
         if (pRequest === 'results') {
@@ -233,9 +235,9 @@ export default class Admon extends Component {
                 isShowValidators: false,
                 isShowResults: true,
                 isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
         })
         }
         if (pRequest === 'documents') {
@@ -250,12 +252,12 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: true,
-                
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
         })
         }
-        if (pRequest === 'constructor_admon') {
+        if (pRequest === 'assign_products') {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
@@ -267,9 +269,9 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                
-                isShowConstructorAdmon: true,
+                isShowAProducts: true,
                 isShowConfigure: false,
+                isShowAPF: false
         })
         }
         
@@ -284,10 +286,10 @@ export default class Admon extends Component {
                 isShowUOM: false,
                 isShowFormulas: false,
                 isShowResults: false,
-                isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowDocuments: false,    
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
         })
         }
         if (pRequest === 'settings') {
@@ -302,9 +304,9 @@ export default class Admon extends Component {
                 isShowFormulas: false,
                 isShowResults: false,
                 isShowDocuments: false,
-                
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: true,
+                isShowAPF: false
         })
         }
         if (pRequest === 'validators') {
@@ -319,8 +321,26 @@ export default class Admon extends Component {
                 isShowResults: false,
                 isShowDocuments: false,
                 isShowValidators: true,
-                isShowConstructorAdmon: false,
+                isShowAProducts: false,
                 isShowConfigure: false,
+                isShowAPF: false
+        })
+        }
+        if (pRequest === 'assign_pf') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowFeatures: false,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+                isShowUOM: false,
+                isShowFormulas: false,
+                isShowResults: false,
+                isShowDocuments: false,
+                isShowValidators: false,
+                isShowAProducts: false,
+                isShowConfigure: false,
+                isShowAPF: true
         })
         }
         
@@ -377,139 +397,10 @@ export default class Admon extends Component {
             isShowResults,
             isShowDocuments,
             isShowValidators,
-            isShowConstructorAdmon,
-            isShowConfigure
+            isShowAProducts,
+            isShowConfigure,
+            isShowAPF
         } = this.state
-
-        const renderAdmonProfile = () => {
-            if (isShowAdmonProfile) {
-                return (
-                    <AdmonProfile
-                        user={this.state.user}
-                        setUserIDUsingCognitoSignedUser={this.setUserIDUsingCognitoSignedUser}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        setUserGraphQLUser={this.setUserGraphQLUser}
-                        handleOnChangeInputForm={this.handleOnChangeInputForm}
-                        handleCUUser={this.handleCUUser}
-                    ></AdmonProfile>
-                )
-            }
-        }
-
-        const renderProducts = () => {
-            if (isShowProducts) {
-                return (
-                    <Products 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                    ></Products>
-                )
-            }
-        }
-
-        const renderCategorys = () => {
-            if (isShowCategorys) {
-                return (
-                    <Categorys 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></Categorys>
-                )
-            }
-        }
-        const renderFeatures = () => {
-            if (isShowFeatures) {
-                return (
-                    <Features 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></Features>
-                )
-            }
-        }
-        const renderOUM = () => {
-            if (isShowUOM) {
-                return (
-                    <UOM 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></UOM>
-                )
-            }
-        }
-        const renderFormulas = () => {
-            if (isShowFormulas) {
-                return (
-                    <Formulas 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></Formulas>
-                )
-            }
-        }
-        const renderResults = () => {
-            if (isShowResults) {
-                return (
-                    <Results 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></Results>
-                )
-            }
-        }
-        const renderDocuments = () => {
-            if (isShowDocuments) {
-                return (
-                    <Documents 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></Documents>
-                )
-            }
-        }
-        const renderConfiguration = () => {
-            if (isShowConfigure) {
-                return (
-                    <Configure 
-                        user={this.state.user}
-                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                        handleCUUser={this.handleCUUser}
-                    ></Configure>
-                )
-            }
-        }
-
-       
-        const renderUserNoAuthorize = () => {
-            if (isShowNotAuthorize) {
-                return (
-                    <Alert key="key_warning" variant="warning">
-                        Perfil no autorizado
-                    </Alert>
-                )
-            }
-        }
-        const renderConstructorAdmon = () => {
-            if (isShowConstructorAdmon) {
-                return (
-                    <UserProducts />
-                )
-            }
-        }
-        const renderValidator = () => {
-            if (isShowValidators) {
-                return (
-                    <Validators />
-                )
-            }
-        }
-
         return (
             <Container fluid style={{paddingTop: 70, minHeight: '100vh'}} >
 
@@ -527,18 +418,69 @@ export default class Admon extends Component {
                 </Row>
 
                 <Row>
-                    {renderProducts()}
-                    {renderCategorys()}
-                    {renderFeatures()}
-                    {renderOUM()}
-                    {renderFormulas()}
-                    {renderResults()}
-                    {renderDocuments()}
-                    {renderAdmonProfile()}
-                    {renderUserNoAuthorize()}
-                    {renderConstructorAdmon()}
-                    {renderValidator()}
-                    {renderConfiguration()}
+                    {isShowAdmonProfile && 
+                        <AdmonProfile
+                        user={this.state.user}
+                        setUserIDUsingCognitoSignedUser={this.setUserIDUsingCognitoSignedUser}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        setUserGraphQLUser={this.setUserGraphQLUser}
+                        handleOnChangeInputForm={this.handleOnChangeInputForm}
+                        handleCUUser={this.handleCUUser}
+                        />}
+                    {isShowProducts && 
+                        <Products 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        />}
+                    {isShowCategorys && 
+                        <Categorys 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                    />}
+                    {isShowFeatures &&
+                        <Features 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                        />}
+                    {isShowUOM && 
+                        <UOM 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                        />}
+                    {isShowFormulas && 
+                        <Formulas 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                        />}
+                    {isShowResults && 
+                        <Results 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                        />}
+                    {isShowDocuments && 
+                        <Documents 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                        />}
+                    {isShowNotAuthorize && 
+                        <Alert key="key_warning" variant="warning">
+                        Perfil no autorizado
+                        </Alert>}
+                    {isShowAProducts && <UserProducts />}
+                    {isShowAPF && <AssignPF />}
+                    {isShowValidators && <Validators />}
+                    {isShowConfigure && 
+                        <Configure 
+                            user={this.state.user}
+                            changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                            handleCUUser={this.handleCUUser}
+                        />}
                 </Row>
 
             </Container>

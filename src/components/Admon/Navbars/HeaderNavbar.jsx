@@ -82,8 +82,11 @@ export default class HeaderNavbar extends Component {
                             </Nav>
                             <Nav>
                                 <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>
-                                <Nav.Link href="#constructorAdmon" onClick={(e) => this.changeHeaderNavBarRequest('constructor_admon', e)}>
+                                <Nav.Link href="#assign_products" onClick={(e) => this.changeHeaderNavBarRequest('assign_products', e)}>
                                     Assign Products
+                                </Nav.Link>          
+                                <Nav.Link href="#assign_pf" onClick={(e) => this.changeHeaderNavBarRequest('assign_pf', e)}>
+                                    Assign PF
                                 </Nav.Link>          
                                 <Nav.Link href="#validators" onClick={(e) => this.changeHeaderNavBarRequest('validators', e)}>
                                     Validators

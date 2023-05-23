@@ -80,10 +80,6 @@ class Formulas extends Component {
         })
 
     }
-    componentWillUnmount() {
-        this.createFormulaListener.unsubscribe();
-        this.updateFormulaListener.unsubscribe();
-      }
     async loadFormulas() {
         const listFormulasResult = await API.graphql(graphqlOperation(listFormulas))
         listFormulasResult.data.listFormulas.items.sort((a, b) => (a.name > b.name) ? 1 : -1)
