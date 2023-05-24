@@ -10,13 +10,13 @@ import { listUsers } from '../../../graphql/queries';
 import { graphql } from 'graphql';
 
 
-export const listProductFeaturesAssignPF = /* GraphQL */ `
-  query ListProductFeatures(
+export const listproductsAssignPF = /* GraphQL */ `
+  query Listproducts(
     $filter: ModelProductFeatureFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listProductFeatures(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listproducts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         isVerifable
@@ -62,19 +62,90 @@ export const listProductFeaturesAssignPF = /* GraphQL */ `
     }
   }
 `;
+export const listProductsAssign = /* GraphQL */ `
+  query ListProducts(
+    $filter: ModelProductFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProducts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        categoryID
+        productFeatures {
+          items {
+            id
+            product {
+              userProducts {
+                items {
+                  id
+                  user {
+                    name
+                    role
+                    id
+                  }
+                }
+              }
+            }
+            featureID
+            feature {
+              id
+              name
+              description
+              isTemplate
+              featureTypeID
+            }
+            documents {
+              items {
+                status
+                  }
+              }
+            verifications {
+              items {
+                id
+                userVerifiedID
+                userVerifierID
+                userVerifier {
+                  name
+                }
+              }
+            }  
+          }
+        }
+        userProducts {
+          items {
+            id
+            user {
+              name
+              role
+              id
+            }
+          }
+        }
+        transactions {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export default class AssignPF extends Component {
   constructor(props) {
     super(props)
     this.state = {
       users: [],
       usersCopy: [],
-      productFeatures: [],
+      products: [],
       showModalRole: false,
       userSelected: null,
-      productFeatureSelected: null,
+      productselected: null,
     }
     this.loadUsers = this.loadUsers.bind(this)
-    this.loadProductFeatures = this.loadProductFeatures.bind(this)
+    this.loadProducts = this.loadProducts.bind(this)
     this.handleSelectUser = this.handleSelectUser.bind(this)
     this.handleSelectProduct = this.handleSelectProduct.bind(this)
     this.handleAssignProduct = this.handleAssignProduct.bind(this)
@@ -82,14 +153,13 @@ export default class AssignPF extends Component {
   componentDidMount = async() => {
     Promise.all([
       this.loadUsers(),
-      this.loadProductFeatures(),
+      this.loadProducts(),
   ])
 
-    // OnCreate Category
     this.createVerificationListener = API.graphql(graphqlOperation(onCreateVerification))
     .subscribe({
         next: createdCategoryData => {
-            this.loadProductFeatures()
+            this.loadProducts()
         }
     })
 }
@@ -102,12 +172,11 @@ export default class AssignPF extends Component {
     const listUsersResults = await API.graphql({ query: listUsers, variables: { filter: filter}})
     this.setState({users: listUsersResults.data.listUsers.items, usersCopy: listUsersResults.data.listUsers.items})
   }
-  async loadProductFeatures() {
-    const listProductFeaturesResults = await API.graphql({ query: listProductFeaturesAssignPF})
-    let pfTemplates = listProductFeaturesResults.data.listProductFeatures.items.filter(pf => pf.feature.isTemplate)
-    pfTemplates.sort((a, b) => {
-        let nameA = a.product.name.toUpperCase();
-        let nameB = b.product.name.toUpperCase();
+  async loadProducts() {
+    const listproductsResults = await API.graphql({ query: listProductsAssign})
+    let productTemplates = listproductsResults.data.listProducts.items.sort((a, b) => {
+        let nameA = a.name.toUpperCase();
+        let nameB = b.name.toUpperCase();
         if (nameA < nameB) {
           return -1;
         }
@@ -116,49 +185,44 @@ export default class AssignPF extends Component {
         }
         return 0;
       })
-    this.setState({productFeatures: pfTemplates})
+    this.setState({products: productTemplates})
     }
   handleSelectUser(user){
     this.setState({userSelected: user})
   }
   handleSelectProduct(product){
-    this.setState({productFeatureSelected: product})
+    this.setState({productselected: product})
   }
   assignRole(user){
     this.handleSelectUser(user)
     this.setState({showModalRole: true})
   }
   async handleAssignProduct(){
-    let existUP = false
-    this.state.productFeatureSelected.verifications?.items?.map(v =>{
-        if(v.userVerifier.name === this.state.userSelected.name) existUP = true
-    } )
-    if(!existUP){
-        /* type Verification @model {
-            id: ID!
-            createdOn: AWSDateTime
-            updatedOn: AWSDateTime
-            sign: String
-            userVerifierID: ID @index(name: "byVerifierUser")
-            userVerifier: User @belongsTo(fields: ["userVerifierID"])
-            userVerifiedID: ID @index(name: "byVerifiedUser")
-            userVerified: User @belongsTo(fields: ["userVerifiedID"])
-            productFeatureID: ID! @index(name: "byProductFeature")
-            productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
-            verificationComments: [VerificationComment] @hasMany(indexName: "byVerification", fields: ["id"])
-          }
-           */
-    
-        let tempUserVerified
-        this.state.productFeatureSelected.product.userProducts.items.map(up =>{ if(up.user.role === 'constructor') tempUserVerified = up.user.id })
-        let tempVerification = {
-            userVerifierID: this.state.userSelected.id,
-            userVerifiedID: tempUserVerified,
-            productFeatureID: this.state.productFeatureSelected.id
-        }
-        await API.graphql(graphqlOperation(createVerification, { input: tempVerification }))
+    let existValidator = false
+    this.state.productselected.productFeatures.items.map(pf =>{
+      pf.verifications?.items?.map(v =>{
+        if(v.userVerifier.name === this.state.userSelected.name) existValidator = true
+      } )
+    })
+    if(!existValidator){
+      let promises = []
+        this.state.productselected.productFeatures.items.map(pf =>{
+          if(pf.feature.isTemplate){
+            let tempUserVerified
+            pf.product.userProducts.items.map(up =>{ if(up.user.role === 'constructor') tempUserVerified = up.user.id })
+            let tempVerification = {
+              sign: 'test', //BORRAR
+              userVerifierID: this.state.userSelected.id,
+              userVerifiedID: tempUserVerified,
+              productFeatureID: pf.id
+            }
+
+            promises.push(API.graphql(graphqlOperation(createVerification, { input: tempVerification })))
+            }
+        })
+        await Promise.all(promises)
     }else{
-      alert('El validador ya tiene asignado ese Product feature')
+      alert('El validador ya tiene asignado ese Proyecto')
     }
     this.cleanState()
   }
@@ -166,11 +230,11 @@ export default class AssignPF extends Component {
     this.setState({
       showModalRole: false,
       userSelected: null,
-      productFeatureSelected: null,
+      productselected: null,
     })
   }
   render() {
-    let { usersCopy, productFeatures, userSelected, productFeatureSelected } = this.state
+    let { usersCopy, products, userSelected, productselected } = this.state
 
     const renderUsers = () => {
       if(usersCopy.length > 0){
@@ -212,35 +276,35 @@ export default class AssignPF extends Component {
       }
     }
     const renderProducts = () => {
-      if(productFeatures.length > 0){
+      if(products.length > 0){
         return(
           <>
-          <h2>Product Features</h2> 
+          <h2>Products</h2> 
           <Table  bordered hover style={{cursor: 'pointer'}}>
               <thead>
               <tr>
-                  <th>Proyect</th>
-                  <th>Feature</th>
-                  <th>Tipo</th>
+                  <th>Proyecto</th>
+                  <th>Categoría</th>
                   <th>Verificadores</th>
               </tr>
               </thead>
               <tbody>
-                  {productFeatures?.map(pf =>{ 
+                  {products?.map(product =>{
+                      let verificadores = []
+                      product.productFeatures.items.map(pf=>{
+                        pf.verifications.items.length > 0 && pf.verifications.items.map(v => !verificadores.includes(v.userVerifier.name) && verificadores.push(v.userVerifier.name))
+                      })
                       return(
-                          <tr key={pf.id} onClick={(e) => this.handleSelectProduct(pf)}>
+                          <tr key={product.id} onClick={(e) => this.handleSelectProduct(product)}>
                               <td>
-                                  {pf.product.name} 
+                                  {product.name} 
                               </td>
                               <td>
-                                  {pf.feature.description.split('.')[0]} 
-                              </td>
-                              <td>
-                                  {pf.feature.featureTypeID} 
+                                  {product.categoryID} 
                               </td>
                               <td>
                                 <ul style={{listStyle: 'none', padding: '0'}}>
-                                    {pf.verifications.items.length > 0? pf.verifications.items.map(v => <li>{v.userVerifier.name}</li>): 'Sin Asignar'}
+                                  {verificadores.length > 0? verificadores.map(v => <li>{v}</li>) : 'Sin asignar'} 
                                 </ul>
                               </td>
                           </tr>
@@ -252,39 +316,42 @@ export default class AssignPF extends Component {
       }
     }
     const renderUserProducts = () => {
-      if(this.state.productFeatures.length > 0){
+      if(products.length > 0){
         return(
           <>
-            <h2>User productFeatures</h2>
-            <Table  bordered hover>
+          <h2>Products</h2> 
+          <Table  bordered hover style={{cursor: 'pointer'}}>
               <thead>
               <tr>
-                  <th>Product</th>
-                  <th>Description</th>
+                  <th>Proyecto</th>
+                  <th>Categoría</th>
                   <th>Verificadores</th>
               </tr>
               </thead>
               <tbody>
-                  {this.state.productFeatures?.map(pf =>{ 
+                  {products?.map(product =>{
+                      let verificadores = []
+                      product.productFeatures.items.map(pf=>{
+                        pf.verifications.items.length > 0 && pf.verifications.items.map(v => !verificadores.includes(v.userVerifier.name) && verificadores.push(v.userVerifier.name))
+                      })
                       return(
-                          <tr key={pf.id}>
+                          <tr key={product.id} onClick={(e) => this.handleSelectProduct(product)}>
                               <td>
-                                  {pf.product.name} 
+                                  {product.name} 
                               </td>
                               <td>
-                                  {pf.feature.description.split('.')[0]} 
+                                  {product.categoryID} 
                               </td>
                               <td>
                                 <ul style={{listStyle: 'none', padding: '0'}}>
-                                    {pf.verifications.items.length > 0? pf.verifications.items.map(v => <li>{v.userVerifier.name}</li>): 'Sin Asignar'}
+                                  {verificadores.length > 0? verificadores.map(v => <li>{v}</li>) : 'Sin asignar'} 
                                 </ul>
                               </td>
                           </tr>
                       )})}
               </tbody>
-            </Table>
+          </Table>
           </>
-          
         )
       }
     }
@@ -305,11 +372,11 @@ export default class AssignPF extends Component {
                                />
                       </Form.Group>
                       <Form.Group as={Col}>
-                          <Form.Label>Product Feature</Form.Label>
+                          <Form.Label>Proyecto</Form.Label>
                           <Form.Control
                               type='text'
-                              placeholder='Seleccionar un product feature'
-                              value={this.state.productFeatureSelected !== null? `${this.state.productFeatureSelected.feature.description.split('.')[0]} | ${this.state.productFeatureSelected.product.name} ` : ''}
+                              placeholder='Seleccionar un proyecto'
+                              value={this.state.productselected !== null? `${this.state.productselected.name} ` : ''}
                               onChange={() => ''} 
                               />
                       </Form.Group>
@@ -319,7 +386,7 @@ export default class AssignPF extends Component {
                       <Button
                       variant='primary'
                       size='sm'
-                      disabled={userSelected === null || productFeatureSelected === null? true : false}
+                      disabled={userSelected === null || productselected === null? true : false}
                       onClick={() => this.handleAssignProduct()}
                       >ASIGNAR VERIFICADOR</Button>
                   </Row>
