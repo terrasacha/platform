@@ -54,22 +54,22 @@ export default class HeaderNavbar extends Component {
                                 navbarScroll
                             >
                                 <Nav.Link href="#products" onClick={(e) => this.changeHeaderNavBarRequest('products', e)}>
-                                    Projects
+                                    Proyectos
                                 </Nav.Link>
 
                                 <Nav.Link href="#documents"onClick={(e) => this.changeHeaderNavBarRequest('documents', e)}>
-                                    Documents
+                                    Documentos
                                 </Nav.Link>
 
                                 <Nav.Link href="#formulas" onClick={(e) => this.changeHeaderNavBarRequest('formulas', e)}>E
-                                    Formulas
+                                    Fórmulas
                                 </Nav.Link>
 
                                 <Nav.Link href="#results" onClick={(e) => this.changeHeaderNavBarRequest('results', e)}>
-                                    Results
+                                    Resultados
                                 </Nav.Link>
                                 <Nav.Link href="#categorys" onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}>
-                                    Categories
+                                    Categorías
                                 </Nav.Link>
 
                                 <Nav.Link href="#features" onClick={(e) => this.changeHeaderNavBarRequest('features', e)}>
@@ -82,14 +82,14 @@ export default class HeaderNavbar extends Component {
                             </Nav>
                             <Nav>
                                 <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>
-                                <Nav.Link href="#assign_products" onClick={(e) => this.changeHeaderNavBarRequest('assign_products', e)}>
+                                {/* <Nav.Link href="#assign_products" onClick={(e) => this.changeHeaderNavBarRequest('assign_products', e)}>
                                     Assign Products
-                                </Nav.Link>          
+                                </Nav.Link>   */}        
                                 <Nav.Link href="#assign_pf" onClick={(e) => this.changeHeaderNavBarRequest('assign_pf', e)}>
-                                    Assign PF
+                                    Asignar Validadores
                                 </Nav.Link>          
                                 <Nav.Link href="#validators" onClick={(e) => this.changeHeaderNavBarRequest('validators', e)}>
-                                    Validators
+                                    Validadores
                                 </Nav.Link>          
                                 <button onClick={(e) => this.handleChangeObjectElement()}>Sign Out</button>
                             </Nav>
