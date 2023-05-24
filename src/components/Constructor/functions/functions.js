@@ -126,7 +126,7 @@ async function handleDocuments(e , productFeatureID, userID) {
                   signed: '',
                   signedHash: '',
                   isApproved: false,
-                  status: '',
+                  status: 'pending',
                   isUploadedToBlockChain: false,
                   documentTypeID: '1',
               }

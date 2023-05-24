@@ -1,17 +1,118 @@
 import React, { Component } from 'react';
 
 //Bootstrap
-import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, Stack } from 'react-bootstrap';
+import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, Stack, Nav } from 'react-bootstrap';
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
 import Bootstrap from "../../common/themes";
 import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
-import './Validation.css';
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerification, updateDocument, updateProductFeature, createVerificationComment } from '../../../graphql/mutations';
-import { listDocuments } from '../../../graphql/queries';
 import { onUpdateDocument, onUpdateProductFeature } from '../../../graphql/subscriptions';
+export const listDocuments = /* GraphQL */ `
+  query ListDocuments(
+    $filter: ModelDocumentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listDocuments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        data
+        timeStamp
+        docHash
+        signedHash
+        signed
+        url
+        signed
+        signedHash
+        isApproved
+        status
+        isUploadedToBlockChain
+        documentTypeID
+        documentType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          isVerifable
+          order
+          isOnMainCard
+          productID
+          featureID
+          createdAt
+          updatedAt
+          feature {
+            name
+            id
+            description
+            featureType {
+              id
+              name
+            }
+          }
+          product {
+            id
+            name
+            category{
+              name
+            }
+          }
+          verifications {
+            items {
+              id
+              userVerifierID
+              userVerifier {
+                name
+              }
+              userVerifiedID
+              userVerified {
+                name
+              }
+              updatedOn
+              sign
+              createdOn
+              verificationComments {
+                items {
+                  comment
+                  createdAt
+                  id
+                  isCommentByVerifier
+                  verificationID
+                }
+              }
+            }
+          }
+        }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          status
+          email
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 const queryUsers = `query GetProduct($id: ID!) {
   getProduct(id: $id) {
     id
@@ -54,6 +155,7 @@ const queryUsers = `query GetProduct($id: ID!) {
   }
 }
 `
+
 class ValidatorAdmon extends Component {
   constructor(props) {
     super(props)
@@ -153,7 +255,6 @@ class ValidatorAdmon extends Component {
     const variables = { id };
 
     const listUsersResult = await API.graphql(graphqlOperation(queryUsers, variables));
-    console.log(listUsersResult)
     this.setState({ users: listUsersResult.data.getProduct.productFeatures.items })
   }
   async changeHeaderNavBarRequest(pRequest) {
@@ -316,91 +417,52 @@ class ValidatorAdmon extends Component {
 
             <Row className="justify-content-md-center">
               <Col xs={2}>
-                <h3>Products</h3>
+                <h3>Proyectos</h3>
                 <Container className='mt-5'>
                   {products?.map(product => <Card key={product} body className={product === this.state.selectedProductValidation ? 'cardContainerSelected' : 'cardContainer'} style={{ cursor: 'pointer' }} onClick={() => this.handleSelectProduct(product)}>{product}<ArrowRight /></Card>)}
                 </Container>
               </Col>
               <Col xs={10}>
                 <div>
-                  <h3>Documentation</h3>
+                  <h3>Documentación</h3>
                   <DropdownButton size='sm' variant='outline-primary' title='By status'>
-                    <Dropdown.Item as="button" onClick={() => this.handleSelectStatus('pendingDoc')}>Pending Documentation</Dropdown.Item>
-                    <Dropdown.Item as="button" onClick={() => this.handleSelectStatus('approveRejectDoc')}>Approved/Rejected Documentation</Dropdown.Item>
+                    <Dropdown.Item as="button" onClick={() => this.handleSelectStatus('pendingDoc')}>Documentación pendiente</Dropdown.Item>
+                    <Dropdown.Item as="button" onClick={() => this.handleSelectStatus('approveRejectDoc')}>Documentación aceptada/rechazada</Dropdown.Item>
                   </DropdownButton>
                 </div>
                 <Table striped hover className='mt-4'>
                   <thead>
                     <tr>
-                      <th>User</th>
-                      <th>Product</th>
+                      <th>Proyecto</th>
+                      <th>Categoría</th>
                       <th>Feature</th>
-                      <th>Status</th>
-                      <th>Document</th>
-                      <th>Comments</th>
+                      <th>Estado</th>
+                      <th>Documento</th>
+                      <th>Commentarios</th>
                       <th>{this.state.showPending ? 'Validate' : 'Validation Details'}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {documents.map(document => (
                       <tr key={document.id}>
-                        <td>{document.user.name}</td>
                         <td>{document.productFeature.product.name}</td>
-                        <td>{document.productFeature.feature.name}</td>
+                        <td>{document.productFeature.product.category.name}</td>
+                        <td>{document.productFeature.feature.description.split('.')[0]}</td>
                         <td>{document.status === 'pending' ? <HourglassSplit size={25} color='grey' /> :
                           document.status === 'accepted' ? <CheckCircle size={25} color='#449E48' /> : <XCircle size={25} color='#CC0000' />
                         }
                         </td>
                         <td>
-                          <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalDocument: true, selectedDocument: document })}>See documentation</Button>
+                          <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalDocument: true, selectedDocument: document })}>Ver documentación</Button>
                         </td>
                         <td>
-                          <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalComments: true, selectedDocument: document })}>See comments</Button>
+                          <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalComments: true, selectedDocument: document })}>Ver comentarios</Button>
                         </td>
                         <td>
                           {this.state.showPending ?
-                            <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalValidate: true, selectedDocument: document })}>Validate</Button> :
-                            <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalDetailsValidation: true, selectedDocument: document })}>Details</Button>}
+                            <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalValidate: true, selectedDocument: document })}>Validar</Button> :
+                            <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalDetailsValidation: true, selectedDocument: document })}>Detalles</Button>}
                         </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </Col>
-            </Row>
-          </Container>
-        )
-      }
-    }
-    const renderUsers = () => {
-      if (this.state.isShowUsers) {
-        return (
-          <Container className='mt-4'>
-
-            <Row className="justify-content-md-center">
-              <Col xs={2}>
-              </Col>
-              <Col xs={10}>
-                <div>
-                  <h3>Users</h3>
-                </div>
-                <Table striped hover className='mt-4'>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Status</th>
-                      <th>Validate</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.users.map(user => (
-                      <tr key={user.id}>
-                        <td>{user.feature.name.slice(0, -"_VALIDATION".length)}</td>
-                        <td>{user.value}</td>
-                        <td>
-                          <Button disabled={user.value === 'verified'} onClick={() => this.validateInfoUser(user.id, user.feature.name.slice(0, -"_VALIDATION".length))}>
-                            Validate
-                          </Button></td>
                       </tr>
                     ))}
                   </tbody>
@@ -438,8 +500,6 @@ class ValidatorAdmon extends Component {
       }
     }
     const modalComments = () => {
-      console.log(this.state.selectedDocument, 'Documento seleccionado')
-      console.log(this.state.actualUser)
       if (this.state.showModalComments) {
         return (
           <Modal
@@ -525,7 +585,6 @@ class ValidatorAdmon extends Component {
       }
     }
     const modalVerification = () => {
-      console.log(this.state.selectedDocument)
       if (this.state.showModalValidate) {
         return (
           <Modal
@@ -578,7 +637,6 @@ class ValidatorAdmon extends Component {
       <Container style={{ paddingTop: 70, minHeight: '100vh' }}>
         <HeaderNavbar logOut={this.logOut} changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}></HeaderNavbar>
         {renderValidations()}
-        {renderUsers()}
         {modalDocument()}
         {modalComments()}
         {modalVerification()}
