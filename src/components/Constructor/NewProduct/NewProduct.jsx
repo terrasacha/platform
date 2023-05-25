@@ -995,7 +995,7 @@ class NewProduct extends Component {
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Imágenes</legend>
+                            <legend>Imágenes </legend>
                             <DragAreaJustImages
                                 idFile={this.state.productOnDraft.images?.items?.length > 0? this.state.productOnDraft.images.items[0].id: ''}
                                 selectImage={this.selectImage}
