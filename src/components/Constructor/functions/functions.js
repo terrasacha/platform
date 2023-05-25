@@ -50,14 +50,14 @@ export const listProductFeaturesUpdate = /* GraphQL */ `
     }
   }
 `;
-export const getFeatureJustTemplate = /* GraphQL */ `
+/* export const getFeatureJustTemplate = `
   query GetFeature($id: ID!) {
     getFeature(id: $id) {
       id
       isTemplate
     }
   }
-`;
+` */
 async function handleFiles(e, productID) {
   let uploadImageResult = null
   let imageId = ''
@@ -332,10 +332,10 @@ export async function updateProyectForm(productOnDraft, state, userID){
         productFeatureID = result.data.listProductFeatures.items[0].id
       await API.graphql(graphqlOperation(updateProductFeature, { input: { id: productFeatureID, value: state.productFeature[pfeature]}}))
     }
-    let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: pfeature }))
+    /* let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: pfeature }))
     if(createVerification.data.getFeature.isTemplate){
       await API.graphql(graphqlOperation(createVerification, { input: { userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b', userVerifiedID: userID, productFeatureID: productFeatureID} }))
-    }
+    } */
   })
   //Info producFeatures REDD o PP
   state.activeButton === 'REDD+' && Object.entries(state.productFeature.redd).map(async ([key, value]) => {
@@ -345,10 +345,10 @@ export async function updateProyectForm(productOnDraft, state, userID){
       pfrProductOnDraft[0].documents.items.length > 0 && await API.graphql(graphqlOperation(deleteDocument, { input: { id: pfrProductOnDraft[0].documents.items[0].id}})).then(()=> console.log('doc deleted', pfrProductOnDraft[0].documents.items[0].id))
       await handleDocuments(value, pfrProductOnDraft[0].id, userID)
     } 
-    let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: key }))
+    /* let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: key }))
     if(createVerification.data.getFeature.isTemplate){
       await API.graphql(graphqlOperation(createVerification, { input: { userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b', userVerifiedID: userID, productFeatureID: pfrProductOnDraft[0].id} }))
-    }
+    } */
     
   });
   state.activeButton === 'PROYECTO_PLANTACIONES' && Object.entries(state.productFeature.PP).map(async ([key, value]) => {
@@ -360,10 +360,10 @@ export async function updateProyectForm(productOnDraft, state, userID){
       pfPPProductOnDraft[0].documents.items.length > 0 && await API.graphql(graphqlOperation(deleteDocument, { input: { id: pfPPProductOnDraft[0].documents.items[0].id}}))
       await handleDocuments(value, pfPPProductOnDraft[0].id, userID)
     } 
-    let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: key }))
+    /* let createVerification = await API.graphql(graphqlOperation(getFeatureJustTemplate, { id: key }))
     if(createVerification.data.getFeature.isTemplate){
       await API.graphql(graphqlOperation(createVerification, { input: { userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b', userVerifiedID: userID, productFeatureID: pfPPProductOnDraft[0].id} }))
-    }
+    } */
   });
   console.log('done')
 }

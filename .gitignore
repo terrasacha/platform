@@ -45,3 +45,5 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+src/aws-exports-dev.js
+src/aws-exports-prod.js

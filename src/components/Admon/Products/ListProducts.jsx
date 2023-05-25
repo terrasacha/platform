@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 // Bootstrap
-import { Button, Image, Modal, Table, Form, Col } from 'react-bootstrap';
+import { Button, Image, Modal, Table, Form, Col, ListGroup } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
-import { updateProduct } from '../../../graphql/mutations';
+import { deleteProductFeatureResult, deleteVerification, deleteVerificationComment, updateProduct, deleteProductFeature } from '../../../graphql/mutations';
+import { ToastContainer, toast } from 'react-toastify';
+
 export default class ListProducts extends Component {
     constructor(props) {
         super(props)
@@ -12,7 +14,14 @@ export default class ListProducts extends Component {
             PFR: [],
             isRenderModalProductFeatures: false,
             isRenderModalProductDescription: false,
+            isRenderModalDeleteProductFeatureConfirmation: false,
             selectedProductToShow: null,
+            selectedProductFeatureToDelete: null,
+            selectedProductFeatureToDeleteHasDocuments: null,
+            selectedProductFeatureToDeleteHasVerifications: null,
+            selectedProductFeatureToDeleteHasVerificationComments: null,
+            selectedProductFeatureToDeleteHasResults: null,
+            selectedProductFeatureToDeleteConfirmationCheck: false,
             isRenderModalProductImages: false,
         }
         this.handleShowAreYouSureDeleteProduct = this.props.handleShowAreYouSureDeleteProduct.bind(this)
@@ -21,8 +30,11 @@ export default class ListProducts extends Component {
         this.handleDeleteFeatureProduct = this.props.handleDeleteFeatureProduct.bind(this)
         this.handleDeleteImageProduct = this.props.handleDeleteImageProduct.bind(this)
         this.handleLoadSelectedProduct = this.handleLoadSelectedProduct.bind(this)
+        this.handleLoadSelectedProduct = this.handleLoadSelectedProduct.bind(this)
+        this.handleShowModalDeteleProductFeatureConfirmation = this.handleShowModalDeteleProductFeatureConfirmation.bind(this)
+        this.handleHideModalDeleteProductFeatureConfirmation = this.handleHideModalDeleteProductFeatureConfirmation.bind(this)
         this.handleHideModalProductImages = this.handleHideModalProductImages.bind(this)
-        this.handleHideModalProductFeatures = this.handleHideModalProductFeatures.bind(this)
+        this.handleDeleteProductFeature = this.handleDeleteProductFeature.bind(this)
     }
     componentDidMount = async () => {
         await this.loadProductFeatureResults()
@@ -44,6 +56,10 @@ export default class ListProducts extends Component {
             this.setState({isRenderModalProductDescription: true, selectedProductToShow: pProduct})
         }
     }
+
+    async handleShowModalDeteleProductFeatureConfirmation(event, pProductFeature) {
+        this.setState({isRenderModalDeleteProductFeatureConfirmation: !this.state.isRenderModalDeleteProductFeatureConfirmation, selectedProductFeatureToDelete: pProductFeature})
+    }
     async certifyProduct(product){
         let updateInfo ={
             id: product.id,
@@ -60,13 +76,106 @@ export default class ListProducts extends Component {
     async handleHideModalProductDescription(event) {
         this.setState({isRenderModalProductDescription: !this.state.isRenderModalProductDescription})
     }
+    async handleHideModalDeleteProductFeatureConfirmation() {
+        this.setState
+            ({
+                isRenderModalDeleteProductFeatureConfirmation: !this.state.isRenderModalDeleteProductFeatureConfirmation,
+                selectedProductFeatureToDelete: null,
+                selectedProductFeatureToDeleteConfirmationCheck: false,
+            })
+    }
 
-    
+    handleDeleteProductFeature = async() => {
+
+        let productFeature = this.state.selectedProductFeatureToDelete
+        let checked = this.state.selectedProductFeatureToDeleteConfirmationCheck
+        if (productFeature != null && checked) {
+            let isPossibleToDelete = true
+
+            if (productFeature.product.status === 'in_blockchain' || productFeature.product.status === 'rejected') isPossibleToDelete = false
+            if (productFeature.documents.items.length > 0) isPossibleToDelete = false
+
+            if (isPossibleToDelete) {
+
+                // Delete Verifications
+                productFeature.verifications.items.map( (verification) => {
+                    const inputVerificationToDelete = {
+                        id: verification.id
+                    }
+                    API.graphql(graphqlOperation(deleteVerification, { input: inputVerificationToDelete }))
+                })
+
+                // Delete Verification Comments
+                productFeature.verifications.items
+                .map((verification) => verification.verificationComments.items)
+                .map((verificationComment) => {
+                    const inputVerificationCommentToDelete = {
+                        id: verificationComment.id
+                    }
+                    API.graphql(graphqlOperation(deleteVerificationComment, { input: inputVerificationCommentToDelete }))
+                })
+
+                // Delete Results
+                productFeature.productFeatureResults.items.map( (result) => {
+                    const inputResultsToDelete = {
+                        id: result.id
+                    }
+                    API.graphql(graphqlOperation(deleteProductFeatureResult, { input: inputResultsToDelete }))
+                })
+                
+                // Delete Product Feature Relation
+                API.graphql(graphqlOperation(deleteProductFeature, { input: {id : productFeature.id} }))
+                
+                this.handleHideModalDeleteProductFeatureConfirmation()
+                
+                this.notify('ProductFeature y componentes asociados eliminados existosamente')
+            }
+
+        }
+        
+    }
+
+    notify = (e) => {
+        toast.success(e, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
+
+    notifyError = (e) => {
+        toast.error(e, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
 
     // RENDER
     render() {
         let {products, urlS3Image, listPF} = this.props
-        let { selectedProductToShow, isRenderModalProductFeatures, isRenderModalProductImages, isRenderModalProductDescription} = this.state
+        let {   
+                selectedProductToShow,
+                isRenderModalProductFeatures,
+                isRenderModalProductImages,
+                isRenderModalProductDescription,
+                isRenderModalDeleteProductFeatureConfirmation,
+                selectedProductFeatureToDelete,
+                selectedProductFeatureToDeleteHasDocuments,
+                selectedProductFeatureToDeleteHasResults,
+                selectedProductFeatureToDeleteHasVerifications,
+                selectedProductFeatureToDeleteHasVerificationComments,
+            } = this.state
         // Render Products
         let productsData = products.map(product=>{
             product.toCertified = false
@@ -273,6 +382,7 @@ export default class ListProducts extends Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                    <ToastContainer/>
                     <Table striped hover size="sm" borderless>
                         <thead>
                         <tr>
@@ -282,6 +392,7 @@ export default class ListProducts extends Component {
                             <th>Main Card</th>
                             <th>Is to BlockChain?</th>
                             <th>Is Verifable?</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -305,6 +416,13 @@ export default class ListProducts extends Component {
                                 </td>
                                 <td>
                                     {pfeature.isVerifable? 'YES' : 'NO'}
+                                </td>
+                                <td>
+                                <Button 
+                                    variant='danger'
+                                    size='sm'
+                                    onClick={(e) => this.handleShowModalDeteleProductFeatureConfirmation(e, pfeature)}
+                                    >Delete</Button>
                                 </td>
                             </tr>
                         ))}
@@ -343,6 +461,53 @@ export default class ListProducts extends Component {
             )
         }
     }
+    const modalDeleteProductFeatureConfirmation = () => {
+        if (isRenderModalDeleteProductFeatureConfirmation && selectedProductFeatureToDelete !== null) {
+            return (
+                <Modal
+                    show={isRenderModalDeleteProductFeatureConfirmation}
+                    onHide={() => this.handleHideModalDeleteProductFeatureConfirmation()}
+                    size="md"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    >
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Confirmacion
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Estas de acuerdo con borrar el ProductFeature: {selectedProductFeatureToDelete.feature.name} ?</p>
+                        <p>Seran eliminados los siguientes elementos:</p>
+                        <ListGroup>
+                            <ListGroup.Item>{ "Documentos (" + selectedProductFeatureToDelete.documents.items.length + ")"}</ListGroup.Item>
+                            <ListGroup.Item>{ "Validadores (" + selectedProductFeatureToDelete.verifications.items.length + ")"} </ListGroup.Item>
+                            <ListGroup.Item>{ "Resultados (" + selectedProductFeatureToDelete.productFeatureResults.items.length + ")"}</ListGroup.Item>
+                        </ListGroup>
+                        <Form.Group className="my-3" controlId="formBasicCheckbox">
+                            <Form.Check 
+                                type="checkbox" 
+                                label="Estoy de acuerdo"
+                                onChange={(e) => this.setState({ selectedProductFeatureToDeleteConfirmationCheck: e.target.checked })}
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            size='sm'
+                            onClick={() => this.handleHideModalDeleteProductFeatureConfirmation()}
+                            >Cancelar</Button>
+                        <Button 
+                            variant='danger'
+                            size='sm'
+                            disabled={!this.state.selectedProductFeatureToDeleteConfirmationCheck}
+                            onClick={(e) => this.handleDeleteProductFeature(e)}
+                        >Eliminar</Button>
+                    </Modal.Footer>
+                </Modal>
+            )
+        }
+    }
         return (
             <> 
                 <h1>Product List</h1>
@@ -350,6 +515,7 @@ export default class ListProducts extends Component {
                 {modalProductImages()}
                 {modalProductFeatures()}
                 {modalProductDescription()}
+                {modalDeleteProductFeatureConfirmation()}
             </>
         )
     }

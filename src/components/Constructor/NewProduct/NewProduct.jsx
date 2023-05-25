@@ -852,7 +852,7 @@ class NewProduct extends Component {
                         Si es aprobado, el equipo de Suan te enviará un contrato en el que se te especificará como continuar el proceso.
                     </p>
                 </div>
-                <div className={s.formContainercompany}>
+                {this.state.productOnDraft === '' && <div className={s.formContainercompany}>
                     <h2>Información de Contacto</h2>
                     <form className={s.formcompany}>
                         <fieldset className={s.inputContainer}>
@@ -865,7 +865,7 @@ class NewProduct extends Component {
                             </select>
                         </fieldset>
                     </form>
-                </div>
+                </div>}
                 {this.state.mostrarFormInfodeEmpresa ?
                     <CompanyInformation
                         productID={this.state.CRUD_Product.id} handleOnChangeInputFormCompany={this.handleOnChangeInputFormCompany}
@@ -995,7 +995,7 @@ class NewProduct extends Component {
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
                         </fieldset>
                         <fieldset className={s.inputContainer}>
-                            <legend>Imágenes</legend>
+                            <legend>Imágenes </legend>
                             <DragAreaJustImages
                                 idFile={this.state.productOnDraft.images?.items?.length > 0? this.state.productOnDraft.images.items[0].id: ''}
                                 selectImage={this.selectImage}
