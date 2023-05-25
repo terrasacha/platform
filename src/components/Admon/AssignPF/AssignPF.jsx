@@ -211,7 +211,7 @@ export default class AssignPF extends Component {
             let tempUserVerified
             pf.product.userProducts.items.map(up =>{ if(up.user.role === 'constructor') tempUserVerified = up.user.id })
             let tempVerification = {
-              sign: 'test', //BORRAR
+              sign: '', //BORRAR
               userVerifierID: this.state.userSelected.id,
               userVerifiedID: tempUserVerified,
               productFeatureID: pf.id
