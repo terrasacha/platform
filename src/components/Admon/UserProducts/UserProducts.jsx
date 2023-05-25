@@ -4,7 +4,7 @@ import { Button, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Tab
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
-import { createUserProduct, updateUser } from '../../../graphql/mutations';
+import { createUserProduct, updateUser, createVerification } from '../../../graphql/mutations';
 import { listProducts, listUserProducts, listUsers } from '../../../graphql/queries';
 import { onCreateUserProduct, onUpdateUser } from '../../../graphql/subscriptions';
 
@@ -20,8 +20,18 @@ export default class UserProducts extends Component {
       userProducts: [],
       showModalRole: false,
       userSelected: null,
+      userSelectedRol: null,
       productSelected: null,
       roleSelected: '',
+      newVerification: {
+          id: '',
+          createdOn: '',
+          updatedOn: '',
+          sign: '',
+          userVerifierID: '',
+          userVerifiedID: '',
+          productFeatureID: '',
+      },
     }
     this.loadUsers = this.loadUsers.bind(this)
     this.loadProducts = this.loadProducts.bind(this)
@@ -92,7 +102,7 @@ componentWillUnmount() {
     this.setState({userProducts: listUserProductsResults.data.listUserProducts.items})
     }
   handleSelectUser(user){
-    this.setState({userSelected: user})
+    this.setState({userSelected: user, userSelectedRol: user.role})
   }
   handleSelectProduct(product){
     this.setState({productSelected: product})
@@ -144,6 +154,7 @@ componentWillUnmount() {
   async handleAssignProduct(){
     let existUP = false
     const userProducts = this.state.userProducts
+    console.log(userProducts)
     for(let i = 0; i < userProducts.length; i++){
       if(userProducts[i].userID === this.state.userSelected.id && userProducts[i].productID === this.state.productSelected.id){
         existUP = true
@@ -158,6 +169,40 @@ componentWillUnmount() {
       await API.graphql(graphqlOperation(createUserProduct, { input: payloadUserProduct }))
     }else{
       alert('Ya exite una Relación entre Producto y Usuario')
+    }
+
+    if(this.state.userSelectedRol === 'validator') {
+      let userProduct = userProducts.filter( uP => uP.productID === this.state.productSelected.id)[0]
+      let constructorID = ''
+      userProducts.filter( uP => uP.productID === this.state.productSelected.id).map( uP => {
+        if (uP.user.role === 'constructor') {
+          constructorID = uP.user.id
+          return
+        }
+      })
+      let newVerifications = []
+      userProduct.product.productFeatures.items.map( pf => {
+        let isAlreadyVerifier = false
+        pf.verifications.items.map( verif => {
+          if (verif.userVerifierID === this.state.userSelected.id) {
+            isAlreadyVerifier = true
+          }
+        })
+        if(pf.isVerifable === true && !isAlreadyVerifier) {
+          let tempNewVerification = this.state.newVerification
+          tempNewVerification.id = uuidv4().replaceAll('-', '_')
+          tempNewVerification.createdOn = new Date().toISOString()
+          tempNewVerification.updatedOn = new Date().toISOString()
+          tempNewVerification.productFeatureID = pf.id
+          tempNewVerification.userVerifiedID = constructorID
+          tempNewVerification.userVerifierID = this.state.userSelected.id
+          newVerifications.push(tempNewVerification)
+        }
+      })
+      for (let i = 0; i < newVerifications.length; i++) {
+        await API.graphql(graphqlOperation(createVerification, { input: newVerifications[i] }))
+      }
+
     }
     this.cleanState()
   }
@@ -177,6 +222,7 @@ componentWillUnmount() {
       roleSelected: '',
     })
   }
+
   render() {
     let { usersCopy, products, userSelected, productSelected, roleSelected, userProducts } = this.state
 

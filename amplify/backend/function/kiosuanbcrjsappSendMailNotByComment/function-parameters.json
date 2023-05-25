@@ -1,0 +1,17 @@
+{
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "graphqlEndpoint",
+      "environmentVariableName": "GRAPHQL_ENDPOINT"
+    },
+    {
+      "cloudFormationParameterName": "graphqlApiKey",
+      "environmentVariableName": "GRAPHQL_API_KEY"
+    },
+    {
+      "cloudFormationParameterName": "sesEmail",
+      "environmentVariableName": "SES_EMAIL"
+    }
+  ]
+}
