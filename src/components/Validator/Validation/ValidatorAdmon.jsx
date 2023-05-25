@@ -562,7 +562,7 @@ class ValidatorAdmon extends Component {
               <Table striped hover className='mt-4'>
                 <thead>
                   <tr>
-                    <th>Product</th>
+                    <th>Product </th>
                     <th>Feature</th>
                     <th>userVerifierID</th>
                     <th>userVerifiedID</th>
