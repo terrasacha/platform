@@ -140,6 +140,7 @@ type Feature @model
   name: String!
   description: String
   isTemplate: Boolean
+  isVerifable: Boolean
   defaultValue: Float
   featureTypeID: ID @index(name: "byFeatureType")
   featureType: FeatureType @belongsTo(fields: ["featureTypeID"])
@@ -192,7 +193,6 @@ type ProductFeature @model
   id: ID!
   value: String
   isToBlockChain: Boolean
-  isVerifable: Boolean
   order: Int
   isOnMainCard: Boolean
   productID: ID! @index(name: "byProduct")

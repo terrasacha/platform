@@ -55,113 +55,10 @@ export const getUser = /* GraphQL */ `
       }
       userProducts {
         items {
-          orders {
-            items {
-              amountOfTokens
-              userProductID
-              id
-            }
-          }
           id
           isFavorite
           userID
           productID
-          product {
-            id
-            description
-            order
-            name
-            isActive
-            counterNumberOfTimesBuyed
-            status
-            images {
-              items {
-                id
-                imageURL
-                title
-              }
-            }
-            categoryID
-            category {
-              name
-            }
-            productFeatures {
-              items {
-                id
-                featureID
-                isVerifable
-                order
-                value
-                productID
-                product {
-                  id
-                  name
-                }
-                feature {
-                  description
-                  id
-                  name
-                  unitOfMeasureID
-                  featureTypeID
-                  featureType {
-                    id
-                    name
-                    description
-                  }
-                  unitOfMeasure {
-                    engineeringUnit
-                    id
-                  }
-                }
-                verifications {
-                  items {
-                    verificationComments {
-                      items {
-                        comment
-                        createdAt
-                        id
-                        isCommentByVerifier
-                        verificationID
-                      }
-                    }
-                    id
-                    userVerifierID
-                    userVerifiedID
-                    createdAt
-                  }
-                }
-                productFeatureResults {
-                  items {
-                    id
-                    isActive
-                    result {
-                      id
-                      value
-                      formula {
-                        id
-                        equation
-                      }
-                    }
-                  }
-                }
-                documents {
-                  items {
-                    id
-                    status
-                    url
-                    userID
-                    docHash
-                    signed
-                    signedHash
-                    documentType {
-                      id
-                      name
-                    }
-                  }
-                }
-              }
-            }
-          }
           createdAt
           updatedAt
         }
@@ -207,46 +104,8 @@ export const listUsers = /* GraphQL */ `
         addresss
         cellphone
         role
-        userProducts {
-          items {
-            id
-            productID
-            product {
-              id
-              name
-              productFeatures {
-                items {
-                  id
-                  documents {
-                    items {
-                      id
-                      status
-                      }
-                  }
-                  feature {
-                    id
-                    name
-                    unitOfMeasureID
-                    unitOfMeasure {
-                      description
-                      engineeringUnit
-                    }
-                  }
-                  featureID
-                  verifications {
-                    items {
-                      id
-                      createdOn
-                      updatedOn
-                      userVerifiedID
-                      userVerifierID
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        status
+        email
         wallets {
           nextToken
         }
@@ -413,7 +272,6 @@ export const getVerification = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -436,6 +294,7 @@ export const getVerification = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -515,7 +374,6 @@ export const listVerifications = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -578,7 +436,6 @@ export const getVerificationComment = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -712,7 +569,6 @@ export const getDocument = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -735,6 +591,7 @@ export const getDocument = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -799,8 +656,6 @@ export const listDocuments = /* GraphQL */ `
         data
         timeStamp
         docHash
-        signedHash
-        signed
         url
         signed
         signedHash
@@ -820,51 +675,12 @@ export const listDocuments = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
           featureID
           createdAt
           updatedAt
-          feature {
-            name
-            id
-            description
-            featureType {
-              id
-              name
-            }
-          }
-          product {
-            id
-            name
-          }
-          verifications {
-            items {
-              id
-              userVerifierID
-              userVerifier {
-                name
-              }
-              userVerifiedID
-              userVerified {
-                name
-              }
-              updatedOn
-              sign
-              createdOn
-              verificationComments {
-                items {
-                  comment
-                  createdAt
-                  id
-                  isCommentByVerifier
-                  verificationID
-                }
-              }
-            }
-          }
         }
         userID
         user {
@@ -980,7 +796,6 @@ export const getProduct = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -1051,66 +866,9 @@ export const listProducts = /* GraphQL */ `
         }
         images {
           nextToken
-          items {
-            id
-            imageURL
-            carouselDescription
-            carouselLabel
-            format
-            isOnCarousel
-            isActive
-            imageURLToDisplay
-            title
-            productID
-            order
-          }
         }
         productFeatures {
           nextToken
-          items {
-            id
-            isToBlockChain
-            isVerifable
-            value
-            featureID
-            documents {
-              items {
-                id
-                isApproved
-                signed
-                status
-              }
-            }
-            feature {
-              id
-              name
-              isTemplate
-              description
-              featureType {
-                name
-                id
-                description
-              }
-              unitOfMeasure {
-                engineeringUnit
-                id
-              }
-            }
-            productFeatureResults {
-              items {
-                id
-                isActive
-                result {
-                  id
-                  value
-                  formula {
-                    id
-                    equation
-                  }
-                }
-              }
-            }
-          }
         }
         userProducts {
           nextToken
@@ -1227,6 +985,7 @@ export const getFeatureType = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1268,6 +1027,7 @@ export const getFeature = /* GraphQL */ `
       name
       description
       isTemplate
+      isVerifable
       defaultValue
       featureTypeID
       featureType {
@@ -1300,7 +1060,6 @@ export const getFeature = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -1337,6 +1096,7 @@ export const listFeatures = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -1381,6 +1141,7 @@ export const getUnitOfMeasure = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1520,6 +1281,7 @@ export const getFeatureFormula = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -1590,6 +1352,7 @@ export const listFeatureFormulas = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1693,7 +1456,6 @@ export const getProductFeature = /* GraphQL */ `
       id
       value
       isToBlockChain
-      isVerifable
       order
       isOnMainCard
       productID
@@ -1735,6 +1497,7 @@ export const getProductFeature = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -1823,7 +1586,6 @@ export const listProductFeatures = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -1846,6 +1608,7 @@ export const listProductFeatures = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1853,44 +1616,13 @@ export const listProductFeatures = /* GraphQL */ `
           updatedAt
         }
         verifications {
-          items {
-            verificationComments {
-              items {
-                comment
-                createdAt
-                id
-                isCommentByVerifier
-                verificationID
-              }
-            }
-            id
-            userVerifierID
-            userVerifiedID
-            createdAt
-          }
+          nextToken
         }
         documents {
-          items {
-            id
-            status
-            url
-            documentType {
-              id
-              name
-            }
-          }
+          nextToken
         }
         productFeatureResults {
-          items {
-            id
-            isActive
-            resultID
-            result {
-              id
-              varID
-              value
-            }
-          }
+          nextToken
         }
         createdAt
         updatedAt
@@ -1909,7 +1641,6 @@ export const getProductFeatureResult = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -1932,6 +1663,7 @@ export const getProductFeatureResult = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1994,31 +1726,12 @@ export const listProductFeatureResults = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
           featureID
           createdAt
           updatedAt
-          feature {
-            id
-            name
-            featureType {
-              id
-              name
-            }
-            unitOfMeasure {
-              id
-              engineeringUnit
-              description
-            }
-          }
-          product {
-            id
-            name
-            order
-          }
         }
         resultID
         result {
@@ -2026,11 +1739,6 @@ export const listProductFeatureResults = /* GraphQL */ `
           varID
           value
           formulaID
-          formula {
-            equation
-            id
-            varID
-          }
           createdAt
           updatedAt
         }
@@ -2165,58 +1873,6 @@ export const listUserProducts = /* GraphQL */ `
           categoryID
           createdAt
           updatedAt
-          category {
-            name
-          }
-          productFeatures {
-            items {
-              id
-              featureID
-              order
-              value
-              isVerifable
-              feature {
-                description
-                id
-                name
-                unitOfMeasureID
-                featureTypeID
-                featureType {
-                  id
-                  name
-                  description
-                }
-              }
-              verifications {
-                items {
-                  verificationComments {
-                    items {
-                      comment
-                      createdAt
-                      id
-                      isCommentByVerifier
-                      verificationID
-                    }
-                  }
-                  id
-                  userVerifierID
-                  userVerifiedID
-                  createdAt
-                }
-              }
-              documents {
-                items {
-                  id
-                  status
-                  url
-                  documentType {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-          }
         }
         orders {
           nextToken
@@ -2401,43 +2057,6 @@ export const listTransactions = /* GraphQL */ `
         updatedAt
       }
       nextToken
-    }
-  }
-`;
-export const getProductDraft = /* GraphQL */ `
-  query GetProduct($id: ID!) {
-    getProduct(id: $id) {
-      id
-      name
-      description
-      status
-      categoryID
-      images {
-        items {
-          id
-          imageURL
-          title
-        }
-      }
-      productFeatures {
-        items {
-          id
-          featureID
-          value
-          feature {
-            id
-            name
-            featureTypeID
-          }
-          documents {
-            items {
-              id
-            }
-          }
-        }
-      }
-      createdAt
-      updatedAt
     }
   }
 `;

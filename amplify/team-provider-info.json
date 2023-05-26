@@ -15,28 +15,14 @@
       "auth": {
         "kiosuanbcrjsappa6accc93": {}
       },
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "db3zbcxaygrmf",
-          "type": "cicd"
-        }
-      },
       "storage": {
         "s37845b3b9": {}
       },
-      "api": {
-        "kiosuanbcrjsapp": {}
-      },
       "function": {
         "kiosuanbcrjsapp58b48a41": {
-          "sesEmail": "notificaciones@suan.global",
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-70746b2f713064453964-build.zip"
-        },
-        "kiosuanbcrjsappSchProjectValidationEnddate": {
-          "sesEmail": "notificaciones@suan.global",
-          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappSchProjectValidationEnddate-7a61624b386253575257-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-70746b2f713064453964-build.zip",
+          "sesEmail": "notificaciones@suan.global"
         },
         "kiosuanbcrjsappSendMailNotByComment": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
@@ -45,13 +31,15 @@
           "graphqlApiKey": "da2-zmafzaqndbc5blfoqw4kqddtlq",
           "sesEmail": "notificaciones@suan.global"
         }
-      }
-    }
-  },
-  "prod": {
-    "categories": {
-      "auth": {
-        "kiosuanbcrjsappa6accc93": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "db3zbcxaygrmf",
+          "type": "cicd"
+        }
+      },
+      "api": {
+        "kiosuanbcrjsapp": {}
       }
     }
   }

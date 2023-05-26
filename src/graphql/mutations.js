@@ -479,7 +479,6 @@ export const createVerification = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -502,6 +501,7 @@ export const createVerification = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -609,7 +609,6 @@ export const updateVerification = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -632,6 +631,7 @@ export const updateVerification = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -739,7 +739,6 @@ export const deleteVerification = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -762,6 +761,7 @@ export const deleteVerification = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -844,7 +844,6 @@ export const createVerificationComment = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -911,7 +910,6 @@ export const updateVerificationComment = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -978,7 +976,6 @@ export const deleteVerificationComment = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -1131,7 +1128,6 @@ export const createDocument = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -1154,6 +1150,7 @@ export const createDocument = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1238,7 +1235,6 @@ export const updateDocument = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -1261,6 +1257,7 @@ export const updateDocument = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1345,7 +1342,6 @@ export const deleteDocument = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -1368,6 +1364,7 @@ export const deleteDocument = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1558,7 +1555,6 @@ export const createProduct = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -1651,7 +1647,6 @@ export const updateProduct = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -1744,7 +1739,6 @@ export const deleteProduct = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -1966,6 +1960,7 @@ export const createFeatureType = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -1994,6 +1989,7 @@ export const updateFeatureType = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -2022,6 +2018,7 @@ export const deleteFeatureType = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -2045,6 +2042,7 @@ export const createFeature = /* GraphQL */ `
       name
       description
       isTemplate
+      isVerifable
       defaultValue
       featureTypeID
       featureType {
@@ -2077,7 +2075,6 @@ export const createFeature = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -2112,6 +2109,7 @@ export const updateFeature = /* GraphQL */ `
       name
       description
       isTemplate
+      isVerifable
       defaultValue
       featureTypeID
       featureType {
@@ -2144,7 +2142,6 @@ export const updateFeature = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -2179,6 +2176,7 @@ export const deleteFeature = /* GraphQL */ `
       name
       description
       isTemplate
+      isVerifable
       defaultValue
       featureTypeID
       featureType {
@@ -2211,7 +2209,6 @@ export const deleteFeature = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -2252,6 +2249,7 @@ export const createUnitOfMeasure = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -2292,6 +2290,7 @@ export const updateUnitOfMeasure = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -2332,6 +2331,7 @@ export const deleteUnitOfMeasure = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -2519,6 +2519,7 @@ export const createFeatureFormula = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -2587,6 +2588,7 @@ export const updateFeatureFormula = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -2655,6 +2657,7 @@ export const deleteFeatureFormula = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -2863,7 +2866,6 @@ export const createProductFeature = /* GraphQL */ `
       id
       value
       isToBlockChain
-      isVerifable
       order
       isOnMainCard
       productID
@@ -2891,12 +2893,7 @@ export const createProductFeature = /* GraphQL */ `
           nextToken
         }
         userProducts {
-          items {
-            user {
-              role
-              id
-            }
-          }
+          nextToken
         }
         transactions {
           nextToken
@@ -2910,6 +2907,7 @@ export const createProductFeature = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -2996,7 +2994,6 @@ export const updateProductFeature = /* GraphQL */ `
       id
       value
       isToBlockChain
-      isVerifable
       order
       isOnMainCard
       productID
@@ -3038,6 +3035,7 @@ export const updateProductFeature = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -3124,7 +3122,6 @@ export const deleteProductFeature = /* GraphQL */ `
       id
       value
       isToBlockChain
-      isVerifable
       order
       isOnMainCard
       productID
@@ -3166,6 +3163,7 @@ export const deleteProductFeature = /* GraphQL */ `
         name
         description
         isTemplate
+        isVerifable
         defaultValue
         featureTypeID
         featureType {
@@ -3256,7 +3254,6 @@ export const createProductFeatureResult = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -3279,6 +3276,7 @@ export const createProductFeatureResult = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -3335,7 +3333,6 @@ export const updateProductFeatureResult = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -3358,6 +3355,7 @@ export const updateProductFeatureResult = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
@@ -3414,7 +3412,6 @@ export const deleteProductFeatureResult = /* GraphQL */ `
         id
         value
         isToBlockChain
-        isVerifable
         order
         isOnMainCard
         productID
@@ -3437,6 +3434,7 @@ export const deleteProductFeatureResult = /* GraphQL */ `
           name
           description
           isTemplate
+          isVerifable
           defaultValue
           featureTypeID
           unitOfMeasureID
