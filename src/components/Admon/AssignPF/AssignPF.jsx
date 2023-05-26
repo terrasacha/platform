@@ -39,7 +39,7 @@ export const listproductsAssignPF = /* GraphQL */ `
           id
           name
           description
-          isTemplate
+          isVerifable
           featureTypeID
         }
         documents {
@@ -93,7 +93,7 @@ export const listProductsAssign = /* GraphQL */ `
               id
               name
               description
-              isTemplate
+              isVerifable
               featureTypeID
             }
             documents {
@@ -207,16 +207,17 @@ export default class AssignPF extends Component {
     if(!existValidator){
       let promises = []
         this.state.productselected.productFeatures.items.map(pf =>{
-          if(pf.feature.isTemplate){
+          if(pf.feature.isVerifable){
             let tempUserVerified
             pf.product.userProducts.items.map(up =>{ if(up.user.role === 'constructor') tempUserVerified = up.user.id })
             let tempVerification = {
-              sign: '', //BORRAR
+              sign: 'test', //BORRAR
               userVerifierID: this.state.userSelected.id,
               userVerifiedID: tempUserVerified,
-              productFeatureID: pf.id
+              productFeatureID: pf.id,
+              createdOn: new Date().toISOString(),
+              updatedOn: new Date().toISOString()
             }
-
             promises.push(API.graphql(graphqlOperation(createVerification, { input: tempVerification })))
             }
         })
