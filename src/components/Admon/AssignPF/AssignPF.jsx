@@ -305,7 +305,7 @@ export default class AssignPF extends Component {
                               </td>
                               <td>
                                 <ul style={{listStyle: 'none', padding: '0'}}>
-                                  {verificadores.length > 0? verificadores.map(v => <li>{v}</li>) : 'Sin asignar'} 
+                                  {verificadores.length > 0? verificadores.map(v => <li key={v}>{v}</li>) : 'Sin asignar'} 
                                 </ul>
                               </td>
                           </tr>
@@ -345,7 +345,7 @@ export default class AssignPF extends Component {
                               </td>
                               <td>
                                 <ul style={{listStyle: 'none', padding: '0'}}>
-                                  {verificadores.length > 0? verificadores.map(v => <li>{v}</li>) : 'Sin asignar'} 
+                                  {verificadores.length > 0? verificadores.map(v => <li key={v}>{v}</li>) : 'Sin asignar'} 
                                 </ul>
                               </td>
                           </tr>

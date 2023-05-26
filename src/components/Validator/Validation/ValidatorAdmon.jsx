@@ -43,7 +43,6 @@ export const listDocuments = /* GraphQL */ `
           id
           value
           isToBlockChain
-          isVerifable
           order
           isOnMainCard
           productID
@@ -53,6 +52,7 @@ export const listDocuments = /* GraphQL */ `
           feature {
             name
             id
+            isVerifable
             description
             featureType {
               id
@@ -444,13 +444,18 @@ class ValidatorAdmon extends Component {
       let documents = []
       if (this.state.showPending) documents = this.state.documentsPending
       if (this.state.showOther) documents = this.state.otherDocuments
-      let products = documents.map(document => document.productFeature.product.name)
-      products = products.reduce((acc, item) => {
-        if (!acc.includes(item)) {
-          acc.push(item);
+      let products = []
+      documents.map(document => document.productFeature.verifications.items.map(v => {
+        if(v.userVerifierID === this.state.actualUser){
+          !products.includes(document.productFeature.product.name) && products.push(document.productFeature.product.name)
         }
-        return acc;
-      }, [])
+      }))
+      let documentsFilteredByValidator = []
+      documents.map(document => document.productFeature.verifications.items.map(v => {
+        if(v.userVerifierID === this.state.actualUser){
+          documentsFilteredByValidator.push(document)
+        }
+      }))
       if (this.state.selectedProductValidation) {
         documents = documents.filter(document => document.productFeature.product.name === this.state.selectedProductValidation)
       }
@@ -486,7 +491,7 @@ class ValidatorAdmon extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {documents.map(document => (
+                    {documentsFilteredByValidator.map(document => (
                       <tr key={document.id}>
                         <td>{document.productFeature.product.name}</td>
                         <td>{document.productFeature.product.category.name}</td>
