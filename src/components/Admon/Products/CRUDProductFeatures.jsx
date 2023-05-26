@@ -71,7 +71,7 @@ export default class CRUDProductFeatures extends Component {
                     newProductFeature: {...prevState.newProductFeature, isToBlockChain: false}}))
             }
         }
-        if(e.target.name === 'isVerifiable'){
+        if(e.target.name === 'isVerifable'){
             if(e.target.value === 'yes'){
                 this.setState(prevState => ({
                     newProductFeature: {...prevState.newProductFeature, isVerifable: true}}))
@@ -248,7 +248,7 @@ export default class CRUDProductFeatures extends Component {
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsVerifable'>
-                                    <Form.Select  name='isVerifiable' onChange={(e) => this.handleCreateProductFeature(e)} >
+                                    <Form.Select  name='isVerifable' onChange={(e) => this.handleCreateProductFeature(e)} >
                                         <option>-</option>
                                         <option value='no' >No</option>
                                         <option value='yes'>Yes</option>

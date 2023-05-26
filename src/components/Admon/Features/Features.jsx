@@ -30,6 +30,7 @@ import 'react-toastify/dist/ReactToastify.css';
                 name: '',
                 description: '',
                 isTemplate: false,
+                isVerifable: false,
                 defaultValue: '1',
                 featureTypeID: '',
                 unitOfMeasureID: ''
@@ -164,6 +165,14 @@ import 'react-toastify/dist/ReactToastify.css';
                 
             }
         }
+        if (event.target.name === 'feature.isVerifable') {
+            if(event.target.value === 'yes'){
+               tempNewFeature.isVerifable = true
+            }else{
+                tempNewFeature.isVerifable = false
+                
+            }
+        }
         if (event.target.name === 'feature.featureType') {
             tempNewFeature.featureTypeID = event.target.value
         }
@@ -260,6 +269,7 @@ import 'react-toastify/dist/ReactToastify.css';
                 name: '',
                 description: '',
                 isTemplate: this.state.newFeature.isTemplate,
+                isVerifable: this.state.newFeature.isVerifable,
                 defaultValue: '1',
                 featureTypeID: this.state.newFeature.featureTypeID,
                 unitOfMeasureID: this.state.newFeature.unitOfMeasureID
@@ -289,6 +299,7 @@ import 'react-toastify/dist/ReactToastify.css';
                                     <th>Type</th>
                                     <th>Unit of Measure</th>
                                     <th>Is template</th>
+                                    <th>Is verifable</th>
                                     <th>Editar</th>
                                     {/* <th>Is available</th> */}
                                 </tr>
@@ -316,6 +327,9 @@ import 'react-toastify/dist/ReactToastify.css';
                                         </td>
                                         <td>
                                             {features.isTemplate? 'Si' : 'No'}
+                                        </td>
+                                        <td>
+                                            {features.isVerifable? 'Si' : 'No'}
                                         </td>
                                         <td>
                                             <Button 
@@ -366,6 +380,13 @@ import 'react-toastify/dist/ReactToastify.css';
                                 <Form.Label>Is template</Form.Label>
                                 <Form.Select 
                                     name='feature.isTemplate'
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                                </Form.Select>
+                                <Form.Label>Is verifable</Form.Label>
+                                <Form.Select 
+                                    name='feature.isVerifable'
                                     onChange={(e) => this.handleOnChangeInputForm(e)}>
                                 <option value="no">No</option>
                                 <option value="yes">Yes</option>

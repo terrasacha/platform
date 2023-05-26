@@ -905,9 +905,61 @@ export const listProducts = /* GraphQL */ `
         }
         images {
           nextToken
+          items {
+            id
+            imageURL
+            title
+            isActive
+            isOnCarousel
+          }
         }
         productFeatures {
           nextToken
+          items {
+            id
+            featureID
+            value
+            documents {
+              items {
+                id
+                isApproved
+                signed
+                documentTypeID
+              }
+            }
+            feature {
+              id
+              name
+              isVerifable
+              isTemplate
+              description
+              unitOfMeasureID
+              unitOfMeasure {
+                description
+              }
+            }
+            productFeatureResults {
+              items {
+                id
+                resultID
+                isActive
+                result {
+                  id
+                  value
+                  varID
+                }
+              }
+            }
+            verifications {
+              items {
+                id
+                sign
+                userVerifierID
+                userVerifiedID
+                createdAt
+              }
+            }
+          }
         }
         userProducts {
           nextToken
