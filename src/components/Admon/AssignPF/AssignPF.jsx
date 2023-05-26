@@ -98,6 +98,7 @@ export const listProductsAssign = /* GraphQL */ `
             }
             documents {
               items {
+                id
                 status
                   }
               }
@@ -207,7 +208,7 @@ export default class AssignPF extends Component {
     if(!existValidator){
       let promises = []
         this.state.productselected.productFeatures.items.map(pf =>{
-          if(pf.feature.isVerifable){
+          if(pf.feature.isVerifable && pf.documents.items.length > 0){
             let tempUserVerified
             pf.product.userProducts.items.map(up =>{ if(up.user.role === 'constructor') tempUserVerified = up.user.id })
             let tempVerification = {

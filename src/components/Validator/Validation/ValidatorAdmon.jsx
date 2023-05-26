@@ -319,7 +319,7 @@ class ValidatorAdmon extends Component {
     if (this.state.selectedDocument) {
       this.setState({ creatingVerification: true })
       let docStatus = this.state.verification.documentStatus
-      let tempNewVerification = this.state.verification
+      /* let tempNewVerification = this.state.verification
       delete tempNewVerification.documentStatus
       tempNewVerification.id = uuidv4().replaceAll('-', '_')
       tempNewVerification.createdOn = new Date().toISOString()
@@ -327,7 +327,7 @@ class ValidatorAdmon extends Component {
       tempNewVerification.userVerifierID = this.state.actualUser
       tempNewVerification.userVerifiedID = this.state.selectedDocument.userID
       tempNewVerification.productFeatureID = this.state.selectedDocument.productFeature.id
-      await API.graphql(graphqlOperation(createVerification, { input: tempNewVerification }))
+      await API.graphql(graphqlOperation(createVerification, { input: tempNewVerification })) */
       if (docStatus === 'Approve') {
         docStatus = {
           isApproved: true,
