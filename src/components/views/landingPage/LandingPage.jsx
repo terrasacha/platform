@@ -72,7 +72,6 @@ export default class LandingPage extends Component {
             items {
               id
               isToBlockChain
-              isVerifable
               value
               productID
               feature {

@@ -3,7 +3,7 @@ import s from './NewProduct.module.css'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature, createDocument } from '../../../graphql/mutations'
-import { getProductDraft, listCategories, listFeatures, listUserProducts, listProductFeatures } from '../../../graphql/queries'
+import {  listCategories, listFeatures, listUserProducts, listProductFeatures } from '../../../graphql/queries'
 import DragAreaJustImages from './dragArea/DragAreaJustImages'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import FromPlantaciones from './FormPlantaciones/FormPlantaciones'
@@ -45,6 +45,65 @@ export const listProductFeaturesUpdate = /* GraphQL */ `
         featureID
       }
       nextToken
+    }
+  }
+`;
+export const getProductDraft = /* GraphQL */ `
+  query GetProduct($id: ID!) {
+    getProduct(id: $id) {
+        name
+        description
+        createdAt
+        images {
+            items {
+              id
+              imageURL
+              isActive
+            }
+          }
+        category {
+            name
+            id
+          }
+          categoryID
+          description
+          id
+          name
+          productFeatures {
+            items {
+              id
+              value
+              documents {
+                items {
+                  id
+                }
+              }
+              feature {
+                description
+                id
+                name
+              }
+              featureID
+              verifications {
+                items {
+                  id
+                  userVerifiedID
+                  userVerifierID
+                  userVerified {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          }
+          userProducts {
+            items {
+              id
+              productID
+              userID
+            }
+          }
     }
   }
 `;
