@@ -201,10 +201,15 @@ export default class AssignPF extends Component {
   async handleAssignProduct(){
     let existValidator = false
     this.state.productselected.productFeatures.items.map(pf =>{
+      if(pf.verifications?.items?.length > 0){
+        existValidator = true
+      }
+    })
+    /* this.state.productselected.productFeatures.items.map(pf =>{
       pf.verifications?.items?.map(v =>{
         if(v.userVerifier.name === this.state.userSelected.name) existValidator = true
       } )
-    })
+    }) */
     if(!existValidator){
       let promises = []
         this.state.productselected.productFeatures.items.map(pf =>{
@@ -212,7 +217,7 @@ export default class AssignPF extends Component {
             let tempUserVerified
             pf.product.userProducts.items.map(up =>{ if(up.user.role === 'constructor') tempUserVerified = up.user.id })
             let tempVerification = {
-              sign: 'test', //BORRAR
+              sign: '', //BORRAR
               userVerifierID: this.state.userSelected.id,
               userVerifiedID: tempUserVerified,
               productFeatureID: pf.id,
@@ -224,7 +229,7 @@ export default class AssignPF extends Component {
         })
         await Promise.all(promises)
     }else{
-      alert('El validador ya tiene asignado ese Proyecto')
+      alert('El validador ya tiene asignado el Proyecto o ya existe un validador asociado a este')
     }
     this.cleanState()
   }
