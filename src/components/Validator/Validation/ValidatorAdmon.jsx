@@ -8,7 +8,7 @@ import Bootstrap from "../../common/themes";
 import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createVerification, updateDocument, updateProductFeature, createVerificationComment } from '../../../graphql/mutations';
+import { createVerification, updateDocument, updateProductFeature, createVerificationComment, updateProduct } from '../../../graphql/mutations';
 import { onUpdateDocument, onUpdateProductFeature, onCreateVerificationComment } from '../../../graphql/subscriptions';
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
@@ -252,18 +252,24 @@ class ValidatorAdmon extends Component {
     }
     const listDocumentsResultAll = await API.graphql({ query: listDocuments})
     listDocumentsResultAll.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
+    let documentsByVerificatorAll= []
+    listDocumentsResultAll.data.listDocuments.items.map(doc => doc.productFeature.verifications.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorAll.push(doc)}))
     this.setState({
-      documents: listDocumentsResultAll.data.listDocuments.items,
+      documents: documentsByVerificatorAll,
     })
     const listDocumentsResult = await API.graphql({ query: listDocuments, variables: { filter: filter1 } })
     listDocumentsResult.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
+    let documentsByVerificatorFilter1= []
+    listDocumentsResult.data.listDocuments.items.map(doc => doc.productFeature.verifications.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorFilter1.push(doc)}))
     this.setState({
-      documentsPending: listDocumentsResult.data.listDocuments.items,
+      documentsPending: documentsByVerificatorFilter1,
     })
     const listDocumentsResult2 = await API.graphql({ query: listDocuments, variables: { filter: filter2 } })
     listDocumentsResult2.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
+    let documentsByVerificatorFilter2= []
+    listDocumentsResult2.data.listDocuments.items.map(doc => doc.productFeature.verifications.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorFilter2.push(doc)}))
     this.setState({
-      otherDocuments: listDocumentsResult2.data.listDocuments.items,
+      otherDocuments: documentsByVerificatorFilter2,
     })
   }
   async loadUsers() {
@@ -319,15 +325,6 @@ class ValidatorAdmon extends Component {
     if (this.state.selectedDocument) {
       this.setState({ creatingVerification: true })
       let docStatus = this.state.verification.documentStatus
-      /* let tempNewVerification = this.state.verification
-      delete tempNewVerification.documentStatus
-      tempNewVerification.id = uuidv4().replaceAll('-', '_')
-      tempNewVerification.createdOn = new Date().toISOString()
-      tempNewVerification.updatedOn = new Date().toISOString()
-      tempNewVerification.userVerifierID = this.state.actualUser
-      tempNewVerification.userVerifiedID = this.state.selectedDocument.userID
-      tempNewVerification.productFeatureID = this.state.selectedDocument.productFeature.id
-      await API.graphql(graphqlOperation(createVerification, { input: tempNewVerification })) */
       if (docStatus === 'Approve') {
         docStatus = {
           isApproved: true,
@@ -338,7 +335,31 @@ class ValidatorAdmon extends Component {
         isApproved: false,
         status: 'denied'
       }
-
+      //Me fijo si el proyecto el cual estoy verificando tiene o no algun doc aceptado para ponerlo en on_verification
+      let putProductOnV = {onVerificacion: false, productID: this.state.selectedDocument.productFeature.product.id}
+      this.state.otherDocuments?.map(doc =>{
+        if(doc.productFeature.product.id === putProductOnV.productID) return putProductOnV.onVerificacion === true
+      })
+      !putProductOnV.onVerificacion && await API.graphql(graphqlOperation(updateProduct,
+        {
+          input: {
+            id: putProductOnV.productID,
+            status: 'on_verification'
+          }
+        }))
+      //Me fijo si es el ultimo doc que falta del proyecto para ponerlo en verified
+      let putProductVerified = {verify: false, productID: this.state.selectedDocument.productFeature.product.id}
+      let leftDocs = this.state.documentsPending?.filter(doc => doc.productFeature.product.id === putProductVerified.productID)
+      if(leftDocs?.length === 1) putProductVerified.verify = true 
+      let acceptedDocs = true 
+      this.state.otherDocuments?.map(doc =>{ if(doc.productFeature.product.id === putProductVerified.productID && doc.status === 'denied') return acceptedDocs = false})
+      putProductVerified.verify && docStatus.status === 'accepted' && acceptedDocs && await API.graphql(graphqlOperation(updateProduct,
+        {
+          input: {
+            id: putProductOnV.productID,
+            status: 'verified'
+          }
+        }))
       await API.graphql(graphqlOperation(updateDocument,
         {
           input: {
@@ -415,7 +436,7 @@ class ValidatorAdmon extends Component {
       showModalComments: false,
       showModalValidate: false,
       selectedDocument: null,
-      createVerification: false,
+      creatingVerification: false,
       verification: {
         id: '',
         createdOn: '',
@@ -448,12 +469,6 @@ class ValidatorAdmon extends Component {
       documents.map(document => document.productFeature.verifications.items.map(v => {
         if(v.userVerifierID === this.state.actualUser){
           !products.includes(document.productFeature.product.name) && products.push(document.productFeature.product.name)
-        }
-      }))
-      let documentsFilteredByValidator = []
-      documents.map(document => document.productFeature.verifications.items.map(v => {
-        if(v.userVerifierID === this.state.actualUser){
-          documentsFilteredByValidator.push(document)
         }
       }))
       if (this.state.selectedProductValidation) {
@@ -491,7 +506,7 @@ class ValidatorAdmon extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {documentsFilteredByValidator.map(document => (
+                    {documents.map(document => (
                       <tr key={document.id}>
                         <td>{document.productFeature.product.name}</td>
                         <td>{document.productFeature.product.category.name}</td>
