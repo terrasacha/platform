@@ -12,7 +12,7 @@ function ProductCard({product, urlS3Image}) {
             <div className={s.infoContainer}>
                 <div className={s.titleContainer}>
                     <div className={s.title}>{product.name}</div>
-                    <div className={s.location}><Icon.GeoAltFill color="#4DBC5E" /><div>{ubicacion[0].value}</div></div>
+                    <div className={s.location}><Icon.GeoAltFill color="#4DBC5E" /><div>{ubicacion[0]?.value}</div></div>
                 </div>
                 <div className={s.description}>
                     {product.description}
@@ -24,7 +24,7 @@ function ProductCard({product, urlS3Image}) {
                     </div>
                     <div className={s.infoProduct}>
                         <div className={s.text}>PERIODO DE PERMANENCIA</div>
-                        <div className={s.value}>{periodoP[0].value} años</div>
+                        <div className={s.value}>{periodoP[0]?.value} años</div>
                     </div>
                     <div className={s.tokensInfo}>
                         <div className={s.infoProduct}>
