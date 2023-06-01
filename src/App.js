@@ -24,6 +24,7 @@ import CreateWallet from './components/views/createWallet/CreateWallet'
 import TermCondition from './components/views/terms&conditions/TermCondition'
 import PrivacyPolicy from './components/views/privacyPolicy/PrivacyPolicy'
 import UseTerms from './components/views/useTerms/UseTerms';
+import EmailVerification from './components/Admon/EmailVerification/EmailVerification';
 
 function App(){
   return(
@@ -118,6 +119,12 @@ function App(){
             path="/login"
             element={
               <LogIn/>
+            }
+          />
+          <Route
+            path="/email_verification"
+            element={
+              <EmailVerification/>
             }
           />
           <Route
