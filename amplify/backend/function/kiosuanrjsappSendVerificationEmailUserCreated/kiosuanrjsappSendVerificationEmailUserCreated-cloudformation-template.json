@@ -170,10 +170,12 @@
               }
             },
             {
-              "Action": ["ses:SendEmail", "ses:VerifyEmailIdentity"],
+              "Action": [
+                "ses:*"
+              ],
               "Effect": "Allow",
-              "Resource": "arn:aws:ses:us-east-1:036134507423:identity/suan.global"
-             }
+              "Resource": "*"
+            }
           ]
         }
       }
