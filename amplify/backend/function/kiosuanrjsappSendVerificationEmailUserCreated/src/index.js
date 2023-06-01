@@ -1,6 +1,6 @@
 // DO NOT DELETE
 // https://docs.aws.amazon.com/ses/latest/dg/example_ses_VerifyEmailIdentity_section.html
-// 
+// https://dev.to/mtliendo/serverless-contact-form-using-aws-amplify-1e9m
 
 const { SESClient, VerifyEmailIdentityCommand } = require("@aws-sdk/client-ses");
 const ses = new SESClient({ region: "us-east-1" });
