@@ -79,7 +79,8 @@ export default function LogIn() {
                     id: response.userSub,
                     name: username,
                     isProfileUpdated: true,
-                    role: role
+                    role: role,
+                    email: email
                 }
                 const inputFeature = {
                     id: `${response.userSub}_VALIDATION`,
