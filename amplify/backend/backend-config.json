@@ -72,6 +72,21 @@
       ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "kiosuanrjsappSendVerificationEmailUserCreated": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "hosting": {
@@ -142,6 +157,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanrjsappSendVerificationEmailUserCreated_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanrjsappSendVerificationEmailUserCreated"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanrjsappSendVerificationEmailUserCreated_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanrjsappSendVerificationEmailUserCreated"
         }
       ]
     },
