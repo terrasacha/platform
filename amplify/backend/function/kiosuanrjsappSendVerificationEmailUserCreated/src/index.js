@@ -11,6 +11,20 @@ exports.handler = async (event) => {
     console.log(record.eventID);
     console.log(record.eventName);
     console.log('DynamoDB Record: %j', record.dynamodb);
+
+    if (streamedItem.eventName === 'INSERT') {
+
+      const EMAIL_ADDRESS = streamedItem.dynamodb.NewImage.email.S;
+      const verifyEmailIdentityCommand = new VerifyEmailIdentityCommand({ EmailAddress: EMAIL_ADDRESS });
+  
+      try {
+        return await ses.send(verifyEmailIdentityCommand);
+      } catch (err) {
+        console.log("Failed to verify email identity.", err);
+        return err;
+      }
+  
+    }
   }
 
 
