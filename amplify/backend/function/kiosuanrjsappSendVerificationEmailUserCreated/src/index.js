@@ -8,20 +8,20 @@ const ses = new SESClient({ region: "us-east-1" });
 exports.handler = async (event) => {
   console.log(event)
 
-  for (const streamedItem of event.Records) {
-    if (streamedItem.eventName === 'INSERT') {
+  // for (const streamedItem of event.Records) {
+  //   if (streamedItem.eventName === 'INSERT') {
 
-      const EMAIL_ADDRESS = "robin8a@gmail.com"
-      const verifyEmailIdentityCommand = new VerifyEmailIdentityCommand({ EmailAddress: EMAIL_ADDRESS });
+  //     const EMAIL_ADDRESS = "robin8a@gmail.com"
+  //     const verifyEmailIdentityCommand = new VerifyEmailIdentityCommand({ EmailAddress: EMAIL_ADDRESS });
   
-      try {
-        return await ses.send(verifyEmailIdentityCommand);
-      } catch (err) {
-        console.log("Failed to verify email identity.", err);
-        return err;
-      }
-    }
-  }
+  //     try {
+  //       return await ses.send(verifyEmailIdentityCommand);
+  //     } catch (err) {
+  //       console.log("Failed to verify email identity.", err);
+  //       return err;
+  //     }
+  //   }
+  // }
 
 
 

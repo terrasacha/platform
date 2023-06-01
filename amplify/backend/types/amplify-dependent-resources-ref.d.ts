@@ -25,10 +25,9 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
-    "kiosuanbcrjsappSendMailNotByComment": {
+    "kiosuanrjsappSendVerificationEmailUserCreated": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     }
