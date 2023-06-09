@@ -43,21 +43,6 @@
     }
   },
   "function": {
-    "kiosuanbcrjsapp58b48a41": {
-      "build": true,
-      "dependsOn": [
-        {
-          "attributes": [
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput"
-          ],
-          "category": "api",
-          "resourceName": "kiosuanbcrjsapp"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
     "kiosuanbcrjsappChangeProductStatus": {
       "build": true,
       "dependsOn": [
@@ -74,6 +59,21 @@
       "service": "Lambda"
     },
     "kiosuanbcrjsappSendMailNotByComment": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "kiosuanbcrjsappSuccessfullyProductCreated": {
       "build": true,
       "dependsOn": [
         {
@@ -111,30 +111,6 @@
     }
   },
   "parameters": {
-    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsapp58b48a41"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsapp58b48a41"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_sesEmail": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsapp58b48a41"
-        }
-      ]
-    },
     "AMPLIFY_function_kiosuanbcrjsappChangeProductStatus_deploymentBucketName": {
       "usedBy": [
         {
@@ -188,6 +164,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSuccessfullyProductCreated_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSuccessfullyProductCreated"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSuccessfullyProductCreated_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSuccessfullyProductCreated"
         }
       ]
     },
