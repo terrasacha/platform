@@ -34,9 +34,6 @@ query GetProduct($id: ID!) {
  */
 exports.handler = async(event) => {
   for (const record of event.Records) {
-    /* console.log(record.eventID);
-    console.log(record.eventName); */
-    /* console.log('DynamoDB Record: %j', record.dynamodb); */
     
     if (record.eventName === 'MODIFY') {
       let newImage = record.dynamodb.NewImage;
@@ -74,9 +71,6 @@ exports.handler = async(event) => {
           console.log(error)
         }
         if(constructorUserEmail !== ''){
-          console.log('EMAIL', SES_EMAIL)
-          console.log('apikey', GRAPHQL_API_KEY)
-          console.log('endpoint', GRAPHQL_ENDPOINT)
           const mailParams = {
             Destination: {
               ToAddresses: [constructorUserEmail.email], //ToAddresses: [process.env.SES_EMAIL],
