@@ -58,6 +58,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "kiosuanbcrjsappCheckTimeOnVerification": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjsappSendMailNotByComment": {
       "build": true,
       "dependsOn": [
@@ -124,6 +139,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappChangeProductStatus"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
         }
       ]
     },

@@ -1613,6 +1613,7 @@ export const updateProduct = /* GraphQL */ `
       amountToBuy
       order
       status
+      timeOnVerification
       categoryID
       category {
         id
