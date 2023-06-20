@@ -23,6 +23,10 @@
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanbcrjsappChangeProductStatus-5771664459516e6b6d49-build.zip"
         },
+        "kiosuanbcrjsappCheckTimeOnVerification": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappCheckTimeOnVerification-636c5234306b3767614a-build.zip"
+        },
         "kiosuanbcrjsappSendMailNotByComment": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanbcrjsappSendMailNotByComment-7753594a6d57554a3279-build.zip",
@@ -38,9 +42,9 @@
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanrjsappSendVerificationEmailUserCreated-5a554b47515a41664a51-build.zip"
         },
-        "kiosuanbcrjsappCheckTimeOnVerification": {
+        "kiosuanbcrjappRejectedDocumentNotificaction": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappCheckTimeOnVerification-636c5234306b3767614a-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjappRejectedDocumentNotificaction-4a4a42446e6b41354e61-build.zip"
         }
       },
       "hosting": {
