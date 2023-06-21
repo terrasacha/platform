@@ -165,7 +165,6 @@ class ProductsList extends Component {
         }
 
         const modalProductAttachments = () => {
-            console.log(products)
             if (isRenderModalProductAttachments && selectedIDProductToShow !== null) {
                 let product = products.filter(product => product.productID === selectedIDProductToShow)[0]
                 return (

@@ -254,6 +254,10 @@ class ValidatorAdmon extends Component {
     listDocumentsResultAll.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
     let documentsByVerificatorAll= []
     listDocumentsResultAll.data.listDocuments.items.map(doc => doc.productFeature.verifications.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorAll.push(doc)}))
+    if(this.state.selectedDocumentID !== ''){
+      let documentSelectedUpdate = documentsByVerificatorAll.filter(doc => doc.id === this.state.selectedDocumentID)
+      this.setState({selectedDocument: documentSelectedUpdate[0]})
+    }
     this.setState({
       documents: documentsByVerificatorAll,
     })

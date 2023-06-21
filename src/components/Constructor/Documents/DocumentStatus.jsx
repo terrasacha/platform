@@ -139,49 +139,6 @@ export const listDocuments = /* GraphQL */ `
     }
   }
 `;
-const queryUsers = `query GetProduct($id: ID!) {
-  getProduct(id: $id) {
-	id
-	productFeatures {
-	  items {
-		id
-		value
-		featureID
-		feature {
-		  id
-		  name
-		  description
-		  defaultValue
-		  featureTypeID
-		}
-		verifications {
-		  items {
-			id
-			sign
-			userVerifiedID
-			userVerifierID
-		  }
-		}
-	  }
-	  nextToken
-	}
-	userProducts {
-	  items {
-		id
-		isFavorite
-		userID
-		productID
-		createdAt
-		updatedAt
-	  }
-	  nextToken
-	}
-	createdAt
-	updatedAt
-  }
-}
-`;
-
 class DocumentStatus extends Component {
   constructor(props) {
     super(props);
@@ -223,7 +180,7 @@ class DocumentStatus extends Component {
       creatingDocument: false,
       newVerificationComment: {
         verificationID: "",
-        isCommentByVerifier: true,
+        isCommentByVerifier: false,
         comment: "",
       },
     };
@@ -303,6 +260,10 @@ class DocumentStatus extends Component {
           documentsByVerificatorAll.push(doc);
       })
     );
+    if(this.state.selectedDocumentID !== ''){
+      let documentSelectedUpdate = documentsByVerificatorAll.filter(doc => doc.id === this.state.selectedDocumentID)
+      this.setState({selectedDocument: documentSelectedUpdate[0]})
+    }
     this.setState({
       documents: documentsByVerificatorAll,
     });
@@ -559,7 +520,7 @@ class DocumentStatus extends Component {
     let verificationID = "";
     if (document.productFeature.verifications.items.length > 0) {
       document.productFeature.verifications.items.map((v) => {
-        if (v.userVerifierID === this.state.actualUser) {
+        if (v.userVerifiedID === this.state.actualUser) {
           verificationID = v.id;
           return;
         }
@@ -632,7 +593,7 @@ class DocumentStatus extends Component {
     this.setState({
       newVerificationComment: {
         verificationID: "",
-        isCommentByVerifier: true,
+        isCommentByVerifier: false,
         comment: "",
       },
     });
@@ -674,7 +635,6 @@ class DocumentStatus extends Component {
         );
       }
       if (this.state.isShowProductDocuments) {
-        console.log(products, "products")
         return (
           <Container className="mt-4">
             <Row className="justify-content-md-center">
@@ -845,7 +805,6 @@ class DocumentStatus extends Component {
 
     const modalUploadDocument = () => {
         if (this.state.productFeatureToAddDoc !== null && this.state.showModalUploadDocument) {
-            console.log(this.state.productFeatureToAddDoc, "entro")
             return (
                 <Modal
                     show={this.state.showModalUploadDocument}
