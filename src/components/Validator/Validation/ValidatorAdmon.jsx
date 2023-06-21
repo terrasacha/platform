@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Bootstrap from "../../common/themes";
 import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
 // GraphQL
-import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
 import { createVerification, updateDocument, updateProductFeature, createVerificationComment, updateProduct } from '../../../graphql/mutations';
 import { onUpdateDocument, onUpdateProductFeature, onCreateVerificationComment } from '../../../graphql/subscriptions';
 export const listDocuments = /* GraphQL */ `
@@ -371,7 +371,20 @@ class ValidatorAdmon extends Component {
     }
     this.cleanState()
   }
-
+  handleDownload = async (doc) => {
+    try {
+      let id = doc.url.split('/').pop()
+      const response = await Storage.get(id, { download: true });
+      // Si el archivo se descargó correctamente, puedes crear un enlace para el usuario
+      const url = URL.createObjectURL(response.Body);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = id;
+      link.click();
+    } catch (error) {
+      console.log('Error al descargar el archivo:', error);
+    }
+  };
   async handleInputCreateVerificationComment(e) {
     if (e.target.name === 'verificationComment') {
       await this.setState(prevState => ({
@@ -516,7 +529,7 @@ class ValidatorAdmon extends Component {
                         }
                         </td>
                         <td>
-                          <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalDocument: true, selectedDocument: document })}>Ver documentación</Button>
+                          <Button variant="outline-primary" size='sm' onClick={() => this.handleDownload(document)}>Ver documentación</Button>
                         </td>
                         <td>
                           <Button variant="outline-primary" size='sm' onClick={() => this.setState({ showModalComments: true, selectedDocument: document, selectedDocumentID: document.id, selectedProductVerificationID: this.getVerificationId(document) })}>See comments</Button>
