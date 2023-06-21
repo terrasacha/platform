@@ -43,7 +43,7 @@ import {
   onCreateDocument,
 } from "../../../graphql/subscriptions";
 import { listDocumentTypes } from "../../../graphql/queries";
-import URL from '../../common/_conf/URL';
+import URLS3 from '../../common/_conf/URLS3';
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
     $filter: ModelDocumentFilterInput
@@ -429,7 +429,7 @@ class DocumentStatus extends Component {
       });
 
       tempNewDocument.id = `${this.state.productFeatureToAddDoc.id}_${imageId}`
-      tempNewDocument.url = encodeURI(`${URL}${uploadImageResult.key}`)
+      tempNewDocument.url = encodeURI(`${URLS3}${uploadImageResult.key}`)
       tempNewDocument.productFeatureID = this.state.productFeatureToAddDoc.id
       tempNewDocument.timeStamp = Date.now()
       tempNewDocument.data = JSON.stringify({ empty: '' })
@@ -457,6 +457,12 @@ class DocumentStatus extends Component {
       }));
     }
   }
+  
+  openDocument = (doc) => {
+    const url = doc.url;
+    const newWindow = window.open();
+    newWindow.location.href = url;
+  };
   handleCreateVerification = async () => {
     if (this.state.selectedDocument) {
       this.setState({ creatingVerification: true });
@@ -768,12 +774,13 @@ class DocumentStatus extends Component {
                             <Button
                               variant="outline-primary"
                               size="sm"
-                              onClick={() =>
+                              /* onClick={() =>
                                 this.setState({
                                   showModalDocument: true,
                                   selectedDocument: document,
                                 })
-                              }
+                              } */
+                              onClick={() => this.openDocument(document)}
                             >
                               Ver documentación
                             </Button>

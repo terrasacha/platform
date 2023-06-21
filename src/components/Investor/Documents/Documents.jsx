@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createDocument } from '../../../graphql/mutations';
 import { getUser, listDocuments, listDocumentTypes } from '../../../graphql/queries';
 import { onCreateDocument } from '../../../graphql/subscriptions';
-import URL from '../../common/_conf/URL';
+import URL from '../../common/_conf/URLS3';
 
 class Documents extends Component {
     constructor(props) {
