@@ -438,10 +438,19 @@ class DocumentStatus extends Component {
     }
   }
   
-  openDocument = (doc) => {
-    const url = doc.url;
-    const newWindow = window.open();
-    newWindow.location.href = url;
+  handleDownload = async (doc) => {
+    try {
+      let id = doc.url.split('/').pop()
+      const response = await Storage.get(id, { download: true });
+      // Si el archivo se descargó correctamente, puedes crear un enlace para el usuario
+      const url = URL.createObjectURL(response.Body);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = id;
+      link.click();
+    } catch (error) {
+      console.log('Error al descargar el archivo:', error);
+    }
   };
   handleCreateVerification = async () => {
     if (this.state.selectedDocument) {
@@ -760,7 +769,7 @@ class DocumentStatus extends Component {
                                   selectedDocument: document,
                                 })
                               } */
-                              onClick={() => this.openDocument(document)}
+                              onClick={() => this.handleDownload(document)}
                             >
                               Ver documentación
                             </Button>
