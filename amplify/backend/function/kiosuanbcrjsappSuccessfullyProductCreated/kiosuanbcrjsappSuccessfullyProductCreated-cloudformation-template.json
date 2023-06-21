@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.6.2\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.7.3\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -23,9 +23,6 @@
     "apikiosuanbcrjsappGraphQLAPIEndpointOutput": {
       "Type": "String",
       "Default": "apikiosuanbcrjsappGraphQLAPIEndpointOutput"
-    },
-    "sesEmail": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -58,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "kiosuanbcrjsapp58b48a41",
+            "kiosuanbcrjsappSuccessfullyProductCreated",
             {
               "Fn::Join": [
                 "",
                 [
-                  "kiosuanbcrjsapp58b48a41",
+                  "kiosuanbcrjsappSuccessfullyProductCreated",
                   "-",
                   {
                     "Ref": "env"
@@ -80,9 +77,6 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
-            },
-            "SES_EMAIL": {
-              "Ref": "sesEmail"
             }
           }
         },
@@ -103,12 +97,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "kiosuanbcrjsappLambdaRolecbfd5d06",
+            "kiosuanbcrjsappLambdaRoleeb52cb1f",
             {
               "Fn::Join": [
                 "",
                 [
-                  "kiosuanbcrjsappLambdaRolecbfd5d06",
+                  "kiosuanbcrjsappLambdaRoleeb52cb1f",
                   "-",
                   {
                     "Ref": "env"
@@ -174,13 +168,6 @@
                   }
                 ]
               }
-            },
-            {
-              "Action": [
-                "ses:SendEmail"
-              ],
-              "Effect": "Allow",
-              "Resource": "arn:aws:ses:us-east-1:036134507423:identity/suan.global"
             }
           ]
         }

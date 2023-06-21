@@ -19,6 +19,7 @@ import s from './ConstructorAdmon.module.css'
 import HeaderNavbar from './Navbar/HeaderNavbar'
 import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
 import NewProduct from './NewProduct/NewProduct'
+import DocumentStatus from './Documents/DocumentStatus'
 
 class ConstructorAdmon extends Component {
 
@@ -263,7 +264,7 @@ class ConstructorAdmon extends Component {
         const renderOrders = () => {
             if (isShowDocuments) {
                 return (
-                    <Documents />
+                    <DocumentStatus />
                 )
             }
         }
