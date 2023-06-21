@@ -80,9 +80,6 @@ class Documents extends Component {
                 }
             })
     }
-    componentWillUnmount() {
-        this.createDocumentListener.unsubscribe();
-      }
     async loadUserProducts(pActualUserID) {
         let userResult = await API.graphql({ query: getUser, variables: { id: pActualUserID } })
         let profileDocument = userResult.data.getUser.role
@@ -206,6 +203,7 @@ class Documents extends Component {
 
     render() {
         let { userProductsDoc, productFeatureToAddDoc, showProductsWithoutDoc, showAllDocuments, listPFWithoutDoc } = this.state
+        console.log(this.state.documents)
         const listDocumentationStatus = () => {
             if (showAllDocuments && userProductsDoc) {
                 return (

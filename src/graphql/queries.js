@@ -81,6 +81,7 @@ export const getUser = /* GraphQL */ `
                 id
                 feature {
                   name
+                  isVerifable
                 }
                 documents {
                   items {
@@ -93,6 +94,14 @@ export const getUser = /* GraphQL */ `
                     id
                     userVerifierID
                     userVerifiedID
+                    verificationComments {
+                      items {
+                        id
+                        comment
+                        createdAt
+                        isCommentByVerifier
+                      }
+                    }
                   }
                 }
               }
@@ -717,7 +726,14 @@ export const listDocuments = /* GraphQL */ `
           order
           isOnMainCard
           productID
+          product {
+            name
+          }
           featureID
+          feature {
+            name
+            isVerifable
+          }
           createdAt
           updatedAt
         }
