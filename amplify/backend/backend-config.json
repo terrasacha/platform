@@ -43,7 +43,52 @@
     }
   },
   "function": {
+    "kiosuanbcrjappRejectedDocumentNotificaction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjsappChangeProductStatus": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "kiosuanbcrjsappCheckTimeOnVerification": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "kiosuanbcrjsappConstructorUploadNewDocument": {
       "build": true,
       "dependsOn": [
         {
@@ -111,6 +156,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_kiosuanbcrjappRejectedDocumentNotificaction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjappRejectedDocumentNotificaction"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjappRejectedDocumentNotificaction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjappRejectedDocumentNotificaction"
+        }
+      ]
+    },
     "AMPLIFY_function_kiosuanbcrjsappChangeProductStatus_deploymentBucketName": {
       "usedBy": [
         {
@@ -124,6 +185,38 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappChangeProductStatus"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
         }
       ]
     },

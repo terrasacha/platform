@@ -29,6 +29,98 @@ query GetProduct($id: ID!) {
     }
   }
 `;
+const queryUpdate = `
+      mutation UpdateProduct(
+        $input: UpdateProductInput!
+        $condition: ModelProductConditionInput
+      ) {
+        updateProduct(input: $input, condition: $condition) {
+          id
+          name
+          description
+          isActive
+          counterNumberOfTimesBuyed
+          amountToBuy
+          order
+          status
+          categoryID
+          category {
+            id
+            name
+            products {
+              nextToken
+            }
+            isSelected
+            createdAt
+            updatedAt
+          }
+          images {
+            items {
+              id
+              imageURL
+              format
+              title
+              imageURLToDisplay
+              isOnCarousel
+              carouselLabel
+              carouselDescription
+              isActive
+              order
+              productID
+              createdAt
+              updatedAt
+            }
+            nextToken
+          }
+          productFeatures {
+            items {
+              id
+              value
+              isToBlockChain
+              order
+              isOnMainCard
+              productID
+              featureID
+              createdAt
+              updatedAt
+            }
+            nextToken
+          }
+          userProducts {
+            items {
+              id
+              isFavorite
+              userID
+              productID
+              createdAt
+              updatedAt
+            }
+            nextToken
+          }
+          transactions {
+            items {
+              id
+              addressOrigin
+              addressDestination
+              txIn
+              txCborhex
+              txHash
+              metadataUrl
+              fees
+              network
+              txProcessed
+              type
+              productID
+              createdAt
+              updatedAt
+            }
+            nextToken
+          }
+          createdAt
+          updatedAt
+        }
+      }
+    `;
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
@@ -45,6 +137,34 @@ exports.handler = async(event) => {
       console.log(`${oldImage.status.S} a ${newImage.status.S}`)
 
       if(oldImage.status.S !== newImage.status.S){
+        if(newImage.status.S === 'on_verification'){
+          let futureDate = new Date();
+          futureDate.setMonth(futureDate.getMonth() + 3);
+          let futureDateTimestamp = futureDate.getTime();
+          const variables = {
+            input: {
+              id: productID,
+              timeOnVerification: futureDateTimestamp
+            }
+          };
+          let query = queryUpdate
+          const options = {
+            method: 'POST',
+            headers: {
+              'x-api-key': GRAPHQL_API_KEY,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ query, variables })
+          };
+          const response = await fetch(GRAPHQL_ENDPOINT, options);
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Response:', data);
+      } else {
+        console.log('Error:', data);
+      }
+        }
         const variables = { id: productID };
         /** @type {import('node-fetch').RequestInit} */
         const options = {
@@ -55,7 +175,6 @@ exports.handler = async(event) => {
           },
           body: JSON.stringify({ query, variables })
         };
-  
         const request = new Request(GRAPHQL_ENDPOINT, options); //GRAPHQL_ENDPOINT
   
         let statusCode = 200;
@@ -74,9 +193,6 @@ exports.handler = async(event) => {
           console.log(error)
         }
         if(constructorUserEmail !== ''){
-          console.log('EMAIL', SES_EMAIL)
-          console.log('apikey', GRAPHQL_API_KEY)
-          console.log('endpoint', GRAPHQL_ENDPOINT)
           const mailParams = {
             Destination: {
               ToAddresses: [constructorUserEmail.email], //ToAddresses: [process.env.SES_EMAIL],
