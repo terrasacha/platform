@@ -42,7 +42,6 @@ import {
   onCreateVerificationComment,
   onCreateDocument,
 } from "../../../graphql/subscriptions";
-import { listDocumentTypes } from "../../../graphql/queries";
 import URLS3 from '../../common/_conf/URLS3';
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
@@ -64,14 +63,6 @@ export const listDocuments = /* GraphQL */ `
         isApproved
         status
         isUploadedToBlockChain
-        documentTypeID
-        documentType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
         productFeatureID
         productFeature {
           id
@@ -198,7 +189,6 @@ class DocumentStatus extends Component {
       actualUser: "",
       documents: [],
       documentsPending: [],
-      documentTypes: [],
       otherDocuments: [],
       showPending: true,
       showOther: false,
@@ -255,7 +245,6 @@ class DocumentStatus extends Component {
     actualUser = actualUser.attributes.sub;
     this.setState({ actualUser: actualUser });
     await this.loadDocuments();
-    await this.loadDocumentTypes();
     // Subscriptions
     // OnCreate Document
     this.updateDocumentListener = API.graphql(
@@ -353,12 +342,6 @@ class DocumentStatus extends Component {
     });
   }
 
-  async loadDocumentTypes() {
-      const listDocumentTypesResult = await API.graphql(graphqlOperation(listDocumentTypes))
-      listDocumentTypesResult.data.listDocumentTypes.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
-      this.setState({ documentTypes: listDocumentTypesResult.data.listDocumentTypes.items })
-  }
-
   handleHideModalDocument() {
     this.setState({ showModalDocument: !this.state.showModalDocument });
   }
@@ -383,9 +366,6 @@ class DocumentStatus extends Component {
       });
   }
   handleInputCreateDocument = (e) => {
-      if (e.target.name === 'selected_documentType') {
-          this.setState(prevState => ({ newDocument: { ...prevState.newDocument, documentTypeID: e.target.value } }))
-      }
       if (e.target.name === 'selected_file') {
           const { target: { files } } = e;
           const [file,] = files || [];
@@ -873,17 +853,6 @@ class DocumentStatus extends Component {
                     <Modal.Body>
                         <Row className='mb-3'>
                             <Form.Group>
-                                <Form.Label>Document type</Form.Label>
-                                <Form.Select
-                                    type='text'
-                                    name='selected_documentType'
-                                    onChange={(e) => this.handleInputCreateDocument(e)}
-                                >
-                                    <option>-</option>
-                                    {this.state.documentTypes.map(
-                                        op => (<option value={op.id} key={op}>{op.name}</option>)
-                                    )}
-                                </Form.Select>
                                 <Form.Group >
                                     <Form.Label>Choose file</Form.Label>
                                     <Form.Control

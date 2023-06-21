@@ -7,7 +7,7 @@ import Bootstrap from "../../common/themes";
 import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
 import { createDocument } from '../../../graphql/mutations';
-import { getUser, listDocuments, listDocumentTypes } from '../../../graphql/queries';
+import { getUser, listDocuments } from '../../../graphql/queries';
 import { onCreateDocument } from '../../../graphql/subscriptions';
 import URL from '../../common/_conf/URLS3';
 
@@ -16,7 +16,6 @@ class Documents extends Component {
         super(props)
         this.state = {
             documents: [],
-            documentTypes: [],
             actualUserID: null,
             newDocument: {
                 id: null,
@@ -28,7 +27,7 @@ class Documents extends Component {
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
-                documentTypeID: '',
+                documentTypeID: '1',
                 productFeatureID: ''
             },
             userProductsDoc: [],
@@ -57,7 +56,6 @@ class Documents extends Component {
         await this.loadUserProducts(actualUserID)
         await this.loadDocuments(actualUserID)
         console.log(this.state.documents, 'documents')
-        await this.loadDocumentTypes()
         // Subscriptions
         // OnCreate Document
         this.createDocumentListener = API.graphql(graphqlOperation(onCreateDocument))
@@ -123,11 +121,6 @@ class Documents extends Component {
         console.log(listPFWithoutDoc)
         this.setState({listPFWithoutDoc: listPFWithoutDoc})
     }
-    async loadDocumentTypes() {
-        const listDocumentTypesResult = await API.graphql(graphqlOperation(listDocumentTypes))
-        listDocumentTypesResult.data.listDocumentTypes.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
-        this.setState({documentTypes: listDocumentTypesResult.data.listDocumentTypes.items})
-        }
     async loadDocuments(actualUserID) {
         const listDocumentsResult = await API.graphql(graphqlOperation(listDocuments))
         listDocumentsResult.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
@@ -139,9 +132,6 @@ class Documents extends Component {
         this.setState({productToShow: userProduct})
     }
     handleInputCreateDocument = (e) => {
-        if(e.target.name === 'selected_documentType'){
-            this.setState(prevState => ({newDocument: {...prevState.newDocument,documentTypeID: e.target.value}}))
-        }
         if(e.target.name === 'selected_file'){
             const { target: { files } } = e;
             const [file,] = files || [];
@@ -193,7 +183,7 @@ class Documents extends Component {
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
-                documentTypeID: '',
+                documentTypeID: '1',
                 productFeatureID: ''
             },
             productToShow: null,
@@ -304,17 +294,6 @@ class Documents extends Component {
                 <Modal.Body>
                     <Row className='mb-3'>
                         <Form.Group>
-                            <Form.Label>Document type</Form.Label>
-                            <Form.Select
-                                type='text'
-                                name='selected_documentType'
-                                onChange={(e) => this.handleInputCreateDocument(e)}
-                                >
-                                <option>-</option>
-                                {this.state.documentTypes.map(
-                                    op => (<option value={op.id} key={op}>{op.name}</option>)
-                                )}
-                            </Form.Select>
                         <Form.Group >
                             <Form.Label>Choose file</Form.Label>
                             <Form.Control
