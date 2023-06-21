@@ -45,6 +45,10 @@
         "kiosuanbcrjappRejectedDocumentNotificaction": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanbcrjappRejectedDocumentNotificaction-4a4a42446e6b41354e61-build.zip"
+        },
+        "kiosuanbcrjsappConstructorUploadNewDocument": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappConstructorUploadNewDocument-30692f78335869644573-build.zip"
         }
       },
       "hosting": {

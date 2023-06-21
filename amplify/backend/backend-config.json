@@ -88,6 +88,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "kiosuanbcrjsappConstructorUploadNewDocument": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjsappSendMailNotByComment": {
       "build": true,
       "dependsOn": [
@@ -186,6 +201,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
         }
       ]
     },
