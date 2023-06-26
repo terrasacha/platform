@@ -8,8 +8,13 @@ import Bootstrap from "../../common/themes";
 import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
 // GraphQL
 import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
-import { createVerification, updateDocument, updateProductFeature, createVerificationComment, updateProduct } from '../../../graphql/mutations';
-import { onUpdateDocument, onUpdateProductFeature, onCreateVerificationComment } from '../../../graphql/subscriptions';
+import { createVerification, updateDocument, updateProductFeature, createVerificationComment, updateProduct, createProductFeature } from '../../../graphql/mutations';
+import { onUpdateDocument, onUpdateProductFeature, onCreateVerificationComment, onCreateProductFeature } from '../../../graphql/subscriptions';
+import { listFeatures } from '../../../graphql/queries'
+import Select from 'react-select'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
     $filter: ModelDocumentFilterInput
@@ -64,6 +69,13 @@ export const listDocuments = /* GraphQL */ `
             name
             category{
               name
+            }
+            productFeatures {
+              items {
+                id
+                featureID
+                value
+              }
             }
           }
           verifications {
@@ -164,6 +176,7 @@ class ValidatorAdmon extends Component {
       documents: [],
       documentsPending: [],
       otherDocuments: [],
+      featuresVerifables: [],
       showPending: true,
       showOther: false,
       isShowProductDocuments: true,
@@ -213,8 +226,8 @@ class ValidatorAdmon extends Component {
     this.setState({ actualUser: actualUser })
     await this.loadDocuments()
     await this.loadUsers()
+    await this.loadFeatures()
     // Subscriptions
-    // OnUpdate Document
     this.updateDocumentListener = API.graphql(graphqlOperation(onUpdateDocument))
       .subscribe({
         next: async updatedDocumentData => {
@@ -222,7 +235,6 @@ class ValidatorAdmon extends Component {
 
         }
       })
-    // OnUpdate ProductFeature
     this.updateProductFeatureListener = API.graphql(graphqlOperation(onUpdateProductFeature))
       .subscribe({
         next: async updatedDocumentData => {
@@ -231,10 +243,15 @@ class ValidatorAdmon extends Component {
         }
       })
 
-    // OnCerate VerificationComment
     this.createDocumentListener = API.graphql(graphqlOperation(onCreateVerificationComment))
       .subscribe({
         next: async createdVerificationComment => {
+          await this.loadDocuments()
+        }
+      })
+    this.createProductFeatureListener = API.graphql(graphqlOperation(onCreateProductFeature))
+      .subscribe({
+        next: async createdproductFeature => {
           await this.loadDocuments()
         }
       })
@@ -254,10 +271,7 @@ class ValidatorAdmon extends Component {
     listDocumentsResultAll.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
     let documentsByVerificatorAll= []
     listDocumentsResultAll.data.listDocuments.items.map(doc => doc.productFeature.verifications.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorAll.push(doc)}))
-    if(this.state.selectedDocumentID !== ''){
-      let documentSelectedUpdate = documentsByVerificatorAll.filter(doc => doc.id === this.state.selectedDocumentID)
-      this.setState({selectedDocument: documentSelectedUpdate[0]})
-    }
+    console.log(documentsByVerificatorAll, 'documentsByVerificatorAll,')
     this.setState({
       documents: documentsByVerificatorAll,
     })
@@ -283,6 +297,20 @@ class ValidatorAdmon extends Component {
     const listUsersResult = await API.graphql(graphqlOperation(queryUsers, variables));
     this.setState({ users: listUsersResult.data.getProduct.productFeatures.items })
   }
+  async loadFeatures(){
+    let filterIsVerifable = {
+      isVerifable: {
+        eq: true
+      }
+    }
+    const listfeaturesVerifablesResult = await API.graphql({ query: listFeatures, variables: { filter: filterIsVerifable } })
+    const listfeaturesVerifables = listfeaturesVerifablesResult.data.listFeatures.items.map(feature => ({
+      label: feature.name,
+      value: feature.id
+    }));
+    this.setState({featuresVerifables: listfeaturesVerifables})
+  }
+
   async changeHeaderNavBarRequest(pRequest) {
     if (pRequest === 'product_documents') {
       this.setState({
@@ -375,6 +403,29 @@ class ValidatorAdmon extends Component {
     }
     this.cleanState()
   }
+  async handleOnSelectFeature(event,product) {
+    let input = {
+      value: '',
+      isToBlockChain: false,
+      isOnMainCard: false,
+      productID: product.id,
+      featureID: event.value,
+    }
+    const result = await API.graphql(graphqlOperation(createProductFeature, { input: input }))
+    this.notify(input.featureID, product.name)
+  }
+  notify = (featureID, productName) =>{
+    toast.success(`${featureID} creado para ${productName}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+}
   handleDownload = async (doc) => {
     try {
       let id = doc.url.split('/').pop()
@@ -485,11 +536,15 @@ class ValidatorAdmon extends Component {
       let products = []
       documents.map(document => document.productFeature.verifications.items.map(v => {
         if(v.userVerifierID === this.state.actualUser){
-          !products.includes(document.productFeature.product.name) && products.push(document.productFeature.product.name)
+          !products.includes(document.productFeature.product.id) && products.push(document.productFeature.product)
         }
       }))
+      const productsUnicos = Object.values(products.reduce((acc, product) => {
+        acc[product.id] = product;
+        return acc;
+      }, {}));
       if (this.state.selectedProductValidation) {
-        documents = documents.filter(document => document.productFeature.product.name === this.state.selectedProductValidation)
+        documents = documents.filter(document => document.productFeature.product.name === this.state.selectedProductValidation.name)
       }
       if (this.state.isShowProductDocuments) {
         return (
@@ -499,8 +554,19 @@ class ValidatorAdmon extends Component {
               <Col xs={2}>
                 <h3>Proyectos</h3>
                 <Container className='mt-5'>
-                  {products?.map(product => <Card key={product} body className={product === this.state.selectedProductValidation ? 'cardContainerSelected' : 'cardContainer'} style={{ cursor: 'pointer' }} onClick={() => this.handleSelectProduct(product)}>{product}<ArrowRight /></Card>)}
-                </Container>
+                  {productsUnicos?.map(product => {
+                    const featuresAvailables = this.state.featuresVerifables.filter(item2 => !product.productFeatures.items.some(item1 => item1.featureID === item2.value));
+                    return(
+                    <Card key={product.id} body  
+                    style={{ cursor: 'pointer' }} 
+                    onClick={() => this.handleSelectProduct(product)}>{product.name}<ArrowRight />
+                      <Select 
+                        style={{ position: 'absolute', top: 0, left: 0, zIndex: 10 }}
+                        options={featuresAvailables}
+                        onChange={event => this.handleOnSelectFeature(event, product)} />
+                    </Card>)}
+                    )}
+                </Container>  
               </Col>
               <Col xs={10}>
                 <div>
@@ -718,6 +784,7 @@ class ValidatorAdmon extends Component {
     return (
       <Container style={{ paddingTop: 70, minHeight: '100vh' }}>
         <HeaderNavbar logOut={this.logOut} changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}></HeaderNavbar>
+        <ToastContainer />
         {renderValidations()}
         {modalDocument()}
         {modalComments()}
