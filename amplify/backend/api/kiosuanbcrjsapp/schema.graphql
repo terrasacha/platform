@@ -89,8 +89,8 @@ type Category @model
 {
   id: ID!
   name: String!
-  products: [Product] @hasMany(indexName: "byCategory", fields: ["id"])
   isSelected: Boolean
+  products: [Product] @hasMany(indexName: "byCategory", fields: ["id"])
 }
 
 type Product @model 
@@ -110,6 +110,7 @@ type Product @model
   productFeatures: [ProductFeature] @hasMany(indexName: "byProduct", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
+  xlsFormProducts: [XLSFormProduct] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model 
@@ -143,12 +144,27 @@ type Feature @model
   isTemplate: Boolean
   isVerifable: Boolean
   defaultValue: Float
+  formOrder: Int
+  formHint: String
+  formRequired: Boolean
+  formAppearance: String
+  formRelevant: String
+  formConstraint: String
+  formRequiredMessage: String
+  parentID: ID @index(name: "byParent", queryField: "featureByParent")
+  children: [Feature] @hasMany (indexName: "byParent", fields: ["id"]) 
   featureTypeID: ID @index(name: "byFeatureType")
   featureType: FeatureType @belongsTo(fields: ["featureTypeID"])
   unitOfMeasureID: ID @index(name: "byUnitOfMeasure")
   unitOfMeasure: UnitOfMeasure @belongsTo(fields: ["unitOfMeasureID"])
   productFeatures: [ProductFeature] @hasMany(indexName: "byFeature", fields: ["id"])
   featureFormulas: [FeatureFormula] @hasMany(indexName: "byFeature", fields: ["id"])
+  xlsFormTypeID: ID @index(name: "byXLSFormType")
+  xlsFormType: XLSFormType @belongsTo(fields: ["xlsFormTypeID"])
+  xlsFormGroupID: ID @index(name: "byXLSFormGroup")
+  xlsFormGroup: XLSFormGroup @belongsTo(fields: ["xlsFormGroupID"])
+  xlsFormChoices: [XLSFormChoice] @hasMany(indexName: "byFeature", fields: ["id"])
+
 }
 # Formulas
 type UnitOfMeasure @model {
@@ -250,4 +266,44 @@ type Transactions @model {
   type: String
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
+}
+
+# XLSForm Models
+
+type XLSForm @model {
+  id: ID!
+  name: String!
+  version: String
+  xlsFormGroups: [XLSFormGroup] @hasMany(indexName: "byXLSForm", fields: ["id"])
+}
+
+type XLSFormProduct @model {
+  id: ID!
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  xlsFormID: ID! @index(name: "byXLSForm")
+  xlsForm: Product @belongsTo(fields: ["xlsFormID"])
+}
+
+type XLSFormType @model {
+  id: ID!
+  name: String!
+  features: [Feature] @hasMany(indexName: "byXLSFormType", fields: ["id"])
+}
+
+type XLSFormGroup @model {
+  id: ID!
+  name: String!
+  features: [Feature] @hasMany(indexName: "byXLSFormGroup", fields: ["id"])
+  xlsFormID: ID @index(name: "byXLSForm")
+  xlsForm: XLSForm @belongsTo(fields: ["xlsFormID"])
+}
+
+type XLSFormChoice @model {
+  id: ID!
+  listName: String!
+  name: String!
+  label: String!
+  featureID: ID! @index(name: "byFeature")
+  feature: Feature @belongsTo(fields: ["featureID"])
 }
