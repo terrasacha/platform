@@ -258,7 +258,9 @@ class ConstructorAdmon extends Component {
             userID: this.state.user.id
         }
         await API.graphql(graphqlOperation(createWallet, { input: info }))
-        this.setState({ editWallet: true })
+        let tempUser = this.state.user
+        tempUser.wallets.items[0].id = this.state.walletAddress
+        this.setState({ editWallet: true, user: tempUser })
 
         setTimeout(() => {
             this.setState({ editWallet: false })
