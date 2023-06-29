@@ -42,3 +42,16 @@
     border: none;
     color: rgb(76,189,127);
 }
+.desactivateButtonStyle{
+    all: unset
+}
+.walletIDContainer{
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    align-items: flex-start;
+    border: 1px solid red;
+}
+.walletIDContainer button{
+    margin-left: 1rem;
+}

@@ -110,7 +110,6 @@ class ProductsList extends Component {
         }
 
         const listAllUserProducts = () => {
-            console.log(products, '113')
             if (products) {
                 return (
                     <Container className='mt-4 '>
