@@ -335,7 +335,7 @@ class ConstructorAdmon extends Component {
                             <div className={s.profile_info_container}>
                                 <div className={s.profile_info}>
                                     <h4>{user.name}</h4>
-                                    <h6>Wallets</h6>
+                                    <h6>Wallet Address</h6>
                                     {renderUserWallets(user)}
                                 </div>
                             </div>
