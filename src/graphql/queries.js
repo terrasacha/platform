@@ -124,7 +124,6 @@ export const getUser = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt
@@ -550,58 +549,6 @@ export const listVerificationComments = /* GraphQL */ `
     }
   }
 `;
-export const getDocumentType = /* GraphQL */ `
-  query GetDocumentType($id: ID!) {
-    getDocumentType(id: $id) {
-      id
-      name
-      description
-      documents {
-        items {
-          id
-          data
-          timeStamp
-          docHash
-          url
-          signed
-          signedHash
-          isApproved
-          status
-          isUploadedToBlockChain
-          documentTypeID
-          productFeatureID
-          userID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listDocumentTypes = /* GraphQL */ `
-  query ListDocumentTypes(
-    $filter: ModelDocumentTypeFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listDocumentTypes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        name
-        description
-        documents {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
 export const getDocument = /* GraphQL */ `
   query GetDocument($id: ID!) {
     getDocument(id: $id) {
@@ -615,17 +562,6 @@ export const getDocument = /* GraphQL */ `
       isApproved
       status
       isUploadedToBlockChain
-      documentTypeID
-      documentType {
-        id
-        name
-        description
-        documents {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       productFeatureID
       productFeature {
         id
@@ -736,14 +672,6 @@ export const listDocuments = /* GraphQL */ `
         isApproved
         status
         isUploadedToBlockChain
-        documentTypeID
-        documentType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
         productFeatureID
         productFeature {
           id
@@ -821,6 +749,7 @@ export const listCategories = /* GraphQL */ `
       items {
         id
         name
+        isSelected
         products {
           nextToken
         }
@@ -843,10 +772,12 @@ export const getProduct = /* GraphQL */ `
       amountToBuy
       order
       status
+      timeOnVerification
       categoryID
       category {
         id
         name
+        isSelected
         products {
           nextToken
         }
@@ -912,6 +843,16 @@ export const getProduct = /* GraphQL */ `
           txProcessed
           type
           productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormProducts {
+        items {
+          id
+          productID
+          xlsFormID
           createdAt
           updatedAt
         }

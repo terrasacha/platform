@@ -56,13 +56,6 @@ type VerificationComment @model {
   verification: Verification @belongsTo(fields: ["verificationID"])
 }
 
-type DocumentType @model {
-  id: ID!
-  name: String!
-  description: String!
-  documents: [Document] @hasMany(indexName: "byDocumentType", fields: ["id"])
-}
-
 type Document @model 
   {
   id: ID!
@@ -75,8 +68,6 @@ type Document @model
   isApproved: Boolean
   status: String
   isUploadedToBlockChain: Boolean
-  documentTypeID: ID! @index(name: "byDocumentType")
-  documentType: DocumentType @belongsTo(fields: ["documentTypeID"])
   productFeatureID: ID! @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
   userID: ID! @index(name: "byUser")

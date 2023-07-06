@@ -101,6 +101,7 @@ El modelo entidad-relación que has compartido es una representación de un esqu
 
 ### Product
 > Representa un producto. Tiene campos como "id", "name", "description", "isActive", "counterNumberOfTimesBuyed", "amountToBuy", "order", "status", "timeOnVerification" y "categoryID". También tiene relaciones con otras entidades, como "Category", "Image", "ProductFeature", "UserProduct" y "Transactions".
+>> isResult: TRUE se debe tomar el valor de "value". Si su valor es FALSE, se debe buscar el último valor cálculado en la tabla Result
 
 ### Image
 > Representa una imagen asociada a un producto. Tiene campos como "id", "imageURL", "format", "title", "imageURLToDisplay", "isOnCarousel", "carouselLabel", "carouselDescription", "isActive", "order" y "productID". También tiene una relación con la entidad "Product".

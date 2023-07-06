@@ -76,7 +76,6 @@ export const onCreateUser = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt
@@ -164,7 +163,6 @@ export const onUpdateUser = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt
@@ -252,7 +250,6 @@ export const onDeleteUser = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt
@@ -1009,105 +1006,6 @@ export const onDeleteVerificationComment = /* GraphQL */ `
     }
   }
 `;
-export const onCreateDocumentType = /* GraphQL */ `
-  subscription OnCreateDocumentType(
-    $filter: ModelSubscriptionDocumentTypeFilterInput
-  ) {
-    onCreateDocumentType(filter: $filter) {
-      id
-      name
-      description
-      documents {
-        items {
-          id
-          data
-          timeStamp
-          docHash
-          url
-          signed
-          signedHash
-          isApproved
-          status
-          isUploadedToBlockChain
-          documentTypeID
-          productFeatureID
-          userID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateDocumentType = /* GraphQL */ `
-  subscription OnUpdateDocumentType(
-    $filter: ModelSubscriptionDocumentTypeFilterInput
-  ) {
-    onUpdateDocumentType(filter: $filter) {
-      id
-      name
-      description
-      documents {
-        items {
-          id
-          data
-          timeStamp
-          docHash
-          url
-          signed
-          signedHash
-          isApproved
-          status
-          isUploadedToBlockChain
-          documentTypeID
-          productFeatureID
-          userID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteDocumentType = /* GraphQL */ `
-  subscription OnDeleteDocumentType(
-    $filter: ModelSubscriptionDocumentTypeFilterInput
-  ) {
-    onDeleteDocumentType(filter: $filter) {
-      id
-      name
-      description
-      documents {
-        items {
-          id
-          data
-          timeStamp
-          docHash
-          url
-          signed
-          signedHash
-          isApproved
-          status
-          isUploadedToBlockChain
-          documentTypeID
-          productFeatureID
-          userID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const onCreateDocument = /* GraphQL */ `
   subscription OnCreateDocument($filter: ModelSubscriptionDocumentFilterInput) {
     onCreateDocument(filter: $filter) {
@@ -1121,17 +1019,6 @@ export const onCreateDocument = /* GraphQL */ `
       isApproved
       status
       isUploadedToBlockChain
-      documentTypeID
-      documentType {
-        id
-        name
-        description
-        documents {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       productFeatureID
       productFeature {
         id
@@ -1237,17 +1124,6 @@ export const onUpdateDocument = /* GraphQL */ `
       isApproved
       status
       isUploadedToBlockChain
-      documentTypeID
-      documentType {
-        id
-        name
-        description
-        documents {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       productFeatureID
       productFeature {
         id
@@ -1353,17 +1229,6 @@ export const onDeleteDocument = /* GraphQL */ `
       isApproved
       status
       isUploadedToBlockChain
-      documentTypeID
-      documentType {
-        id
-        name
-        description
-        documents {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
       productFeatureID
       productFeature {
         id
@@ -3396,7 +3261,6 @@ export const onCreateProductFeature = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt
@@ -3557,7 +3421,6 @@ export const onUpdateProductFeature = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt
@@ -3718,7 +3581,6 @@ export const onDeleteProductFeature = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt
