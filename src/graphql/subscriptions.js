@@ -462,6 +462,7 @@ export const onCreateVerification = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -472,6 +473,7 @@ export const onCreateVerification = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -484,8 +486,18 @@ export const onCreateVerification = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -591,6 +603,7 @@ export const onUpdateVerification = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -601,6 +614,7 @@ export const onUpdateVerification = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -613,8 +627,18 @@ export const onUpdateVerification = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -720,6 +744,7 @@ export const onDeleteVerification = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -730,6 +755,7 @@ export const onDeleteVerification = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -742,8 +768,18 @@ export const onDeleteVerification = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -824,6 +860,7 @@ export const onCreateVerificationComment = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -889,6 +926,7 @@ export const onUpdateVerificationComment = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -954,6 +992,7 @@ export const onDeleteVerificationComment = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -1100,6 +1139,7 @@ export const onCreateDocument = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -1110,6 +1150,7 @@ export const onCreateDocument = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -1122,8 +1163,18 @@ export const onCreateDocument = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -1204,6 +1255,7 @@ export const onUpdateDocument = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -1214,6 +1266,7 @@ export const onUpdateDocument = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -1226,8 +1279,18 @@ export const onUpdateDocument = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -1308,6 +1371,7 @@ export const onDeleteDocument = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -1318,6 +1382,7 @@ export const onDeleteDocument = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -1330,8 +1395,18 @@ export const onDeleteDocument = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -1386,6 +1461,7 @@ export const onCreateCategory = /* GraphQL */ `
     onCreateCategory(filter: $filter) {
       id
       name
+      isSelected
       products {
         items {
           id
@@ -1396,13 +1472,13 @@ export const onCreateCategory = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
         }
         nextToken
       }
-      isSelected
       createdAt
       updatedAt
     }
@@ -1413,6 +1489,7 @@ export const onUpdateCategory = /* GraphQL */ `
     onUpdateCategory(filter: $filter) {
       id
       name
+      isSelected
       products {
         items {
           id
@@ -1423,13 +1500,13 @@ export const onUpdateCategory = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
         }
         nextToken
       }
-      isSelected
       createdAt
       updatedAt
     }
@@ -1440,6 +1517,7 @@ export const onDeleteCategory = /* GraphQL */ `
     onDeleteCategory(filter: $filter) {
       id
       name
+      isSelected
       products {
         items {
           id
@@ -1450,13 +1528,13 @@ export const onDeleteCategory = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
         }
         nextToken
       }
-      isSelected
       createdAt
       updatedAt
     }
@@ -1473,14 +1551,15 @@ export const onCreateProduct = /* GraphQL */ `
       amountToBuy
       order
       status
+      timeOnVerification
       categoryID
       category {
         id
         name
+        isSelected
         products {
           nextToken
         }
-        isSelected
         createdAt
         updatedAt
       }
@@ -1509,6 +1588,7 @@ export const onCreateProduct = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -1541,6 +1621,16 @@ export const onCreateProduct = /* GraphQL */ `
           txProcessed
           type
           productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormProducts {
+        items {
+          id
+          productID
+          xlsFormID
           createdAt
           updatedAt
         }
@@ -1562,14 +1652,15 @@ export const onUpdateProduct = /* GraphQL */ `
       amountToBuy
       order
       status
+      timeOnVerification
       categoryID
       category {
         id
         name
+        isSelected
         products {
           nextToken
         }
-        isSelected
         createdAt
         updatedAt
       }
@@ -1598,6 +1689,7 @@ export const onUpdateProduct = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -1630,6 +1722,16 @@ export const onUpdateProduct = /* GraphQL */ `
           txProcessed
           type
           productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormProducts {
+        items {
+          id
+          productID
+          xlsFormID
           createdAt
           updatedAt
         }
@@ -1651,14 +1753,15 @@ export const onDeleteProduct = /* GraphQL */ `
       amountToBuy
       order
       status
+      timeOnVerification
       categoryID
       category {
         id
         name
+        isSelected
         products {
           nextToken
         }
-        isSelected
         createdAt
         updatedAt
       }
@@ -1687,6 +1790,7 @@ export const onDeleteProduct = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -1719,6 +1823,16 @@ export const onDeleteProduct = /* GraphQL */ `
           txProcessed
           type
           productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormProducts {
+        items {
+          id
+          productID
+          xlsFormID
           createdAt
           updatedAt
         }
@@ -1752,6 +1866,7 @@ export const onCreateImage = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -1770,6 +1885,9 @@ export const onCreateImage = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -1803,6 +1921,7 @@ export const onUpdateImage = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -1821,6 +1940,9 @@ export const onUpdateImage = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -1854,6 +1976,7 @@ export const onDeleteImage = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -1872,6 +1995,9 @@ export const onDeleteImage = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -1898,8 +2024,18 @@ export const onCreateFeatureType = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -1926,8 +2062,18 @@ export const onUpdateFeatureType = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -1954,8 +2100,18 @@ export const onDeleteFeatureType = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -1975,6 +2131,39 @@ export const onCreateFeature = /* GraphQL */ `
       isTemplate
       isVerifable
       defaultValue
+      formOrder
+      formHint
+      formRequired
+      formAppearance
+      formRelevant
+      formConstraint
+      formRequiredMessage
+      parentID
+      children {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       featureTypeID
       featureType {
         id
@@ -2008,6 +2197,7 @@ export const onCreateFeature = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -2020,6 +2210,46 @@ export const onCreateFeature = /* GraphQL */ `
           id
           featureID
           formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormTypeID
+      xlsFormType {
+        id
+        name
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormGroupID
+      xlsFormGroup {
+        id
+        name
+        features {
+          nextToken
+        }
+        xlsFormID
+        xlsForm {
+          id
+          name
+          version
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormChoices {
+        items {
+          id
+          listName
+          name
+          label
+          featureID
           createdAt
           updatedAt
         }
@@ -2039,6 +2269,39 @@ export const onUpdateFeature = /* GraphQL */ `
       isTemplate
       isVerifable
       defaultValue
+      formOrder
+      formHint
+      formRequired
+      formAppearance
+      formRelevant
+      formConstraint
+      formRequiredMessage
+      parentID
+      children {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       featureTypeID
       featureType {
         id
@@ -2072,6 +2335,7 @@ export const onUpdateFeature = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -2084,6 +2348,46 @@ export const onUpdateFeature = /* GraphQL */ `
           id
           featureID
           formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormTypeID
+      xlsFormType {
+        id
+        name
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormGroupID
+      xlsFormGroup {
+        id
+        name
+        features {
+          nextToken
+        }
+        xlsFormID
+        xlsForm {
+          id
+          name
+          version
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormChoices {
+        items {
+          id
+          listName
+          name
+          label
+          featureID
           createdAt
           updatedAt
         }
@@ -2103,6 +2407,39 @@ export const onDeleteFeature = /* GraphQL */ `
       isTemplate
       isVerifable
       defaultValue
+      formOrder
+      formHint
+      formRequired
+      formAppearance
+      formRelevant
+      formConstraint
+      formRequiredMessage
+      parentID
+      children {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       featureTypeID
       featureType {
         id
@@ -2136,6 +2473,7 @@ export const onDeleteFeature = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           featureID
           createdAt
@@ -2148,6 +2486,46 @@ export const onDeleteFeature = /* GraphQL */ `
           id
           featureID
           formulaID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormTypeID
+      xlsFormType {
+        id
+        name
+        features {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormGroupID
+      xlsFormGroup {
+        id
+        name
+        features {
+          nextToken
+        }
+        xlsFormID
+        xlsForm {
+          id
+          name
+          version
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormChoices {
+        items {
+          id
+          listName
+          name
+          label
+          featureID
           createdAt
           updatedAt
         }
@@ -2175,8 +2553,18 @@ export const onCreateUnitOfMeasure = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -2215,8 +2603,18 @@ export const onUpdateUnitOfMeasure = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -2255,8 +2653,18 @@ export const onDeleteUnitOfMeasure = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -2304,6 +2712,7 @@ export const onCreateFormula = /* GraphQL */ `
           id
           varID
           value
+          dateTimeStamp
           formulaID
           createdAt
           updatedAt
@@ -2351,6 +2760,7 @@ export const onUpdateFormula = /* GraphQL */ `
           id
           varID
           value
+          dateTimeStamp
           formulaID
           createdAt
           updatedAt
@@ -2398,6 +2808,7 @@ export const onDeleteFormula = /* GraphQL */ `
           id
           varID
           value
+          dateTimeStamp
           formulaID
           createdAt
           updatedAt
@@ -2433,6 +2844,17 @@ export const onCreateFeatureFormula = /* GraphQL */ `
         isTemplate
         isVerifable
         defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
         featureTypeID
         featureType {
           id
@@ -2454,6 +2876,24 @@ export const onCreateFeatureFormula = /* GraphQL */ `
           nextToken
         }
         featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
           nextToken
         }
         createdAt
@@ -2501,6 +2941,17 @@ export const onUpdateFeatureFormula = /* GraphQL */ `
         isTemplate
         isVerifable
         defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
         featureTypeID
         featureType {
           id
@@ -2522,6 +2973,24 @@ export const onUpdateFeatureFormula = /* GraphQL */ `
           nextToken
         }
         featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
           nextToken
         }
         createdAt
@@ -2569,6 +3038,17 @@ export const onDeleteFeatureFormula = /* GraphQL */ `
         isTemplate
         isVerifable
         defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
         featureTypeID
         featureType {
           id
@@ -2590,6 +3070,24 @@ export const onDeleteFeatureFormula = /* GraphQL */ `
           nextToken
         }
         featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
           nextToken
         }
         createdAt
@@ -2629,6 +3127,7 @@ export const onCreateResult = /* GraphQL */ `
       id
       varID
       value
+      dateTimeStamp
       formulaID
       formula {
         id
@@ -2674,6 +3173,7 @@ export const onUpdateResult = /* GraphQL */ `
       id
       varID
       value
+      dateTimeStamp
       formulaID
       formula {
         id
@@ -2719,6 +3219,7 @@ export const onDeleteResult = /* GraphQL */ `
       id
       varID
       value
+      dateTimeStamp
       formulaID
       formula {
         id
@@ -2768,6 +3269,7 @@ export const onCreateProductFeature = /* GraphQL */ `
       isToBlockChain
       order
       isOnMainCard
+      isResult
       productID
       product {
         id
@@ -2778,6 +3280,7 @@ export const onCreateProductFeature = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -2798,6 +3301,9 @@ export const onCreateProductFeature = /* GraphQL */ `
         transactions {
           nextToken
         }
+        xlsFormProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2809,6 +3315,17 @@ export const onCreateProductFeature = /* GraphQL */ `
         isTemplate
         isVerifable
         defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
         featureTypeID
         featureType {
           id
@@ -2830,6 +3347,24 @@ export const onCreateProductFeature = /* GraphQL */ `
           nextToken
         }
         featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
           nextToken
         }
         createdAt
@@ -2895,6 +3430,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
       isToBlockChain
       order
       isOnMainCard
+      isResult
       productID
       product {
         id
@@ -2905,6 +3441,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -2925,6 +3462,9 @@ export const onUpdateProductFeature = /* GraphQL */ `
         transactions {
           nextToken
         }
+        xlsFormProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -2936,6 +3476,17 @@ export const onUpdateProductFeature = /* GraphQL */ `
         isTemplate
         isVerifable
         defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
         featureTypeID
         featureType {
           id
@@ -2957,6 +3508,24 @@ export const onUpdateProductFeature = /* GraphQL */ `
           nextToken
         }
         featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
           nextToken
         }
         createdAt
@@ -3022,6 +3591,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
       isToBlockChain
       order
       isOnMainCard
+      isResult
       productID
       product {
         id
@@ -3032,6 +3602,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -3052,6 +3623,9 @@ export const onDeleteProductFeature = /* GraphQL */ `
         transactions {
           nextToken
         }
+        xlsFormProducts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -3063,6 +3637,17 @@ export const onDeleteProductFeature = /* GraphQL */ `
         isTemplate
         isVerifable
         defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
         featureTypeID
         featureType {
           id
@@ -3084,6 +3669,24 @@ export const onDeleteProductFeature = /* GraphQL */ `
           nextToken
         }
         featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
           nextToken
         }
         createdAt
@@ -3153,6 +3756,7 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -3163,6 +3767,7 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -3175,8 +3780,18 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -3197,6 +3812,7 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
         id
         varID
         value
+        dateTimeStamp
         formulaID
         formula {
           id
@@ -3231,6 +3847,7 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -3241,6 +3858,7 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -3253,8 +3871,18 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -3275,6 +3903,7 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
         id
         varID
         value
+        dateTimeStamp
         formulaID
         formula {
           id
@@ -3309,6 +3938,7 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
         isToBlockChain
         order
         isOnMainCard
+        isResult
         productID
         product {
           id
@@ -3319,6 +3949,7 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -3331,8 +3962,18 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
           isTemplate
           isVerifable
           defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
           featureTypeID
           unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
           createdAt
           updatedAt
         }
@@ -3353,6 +3994,7 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
         id
         varID
         value
+        dateTimeStamp
         formulaID
         formula {
           id
@@ -3419,6 +4061,7 @@ export const onCreateUserProduct = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -3437,6 +4080,9 @@ export const onCreateUserProduct = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -3508,6 +4154,7 @@ export const onUpdateUserProduct = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -3526,6 +4173,9 @@ export const onUpdateUserProduct = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -3597,6 +4247,7 @@ export const onDeleteUserProduct = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -3615,6 +4266,9 @@ export const onDeleteUserProduct = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -3678,6 +4332,7 @@ export const onCreateOrder = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -3731,6 +4386,7 @@ export const onUpdateOrder = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -3784,6 +4440,7 @@ export const onDeleteOrder = /* GraphQL */ `
           amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
@@ -3825,6 +4482,7 @@ export const onCreateTransactions = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -3843,6 +4501,9 @@ export const onCreateTransactions = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -3879,6 +4540,7 @@ export const onUpdateTransactions = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -3897,6 +4559,9 @@ export const onUpdateTransactions = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
           nextToken
         }
         createdAt
@@ -3933,6 +4598,7 @@ export const onDeleteTransactions = /* GraphQL */ `
         amountToBuy
         order
         status
+        timeOnVerification
         categoryID
         category {
           id
@@ -3951,6 +4617,813 @@ export const onDeleteTransactions = /* GraphQL */ `
           nextToken
         }
         transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateXLSForm = /* GraphQL */ `
+  subscription OnCreateXLSForm($filter: ModelSubscriptionXLSFormFilterInput) {
+    onCreateXLSForm(filter: $filter) {
+      id
+      name
+      version
+      xlsFormGroups {
+        items {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateXLSForm = /* GraphQL */ `
+  subscription OnUpdateXLSForm($filter: ModelSubscriptionXLSFormFilterInput) {
+    onUpdateXLSForm(filter: $filter) {
+      id
+      name
+      version
+      xlsFormGroups {
+        items {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteXLSForm = /* GraphQL */ `
+  subscription OnDeleteXLSForm($filter: ModelSubscriptionXLSFormFilterInput) {
+    onDeleteXLSForm(filter: $filter) {
+      id
+      name
+      version
+      xlsFormGroups {
+        items {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateXLSFormProduct = /* GraphQL */ `
+  subscription OnCreateXLSFormProduct(
+    $filter: ModelSubscriptionXLSFormProductFilterInput
+  ) {
+    onCreateXLSFormProduct(filter: $filter) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormID
+      xlsForm {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateXLSFormProduct = /* GraphQL */ `
+  subscription OnUpdateXLSFormProduct(
+    $filter: ModelSubscriptionXLSFormProductFilterInput
+  ) {
+    onUpdateXLSFormProduct(filter: $filter) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormID
+      xlsForm {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteXLSFormProduct = /* GraphQL */ `
+  subscription OnDeleteXLSFormProduct(
+    $filter: ModelSubscriptionXLSFormProductFilterInput
+  ) {
+    onDeleteXLSFormProduct(filter: $filter) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      xlsFormID
+      xlsForm {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateXLSFormType = /* GraphQL */ `
+  subscription OnCreateXLSFormType(
+    $filter: ModelSubscriptionXLSFormTypeFilterInput
+  ) {
+    onCreateXLSFormType(filter: $filter) {
+      id
+      name
+      features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateXLSFormType = /* GraphQL */ `
+  subscription OnUpdateXLSFormType(
+    $filter: ModelSubscriptionXLSFormTypeFilterInput
+  ) {
+    onUpdateXLSFormType(filter: $filter) {
+      id
+      name
+      features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteXLSFormType = /* GraphQL */ `
+  subscription OnDeleteXLSFormType(
+    $filter: ModelSubscriptionXLSFormTypeFilterInput
+  ) {
+    onDeleteXLSFormType(filter: $filter) {
+      id
+      name
+      features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateXLSFormGroup = /* GraphQL */ `
+  subscription OnCreateXLSFormGroup(
+    $filter: ModelSubscriptionXLSFormGroupFilterInput
+  ) {
+    onCreateXLSFormGroup(filter: $filter) {
+      id
+      name
+      features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormID
+      xlsForm {
+        id
+        name
+        version
+        xlsFormGroups {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateXLSFormGroup = /* GraphQL */ `
+  subscription OnUpdateXLSFormGroup(
+    $filter: ModelSubscriptionXLSFormGroupFilterInput
+  ) {
+    onUpdateXLSFormGroup(filter: $filter) {
+      id
+      name
+      features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormID
+      xlsForm {
+        id
+        name
+        version
+        xlsFormGroups {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteXLSFormGroup = /* GraphQL */ `
+  subscription OnDeleteXLSFormGroup(
+    $filter: ModelSubscriptionXLSFormGroupFilterInput
+  ) {
+    onDeleteXLSFormGroup(filter: $filter) {
+      id
+      name
+      features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          xlsFormTypeID
+          xlsFormGroupID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      xlsFormID
+      xlsForm {
+        id
+        name
+        version
+        xlsFormGroups {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateXLSFormChoice = /* GraphQL */ `
+  subscription OnCreateXLSFormChoice(
+    $filter: ModelSubscriptionXLSFormChoiceFilterInput
+  ) {
+    onCreateXLSFormChoice(filter: $filter) {
+      id
+      listName
+      name
+      label
+      featureID
+      feature {
+        id
+        name
+        description
+        isTemplate
+        isVerifable
+        defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateXLSFormChoice = /* GraphQL */ `
+  subscription OnUpdateXLSFormChoice(
+    $filter: ModelSubscriptionXLSFormChoiceFilterInput
+  ) {
+    onUpdateXLSFormChoice(filter: $filter) {
+      id
+      listName
+      name
+      label
+      featureID
+      feature {
+        id
+        name
+        description
+        isTemplate
+        isVerifable
+        defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteXLSFormChoice = /* GraphQL */ `
+  subscription OnDeleteXLSFormChoice(
+    $filter: ModelSubscriptionXLSFormChoiceFilterInput
+  ) {
+    onDeleteXLSFormChoice(filter: $filter) {
+      id
+      listName
+      name
+      label
+      featureID
+      feature {
+        id
+        name
+        description
+        isTemplate
+        isVerifable
+        defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+        }
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+        }
+        productFeatures {
+          nextToken
+        }
+        featureFormulas {
+          nextToken
+        }
+        xlsFormTypeID
+        xlsFormType {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        xlsFormGroupID
+        xlsFormGroup {
+          id
+          name
+          xlsFormID
+          createdAt
+          updatedAt
+        }
+        xlsFormChoices {
           nextToken
         }
         createdAt
