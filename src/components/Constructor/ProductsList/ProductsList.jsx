@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Button, Badge, Card, Col, Container, Form, Modal, Row, Tabs, Tab, Accordion, Stack } from 'react-bootstrap';
 import {  XCircle } from 'react-bootstrap-icons';
 // GraphQL
+import WebAppConfig from '../../common/_conf/WebAppConfig';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerificationComment } from '../../../graphql/mutations';
 import { getUser, getVerificationComment } from '../../../graphql/queries';
@@ -98,7 +99,7 @@ class ProductsList extends Component {
 
     render() {
         let { products, selectedIDProductToShow, isRenderModalProductAttachments, newVerificationComment } = this.state
-
+        const url = WebAppConfig.url_s3_public_images
         const cardTextStyle = {
             textAlign: "justify",
         };
@@ -118,7 +119,7 @@ class ProductsList extends Component {
                                     return (
                                         <Col key={product.productID}>
                                             <Card>
-                                                <Card.Img variant="top" src="https://picsum.photos/500/160" />
+                                                <Card.Img variant="top" src={`${url}${product.product.images.items[0].imageURL}`} style={{height:'24rem', width:'auto'}}/>
                                                 <Card.Body>
                                                     <Card.Title><h5>{product.product.name}</h5></Card.Title>
                                                     <Row className="my-3 px-3">
@@ -165,7 +166,6 @@ class ProductsList extends Component {
         }
 
         const modalProductAttachments = () => {
-            console.log(products)
             if (isRenderModalProductAttachments && selectedIDProductToShow !== null) {
                 let product = products.filter(product => product.productID === selectedIDProductToShow)[0]
                 return (

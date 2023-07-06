@@ -42,8 +42,7 @@ import {
   onCreateVerificationComment,
   onCreateDocument,
 } from "../../../graphql/subscriptions";
-import { listDocumentTypes } from "../../../graphql/queries";
-import URL from '../../common/_conf/URL';
+import URLS3 from '../../common/_conf/URLS3';
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
     $filter: ModelDocumentFilterInput
@@ -64,14 +63,6 @@ export const listDocuments = /* GraphQL */ `
         isApproved
         status
         isUploadedToBlockChain
-        documentTypeID
-        documentType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
         productFeatureID
         productFeature {
           id
@@ -148,49 +139,6 @@ export const listDocuments = /* GraphQL */ `
     }
   }
 `;
-const queryUsers = `query GetProduct($id: ID!) {
-  getProduct(id: $id) {
-	id
-	productFeatures {
-	  items {
-		id
-		value
-		featureID
-		feature {
-		  id
-		  name
-		  description
-		  defaultValue
-		  featureTypeID
-		}
-		verifications {
-		  items {
-			id
-			sign
-			userVerifiedID
-			userVerifierID
-		  }
-		}
-	  }
-	  nextToken
-	}
-	userProducts {
-	  items {
-		id
-		isFavorite
-		userID
-		productID
-		createdAt
-		updatedAt
-	  }
-	  nextToken
-	}
-	createdAt
-	updatedAt
-  }
-}
-`;
-
 class DocumentStatus extends Component {
   constructor(props) {
     super(props);
@@ -198,7 +146,6 @@ class DocumentStatus extends Component {
       actualUser: "",
       documents: [],
       documentsPending: [],
-      documentTypes: [],
       otherDocuments: [],
       showPending: true,
       showOther: false,
@@ -233,7 +180,7 @@ class DocumentStatus extends Component {
       creatingDocument: false,
       newVerificationComment: {
         verificationID: "",
-        isCommentByVerifier: true,
+        isCommentByVerifier: false,
         comment: "",
       },
     };
@@ -255,7 +202,6 @@ class DocumentStatus extends Component {
     actualUser = actualUser.attributes.sub;
     this.setState({ actualUser: actualUser });
     await this.loadDocuments();
-    await this.loadDocumentTypes();
     // Subscriptions
     // OnCreate Document
     this.updateDocumentListener = API.graphql(
@@ -314,6 +260,10 @@ class DocumentStatus extends Component {
           documentsByVerificatorAll.push(doc);
       })
     );
+    if(this.state.selectedDocumentID !== ''){
+      let documentSelectedUpdate = documentsByVerificatorAll.filter(doc => doc.id === this.state.selectedDocumentID)
+      this.setState({selectedDocument: documentSelectedUpdate[0]})
+    }
     this.setState({
       documents: documentsByVerificatorAll,
     });
@@ -353,12 +303,6 @@ class DocumentStatus extends Component {
     });
   }
 
-  async loadDocumentTypes() {
-      const listDocumentTypesResult = await API.graphql(graphqlOperation(listDocumentTypes))
-      listDocumentTypesResult.data.listDocumentTypes.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
-      this.setState({ documentTypes: listDocumentTypesResult.data.listDocumentTypes.items })
-  }
-
   handleHideModalDocument() {
     this.setState({ showModalDocument: !this.state.showModalDocument });
   }
@@ -383,9 +327,6 @@ class DocumentStatus extends Component {
       });
   }
   handleInputCreateDocument = (e) => {
-      if (e.target.name === 'selected_documentType') {
-          this.setState(prevState => ({ newDocument: { ...prevState.newDocument, documentTypeID: e.target.value } }))
-      }
       if (e.target.name === 'selected_file') {
           const { target: { files } } = e;
           const [file,] = files || [];
@@ -429,7 +370,7 @@ class DocumentStatus extends Component {
       });
 
       tempNewDocument.id = `${this.state.productFeatureToAddDoc.id}_${imageId}`
-      tempNewDocument.url = encodeURI(`${URL}${uploadImageResult.key}`)
+      tempNewDocument.url = encodeURI(`${URLS3}${uploadImageResult.key}`)
       tempNewDocument.productFeatureID = this.state.productFeatureToAddDoc.id
       tempNewDocument.timeStamp = Date.now()
       tempNewDocument.data = JSON.stringify({ empty: '' })
@@ -457,6 +398,21 @@ class DocumentStatus extends Component {
       }));
     }
   }
+  
+  handleDownload = async (doc) => {
+    try {
+      let id = doc.url.split('/').pop()
+      const response = await Storage.get(id, { download: true });
+      // Si el archivo se descargó correctamente, puedes crear un enlace para el usuario
+      const url = URL.createObjectURL(response.Body);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = id;
+      link.click();
+    } catch (error) {
+      console.log('Error al descargar el archivo:', error);
+    }
+  };
   handleCreateVerification = async () => {
     if (this.state.selectedDocument) {
       this.setState({ creatingVerification: true });
@@ -564,7 +520,7 @@ class DocumentStatus extends Component {
     let verificationID = "";
     if (document.productFeature.verifications.items.length > 0) {
       document.productFeature.verifications.items.map((v) => {
-        if (v.userVerifierID === this.state.actualUser) {
+        if (v.userVerifiedID === this.state.actualUser) {
           verificationID = v.id;
           return;
         }
@@ -637,7 +593,7 @@ class DocumentStatus extends Component {
     this.setState({
       newVerificationComment: {
         verificationID: "",
-        isCommentByVerifier: true,
+        isCommentByVerifier: false,
         comment: "",
       },
     });
@@ -679,7 +635,6 @@ class DocumentStatus extends Component {
         );
       }
       if (this.state.isShowProductDocuments) {
-        console.log(products, "products")
         return (
           <Container className="mt-4">
             <Row className="justify-content-md-center">
@@ -768,12 +723,13 @@ class DocumentStatus extends Component {
                             <Button
                               variant="outline-primary"
                               size="sm"
-                              onClick={() =>
+                              /* onClick={() =>
                                 this.setState({
                                   showModalDocument: true,
                                   selectedDocument: document,
                                 })
-                              }
+                              } */
+                              onClick={() => this.handleDownload(document)}
                             >
                               Ver documentación
                             </Button>
@@ -849,7 +805,6 @@ class DocumentStatus extends Component {
 
     const modalUploadDocument = () => {
         if (this.state.productFeatureToAddDoc !== null && this.state.showModalUploadDocument) {
-            console.log(this.state.productFeatureToAddDoc, "entro")
             return (
                 <Modal
                     show={this.state.showModalUploadDocument}
@@ -866,17 +821,6 @@ class DocumentStatus extends Component {
                     <Modal.Body>
                         <Row className='mb-3'>
                             <Form.Group>
-                                <Form.Label>Document type</Form.Label>
-                                <Form.Select
-                                    type='text'
-                                    name='selected_documentType'
-                                    onChange={(e) => this.handleInputCreateDocument(e)}
-                                >
-                                    <option>-</option>
-                                    {this.state.documentTypes.map(
-                                        op => (<option value={op.id} key={op}>{op.name}</option>)
-                                    )}
-                                </Form.Select>
                                 <Form.Group >
                                     <Form.Label>Choose file</Form.Label>
                                     <Form.Control

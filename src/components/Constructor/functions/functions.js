@@ -1,6 +1,6 @@
 import { deleteProduct, deleteProductFeature, deleteImage, deleteDocument, deleteVerification, deleteUserProduct, updateProduct, createImage, updateProductFeature, createDocument } from "../../../graphql/mutations"
 import { API, graphqlOperation, Storage} from "aws-amplify"
-import URL from '../../common/_conf/URL';
+import URL from '../../common/_conf/URLS3';
 const getProductQuery = /* GraphQL */ `
   query GetProduct($id: ID!) {
     getProduct(id: $id) {

@@ -15,7 +15,7 @@ import { InfoCircle } from 'react-bootstrap-icons'
 import { fillForm, validarString, updateProyectForm } from '../functions/functions'
 import 'react-toastify/dist/ReactToastify.css';
 import WebAppConfig from '../../common/_conf/WebAppConfig'
-import URL from '../../common/_conf/URL';
+import URL from '../../common/_conf/URLS3';
 // Utils 
 import randomWords from 'random-words';
 // AWS S3 Storage
