@@ -128,7 +128,6 @@ async function handleDocuments(e , productFeatureID, userID) {
                   isApproved: false,
                   status: 'pending',
                   isUploadedToBlockChain: false,
-                  documentTypeID: '1',
               }
               console.log(`url de ${newDocPayLoad.id}`, newDocPayLoad.url)
               await API.graphql(graphqlOperation(createDocument, { input: newDocPayLoad })).then(()=> console.log('documento creado'))
