@@ -909,7 +909,6 @@ export const listProducts = /* GraphQL */ `
                 id
                 isApproved
                 signed
-                documentTypeID
               }
             }
             feature {
@@ -1834,7 +1833,6 @@ export const getProductFeature = /* GraphQL */ `
           isApproved
           status
           isUploadedToBlockChain
-          documentTypeID
           productFeatureID
           userID
           createdAt

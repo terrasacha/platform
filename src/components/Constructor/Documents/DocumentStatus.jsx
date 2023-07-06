@@ -173,7 +173,6 @@ class DocumentStatus extends Component {
           isApproved: false,
           status: 'pending',
           isUploadedToBlockChain: false,
-          documentTypeID: '1',
           productFeatureID: ''
       },
       fileToUpload: null,
@@ -573,7 +572,6 @@ class DocumentStatus extends Component {
           isApproved: false,
           status: 'pending',
           isUploadedToBlockChain: false,
-          documentTypeID: '1',
           productFeatureID: ''
       },
       verification: {

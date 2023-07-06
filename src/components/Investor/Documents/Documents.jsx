@@ -27,7 +27,6 @@ class Documents extends Component {
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
-                documentTypeID: '1',
                 productFeatureID: ''
             },
             userProductsDoc: [],
@@ -183,7 +182,6 @@ class Documents extends Component {
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
-                documentTypeID: '1',
                 productFeatureID: ''
             },
             productToShow: null,

@@ -35,14 +35,6 @@ export const listDocuments = /* GraphQL */ `
         isApproved
         status
         isUploadedToBlockChain
-        documentTypeID
-        documentType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
         productFeatureID
         productFeature {
           id

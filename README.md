@@ -92,7 +92,7 @@ El modelo entidad-relación que has compartido es una representación de un esqu
 > Representa un tipo de documento. Tiene campos como "id", "name" y "description". También tiene una relación de uno a muchos con "Document".
 
 ## Document
-> Representa un documento asociado a un usuario y un tipo de documento. Tiene campos como "id", "data", "timeStamp", "docHash", "url", "signed", "signedHash", "isApproved", "status", "isUploadedToBlockChain", "documentTypeID", "productFeatureID" y "userID". También tiene relaciones con las entidades "DocumentType", "ProductFeature" y "User".
+> Representa un documento asociado a un usuario y un tipo de documento. Tiene campos como "id", "data", "timeStamp", "docHash", "url", "signed", "signedHash", "isApproved", "status", "isUploadedToBlockChain", "productFeatureID" y "userID". También tiene relaciones con las entidades "DocumentType", "ProductFeature" y "User".
 
 ## Product Models:
 
