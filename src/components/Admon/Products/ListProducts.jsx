@@ -179,7 +179,7 @@ export default class ListProducts extends Component {
         // Render Products
         let productsData = products.map(product=>{
             product.toCertified = false
-            let pfFiltered = product.productFeatures.items.filter(pf => pf.featureID === "CERTIFICACION_3TH_PARTY") 
+            let pfFiltered = product.productFeatures.items.filter(pf => pf.featureID === "CERTIFICATION_3RD_PARTY") 
             pfFiltered.map(pff =>{
               if( pff.documents.items[0]?.status === 'accepted' && pff.documents.items[0]?.isApproved) product.toCertified = true 
             })

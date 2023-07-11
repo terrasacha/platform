@@ -101,7 +101,7 @@ El modelo entidad-relación que has compartido es una representación de un esqu
 
 ### Product
 > Representa un producto. Tiene campos como "id", "name", "description", "isActive", "counterNumberOfTimesBuyed", "amountToBuy", "order", "status", "timeOnVerification" y "categoryID". También tiene relaciones con otras entidades, como "Category", "Image", "ProductFeature", "UserProduct" y "Transactions".
->> isResult: TRUE se debe tomar el valor de "value". Si su valor es FALSE, se debe buscar el último valor cálculado en la tabla Result
+>> isResult: Si el FEATURE NO tiene VACIO la propiedad defaultValue; usar ése valor. Delo contrario verificar: TRUE se debe tomar el valor de "value". Si su valor es FALSE, se debe buscar el último valor cálculado en la tabla Result
 
 ### Image
 > Representa una imagen asociada a un producto. Tiene campos como "id", "imageURL", "format", "title", "imageURLToDisplay", "isOnCarousel", "carouselLabel", "carouselDescription", "isActive", "order" y "productID". También tiene una relación con la entidad "Product".
@@ -144,3 +144,28 @@ En general, este modelo entidad-relación describe entidades como usuarios, bill
 # XLSForm
 
 # Standar name (Feature: graphql = id PK)
+
+
+# Feature Global Variables
+
+# Global platform variables
+PROJECT_REGISTER_END_DATE
+PROJECT_VALIDATION_END_DATE
+CERTIFICADO_LIBERTAD_Y_TRADICION
+CERTIFICATION_3RD_PARTY
+VCU (Verified Carbon Unit)
+
+# Global calculated variables
+global_token_unit_value
+global_total_tokens
+global_token_name
+global_expected_income
+global_total_price
+global_ubicacion
+global_coordenadas
+global_periodo_permanencia
+global_fecha_inscripcion
+
+
+Fecha final para registrar la información del PRODUCT(proyecto)
+

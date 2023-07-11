@@ -136,7 +136,7 @@ type Feature @model
   description: String
   isTemplate: Boolean
   isVerifable: Boolean
-  defaultValue: Float
+  defaultValue: String
   formOrder: Int
   formHint: String
   formRequired: Boolean
