@@ -404,8 +404,6 @@ export default class Admon extends Component {
         return (
             <Container fluid style={{paddingTop: 70, minHeight: '100vh'}} >
 
-                <h4>Admon Dashboard</h4>
-                
                 <Row>
                     <Col>
                         <HeaderNavbar 
