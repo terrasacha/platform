@@ -22,6 +22,7 @@ type User @model
   verifiedVerifications: [Verification] @hasMany(indexName: "byVerifiedUser", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byUser", fields: ["id"])
   documents: [Document] @hasMany(indexName: "byUser", fields: ["id"])
+  companies: [Company] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Wallet @model 
@@ -102,6 +103,7 @@ type Product @model
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
   xlsFormProducts: [XLSFormProduct] @hasMany(indexName: "byProduct", fields: ["id"])
+  companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model 
@@ -257,6 +259,16 @@ type Transactions @model {
   network: String
   txProcessed: Boolean
   type: String
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+}
+
+type Company @model {
+  id: ID!
+  name: String
+  description: String
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
 }

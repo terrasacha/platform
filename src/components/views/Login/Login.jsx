@@ -84,8 +84,7 @@ export default function LogIn() {
                 }
                 const inputFeature = {
                     id: `${response.userSub}_VALIDATION`,
-                    name: `${username}_VALIDATION`,
-                    featureTypeID: `USER_TO_VALIDATE`
+                    name: `${username}_VALIDATION`
                 } 
                 const inputProductFeature = {
                     featureID: `${response.userSub}_VALIDATION`,
