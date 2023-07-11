@@ -83,6 +83,18 @@ export const onCreateUser = /* GraphQL */ `
         }
         nextToken
       }
+      companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -165,6 +177,18 @@ export const onUpdateUser = /* GraphQL */ `
           isUploadedToBlockChain
           productFeatureID
           userID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
           createdAt
           updatedAt
         }
@@ -257,6 +281,18 @@ export const onDeleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -293,6 +329,9 @@ export const onCreateWallet = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -336,6 +375,9 @@ export const onUpdateWallet = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -375,6 +417,9 @@ export const onDeleteWallet = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -420,6 +465,9 @@ export const onCreateVerification = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -447,6 +495,9 @@ export const onCreateVerification = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -561,6 +612,9 @@ export const onUpdateVerification = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -588,6 +642,9 @@ export const onUpdateVerification = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -702,6 +759,9 @@ export const onDeleteVerification = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -729,6 +789,9 @@ export const onDeleteVerification = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -1103,6 +1166,9 @@ export const onCreateDocument = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1208,6 +1274,9 @@ export const onUpdateDocument = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1311,6 +1380,9 @@ export const onDeleteDocument = /* GraphQL */ `
           nextToken
         }
         documents {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -1501,6 +1573,18 @@ export const onCreateProduct = /* GraphQL */ `
         }
         nextToken
       }
+      companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1597,6 +1681,18 @@ export const onUpdateProduct = /* GraphQL */ `
           id
           productID
           xlsFormID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
           createdAt
           updatedAt
         }
@@ -1703,6 +1799,18 @@ export const onDeleteProduct = /* GraphQL */ `
         }
         nextToken
       }
+      companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1753,6 +1861,9 @@ export const onCreateImage = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -1810,6 +1921,9 @@ export const onUpdateImage = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1863,6 +1977,9 @@ export const onDeleteImage = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -3169,6 +3286,9 @@ export const onCreateProductFeature = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -3329,6 +3449,9 @@ export const onUpdateProductFeature = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -3487,6 +3610,9 @@ export const onDeleteProductFeature = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -3910,6 +4036,9 @@ export const onCreateUserProduct = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -3945,6 +4074,9 @@ export const onCreateUserProduct = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -4003,6 +4135,9 @@ export const onUpdateUserProduct = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -4038,6 +4173,9 @@ export const onUpdateUserProduct = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -4096,6 +4234,9 @@ export const onDeleteUserProduct = /* GraphQL */ `
         documents {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -4131,6 +4272,9 @@ export const onDeleteUserProduct = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -4368,6 +4512,9 @@ export const onCreateTransactions = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -4426,6 +4573,9 @@ export const onUpdateTransactions = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -4482,6 +4632,258 @@ export const onDeleteTransactions = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateCompany = /* GraphQL */ `
+  subscription OnCreateCompany($filter: ModelSubscriptionCompanyFilterInput) {
+    onCreateCompany(filter: $filter) {
+      id
+      name
+      description
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        status
+        email
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateCompany = /* GraphQL */ `
+  subscription OnUpdateCompany($filter: ModelSubscriptionCompanyFilterInput) {
+    onUpdateCompany(filter: $filter) {
+      id
+      name
+      description
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        status
+        email
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteCompany = /* GraphQL */ `
+  subscription OnDeleteCompany($filter: ModelSubscriptionCompanyFilterInput) {
+    onDeleteCompany(filter: $filter) {
+      id
+      name
+      description
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        addresss
+        cellphone
+        role
+        status
+        email
+        wallets {
+          nextToken
+        }
+        verifierVerifications {
+          nextToken
+        }
+        verifiedVerifications {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        documents {
+          nextToken
+        }
+        companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        counterNumberOfTimesBuyed
+        amountToBuy
+        order
+        status
+        timeOnVerification
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+        }
+        images {
+          nextToken
+        }
+        productFeatures {
+          nextToken
+        }
+        userProducts {
+          nextToken
+        }
+        transactions {
+          nextToken
+        }
+        xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -4595,6 +4997,9 @@ export const onCreateXLSFormProduct = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -4630,6 +5035,9 @@ export const onCreateXLSFormProduct = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -4680,6 +5088,9 @@ export const onUpdateXLSFormProduct = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -4715,6 +5126,9 @@ export const onUpdateXLSFormProduct = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
@@ -4765,6 +5179,9 @@ export const onDeleteXLSFormProduct = /* GraphQL */ `
         xlsFormProducts {
           nextToken
         }
+        companies {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -4800,6 +5217,9 @@ export const onDeleteXLSFormProduct = /* GraphQL */ `
           nextToken
         }
         xlsFormProducts {
+          nextToken
+        }
+        companies {
           nextToken
         }
         createdAt
