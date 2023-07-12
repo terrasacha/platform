@@ -3,8 +3,6 @@ import React, { Component } from 'react'
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
-// Auth css custom
-import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createCategory, updateCategory } from '../../../graphql/mutations'
