@@ -148,23 +148,29 @@ En general, este modelo entidad-relación describe entidades como usuarios, bill
 
 # Feature Global Variables
 
-# Global platform variables
+## Global platform variables
 PROJECT_REGISTER_END_DATE
 PROJECT_VALIDATION_END_DATE
 CERTIFICADO_LIBERTAD_Y_TRADICION
 CERTIFICATION_3RD_PARTY
 VCU (Verified Carbon Unit)
 
-# Global calculated variables
-global_token_unit_value
+## Global calculated variables
+global_token_price
 global_total_tokens
-global_token_name
-global_expected_income
-global_total_price
-global_ubicacion
-global_coordenadas
-global_periodo_permanencia
-global_fecha_inscripcion
+
+<!-- global_token_unit_value -->
+<!-- global_total_tokens -->
+<!-- global_token_name -->
+<!-- global_expected_income -->
+<!-- global_total_price -->
+<!-- global_ubicacion -->
+<!-- global_coordenadas -->
+<!-- global_periodo_permanencia -->
+<!-- global_fecha_inscripcion -->
+
+global_project_total_cost/global_total_tokens = global_token_unit_value
+
 
 
 Fecha final para registrar la información del PRODUCT(proyecto)

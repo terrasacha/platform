@@ -66,8 +66,9 @@ class UOM extends Component {
 
     }
     componentWillUnmount() {
-        this.createUnitOfMeasureListener.unsubscribe();
-        this.updateCategoryListener.unsubscribe();
+        // TODO: Why is not working the unsubscribe
+        // this.createUnitOfMeasureListener.unsubscribe();
+        // this.updateCategoryListener.unsubscribe();
       }
 
     async loadUnitOfMeasures() {

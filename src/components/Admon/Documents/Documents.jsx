@@ -77,7 +77,7 @@ class Documents extends Component {
         })
     }
     componentWillUnmount() {
-        this.createDocumentListener.unsubscribe();
+        // this.createDocumentListener.unsubscribe();
       }
     async loadUserProducts(pActualUserID) {
         let userResult = await API.graphql({ query: getUser, variables: { id: pActualUserID }})
