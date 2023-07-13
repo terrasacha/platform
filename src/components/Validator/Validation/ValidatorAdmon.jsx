@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 //Bootstrap
 import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, Stack, Nav } from 'react-bootstrap';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
 import Bootstrap from "../../common/themes";
@@ -263,7 +264,6 @@ class ValidatorAdmon extends Component {
     listDocumentsResultAll.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
     let documentsByVerificatorAll= []
     listDocumentsResultAll.data.listDocuments.items.map(doc => doc.productFeature.verifications.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorAll.push(doc)}))
-    console.log(documentsByVerificatorAll, 'documentsByVerificatorAll,')
     this.setState({
       documents: documentsByVerificatorAll,
     })
@@ -287,7 +287,7 @@ class ValidatorAdmon extends Component {
     const variables = { id };
 
     const listUsersResult = await API.graphql(graphqlOperation(queryUsers, variables));
-    this.setState({ users: listUsersResult.data.getProduct.productFeatures.items })
+    this.setState({ users: listUsersResult.data.getProduct?.productFeatures?.items })
   }
   async loadFeatures(){
     let filterIsVerifable = {
@@ -467,6 +467,28 @@ class ValidatorAdmon extends Component {
 
     return verificationID
   }
+  async updateTokenPrice(product, tokenPrice){
+    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'token_value');
+    if(tieneTokenValue){
+      let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'token_value')[0].id
+      let tempProductFeature = {
+        id: tokenPricePF,
+        value: tokenPrice
+      }
+      API.graphql(graphqlOperation(updateProductFeature, { input: tempProductFeature }))
+    }else{
+      let tempProductFeature = {
+        value: '',
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: product.id,
+        featureID: 'token_value',
+      }
+      API.graphql(graphqlOperation(createProductFeature , { input: tempProductFeature }))
+
+    }
+    await this.loadDocuments()
+}
 
   validateInfoUser = async (pfID, userVerifiedID) => {
     let tempNewVerification = {}
@@ -547,11 +569,28 @@ class ValidatorAdmon extends Component {
                 <h3>Proyectos</h3>
                 <Container className='mt-5'>
                   {productsUnicos?.map(product => {
+                    const tokenPrice = product.productFeatures.items.filter(pf => pf.featureID === 'token_value')[0]?.value ?? ''
                     const featuresAvailables = this.state.featuresVerifables.filter(item2 => !product.productFeatures.items.some(item1 => item1.featureID === item2.value));
+                    const handleTokenPriceChange = (event) => {
+                      tokenPrice = event.target.value
+                    };
                     return(
                     <Card key={product.id} body  
                     style={{ cursor: 'pointer' }} 
-                    onClick={() => this.handleSelectProduct(product)}>{product.name}<ArrowRight />
+                    onClick={() => this.handleSelectProduct(product)}>
+                      {product.name}<ArrowRight />
+                      <InputGroup className="mb-3">
+                        <Form.Control
+                          value={tokenPrice}
+                          placeholder="Introduce token price"
+                          name='token_price'
+                          aria-describedby="basic-addon2"
+                          onChange={handleTokenPriceChange} 
+                        />
+                        <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateTokenPrice(product, tokenPrice)}>
+                          Change
+                        </Button>
+                      </InputGroup>
                       <Select 
                         style={{ position: 'absolute', top: 0, left: 0, zIndex: 10 }}
                         options={featuresAvailables}
