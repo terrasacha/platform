@@ -517,8 +517,6 @@ export const onCreateVerification = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -664,8 +662,6 @@ export const onUpdateVerification = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -811,8 +807,6 @@ export const onDeleteVerification = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1096,8 +1090,6 @@ export const onCreateDocument = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1204,8 +1196,6 @@ export const onUpdateDocument = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1312,8 +1302,6 @@ export const onDeleteDocument = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1405,8 +1393,6 @@ export const onCreateCategory = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1433,8 +1419,6 @@ export const onUpdateCategory = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1461,8 +1445,6 @@ export const onDeleteCategory = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1484,8 +1466,6 @@ export const onCreateProduct = /* GraphQL */ `
       name
       description
       isActive
-      counterNumberOfTimesBuyed
-      amountToBuy
       order
       status
       timeOnVerification
@@ -1557,7 +1537,10 @@ export const onCreateProduct = /* GraphQL */ `
           network
           txProcessed
           type
+          tokenName
+          amountOfTokens
           productID
+          orderID
           createdAt
           updatedAt
         }
@@ -1597,8 +1580,6 @@ export const onUpdateProduct = /* GraphQL */ `
       name
       description
       isActive
-      counterNumberOfTimesBuyed
-      amountToBuy
       order
       status
       timeOnVerification
@@ -1670,7 +1651,10 @@ export const onUpdateProduct = /* GraphQL */ `
           network
           txProcessed
           type
+          tokenName
+          amountOfTokens
           productID
+          orderID
           createdAt
           updatedAt
         }
@@ -1710,8 +1694,6 @@ export const onDeleteProduct = /* GraphQL */ `
       name
       description
       isActive
-      counterNumberOfTimesBuyed
-      amountToBuy
       order
       status
       timeOnVerification
@@ -1783,7 +1765,10 @@ export const onDeleteProduct = /* GraphQL */ `
           network
           txProcessed
           type
+          tokenName
+          amountOfTokens
           productID
+          orderID
           createdAt
           updatedAt
         }
@@ -1835,8 +1820,6 @@ export const onCreateImage = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -1893,8 +1876,6 @@ export const onUpdateImage = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -1951,8 +1932,6 @@ export const onDeleteImage = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -3258,8 +3237,6 @@ export const onCreateProductFeature = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -3421,8 +3398,6 @@ export const onUpdateProductFeature = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -3584,8 +3559,6 @@ export const onDeleteProductFeature = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -3751,8 +3724,6 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -3842,8 +3813,6 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -3933,8 +3902,6 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -4048,8 +4015,6 @@ export const onCreateUserProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4085,7 +4050,6 @@ export const onCreateUserProduct = /* GraphQL */ `
       orders {
         items {
           id
-          amountOfTokens
           currencyCode
           fiatTotalAmount
           statusCode
@@ -4147,8 +4111,6 @@ export const onUpdateUserProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4184,7 +4146,6 @@ export const onUpdateUserProduct = /* GraphQL */ `
       orders {
         items {
           id
-          amountOfTokens
           currencyCode
           fiatTotalAmount
           statusCode
@@ -4246,8 +4207,6 @@ export const onDeleteUserProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4283,7 +4242,6 @@ export const onDeleteUserProduct = /* GraphQL */ `
       orders {
         items {
           id
-          amountOfTokens
           currencyCode
           fiatTotalAmount
           statusCode
@@ -4304,7 +4262,6 @@ export const onCreateOrder = /* GraphQL */ `
   subscription OnCreateOrder($filter: ModelSubscriptionOrderFilterInput) {
     onCreateOrder(filter: $filter) {
       id
-      amountOfTokens
       currencyCode
       fiatTotalAmount
       statusCode
@@ -4334,8 +4291,6 @@ export const onCreateOrder = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -4348,6 +4303,28 @@ export const onCreateOrder = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          tokenName
+          amountOfTokens
+          productID
+          orderID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -4358,7 +4335,6 @@ export const onUpdateOrder = /* GraphQL */ `
   subscription OnUpdateOrder($filter: ModelSubscriptionOrderFilterInput) {
     onUpdateOrder(filter: $filter) {
       id
-      amountOfTokens
       currencyCode
       fiatTotalAmount
       statusCode
@@ -4388,8 +4364,6 @@ export const onUpdateOrder = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -4403,6 +4377,28 @@ export const onUpdateOrder = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          tokenName
+          amountOfTokens
+          productID
+          orderID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -4412,7 +4408,6 @@ export const onDeleteOrder = /* GraphQL */ `
   subscription OnDeleteOrder($filter: ModelSubscriptionOrderFilterInput) {
     onDeleteOrder(filter: $filter) {
       id
-      amountOfTokens
       currencyCode
       fiatTotalAmount
       statusCode
@@ -4442,8 +4437,6 @@ export const onDeleteOrder = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -4456,6 +4449,28 @@ export const onDeleteOrder = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          tokenName
+          amountOfTokens
+          productID
+          orderID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -4478,14 +4493,14 @@ export const onCreateTransactions = /* GraphQL */ `
       network
       txProcessed
       type
+      tokenName
+      amountOfTokens
       productID
       product {
         id
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4513,6 +4528,29 @@ export const onCreateTransactions = /* GraphQL */ `
           nextToken
         }
         companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orderID
+      order {
+        id
+        currencyCode
+        fiatTotalAmount
+        statusCode
+        externalOrderId
+        confirmation
+        userProductID
+        userProduct {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        transactions {
           nextToken
         }
         createdAt
@@ -4539,14 +4577,14 @@ export const onUpdateTransactions = /* GraphQL */ `
       network
       txProcessed
       type
+      tokenName
+      amountOfTokens
       productID
       product {
         id
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4579,6 +4617,29 @@ export const onUpdateTransactions = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      orderID
+      order {
+        id
+        currencyCode
+        fiatTotalAmount
+        statusCode
+        externalOrderId
+        confirmation
+        userProductID
+        userProduct {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        transactions {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -4600,14 +4661,14 @@ export const onDeleteTransactions = /* GraphQL */ `
       network
       txProcessed
       type
+      tokenName
+      amountOfTokens
       productID
       product {
         id
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4635,6 +4696,29 @@ export const onDeleteTransactions = /* GraphQL */ `
           nextToken
         }
         companies {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      orderID
+      order {
+        id
+        currencyCode
+        fiatTotalAmount
+        statusCode
+        externalOrderId
+        confirmation
+        userProductID
+        userProduct {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        transactions {
           nextToken
         }
         createdAt
@@ -4689,8 +4773,6 @@ export const onCreateCompany = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4772,8 +4854,6 @@ export const onUpdateCompany = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4855,8 +4935,6 @@ export const onDeleteCompany = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -4969,8 +5047,6 @@ export const onCreateXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -5009,8 +5085,6 @@ export const onCreateXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -5060,8 +5134,6 @@ export const onUpdateXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -5100,8 +5172,6 @@ export const onUpdateXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -5151,8 +5221,6 @@ export const onDeleteXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -5191,8 +5259,6 @@ export const onDeleteXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification

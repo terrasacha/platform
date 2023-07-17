@@ -352,8 +352,6 @@ export const getVerification = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -600,8 +598,6 @@ export const getDocument = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -706,6 +702,7 @@ export const listDocuments = /* GraphQL */ `
           isToBlockChain
           order
           isOnMainCard
+          isResult
           productID
           product {
             name
@@ -744,23 +741,22 @@ export const getCategory = /* GraphQL */ `
     getCategory(id: $id) {
       id
       name
+      isSelected
       products {
         items {
           id
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
+          timeOnVerification
           categoryID
           createdAt
           updatedAt
         }
         nextToken
       }
-      isSelected
       createdAt
       updatedAt
     }
@@ -780,7 +776,6 @@ export const listCategories = /* GraphQL */ `
         products {
           nextToken
         }
-        isSelected
         createdAt
         updatedAt
       }
@@ -795,8 +790,6 @@ export const getProduct = /* GraphQL */ `
       name
       description
       isActive
-      counterNumberOfTimesBuyed
-      amountToBuy
       order
       status
       timeOnVerification
@@ -808,7 +801,6 @@ export const getProduct = /* GraphQL */ `
         products {
           nextToken
         }
-        isSelected
         createdAt
         updatedAt
       }
@@ -869,7 +861,10 @@ export const getProduct = /* GraphQL */ `
           network
           txProcessed
           type
+          tokenName
+          amountOfTokens
           productID
+          orderID
           createdAt
           updatedAt
         }
@@ -914,8 +909,6 @@ export const listProducts = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -1022,8 +1015,6 @@ export const getImage = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -1085,8 +1076,6 @@ export const listImages = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1758,8 +1747,6 @@ export const getProductFeature = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -1924,8 +1911,6 @@ export const listProductFeatures = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -1991,8 +1976,6 @@ export const getProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -2148,8 +2131,6 @@ export const getUserProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -2185,7 +2166,6 @@ export const getUserProduct = /* GraphQL */ `
       orders {
         items {
           id
-          amountOfTokens
           currencyCode
           fiatTotalAmount
           statusCode
@@ -2232,8 +2212,6 @@ export const listUserProducts = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -2255,7 +2233,6 @@ export const getOrder = /* GraphQL */ `
   query GetOrder($id: ID!) {
     getOrder(id: $id) {
       id
-      amountOfTokens
       currencyCode
       fiatTotalAmount
       statusCode
@@ -2285,8 +2262,6 @@ export const getOrder = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -2299,6 +2274,28 @@ export const getOrder = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          tokenName
+          amountOfTokens
+          productID
+          orderID
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt
@@ -2314,7 +2311,6 @@ export const listOrders = /* GraphQL */ `
     listOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        amountOfTokens
         currencyCode
         fiatTotalAmount
         statusCode
@@ -2328,6 +2324,9 @@ export const listOrders = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+        }
+        transactions {
+          nextToken
         }
         createdAt
         updatedAt
@@ -2350,14 +2349,14 @@ export const getTransactions = /* GraphQL */ `
       network
       txProcessed
       type
+      tokenName
+      amountOfTokens
       productID
       product {
         id
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -2390,6 +2389,29 @@ export const getTransactions = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      orderID
+      order {
+        id
+        currencyCode
+        fiatTotalAmount
+        statusCode
+        externalOrderId
+        confirmation
+        userProductID
+        userProduct {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+        }
+        transactions {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -2414,18 +2436,30 @@ export const listTransactions = /* GraphQL */ `
         network
         txProcessed
         type
+        tokenName
+        amountOfTokens
         productID
         product {
           id
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
           categoryID
+          createdAt
+          updatedAt
+        }
+        orderID
+        order {
+          id
+          currencyCode
+          fiatTotalAmount
+          statusCode
+          externalOrderId
+          confirmation
+          userProductID
           createdAt
           updatedAt
         }
@@ -2480,8 +2514,6 @@ export const getCompany = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -2550,8 +2582,6 @@ export const listCompanies = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -2618,8 +2648,6 @@ export const getXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -2658,8 +2686,6 @@ export const getXLSFormProduct = /* GraphQL */ `
         name
         description
         isActive
-        counterNumberOfTimesBuyed
-        amountToBuy
         order
         status
         timeOnVerification
@@ -2712,8 +2738,6 @@ export const listXLSFormProducts = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification
@@ -2727,8 +2751,6 @@ export const listXLSFormProducts = /* GraphQL */ `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           timeOnVerification

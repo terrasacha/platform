@@ -91,8 +91,6 @@ type Product @model
   name: String!
   description: String
   isActive: Boolean!
-  counterNumberOfTimesBuyed: Int
-  amountToBuy: Float
   order: Int
   status: String
   timeOnVerification: AWSTimestamp
@@ -237,7 +235,6 @@ type UserProduct @model {
 
 type Order @model {
   id: ID! # local order ID 
-  amountOfTokens: Int
   currencyCode: String
   fiatTotalAmount: Float
   statusCode: String
@@ -245,6 +242,7 @@ type Order @model {
   confirmation: String
   userProductID: ID! @index(name: "byUserProduct")
   userProduct: UserProduct @belongsTo(fields: ["userProductID"])
+  transactions: [Transactions] @hasMany(indexName: "byOrder", fields: ["id"])
 }
 
 type Transactions @model {
@@ -259,8 +257,12 @@ type Transactions @model {
   network: String
   txProcessed: Boolean
   type: String
+  tokenName: String
+  amountOfTokens: Int
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
+  orderID: ID @index(name: "byOrder")
+  order: Order @belongsTo(fields: ["orderID"])
 }
 
 type Company @model {
