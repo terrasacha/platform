@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
 //Bootstrap
-import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, Stack, Nav } from 'react-bootstrap';
+import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, Stack } from 'react-bootstrap';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
-import Bootstrap from "../../common/themes";
 import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
 // GraphQL
 import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
@@ -423,16 +422,15 @@ class ValidatorAdmon extends Component {
       
       const arrayURLSlash = doc.url.split('/')
       if (arrayURLSlash.length > 2) {
-        debugger
         const projectIDURL = arrayURLSlash[arrayURLSlash.length-2]
         const fileSrc = arrayURLSlash[arrayURLSlash.length-1]
         // let id = doc.url.split('/').pop()
         const key = projectIDURL + '/'+ fileSrc
-
         // const config = {
         //   level: 'protected',
         //   download: true, 
         //   expires: 300, 
+        //   identityId: this.state.actualUser,
         //   validateObjectExistence: false
         // }
 
@@ -441,9 +439,7 @@ class ValidatorAdmon extends Component {
           expires: 300, 
           validateObjectExistence: false
         }
-        debugger
         const response = await Storage.get(key, config)
-        debugger
         // const response = await Storage.get(key, { download: true });
         // Si el archivo se descargó correctamente, puedes crear un enlace para el usuario
         const url = URL.createObjectURL(response.Body);

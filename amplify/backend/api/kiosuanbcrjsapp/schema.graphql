@@ -60,8 +60,8 @@ type VerificationComment @model {
 type Document @model 
   {
   id: ID!
-  data: AWSJSON!
-  timeStamp: AWSTimestamp!
+  data: AWSJSON
+  timeStamp: AWSTimestamp
   docHash: String
   url: AWSURL
   signed: String
