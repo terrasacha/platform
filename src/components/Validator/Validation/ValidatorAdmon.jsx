@@ -420,14 +420,38 @@ class ValidatorAdmon extends Component {
 }
   handleDownload = async (doc) => {
     try {
-      let id = doc.url.split('/').pop()
-      const response = await Storage.get(id, { download: true });
-      // Si el archivo se descargó correctamente, puedes crear un enlace para el usuario
-      const url = URL.createObjectURL(response.Body);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = id;
-      link.click();
+      
+      const arrayURLSlash = doc.url.split('/')
+      if (arrayURLSlash.length > 2) {
+        debugger
+        const projectIDURL = arrayURLSlash[arrayURLSlash.length-2]
+        const fileSrc = arrayURLSlash[arrayURLSlash.length-1]
+        // let id = doc.url.split('/').pop()
+        const key = projectIDURL + '/'+ fileSrc
+
+        // const config = {
+        //   level: 'protected',
+        //   download: true, 
+        //   expires: 300, 
+        //   validateObjectExistence: false
+        // }
+
+        const config = {
+          download: true, 
+          expires: 300, 
+          validateObjectExistence: false
+        }
+        debugger
+        const response = await Storage.get(key, config)
+        debugger
+        // const response = await Storage.get(key, { download: true });
+        // Si el archivo se descargó correctamente, puedes crear un enlace para el usuario
+        const url = URL.createObjectURL(response.Body);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = key;
+        link.click();
+      }
     } catch (error) {
       console.log('Error al descargar el archivo:', error);
     }

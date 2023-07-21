@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 // Bootstrap
 import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap'
-// Auth css custom
-import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
