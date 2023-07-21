@@ -39,8 +39,6 @@ const queryUpdate = `
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           categoryID

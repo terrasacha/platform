@@ -176,8 +176,6 @@ export async function fillForm(product, userID){
           description: product.description,
           status: product.status,
           order: 0,
-          counterNumberOfTimesBuyed: 0,
-          amountToBuy: 0.0,
           categoryID: '',
           images: product.images.items,
       },

@@ -100,7 +100,7 @@ El modelo entidad-relación que has compartido es una representación de un esqu
 > Representa una categoría de productos. Tiene campos como "id", "name" y "isSelected". También tiene una relación de uno a muchos con "Product".
 
 ### Product
-> Representa un producto. Tiene campos como "id", "name", "description", "isActive", "counterNumberOfTimesBuyed", "amountToBuy", "order", "status", "timeOnVerification" y "categoryID". También tiene relaciones con otras entidades, como "Category", "Image", "ProductFeature", "UserProduct" y "Transactions".
+> Representa un producto. Tiene campos como "id", "name", "description", "isActive", "order", "status", "timeOnVerification" y "categoryID". También tiene relaciones con otras entidades, como "Category", "Image", "ProductFeature", "UserProduct" y "Transactions".
 >> isResult: Si el FEATURE NO tiene VACIO la propiedad defaultValue; usar ése valor. Delo contrario verificar: TRUE se debe tomar el valor de "value". Si su valor es FALSE, se debe buscar el último valor cálculado en la tabla Result
 
 ### Image

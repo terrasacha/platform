@@ -37,8 +37,6 @@ export default class LandingPage extends Component {
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           categoryID

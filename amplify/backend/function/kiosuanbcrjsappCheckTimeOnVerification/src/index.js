@@ -48,7 +48,6 @@ const queryUpdate = /* GraphQL */ `
       description
       isActive
       counterNumberOfTimesBuyed
-      amountToBuy
       order
       status
       categoryID

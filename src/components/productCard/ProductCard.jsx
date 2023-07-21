@@ -35,7 +35,7 @@ function ProductCard({product, urlS3Image}) {
                             </div>
                             <div className={s.infoProduct}>
                                 <div className={s.textTokensInfo}>TOKENS DISPONIBLES</div>
-                                <div className={s.valueTokensInfo}>{/* {product.amountToBuy} */} 12</div>
+                                <div className={s.valueTokensInfo}>12</div>
                         </div>
                     </div>
                 </div>
