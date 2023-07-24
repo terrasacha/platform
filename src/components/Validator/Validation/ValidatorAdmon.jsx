@@ -166,6 +166,7 @@ class ValidatorAdmon extends Component {
     this.state = {
       actualUser: '',
       documents: [],
+      tokenPrices: {},
       documentsPending: [],
       otherDocuments: [],
       featuresVerifables: [],
@@ -219,6 +220,7 @@ class ValidatorAdmon extends Component {
     await this.loadDocuments()
     await this.loadUsers()
     await this.loadFeatures()
+    await this.loadTokenPrices()
     // Subscriptions
     this.updateDocumentListener = API.graphql(graphqlOperation(onUpdateDocument))
       .subscribe({
@@ -301,7 +303,29 @@ class ValidatorAdmon extends Component {
     }));
     this.setState({featuresVerifables: listfeaturesVerifables})
   }
-
+  loadTokenPrices(){
+    let documents = []
+    if (this.state.showPending) documents = this.state.documentsPending
+    if (this.state.showOther) documents = this.state.otherDocuments
+      let products = []
+      documents.map(document => document.productFeature.verifications.items.map(v => {
+        if(v.userVerifierID === this.state.actualUser){
+          !products.includes(document.productFeature.product.id) && products.push(document.productFeature.product)
+        }
+      }))
+      const productsUnicos = Object.values(products.reduce((acc, product) => {
+        acc[product.id] = product;
+        return acc;
+      }, {}));
+      let tokenPrices = {} 
+      productsUnicos.map(product => tokenPrices[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE')[0]?.value : '')
+      this.setState({tokenPrices: tokenPrices})
+  }
+  handleTokenPriceChange = (event, product) => {
+    const newTokenPrices = { ...this.state.tokenPrices };
+    newTokenPrices[product.id] = event.target.value;
+    this.setState({ tokenPrices: newTokenPrices });
+  };
   async changeHeaderNavBarRequest(pRequest) {
     if (pRequest === 'product_documents') {
       this.setState({
@@ -417,6 +441,18 @@ class ValidatorAdmon extends Component {
         theme: "light",
         });
 }
+  notifyAssignTokenPrice = (product, tokenPrice) =>{
+    toast.success(`Nuevo precio para ${product}. $${tokenPrice}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+}
   handleDownload = async (doc) => {
     try {
       
@@ -487,26 +523,27 @@ class ValidatorAdmon extends Component {
 
     return verificationID
   }
-  async updateTokenPrice(product, tokenPrice){
-    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'token_value');
+  async updateTokenPrice(product){
+    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE');
     if(tieneTokenValue){
-      let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'token_value')[0].id
+      let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'GLOBAL_TOKEN_PRICE')[0].id
       let tempProductFeature = {
         id: tokenPricePF,
-        value: tokenPrice
+        value: this.state.tokenPrices[product.id]
       }
       API.graphql(graphqlOperation(updateProductFeature, { input: tempProductFeature }))
     }else{
       let tempProductFeature = {
-        value: '',
+        value: this.state.tokenPrices[product.id],
         isToBlockChain: false,
         isOnMainCard: false,
         productID: product.id,
-        featureID: 'token_value',
+        featureID: 'GLOBAL_TOKEN_PRICE',
       }
       API.graphql(graphqlOperation(createProductFeature , { input: tempProductFeature }))
 
     }
+    this.notifyAssignTokenPrice(product.name, this.state.tokenPrices[product.id])
     await this.loadDocuments()
 }
 
@@ -589,25 +626,21 @@ class ValidatorAdmon extends Component {
                 <h3>Proyectos</h3>
                 <Container className='mt-5'>
                   {productsUnicos?.map(product => {
-                    const tokenPrice = product.productFeatures.items.filter(pf => pf.featureID === 'token_value')[0]?.value ?? ''
                     const featuresAvailables = this.state.featuresVerifables.filter(item2 => !product.productFeatures.items.some(item1 => item1.featureID === item2.value));
-                    const handleTokenPriceChange = (event) => {
-                      tokenPrice = event.target.value
-                    };
                     return(
                     <Card key={product.id} body  
                     style={{ cursor: 'pointer' }} 
                     onClick={() => this.handleSelectProduct(product)}>
                       {product.name}<ArrowRight />
                       <InputGroup className="mb-3">
-                        <Form.Control
-                          value={tokenPrice}
-                          placeholder="Introduce token price"
-                          name='token_price'
-                          aria-describedby="basic-addon2"
-                          onChange={handleTokenPriceChange} 
-                        />
-                        <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateTokenPrice(product, tokenPrice)}>
+                      <Form.Control
+                        value={this.state.tokenPrices[product.id] || ''}
+                        placeholder="Introduce token price"
+                        name='GLOBAL_TOKEN_PRICE'
+                        aria-describedby="basic-addon2"
+                        onChange={(event) => this.handleTokenPriceChange(event, product)} 
+                      />
+                        <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateTokenPrice(product)}>
                           Change
                         </Button>
                       </InputGroup>
