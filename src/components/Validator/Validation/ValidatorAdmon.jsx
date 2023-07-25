@@ -167,6 +167,7 @@ class ValidatorAdmon extends Component {
       actualUser: '',
       documents: [],
       tokenPrices: {},
+      tokenNames: {},
       documentsPending: [],
       otherDocuments: [],
       featuresVerifables: [],
@@ -221,6 +222,7 @@ class ValidatorAdmon extends Component {
     await this.loadUsers()
     await this.loadFeatures()
     await this.loadTokenPrices()
+    await this.loadTokenNames()
     // Subscriptions
     this.updateDocumentListener = API.graphql(graphqlOperation(onUpdateDocument))
       .subscribe({
@@ -321,10 +323,33 @@ class ValidatorAdmon extends Component {
       productsUnicos.map(product => tokenPrices[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE')[0]?.value : '')
       this.setState({tokenPrices: tokenPrices})
   }
+  loadTokenNames(){
+    let documents = []
+    if (this.state.showPending) documents = this.state.documentsPending
+    if (this.state.showOther) documents = this.state.otherDocuments
+      let products = []
+      documents.map(document => document.productFeature.verifications.items.map(v => {
+        if(v.userVerifierID === this.state.actualUser){
+          !products.includes(document.productFeature.product.id) && products.push(document.productFeature.product)
+        }
+      }))
+      const productsUnicos = Object.values(products.reduce((acc, product) => {
+        acc[product.id] = product;
+        return acc;
+      }, {}));
+      let tokenNames = {} 
+      productsUnicos.map(product => tokenNames[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_NAME')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_NAME')[0]?.value : '')
+      this.setState({tokenNames: tokenNames})
+  }
   handleTokenPriceChange = (event, product) => {
     const newTokenPrices = { ...this.state.tokenPrices };
     newTokenPrices[product.id] = event.target.value;
     this.setState({ tokenPrices: newTokenPrices });
+  };
+  handleTokenNameChange = (event, product) => {
+    const newTokenNames = { ...this.state.tokenNames };
+    newTokenNames[product.id] = event.target.value;
+    this.setState({ tokenNames: newTokenNames });
   };
   async changeHeaderNavBarRequest(pRequest) {
     if (pRequest === 'product_documents') {
@@ -453,6 +478,18 @@ class ValidatorAdmon extends Component {
         theme: "light",
         });
 }
+  notifyAssignTokenName = (product, tokenName) =>{
+    toast.success(`Nuevo nombre de token para ${product}. ${tokenName}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+}
   handleDownload = async (doc) => {
     try {
       
@@ -546,6 +583,29 @@ class ValidatorAdmon extends Component {
     this.notifyAssignTokenPrice(product.name, this.state.tokenPrices[product.id])
     await this.loadDocuments()
 }
+  async updateTokenName(product){
+    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_TOKEN_NAME');
+    if(tieneTokenValue){
+      let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'GLOBAL_TOKEN_NAME')[0].id
+      let tempProductFeature = {
+        id: tokenPricePF,
+        value: this.state.tokenNames[product.id]
+      }
+      API.graphql(graphqlOperation(updateProductFeature, { input: tempProductFeature }))
+    }else{
+      let tempProductFeature = {
+        value: this.state.tokenNames[product.id],
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: product.id,
+        featureID: 'GLOBAL_TOKEN_NAME',
+      }
+      API.graphql(graphqlOperation(createProductFeature , { input: tempProductFeature }))
+
+    }
+    this.notifyAssignTokenName(product.name, this.state.tokenNames[product.id])
+    await this.loadDocuments()
+}
 
   validateInfoUser = async (pfID, userVerifiedID) => {
     let tempNewVerification = {}
@@ -622,7 +682,7 @@ class ValidatorAdmon extends Component {
           <Container className='mt-4'>
 
             <Row className="justify-content-md-center">
-              <Col xs={2}>
+              <Col xs={3}>
                 <h3>Proyectos</h3>
                 <Container className='mt-5'>
                   {productsUnicos?.map(product => {
@@ -635,12 +695,24 @@ class ValidatorAdmon extends Component {
                       <InputGroup className="mb-3">
                       <Form.Control
                         value={this.state.tokenPrices[product.id] || ''}
-                        placeholder="Introduce token price"
+                        placeholder="Token price"
                         name='GLOBAL_TOKEN_PRICE'
                         aria-describedby="basic-addon2"
                         onChange={(event) => this.handleTokenPriceChange(event, product)} 
                       />
                         <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateTokenPrice(product)}>
+                          Change
+                        </Button>
+                      </InputGroup>
+                      <InputGroup className="mb-3">
+                      <Form.Control
+                        value={this.state.tokenNames[product.id] || ''}
+                        placeholder="Token name"
+                        name='GLOBAL_TOKEN_NAME'
+                        aria-describedby="basic-addon2"
+                        onChange={(event) => this.handleTokenNameChange(event, product)} 
+                      />
+                        <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateTokenName(product)}>
                           Change
                         </Button>
                       </InputGroup>
@@ -652,7 +724,7 @@ class ValidatorAdmon extends Component {
                     )}
                 </Container>  
               </Col>
-              <Col xs={10}>
+              <Col xs={9}>
                 <div>
                   <h3>Documentación</h3>
                   <DropdownButton size='sm' variant='outline-primary' title='By status'>
