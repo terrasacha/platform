@@ -4,6 +4,7 @@ import s from './NewProduct.module.css'
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createUserProduct, createProductFeature, createFeatureType, createFeature, createDocument } from '../../../graphql/mutations'
 import {  listCategories, listFeatures, listUserProducts, listProductFeatures } from '../../../graphql/queries'
+import checkIfUserExists from '../../../utilities/checkIfIDuserExist'
 import DragAreaJustImages from './dragArea/DragAreaJustImages'
 import CompanyInformation from './companyInformation/CompanyInformation'
 import FromPlantaciones from './FormPlantaciones/FormPlantaciones'
@@ -112,7 +113,7 @@ class NewProduct extends Component {
         super(props)
         this.state = {
             CRUD_Product: {
-                id: uuidv4().replaceAll('-', '_'),
+                id: uuidv4().split('-')[4],
                 name: '',
                 description: '',
                 isActive: true,
@@ -154,10 +155,10 @@ class NewProduct extends Component {
             productFeature: {
                 ha_tot: '',
                 fecha_inscripcion: '',
-                ubicacion: '',
+                C_ubicacion: '',
                 coordenadas: '',
                 periodo_permanencia: '',
-                token_name: randomWords({ exactly: 3, join: '' }).toUpperCase(),
+                GLOBAL_TOKEN_NAME: randomWords({ exactly: 3, join: '' }).toUpperCase(),
                 redd:{
                     redd_map: '',
                     redd_gob: '',
@@ -186,10 +187,10 @@ class NewProduct extends Component {
             errors: {
                 title: '',
                 ha_tot: '',
-                ubicacion: '',
+                C_ubicacion: '',
                 coordenadas: '',
                 periodo_permanencia: '',
-                token_name: ''
+                GLOBAL_TOKEN_NAME: ''
             },
             renderModalInformation: false,
             renderModalProductOnDraft: false,
@@ -428,8 +429,9 @@ class NewProduct extends Component {
         const actualUser = await Auth.currentAuthenticatedUser()
         const userID = actualUser.attributes.sub;
         const tempCRUD_Product = this.state.CRUD_Product
+        tempCRUD_Product.id = await checkIfUserExists(tempCRUD_Product.id)
         if (this.state.selectedCompany === 'no company') return this.notifyError('Debe seleccionar una empresa/persona natural')
-        if ((this.state.errors.title === '' && this.state.errors.ubicacion === '' && this.state.errors.ha_tot === ''
+        if ((this.state.errors.title === '' && this.state.errors.C_ubicacion === '' && this.state.errors.ha_tot === ''
             && this.state.errors.coordenadas === '' && this.state.companyerrors.name === '' && this.state.companyerrors.cp === ''
             && this.state.companyerrors.phone === '' && this.state.companyerrors.email === ''
             && this.state.companyerrors.website === '') || this.state.renderGuardarParcialmente) {
@@ -444,7 +446,7 @@ class NewProduct extends Component {
                         categoryID: this.state.activeButton,
                         order: 0,
                     }
-                    this.state.imageToUpload !== '' && this.handleFiles(this.state.imageToUpload, payLoadNewProduct.id)
+                    this.state.imageToUpload !== '' && this.handleFiles(this.state.imageToUpload, payLoadNewProduct.idGLOBAL_TOKEN_NAMEC_C_ubicacion)
                     await API.graphql(graphqlOperation(createProduct, { input: payLoadNewProduct }))
                     // Creating UserProduct
                     let actualUser = await Auth.currentAuthenticatedUser()
@@ -462,11 +464,11 @@ class NewProduct extends Component {
                     }
                     const productFeatures = [
                         { featureID: 'ha_tot', value: this.state.productFeature.ha_tot },
-                        { featureID: 'ubicacion', value: this.state.productFeature.ubicacion },
+                        { featureID: 'C_ubicacion', value: this.state.productFeature.C_ubicacion },
                         { featureID: 'fecha_inscripcion', value: Date.parse(this.state.productFeature.fecha_inscripcion) },
                         { featureID: 'coordenadas', value: this.state.productFeature.coordenadas },
                         { featureID: 'periodo_permanencia', value: this.state.productFeature.periodo_permanencia },
-                        { featureID: 'token_name', value: this.state.productFeature.token_name },
+                        { featureID: 'GLOBAL_TOKEN_NAME', value: this.state.productFeature.GLOBAL_TOKEN_NAME },
                       ];
                       
                     const userProducts = [payLoadNewUserProduct, payLoadAdmonProduct];
@@ -616,10 +618,10 @@ class NewProduct extends Component {
             productFeature: {
                 ha_tot: '',
                 fecha_inscripcion: '',
-                ubicacion: '',
+                C_ubicacion: '',
                 coordenadas: '',
                 periodo_permanencia: '',
-                token_name: randomWords({ exactly: 3, join: '_' }).toUpperCase(),
+                GLOBAL_TOKEN_NAME: randomWords({ exactly: 3, join: '_' }).toUpperCase(),
                 redd:{
                     redd_map: '',
                     redd_gob: '',
@@ -648,10 +650,10 @@ class NewProduct extends Component {
             errors: {
                 title: '',
                 ha_tot: '',
-                ubicacion: '',
+                C_ubicacion: '',
                 coordenadas: '',
                 periodo_permanencia: '',
-                token_name: ''
+                GLOBAL_TOKEN_NAME: ''
             },
             imageToUpload: '',
             activeButton: '',
@@ -719,11 +721,11 @@ class NewProduct extends Component {
         if (event.target.name === 'productFeature_fecha') {
             tempCRUD_productFeature.fecha_inscripcion = event.target.value
         }
-        if (event.target.name === 'productFeature_ubicacion') {
-            tempCRUD_productFeature.ubicacion = event.target.value
+        if (event.target.name === 'productFeature_C_ubicacion') {
+            tempCRUD_productFeature.C_ubicacion = event.target.value
             let error = validarString(event.target.value, regexInputUbic)
             this.setState(prevState => ({
-                errors: { ...prevState.errors, ubicacion: error }
+                errors: { ...prevState.errors, C_ubicacion: error }
             }))
         }
         if (event.target.name === 'productFeature_coord') {
@@ -740,11 +742,11 @@ class NewProduct extends Component {
                 errors: { ...prevState.errors, periodo_permanencia: error }
             }))
         }
-        if (event.target.name === 'productFeature_token_name') {
-            tempCRUD_productFeature.token_name = event.target.value.toUpperCase()
+        if (event.target.name === 'productFeature_GLOBAL_TOKEN_NAME') {
+            tempCRUD_productFeature.GLOBAL_TOKEN_NAME = event.target.value.toUpperCase()
             let error = validarString(event.target.value, regexInputTokenName)
             this.setState(prevState => ({
-                errors: { ...prevState.errors, token_name: error }
+                errors: { ...prevState.errors, GLOBAL_TOKEN_NAME: error }
             }))
         }
         if (event.target.name === 'PP_for_ten_tie') {
@@ -955,10 +957,10 @@ class NewProduct extends Component {
                                 </div>
                             </legend>
                             <input type="text"
-                                name='productFeature_token_name'
-                                value={productFeature.token_name}
+                                name='productFeature_GLOBAL_TOKEN_NAME'
+                                value={productFeature.GLOBAL_TOKEN_NAME}
                                 onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.token_name}</span>
+                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.GLOBAL_TOKEN_NAME}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
@@ -987,11 +989,11 @@ class NewProduct extends Component {
                                 </div>
                             </legend>
                             <input type="text"
-                                name='productFeature_ubicacion'
-                                value={productFeature.ubicacion}
+                                name='productFeature_C_ubicacion'
+                                value={productFeature.C_ubicacion}
                                 onChange={(e) => this.handleOnChangeInputForm(e)}
                                 placeholder='Ciudad, Departamento, País' />
-                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.ubicacion}</span>
+                            <span style={{ color: 'red', fontSize: '.6em' }}>{this.state.errors.C_ubicacion}</span>
                         </fieldset>
                         <fieldset className={s.inputContainer}>
                             <legend>
