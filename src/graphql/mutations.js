@@ -539,6 +539,7 @@ export const createVerification = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -685,6 +686,7 @@ export const updateVerification = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -831,6 +833,7 @@ export const deleteVerification = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1120,6 +1123,7 @@ export const createDocument = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1229,6 +1233,7 @@ export const updateDocument = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1338,6 +1343,7 @@ export const deleteDocument = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1432,6 +1438,7 @@ export const createCategory = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1461,6 +1468,7 @@ export const updateCategory = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1490,6 +1498,7 @@ export const deleteCategory = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1514,6 +1523,7 @@ export const createProduct = /* GraphQL */ `
       order
       status
       timeOnVerification
+      projectReadiness
       categoryID
       category {
         id
@@ -1631,6 +1641,7 @@ export const updateProduct = /* GraphQL */ `
       order
       status
       timeOnVerification
+      projectReadiness
       categoryID
       category {
         id
@@ -1748,6 +1759,7 @@ export const deleteProduct = /* GraphQL */ `
       order
       status
       timeOnVerification
+      projectReadiness
       categoryID
       category {
         id
@@ -1877,6 +1889,7 @@ export const createImage = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -1936,6 +1949,7 @@ export const updateImage = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -1995,6 +2009,7 @@ export const deleteImage = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -3337,6 +3352,7 @@ export const createProductFeature = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -3499,6 +3515,7 @@ export const updateProductFeature = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -3661,6 +3678,7 @@ export const deleteProductFeature = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -3827,6 +3845,7 @@ export const createProductFeatureResult = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -3917,6 +3936,7 @@ export const updateProductFeatureResult = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -4007,6 +4027,7 @@ export const deleteProductFeatureResult = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -4121,6 +4142,7 @@ export const createUserProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -4218,6 +4240,7 @@ export const updateUserProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -4315,6 +4338,7 @@ export const deleteUserProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -4402,6 +4426,7 @@ export const createOrder = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -4478,6 +4503,7 @@ export const updateOrder = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -4554,6 +4580,7 @@ export const deleteOrder = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -4619,6 +4646,7 @@ export const createTransactions = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -4704,6 +4732,7 @@ export const updateTransactions = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -4789,6 +4818,7 @@ export const deleteTransactions = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -4896,6 +4926,7 @@ export const createCompany = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -4980,6 +5011,7 @@ export const updateCompany = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -5064,6 +5096,7 @@ export const deleteCompany = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -5186,6 +5219,7 @@ export const createXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -5224,6 +5258,7 @@ export const createXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -5274,6 +5309,7 @@ export const updateXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -5312,6 +5348,7 @@ export const updateXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -5362,6 +5399,7 @@ export const deleteXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -5400,6 +5438,7 @@ export const deleteXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
