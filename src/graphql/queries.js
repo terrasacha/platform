@@ -98,7 +98,7 @@ export const getUser = /* GraphQL */ `
                       items {
                         id
                         comment
-                        createdAt
+          createdAt
                         isCommentByVerifier
                       }
                     }
@@ -355,6 +355,7 @@ export const getVerification = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -601,6 +602,7 @@ export const getDocument = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -751,6 +753,7 @@ export const getCategory = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -793,6 +796,7 @@ export const getProduct = /* GraphQL */ `
       order
       status
       timeOnVerification
+      projectReadiness
       categoryID
       category {
         id
@@ -928,7 +932,7 @@ export const listProducts = /* GraphQL */ `
             title
             isActive
             isOnCarousel
-          }
+        }
         }
         productFeatures {
           nextToken
@@ -941,7 +945,7 @@ export const listProducts = /* GraphQL */ `
                 id
                 isApproved
                 signed
-              }
+        }
             }
             feature {
               id
@@ -1018,6 +1022,7 @@ export const getImage = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -1079,6 +1084,7 @@ export const listImages = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1750,6 +1756,7 @@ export const getProductFeature = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -1914,6 +1921,7 @@ export const listProductFeatures = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -1979,6 +1987,7 @@ export const getProductFeatureResult = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -2134,6 +2143,7 @@ export const getUserProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -2215,6 +2225,7 @@ export const listUserProducts = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -2265,6 +2276,7 @@ export const getOrder = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -2360,6 +2372,7 @@ export const getTransactions = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -2447,6 +2460,7 @@ export const listTransactions = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -2517,6 +2531,7 @@ export const getCompany = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -2585,6 +2600,7 @@ export const listCompanies = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -2651,6 +2667,7 @@ export const getXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -2689,6 +2706,7 @@ export const getXLSFormProduct = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
@@ -2741,6 +2759,7 @@ export const listXLSFormProducts = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
@@ -2754,6 +2773,7 @@ export const listXLSFormProducts = /* GraphQL */ `
           order
           status
           timeOnVerification
+          projectReadiness
           categoryID
           createdAt
           updatedAt
