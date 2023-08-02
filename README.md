@@ -233,23 +233,3 @@ exports.handler = async(event) => {
           }
         }
 ``````
-## Global calculated variables
-global_token_price
-global_total_tokens
-
-<!-- global_token_unit_value -->
-<!-- global_total_tokens -->
-<!-- global_token_name -->
-<!-- global_expected_income -->
-<!-- global_total_price -->
-<!-- global_ubicacion -->
-<!-- global_coordenadas -->
-<!-- global_periodo_permanencia -->
-<!-- global_fecha_inscripcion -->
-
-global_project_total_cost/global_total_tokens = global_token_unit_value
-
-
-
-Fecha final para registrar la información del PRODUCT(proyecto)
-
