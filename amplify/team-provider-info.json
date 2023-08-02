@@ -80,7 +80,18 @@
       },
       "function": {
         "kiosuanbcrjsapp": {},
-        "kiosuanbcrjsappa6accc93": {}
+        "kiosuanbcrjsappa6accc93": {},
+        "kiosuanbcrjappRejectedDocumentNotificaction": {},
+        "kiosuanbcrjsappChangeProductStatus": {},
+        "kiosuanbcrjsappCheckTimeOnVerification": {},
+        "kiosuanbcrjsappConstructorUploadNewDocument": {},
+        "kiosuanbcrjsappSendMailNotByComment": {
+          "graphqlEndpoint": "https://5ctx6qwpnrgttdsri65x2zrhaq.appsync-api.us-east-1.amazonaws.com/graphql",
+          "graphqlApiKey": "da2-7lda7ydzxjh5xg6nx3seq5eaka",
+          "sesEmail": "notificaciones@suan.global"
+        },
+        "kiosuanbcrjsappSuccessfullyProductCreated": {},
+        "kiosuanrjsappSendVerificationEmailUserCreated": {}
       },
       "hosting": {
         "amplifyhosting": {

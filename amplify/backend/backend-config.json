@@ -156,6 +156,30 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_graphqlApiKey": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_graphqlEndpoint": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_sesEmail": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {

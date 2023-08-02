@@ -916,6 +916,7 @@ export const listProducts = /* GraphQL */ `
         order
         status
         timeOnVerification
+        projectReadiness
         categoryID
         category {
           id
