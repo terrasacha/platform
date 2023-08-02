@@ -79,16 +79,6 @@
         "kiosuanbcrjsappa6accc93": {}
       },
       "function": {
-        "kiosuanbcrjsapp58b48a41": {
-          "sesEmail": "notificaciones@suan.global",
-          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsapp58b48a41-477743776b58774c3654-build.zip"
-        },
-        "kiosuanbcrjsappSchProjectValidationEnddate": {
-          "sesEmail": "notificaciones@suan.global",
-          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappSchProjectValidationEnddate-7a6d6449574f69616579-build.zip"
-        },
         "kiosuanbcrjsapp": {},
         "kiosuanbcrjsappa6accc93": {}
       },
