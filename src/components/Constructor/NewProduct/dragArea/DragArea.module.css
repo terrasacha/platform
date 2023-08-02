@@ -36,7 +36,17 @@
     font-weight: 400;
     font-size: 1em;
   }
-
+.fileAdded{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fileAdded button {
+  all:unset;
+  margin-top: .3rem;
+  z-index: 10;
+  color: rgb(229, 70, 70);
+}
   /* Estilos para pantallas pequeñas */
 @media (max-width: 600px) {
   

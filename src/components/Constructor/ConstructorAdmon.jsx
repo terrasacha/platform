@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Auth } from 'aws-amplify'
 import { Accordion, Button, Card, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap'
+import InputGroup from 'react-bootstrap/InputGroup';
 // Auth css custom
 import Bootstrap from "../common/themes"
 // Routing
 // import { useHistory } from 'react-router-dom'
 // GraphQL
-import { API, graphqlOperation } from 'aws-amplify'
-import { createUser, createWallet, updateUser } from '../../graphql/mutations'
+import { API, Auth, graphqlOperation } from 'aws-amplify'
+import { createUser, createWallet, deleteWallet, updateUser } from '../../graphql/mutations'
 import { getUser } from '../../graphql/queries'
 // Components
 import wallet from './assets/crypto-digital-wallet-gID_4.jpg'
@@ -19,26 +19,23 @@ import s from './ConstructorAdmon.module.css'
 import HeaderNavbar from './Navbar/HeaderNavbar'
 import ProductsBuyed from './ProductsBuyed/ProductsBuyed'
 import NewProduct from './NewProduct/NewProduct'
+import DocumentStatus from './Documents/DocumentStatus'
 
 class ConstructorAdmon extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            user: {
-                id: '',
-                name: '',
-                isProfileUpdated: false,
-                walletID: '',
-                walletName: ''
-            },
+            user: {},
+            walletAddress: '',
+            editWallet: false,
             isShowDocuments: false,
             isShowProductsBuyed: false,
             isShowProductsList:true,
             uploadNewProduct:false, //false
             isShowInvestorProfile: false, //true
             showModalDocument: false,
-            isRenderCompleteOrUpdateProfile: false,
+            isRenderProfile: false,
             isNewUser: false
         }
         this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this)
@@ -52,9 +49,15 @@ class ConstructorAdmon extends Component {
     async componentDidMount() { 
         console.log('componentDidMount')
         const actualUser = await Auth.currentAuthenticatedUser()
-        this.loadActualLoggedUser(actualUser)
+        let userResult = await API.graphql({ query: getUser, variables: { id: actualUser.attributes.sub } })
+        this.loadUserInfo(userResult)
     }
-
+    loadUserInfo(userResult){
+        this.setState({ user: userResult.data.getUser })
+        if(userResult.data.getUser.wallets.items.length > 0){
+            this.setState({walletAddress: userResult.data.getUser.wallets.items[0].id})
+        }
+    }
     async loadActualLoggedUser(actualUser) {
         let tempUser = this.state.user
         if (actualUser !== undefined) {
@@ -68,16 +71,16 @@ class ConstructorAdmon extends Component {
             const result = await API.graphql(graphqlOperation(getUser, filterByUserID))
             if (result.data.getUser === null) {
                 // The user doesn't exists
-                await this.setState({isRenderCompleteOrUpdateProfile: true, isNewUser: true, showModalDocument: true})
+                await this.setState({isRenderProfile: true, isNewUser: true, showModalDocument: true})
             } else {
                 if (result.data.getUser.isProfileUpdated === null || !result.data.getUser.isProfileUpdated) {
                     // The user exists but the profile is not completed
-                    await this.setState({isRenderCompleteOrUpdateProfile: true, isNewUser: false, showModalDocument: true})
+                    await this.setState({isRenderProfile: true, isNewUser: false, showModalDocument: true})
                 } else {
                     // The user exists and the profile is complete
                     await this.setState({
                         user: result.data.getUser,
-                        isRenderCompleteOrUpdateProfile: false,
+                        isRenderProfile: false,
                         isShowProductsList:true,
                         isShowDocuments: false,
                         isNewUser: false
@@ -91,12 +94,12 @@ class ConstructorAdmon extends Component {
     async changeHeaderNavBarRequest(pRequest) {
         console.log('changeHeaderNavBarRequest: ', pRequest)
 
-        if (pRequest === 'investor_profile') {
+        if (pRequest === 'perfil') {
             this.setState({
                 isShowDocuments: false,
                 isShowProductsBuyed: false,
-                isShowInvestorProfile: true,
-                isRenderCompleteOrUpdateProfile: false,
+                isShowInvestorProfile: false,
+                isRenderProfile: true,
                 uploadNewProduct: false,
                 isShowProductsList: false
             })
@@ -107,7 +110,7 @@ class ConstructorAdmon extends Component {
                 isShowDocuments: true,
                 isShowProductsBuyed: false,
                 isShowInvestorProfile: false,
-                isRenderCompleteOrUpdateProfile: false,
+                isRenderProfile: false,
                 uploadNewProduct: false,
                 isNewUser: false,
                 isShowProductsList: false
@@ -118,7 +121,7 @@ class ConstructorAdmon extends Component {
                 isShowDocuments: false,
                 isShowProductsBuyed: true,
                 isShowInvestorProfile: false,
-                isRenderCompleteOrUpdateProfile: false,
+                isRenderProfile: false,
                 uploadNewProduct: false,
                 isNewUser: false,
                 isShowProductsList: false
@@ -129,7 +132,7 @@ class ConstructorAdmon extends Component {
                 isShowDocuments: false,
                 isShowProductsBuyed: false,
                 isShowInvestorProfile: false,
-                isRenderCompleteOrUpdateProfile: false,
+                isRenderProfile: false,
                 uploadNewProduct: true,
                 isNewUser: false,
                 isShowProductsList: false
@@ -140,7 +143,7 @@ class ConstructorAdmon extends Component {
                 isShowDocuments: false,
                 isShowProductsBuyed: false,
                 isShowInvestorProfile: false,
-                isRenderCompleteOrUpdateProfile: false,
+                isRenderProfile: false,
                 uploadNewProduct: false,
                 isNewUser: false,
                 isShowProductsList: true
@@ -154,7 +157,7 @@ class ConstructorAdmon extends Component {
     }
 
     async handleRenderCompleteOrUpdateProfile () {
-        this.setState({isRenderCompleteOrUpdateProfile: !this.state.isRenderCompleteOrUpdateProfile})
+        this.setState({isRenderProfile: !this.state.isRenderProfile})
     }
 
 
@@ -210,7 +213,7 @@ class ConstructorAdmon extends Component {
             status: 'new'
         }
         await API.graphql(graphqlOperation(createWallet, { input: walletPayload }))
-        this.setState({isRenderCompleteOrUpdateProfile: false})
+        this.setState({isRenderProfile: false})
     }
     handleHideModalDocument() {
         this.setState({showModalDocument: !this.state.showModalDocument})
@@ -228,7 +231,7 @@ class ConstructorAdmon extends Component {
                                 walletID: '',
                                 walletName: ''
                             },
-                            isRenderCompleteOrUpdateProfile: false, 
+                            isRenderProfile: false, 
                         },
                         )
             window.location.href="/"
@@ -240,30 +243,65 @@ class ConstructorAdmon extends Component {
             console.log('error signing out: ', error)
         }
     }
+    editUserWallet(e){
+        if (e.target.name === 'walletAddress') {
+            this.setState({walletAddress: e.target.value })
+        }
+    }
+    async updateUserWallet(walletID){
+        await API.graphql(graphqlOperation(deleteWallet,{ input: {id: walletID} }))
+        let info ={
+            id: this.state.walletAddress,
+            name: this.state.walletAddress,
+            status: 'new',
+            isSelected: true,
+            userID: this.state.user.id
+        }
+        await API.graphql(graphqlOperation(createWallet, { input: info }))
+        let tempUser = this.state.user
+        tempUser.wallets.items[0].id = this.state.walletAddress
+        this.setState({ editWallet: true, user: tempUser })
 
+        setTimeout(() => {
+            this.setState({ editWallet: false })
+        }, 2000)
+
+    }
     render() {
-        let {isShowDocuments, user, isRenderCompleteOrUpdateProfile, isShowProductsBuyed, uploadNewProduct, isShowProductsList} = this.state
+        let {isShowDocuments, user, isRenderProfile, isShowProductsBuyed, uploadNewProduct, isShowProductsList} = this.state
         const renderUserWallets = (user) => {
             if (user.wallets !== undefined && user.wallets.items !== undefined) {
                 if (user.wallets.items.length > 0) {
                     return (
-                        <Row xs={1} md={2} lg={3}>
-                            {user.wallets.items.map(wallet => (
-                                <Col key={wallet.id}>
-                                    {wallet.name} / {wallet.id}
-                                </Col>
-                            ))}
-                        </Row>
+                        <InputGroup className="mb-3">
+                        <Form.Control
+                            value={this.state.walletAddress}
+                          placeholder="Paste your address"
+                          name='walletAddress'
+                          aria-describedby="basic-addon2"
+                          onChange={(e) => this.editUserWallet(e)}
+                        />
+                        <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateUserWallet(user.wallets.items[0].id)}>
+                          {this.state.editWallet? 'Done': 'Edit'}
+                        </Button>
+                      </InputGroup>
                     )
                     
                 }
             }
         }
+        {/* <>
+{user.wallets.items.map(wallet => (
+                <div key={wallet.id}>
+                    {wallet.id}
+                </div>
+            ))}
+        </> */}
 
         const renderOrders = () => {
             if (isShowDocuments) {
                 return (
-                    <Documents />
+                    <DocumentStatus />
                 )
             }
         }
@@ -289,56 +327,7 @@ class ConstructorAdmon extends Component {
             }
         }
 
-        const renderCompleteProfile = () => {
-            if(!uploadNewProduct){
-                if (isRenderCompleteOrUpdateProfile) {
-                    return (
-                        <Container>
-                            <Form>
-                            
-                            <Row className='mb-3'>
-                                
-                                <Form.Group as={Col} controlId='formGridUserContactName'>
-                                    <Form.Label>Name</Form.Label>
-                                    <Form.Control
-                                        type='text'
-                                        placeholder='Nombre Contacto'
-                                        name='user.name'
-                                        value={user.name}
-                                        onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                </Form.Group>
-
-                                <Form.Group as={Col} controlId='formGridUserWalletName'>
-                                    <Form.Label>Wallet Name</Form.Label>
-                                    <Form.Control
-                                        type='text'
-                                        placeholder=''
-                                        name='user.walletName'
-                                        value={user.walletName}
-                                        onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                </Form.Group>
-
-                                <Form.Group as={Col} controlId='formGridUserWalletID'>
-                                    <Form.Label>Wallet Address</Form.Label>
-                                    <Form.Control
-                                        type='text'
-                                        placeholder=''
-                                        name='user.walletID'
-                                        value={user.walletID}
-                                        onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                </Form.Group>
-
-                            </Row>
-                            
-                            <Button
-                                variant='primary'
-                                size='lg'
-                                onClick={() => this.handleCUUser()}
-                                >Actualizar</Button>
-                            </Form>
-                        </Container>
-                    )
-                } else {
+        const renderProfile = () => {
                     return (
                         <div style={{width: '100%', height: '20%',display: 'flex', justifyContent:'center'}}>
                         <div className={s.container_profile}>
@@ -348,21 +337,16 @@ class ConstructorAdmon extends Component {
                             <div className={s.profile_info_container}>
                                 <div className={s.profile_info}>
                                     <h4>{user.name}</h4>
-                                    <h6>Wallets</h6>
+                                    <h6>Wallet Address</h6>
                                     {renderUserWallets(user)}
-                                </div>
-                                <div className={s.button_container}>
-                                    <button className={s.button_update_profile} onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}>Update info</button>
                                 </div>
                             </div>
                         </div>
                         </div>
                     )
-                }
-            }
         }
         const renderModalWallet = () => {
-            if (isRenderCompleteOrUpdateProfile) {
+            if (isRenderProfile) {
                 return (
                     <Modal
                         show={this.state.showModalDocument}
@@ -428,7 +412,7 @@ class ConstructorAdmon extends Component {
                 </Row>
 
                 <Row>
-                    {/* {renderCompleteProfile()} */}
+                    {renderProfile()}
                     {renderOrders()}
                     {/* {renderProductsBuyed()} */}
                     {renderNewProduct()}

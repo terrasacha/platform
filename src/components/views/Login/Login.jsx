@@ -7,7 +7,7 @@ import { createFeature, createProductFeature, createUser } from '../../../graphq
 import s from './Login.module.css'
 import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
-    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signUp' ,terms: false,privacy_policy:false, role: 'investor', code: ''
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn' ,terms: false,privacy_policy:false, role: 'investor', code: ''
 }
 
 export default function LogIn() {
@@ -79,12 +79,12 @@ export default function LogIn() {
                     id: response.userSub,
                     name: username,
                     isProfileUpdated: true,
-                    role: role
+                    role: role,
+                    email: email
                 }
                 const inputFeature = {
                     id: `${response.userSub}_VALIDATION`,
-                    name: `${username}_VALIDATION`,
-                    featureTypeID: `USER_TO_VALIDATE`
+                    name: `${username}_VALIDATION`
                 } 
                 const inputProductFeature = {
                     featureID: `${response.userSub}_VALIDATION`,

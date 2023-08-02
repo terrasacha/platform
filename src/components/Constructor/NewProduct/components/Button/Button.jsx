@@ -13,6 +13,9 @@ class Button extends Component {
         this.props.handleButtonClick(this.props.id);
     };
     componentDidMount(){
+        if(this.props.activeButton === this.props.id){
+            this.setState({isActive: true})
+        }
     }
     componentDidUpdate(prevProps){
         if(prevProps.activeButton !== this.props.activeButton){

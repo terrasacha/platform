@@ -30,7 +30,7 @@ export default class CRUDProductFeatures extends Component {
                 createdOn: '',
                 updatedOn: '',
                 sign: '',
-                userVerifierID: '',
+                userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b',
                 userVerifiedID: '',
                 productFeatureID: '',
             },
@@ -71,7 +71,7 @@ export default class CRUDProductFeatures extends Component {
                     newProductFeature: {...prevState.newProductFeature, isToBlockChain: false}}))
             }
         }
-        if(e.target.name === 'isVerifiable'){
+        if(e.target.name === 'isVerifable'){
             if(e.target.value === 'yes'){
                 this.setState(prevState => ({
                     newProductFeature: {...prevState.newProductFeature, isVerifable: true}}))
@@ -91,7 +91,15 @@ export default class CRUDProductFeatures extends Component {
             tempNewProductFeature.productID = this.props.CRUD_Product.id
             tempNewProductFeature.featureID = this.props.selectedFeature.id
             
-            await API.graphql(graphqlOperation(createProductFeature, { input: tempNewProductFeature }))
+            const pF = await API.graphql(graphqlOperation(createProductFeature, { input: tempNewProductFeature }) )
+            console.log(pF, "pf")
+            let constructorID = ''
+            pF.data.createProductFeature.product.userProducts.items.map( uP => {
+                if (uP.user.role === 'constructor') {
+                  constructorID = uP.user.id
+                  return
+                }
+            })
 
             if (tempNewProductFeature.isVerifable === true) {
                 let tempNewVerification = this.state.newVerification
@@ -99,9 +107,9 @@ export default class CRUDProductFeatures extends Component {
                 tempNewVerification.createdOn = new Date().toISOString()
                 tempNewVerification.updatedOn = new Date().toISOString()
                 tempNewVerification.productFeatureID = tempNewProductFeature.id
+                tempNewVerification.userVerifiedID = constructorID
                 await API.graphql(graphqlOperation(createVerification, { input: tempNewVerification }))
                 await this.cleanVerificationCreate()
-
             }
 
             await this.cleanProductFeatureCreate()
@@ -148,7 +156,7 @@ export default class CRUDProductFeatures extends Component {
                 createdOn: '',
                 updatedOn: '',
                 sign: '',
-                userVerifierID: '',
+                userVerifierID: 'ef21568e-027c-4aaf-8cf4-b1bbce19110b',
                 userVerifiedID: '',
                 productFeatureID: '',
             },
@@ -240,7 +248,7 @@ export default class CRUDProductFeatures extends Component {
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsVerifable'>
-                                    <Form.Select  name='isVerifiable' onChange={(e) => this.handleCreateProductFeature(e)} >
+                                    <Form.Select  name='isVerifable' onChange={(e) => this.handleCreateProductFeature(e)} >
                                         <option>-</option>
                                         <option value='no' >No</option>
                                         <option value='yes'>Yes</option>

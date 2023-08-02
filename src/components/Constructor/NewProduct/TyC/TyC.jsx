@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Col, Container, Form, Row, Table, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import s from './TyC.module.css'
 import LOGO from '../../../common/_images/SuanLogoName.svg'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 class TyC extends Component {
 

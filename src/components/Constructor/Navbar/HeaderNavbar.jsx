@@ -52,7 +52,7 @@ export default class HeaderNavbar extends Component {
                         <Offcanvas.Title id={`offcanvasNavbarLabel-expand-$'sm'`}>
                             <a href='/'><img src={LOGO} 
                                 width="40"
-                                height="auto"
+                                height="40"
                                 className="d-inline-block align-top"
                                 alt="ATP"
                             /></a>
@@ -68,10 +68,10 @@ export default class HeaderNavbar extends Component {
                         <Nav>
                             <Nav className={s.navGroup}>
                                 {/* <Nav.Link href="#profile" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_profile')}>Profile</Nav.Link> */}
-                                <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_products')}>Products</Nav.Link>
-                                <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documents</Nav.Link>
+                                <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_products')}>Proyectos</Nav.Link>
+                                <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documentos</Nav.Link>
                                 {/* <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link> */}
-                                <Nav.Link href="#upload_product" onClick={(e) => this.props.changeHeaderNavBarRequest('upload_product')}>New Product</Nav.Link>
+                                <Nav.Link href="#upload_product" onClick={(e) => this.props.changeHeaderNavBarRequest('upload_product')}>Nuevo Proyecto</Nav.Link>
                                 <Nav.Link  onClick={() => window.location.href="/creating_wallet"}>¿Cómo crear tu billetera?</Nav.Link>
                                 {localStorage.getItem('role')?
                                 <button className={s.signing} onClick={() => this.handleSignOut()}>Log out</button>:

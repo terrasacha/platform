@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Button, Container, Nav, Navbar } from 'react-bootstrap'
-// Import React Bootstrap Icons
-import { ListTask } from 'react-bootstrap-icons'
-
+import {  Container, Nav, Navbar } from 'react-bootstrap'
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import s from './HeaderNavbar.module.css'
 // Import images
-import LOGO from '../../common/_images/SuanLogoName.svg'
+import LOGO from '../../common/_images/SuanLogo.png'
 
 export default class HeaderNavbar extends Component {
 
@@ -31,23 +30,50 @@ export default class HeaderNavbar extends Component {
         let role = localStorage.getItem('role')
         return (
             <>
-                <Navbar style={{backgroundColor: '#fff'}} fixed="top">
+                <Navbar key='sm' bg="light" expand='lg' fixed="top">
                     <Container>
-                        <Nav className="me-auto">
-                            <Nav.Link href="/">
-                                <img src={LOGO}
-                                    width="80"
-                                    height="auto"
-                                    className="d-inline-block align-top"
-                                    alt="BBT"/>
-                            </Nav.Link>
-                            <Nav.Link href="#profile" onClick={(e) => this.props.changeHeaderNavBarRequest('product_documents')}>Product_Documents</Nav.Link>
-                            <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('users')}>Users</Nav.Link>
-                        </Nav>
-                        <Nav>
-                            <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>
-                            <button onClick={(e) => this.handleSignOut()}>Sign Out</button>
-                        </Nav>
+                            <Navbar.Brand href="/" style={{marginLeft: '2%'}}>
+                                <img src={LOGO} 
+                                height="40"
+                                width="auto"
+                                className="d-inline-block align-top"
+                                alt="ATP"
+                                />
+                                </Navbar.Brand>
+                                <Navbar.Toggle  />
+                                <Navbar.Offcanvas
+                                    placement="end"
+                                    >
+                                    <Offcanvas.Header closeButton>
+                                        <Offcanvas.Title >
+                                            <a href='/'><img src={LOGO} 
+                                                width="40"
+                                                height="40"
+                                                className="d-inline-block align-top"
+                                                alt="ATP"
+                                            /></a>
+                                        </Offcanvas.Title>
+                                    </Offcanvas.Header>
+                                    <Offcanvas.Body>
+                                        <Nav
+                                        className="me-auto my-2 my-lg-0"
+                                        style={{ maxHeight: '100px' }}
+                                        navbarScroll
+                                        >
+                                        </Nav>
+                                        <Nav>
+                                            <Nav className={s.navGroup}>
+                                            <Nav.Link href="#profile" onClick={(e) => this.props.changeHeaderNavBarRequest('product_documents')}>Proyectos Asignados</Nav.Link>
+                                            <Nav.Link style={{fontWeight: '700', color: '#FE4849'}} disabled>{role? role: ''}</Nav.Link>
+                                                {localStorage.getItem('role')?
+                                                <button className={s.signing} onClick={() => this.handleSignOut()}>Log out</button>:
+                                                <button className={s.signing} onClick={() => window.location.href="/login"}>Log In</button>
+                                                }
+                                            </Nav>
+
+                                        </Nav>
+                                    </Offcanvas.Body>
+                                </Navbar.Offcanvas>
                     </Container>
                 </Navbar>
             </>

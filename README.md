@@ -68,3 +68,110 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+# Entity Relation Model
+
+El modelo entidad-relación que has compartido es una representación de un esquema de base de datos utilizando la notación GraphQL con la adición de anotaciones específicas de Amplify, un servicio de desarrollo de aplicaciones de AWS. Aquí hay una descripción de las entidades y sus relaciones:
+
+## Auth Models:
+
+> User: Representa a un usuario. Tiene campos como "id", "name", "dateOfBirth", "isProfileUpdated", "address", "cellphone", "role", "status", "email". También tiene relaciones con otras entidades, como "wallets", "verifierVerifications", "verifiedVerifications", "userProducts" y "documents".
+
+## Wallet: 
+
+> Representa una billetera asociada a un usuario. Tiene campos como "id", "name", "status", "isSelected" y "userID". También tiene una relación con la entidad "User".
+
+## Verification
+> Representa una verificación realizada por un verificador sobre un usuario. Tiene campos como "id", "createdOn", "updatedOn", "sign", "userVerifierID", "userVerifiedID", "productFeatureID". También tiene relaciones con las entidades "User" y "ProductFeature". Además, tiene una relación de uno a muchos con "VerificationComment".
+
+## VerificationComment
+> Representa un comentario asociado a una verificación. Tiene campos como "id", "comment", "isCommentByVerifier" y "verificationID". También tiene una relación con la entidad "Verification".
+
+## DocumentType
+> Representa un tipo de documento. Tiene campos como "id", "name" y "description". También tiene una relación de uno a muchos con "Document".
+
+## Document
+> Representa un documento asociado a un usuario y un tipo de documento. Tiene campos como "id", "data", "timeStamp", "docHash", "url", "signed", "signedHash", "isApproved", "status", "isUploadedToBlockChain", "productFeatureID" y "userID". También tiene relaciones con las entidades "DocumentType", "ProductFeature" y "User".
+
+## Product Models:
+
+### Category
+> Representa una categoría de productos. Tiene campos como "id", "name" y "isSelected". También tiene una relación de uno a muchos con "Product".
+
+### Product
+> Representa un producto. Tiene campos como "id", "name", "description", "isActive", "order", "status", "timeOnVerification" y "categoryID". También tiene relaciones con otras entidades, como "Category", "Image", "ProductFeature", "UserProduct" y "Transactions".
+>> isResult: Si el FEATURE NO tiene VACIO la propiedad defaultValue; usar ése valor. Delo contrario verificar: TRUE se debe tomar el valor de "value". Si su valor es FALSE, se debe buscar el último valor cálculado en la tabla Result
+
+### Image
+> Representa una imagen asociada a un producto. Tiene campos como "id", "imageURL", "format", "title", "imageURLToDisplay", "isOnCarousel", "carouselLabel", "carouselDescription", "isActive", "order" y "productID". También tiene una relación con la entidad "Product".
+
+### FeatureType
+> Representa un tipo de característica de un producto. Tiene campos como "id", "name" y "description". También tiene una relación de uno a muchos con "Feature".
+
+### Feature 
+> Representa una característica de un producto. Tiene campos como "id", "name", "description", "isTemplate", "isVerifiable", "defaultValue", "formOrder", "formHint", "formRequired", "formAppearance", "formRelevant", "formConstraint", "formRequiredMessage", "parentID", "featureTypeID", "unitOfmedidaID", "xlsFormTypeID" y "xlsFormGroupID". También tiene relaciones con otras entidades, como "FeatureType", "UnitOfMeasure", "ProductFeature", "FeatureFormula" y "XLSFormChoice".
+
+### UnitOfMeasure
+> Representa una unidad de medida utilizada en las características de los productos. Tiene campos como "id", "engineeringUnit", "description" y "isFloat". También tiene una relación de uno a muchos con "Feature" y "Formula".
+
+### Formula: 
+> Representa una fórmula utilizada en las características de los productos. Tiene campos como "id", "varID", "equation" y "unitOfMeasureID". También tiene relaciones con las entidades "UnitOfMeasure" y "Result".
+
+### FeatureFormula
+> Representa la relación entre una característica y una fórmula utilizada en los productos. Tiene campos como "id", "featureID" y "formulaID". También tiene relaciones con las entidades "Feature" y "Formula".
+
+### Result
+> Representa el resultado de una fórmula utilizada en los productos. Tiene campos como "id", "varID", "value", "dateTimeStamp" y "formulaID". También tiene relaciones con las entidades "Formula" y "ProductFeatureResult".
+
+### ProductFeature
+> Representa una característica específica de un producto. Tiene campos como "id", "value", "isToBlockChain", "order", "isOnMainCard", "isResult", "productID" y "featureID". También tiene relaciones con otras entidades, como "Product", "Feature", "Verification" y "Document".
+
+### ProductFeatureResult
+> Representa el resultado de una característica específica de un producto. Tiene campos como "id", "isActive", "productFeatureID" y "resultID". También tiene relaciones con las entidades "ProductFeature" y "Result".
+
+### UserProduct
+> Representa la relación entre un usuario y un producto. Tiene campos como "id", "isFavorite", "userID" y "productID". También tiene relaciones con las entidades "User" y "Product".
+
+### Transactions
+> Representa las transacciones asociadas a un producto. No se proporciona la definición completa en el modelo compartido.
+
+### XLSFormProduct
+> Representa los productos definidos en un formulario XLSForm. No se proporciona la definición completa en el modelo compartido.
+
+En general, este modelo entidad-relación describe entidades como usuarios, billeteras, verificaciones, documentos, categorías de productos, productos, imágenes, tipos de características, características, unidades de medida, fórmulas y relaciones entre estas entidades. Cada entidad tiene campos y relaciones específicas para representar la estructura y las conexiones en la base de datos.
+
+# XLSForm
+
+# Standar name (Feature: graphql = id PK)
+
+
+# Feature Global Variables
+
+## Global platform variables
+PROJECT_REGISTER_END_DATE
+PROJECT_VALIDATION_END_DATE
+CERTIFICADO_LIBERTAD_Y_TRADICION
+CERTIFICATION_3RD_PARTY
+VCU (Verified Carbon Unit)
+
+## Global calculated variables
+global_token_price
+global_total_tokens
+
+<!-- global_token_unit_value -->
+<!-- global_total_tokens -->
+<!-- global_token_name -->
+<!-- global_expected_income -->
+<!-- global_total_price -->
+<!-- global_ubicacion -->
+<!-- global_coordenadas -->
+<!-- global_periodo_permanencia -->
+<!-- global_fecha_inscripcion -->
+
+global_project_total_cost/global_total_tokens = global_token_unit_value
+
+
+
+Fecha final para registrar la información del PRODUCT(proyecto)
+

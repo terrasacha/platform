@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 // Bootstrap
 import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap'
-// Auth css custom
-import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature } from '../../../graphql/subscriptions'
+import { onCreateProduct, onCreateVerification, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature } from '../../../graphql/subscriptions'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -31,8 +29,6 @@ class Products extends Component {
                 isActive: true,
                 status: 'draft',
                 order: '',
-                counterNumberOfTimesBuyed: 0,
-                amountToBuy: 0.0,
                 categoryID: '',
                 images: [],
             },
@@ -162,6 +158,13 @@ class Products extends Component {
                     }
                     tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
                     this.setState((state) => ({listPF: tempProductFeatures}))
+                }
+            })
+            // OnCreate Verification
+            this.createProductFeatureListener = API.graphql(graphqlOperation(onCreateVerification))
+            .subscribe({
+                next: createdVerification => {
+                    this.loadProductFeatures()
                 }
             })
         //     }
@@ -372,8 +375,6 @@ class Products extends Component {
             name: product.name,
             description: product.description,
             isActive: product.isActive,
-            counterNumberOfTimesBuyed: 0,
-            amountToBuy: 0.0,
             categoryID: product.categoryID,
             images: product.images.items,
             order: product.order,
@@ -531,8 +532,6 @@ class Products extends Component {
                 isActive: true,
                 order: '',
                 status: 'draft',
-                counterNumberOfTimesBuyed: 0,
-                amountToBuy: 0.0,
                 categoryID: '',
                 images: [],
             },

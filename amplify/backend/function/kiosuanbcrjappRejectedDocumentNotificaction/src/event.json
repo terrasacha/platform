@@ -1,0 +1,113 @@
+{
+  "ApproximateCreationDateTime": 1687292473,
+  "Keys": {
+      "id": {
+          "S": "e1357e60_d104_4a9a_b1ef_1651845266dd"
+      }
+  },
+  "NewImage": {
+      "data": {
+          "M": {
+              "empty": {
+                  "S": ""
+              }
+          }
+      },
+      "__typename": {
+          "S": "Document"
+      },
+      "docHash": {
+          "S": ""
+      },
+      "documentTypeID": {
+          "S": "1"
+      },
+      "productFeatureID": {
+          "S": "402decc1_6b56_4c90_907e_6f9f0eab1156"
+      },
+      "signed": {
+          "S": ""
+      },
+      "userID": {
+          "S": "21263c08-0090-46c2-9e0d-aa8d7d8dda2b"
+      },
+      "isUploadedToBlockChain": {
+          "BOOL": false
+      },
+      "url": {
+          "S": "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/1595155983_2392352988.jpg"
+      },
+      "timeStamp": {
+          "N": "1680273826948"
+      },
+      "createdAt": {
+          "S": "2023-03-31T14:43:47.473Z"
+      },
+      "id": {
+          "S": "e1357e60_d104_4a9a_b1ef_1651845266dd"
+      },
+      "isApproved": {
+          "BOOL": true
+      },
+      "status": {
+          "S": "denied"
+      },
+      "updatedAt": {
+          "S": "2023-06-20T20:21:13.803Z"
+      }
+  },
+  "OldImage": {
+      "data": {
+          "M": {
+              "empty": {
+                  "S": ""
+              }
+          }
+      },
+      "__typename": {
+          "S": "Document"
+      },
+      "docHash": {
+          "S": ""
+      },
+      "documentTypeID": {
+          "S": "1"
+      },
+      "productFeatureID": {
+          "S": "402decc1_6b56_4c90_907e_6f9f0eab1156"
+      },
+      "signed": {
+          "S": ""
+      },
+      "userID": {
+          "S": "21263c08-0090-46c2-9e0d-aa8d7d8dda2b"
+      },
+      "isUploadedToBlockChain": {
+          "BOOL": false
+      },
+      "url": {
+          "S": "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/1595155983_2392352988.jpg"
+      },
+      "timeStamp": {
+          "N": "1680273826948"
+      },
+      "createdAt": {
+          "S": "2023-03-31T14:43:47.473Z"
+      },
+      "id": {
+          "S": "e1357e60_d104_4a9a_b1ef_1651845266dd"
+      },
+      "isApproved": {
+          "BOOL": true
+      },
+      "status": {
+          "S": "accepted"
+      },
+      "updatedAt": {
+          "S": "2023-06-20T20:20:34.014Z"
+      }
+  },
+  "SequenceNumber": "1351264100000000037573204300",
+  "SizeBytes": 916,
+  "StreamViewType": "NEW_AND_OLD_IMAGES"
+}

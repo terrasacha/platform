@@ -22,6 +22,7 @@ type User @model
   verifiedVerifications: [Verification] @hasMany(indexName: "byVerifiedUser", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byUser", fields: ["id"])
   documents: [Document] @hasMany(indexName: "byUser", fields: ["id"])
+  companies: [Company] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Wallet @model 
@@ -56,18 +57,11 @@ type VerificationComment @model {
   verification: Verification @belongsTo(fields: ["verificationID"])
 }
 
-type DocumentType @model {
-  id: ID!
-  name: String!
-  description: String!
-  documents: [Document] @hasMany(indexName: "byDocumentType", fields: ["id"])
-}
-
 type Document @model 
   {
   id: ID!
-  data: AWSJSON!
-  timeStamp: AWSTimestamp!
+  data: AWSJSON
+  timeStamp: AWSTimestamp
   docHash: String
   url: AWSURL
   signed: String
@@ -75,8 +69,6 @@ type Document @model
   isApproved: Boolean
   status: String
   isUploadedToBlockChain: Boolean
-  documentTypeID: ID! @index(name: "byDocumentType")
-  documentType: DocumentType @belongsTo(fields: ["documentTypeID"])
   productFeatureID: ID! @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
   userID: ID! @index(name: "byUser")
@@ -89,8 +81,8 @@ type Category @model
 {
   id: ID!
   name: String!
-  products: [Product] @hasMany(indexName: "byCategory", fields: ["id"])
   isSelected: Boolean
+  products: [Product] @hasMany(indexName: "byCategory", fields: ["id"])
 }
 
 type Product @model 
@@ -99,16 +91,18 @@ type Product @model
   name: String!
   description: String
   isActive: Boolean!
-  counterNumberOfTimesBuyed: Int
-  amountToBuy: Float
   order: Int
   status: String
+  timeOnVerification: AWSTimestamp
+  projectReadiness: Boolean
   categoryID: ID! @index(name: "byCategory")
   category: Category @belongsTo(fields: ["categoryID"])
   images: [Image] @hasMany(indexName: "byProduct", fields: ["id"])
   productFeatures: [ProductFeature] @hasMany(indexName: "byProduct", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
+  xlsFormProducts: [XLSFormProduct] @hasMany(indexName: "byProduct", fields: ["id"])
+  companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model 
@@ -140,13 +134,29 @@ type Feature @model
   name: String!
   description: String
   isTemplate: Boolean
-  defaultValue: Float
+  isVerifable: Boolean
+  defaultValue: String
+  formOrder: Int
+  formHint: String
+  formRequired: Boolean
+  formAppearance: String
+  formRelevant: String
+  formConstraint: String
+  formRequiredMessage: String
+  parentID: ID @index(name: "byParent", queryField: "featureByParent")
+  children: [Feature] @hasMany (indexName: "byParent", fields: ["id"]) 
   featureTypeID: ID @index(name: "byFeatureType")
   featureType: FeatureType @belongsTo(fields: ["featureTypeID"])
   unitOfMeasureID: ID @index(name: "byUnitOfMeasure")
   unitOfMeasure: UnitOfMeasure @belongsTo(fields: ["unitOfMeasureID"])
   productFeatures: [ProductFeature] @hasMany(indexName: "byFeature", fields: ["id"])
   featureFormulas: [FeatureFormula] @hasMany(indexName: "byFeature", fields: ["id"])
+  xlsFormTypeID: ID @index(name: "byXLSFormType")
+  xlsFormType: XLSFormType @belongsTo(fields: ["xlsFormTypeID"])
+  xlsFormGroupID: ID @index(name: "byXLSFormGroup")
+  xlsFormGroup: XLSFormGroup @belongsTo(fields: ["xlsFormGroupID"])
+  xlsFormChoices: [XLSFormChoice] @hasMany(indexName: "byFeature", fields: ["id"])
+
 }
 # Formulas
 type UnitOfMeasure @model {
@@ -182,6 +192,7 @@ type Result @model
   id: ID!
   varID: String!
   value: Float
+  dateTimeStamp: AWSTimestamp
   formulaID: ID! @index(name: "byFormula")
   formula: Formula @belongsTo(fields: ["formulaID"])
   productFeatureResults: [ProductFeatureResult] @hasMany(indexName: "byResult", fields: ["id"]) 
@@ -192,9 +203,9 @@ type ProductFeature @model
   id: ID!
   value: String
   isToBlockChain: Boolean
-  isVerifable: Boolean
   order: Int
   isOnMainCard: Boolean
+  isResult: Boolean
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
   featureID: ID! @index(name: "byFeature")
@@ -225,7 +236,6 @@ type UserProduct @model {
 
 type Order @model {
   id: ID! # local order ID 
-  amountOfTokens: Int
   currencyCode: String
   fiatTotalAmount: Float
   statusCode: String
@@ -233,6 +243,7 @@ type Order @model {
   confirmation: String
   userProductID: ID! @index(name: "byUserProduct")
   userProduct: UserProduct @belongsTo(fields: ["userProductID"])
+  transactions: [Transactions] @hasMany(indexName: "byOrder", fields: ["id"])
 }
 
 type Transactions @model {
@@ -247,6 +258,60 @@ type Transactions @model {
   network: String
   txProcessed: Boolean
   type: String
+  tokenName: String
+  amountOfTokens: Int
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
+  orderID: ID @index(name: "byOrder")
+  order: Order @belongsTo(fields: ["orderID"])
+}
+
+type Company @model {
+  id: ID!
+  name: String
+  description: String
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+}
+
+# XLSForm Models
+
+type XLSForm @model {
+  id: ID!
+  name: String!
+  version: String
+  xlsFormGroups: [XLSFormGroup] @hasMany(indexName: "byXLSForm", fields: ["id"])
+}
+
+type XLSFormProduct @model {
+  id: ID!
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  xlsFormID: ID! @index(name: "byXLSForm")
+  xlsForm: Product @belongsTo(fields: ["xlsFormID"])
+}
+
+type XLSFormType @model {
+  id: ID!
+  name: String!
+  features: [Feature] @hasMany(indexName: "byXLSFormType", fields: ["id"])
+}
+
+type XLSFormGroup @model {
+  id: ID!
+  name: String!
+  features: [Feature] @hasMany(indexName: "byXLSFormGroup", fields: ["id"])
+  xlsFormID: ID @index(name: "byXLSForm")
+  xlsForm: XLSForm @belongsTo(fields: ["xlsFormID"])
+}
+
+type XLSFormChoice @model {
+  id: ID!
+  listName: String!
+  name: String!
+  label: String!
+  featureID: ID! @index(name: "byFeature")
+  feature: Feature @belongsTo(fields: ["featureID"])
 }

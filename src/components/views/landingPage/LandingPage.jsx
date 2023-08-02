@@ -30,18 +30,13 @@ export default class LandingPage extends Component {
 
   async loadProducts() {
     const limit = 6;
-    const filter = {
-    isActive: {eq: true}
-    }
-    const query = `query ListProducts($limit: Int, $filter: ModelProductFilterInput) {
-      listProducts(limit: $limit, filter: $filter) {
+    const query = `query ListProducts($limit: Int) {
+      listProducts(limit: $limit) {
         items {
           id
           name
           description
           isActive
-          counterNumberOfTimesBuyed
-          amountToBuy
           order
           status
           categoryID
@@ -72,7 +67,6 @@ export default class LandingPage extends Component {
             items {
               id
               isToBlockChain
-              isVerifable
               value
               productID
               feature {
@@ -116,9 +110,7 @@ export default class LandingPage extends Component {
       }
     }`;
 
-    const variables = { limit, filter };
-
-    const listProductsResult = await API.graphql(graphqlOperation(query, variables));
+    const listProductsResult = await API.graphql(graphqlOperation(query));
     /* let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel */
     let tempListProductsResult = listProductsResult.data.listProducts.items.map((product) => {
 /*         // Ordering images
@@ -133,8 +125,10 @@ export default class LandingPage extends Component {
         return product
     })
     tempListProductsResult.sort((a, b) => (a.order > b.order) ? 1 : -1)
-    tempListProductsResult = tempListProductsResult.filter(product => product.images.items.length > 0 && product.productFeatures.items.length > 0)
-    this.setState({productsLanding: tempListProductsResult/* , productsImagesIsOnCarousel: tempProductsImagesIsOnCarousel */})
+    let productsLanding = []
+    tempListProductsResult.map(product =>{ if(product.images.items.length > 0 && product.productFeatures.items.length > 0 
+                                              && (product.status !== 'draft' && product.status !== 'rejected')) productsLanding.push(product)})
+    this.setState({productsLanding: productsLanding/* , productsImagesIsOnCarousel: tempProductsImagesIsOnCarousel */})
 }
   async logOut(){
     await Auth.signOut()

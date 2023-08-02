@@ -9,16 +9,15 @@ import './Documents.css';
 import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
 import { createDocument } from '../../../graphql/mutations';
-import { getUser, listDocumentTypes } from '../../../graphql/queries';
+import { getUser } from '../../../graphql/queries';
 import { onCreateDocument } from '../../../graphql/subscriptions';
-import URL from '../../common/_conf/URL';
+import URL from '../../common/_conf/URLS3';
 
 class Documents extends Component {
     constructor(props) {
         super(props)
         this.state = {
             documents: [],
-            documentTypes: [],
             actualUserID: null,
             newDocument: {
                 id: null,
@@ -31,7 +30,6 @@ class Documents extends Component {
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
-                documentTypeID: '',
                 productFeatureID: ''
             },
             userProductsDoc: [],
@@ -56,7 +54,6 @@ class Documents extends Component {
             actualUserID: actualUserID
         })
         await this.loadUserProducts(actualUserID)
-        await this.loadDocumentTypes()
         // Subscriptions
         // OnCreate Document
         this.createDocumentListener = API.graphql(graphqlOperation(onCreateDocument))
@@ -80,7 +77,7 @@ class Documents extends Component {
         })
     }
     componentWillUnmount() {
-        this.createDocumentListener.unsubscribe();
+        // this.createDocumentListener.unsubscribe();
       }
     async loadUserProducts(pActualUserID) {
         let userResult = await API.graphql({ query: getUser, variables: { id: pActualUserID }})
@@ -107,19 +104,11 @@ class Documents extends Component {
         this.setState({
             userProductsDoc: listUserProductsDocs,})
     }
-    async loadDocumentTypes() {
-        const listDocumentTypesResult = await API.graphql(graphqlOperation(listDocumentTypes))
-        listDocumentTypesResult.data.listDocumentTypes.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
-        this.setState({documentTypes: listDocumentTypesResult.data.listDocumentTypes.items})
-        }
-    
     handleLoadUserProduct = (userProduct) => {
         this.setState({productToShow: userProduct})
     }
     handleInputCreateDocument = (e) => {
-        if(e.target.name === 'selected_documentType'){
-            this.setState(prevState => ({newDocument: {...prevState.newDocument,documentTypeID: e.target.value}}))
-        }
+
         if(e.target.name === 'selected_file'){
             const { target: { files } } = e;
             const [file,] = files || [];
@@ -172,7 +161,6 @@ class Documents extends Component {
                 isApproved: false,
                 status: 'pending',
                 isUploadedToBlockChain: false,
-                documentTypeID: '',
                 productFeatureID: ''
             },
             productToShow: null,
@@ -302,17 +290,6 @@ class Documents extends Component {
                 <Modal.Body>
                     <Row className='mb-3'>
                         <Form.Group>
-                            <Form.Label>Document type</Form.Label>
-                            <Form.Select
-                                type='text'
-                                name='selected_documentType'
-                                onChange={(e) => this.handleInputCreateDocument(e)}
-                                >
-                                <option>-</option>
-                                {this.state.documentTypes.map(
-                                    op => (<option value={op.id} key={op}>{op.name}</option>)
-                                )}
-                            </Form.Select>
                         <Form.Group >
                             <Form.Label>Choose file</Form.Label>
                             <Form.Control

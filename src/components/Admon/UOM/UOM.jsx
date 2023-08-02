@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 // Bootstrap
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
 // Auth css custom
-import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUnitOfMeasure, updateUnitOfMeasure } from '../../../graphql/mutations'
@@ -67,8 +66,9 @@ class UOM extends Component {
 
     }
     componentWillUnmount() {
-        this.createUnitOfMeasureListener.unsubscribe();
-        this.updateCategoryListener.unsubscribe();
+        // TODO: Why is not working the unsubscribe
+        // this.createUnitOfMeasureListener.unsubscribe();
+        // this.updateCategoryListener.unsubscribe();
       }
 
     async loadUnitOfMeasures() {

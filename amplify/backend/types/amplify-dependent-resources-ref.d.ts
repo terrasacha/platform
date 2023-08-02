@@ -18,16 +18,50 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
-    "kiosuanbcrjsapp58b48a41": {
+    "kiosuanbcrjappRejectedDocumentNotificaction": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "kiosuanbcrjsappSchProjectValidationEnddate": {
+    "kiosuanbcrjsappChangeProductStatus": {
       "Arn": "string",
-      "CloudWatchEventRule": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "kiosuanbcrjsappCheckTimeOnVerification": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "kiosuanbcrjsappConstructorUploadNewDocument": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "kiosuanbcrjsappSendMailNotByComment": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "kiosuanbcrjsappSuccessfullyProductCreated": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "kiosuanrjsappSendVerificationEmailUserCreated": {
+      "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",

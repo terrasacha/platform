@@ -3,8 +3,6 @@ import React, { Component } from 'react'
 // import '@aws-amplify/ui-react/styles.css'
 // Bootstrap
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
-// Auth css custom
-import Bootstrap from "../../common/themes"
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createCategory, updateCategory } from '../../../graphql/mutations'
@@ -171,14 +169,14 @@ class Categorys extends Component {
             
             <Container style={{display: 'flex', flexDirection: 'column'}}> 
                 <Container>
-                    <h2>{CRUDButtonName} Formula: {newCategory.name}</h2>
+                    <h2>{CRUDButtonName} Categoría: {newCategory.name}</h2>
                     <Form>
                         <Row className='mb-2'>
                             <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                                <Form.Label>Name</Form.Label>
+                                <Form.Label>Nombre</Form.Label>
                                 <Form.Control
                                     type='text'
-                                    placeholder='Ex. ANIMALS'
+                                    placeholder='Ex. NUEVA CATERORIA'
                                     name='category.name'
                                     value={newCategory.name}
                                     onChange={(e) => this.handleOnChangeInputForm(e)} />

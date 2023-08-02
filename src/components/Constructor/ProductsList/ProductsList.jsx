@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 //Bootstrap
-import { Button, Badge, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, ListGroup, Tabs, Tab, Accordion, Stack } from 'react-bootstrap';
-import { ArrowRight, CheckCircle, HourglassSplit, XCircle, Server, Water } from 'react-bootstrap-icons';
-import Bootstrap from "../../common/themes";
+import { Button, Badge, Card, Col, Container, Form, Modal, Row, Tabs, Tab, Accordion, Stack } from 'react-bootstrap';
+import {  XCircle } from 'react-bootstrap-icons';
 // GraphQL
+import WebAppConfig from '../../common/_conf/WebAppConfig';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createVerificationComment } from '../../../graphql/mutations';
 import { getUser, getVerificationComment } from '../../../graphql/queries';
@@ -99,7 +99,7 @@ class ProductsList extends Component {
 
     render() {
         let { products, selectedIDProductToShow, isRenderModalProductAttachments, newVerificationComment } = this.state
-
+        const url = WebAppConfig.url_s3_public_images
         const cardTextStyle = {
             textAlign: "justify",
         };
@@ -119,7 +119,7 @@ class ProductsList extends Component {
                                     return (
                                         <Col key={product.productID}>
                                             <Card>
-                                                <Card.Img variant="top" src="https://picsum.photos/500/160" />
+                                                <Card.Img variant="top" src={`${url}${product.product.images.items[0].imageURL}`} style={{height:'24rem', width:'auto'}}/>
                                                 <Card.Body>
                                                     <Card.Title><h5>{product.product.name}</h5></Card.Title>
                                                     <Row className="my-3 px-3">
@@ -184,55 +184,65 @@ class ProductsList extends Component {
                         <Modal.Body>
                             <Accordion defaultActiveKey="0">
                                 {
-                                    product.product.productFeatures.items.filter(productFeature => productFeature.isVerifable == true).map(pf => {
-                                        return (
-                                            <Accordion.Item key={pf.featureID} eventKey={pf.featureID}>
-                                                <Accordion.Header>{pf.feature.name}</Accordion.Header>
-
-                                                <Accordion.Body>
-                                                    <Tabs
-                                                        transition={false}
-                                                        id="noanim-tab-example"
-                                                        className="mb-3"
-                                                    >
-                                                        {
-                                                            pf.verifications.items.map(v => {
-                                                                return (
-                                                                    <Tab key={v.id} eventKey={v.id} title={v.id}>
-                                                                        {
-                                                                            v.verificationComments.items.sort(function (a, b) {
-                                                                                return new Date(a.createdAt) - new Date(b.createdAt);
-                                                                            }).map(vc => {
-                                                                                return (
-                                                                                    <p key={vc.id}>{vc.createdAt} ({vc.isCommentByVerifier == true ? "Verificador" : "Tu"}) {vc.comment}</p>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                        <Stack direction="horizontal" gap={2}>
-                                                                            <Form.Control
-                                                                                className="me-auto"
-                                                                                type='text'
-                                                                                placeholder='Escribe un comentario aqui ...'
-                                                                                name='verificationComment'
-                                                                                value={newVerificationComment.comment}
-                                                                                onChange={(e) => this.handleInputCreateVerificationComment(e)} />
-                                                                            <div className="vr" />
-                                                                            <Button
-                                                                                variant="secondary"
-                                                                                onClick={(e) => this.handleCreateVerificaionComment(v.id)}>Enviar comentario</Button>
-                                                                        </Stack>
-                                                                    </Tab>
-                                                                )
+                                    product.product.productFeatures.items
+                                    .filter(productFeature => productFeature.feature.isVerifable === true)
+                                    .map(pf => {
+                                      return (
+                                        <Accordion.Item key={pf.featureID} eventKey={pf.featureID}>
+                                          <Accordion.Header>{pf.feature.name}</Accordion.Header>
+                                          <Accordion.Body>
+                                            <Tabs
+                                              transition={false}
+                                              id="noanim-tab-example"
+                                              className="mb-3"
+                                            >
+                                              {pf.verifications && pf.verifications.items
+                                                ? pf.verifications.items.map(v => {
+                                                    return (
+                                                      <Tab key={v.id} eventKey={v.id} title={v.id}>
+                                                        {v.verificationComments &&
+                                                          v.verificationComments.items ?
+                                                          v.verificationComments.items
+                                                            .sort(function (a, b) {
+                                                              return new Date(a.createdAt) - new Date(b.createdAt);
                                                             })
-                                                        }
-                                                    </Tabs>
-
-
-                                                </Accordion.Body>
-                                            </Accordion.Item>
-                                        )
-
+                                                            .map(vc => {
+                                                              return (
+                                                                <p key={vc.id}>
+                                                                  {vc.createdAt} (
+                                                                  {vc.isCommentByVerifier === true
+                                                                    ? "Verificador"
+                                                                    : "Tu"}) {vc.comment}
+                                                                </p>
+                                                              );
+                                                            }) : null}
+                                                        <Stack direction="horizontal" gap={2}>
+                                                          <Form.Control
+                                                            className="me-auto"
+                                                            type="text"
+                                                            placeholder="Escribe un comentario aquí ..."
+                                                            name="verificationComment"
+                                                            value={newVerificationComment.comment}
+                                                            onChange={(e) => this.handleInputCreateVerificationComment(e)}
+                                                          />
+                                                          <div className="vr" />
+                                                          <Button
+                                                            variant="secondary"
+                                                            onClick={(e) => this.handleCreateVerificaionComment(v.id)}
+                                                          >
+                                                            Enviar comentario
+                                                          </Button>
+                                                        </Stack>
+                                                      </Tab>
+                                                    );
+                                                  })
+                                                : null}
+                                            </Tabs>
+                                          </Accordion.Body>
+                                        </Accordion.Item>
+                                      );
                                     })
+                                  
                                 }
                             </Accordion>
                         </Modal.Body>

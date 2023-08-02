@@ -38,7 +38,7 @@ export default class HeaderNavbar extends Component {
                 <Offcanvas.Title id={`offcanvasNavbarLabel-expand-$'sm'`}>
                 <a href='/'><img src={LOGO} 
                             width="40"
-                            height="auto"
+                            height="40"
                             className="d-inline-block align-top"
                             alt="ATP"
                 /></a>
@@ -60,7 +60,7 @@ export default class HeaderNavbar extends Component {
 
             </Nav>
             <Nav className={s.navGroup}>
-              <Nav.Link href="#home" onClick={() => window.location.href="/"}>Inicio</Nav.Link>
+              {/* <Nav.Link href="#home" onClick={() => window.location.href="/"}>Inicio</Nav.Link> */}
               {/* <Nav.Link href="#products" onClick={() => window.location.href="/products"}>Proyectos</Nav.Link> */}
               {localStorage.getItem('role')?
               <button className={s.signing} onClick={() => this.logOut()}>Log out</button>:

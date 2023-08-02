@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 // Auth css custom
-import Bootstrap from "../../common/themes";
 // Bootstrap
 import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 // GraphQL
