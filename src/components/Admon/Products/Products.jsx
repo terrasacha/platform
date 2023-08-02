@@ -6,6 +6,7 @@ import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
 import { onCreateProduct, onCreateVerification, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature } from '../../../graphql/subscriptions'
+import checkIfUserExists from '../../../utilities/checkIfIDuserExist'
 // Utils 
 import Select from 'react-select'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
@@ -265,6 +266,7 @@ class Products extends Component {
     
     async handleCRUDProduct() {
         const tempCRUD_Product = this.state.CRUD_Product
+        tempCRUD_Product.id = await checkIfUserExists(tempCRUD_Product.id)
         if (this.state.CRUDButtonName === 'CREATE') {
             const payLoadNewProduct = {
                 id: tempCRUD_Product.id,

@@ -473,8 +473,15 @@ class NewProduct extends Component {
                       
                     const userProducts = [payLoadNewUserProduct, payLoadAdmonProduct];
                     
-                    const productFeaturePromises = productFeatures.map((feature) =>
-                    API.graphql(graphqlOperation(createProductFeature, { input: { featureID: feature.featureID, productID: tempCRUD_Product.id, value: feature.value } }))
+                    const productFeaturePromises = productFeatures.map((feature) =>{
+
+                        if(feature.featureID === 'GLOBAL_TOKEN_NAME' && feature.value === ""){
+                        API.graphql(graphqlOperation(createProductFeature, { input: { featureID: feature.featureID, productID: tempCRUD_Product.id, value: `SUAN-${tempCRUD_Product.id}` } }))
+                            
+                        }else{
+                            API.graphql(graphqlOperation(createProductFeature, { input: { featureID: feature.featureID, productID: tempCRUD_Product.id, value: feature.value } }))
+                        }
+                    }
                     );
                     
                     const userProductPromises = userProducts.map((payload) =>
