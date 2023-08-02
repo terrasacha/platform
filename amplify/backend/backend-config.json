@@ -156,139 +156,51 @@
     }
   },
   "parameters": {
-    "AMPLIFY_function_kiosuanbcrjappRejectedDocumentNotificaction_deploymentBucketName": {
+    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "kiosuanbcrjappRejectedDocumentNotificaction"
+          "resourceName": "kiosuanbcrjsapp58b48a41"
         }
       ]
     },
-    "AMPLIFY_function_kiosuanbcrjappRejectedDocumentNotificaction_s3Key": {
+    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "kiosuanbcrjappRejectedDocumentNotificaction"
+          "resourceName": "kiosuanbcrjsapp58b48a41"
         }
       ]
     },
-    "AMPLIFY_function_kiosuanbcrjsappChangeProductStatus_deploymentBucketName": {
+    "AMPLIFY_function_kiosuanbcrjsapp58b48a41_sesEmail": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "kiosuanbcrjsappChangeProductStatus"
+          "resourceName": "kiosuanbcrjsapp58b48a41"
         }
       ]
     },
-    "AMPLIFY_function_kiosuanbcrjsappChangeProductStatus_s3Key": {
+    "AMPLIFY_function_kiosuanbcrjsappSchProjectValidationEnddate_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "kiosuanbcrjsappChangeProductStatus"
+          "resourceName": "kiosuanbcrjsappSchProjectValidationEnddate"
         }
       ]
     },
-    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_deploymentBucketName": {
+    "AMPLIFY_function_kiosuanbcrjsappSchProjectValidationEnddate_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
+          "resourceName": "kiosuanbcrjsappSchProjectValidationEnddate"
         }
       ]
     },
-    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_s3Key": {
+    "AMPLIFY_function_kiosuanbcrjsappSchProjectValidationEnddate_sesEmail": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_graphqlApiKey": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_graphqlEndpoint": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_sesEmail": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappSuccessfullyProductCreated_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappSuccessfullyProductCreated"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanbcrjsappSuccessfullyProductCreated_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanbcrjsappSuccessfullyProductCreated"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanrjsappSendVerificationEmailUserCreated_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanrjsappSendVerificationEmailUserCreated"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanrjsappSendVerificationEmailUserCreated_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanrjsappSendVerificationEmailUserCreated"
+          "resourceName": "kiosuanbcrjsappSchProjectValidationEnddate"
         }
       ]
     },
