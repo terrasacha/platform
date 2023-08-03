@@ -43,6 +43,11 @@
     }
   },
   "function": {
+    "kiosuanPROD": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjappRejectedDocumentNotificaction": {
       "build": true,
       "dependsOn": [
@@ -156,6 +161,94 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_kiosuanPROD_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanPROD"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanPROD_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanPROD"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjappRejectedDocumentNotificaction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjappRejectedDocumentNotificaction"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjappRejectedDocumentNotificaction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjappRejectedDocumentNotificaction"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappChangeProductStatus_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappChangeProductStatus"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappChangeProductStatus_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappChangeProductStatus"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappCheckTimeOnVerification_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappCheckTimeOnVerification"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappConstructorUploadNewDocument_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
     "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_graphqlApiKey": {
       "usedBy": [
         {
@@ -172,11 +265,51 @@
         }
       ]
     },
+    "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
     "AMPLIFY_function_kiosuanbcrjsappSendMailNotByComment_sesEmail": {
       "usedBy": [
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappSendMailNotByComment"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSuccessfullyProductCreated_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSuccessfullyProductCreated"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappSuccessfullyProductCreated_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappSuccessfullyProductCreated"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanrjsappSendVerificationEmailUserCreated_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanrjsappSendVerificationEmailUserCreated"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanrjsappSendVerificationEmailUserCreated_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanrjsappSendVerificationEmailUserCreated"
         }
       ]
     },

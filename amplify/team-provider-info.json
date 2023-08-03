@@ -81,17 +81,41 @@
       "function": {
         "kiosuanbcrjsapp": {},
         "kiosuanbcrjsappa6accc93": {},
-        "kiosuanbcrjappRejectedDocumentNotificaction": {},
-        "kiosuanbcrjsappChangeProductStatus": {},
-        "kiosuanbcrjsappCheckTimeOnVerification": {},
-        "kiosuanbcrjsappConstructorUploadNewDocument": {},
+        "kiosuanbcrjappRejectedDocumentNotificaction": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjappRejectedDocumentNotificaction-576f4377764c57465074-build.zip"
+        },
+        "kiosuanbcrjsappChangeProductStatus": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappChangeProductStatus-754d50663235526d754a-build.zip"
+        },
+        "kiosuanbcrjsappCheckTimeOnVerification": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappCheckTimeOnVerification-766e4c557a32784c4e37-build.zip"
+        },
+        "kiosuanbcrjsappConstructorUploadNewDocument": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappConstructorUploadNewDocument-334b646c71714d634e41-build.zip"
+        },
         "kiosuanbcrjsappSendMailNotByComment": {
           "graphqlEndpoint": "https://5ctx6qwpnrgttdsri65x2zrhaq.appsync-api.us-east-1.amazonaws.com/graphql",
           "graphqlApiKey": "da2-7lda7ydzxjh5xg6nx3seq5eaka",
-          "sesEmail": "notificaciones@suan.global"
+          "sesEmail": "notificaciones@suan.global",
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappSendMailNotByComment-675343712b3468717337-build.zip"
         },
-        "kiosuanbcrjsappSuccessfullyProductCreated": {},
-        "kiosuanrjsappSendVerificationEmailUserCreated": {}
+        "kiosuanbcrjsappSuccessfullyProductCreated": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappSuccessfullyProductCreated-5151754c436746496941-build.zip"
+        },
+        "kiosuanrjsappSendVerificationEmailUserCreated": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanrjsappSendVerificationEmailUserCreated-57354b6f456b6c475341-build.zip"
+        },
+        "kiosuanPROD": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
+          "s3Key": "amplify-builds/kiosuanPROD-427a79764d2b66593158-build.zip"
+        }
       },
       "hosting": {
         "amplifyhosting": {
