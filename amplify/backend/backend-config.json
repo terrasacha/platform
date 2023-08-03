@@ -43,11 +43,6 @@
     }
   },
   "function": {
-    "kiosuanPROD": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
     "kiosuanbcrjappRejectedDocumentNotificaction": {
       "build": true,
       "dependsOn": [
@@ -161,22 +156,6 @@
     }
   },
   "parameters": {
-    "AMPLIFY_function_kiosuanPROD_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanPROD"
-        }
-      ]
-    },
-    "AMPLIFY_function_kiosuanPROD_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "kiosuanPROD"
-        }
-      ]
-    },
     "AMPLIFY_function_kiosuanbcrjappRejectedDocumentNotificaction_deploymentBucketName": {
       "usedBy": [
         {

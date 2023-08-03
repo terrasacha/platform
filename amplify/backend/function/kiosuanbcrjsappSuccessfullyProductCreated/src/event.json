@@ -2,7 +2,7 @@
   "ApproximateCreationDateTime": 1686177160,
   "Keys": {
       "id": {
-          "S": "1234test"
+          "S": "123test"
       }
   },
   "NewImage": {
@@ -16,7 +16,7 @@
           "S": "test"
       },
       "id": {
-          "S": "1234test"
+          "S": "123test"
       },
       "isActive": {
           "BOOL": false

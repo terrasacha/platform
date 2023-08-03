@@ -106,15 +106,11 @@
         },
         "kiosuanbcrjsappSuccessfullyProductCreated": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappSuccessfullyProductCreated-5151754c436746496941-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappSuccessfullyProductCreated-4335504d6a6d586f4350-build.zip"
         },
         "kiosuanrjsappSendVerificationEmailUserCreated": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
           "s3Key": "amplify-builds/kiosuanrjsappSendVerificationEmailUserCreated-57354b6f456b6c475341-build.zip"
-        },
-        "kiosuanPROD": {
-          "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
-          "s3Key": "amplify-builds/kiosuanPROD-427a79764d2b66593158-build.zip"
         }
       },
       "hosting": {
