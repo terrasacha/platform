@@ -695,7 +695,7 @@ class ValidatorAdmon extends Component {
                       <InputGroup className="mb-3">
                       <Form.Control
                         value={this.state.tokenPrices[product.id] || ''}
-                        placeholder="Token price"
+                        placeholder="Token price (USD)"
                         name='GLOBAL_TOKEN_PRICE'
                         aria-describedby="basic-addon2"
                         onChange={(event) => this.handleTokenPriceChange(event, product)} 
