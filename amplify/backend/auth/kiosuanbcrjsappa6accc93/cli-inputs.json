@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "kiosuanbcrjsappa6accc93_identitypool_a6accc93",
-    "allowUnauthenticatedIdentities": true,
+    "allowUnauthenticatedIdentities": false,
     "resourceNameTruncated": "kiosuaa6accc93",
     "userPoolName": "kiosuanbcrjsappa6accc93_userpool_a6accc93",
     "autoVerifiedAttributes": [
@@ -36,7 +36,7 @@
     "sharedId": "a6accc93",
     "resourceName": "kiosuanbcrjsappa6accc93",
     "authSelections": "identityPoolAndUserPool",
-    "useDefault": "default",
+    "useDefault": "defaultSocial",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
@@ -54,6 +54,14 @@
       ]
     },
     "breakCircularDependency": true,
-    "dependsOn": []
+    "dependsOn": [],
+    "hostedUI": true,
+    "hostedUIDomainName": "kiosuanbcrjsapp4e1e05fa-4e1e05fa",
+    "authProvidersUserPool": [
+      "Google"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://moocs.n4nadigital.com/\"],\"LogoutURLs\":[\"https://moocs.n4nadigital.com/\"]}",
+    "authProviders": []
   }
 }
