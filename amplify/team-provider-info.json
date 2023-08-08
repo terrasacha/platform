@@ -106,7 +106,7 @@
         },
         "kiosuanbcrjsappSuccessfullyProductCreated": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappSuccessfullyProductCreated-4335504d6a6d586f4350-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappSuccessfullyProductCreated-344a77384c3474474448-build.zip"
         },
         "kiosuanrjsappSendVerificationEmailUserCreated": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-prod-90339-deployment",

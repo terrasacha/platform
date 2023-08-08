@@ -33,7 +33,6 @@ query GetProduct($id: ID!) {
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async(event) => {
-  console.log('ignacioEVENT', event)
   for (const record of event.Records) {
     console.log(record.eventID);
     console.log(record.eventName);
@@ -70,7 +69,6 @@ exports.handler = async(event) => {
           console.log(error)
         }
         if(constructorUserEmail !== ''){
-          console.log(`user email ---> ${constructorUserEmail.email}`)
           const mailParams = {
             Destination: {
               ToAddresses: [constructorUserEmail.email], 
