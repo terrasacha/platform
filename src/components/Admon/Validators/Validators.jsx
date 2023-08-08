@@ -124,6 +124,7 @@ class Validators extends Component {
                 const userPayload = {
                     id: response.userSub,
                     name: username,
+                    email: email,
                     isProfileUpdated: false,
                     role: role
                 }
