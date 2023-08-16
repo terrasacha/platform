@@ -31,9 +31,10 @@ type Wallet @model
   name: String!
   status: String!
   isSelected: Boolean
+  isAdmin: Boolean
   userID: ID! @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
-}
+  }
 
 type Verification @model {
   id: ID!
@@ -253,13 +254,15 @@ type Transactions @model {
   txIn: String
   txCborhex: String 
   txHash: String
-  metadataUrl: String
+  metadataUrl: AWSJSON
   fees: Float
   network: String
   txProcessed: Boolean
   type: String
   tokenName: String
   amountOfTokens: Int
+  policyID: String
+  stakeAddress: String
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
   orderID: ID @index(name: "byOrder")
