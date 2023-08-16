@@ -1,6 +1,6 @@
 
 const fetch = require('node-fetch');
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses");
 const ses = new SESClient({ region: "us-east-1" });
 const { Request } = fetch
 
@@ -62,6 +62,7 @@ exports.handler = async(event) => {
         let body;
         let response;
         let userVerifierEmail = ''
+        let userVerifierName = ''
         let msInOneDay = 86400000
         let diffMsDates = ''
         let bodyInfo = {}
@@ -72,6 +73,7 @@ exports.handler = async(event) => {
           let timestamp2 = new Date(body.data.getDocument.createdAt).getTime();
           diffMsDates = Math.abs(timestamp2 - timestamp1)
           userVerifierEmail = body.data.getDocument.productFeature.verifications.items[0].userVerifier.email
+          userVerifierName = body.data.getDocument.productFeature.verifications.items[0].userVerifier.name
           bodyInfo = {productName: body.data.getDocument.productFeature.product.name, featureID: body.data.getDocument.productFeature.featureID}
           if (body.errors) statusCode = 400;
         } catch (error) {
@@ -79,21 +81,22 @@ exports.handler = async(event) => {
           console.log(error)
         }
         if(diffMsDates > msInOneDay){
-          const mailParams = {
-            Destination: {
-              ToAddresses: [userVerifierEmail], 
-            },
-            Source: SES_EMAIL, 
-            Message: {
-              Subject: { Data: `Se ha subido un nuevo documento vinculado a ${bodyInfo.productName}` },
-              Body: {
-                Text: { Data: `El propietario del proyecto ${bodyInfo.productName} ha subido nueva documentación referida a ${bodyInfo.featureID}.` },
-              },
-            },
-          }
-          const command = new SendEmailCommand(mailParams);
+          const fromMail = SES_EMAIL
+          const toMail = [userVerifierEmail]
+          const data3 =   `El propietario del proyecto ${bodyInfo.productName} ha subido nueva documentación referida a ${bodyInfo.featureID}.`
+          const templateData = {
+            data: data3,
+            user: userVerifierName
+          };
           try {
-            const data = await ses.send(command);
+            const data = await ses.send(new SendTemplatedEmailCommand({
+              Source: fromMail,
+              Destination: {
+                ToAddresses: toMail,
+              },
+              Template: "AWS-SES-HTML-Email-Default-Template",
+              TemplateData: JSON.stringify(templateData),
+            }));
             return { status: 'done', msg: data }
           } catch (error) {
             return { status: 'error', msg: error }

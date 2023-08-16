@@ -1,6 +1,6 @@
 
 const fetch = require('node-fetch');
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses");
 const ses = new SESClient({ region: "us-east-1" });
 const { Request } = fetch
 
@@ -79,21 +79,22 @@ exports.handler = async(event) => {
           console.log(error)
         }
         if(constructorUserEmail !== ''){
-          const mailParams = {
-            Destination: {
-              ToAddresses: [constructorUserEmail.email], //ToAddresses: [process.env.SES_EMAIL],
-            },
-            Source: SES_EMAIL, //process.env.SES_EMAIL
-            Message: {
-              Subject: { Data: `Se ha rechazado un documento vinculado a ${infoProduct.name}` },
-              Body: {
-                Text: { Data: `Por favor, ingrese a su perfil para poder ver más detalles acerca de su proyecto ${infoProduct.name}. Documento rechazado ${infoProduct.featureID}` },
-              },
-            },
-          }
-          const command = new SendEmailCommand(mailParams);
+          const fromMail = SES_EMAIL
+          const toMail = [constructorUserEmail.email]
+          const data3 =  `Por favor, ingrese a su perfil para poder ver más detalles acerca de su proyecto ${infoProduct.name}. Documento rechazado ${infoProduct.featureID}`
+          const templateData = {
+            data: data3,
+            user: constructorUserEmail.name
+          };
           try {
-            const data = await ses.send(command);
+            const data = await ses.send(new SendTemplatedEmailCommand({
+              Source: fromMail,
+              Destination: {
+                ToAddresses: toMail,
+              },
+              Template: "AWS-SES-HTML-Email-Default-Template",
+              TemplateData: JSON.stringify(templateData),
+            }));
             return { status: 'done', msg: data }
           } catch (error) {
             return { status: 'error', msg: error }

@@ -31,6 +31,7 @@ type Wallet @model
   name: String!
   status: String!
   isSelected: Boolean
+  isAdmin: Boolean
   userID: ID! @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
 }
@@ -260,6 +261,9 @@ type Transactions @model {
   type: String
   tokenName: String
   amountOfTokens: Int
+  policyID: String
+  stakeAddress: String
+  metadataUrl: AWSJSON
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
   orderID: ID @index(name: "byOrder")
