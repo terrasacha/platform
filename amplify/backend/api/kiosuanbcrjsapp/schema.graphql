@@ -94,6 +94,7 @@ type Product @model
   order: Int
   status: String
   timeOnVerification: AWSTimestamp
+  projectReadiness: Boolean
   categoryID: ID! @index(name: "byCategory")
   category: Category @belongsTo(fields: ["categoryID"])
   images: [Image] @hasMany(indexName: "byProduct", fields: ["id"])

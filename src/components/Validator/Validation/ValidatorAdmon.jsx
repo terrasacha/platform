@@ -168,6 +168,7 @@ class ValidatorAdmon extends Component {
       documents: [],
       tokenPrices: {},
       tokenNames: {},
+      amountTokens: {},
       documentsPending: [],
       otherDocuments: [],
       featuresVerifables: [],
@@ -223,6 +224,7 @@ class ValidatorAdmon extends Component {
     await this.loadFeatures()
     await this.loadTokenPrices()
     await this.loadTokenNames()
+    await this.loadAmountTokens()
     // Subscriptions
     this.updateDocumentListener = API.graphql(graphqlOperation(onUpdateDocument))
       .subscribe({
@@ -341,6 +343,24 @@ class ValidatorAdmon extends Component {
       productsUnicos.map(product => tokenNames[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_NAME')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_NAME')[0]?.value : '')
       this.setState({tokenNames: tokenNames})
   }
+  loadAmountTokens(){
+    let documents = []
+    if (this.state.showPending) documents = this.state.documentsPending
+    if (this.state.showOther) documents = this.state.otherDocuments
+      let products = []
+      documents.map(document => document.productFeature.verifications.items.map(v => {
+        if(v.userVerifierID === this.state.actualUser){
+          !products.includes(document.productFeature.product.id) && products.push(document.productFeature.product)
+        }
+      }))
+      const productsUnicos = Object.values(products.reduce((acc, product) => {
+        acc[product.id] = product;
+        return acc;
+      }, {}));
+      let amountTokens = {} 
+      productsUnicos.map(product => amountTokens[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS')[0]?.value : '')
+      this.setState({amountTokens: amountTokens})
+  }
   handleTokenPriceChange = (event, product) => {
     const newTokenPrices = { ...this.state.tokenPrices };
     newTokenPrices[product.id] = event.target.value;
@@ -350,6 +370,11 @@ class ValidatorAdmon extends Component {
     const newTokenNames = { ...this.state.tokenNames };
     newTokenNames[product.id] = event.target.value;
     this.setState({ tokenNames: newTokenNames });
+  };
+  handleAmountOfTokens = (event, product) => {
+    const newAmountTokens = { ...this.state.amountTokens };
+    newAmountTokens[product.id] = event.target.value;
+    this.setState({ amountTokens: newAmountTokens });
   };
   async changeHeaderNavBarRequest(pRequest) {
     if (pRequest === 'product_documents') {
@@ -490,6 +515,18 @@ class ValidatorAdmon extends Component {
         theme: "light",
         });
 }
+  notifyAssignAmountTokens = (product, tokenName) =>{
+    toast.success(`Cantidad de tokens actualizada para   ${product}. ${tokenName}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+}
   handleDownload = async (doc) => {
     try {
       
@@ -606,6 +643,29 @@ class ValidatorAdmon extends Component {
     this.notifyAssignTokenName(product.name, this.state.tokenNames[product.id])
     await this.loadDocuments()
 }
+  async updateAmountTokens(product){
+    const tieneAmountTokens = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS');
+    if(tieneAmountTokens){
+      let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS')[0].id
+      let tempProductFeature = {
+        id: tokenPricePF,
+        value: this.state.amountTokens[product.id]
+      }
+      API.graphql(graphqlOperation(updateProductFeature, { input: tempProductFeature }))
+    }else{
+      let tempProductFeature = {
+        value: this.state.amountTokens[product.id],
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: product.id,
+        featureID: 'GLOBAL_AMOUNT_OF_TOKENS',
+      }
+      API.graphql(graphqlOperation(createProductFeature , { input: tempProductFeature }))
+
+    }
+    this.notifyAssignAmountTokens(product.name, this.state.amountTokens[product.id])
+    await this.loadDocuments()
+}
 
   validateInfoUser = async (pfID, userVerifiedID) => {
     let tempNewVerification = {}
@@ -695,7 +755,7 @@ class ValidatorAdmon extends Component {
                       <InputGroup className="mb-3">
                       <Form.Control
                         value={this.state.tokenPrices[product.id] || ''}
-                        placeholder="Token price"
+                        placeholder="Token price (USD)"
                         name='GLOBAL_TOKEN_PRICE'
                         aria-describedby="basic-addon2"
                         onChange={(event) => this.handleTokenPriceChange(event, product)} 
@@ -713,6 +773,18 @@ class ValidatorAdmon extends Component {
                         onChange={(event) => this.handleTokenNameChange(event, product)} 
                       />
                         <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateTokenName(product)}>
+                          Change
+                        </Button>
+                      </InputGroup>
+                      <InputGroup className="mb-3">
+                      <Form.Control
+                        value={this.state.amountTokens[product.id] || ''}
+                        placeholder="Amount of Tokens"
+                        name='GLOBAL_AMOUNT_OF_TOKENS'
+                        aria-describedby="basic-addon2"
+                        onChange={(event) => this.handleAmountOfTokens(event, product)} 
+                      />
+                        <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateAmountTokens(product)}>
                           Change
                         </Button>
                       </InputGroup>
