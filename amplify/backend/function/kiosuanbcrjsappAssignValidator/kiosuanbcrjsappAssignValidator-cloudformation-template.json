@@ -97,12 +97,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "kiosuanbcrjsappLambdaRole77cdcf48",
+            "kiosuanbcrjsappLambdaRole33022523",
             {
               "Fn::Join": [
                 "",
                 [
-                  "kiosuanbcrjsappLambdaRole77cdcf48",
+                  "kiosuanbcrjsappLambdaRole33022523",
                   "-",
                   {
                     "Ref": "env"
