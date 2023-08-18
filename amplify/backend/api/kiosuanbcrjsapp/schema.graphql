@@ -254,7 +254,7 @@ type Transactions @model {
   txIn: String
   txCborhex: String 
   txHash: String
-  metadataUrl: String
+  metadataUrl: AWSJSON
   fees: Float
   network: String
   txProcessed: Boolean
@@ -263,7 +263,6 @@ type Transactions @model {
   amountOfTokens: Int
   policyID: String
   stakeAddress: String
-  metadataUrl: AWSJSON
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
   orderID: ID @index(name: "byOrder")

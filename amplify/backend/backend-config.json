@@ -58,6 +58,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "kiosuanbcrjsappAssignValidator": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjsappChangeProductStatus": {
       "build": true,
       "dependsOn": [
@@ -169,6 +184,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjappRejectedDocumentNotificaction"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappAssignValidator_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappAssignValidator"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappAssignValidator_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappAssignValidator"
         }
       ]
     },
