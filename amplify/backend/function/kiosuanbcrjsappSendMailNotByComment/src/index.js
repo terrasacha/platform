@@ -6,7 +6,7 @@
 Amplify Params - DO NOT EDIT */
 
 const fetch = require('node-fetch');
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses");
 
 const ses = new SESClient({ region: "us-east-1" });
 
@@ -25,9 +25,11 @@ query GetVerification($id: ID!) {
       userVerifiedID
       userVerified {
         email
+        name
       }
       userVerifier {
         email
+        name
       }
     }
   }
@@ -86,36 +88,36 @@ exports.handler = async (event) => {
       if (!isCommentByVerifier) {
         // Send mail to user
         userEmail = body.data.getVerification.userVerified.email
+        userName = body.data.getVerification.userVerified.name
         console.log("Envio de mensaje a usuario")
         console.log(userEmail)
       } else {
         userEmail = body.data.getVerification.userVerifier.email
+        userName = body.data.getVerification.userVerifier.name
         console.log("Envio de mensaje a verificador")
         console.log(userEmail)
         // Send mail to verifier
       }
-
-      const mailParams = {
-        Destination: {
-          ToAddresses: [userEmail], //ToAddresses: [process.env.SES_EMAIL],
-        },
-        Source: process.env.SES_EMAIL,
-        Message: {
-          Subject: { Data: 'New Comment' },
-          Body: {
-            Text: { Data: `Se ha realizado un nuevo comentario sobre la verificacion de un documento` },
-          },
-        },
-      }
-      const command = new SendEmailCommand(mailParams);
-
-      try {
-        const data = await ses.send(command);
-        return { status: 'done', msg: data }
-      } catch (error) {
-        return { status: 'error', msg: error }
-      }
-
+        const fromMail = SES_EMAIL
+          const toMail = [userEmail]
+          const data3 =   `Se ha realizado un nuevo comentario sobre la verificacion de un documento`
+          const templateData = {
+            data: data3,
+            user: userName
+          };
+          try {
+            const data = await ses.send(new SendTemplatedEmailCommand({
+              Source: fromMail,
+              Destination: {
+                ToAddresses: toMail,
+              },
+              Template: "AWS-SES-HTML-Email-Default-Template",
+              TemplateData: JSON.stringify(templateData),
+            }));
+            return { status: 'done', msg: data }
+          } catch (error) {
+            return { status: 'error', msg: error }
+          }
     }
   }
 };

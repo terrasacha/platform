@@ -7,24 +7,21 @@ const { Request } = fetch
 const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
 const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY;
 const SES_EMAIL = process.env.SES_EMAIL
-
 const query = /* GraphQL */ `
-query GetProduct($id: ID!) {
-    getProduct(id: $id) {
+  query GetVerification($id: ID!) {
+    getVerification(id: $id) {
       id
-      name
-      status
-      userProducts {
-        items {
+      userVerifier {
+        id
+        name
+        email
+      }
+      productFeature {
+        id
+        product {
           id
-          userID
-          user{
-            name
-            email
-            role
-          }
+          name
         }
-        nextToken
       }
     }
   }
@@ -34,13 +31,11 @@ query GetProduct($id: ID!) {
  */
 exports.handler = async(event) => {
   for (const record of event.Records) {
-    console.log(record.eventID);
-    console.log(record.eventName);
-    console.log('DynamoDB Record: %j', record.dynamodb);
+    /* console.log('DynamoDB Record: %j', record.dynamodb); */
     
     if (record.eventName === 'INSERT' && record.dynamodb.NewImage) {
-      let productID = record.dynamodb.NewImage.id.S
-        const variables = { id: productID };
+      let verification = record.dynamodb.NewImage.id.S
+        const variables = { id: verification };
         /** @type {import('node-fetch').RequestInit} */
         const options = {
           method: 'POST',
@@ -56,27 +51,31 @@ exports.handler = async(event) => {
         let statusCode = 200;
         let body;
         let response;
-        let constructorUserEmail = ''
-        let infoProduct = ''
+        let userVerifierEmail = ''
+        let userVerifierName = ''
+        let productName = ''
         try {
           response = await fetch(request);
           body = await response.json();
-          infoProduct = {name: body.data.getProduct.name, status: body.data.getProduct.status}
-          body.data.getProduct.userProducts.items.map(up => {if(up.user.role === 'constructor') constructorUserEmail = {name: up.user.name, email: up.user.email}})
+          console.log(`body ${JSON.stringify(body)}`)
+          userVerifierEmail = body.data.getVerification.userVerifier.email
+          userVerifierName = body.data.getVerification.userVerifier.name
+          productName = body.data.getVerification.productFeature.product.name
           if (body.errors) statusCode = 400;
         } catch (error) {
           statusCode = 400;
           console.log(error)
         }
-        if(constructorUserEmail !== ''){
+        if(userVerifierEmail !== ''){
           const fromMail = SES_EMAIL
-          const toMail = [constructorUserEmail.email]
-          const data3 =   `El proyecto llamado ${infoProduct.name} ha sido creado correctamente. Estado del proyecto: ${infoProduct.status}`
+          const toMail = [userVerifierEmail]
+          const data3 =   `Se te ha asigna el projecto ${productName} para la revisión de documentación. Recuerda priorizar la asignación de valores a "Token Price", "Token Name" y "Amount of tokens" para que el proyecto pueda ser visualizado en el Marketplace`
           const templateData = {
             data: data3,
-            user: constructorUserEmail.name
-          };
+            user: userVerifierName
+          }
           try {
+            console.log('entra a enviar el mail')
             const data = await ses.send(new SendTemplatedEmailCommand({
               Source: fromMail,
               Destination: {
@@ -85,6 +84,7 @@ exports.handler = async(event) => {
               Template: "AWS-SES-HTML-Email-Default-Template",
               TemplateData: JSON.stringify(templateData),
             }));
+            console.log(JSON.stringify(data))
             return { status: 'done', msg: data }
           } catch (error) {
             return { status: 'error', msg: error }

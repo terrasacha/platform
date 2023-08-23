@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses");
 const ses = new SESClient({ region: "us-east-1" });
 const { Request } = fetch;
 
@@ -157,14 +157,17 @@ exports.handler = async (event) => {
 
     listProducts = listProducts.filter((p) => p.status === 'on_verification');
     listProducts = listProducts.map((product) => {
-      let info = { id: product.id, name: product.name, email: '', case: '' };
+      let info = { id: product.id, name: product.name, email: '', case: '', username: '' };
 
       if (product.timeOnVerification) info.case = '';
       if (product.timeOnVerification < fechaActual) info.case = 'out_of_time';
       if (product.timeOnVerification > fechaActual) info.case = 'still_on_verification';
 
       product.userProducts.items.map((up) => {
-        if (up.user.role === 'constructor') info.email = up.user.email;
+        if (up.user.role === 'constructor'){
+          info.email = up.user.email
+          info.username = up.user.name
+        } ;
       });
 
       return info;
@@ -205,53 +208,52 @@ exports.handler = async (event) => {
       console.log(data);
 
       if (product.email !== '') {
-        const mailParams = {
-          Destination: {
-            ToAddresses: [product.email],
-          },
-          Source: SES_EMAIL,
-          Message: {
-            Subject: { Data: 'Cambio Estado de Proyecto' },
-            Body: {
-              Text: { Data: `Su proyecto llamado ${product.name} ha excedido el tiempo límite de verificación, por lo tanto queda rechazado` },
-            },
-          },
-        };
-
-        const command = new SendEmailCommand(mailParams);
-
-        try {
-          const data = await ses.send(command);
-          console.log({ status: 'done', msg: data });
-        } catch (error) {
-          console.log({ status: 'error', msg: error });
-        }
+          const fromMail = SES_EMAIL
+          const toMail = [product.email]
+          const data3 =  `Su proyecto llamado ${product.name} ha excedido el tiempo límite de verificación, por lo tanto queda rechazado`
+          const templateData = {
+            data: data3,
+            user: product.username
+          };
+          try {
+            const data = await ses.send(new SendTemplatedEmailCommand({
+              Source: fromMail,
+              Destination: {
+                ToAddresses: toMail,
+              },
+              Template: "AWS-SES-HTML-Email-Default-Template",
+              TemplateData: JSON.stringify(templateData),
+            }));
+            return { status: 'done', msg: data }
+          } catch (error) {
+            return { status: 'error', msg: error }
+          }
       }
     }
 
     if (product.case === 'still_on_verification' && product.email !== '') {
       console.log('crea los params para enviar el mail');
-      let mailParams = {
-        Destination: {
-          ToAddresses: [product.email],
-        },
-        Source: SES_EMAIL,
-        Message: {
-          Subject: { Data: `Su proyecto ${product.name} sigue en verificación` },
-          Body: {
-            Text: { Data: `Aún falta revisar documentación vinculada al proyecto ${product.name}` },
-          },
-        },
-      };
-
-      const command = new SendEmailCommand(mailParams);
-
-      try {
-        const data = await ses.send(command);
-        console.log({ status: 'done', msg: data });
-      } catch (error) {
-        console.log({ status: 'error', msg: error });
-      }
+      const fromMail = SES_EMAIL
+          const toMail = [product.email]
+          const data3 =   `Aún falta revisar documentación vinculada al proyecto ${product.name}`
+          const templateData = {
+            data: data3,
+            user: product.username
+          };
+          try {
+            const data = await ses.send(new SendTemplatedEmailCommand({
+              Source: fromMail,
+              Destination: {
+                ToAddresses: toMail,
+              },
+              Template: "AWS-SES-HTML-Email-Default-Template",
+              TemplateData: JSON.stringify(templateData),
+            }));
+            return { status: 'done', msg: data }
+          } catch (error) {
+            return { status: 'error', msg: error }
+          }
+    
     }
   }
 };

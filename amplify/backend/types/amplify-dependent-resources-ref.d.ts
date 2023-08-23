@@ -25,6 +25,13 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
+    "kiosuanbcrjsappAssignValidator": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "kiosuanbcrjsappChangeProductStatus": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
