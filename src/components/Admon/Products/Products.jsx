@@ -4,8 +4,9 @@ import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-boo
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
-import { listCategories, listFeatures, listProductFeatures, listProducts } from '../../../graphql/queries'
-import { onCreateProduct, onCreateVerification, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature } from '../../../graphql/subscriptions'
+import { listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
+import { listProducts } from '../../Investor/querys'
+import { onCreateProduct, onCreateVerification, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature, onDeleteProduct } from '../../../graphql/subscriptions'
 import checkIfUserExists from '../../../utilities/checkIfIDuserExist'
 // Utils 
 import Select from 'react-select'
@@ -168,6 +169,12 @@ class Products extends Component {
                     this.loadProductFeatures()
                 }
             })
+            this.deleteProductListener = API.graphql(graphqlOperation(onDeleteProduct))
+            .subscribe({
+                next: createdVerification => {
+                    this.loadProducts()
+                }
+            })
         //     }
         // } else {
         //     this.props.changeHeaderNavBarRequest('admon_profile')
@@ -245,7 +252,6 @@ class Products extends Component {
     async loadProducts() {
         const listProductsResult = await API.graphql(graphqlOperation(listProducts))
         listProductsResult.data.listProducts.items.sort((a, b) => (a.order > b.order) ? 1 : -1)
-        console.log(listProductsResult.data.listProducts.items,'listProductsResult.data.listProducts.items')
         this.setState({products: listProductsResult.data.listProducts.items})
     }
     async loadProductFeatures() {

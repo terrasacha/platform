@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // Bootstrap
 import { Button, Image, Modal, Table, Form, Col, ListGroup } from 'react-bootstrap';
+import { deleteAllInfoProduct } from './functions';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
@@ -39,7 +40,11 @@ export default class ListProducts extends Component {
     componentDidMount = async () => {
         await this.loadProductFeatureResults()
     }
-
+    hasVerifiedProductFeatures(product) {
+    return product.productFeatures.items.some(
+        (feature) => feature.verifications.items.length > 0
+    );
+    }
     async loadProductFeatureResults() {
         const listProductFeatureResultsResult = await API.graphql(graphqlOperation(listProductFeatureResults))
         listProductFeatureResultsResult.data.listProductFeatureResults.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
@@ -160,7 +165,6 @@ export default class ListProducts extends Component {
             theme: "light",
         });
     }
-
     // RENDER
     render() {
         let {products, urlS3Image, listPF} = this.props
@@ -185,13 +189,19 @@ export default class ListProducts extends Component {
             })
             return product
           })
+        const listCleanProducts = productsData.map((product) => {
+            let unverified = !this.hasVerifiedProductFeatures(product)
+            if(unverified) product.unverified = true
+            if(!unverified) product.unverified = false
+            return product
+        });
         const renderProducts = () => {
-            if (productsData.length > 0) {
+            if (listCleanProducts.length > 0) {
                 return (
                         <Table striped bordered hover>
                             <thead>
                             <tr>
-                                <th>Order</th>
+                                <th>Delete</th>
                                 <th>Name</th>
                                 <th>Category</th>
                                 <th>Status</th>
@@ -207,7 +217,12 @@ export default class ListProducts extends Component {
                             {products.map(product => (
                                 <tr key={product.id}>
                                     <td>
-                                        {product.order}
+                                        {product.unverified? 
+                                            <Button 
+                                                variant={'danger'}
+                                                size='sm' 
+                                                onClick={(e) => deleteAllInfoProduct(product)}
+                                            >Delete</Button> : ''}
                                     </td>
                                     <td>
                                         {product.name?product.name : ""}
