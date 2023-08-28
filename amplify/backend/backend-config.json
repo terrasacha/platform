@@ -118,6 +118,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "kiosuanbcrjsappNotifyAdmonAndCreateUser": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjsappSendMailNotByComment": {
       "build": true,
       "dependsOn": [
@@ -248,6 +263,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappConstructorUploadNewDocument"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappNotifyAdmonAndCreateUser_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappNotifyAdmonAndCreateUser"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappNotifyAdmonAndCreateUser_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappNotifyAdmonAndCreateUser"
         }
       ]
     },
