@@ -41,9 +41,11 @@ export default class ListProducts extends Component {
         await this.loadProductFeatureResults()
     }
     hasVerifiedProductFeatures(product) {
-    return product.productFeatures.items.some(
-        (feature) => feature.verifications.items.length > 0
-    );
+    let verifications = product.productFeatures.items.some(
+        (feature) => feature.verifications.items.length > 0 
+        );
+    let transactions = product.transactions.items.length > 0
+    return verifications || transactions
     }
     async loadProductFeatureResults() {
         const listProductFeatureResultsResult = await API.graphql(graphqlOperation(listProductFeatureResults))

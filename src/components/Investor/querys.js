@@ -94,7 +94,10 @@ const listProducts = /* GraphQL */ `
           }
         }
         transactions {
-          nextToken
+          items {
+            id
+            productID
+          }
         }
         xlsFormProducts {
           nextToken
