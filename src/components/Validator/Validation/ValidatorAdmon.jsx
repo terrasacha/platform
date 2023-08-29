@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 //Bootstrap
-import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, Stack } from 'react-bootstrap';
-import InputGroup from 'react-bootstrap/InputGroup';
-import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons';
-import { v4 as uuidv4 } from 'uuid';
-import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar';
+import { Button, Card, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table, Stack } from 'react-bootstrap'
+import InputGroup from 'react-bootstrap/InputGroup'
+import { ArrowRight, CheckCircle, HourglassSplit, XCircle } from 'react-bootstrap-icons'
+import { v4 as uuidv4 } from 'uuid'
+import HeaderNavbar from '../../Investor/Navbars/HeaderNavbar'
 // GraphQL
-import { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
-import { createVerification, updateDocument, updateProductFeature, createVerificationComment, updateProduct, createProductFeature } from '../../../graphql/mutations';
-import { onUpdateDocument, onUpdateProductFeature, onCreateVerificationComment, onCreateProductFeature } from '../../../graphql/subscriptions';
+import { API, Auth, graphqlOperation, Storage } from 'aws-amplify'
+import { createVerification, updateDocument, updateProductFeature, createVerificationComment, updateProduct, createProductFeature } from '../../../graphql/mutations'
+import { onUpdateDocument, onUpdateProductFeature, onCreateVerificationComment, onCreateProductFeature } from '../../../graphql/subscriptions'
 import { listFeatures } from '../../../graphql/queries'
 import Select from 'react-select'
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
@@ -59,6 +59,11 @@ export const listDocuments = /* GraphQL */ `
           product {
             id
             name
+            transactions{
+              items {
+                id
+              }
+            }
             category{
               name
             }
@@ -116,7 +121,7 @@ export const listDocuments = /* GraphQL */ `
       nextToken
     }
   }
-`;
+`
 const queryUsers = `query GetProduct($id: ID!) {
   getProduct(id: $id) {
     id
@@ -288,10 +293,10 @@ class ValidatorAdmon extends Component {
     })
   }
   async loadUsers() {
-    const id = 'PRODUCT_USER_VALIDATION';
-    const variables = { id };
+    const id = 'PRODUCT_USER_VALIDATION'
+    const variables = { id }
 
-    const listUsersResult = await API.graphql(graphqlOperation(queryUsers, variables));
+    const listUsersResult = await API.graphql(graphqlOperation(queryUsers, variables))
     this.setState({ users: listUsersResult.data.getProduct?.productFeatures?.items })
   }
   async loadFeatures(){
@@ -304,7 +309,7 @@ class ValidatorAdmon extends Component {
     const listfeaturesVerifables = listfeaturesVerifablesResult.data.listFeatures.items.map(feature => ({
       label: feature.name,
       value: feature.id
-    }));
+    }))
     this.setState({featuresVerifables: listfeaturesVerifables})
   }
   loadTokenPrices(){
@@ -318,9 +323,9 @@ class ValidatorAdmon extends Component {
         }
       }))
       const productsUnicos = Object.values(products.reduce((acc, product) => {
-        acc[product.id] = product;
-        return acc;
-      }, {}));
+        acc[product.id] = product
+        return acc
+      }, {}))
       let tokenPrices = {} 
       productsUnicos.map(product => tokenPrices[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE')[0]?.value : '')
       this.setState({tokenPrices: tokenPrices})
@@ -336,9 +341,9 @@ class ValidatorAdmon extends Component {
         }
       }))
       const productsUnicos = Object.values(products.reduce((acc, product) => {
-        acc[product.id] = product;
-        return acc;
-      }, {}));
+        acc[product.id] = product
+        return acc
+      }, {}))
       let tokenNames = {} 
       productsUnicos.map(product => tokenNames[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_NAME')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_TOKEN_NAME')[0]?.value : '')
       this.setState({tokenNames: tokenNames})
@@ -354,28 +359,36 @@ class ValidatorAdmon extends Component {
         }
       }))
       const productsUnicos = Object.values(products.reduce((acc, product) => {
-        acc[product.id] = product;
-        return acc;
-      }, {}));
+        acc[product.id] = product
+        return acc
+      }, {}))
       let amountTokens = {} 
       productsUnicos.map(product => amountTokens[product.id] = product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS')[0]?.value?  product.productFeatures.items.filter(pf => pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS')[0]?.value : '')
       this.setState({amountTokens: amountTokens})
   }
   handleTokenPriceChange = (event, product) => {
-    const newTokenPrices = { ...this.state.tokenPrices };
-    newTokenPrices[product.id] = event.target.value;
-    this.setState({ tokenPrices: newTokenPrices });
-  };
+    const newTokenPrices = { ...this.state.tokenPrices }
+    newTokenPrices[product.id] = event.target.value
+    this.setState({ tokenPrices: newTokenPrices })
+  }
   handleTokenNameChange = (event, product) => {
-    const newTokenNames = { ...this.state.tokenNames };
-    newTokenNames[product.id] = event.target.value;
-    this.setState({ tokenNames: newTokenNames });
-  };
+    const newName = event.target.value
+    const regexInputTokenName = /^[a-zA-Z0-9\-]{0,32}$/
+  
+    if (regexInputTokenName.test(newName)) {
+      const newTokenNames = { ...this.state.tokenNames }
+      newTokenNames[product.id] = newName
+      this.setState({ tokenNames: newTokenNames })
+    } else {
+      console.log("Nombre de token no válido")
+    }
+  }
+  
   handleAmountOfTokens = (event, product) => {
-    const newAmountTokens = { ...this.state.amountTokens };
-    newAmountTokens[product.id] = event.target.value;
-    this.setState({ amountTokens: newAmountTokens });
-  };
+    const newAmountTokens = { ...this.state.amountTokens }
+    newAmountTokens[product.id] = event.target.value
+    this.setState({ amountTokens: newAmountTokens })
+  }
   async changeHeaderNavBarRequest(pRequest) {
     if (pRequest === 'product_documents') {
       this.setState({
@@ -489,7 +502,7 @@ class ValidatorAdmon extends Component {
         draggable: true,
         progress: undefined,
         theme: "light",
-        });
+        })
 }
   notifyAssignTokenPrice = (product, tokenPrice) =>{
     toast.success(`Nuevo precio para ${product}. $${tokenPrice}`, {
@@ -501,7 +514,7 @@ class ValidatorAdmon extends Component {
         draggable: true,
         progress: undefined,
         theme: "light",
-        });
+        })
 }
   notifyAssignTokenName = (product, tokenName) =>{
     toast.success(`Nuevo nombre de token para ${product}. ${tokenName}`, {
@@ -513,7 +526,7 @@ class ValidatorAdmon extends Component {
         draggable: true,
         progress: undefined,
         theme: "light",
-        });
+        })
 }
   notifyAssignAmountTokens = (product, tokenName) =>{
     toast.success(`Cantidad de tokens actualizada para   ${product}. ${tokenName}`, {
@@ -525,7 +538,7 @@ class ValidatorAdmon extends Component {
         draggable: true,
         progress: undefined,
         theme: "light",
-        });
+        })
 }
   handleDownload = async (doc) => {
     try {
@@ -550,18 +563,18 @@ class ValidatorAdmon extends Component {
           validateObjectExistence: false
         }
         const response = await Storage.get(key, config)
-        // const response = await Storage.get(key, { download: true });
+        // const response = await Storage.get(key, { download: true })
         // Si el archivo se descargó correctamente, puedes crear un enlace para el usuario
-        const url = URL.createObjectURL(response.Body);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = key;
-        link.click();
+        const url = URL.createObjectURL(response.Body)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = key
+        link.click()
       }
     } catch (error) {
-      console.log('Error al descargar el archivo:', error);
+      console.log('Error al descargar el archivo:', error)
     }
-  };
+  }
   async handleInputCreateVerificationComment(e) {
     if (e.target.name === 'verificationComment') {
       await this.setState(prevState => ({
@@ -598,7 +611,7 @@ class ValidatorAdmon extends Component {
     return verificationID
   }
   async updateTokenPrice(product){
-    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE');
+    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_TOKEN_PRICE')
     if(tieneTokenValue){
       let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'GLOBAL_TOKEN_PRICE')[0].id
       let tempProductFeature = {
@@ -621,7 +634,7 @@ class ValidatorAdmon extends Component {
     await this.loadDocuments()
 }
   async updateTokenName(product){
-    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_TOKEN_NAME');
+    const tieneTokenValue = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_TOKEN_NAME')
     if(tieneTokenValue){
       let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'GLOBAL_TOKEN_NAME')[0].id
       let tempProductFeature = {
@@ -644,7 +657,7 @@ class ValidatorAdmon extends Component {
     await this.loadDocuments()
 }
   async updateAmountTokens(product){
-    const tieneAmountTokens = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS');
+    const tieneAmountTokens = product.productFeatures.items.some(pf => pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS')
     if(tieneAmountTokens){
       let tokenPricePF = product.productFeatures.items.filter(pf =>  pf.featureID === 'GLOBAL_AMOUNT_OF_TOKENS')[0].id
       let tempProductFeature = {
@@ -731,9 +744,13 @@ class ValidatorAdmon extends Component {
         }
       }))
       const productsUnicos = Object.values(products.reduce((acc, product) => {
-        acc[product.id] = product;
-        return acc;
-      }, {}));
+        acc[product.id] = product
+        return acc
+      }, {}))
+      productsUnicos.map(pu =>{ 
+        if(pu.transactions.items. length > 0){
+          pu.mutableName = true
+        }else pu.mutableName = false} )
       if (this.state.selectedProductValidation) {
         documents = documents.filter(document => document.productFeature.product.name === this.state.selectedProductValidation.name)
       }
@@ -746,7 +763,7 @@ class ValidatorAdmon extends Component {
                 <h3>Proyectos</h3>
                 <Container className='mt-5'>
                   {productsUnicos?.map(product => {
-                    const featuresAvailables = this.state.featuresVerifables.filter(item2 => !product.productFeatures.items.some(item1 => item1.featureID === item2.value));
+                    const featuresAvailables = this.state.featuresVerifables.filter(item2 => !product.productFeatures.items.some(item1 => item1.featureID === item2.value))
                     return(
                     <Card key={product.id} body  
                     style={{ cursor: 'pointer' }} 
@@ -768,11 +785,12 @@ class ValidatorAdmon extends Component {
                       <Form.Control
                         value={this.state.tokenNames[product.id] || ''}
                         placeholder="Token name"
+                        disabled={product.mutableName}
                         name='GLOBAL_TOKEN_NAME'
                         aria-describedby="basic-addon2"
                         onChange={(event) => this.handleTokenNameChange(event, product)} 
                       />
-                        <Button variant="outline-success" id="button-addon2" onClick={(e) => this.updateTokenName(product)}>
+                        <Button variant="outline-success" id="button-addon2" disabled={product.mutableName}  onClick={(e) => this.updateTokenName(product)}>
                           Change
                         </Button>
                       </InputGroup>
@@ -892,7 +910,7 @@ class ValidatorAdmon extends Component {
             <Modal.Body>
               {
                 this.state.selectedDocument.productFeature.verifications.items.length > 0 ? this.state.selectedDocument.productFeature.verifications.items.filter(v => v.userVerifierID === this.state.actualUser)[0].verificationComments.items.sort(function (a, b) {
-                  return new Date(a.createdAt) - new Date(b.createdAt);
+                  return new Date(a.createdAt) - new Date(b.createdAt)
                 }).map(vc => {
                   return (
                     <p key={vc.id}>{vc.createdAt} ({vc.isCommentByVerifier === true ? "Tu" : "Constructor"}) {vc.comment}</p>
