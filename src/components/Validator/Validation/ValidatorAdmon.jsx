@@ -287,7 +287,7 @@ class ValidatorAdmon extends Component {
     const listDocumentsResult2 = await API.graphql({ query: listDocuments, variables: { filter: filter2 } })
     listDocumentsResult2.data.listDocuments.items.sort((a, b) => (a.id > b.id) ? 1 : -1)
     let documentsByVerificatorFilter2= []
-    listDocumentsResult2.data.listDocuments.items.map(doc => doc.productFeature.verifications.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorFilter2.push(doc)}))
+    listDocumentsResult2.data.listDocuments.items.map(doc => doc.productFeature?.verifications?.items.map(v =>{if(v.userVerifierID === this.state.actualUser) documentsByVerificatorFilter2.push(doc)}))
     this.setState({
       otherDocuments: documentsByVerificatorFilter2,
     })

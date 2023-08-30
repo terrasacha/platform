@@ -1,9 +1,10 @@
 import { API, graphqlOperation } from "aws-amplify";
-import { deleteProduct, deleteProductFeature, deleteImage, deleteUserProduct } from "../../../graphql/mutations";
+import { deleteProduct, deleteProductFeature, deleteImage, deleteUserProduct, deleteDocument } from "../../../graphql/mutations";
 
 export async function deleteAllInfoProduct(product) {
+    console.log(product)
     if (!product) {
-        return
+        returns
     }
 
     const promises = [
@@ -15,8 +16,15 @@ export async function deleteAllInfoProduct(product) {
     )
     promises.push(...imagePromises)
 
-    const productFeaturePromises = product.productFeatures.items?.map(pf =>
+    const productFeaturePromises = product.productFeatures.items?.map(pf =>{
         API.graphql(graphqlOperation(deleteProductFeature, { input: { id: pf.id } }))
+        pf.documents?.items?.map(doc =>
+            API.graphql(graphqlOperation(deleteDocument, { input: { id: doc.id } }))
+        )
+        pf.verifications?.items?.map(verification =>
+            API.graphql(graphqlOperation(deleteDocument, { input: { id: verification.id } }))
+        )
+    }
     )
     promises.push(...productFeaturePromises)
 
