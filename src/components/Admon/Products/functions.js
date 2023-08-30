@@ -1,5 +1,5 @@
 import { API, graphqlOperation } from "aws-amplify";
-import { deleteProduct, deleteProductFeature, deleteImage, deleteUserProduct, deleteDocument } from "../../../graphql/mutations";
+import { deleteProduct, deleteProductFeature, deleteImage, deleteUserProduct, deleteDocument, deleteVerification } from "../../../graphql/mutations";
 
 export async function deleteAllInfoProduct(product) {
     console.log(product)
@@ -22,7 +22,7 @@ export async function deleteAllInfoProduct(product) {
             API.graphql(graphqlOperation(deleteDocument, { input: { id: doc.id } }))
         )
         pf.verifications?.items?.map(verification =>
-            API.graphql(graphqlOperation(deleteDocument, { input: { id: verification.id } }))
+            API.graphql(graphqlOperation(deleteVerification, { input: { id: verification.id } }))
         )
     }
     )
