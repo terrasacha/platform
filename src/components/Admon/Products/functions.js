@@ -4,7 +4,7 @@ import { deleteProduct, deleteProductFeature, deleteImage, deleteUserProduct, de
 export async function deleteAllInfoProduct(product) {
     console.log(product)
     if (!product) {
-        returns
+        return
     }
 
     const promises = [
