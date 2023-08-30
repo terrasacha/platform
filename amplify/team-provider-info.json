@@ -50,7 +50,7 @@
         },
         "kiosuanbcrjsappNotifyAdmonAndCreateUser": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappNotifyAdmonAndCreateUser-4774597a4a5766374461-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappNotifyAdmonAndCreateUser-724c454e75756d57536c-build.zip"
         }
       },
       "hosting": {

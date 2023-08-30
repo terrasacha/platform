@@ -16,24 +16,8 @@ const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
 const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY;
 const SES_EMAIL = process.env.SES_EMAIL;
 const USER_POOL_ID = process.env.USER_POOL_ID
+const EMAIL_ADMIN = process.env.EMAIL_ADMIN
 
-const queryGetProduct = /* GraphQL */ `
-query GetProduct($id: ID!) {
-    getProduct(id: $id) {
-      id
-      name
-      status
-      productFeatures {
-        items {
-          id
-          value
-          featureID
-        }
-        nextToken
-      }
-    }
-  }
-`;
 async function createUserInCognito(usuario, email, role, tempPassword) {
   const params = {
     UserPoolId: USER_POOL_ID,
@@ -77,7 +61,7 @@ async function sendEmailNotification(userEmail) {
     const data = await ses.send(new SendTemplatedEmailCommand({
       Source: SES_EMAIL,
       Destination: {
-        ToAddresses: ['diaznannignacio@gmail.com']
+        ToAddresses: [EMAIL_ADMIN]
       },
       Template: 'AWS-SES-HTML-Email-Default-Template',
       TemplateData: JSON.stringify(templateData),
@@ -90,8 +74,8 @@ async function sendEmailNotification(userEmail) {
   }
 }
 
-async function createUserInGraphQL(sub, usuario, email, role) {
-  const fetchOptions = {
+async function createUserInGraphQL(sub, usuario, email, role, productID) {
+  const fetchOptionsUser = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -119,12 +103,38 @@ async function createUserInGraphQL(sub, usuario, email, role) {
       }
     })
   }
+  const fetchOptionsUserProduct = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': GRAPHQL_API_KEY
+    },
+    body: JSON.stringify({
+      query: `
+        mutation CreateUserProduct($input: CreateUserProductInput!) {
+          createUserProduct(input: $input) {
+            userID
+            productID
+          }
+        }
+      `,
+      variables: {
+        input: {
+          userID: sub,
+          productID: productID,
+        }
+      }
+    })
+  }
 
   try {
-    const response = await fetch(GRAPHQL_ENDPOINT, fetchOptions)
-    const responseData = await response.json()
+    const responseUser = await fetch(GRAPHQL_ENDPOINT, fetchOptionsUser)
+    const responseUserProduct = await fetch(GRAPHQL_ENDPOINT, fetchOptionsUserProduct)
+    const responseDataUser = await responseUser.json()
+    const responseDataUserProduct = await responseUserProduct.json()
 
-    console.log('User registration in GraphQL:', responseData)
+    console.log('User registration in GraphQL:', responseDataUser)
+    console.log('UserProduct registration in GraphQL:', responseDataUserProduct)
   } catch (error) {
     console.error('Error creating user in GraphQL', error)
     throw error
@@ -193,7 +203,7 @@ exports.handler = async (event) => {
 
       try {
         const sub = await createUserInCognito(usuario, email, role, tempPassword)
-        await createUserInGraphQL(sub, usuario, email, role)
+        await createUserInGraphQL(sub, usuario, email, role, productID)
         await sendEmailNotification()
         return { status: 'done', msg: 'Process completed successfully' }
       } catch (error) {
