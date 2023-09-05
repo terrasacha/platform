@@ -9,6 +9,7 @@
     "@aws-sdk/client-ses": "^3.332.0",
     "amazon-cognito-identity-js": "^6.3.5",
     "aws-sdk": "^2.1445.0",
+    "generate-password": "^1.7.0",
     "node-fetch": "^2.6.11"
   },
   "devDependencies": {

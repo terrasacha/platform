@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React from 'react';
 
 // Components
 import Admon from "./components/Admon/Admon";
@@ -7,6 +7,7 @@ import ConstructorAdmon from "./components/Constructor/ConstructorAdmon";
 import Error from './components/views/Error';
 import LandingPage from "./components/views/landingPage/LandingPage.jsx";
 import { AuthProvider } from './context/AuthContext';
+import { ProjectDataProvider } from './context/ProjectDataContext';
 // Routing
 // import { Auth } from 'aws-amplify';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -24,6 +25,7 @@ import CreateWallet from './components/views/createWallet/CreateWallet'
 import TermCondition from './components/views/terms&conditions/TermCondition'
 import PrivacyPolicy from './components/views/privacyPolicy/PrivacyPolicy'
 import UseTerms from './components/views/useTerms/UseTerms';
+import ProjectPage from './components/Constructor/ProjectPage/ProjectPage';
 
 function App(){
   return(
@@ -34,6 +36,15 @@ function App(){
             path="/"
             element={
               <LandingPage />
+            }
+            exact
+          />
+          <Route
+            path="/project_details/:id"
+            element={
+              <ProjectDataProvider>
+                <ProjectPage />
+              </ProjectDataProvider>
             }
             exact
           />

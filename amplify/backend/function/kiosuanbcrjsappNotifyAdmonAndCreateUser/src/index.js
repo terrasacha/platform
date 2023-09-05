@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 const fetch = require('node-fetch')
-
+const generator = require('generate-password');
 const {
   SESClient,
   SendTemplatedEmailCommand
@@ -11,9 +11,12 @@ AWS.config.update({ region: 'us-east-1' })
 const cognito = new AWS.CognitoIdentityServiceProvider()
 const ses = new SESClient({ region: 'us-east-1' })
 
-const USER_POOL_ID = 'us-east-1_DFaBfYrB1'
-const API_KEY = 'da2-zmafzaqndbc5blfoqw4kqddtlq'
-const GRAPHQL_API_URL = 'https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql'
+
+const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
+const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY;
+const SES_EMAIL = process.env.SES_EMAIL;
+const USER_POOL_ID = process.env.USER_POOL_ID
+const EMAIL_ADMIN = process.env.EMAIL_ADMIN
 
 async function createUserInCognito(usuario, email, role, tempPassword) {
   const params = {
@@ -48,7 +51,7 @@ async function createUserInCognito(usuario, email, role, tempPassword) {
   }
 }
 
-async function sendEmailNotification() {
+async function sendEmailNotification(userEmail) {
   const templateData = {
     data: 'Se ha creado un nuevo proyecto, por favor asigne un validador lo antes posible',
     user: 'Administrador'
@@ -56,9 +59,9 @@ async function sendEmailNotification() {
 
   try {
     const data = await ses.send(new SendTemplatedEmailCommand({
-      Source: 'notificaciones@suan.global',
+      Source: SES_EMAIL,
       Destination: {
-        ToAddresses: ['diaznannignacio@gmail.com']
+        ToAddresses: [EMAIL_ADMIN]
       },
       Template: 'AWS-SES-HTML-Email-Default-Template',
       TemplateData: JSON.stringify(templateData),
@@ -71,12 +74,12 @@ async function sendEmailNotification() {
   }
 }
 
-async function createUserInGraphQL(sub, usuario, email, role) {
-  const fetchOptions = {
+async function createUserInGraphQL(sub, usuario, email, role, productID) {
+  const fetchOptionsUser = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': API_KEY
+      'x-api-key': GRAPHQL_API_KEY
     },
     body: JSON.stringify({
       query: `
@@ -100,12 +103,81 @@ async function createUserInGraphQL(sub, usuario, email, role) {
       }
     })
   }
+  const fetchOptionsUserProduct = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': GRAPHQL_API_KEY
+    },
+    body: JSON.stringify({
+      query: `
+        mutation CreateUserProduct($input: CreateUserProductInput!) {
+          createUserProduct(input: $input) {
+            userID
+            productID
+          }
+        }
+      `,
+      variables: {
+        input: {
+          userID: sub,
+          productID: productID,
+        }
+      }
+    })
+  }
 
   try {
-    const response = await fetch(GRAPHQL_API_URL, fetchOptions)
-    const responseData = await response.json()
+    const responseUser = await fetch(GRAPHQL_ENDPOINT, fetchOptionsUser)
+    const responseUserProduct = await fetch(GRAPHQL_ENDPOINT, fetchOptionsUserProduct)
+    const responseDataUser = await responseUser.json()
+    const responseDataUserProduct = await responseUserProduct.json()
 
-    console.log('User registration in GraphQL:', responseData)
+    console.log('User registration in GraphQL:', responseDataUser)
+    console.log('UserProduct registration in GraphQL:', responseDataUserProduct)
+  } catch (error) {
+    console.error('Error creating user in GraphQL', error)
+    throw error
+  }
+}
+
+async function getProductInfo(productID){
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': GRAPHQL_API_KEY
+    },
+    body: JSON.stringify({ 
+      query: `
+        query GetProduct($id: ID!) {
+            getProduct(id: $id) {
+              id
+              name
+              status
+              productFeatures {
+                items {
+                  id
+                  value
+                  featureID
+                }
+                nextToken
+              }
+            }
+          }
+        `,
+        variables: {
+          id: productID
+        }
+      })
+  }
+
+  try {
+    const response = await fetch(GRAPHQL_ENDPOINT, fetchOptions)
+    const responseData = await response.json()
+    const productFeatureEmail = responseData.data.getProduct.productFeatures.items.filter(pf => pf.featureID === 'A_postulante_email')
+    if(productFeatureEmail[0].value) return productFeatureEmail[0].value
+    return null
   } catch (error) {
     console.error('Error creating user in GraphQL', error)
     throw error
@@ -113,18 +185,30 @@ async function createUserInGraphQL(sub, usuario, email, role) {
 }
 
 exports.handler = async (event) => {
-  const usuario = 'usuariodepruebalambda'
-  const email = 'ignaciodiaznanni@gmail.com'
-  const role = 'constructor'
-  const tempPassword = 'constraseñaSuperSegura1313$!'
+  console.log(event)
+  for (const record of event.Records) {
+    console.log(record.eventID);
+    console.log(record.eventName);
+    console.log('DynamoDB Record: %j', record.dynamodb);
 
-  try {
-    const sub = await createUserInCognito(usuario, email, role, tempPassword)
-    await createUserInGraphQL(sub, usuario, email, role)
-    await sendEmailNotification()
-    
-    return { status: 'done', msg: 'Process completed successfully' }
-  } catch (error) {
-    return { status: 'error', msg: 'An error occurred during processing' }
+    if (record.eventName === 'INSERT' && record.dynamodb.NewImage) {
+      let productID = record.dynamodb.NewImage.id.S
+      const email = await getProductInfo(productID)
+      const usuario = email.split('@')[0]
+      const role = 'constructor'
+      const tempPassword  = generator.generate({
+        length: 12,
+        numbers: true
+      });
+
+      try {
+        const sub = await createUserInCognito(usuario, email, role, tempPassword)
+        await createUserInGraphQL(sub, usuario, email, role, productID)
+        await sendEmailNotification()
+        return { status: 'done', msg: 'Process completed successfully' }
+      } catch (error) {
+        return { status: 'error', msg: 'An error occurred during processing' }
+      }
+    }
   }
 }

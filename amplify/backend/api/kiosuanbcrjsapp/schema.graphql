@@ -34,7 +34,7 @@ type Wallet @model
   isAdmin: Boolean
   userID: ID! @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
-  }
+}
 
 type Verification @model {
   id: ID!
