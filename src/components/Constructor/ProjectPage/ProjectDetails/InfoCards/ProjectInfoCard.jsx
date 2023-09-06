@@ -1,8 +1,8 @@
 import React from "react";
 
-import Card from "../../common/Card";
-import FormGroup from "../../common/FormGroup";
-import { useProjectData } from "../../../context/ProjectDataContext";
+import Card from "../../../../common/Card";
+import FormGroup from "../../../../common/FormGroup";
+import { useProjectData } from "../../../../../context/ProjectDataContext";
 
 export default function ProjectInfoCard(props) {
   const { className } = props;
@@ -40,7 +40,7 @@ export default function ProjectInfoCard(props) {
               disabled
               label="Categoria del proyecto"
               inputType="radio"
-              optionList={["REDD++", "Proyecto Plantaciones"]}
+              optionList={["REDD+", "Proyecto Plantaciones"]}
               optionCheckedList={projectData.projectInfo?.category}
             />
           </div>

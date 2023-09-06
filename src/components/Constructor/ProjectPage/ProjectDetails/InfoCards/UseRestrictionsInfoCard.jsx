@@ -1,8 +1,8 @@
 import React from "react";
 
-import Card from "../../common/Card";
-import FormGroup from "../../common/FormGroup";
-import { useProjectData } from "../../../context/ProjectDataContext";
+import Card from "../../../../common/Card";
+import FormGroup from "../../../../common/FormGroup";
+import { useProjectData } from "../../../../../context/ProjectDataContext";
 
 export default function UseRestrictionsInfoCard(props) {
   const { className } = props;

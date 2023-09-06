@@ -12,7 +12,7 @@ export function ProjectDataProvider({ children }) {
   const handleProjectData = async (data) => {
     setProjectData(data);
   };
-
+  
   const contextProps = {
     projectData,
     handleProjectData,

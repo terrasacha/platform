@@ -1,12 +1,12 @@
 export const parseSerializedKoboData = async (data) => {
-  const contenido = data.replace(/[{}[\]]/g, '');
+  const contenido = data.replace(/[{}[\]]/g, "");
   const pares = contenido.split(", ");
 
   const parsedData = {};
 
   pares.forEach((par) => {
     const [clave, valor] = par.split("=");
-    if(clave === "D_actual_use" || clave === "D_replace_use") {
+    if (clave === "D_actual_use" || clave === "D_replace_use") {
       parsedData[clave] = valor.split("|");
     } else {
       parsedData[clave] = valor;
@@ -14,36 +14,52 @@ export const parseSerializedKoboData = async (data) => {
   });
 
   return parsedData;
-}
+};
 
-
-export const getLocationData = async (location) => {
-  let locationData = {
-    lat: "",
-    lng: "",
-    alt: "",
-    pres: "",
-  };
-  if (location) {
-    const data = location.split(" ");
-
-    locationData.lat = parseFloat(data[0]);
-    locationData.lng = parseFloat(data[1]);
-    locationData.alt = parseFloat(data[2]);
-    locationData.pres = parseFloat(data[3]);
-  }
-  return locationData;
-}
-
-export const convertAWSDatetimeToDate = async(AWSDatetime) => {
+export const convertAWSDatetimeToDate = async (AWSDatetime) => {
   const fechaObjeto = new Date(AWSDatetime);
   const anio = fechaObjeto.getFullYear();
-  const mes = String(fechaObjeto.getMonth() + 1).padStart(2, '0');
-  const dia = String(fechaObjeto.getDate()).padStart(2, '0');
+  const mes = String(fechaObjeto.getMonth() + 1).padStart(2, "0");
+  const dia = String(fechaObjeto.getDate()).padStart(2, "0");
 
   return `${anio}-${mes}-${dia}`;
-}
+};
 
 export const formatNumberWithThousandsSeparator = async (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
+};
+
+export const getElapsedTime = async (initDate, endDate = new Date()) => {
+  const diferenciaEnMilisegundos = endDate - new Date(initDate);
+  let minutosTranscurridos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
+  let elapsedTime = "";
+  if (minutosTranscurridos < 60) {
+    elapsedTime = `Hace ${minutosTranscurridos} minutos`;
+  }
+  if (minutosTranscurridos >= 60 && minutosTranscurridos < 1440) {
+    minutosTranscurridos = Math.floor(minutosTranscurridos / 60);
+    elapsedTime = `Hace ${minutosTranscurridos} horas`;
+  }
+  if (minutosTranscurridos >= 1440) {
+    minutosTranscurridos = Math.floor(minutosTranscurridos / 1440);
+    elapsedTime = `Hace ${minutosTranscurridos} dias`;
+  }
+
+  return elapsedTime;
+};
+
+export const capitalizeWords = async (str) => {
+  const lowercaseStr = str.toLowerCase();
+
+  const words = lowercaseStr.split(' ');
+
+  const capitalizedWords = words.map((word) => {
+    if (word.length > 0) {
+      return word[0].toUpperCase() + word.slice(1);
+    } else {
+      return word;
+    }
+  });
+
+  return capitalizedWords.join(" ");
+};

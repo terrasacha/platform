@@ -1,5 +1,6 @@
-import { Auth } from "aws-amplify";
+import { Auth, API, graphqlOperation } from "aws-amplify";
 import React, { useContext, useEffect, useState } from "react";
+import { getUser } from "../utilities/customQueries";
 
 
 const AuthContext = React.createContext();
@@ -19,7 +20,9 @@ export function AuthProvider({ children }) {
   async function checkUser(){
       try {
           const currentUser = await Auth.currentAuthenticatedUser()
-          setUser({user: currentUser.attributes['custom:role']})
+          const response = await API.graphql(graphqlOperation(getUser, { id: currentUser.attributes.sub }));
+
+          setUser(response.data.getUser)
           localStorage.setItem('role', currentUser.attributes['custom:role'])
       } catch (error) {
           

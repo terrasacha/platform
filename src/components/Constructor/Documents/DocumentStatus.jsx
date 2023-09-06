@@ -254,7 +254,7 @@ class DocumentStatus extends Component {
     );
     let documentsByVerificatorAll = [];
     listDocumentsResultAll.data.listDocuments.items.map((doc) =>
-      doc.productFeature.verifications.items.map((v) => {
+      doc.productFeature?.verifications?.items.map((v) => {
         if (v.userVerifiedID === this.state.actualUser)
           documentsByVerificatorAll.push(doc);
       })
@@ -275,7 +275,7 @@ class DocumentStatus extends Component {
     );
     let documentsByVerificatorFilter1 = [];
     listDocumentsResult.data.listDocuments.items.map((doc) =>
-      doc.productFeature.verifications.items.map((v) => {
+      doc.productFeature?.verifications?.items.map((v) => {
         if (v.userVerifiedID === this.state.actualUser)
           documentsByVerificatorFilter1.push(doc);
       })
@@ -292,7 +292,7 @@ class DocumentStatus extends Component {
     );
     let documentsByVerificatorFilter2 = [];
     listDocumentsResult2.data.listDocuments.items.map((doc) =>
-      doc.productFeature.verifications.items.map((v) => {
+      doc.productFeature?.verifications?.items.map((v) => {
         if (v.userVerifiedID === this.state.actualUser)
           documentsByVerificatorFilter2.push(doc);
       })

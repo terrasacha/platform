@@ -1,24 +1,126 @@
-import { parseSerializedKoboData, getLocationData, convertAWSDatetimeToDate, formatNumberWithThousandsSeparator } from "./utils";
+import {
+  parseSerializedKoboData,
+  convertAWSDatetimeToDate,
+  formatNumberWithThousandsSeparator,
+  getElapsedTime,
+  capitalizeWords
+} from "./utils";
+
+const mapProjectVerifiers = async (data) => {
+  
+  const verifiablePF = data.productFeatures.items.filter(
+    (pf) => pf.feature.isVerifable === true
+  );
+  let projectVerifiers = []
+  verifiablePF.forEach(pf => {
+    pf.verifications.items.forEach(vf => {
+      projectVerifiers.push(vf.userVerifierID)
+    })
+  })
+
+  return projectVerifiers
+}
+
+const mapVerificationsData = async (verifications) => {
+  const verificationData = verifications.map(async (verification) => {
+    return {
+      id: verification.id,
+      verifierID: verification.userVerifierID,
+      verifierName: verification.userVerifier.name,
+      postulantName: verification.userVerified.name,
+      postulantID: verification.userVerifiedID,
+      messages: await Promise.all(
+        verification.verificationComments.items
+          .sort(function (a, b) {
+            return new Date(a.createdAt) - new Date(b.createdAt);
+          })
+          .map(async (msg) => {
+            return {
+              ...msg,
+              userName: await capitalizeWords(msg.isCommentByVerifier ? verification.userVerifier.name : verification.userVerified.name),
+              createdAt: await convertAWSDatetimeToDate(msg.createdAt),
+              elapsedTime: await getElapsedTime(msg.createdAt),
+            };
+          })
+      ),
+    };
+  });
+
+  // Esperar a que todas las promesas se resuelvan y devolver la primera
+  const resolvedVerificationData = await Promise.all(verificationData);
+
+  return resolvedVerificationData[0];
+};
+
+const mapDocumentsData = async (data) => {
+  const PFNameMapper = {
+    B_owner_certificado: "Certificado de tradición",
+    C_plano_predio: "Plano del predio",
+  };
+  const verifiablePF = data.productFeatures.items.filter(
+    (pf) => pf.feature.isVerifable === true
+  );
+
+  const documentsPromises = verifiablePF.map((pf) =>
+    pf.documents.items.map(async (document) => {
+      return {
+        id: document.id,
+        title: PFNameMapper[pf.feature.name],
+        url: document.url,
+        signed: document.signed,
+        signedHash: document.signedHash,
+        isUploadedToBlockChain: document.isUploadedToBlockChain,
+        isApproved: document.isApproved,
+        verification: await mapVerificationsData(pf.verifications.items),
+        updatedAt: await convertAWSDatetimeToDate(pf.updatedAt),
+        status: document.status,
+      };
+    })
+  );
+  const documents = await Promise.all(documentsPromises.flat());
+  return documents;
+};
+
+const mapLocationData = async (location) => {
+  if (!location) {
+    return {
+      lat: "",
+      lng: "",
+      alt: "",
+      pres: "",
+    };
+  }
+
+  const [lat, lng, alt, pres] = location.split(" ").map(parseFloat);
+
+  return {
+    lat: isNaN(lat) ? "" : lat,
+    lng: isNaN(lng) ? "" : lng,
+    alt: isNaN(alt) ? "" : alt,
+    pres: isNaN(pres) ? "" : pres,
+  };
+};
 
 const mapStatus = async (obj) => {
   const mapper = {
-    "draft": "En Borrador",
-    "verified": "Verificado",
-    "in_blockchain": "En Blockchain",
-    "in_equilibrium": "En equilibrio",
+    draft: "En borrador",
+    verified: "Verificado",
+    on_verification: "En verificación",
+    in_blockchain: "En blockchain",
+    in_equilibrium: "En equilibrio",
   };
 
   return mapper[obj] || false;
-}
+};
 
 const mapCategory = async (obj) => {
   const mapper = {
-    "PROYECTO_PLANTACIONES": "Proyecto Plantaciones",
-    "RED++": "RED++",
+    PROYECTO_PLANTACIONES: "Proyecto Plantaciones",
+    "REDD+": "REDD+",
   };
 
   return mapper[obj] || false;
-}
+};
 
 const mapUseTypes = async (types) => {
   const mapper = {
@@ -46,7 +148,7 @@ const mapTrueOrFalseAnswers = async (answer) => {
   };
 
   return mapper[answer] || false;
-}
+};
 
 const mapTemporalOrPermanent = async (answer) => {
   const mapper = {
@@ -55,7 +157,7 @@ const mapTemporalOrPermanent = async (answer) => {
   };
 
   return mapper[answer] || false;
-}
+};
 
 const mapProjectGeneralAspects = async (data) => {
   let parsedData = "";
@@ -65,9 +167,11 @@ const mapProjectGeneralAspects = async (data) => {
 
   return {
     postulant: {
-      livesOnProperty: await mapTrueOrFalseAnswers(parsedData?.G_habita_predio) || "",
+      livesOnProperty:
+        (await mapTrueOrFalseAnswers(parsedData?.G_habita_predio)) || "",
       timeLivingOnProperty: parsedData?.G_habita_years || "",
-      typeOfStay: await mapTemporalOrPermanent(parsedData?.G_Temporal_permanente) || "",
+      typeOfStay:
+        (await mapTemporalOrPermanent(parsedData?.G_Temporal_permanente)) || "",
     },
     households: parsedData?.G_viviendas_number || "",
     familiesNumber: parsedData?.G_familias || "",
@@ -75,7 +179,8 @@ const mapProjectGeneralAspects = async (data) => {
     roadsStatus: parsedData?.G_vias_state || "",
     municipalDistance: parsedData?.G_distancia_predio_municipal || "",
     conveyance: parsedData?.G_transport_mean || "",
-    neighborhoodRoads: await mapTrueOrFalseAnswers(parsedData?.G_caminos_existence) || "",
+    neighborhoodRoads:
+      (await mapTrueOrFalseAnswers(parsedData?.G_caminos_existence)) || "",
     collapseRisk: parsedData?.G_risks_erosion_derrumbe || "",
   };
 };
@@ -88,11 +193,11 @@ const mapProjectEcosystems = async (data) => {
 
   return {
     waterSprings: {
-      exist: await mapTrueOrFalseAnswers(parsedData?.F_nacimiento_agua) || "",
+      exist: (await mapTrueOrFalseAnswers(parsedData?.F_nacimiento_agua)) || "",
       quantity: parsedData?.F_nacimiento_agua_quantity || "",
     },
     concessions: {
-      exist: await mapTrueOrFalseAnswers(parsedData?.F_agua_concede) || "",
+      exist: (await mapTrueOrFalseAnswers(parsedData?.F_agua_concede)) || "",
       entity: parsedData?.F_agua_concede_entity || "",
     },
     deforestationThreats: parsedData?.F_amenazas_defo_desc || "",
@@ -114,7 +219,7 @@ const mapProjectUses = async (data) => {
 
   return {
     actualUse: {
-      types: await mapUseTypes(parsedData?.D_actual_use) || [],
+      types: (await mapUseTypes(parsedData?.D_actual_use)) || [],
       potreros: {
         ha: parsedData?.D_area_potrero || "",
       },
@@ -144,7 +249,7 @@ const mapProjectUses = async (data) => {
       },
     },
     replaceUse: {
-      types: await mapUseTypes(parsedData?.D_replace_use) || [],
+      types: (await mapUseTypes(parsedData?.D_replace_use)) || [],
       potreros: {
         newUse: parsedData?.D_replace_potrero_use || "",
         ha: parsedData?.D_replace_ha_potrero_use || "",
@@ -240,19 +345,11 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "B_owner_id";
     })[0]?.value || "";
-  const ownerCertificationFileURL =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "B_owner_certificado";
-    })[0]?.value || "";
 
   // C
   const location =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "C_ubicacion";
-    })[0]?.value || "";
-  const propertymapFileURL =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "C_plano_predio";
     })[0]?.value || "";
 
   // D
@@ -304,6 +401,8 @@ export const mapProjectData = async (data) => {
       return item.featureID === "H_grupo_comunitario_desc";
     })[0]?.value || "";
 
+  const postulantID = data.userProducts.items.filter(up => up.user.role === "constructor")[0]?.user.id || ""
+
   return {
     projectInfo: {
       status: await mapStatus(data.status),
@@ -322,12 +421,13 @@ export const mapProjectData = async (data) => {
         municipio: municipio,
         matricula: matricula,
         fichaCatrastal: fichaCatrastal,
-        coords: await getLocationData(location),
+        coords: await mapLocationData(location),
       },
       verificationLimitDate: data.timeOnVerification,
       createdAt: await convertAWSDatetimeToDate(data.createdAt),
     },
     projectPostulant: {
+      id: postulantID,
       name: postulantName,
       docType: postulantDocType.toUpperCase(),
       docNumber: postulantDocNumber,
@@ -352,9 +452,7 @@ export const mapProjectData = async (data) => {
       strategicAllies: strategicAllies,
       communityGroups: communityGroups,
     },
-    projectFiles: {
-      certificationFileURL: ownerCertificationFileURL,
-      propertymapFileURL: propertymapFileURL,
-    },
+    projectFiles: await mapDocumentsData(data),
+    projectVerifiers: await mapProjectVerifiers(data)
   };
 };

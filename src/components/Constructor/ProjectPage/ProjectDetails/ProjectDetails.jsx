@@ -1,15 +1,14 @@
 import React from "react";
-import PostulantInfoCard from "./PostulantInfoCard";
-import ProjectInfoCard from "./ProjectInfoCard";
-import OwnerInfoCard from "./OwnerInfoCard";
-import ActualUseAndPotentialInfoCard from "./ActualUseAndPotentialInfoCard";
-import EcosystemInfoCard from "./EcosystemInfoCard";
-import PropertyInfoCard from "./PropertyInfoCard";
-import RelationsInfoCard from "./RelationsInfoCard";
-import MapCard from "../../common/MapCard";
-import { useProjectData } from "../../../context/ProjectDataContext";
-import UseRestrictionsInfoCard from "./UseRestrictionsInfoCard";
-
+import PostulantInfoCard from "./InfoCards/PostulantInfoCard";
+import ProjectInfoCard from "./InfoCards/ProjectInfoCard";
+import OwnerInfoCard from "./InfoCards/OwnerInfoCard";
+import ActualUseAndPotentialInfoCard from "./InfoCards/ActualUseAndPotentialInfoCard";
+import EcosystemInfoCard from "./InfoCards/EcosystemInfoCard";
+import PropertyInfoCard from "./InfoCards/PropertyInfoCard";
+import RelationsInfoCard from "./InfoCards/RelationsInfoCard";
+import MapCard from "../../../common/MapCard";
+import { useProjectData } from "../../../../context/ProjectDataContext";
+import UseRestrictionsInfoCard from "./InfoCards/UseRestrictionsInfoCard";
 export default function ProjectDetails() {
   const { projectData } = useProjectData();
 
