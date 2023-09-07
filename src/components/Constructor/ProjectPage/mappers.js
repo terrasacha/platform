@@ -1,25 +1,23 @@
 import {
   parseSerializedKoboData,
   convertAWSDatetimeToDate,
-  formatNumberWithThousandsSeparator,
   getElapsedTime,
-  capitalizeWords
+  capitalizeWords,
 } from "./utils";
 
 const mapProjectVerifiers = async (data) => {
-  
   const verifiablePF = data.productFeatures.items.filter(
     (pf) => pf.feature.isVerifable === true
   );
-  let projectVerifiers = []
-  verifiablePF.forEach(pf => {
-    pf.verifications.items.forEach(vf => {
-      projectVerifiers.push(vf.userVerifierID)
-    })
-  })
+  let projectVerifiers = [];
+  verifiablePF.forEach((pf) => {
+    pf.verifications.items.forEach((vf) => {
+      projectVerifiers.push(vf.userVerifierID);
+    });
+  });
 
-  return projectVerifiers
-}
+  return projectVerifiers;
+};
 
 const mapVerificationsData = async (verifications) => {
   const verificationData = verifications.map(async (verification) => {
@@ -37,7 +35,11 @@ const mapVerificationsData = async (verifications) => {
           .map(async (msg) => {
             return {
               ...msg,
-              userName: await capitalizeWords(msg.isCommentByVerifier ? verification.userVerifier.name : verification.userVerified.name),
+              userName: await capitalizeWords(
+                msg.isCommentByVerifier
+                  ? verification.userVerifier.name
+                  : verification.userVerified.name
+              ),
               createdAt: await convertAWSDatetimeToDate(msg.createdAt),
               elapsedTime: await getElapsedTime(msg.createdAt),
             };
@@ -283,20 +285,37 @@ const mapProjectUses = async (data) => {
 };
 
 export const mapProjectData = async (data) => {
+
+  const projectID = data.id
+  const projecIsActive = data.isActive
+
   const tokenName =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
     })[0]?.value || "";
+  const pfTokenNameID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_NAME";
+    })[0]?.id || "";
 
   const tokenPrice =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_PRICE";
     })[0]?.value || "0";
+  const pfTokenPriceID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_PRICE";
+    })[0]?.id || "";
 
   const tokenAmount =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
     })[0]?.value || "0";
+
+  const pfTokenAmountID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
+    })[0]?.id || "";
 
   // A
   const postulantName =
@@ -401,20 +420,29 @@ export const mapProjectData = async (data) => {
       return item.featureID === "H_grupo_comunitario_desc";
     })[0]?.value || "";
 
-  const postulantID = data.userProducts.items.filter(up => up.user.role === "constructor")[0]?.user.id || ""
+  const postulantID =
+    data.userProducts.items.filter((up) => up.user.role === "constructor")[0]
+      ?.user.id || "";
 
   return {
     projectInfo: {
+      id: projectID,
       status: await mapStatus(data.status),
+      isActive: projecIsActive,
       title: data.name,
       description: data.description,
       category: await mapCategory(data.categoryID),
       area: area,
       token: {
+        pfIDs: {
+          pfTokenNameID: pfTokenNameID,
+          pfTokenPriceID: pfTokenPriceID,
+          pfTokenAmountID: pfTokenAmountID,
+        },
         name: tokenName,
         price: tokenPrice,
         priceCurrency: "USD",
-        amount: await formatNumberWithThousandsSeparator(tokenAmount),
+        amount: tokenAmount,
       },
       location: {
         vereda: vereda,
@@ -453,6 +481,6 @@ export const mapProjectData = async (data) => {
       communityGroups: communityGroups,
     },
     projectFiles: await mapDocumentsData(data),
-    projectVerifiers: await mapProjectVerifiers(data)
+    projectVerifiers: await mapProjectVerifiers(data),
   };
 };

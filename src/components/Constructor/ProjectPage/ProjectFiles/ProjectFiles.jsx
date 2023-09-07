@@ -8,13 +8,15 @@ import { useProjectData } from "../../../../context/ProjectDataContext";
 import { useAuth } from "../../../../context/AuthContext";
 import { createVerificationComment } from "../../../../graphql/mutations";
 import { convertAWSDatetimeToDate, capitalizeWords } from "../utils";
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from "uuid";
 
 export default function ProjectFiles() {
   const [isMessageCardActive, setIsMessageCardActive] = useState(false);
   const [selectedVerificationId, setSelectedVerificationId] = useState(null);
   const [newMessage, setNewMessage] = useState("");
-  const [isValidUser, setIsValidUser] = useState(false);
+  const [isPostulant, setIsPostulant] = useState(false);
+  const [isVerifier, setIsVerifier] = useState(false);
+  const [isDocApproved, setIsDocApproved] = useState(false);
   const [messages, setMessages] = useState([]);
 
   const { user } = useAuth();
@@ -22,18 +24,18 @@ export default function ProjectFiles() {
 
   useEffect(() => {
     if (user && projectData) {
-      let authorizedUsers = projectData.projectVerifiers
-      if(projectData.projectPostulant.id){
-        authorizedUsers.push(projectData.projectPostulant.id)
-      }
-      if (authorizedUsers.includes(user.id)) setIsValidUser(true);
+      const verifiers = projectData.projectVerifiers;
+      if (projectData.projectPostulant.id) setIsPostulant(true);
+      if (verifiers.includes(user.id)) setIsVerifier(true);
     }
   }, [user, projectData]);
 
-  const handleMessageButtonClick = async (verification) => {
+  const handleMessageButtonClick = async (fileIndex) => {
+    const file = projectData.projectFiles[fileIndex];
     setIsMessageCardActive(!isMessageCardActive);
-    setSelectedVerificationId(verification.id);
-    setMessages(verification.messages);
+    setSelectedVerificationId(file.verification.id);
+    setIsDocApproved(file.isApproved);
+    setMessages(file.verification.messages);
   };
 
   const handleSendMessageButtonClick = async () => {
@@ -69,16 +71,21 @@ export default function ProjectFiles() {
         <FilesInfoCard
           projectFiles={projectData.projectFiles}
           handleMessageButtonClick={handleMessageButtonClick}
+          setIsDocApproved={setIsDocApproved}
+          isVerifier={isVerifier}
         />
       </div>
       {isMessageCardActive && (
         <div className="col">
           <MessagesHistoryCard
+            className="scale-up-ver-top"
             messages={messages}
             newMessage={newMessage}
             setNewMessage={setNewMessage}
             handleSendMessageButtonClick={handleSendMessageButtonClick}
-            isValidUser={isValidUser}
+            isPostulant={isPostulant}
+            isVerifier={isVerifier}
+            isDocApproved={isDocApproved}
           />
         </div>
       )}

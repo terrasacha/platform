@@ -25,7 +25,7 @@ export const convertAWSDatetimeToDate = async (AWSDatetime) => {
   return `${anio}-${mes}-${dia}`;
 };
 
-export const formatNumberWithThousandsSeparator = async (number) => {
+export const formatNumberWithThousandsSeparator = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 

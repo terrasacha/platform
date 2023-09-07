@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+// Sections
+import ProjectDetails from "./ProjectDetails/ProjectDetails";
+import ProjectFiles from "./ProjectFiles/ProjectFiles";
+import ProjectSettings from "./ProjectSettings/ProjectSettings";
+
+// Components
+import MiniInfoCard from "../../common/MiniInfoCard";
 import Nav from "react-bootstrap/Nav";
 import Badge from "react-bootstrap/Badge";
 import Stack from "react-bootstrap/Stack";
-import ProjectDetails from "./ProjectDetails/ProjectDetails";
-import MiniInfoCard from "../../common/MiniInfoCard";
-import { useParams } from "react-router-dom";
-import { fetchProjectDataByProjectID } from "./api";
+
+// Contexts
 import { useProjectData } from "../../../context/ProjectDataContext";
-import ProjectFiles from "./ProjectFiles/ProjectFiles";
+import { useAuth } from "../../../context/AuthContext";
+import { fetchProjectDataByProjectID } from "./api";
+import { formatNumberWithThousandsSeparator } from "./utils";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
 export default function ProjectPage() {
   const { id } = useParams();
   const { projectData, handleProjectData } = useProjectData();
+  const { user } = useAuth();
 
   const [activeSection, setActiveSection] = useState("details");
   
@@ -21,12 +31,13 @@ export default function ProjectPage() {
     const getProjectData = async () => {
       const data = await fetchProjectDataByProjectID(id);
       if (data) {
-        handleProjectData(data);
+        await handleProjectData(data);
       }
     };
 
     getProjectData();
-  }, [id]);
+
+  }, []);
 
   return (
     <div className="container-sm">
@@ -83,7 +94,7 @@ export default function ProjectPage() {
               {projectData.projectInfo?.token.amount && (
                 <MiniInfoCard
                   label="Cantidad de tokens"
-                  value={projectData.projectInfo?.token.amount}
+                  value={formatNumberWithThousandsSeparator(projectData.projectInfo?.token.amount)}
                   className="me-2 bg-dark text-white"
                 />
               )}
@@ -109,36 +120,40 @@ export default function ProjectPage() {
           <Nav.Item>
             <Nav.Link
               href="#details"
-              onClick={(e) => setActiveSection("details")}
+              onClick={() => setActiveSection("details")}
             >
               Detalles
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link
-              href="#statistics"
-              onClick={(e) => setActiveSection("statistics")}
-            >
-              Estadisticas
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="#files" onClick={(e) => setActiveSection("files")}>
+            <Nav.Link href="#files" onClick={() => setActiveSection("files")}>
               Archivos
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link
               href="#history"
-              onClick={(e) => setActiveSection("history")}
+              onClick={() => setActiveSection("history")}
             >
               Actividad
             </Nav.Link>
           </Nav.Item>
+          {user?.role === "validator" && (
+          <Nav.Item>
+            <Nav.Link
+              href="#settings"
+              onClick={() => setActiveSection("settings")}
+            >
+              Configuración
+            </Nav.Link>
+          </Nav.Item>
+
+          )}
         </Nav>
       </div>
       {activeSection === "details" && <ProjectDetails />}
       {activeSection === "files" && <ProjectFiles />}
+      {activeSection === "settings" && user?.role === "validator" && <ProjectSettings />}
     </div>
   );
 }
