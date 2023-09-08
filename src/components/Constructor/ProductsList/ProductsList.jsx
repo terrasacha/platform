@@ -119,7 +119,7 @@ class ProductsList extends Component {
                                     return (
                                         <Col key={product.productID}>
                                             <Card>
-                                                <Card.Img variant="top" src={`${url}${product.product.images.items[0].imageURL}`} style={{height:'24rem', width:'auto'}}/>
+                                                <Card.Img variant="top" src={`${url}${product.product.images.items[0]?.imageURL}`} style={{height:'24rem', width:'auto'}}/>
                                                 <Card.Body>
                                                     <Card.Title><h5>{product.product.name}</h5></Card.Title>
                                                     <Row className="my-3 px-3">

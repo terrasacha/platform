@@ -25,7 +25,7 @@ export default function ProjectFiles() {
   useEffect(() => {
     if (user && projectData) {
       const verifiers = projectData.projectVerifiers;
-      if (projectData.projectPostulant.id) setIsPostulant(true);
+      if (projectData.projectPostulant.id === user.id) setIsPostulant(true);
       if (verifiers.includes(user.id)) setIsVerifier(true);
     }
   }, [user, projectData]);
@@ -73,6 +73,7 @@ export default function ProjectFiles() {
           handleMessageButtonClick={handleMessageButtonClick}
           setIsDocApproved={setIsDocApproved}
           isVerifier={isVerifier}
+          isPostulant={isPostulant}
         />
       </div>
       {isMessageCardActive && (

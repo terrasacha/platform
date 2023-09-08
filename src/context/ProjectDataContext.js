@@ -13,14 +13,20 @@ export function ProjectDataProvider({ children }) {
     setProjectData(data);
   };
 
-  const handleUpdateContextDocumentStatus = async (fileIndex, status) => {
-    let updateProjectData = projectData;
-    updateProjectData.projectFiles[fileIndex].isApproved = status;
-    updateProjectData.projectFiles[fileIndex].status = status
-      ? "accepted"
-      : "denied";
-
-    setProjectData(updateProjectData);
+  const handleUpdateContextDocumentStatus = async (fileIndex, data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectFiles: prevData.projectFiles.map((file, index) => {
+        if (index === fileIndex) {
+          return {
+            ...file,
+            ...data
+          };
+        } else {
+          return file;
+        }
+      })
+    }));
   };
 
   const handleUpdateContextProjectTokenData = async (data) => {
