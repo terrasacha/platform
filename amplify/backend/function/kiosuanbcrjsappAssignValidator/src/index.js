@@ -69,7 +69,7 @@ exports.handler = async(event) => {
         if(userVerifierEmail !== ''){
           const fromMail = SES_EMAIL
           const toMail = [userVerifierEmail]
-          const data3 =   `Se te ha asigna el projecto ${productName} para la revisión de documentación. Recuerda priorizar la asignación de valores a "Token Price", "Token Name" y "Amount of tokens" para que el proyecto pueda ser visualizado en el Marketplace`
+          const data3 =   `Se te ha asignado el proyecto ${productName} para la revisión de documentación. Recuerda priorizar la asignación de valores a "Token Price", "Token Name" y "Amount of tokens" para que el proyecto pueda ser visualizado en el Marketplace`
           const templateData = {
             data: data3,
             user: userVerifierName
