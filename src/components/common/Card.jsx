@@ -26,7 +26,11 @@ class CardHeader extends Component {
 class CardBody extends Component {
   render() {
     const className = this.props.className || "";
-    return <section className={className + " p-4"}>{this.props.children}</section>;
+    return (
+      <section className={className + " p-4 flex-grow-1"}>
+        {this.props.children}
+      </section>
+    );
   }
 }
 
@@ -49,6 +53,10 @@ export default class Card extends Component {
 
   render() {
     const className = this.props.className || "";
-    return <div className={className + " border rounded shadow"}>{this.props.children}</div>;
+    return (
+      <div className={className + " border rounded shadow"}>
+        {this.props.children}
+      </div>
+    );
   }
 }

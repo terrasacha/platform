@@ -257,7 +257,7 @@ export default function LogIn() {
                 <div className={s.containerCard}>
                     <div className={s.containerTitle}>
                         <img src={LOGO} style={{width:'150px'}} alt='logo'/>
-                        <h2 className="text-center mb-4">Log In</h2>
+                        <h2 className="text-center mb-4">Inicio de sesión</h2>
                         {error && <Alert variant="danger">{error}</Alert>}
                     </div>
                     <form className={s.inputContainer}>
@@ -273,15 +273,15 @@ export default function LogIn() {
                             style={{cursor: 'pointer',width: '100%',fontSize: '.9em',color:'rgba(77,188,94,1)',textAlign: 'end'}}
                             onClick={() => updateFormState(() => ({
                                     ...formState, formType: 'ForgotPassword'
-                                }))}>Forgot your password?</span>
+                                }))}>Olvidaste tu contraseña?</span>
                         <button disabled={loading} onClick={signIn} >
-                            {loading?'Loading': 'Log In'}
+                            {loading?'Loading': 'Ingresar'}
                         </button>
                     </form>
                     <div className={s.needAccount}>
-                        Need an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
+                        Necesitas una cuenta? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
                             ...formState, formType: 'signUp'
-                        }))}>Sign Up</span>
+                        }))}>Registrarse</span>
                     </div>
                 </div>
             </div>

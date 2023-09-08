@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import s from './HeaderNavbar.module.css'
 
@@ -68,14 +69,14 @@ export default class HeaderNavbar extends Component {
                         <Nav>
                             <Nav className={s.navGroup}>
                                 {/* <Nav.Link href="#profile" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_profile')}>Profile</Nav.Link> */}
-                                <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_products')}>Proyectos</Nav.Link>
-                                <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documentos</Nav.Link>
+                                <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_products')}>Mis Proyectos</Nav.Link>
+                                {/* <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documentos</Nav.Link> */}
                                 {/* <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link> */}
-                                <Nav.Link href="#upload_product" onClick={(e) => this.props.changeHeaderNavBarRequest('upload_product')}>Nuevo Proyecto</Nav.Link>
+                                {/* <Nav.Link href="#upload_product" onClick={(e) => this.props.changeHeaderNavBarRequest('upload_product')}>Nuevo Proyecto</Nav.Link> */}
                                 <Nav.Link  onClick={() => window.location.href="/creating_wallet"}>¿Cómo crear tu billetera?</Nav.Link>
                                 {localStorage.getItem('role')?
-                                <button className={s.signing} onClick={() => this.handleSignOut()}>Log out</button>:
-                                <button className={s.signing} onClick={() => window.location.href="/login"}>Log In</button>
+                                <button className={s.signing} onClick={() => this.handleSignOut()}>Desconectar</button>:
+                                <button className={s.signing} onClick={() => window.location.href="/login"}>Conectar</button>
                                 }
                             </Nav>
 

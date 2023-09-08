@@ -1,26 +1,17 @@
 import React, { Component } from "react";
 //Bootstrap
-import {
-  Button,
-  Badge,
-  Card,
-  Col,
-  Container,
-  Form,
-  Modal,
-  Row,
-  Tabs,
-  Tab,
-  Accordion,
-  Stack,
-} from "react-bootstrap";
-import { XCircle } from "react-bootstrap-icons";
+import { Container } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
+import Stack from "react-bootstrap/Stack";
 // GraphQL
 import WebAppConfig from "../../common/_conf/WebAppConfig";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import { createVerificationComment } from "../../../graphql/mutations";
-import { getUser, getVerificationComment } from "../../../graphql/queries";
+import { getUser } from "../../../graphql/queries";
 import { onCreateVerificationComment } from "../../../graphql/subscriptions";
+import { getImagesCategories, getYearFromAWSDatetime } from "../ProjectPage/utils";
 
 class ProductsList extends Component {
   constructor(props) {
@@ -133,222 +124,118 @@ class ProductsList extends Component {
   };
 
   render() {
-    let {
-      products,
-      selectedIDProductToShow,
-      isRenderModalProductAttachments,
-      newVerificationComment,
-    } = this.state;
-    const url = WebAppConfig.url_s3_public_images;
-    const cardTextStyle = {
-      textAlign: "justify",
-    };
-
-    const scrollable = {
-      overflowY: "scroll",
-      height: "150px",
-    };
-
+    let { products } = this.state;
+    console.log(products);
     const listAllUserProducts = () => {
       if (products) {
         return (
-          <Container className="mt-4 ">
-            <Row xs={1} md={2} className="g-4">
-              {products.map((product) => {
+            <div className="row row-cols-1 row-cols-lg-3 g-2 mt-4">
+              {products.map((product, index) => {
                 return (
-                  <Col key={product.productID}>
-                    <Card>
-                      <Card.Img
-                        variant="top"
-                        src={`${url}${product.product.images.items[0]?.imageURL}`}
-                        style={{ height: "24rem", width: "auto" }}
-                      />
-                      <Card.Body>
-                        <Card.Title>
-                          <h5>{product.product.name}</h5>
-                        </Card.Title>
-                        <Row className="my-3 px-3">
-                          <Badge pill bg="primary">
-                            {product.product.category.name}
-                          </Badge>
-                        </Row>
-                        <div className="mb-2">
-                          <div className="fw-bold">Fecha de inscripción:</div>
-                          {product.createdAt}
-                        </div>
-                        <div className="mb-2">
-                          <div className="fw-bold">Estado del proyecto:</div>
-                          {product.product.status === "draft" ? (
-                            "En espera"
-                          ) : product.product.status === "verified" ? (
-                            "Verificado"
-                          ) : product.product.status === "in_blockchain" ? (
-                            "En blockchain"
-                          ) : product.product.status === "in_equilibrium" ? (
-                            "Financiado"
-                          ) : (
-                            <XCircle size={25} color="#CC0000" />
-                          )}
-                        </div>
-                        <div className="mb-2">
-                          <div className="fw-bold">
-                            Descripcion del proyecto:
-                          </div>
-                          <div style={scrollable}>
-                            <Card.Text style={cardTextStyle}>
-                              {product.product.description}
-                            </Card.Text>
-                          </div>
-                        </div>
-
-                        <div className="d-flex justify-content-center mt-3 px-2 ">
-                          <a href={"/project_details/" + product.product.id}>
-                            <Button variant="secondary">Ver detalles</Button>
-                          </a>
-                        </div>
-                      </Card.Body>
-                      <Card.Footer>
-                        <small className="text-muted">
-                          Last updated 3 mins ago
-                        </small>
-                      </Card.Footer>
-                    </Card>
-                  </Col>
+                  <Card key={product.productID} className="p-0">
+                    <img
+                      variant="top"
+                      src={getImagesCategories(product?.product?.categoryID)}
+                      style={{ height: "150px" }}
+                      alt="Hola"
+                    />
+                    <Card.Body>
+                      <div className="d-flex">
+                        <Stack direction="horizontal" gap={2}>
+                          <Badge bg="primary">{getYearFromAWSDatetime(product?.createdAt)}</Badge>
+                          <Badge bg="primary">{product?.product?.categoryID}</Badge>
+                        </Stack>
+                      </div>
+                      <p className="fs-5 my-2">{product?.product?.name}</p>
+                      <hr className="mb-2" />
+                      <p className="fs-6 my-2">
+                        {product?.product?.description}
+                      </p>
+                    </Card.Body>
+                    <Card.Footer>
+                      <div className="d-flex justify-content-center align-items-center">
+                        <a href={"project_details/" + product.productID}>
+                          <Button oncli>Ver más</Button>
+                        </a>
+                      </div>
+                    </Card.Footer>
+                  </Card>
                 );
               })}
-            </Row>
-          </Container>
-        );
-      }
-    };
+            </div>
+          // <Container className="mt-4 ">
+          //   <Row xs={1} md={2} className="g-4">
+          //     {products.map((product) => {
+          //       return (
+          //         <Col key={product.productID}>
+          //           <Card>
+          //             <Card.Img
+          //               variant="top"
+          //               src={`${url}${product.product.images.items[0]?.imageURL}`}
+          //               style={{ height: "24rem", width: "auto" }}
+          //             />
+          //             <Card.Body>
+          //               <Card.Title>
+          //                 <h5>{product.product.name}</h5>
+          //               </Card.Title>
+          //               <Row className="my-3 px-3">
+          //                 <Badge pill bg="primary">
+          //                   {product.product.category.name}
+          //                 </Badge>
+          //               </Row>
+          //               <div className="mb-2">
+          //                 <div className="fw-bold">Fecha de inscripción:</div>
+          //                 {product.createdAt}
+          //               </div>
+          //               <div className="mb-2">
+          //                 <div className="fw-bold">Estado del proyecto:</div>
+          //                 {product.product.status === "draft" ? (
+          //                   "En espera"
+          //                 ) : product.product.status === "verified" ? (
+          //                   "Verificado"
+          //                 ) : product.product.status === "in_blockchain" ? (
+          //                   "En blockchain"
+          //                 ) : product.product.status === "in_equilibrium" ? (
+          //                   "Financiado"
+          //                 ) : (
+          //                   <XCircle size={25} color="#CC0000" />
+          //                 )}
+          //               </div>
+          //               <div className="mb-2">
+          //                 <div className="fw-bold">
+          //                   Descripcion del proyecto:
+          //                 </div>
+          //                 <div style={scrollable}>
+          //                   <Card.Text style={cardTextStyle}>
+          //                     {product.product.description}
+          //                   </Card.Text>
+          //                 </div>
+          //               </div>
 
-    const modalProductAttachments = () => {
-      if (isRenderModalProductAttachments && selectedIDProductToShow !== null) {
-        let product = products.filter(
-          (product) => product.productID === selectedIDProductToShow
-        )[0];
-        return (
-          <Modal
-            show={this.state.isRenderModalProductAttachments}
-            onHide={(e) =>
-              this.handleHideModal(e, "hide_modal_product_attatchments")
-            }
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                {product.product.name}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Accordion defaultActiveKey="0">
-                {product.product.productFeatures.items
-                  .filter(
-                    (productFeature) =>
-                      productFeature.feature.isVerifable === true
-                  )
-                  .map((pf) => {
-                    return (
-                      <Accordion.Item
-                        key={pf.featureID}
-                        eventKey={pf.featureID}
-                      >
-                        <Accordion.Header>{pf.feature.name}</Accordion.Header>
-                        <Accordion.Body>
-                          <Tabs
-                            transition={false}
-                            id="noanim-tab-example"
-                            className="mb-3"
-                          >
-                            {pf.verifications && pf.verifications.items
-                              ? pf.verifications.items.map((v) => {
-                                  return (
-                                    <Tab
-                                      key={v.id}
-                                      eventKey={v.id}
-                                      title={v.id}
-                                    >
-                                      {v.verificationComments &&
-                                      v.verificationComments.items
-                                        ? v.verificationComments.items
-                                            .sort(function (a, b) {
-                                              return (
-                                                new Date(a.createdAt) -
-                                                new Date(b.createdAt)
-                                              );
-                                            })
-                                            .map((vc) => {
-                                              return (
-                                                <p key={vc.id}>
-                                                  {vc.createdAt} (
-                                                  {vc.isCommentByVerifier ===
-                                                  true
-                                                    ? "Verificador"
-                                                    : "Tu"}
-                                                  ) {vc.comment}
-                                                </p>
-                                              );
-                                            })
-                                        : null}
-                                      <Stack direction="horizontal" gap={2}>
-                                        <Form.Control
-                                          className="me-auto"
-                                          type="text"
-                                          placeholder="Escribe un comentario aquí ..."
-                                          name="verificationComment"
-                                          value={newVerificationComment.comment}
-                                          onChange={(e) =>
-                                            this.handleInputCreateVerificationComment(
-                                              e
-                                            )
-                                          }
-                                        />
-                                        <div className="vr" />
-                                        <Button
-                                          variant="secondary"
-                                          onClick={(e) =>
-                                            this.handleCreateVerificaionComment(
-                                              v.id
-                                            )
-                                          }
-                                        >
-                                          Enviar comentario
-                                        </Button>
-                                      </Stack>
-                                    </Tab>
-                                  );
-                                })
-                              : null}
-                          </Tabs>
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    );
-                  })}
-              </Accordion>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                onClick={(e) =>
-                  this.handleHideModal(e, "hide_modal_product_attatchments")
-                }
-                variant="secondary"
-              >
-                Cerrar
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          //               <div className="d-flex justify-content-center mt-3 px-2 ">
+          //                 <a href={"/project_details/" + product.product.id}>
+          //                   <Button variant="secondary">Ver detalles</Button>
+          //                 </a>
+          //               </div>
+          //             </Card.Body>
+          //             <Card.Footer>
+          //               <small className="text-muted">
+          //                 Last updated 3 mins ago
+          //               </small>
+          //             </Card.Footer>
+          //           </Card>
+          //         </Col>
+          //       );
+          //     })}
+          //   </Row>
+          // </Container>
         );
       }
     };
 
     return (
       <Container>
-        <Container>
-          {listAllUserProducts()}
-          {modalProductAttachments()}
-        </Container>
+        <Container>{listAllUserProducts()}</Container>
       </Container>
     );
   }

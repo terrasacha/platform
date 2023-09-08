@@ -25,6 +25,13 @@ export const convertAWSDatetimeToDate = async (AWSDatetime) => {
   return `${anio}-${mes}-${dia}`;
 };
 
+export const getYearFromAWSDatetime = (AWSDatetime) => {
+  const fechaObjeto = new Date(AWSDatetime);
+  const anio = fechaObjeto.getFullYear();
+
+    return anio
+}
+
 export const formatNumberWithThousandsSeparator = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
@@ -63,3 +70,14 @@ export const capitalizeWords = async (str) => {
 
   return capitalizedWords.join(" ");
 };
+
+export const getImagesCategories = (category) => {
+  try {
+    let url = `https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/category-projects-images/${category}.jpg`;
+    url = url.replace("REDD+", "REDD%2B")
+    return url
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+}
