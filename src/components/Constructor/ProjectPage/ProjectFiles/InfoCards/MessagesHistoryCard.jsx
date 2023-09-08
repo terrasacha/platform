@@ -16,7 +16,7 @@ export default function MessagesHistoryCard(props) {
     setNewMessage,
     handleSendMessageButtonClick,
     isPostulant,
-    isVerifier,
+    isFileVerifier,
     isDocApproved,
   } = props;
 
@@ -42,7 +42,7 @@ export default function MessagesHistoryCard(props) {
             />
           );
         })}
-        {(isPostulant || isVerifier) && !isDocApproved && (
+        {(isPostulant || isFileVerifier) && !isDocApproved && (
           <div className="d-flex">
             <Form.Control
               size="sm"

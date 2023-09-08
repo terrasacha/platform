@@ -16,6 +16,7 @@ export default function ProjectFiles() {
   const [newMessage, setNewMessage] = useState("");
   const [isPostulant, setIsPostulant] = useState(false);
   const [isVerifier, setIsVerifier] = useState(false);
+  const [isFileVerifier, setIsFileVerifier] = useState(false);
   const [isDocApproved, setIsDocApproved] = useState(false);
   const [messages, setMessages] = useState([]);
 
@@ -24,9 +25,8 @@ export default function ProjectFiles() {
 
   useEffect(() => {
     if (user && projectData) {
-      const verifiers = projectData.projectVerifiers;
       if (projectData.projectPostulant.id === user.id) setIsPostulant(true);
-      if (verifiers.includes(user.id)) setIsVerifier(true);
+      if (user.role === "validator") setIsVerifier(true);
     }
   }, [user, projectData]);
 
@@ -35,6 +35,7 @@ export default function ProjectFiles() {
     setIsMessageCardActive(!isMessageCardActive);
     setSelectedVerificationId(file.verification.id);
     setIsDocApproved(file.isApproved);
+    setIsFileVerifier(file.verification.verifierID === user.id ? true : false)
     setMessages(file.verification.messages);
   };
 
@@ -85,7 +86,7 @@ export default function ProjectFiles() {
             setNewMessage={setNewMessage}
             handleSendMessageButtonClick={handleSendMessageButtonClick}
             isPostulant={isPostulant}
-            isVerifier={isVerifier}
+            isFileVerifier={isFileVerifier}
             isDocApproved={isDocApproved}
           />
         </div>

@@ -4,12 +4,18 @@ import { API, graphqlOperation, Storage } from "aws-amplify";
 import Card from "../../../../common/Card";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 import { DownloadIcon } from "../../../../common/icons/DownloadIcon";
 import { MessagesIcon } from "../../../../common/icons/MessagesIcon";
 import { CheckIcon } from "../../../../common/icons/CheckIcon";
 import { XIcon } from "../../../../common/icons/XIcon";
-import { updateDocument } from "../../../../../graphql/mutations";
+import {
+  createVerification,
+  updateDocument,
+} from "../../../../../graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
+import { useAuth } from "../../../../../context/AuthContext";
+import { notify } from "../../../../../utilities/notify";
 
 export default function FilesInfoCard(props) {
   const {
@@ -21,11 +27,55 @@ export default function FilesInfoCard(props) {
     isPostulant,
   } = props;
   const [isValidating, setIsValidating] = useState(false);
-  const { handleUpdateContextDocumentStatus } = useProjectData();
+  const [isLoadingDoc, setIsLoadingDoc] = useState(false);
+  const {
+    handleUpdateContextDocumentStatus,
+    handleUpdateContextFileVerification,
+    projectData,
+  } = useProjectData();
+  const { user } = useAuth();
 
   const fileInputRef = React.createRef();
 
   const handleUpdateDocumentStatus = async (fileIndex, docId, status) => {
+    const file = projectData.projectFiles[fileIndex];
+    if (!file.verification) {
+      const newVerification = {
+        productFeatureID: file.pfID,
+        userVerifierID: user.id,
+        userVerifiedID: projectData.projectPostulant.id,
+      };
+
+      console.log(newVerification);
+
+      const createVerificationResult = await API.graphql(
+        graphqlOperation(createVerification, {
+          input: newVerification,
+        })
+      );
+
+      const verification = createVerificationResult.data.createVerification;
+      const localVerification = {
+        id: verification.id,
+        messages: [],
+        postulantID: projectData.projectPostulant.id,
+        postulantName: projectData.projectPostulant.name,
+        verifierID: user.id,
+        verifierName: user.name,
+      };
+      await handleUpdateContextFileVerification(fileIndex, localVerification);
+    } else {
+      if (file.verification.verifierID !== user.id) {
+        notify({
+          msg: "El archivo ya fue asignado a otro verificador",
+          type: "error",
+        });
+        return;
+      }
+    }
+
+    console.log(projectData);
+
     const updateDocumentStatus = {
       id: docId,
       isApproved: status,
@@ -42,9 +92,23 @@ export default function FilesInfoCard(props) {
     });
     setIsValidating(false);
     setIsDocApproved(status);
+
+    if (status) {
+      notify({
+        msg: "El archivo fue aceptado",
+        type: "success",
+      });
+    } else {
+      notify({
+        msg: "El archivo fue rechazado, el postulante deberá subir un nuevo archivo",
+        type: "success",
+      });
+    }
   };
 
-  const handleUpdateDocument = async (e, fileIndex, file) => {
+  const handleUpdateDocumentFile = async (e, fileIndex, file) => {
+    setIsLoadingDoc(true);
+
     const newFile = e.target.files[0];
 
     const getFilePathRegex = /\/public\/(.+)$/;
@@ -63,8 +127,12 @@ export default function FilesInfoCard(props) {
         console.log("Archivo seleccionado:", newFile);
         console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
-        console.log("error", error);
-        return
+        notify({
+          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
+          type: "error",
+        });
+        setIsLoadingDoc(false);
+        return;
       }
 
       const tempUpdatedDocument = {
@@ -78,18 +146,27 @@ export default function FilesInfoCard(props) {
           graphqlOperation(updateDocument, { input: tempUpdatedDocument })
         );
       } catch (error) {
-        console.log("error", error);
-        return
+        notify({
+          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
+          type: "error",
+        });
+        setIsLoadingDoc(false);
+        return;
       }
 
-      
-      handleUpdateContextDocumentStatus(fileIndex, {
+      await handleUpdateContextDocumentStatus(fileIndex, {
         isApproved: false,
         status: "pending",
       });
 
-      e.target.value = "";
+      notify({
+        msg: "Archivo subido y enviado a validación exitosamente",
+        type: "success",
+      });
     }
+
+    e.target.value = "";
+    setIsLoadingDoc(false);
   };
 
   const handleUploadDocumentButtonClick = async () => {
@@ -171,7 +248,9 @@ export default function FilesInfoCard(props) {
                           type="file"
                           style={{ display: "none" }}
                           ref={fileInputRef}
-                          onChange={(e) => handleUpdateDocument(e, fileIndex, file)}
+                          onChange={(e) =>
+                            handleUpdateDocumentFile(e, fileIndex, file)
+                          }
                         />
                         <Button
                           className="m-1"
@@ -179,7 +258,11 @@ export default function FilesInfoCard(props) {
                           variant="outline-primary"
                           onClick={() => handleUploadDocumentButtonClick()}
                         >
-                          Actualizar documentación
+                          {isLoadingDoc ? (
+                            <Spinner size="sm" className="p-2"></Spinner>
+                          ) : (
+                            "Actualizar documentación"
+                          )}
                         </Button>
                       </>
                     )}
@@ -192,14 +275,16 @@ export default function FilesInfoCard(props) {
                         <DownloadIcon />
                       </Button>
                     </a>
-                    <Button
-                      className="m-1"
-                      size="sm"
-                      variant="outline-primary"
-                      onClick={() => handleMessageButtonClick(fileIndex)}
-                    >
-                      <MessagesIcon />
-                    </Button>
+                    {file.verification && (
+                      <Button
+                        className="m-1"
+                        size="sm"
+                        variant="outline-primary"
+                        onClick={() => handleMessageButtonClick(fileIndex)}
+                      >
+                        <MessagesIcon />
+                      </Button>
+                    )}
                   </td>
                 </tr>
               );

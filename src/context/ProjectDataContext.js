@@ -20,12 +20,12 @@ export function ProjectDataProvider({ children }) {
         if (index === fileIndex) {
           return {
             ...file,
-            ...data
+            ...data,
           };
         } else {
           return file;
         }
-      })
+      }),
     }));
   };
 
@@ -39,11 +39,29 @@ export function ProjectDataProvider({ children }) {
     }));
   };
 
+  const handleUpdateContextFileVerification = async (fileIndex, data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectFiles: prevData.projectFiles.map((file, index) => {
+        if (index === fileIndex) {
+          console.log("data", data)
+          return {
+            ...file,
+            verification: { ...data },
+          };
+        } else {
+          return file;
+        }
+      }),
+    }));
+  };
+
   const contextProps = {
     projectData,
     handleProjectData,
     handleUpdateContextDocumentStatus,
     handleUpdateContextProjectTokenData,
+    handleUpdateContextFileVerification,
   };
 
   return (

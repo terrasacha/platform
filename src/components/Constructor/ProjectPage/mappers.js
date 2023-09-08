@@ -67,6 +67,7 @@ const mapDocumentsData = async (data) => {
     pf.documents.items.map(async (document) => {
       return {
         id: document.id,
+        pfID: pf.id,
         title: PFNameMapper[pf.feature.name],
         url: document.url,
         signed: document.signed,

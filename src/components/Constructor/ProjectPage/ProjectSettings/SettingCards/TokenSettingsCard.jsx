@@ -8,6 +8,7 @@ import {
   createProductFeature,
   updateProductFeature,
 } from "../../../../../graphql/mutations";
+import { notify } from "../../../../../utilities/notify";
 
 export default function TokenSettingsCard(props) {
   const { className } = props;
@@ -31,6 +32,7 @@ export default function TokenSettingsCard(props) {
   }, [projectData]);
 
   const handleSaveBtn = async (toSave) => {
+    let error = false;
     if (toSave === "tokenName") {
       await handleUpdateContextProjectTokenData({ name: tokenName });
 
@@ -39,9 +41,11 @@ export default function TokenSettingsCard(props) {
           id: projectData.projectInfo.token.pfIDs.pfTokenNameID,
           value: tokenName,
         };
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
+
+        if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
           value: tokenName,
@@ -50,9 +54,19 @@ export default function TokenSettingsCard(props) {
           productID: projectData.projectInfo.id,
           featureID: "GLOBAL_TOKEN_NAME",
         };
-        await API.graphql(
+
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
+
+        if (!response.data.createProductFeature) error = true;
+      }
+
+      if (!error) {
+        notify({
+          msg: "El nombre del token ha sido modificado exitosamente",
+          type: "success",
+        });
       }
     }
     if (toSave === "tokenPrice") {
@@ -63,9 +77,11 @@ export default function TokenSettingsCard(props) {
           id: projectData.projectInfo.token.pfIDs.pfTokenPriceID,
           value: tokenPrice,
         };
-        API.graphql(
+        const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
+
+        if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
           value: tokenPrice,
@@ -74,9 +90,18 @@ export default function TokenSettingsCard(props) {
           productID: projectData.projectInfo.id,
           featureID: "GLOBAL_TOKEN_PRICE",
         };
-        API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
+
+        if (!response.data.createProductFeature) error = true;
+      }
+
+      if (!error) {
+        notify({
+          msg: "El precio del token ha sido modificada exitosamente",
+          type: "success",
+        });
       }
     }
     if (toSave === "tokenAmount") {
@@ -87,9 +112,12 @@ export default function TokenSettingsCard(props) {
           id: projectData.projectInfo.token.pfIDs.pfTokenAmountID,
           value: tokenAmount,
         };
-        API.graphql(
+        const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
+
+        if (!response.data.updateProductFeature) error = true;
+
       } else {
         let tempProductFeature = {
           value: tokenAmount,
@@ -98,10 +126,26 @@ export default function TokenSettingsCard(props) {
           productID: projectData.projectInfo.id,
           featureID: "GLOBAL_AMOUNT_OF_TOKENS",
         };
-        API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
+
+        if (!response.data.createProductFeature) error = true;
       }
+
+      if (!error) {
+        notify({
+          msg: "La cantidad de tokens ha sido modificado exitosamente",
+          type: "success",
+        });
+      }
+    }
+
+    if (error) {
+      notify({
+        msg: "Ups!, parece que algo ha fallado",
+        type: "error",
+      });
     }
   };
 
@@ -118,50 +162,54 @@ export default function TokenSettingsCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Configuración del Token" sep={true} />
-      <Card.Body>
-        <FormGroup
-          disabled={isDisabledTokenName}
-          type="flex"
-          inputType="text"
-          inputSize="md"
-          label="Nombre del token"
-          inputName="tokenName"
-          inputValue={tokenName}
-          saveBtnDisabled={
-            projectData.projectInfo?.token.name === tokenName ? true : false
-          }
-          onChangeInputValue={(e) => handleChangeInputValue(e)}
-          onClickSaveBtn={() => handleSaveBtn("tokenName")}
-        />
-        <FormGroup
-          type="flex"
-          inputType="text"
-          inputSize="md"
-          label="Cantidad de tokens"
-          inputName="tokenAmount"
-          inputValue={tokenAmount}
-          saveBtnDisabled={
-            projectData.projectInfo?.token.amount === tokenAmount ? true : false
-          }
-          onChangeInputValue={(e) => handleChangeInputValue(e)}
-          onClickSaveBtn={() => handleSaveBtn("tokenAmount")}
-        />
-        <FormGroup
-          type="flex"
-          inputType="text"
-          inputSize="md"
-          label="Precio del token"
-          inputName="tokenPrice"
-          inputValue={tokenPrice}
-          saveBtnDisabled={
-            projectData.projectInfo?.token.price === tokenPrice ? true : false
-          }
-          onChangeInputValue={(e) => handleChangeInputValue(e)}
-          onClickSaveBtn={() => handleSaveBtn("tokenPrice")}
-        />
-      </Card.Body>
-    </Card>
+    <>
+      <Card className={className}>
+        <Card.Header title="Configuración del Token" sep={true} />
+        <Card.Body>
+          <FormGroup
+            disabled={isDisabledTokenName}
+            type="flex"
+            inputType="text"
+            inputSize="md"
+            label="Nombre del token"
+            inputName="tokenName"
+            inputValue={tokenName}
+            saveBtnDisabled={
+              projectData.projectInfo?.token.name === tokenName ? true : false
+            }
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("tokenName")}
+          />
+          <FormGroup
+            type="flex"
+            inputType="text"
+            inputSize="md"
+            label="Cantidad de tokens"
+            inputName="tokenAmount"
+            inputValue={tokenAmount}
+            saveBtnDisabled={
+              projectData.projectInfo?.token.amount === tokenAmount
+                ? true
+                : false
+            }
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("tokenAmount")}
+          />
+          <FormGroup
+            type="flex"
+            inputType="text"
+            inputSize="md"
+            label="Precio del token"
+            inputName="tokenPrice"
+            inputValue={tokenPrice}
+            saveBtnDisabled={
+              projectData.projectInfo?.token.price === tokenPrice ? true : false
+            }
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("tokenPrice")}
+          />
+        </Card.Body>
+      </Card>
+    </>
   );
 }

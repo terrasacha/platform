@@ -6,6 +6,7 @@ import FormGroup from "../../../../common/FormGroup";
 
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { updateProduct } from "../../../../../graphql/mutations";
+import { notify } from "../../../../../utilities/notify";
 
 export default function ProjectSettingsCard(props) {
   const { className } = props;
@@ -25,9 +26,21 @@ export default function ProjectSettingsCard(props) {
       id: projectData.projectInfo.id,
       isActive: !projectIsActive
     }
-    API.graphql(
+    await API.graphql(
       graphqlOperation(updateProduct, { input: updatedProduct })
     );
+
+    if(!projectIsActive === true) {
+      notify({
+        msg: "Ahora el proyecto sera visible en Marketplace",
+        type: "success",
+      });
+    } else {
+      notify({
+        msg: "El proyecto ha sido ocultado en Marketplace",
+        type: "success",
+      });
+    }
 
   }
 

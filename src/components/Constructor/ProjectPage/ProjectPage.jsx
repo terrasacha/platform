@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 // Sections
 import ProjectDetails from "./ProjectDetails/ProjectDetails";
@@ -154,6 +155,7 @@ export default function ProjectPage() {
       {activeSection === "details" && <ProjectDetails />}
       {activeSection === "files" && <ProjectFiles />}
       {activeSection === "settings" && user?.role === "validator" && <ProjectSettings />}
+      <ToastContainer></ToastContainer>
     </div>
   );
 }
