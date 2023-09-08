@@ -13,6 +13,20 @@ export function ProjectDataProvider({ children }) {
     setProjectData(data);
   };
 
+  const handleUpdateContextProjectInfo = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectInfo: { ...prevData.projectInfo, ...data },
+    }));
+  };
+
+  const handleUpdateContextVerifiers = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectVerifiers: [...data],
+    }));
+  };
+
   const handleUpdateContextDocumentStatus = async (fileIndex, data) => {
     setProjectData((prevData) => ({
       ...prevData,
@@ -44,7 +58,6 @@ export function ProjectDataProvider({ children }) {
       ...prevData,
       projectFiles: prevData.projectFiles.map((file, index) => {
         if (index === fileIndex) {
-          console.log("data", data)
           return {
             ...file,
             verification: { ...data },
@@ -62,6 +75,8 @@ export function ProjectDataProvider({ children }) {
     handleUpdateContextDocumentStatus,
     handleUpdateContextProjectTokenData,
     handleUpdateContextFileVerification,
+    handleUpdateContextProjectInfo,
+    handleUpdateContextVerifiers,
   };
 
   return (

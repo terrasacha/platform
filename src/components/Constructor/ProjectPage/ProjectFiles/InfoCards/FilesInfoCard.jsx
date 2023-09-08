@@ -12,6 +12,7 @@ import { XIcon } from "../../../../common/icons/XIcon";
 import {
   createVerification,
   updateDocument,
+  updateProduct,
 } from "../../../../../graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { useAuth } from "../../../../../context/AuthContext";
@@ -31,6 +32,8 @@ export default function FilesInfoCard(props) {
   const {
     handleUpdateContextDocumentStatus,
     handleUpdateContextFileVerification,
+    handleUpdateContextProjectInfo,
+    handleUpdateContextVerifiers,
     projectData,
   } = useProjectData();
   const { user } = useAuth();
@@ -64,6 +67,7 @@ export default function FilesInfoCard(props) {
         verifierName: user.name,
       };
       await handleUpdateContextFileVerification(fileIndex, localVerification);
+      await handleUpdateContextVerifiers([...projectData.projectVerifiers, user.id])
     } else {
       if (file.verification.verifierID !== user.id) {
         notify({
@@ -74,35 +78,78 @@ export default function FilesInfoCard(props) {
       }
     }
 
-    console.log(projectData);
+    // En caso de que el proyecto no tenga ningun verificador, se actualiza el estado del proyecto a En Verificación
+    const isProjectOnVerification = projectData.projectFiles.filter(
+      (proyectFile) => proyectFile.verification !== undefined
+    );
+    if (isProjectOnVerification.length === 0) {
+      console.log("entro a actualizar a on_verification")
+      await handleUpdateContextProjectInfo({ status: "En verificación" });
 
+      await API.graphql(
+        graphqlOperation(updateProduct, {
+          input: {
+            id: projectData.projectInfo.id,
+            status: "on_verification",
+          },
+        })
+      );
+    }
+
+    // Actualización de estado de documento
     const updateDocumentStatus = {
       id: docId,
       isApproved: status,
       status: status ? "accepted" : "denied",
     };
-    await API.graphql(
-      graphqlOperation(updateDocument, {
-        input: updateDocumentStatus,
-      })
-    );
-    handleUpdateContextDocumentStatus(fileIndex, {
-      isApproved: status,
-      status: status ? "accepted" : "denied",
-    });
-    setIsValidating(false);
-    setIsDocApproved(status);
+    try {
+      await API.graphql(
+        graphqlOperation(updateDocument, {
+          input: updateDocumentStatus,
+        })
+      );
 
-    if (status) {
-      notify({
-        msg: "El archivo fue aceptado",
-        type: "success",
+      await handleUpdateContextDocumentStatus(fileIndex, {
+        isApproved: status,
+        status: status ? "accepted" : "denied",
       });
-    } else {
+      setIsValidating(false);
+      setIsDocApproved(status);
+
+      if (status) {
+        notify({
+          msg: "El archivo fue aceptado",
+          type: "success",
+        });
+      } else {
+        notify({
+          msg: "El archivo fue rechazado, el postulante deberá subir un nuevo archivo",
+          type: "success",
+        });
+      }
+      
+    } catch (error) {
       notify({
-        msg: "El archivo fue rechazado, el postulante deberá subir un nuevo archivo",
-        type: "success",
+        msg: "Ups!, parece que algo ha fallado",
+        type: "error",
       });
+      return
+    }
+
+    // En caso de que todos los documentos sean aprobados, se actualiza el estado del proyecto a Verificado
+    const approvedDocuments = projectData.projectFiles.filter(projectFile => projectFile.isApproved === true)
+    if(projectData.projectFiles.length === approvedDocuments.length + status ? 1 : 0) {
+      console.log("entro a actualizar verified")
+      await handleUpdateContextProjectInfo({ status: "Verificado" });
+
+      await API.graphql(
+        graphqlOperation(updateProduct, {
+          input: {
+            id: projectData.projectInfo.id,
+            status: "verified",
+          },
+        })
+      );
     }
   };
 

@@ -35,7 +35,7 @@ export default function ProjectFiles() {
     setIsMessageCardActive(!isMessageCardActive);
     setSelectedVerificationId(file.verification.id);
     setIsDocApproved(file.isApproved);
-    setIsFileVerifier(file.verification.verifierID === user.id ? true : false)
+    setIsFileVerifier(file.verification.verifierID === user?.id ? true : false)
     setMessages(file.verification.messages);
   };
 

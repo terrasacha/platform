@@ -50,12 +50,12 @@ export default function ProjectPage() {
               <Badge bg="primary">{projectData.projectInfo?.status}</Badge>
               <Badge
                 bg={
-                  projectData.projectInfo?.verificationLimitDate
+                  projectData.projectVerifiers?.length > 0
                     ? "success"
                     : "danger"
                 }
               >
-                {projectData.projectInfo?.verificationLimitDate
+                {projectData.projectVerifiers?.length > 0
                   ? "Validador asignado"
                   : "Sin validador"}
               </Badge>

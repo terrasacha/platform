@@ -23,10 +23,10 @@ const mapVerificationsData = async (verifications) => {
   const verificationData = verifications.map(async (verification) => {
     return {
       id: verification.id,
-      verifierID: verification.userVerifierID,
-      verifierName: verification.userVerifier.name,
-      postulantName: verification.userVerified.name,
-      postulantID: verification.userVerifiedID,
+      verifierID: verification.userVerifierID || "",
+      verifierName: verification.userVerifier?.name || "",
+      postulantName: verification.userVerified?.name || "",
+      postulantID: verification.userVerifiedID || "",
       messages: await Promise.all(
         verification.verificationComments.items
           .sort(function (a, b) {
