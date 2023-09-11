@@ -814,7 +814,7 @@ class ValidatorAdmon extends Component {
                     </Card.Body>
                     <Card.Footer>
                       <div className="d-flex justify-content-center align-items-center">
-                        <a href={"project_details/" + product.id}>
+                        <a href={"project/" + product.id}>
                           <Button>Ver más</Button>
                         </a>
                       </div>

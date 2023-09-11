@@ -10,6 +10,11 @@ export const getProduct = /* GraphQL */ `
       timeOnVerification
       projectReadiness
       categoryID
+      transactions {
+        items {
+          id
+        }
+      }
       userProducts {
         items {
           user {
@@ -193,6 +198,32 @@ export const getUser = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+    }
+  }
+`;
+
+
+export const getUserProjects = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      userProducts {
+        items {
+          product {
+            id
+            categoryID
+            createdAt
+            description
+            isActive
+            name
+            order
+            projectReadiness
+            status
+            timeOnVerification
+            updatedAt
+          }
+          isFavorite
+        }
       }
     }
   }

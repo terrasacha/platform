@@ -19,7 +19,7 @@ export default function ProjectDetails() {
   };
 
   return (
-    <div className="row row-cols-1 row-cols-lg-2 g-4">
+    <div className="row row-cols-1 row-cols-xl-2 g-4">
       <div className="col">
         <ProjectInfoCard />
       </div>

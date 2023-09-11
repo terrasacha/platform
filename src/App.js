@@ -40,7 +40,7 @@ function App(){
             exact
           />
           <Route
-            path="/project_details/:id"
+            path="/project/:id"
             element={
               <ProjectDataProvider>
                 <ProjectPage />

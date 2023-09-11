@@ -22,14 +22,14 @@ export default function TokenSettingsCard(props) {
 
   useEffect(() => {
     if (projectData) {
-      if (projectData.projectInfo.token.pfIDs.pfTokenNameID) {
+      if (projectData.projectInfo.token.transactionsNumber !== 0) {
         setIsDisabledTokenName(true);
       }
       setTokenName(projectData.projectInfo.token.name);
       setTokenPrice(projectData.projectInfo.token.price);
       setTokenAmount(projectData.projectInfo.token.amount);
     }
-  }, [projectData]);
+  }, []);
 
   const handleSaveBtn = async (toSave) => {
     let error = false;

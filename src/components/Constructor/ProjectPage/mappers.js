@@ -440,6 +440,7 @@ export const mapProjectData = async (data) => {
           pfTokenPriceID: pfTokenPriceID,
           pfTokenAmountID: pfTokenAmountID,
         },
+        transactionsNumber: data.transactions.items.length,
         name: tokenName,
         price: tokenPrice,
         priceCurrency: "USD",
