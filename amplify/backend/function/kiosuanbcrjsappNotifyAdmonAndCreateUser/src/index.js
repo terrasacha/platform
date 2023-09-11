@@ -196,10 +196,7 @@ exports.handler = async (event) => {
       const email = await getProductInfo(productID)
       const usuario = email.split('@')[0]
       const role = 'constructor'
-      const tempPassword  = generator.generate({
-        length: 12,
-        numbers: true
-      });
+      const tempPassword  = 'passwordSegura'
 
       try {
         const sub = await createUserInCognito(usuario, email, role, tempPassword)
