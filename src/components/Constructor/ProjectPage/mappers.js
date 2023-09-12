@@ -286,9 +286,8 @@ const mapProjectUses = async (data) => {
 };
 
 export const mapProjectData = async (data) => {
-
-  const projectID = data.id
-  const projecIsActive = data.isActive
+  const projectID = data.id;
+  const projecIsActive = data.isActive;
 
   const tokenName =
     data.productFeatures.items.filter((item) => {
@@ -317,6 +316,17 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
     })[0]?.id || "";
+
+  const pfTokenHistoricalDataID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA";
+    })[0]?.id || "";
+
+  const tokenHistoricalData = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA";
+    })[0]?.value || "[]"
+  );
 
   // A
   const postulantName =
@@ -439,7 +449,9 @@ export const mapProjectData = async (data) => {
           pfTokenNameID: pfTokenNameID,
           pfTokenPriceID: pfTokenPriceID,
           pfTokenAmountID: pfTokenAmountID,
+          pfTokenHistoricalDataID: pfTokenHistoricalDataID,
         },
+        historicalData: tokenHistoricalData,
         transactionsNumber: data.transactions.items.length,
         name: tokenName,
         price: tokenPrice,

@@ -8,10 +8,10 @@ export default function ProjectSettings() {
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       <div className="col">
-        <TokenSettingsCard />
+        <ProjectSettingsCard />
       </div>
       <div className="col">
-        <ProjectSettingsCard />
+        <TokenSettingsCard />
       </div>
     </div>
   );

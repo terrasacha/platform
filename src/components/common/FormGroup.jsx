@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Form from "react-bootstrap/Form";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/Button";
 import { SaveDiskIcon } from "./icons/SaveDiskIcon";
 
@@ -30,6 +31,7 @@ export default class FormGroup extends Component {
     function handleInputRenderByInputType(inputType) {
       if (
         inputType === "text" ||
+        inputType === "number" ||
         inputType === "email" ||
         inputType === "password"
       ) {
@@ -91,31 +93,35 @@ export default class FormGroup extends Component {
     if (type === "block") {
       return (
         <Form.Group className={className + " mb-3"}>
-        {
-          inputType !== "switch" && (
-            <Form.Label>
-              {label}
-            </Form.Label>
-          )
-        }
+          {inputType !== "switch" && <Form.Label>{label}</Form.Label>}
           {handleInputRenderByInputType(inputType)}
         </Form.Group>
+      );
+    }
+
+    if (type === "floating") {
+      return (
+        <FloatingLabel label={label} className={className + " mb-3"}>
+          {handleInputRenderByInputType(inputType)}
+        </FloatingLabel>
       );
     }
     if (type === "flex") {
       return (
         <Form.Group className={className + " mb-3"}>
           <div className="row align-items-center">
-            {
-              inputType !== "switch" && (
-                <Form.Label column sm="5">
-                  {label}
-                </Form.Label>
-              )
-            }
+            {inputType !== "switch" && (
+              <Form.Label column sm="5">
+                {label}
+              </Form.Label>
+            )}
             <div className="col">{handleInputRenderByInputType(inputType)}</div>
             <div className="col-auto">
-              <Button disabled={saveBtnDisabled} variant="success" onClick={onClickSaveBtn}>
+              <Button
+                disabled={saveBtnDisabled}
+                variant="success"
+                onClick={onClickSaveBtn}
+              >
                 <SaveDiskIcon />
               </Button>
             </div>
