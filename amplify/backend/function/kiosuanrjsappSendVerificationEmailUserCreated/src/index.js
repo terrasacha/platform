@@ -12,7 +12,7 @@ exports.handler = async (event) => {
     console.log(record.eventName);
     console.log('DynamoDB Record: %j', record.dynamodb);
 
-    if (record.eventName === 'INSERT') {
+    if (record.eventName === 'INSERT' && record.dynamodb.NewImage.role.S !== 'validator' ) {
 
       const EMAIL_ADDRESS = record.dynamodb.NewImage.email.S;
       const verifyEmailIdentityCommand = new VerifyEmailIdentityCommand({ EmailAddress: EMAIL_ADDRESS });

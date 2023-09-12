@@ -1,0 +1,43 @@
+{"Records":[
+  {
+    "eventName": "INSERT",
+    "dynamodb":{
+      "ApproximateCreationDateTime": 1694453531,
+      "Keys": {
+          "id": {
+              "S": "222"
+          }
+      },
+      "NewImage": {
+          "createdAt": {
+              "S": "2023-09-11T17:32:10.988Z"
+          },
+          "role": {
+              "S": "validator"
+          },
+          "__typename": {
+              "S": "User"
+          },
+          "name": {
+              "S": "ignaciovalidator"
+          },
+          "isProfileUpdated": {
+              "BOOL": true
+          },
+          "id": {
+              "S": "222"
+          },
+          "email": {
+              "S": "ignaciodiaznanni@gmail.com"
+          },
+          "updatedAt": {
+              "S": "2023-09-11T17:32:10.988Z"
+          }
+      },
+      "SequenceNumber": "1746057200000000016353589204",
+      "SizeBytes": 171,
+      "StreamViewType": "NEW_AND_OLD_IMAGES"
+  }
+  
+  }
+]}
