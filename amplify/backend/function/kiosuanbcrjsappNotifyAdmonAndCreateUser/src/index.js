@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 const fetch = require('node-fetch')
-const generator = require('generate-password');
+const generator = require('generate-password')
 const {
   SESClient,
   SendTemplatedEmailCommand
@@ -12,9 +12,9 @@ const cognito = new AWS.CognitoIdentityServiceProvider()
 const ses = new SESClient({ region: 'us-east-1' })
 
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY;
-const SES_EMAIL = process.env.SES_EMAIL;
+const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT
+const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY
+const SES_EMAIL = process.env.SES_EMAIL
 const USER_POOL_ID = process.env.USER_POOL_ID
 const EMAIL_ADMIN = process.env.EMAIL_ADMIN
 
@@ -22,34 +22,50 @@ async function createUserInCognito(usuario, email, role, tempPassword) {
   const params = {
     UserPoolId: USER_POOL_ID,
     Username: usuario,
-    UserAttributes: [
-      { Name: 'email', Value: email },
-      { Name: 'custom:role', Value: role }
-    ],
-    MessageAction: 'SUPPRESS' //con esto evito el codigo de verificacion
   }
-
+  let alreadyExist = false
   try {
-    const createUserResult = await cognito.adminCreateUser(params).promise()
-    const sub = createUserResult.User.Attributes.find(attr => attr.Name === 'sub').Value
-
-    console.log('User SUB:', sub)
-
-    await cognito.adminSetUserPassword({
-      UserPoolId: USER_POOL_ID,
-      Username: usuario,
-      Password: tempPassword,
-      Permanent: true
-    }).promise()
-
-    console.log('User created in Cognito with temporary password')
-    
-    return sub
+    const existingUser = await cognito.adminGetUser(params).promise()
+    const sub = existingUser.UserAttributes.find(attr => attr.Name === 'sub').Value
+    console.log('User already exists in Cognito, returning existing sub:', sub)
+    alreadyExist = true
+    return { sub, alreadyExist }
   } catch (error) {
-    console.error('Error creating user in Cognito', error)
-    throw error
+    if (error.code === 'UserNotFoundException') {
+      const createUserParams = {
+        UserPoolId: USER_POOL_ID,
+        Username: usuario,
+        UserAttributes: [
+          { Name: 'email', Value: email },
+          { Name: 'custom:role', Value: role }
+        ],
+        MessageAction: 'SUPPRESS'
+      }
+
+      try {
+        const createUserResult = await cognito.adminCreateUser(createUserParams).promise()
+        const sub = createUserResult.User.Attributes.find(attr => attr.Name === 'sub').Value
+        console.log('User created in Cognito with temporary password')
+        await cognito.adminSetUserPassword({
+          UserPoolId: USER_POOL_ID,
+          Username: usuario,
+          Password: tempPassword,
+          Permanent: true
+        }).promise()
+        alreadyExist = false
+        return { sub, alreadyExist }
+      } catch (createUserError) {
+        console.error('Error creating user in Cognito', createUserError)
+        throw createUserError
+      }
+    } else {
+      console.error('Error getting user from Cognito', error)
+      throw error
+    }
   }
 }
+
+
 
 async function sendEmailNotification(userEmail) {
   const templateData = {
@@ -74,7 +90,7 @@ async function sendEmailNotification(userEmail) {
   }
 }
 
-async function createUserInGraphQL(sub, usuario, email, role, productID) {
+async function createUserInGraphQL(sub, usuario, email, role, productID, alredyExist) {
   const fetchOptionsUser = {
     method: 'POST',
     headers: {
@@ -126,14 +142,16 @@ async function createUserInGraphQL(sub, usuario, email, role, productID) {
       }
     })
   }
-
   try {
-    const responseUser = await fetch(GRAPHQL_ENDPOINT, fetchOptionsUser)
+    if (!alredyExist) {
+      const responseUser = await fetch(GRAPHQL_ENDPOINT, fetchOptionsUser)
+      const responseDataUser = await responseUser.json()
+      console.log('User registration in GraphQL:', responseDataUser)
+    }
+
     const responseUserProduct = await fetch(GRAPHQL_ENDPOINT, fetchOptionsUserProduct)
-    const responseDataUser = await responseUser.json()
     const responseDataUserProduct = await responseUserProduct.json()
 
-    console.log('User registration in GraphQL:', responseDataUser)
     console.log('UserProduct registration in GraphQL:', responseDataUserProduct)
   } catch (error) {
     console.error('Error creating user in GraphQL', error)
@@ -183,13 +201,12 @@ async function getProductInfo(productID){
     throw error
   }
 }
-
 exports.handler = async (event) => {
   console.log(event)
   for (const record of event.Records) {
-    console.log(record.eventID);
-    console.log(record.eventName);
-    console.log('DynamoDB Record: %j', record.dynamodb);
+    console.log(record.eventID)
+    console.log(record.eventName)
+    console.log('DynamoDB Record: %j', record.dynamodb)
 
     if (record.eventName === 'INSERT' && record.dynamodb.NewImage) {
       let productID = record.dynamodb.NewImage.id.S
@@ -199,8 +216,8 @@ exports.handler = async (event) => {
       const tempPassword  = 'passwordSegura'
 
       try {
-        const sub = await createUserInCognito(usuario, email, role, tempPassword)
-        await createUserInGraphQL(sub, usuario, email, role, productID)
+        const {sub, alreadyExist} = await createUserInCognito(usuario, email, role, tempPassword)
+        await createUserInGraphQL(sub, usuario, email, role, productID, alreadyExist)
         await sendEmailNotification()
         return { status: 'done', msg: 'Process completed successfully' }
       } catch (error) {

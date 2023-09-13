@@ -6,6 +6,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { onCreateUser, onUpdateUser } from '../../../graphql/subscriptions';
 import { createUser, updateUser } from '../../../graphql/mutations';
 import { listUsers } from '../../../graphql/queries';
+import { v4 as uuidv4 } from 'uuid'
 
 class Validators extends Component {
 
@@ -16,12 +17,9 @@ class Validators extends Component {
             newUser:{
                 id: '',
                 username: '',
-                password: '',
                 email: '',
                 role: 'validator'
             },
-            showModal: false,
-            confirmationCode: '',
             userToConfirm: ''
         }
         this.handleCRUDUser = this.handleCRUDUser.bind(this)
@@ -33,19 +31,7 @@ class Validators extends Component {
         this.createValidatorListener = API.graphql(graphqlOperation(onCreateUser))
         .subscribe({
             next: createdUser => {
-                let isOnCreateList = false;
-                this.state.validators.map((mapvalidators) => {
-                    if (createdUser.value.data.onCreateUser.id === mapvalidators.id) {
-                        isOnCreateList = true;
-                    } 
-                    return mapvalidators
-                })
-                let tempvalidators = this.state.validators
-                let temponCreateUser = createdUser.value.data.onCreateUser
-                if (!isOnCreateList) {
-                    tempvalidators.push(temponCreateUser)
-                }
-                this.setState({validators: tempvalidators})
+                this.loadValidatorUsers()
             }
         })
         this.updateUserListener = API.graphql(graphqlOperation(onUpdateUser))
@@ -81,18 +67,12 @@ class Validators extends Component {
         if (event.target.name === 'newUser.email') {
             tempNewUser.email = event.target.value
         }
-        if (event.target.name === 'newUser.password') {
-            tempNewUser.password = event.target.value
-        }
-        if (event.target.name === 'confirmationCode') {
-            this.setState({confirmationCode: event.target.value})
-        }
         
         this.setState({newUser: tempNewUser})      
     }
     async handleCRUDUser() {
         let tempNewUser = this.state.newUser
-        await this.signUp(tempNewUser.username, tempNewUser.email, tempNewUser.password, tempNewUser.role)
+        await this.signUp(tempNewUser.username, tempNewUser.email, tempNewUser.role)
         this.cleanUserOnCreate()
     }
     handleHideModal() {
@@ -103,26 +83,19 @@ class Validators extends Component {
             newUser:{
                 id: '',
                 username: '',
-                password: '',
                 email: '',
                 role: 'validator'
             },
-            showModal: false,
-            confirmationCode: '',
             userToConfirm: ''
         })
     }
     async signUp(){
-        const { username, email, password, role } = this.state.newUser
-        if(password !== '' && username !== '' && email !== ''){
+        const { username, email, role } = this.state.newUser
+        if(username !== '' && email !== ''){
             try {
-                let response = await Auth.signUp({ username, password, attributes: {
-                        email,
-                        'custom:role': role  
-                    }})
-                console.log(response, 'response')
+                
                 const userPayload = {
-                    id: response.userSub,
+                    id: uuidv4().split('-')[4],
                     name: username,
                     email: email,
                     isProfileUpdated: false,
@@ -133,35 +106,11 @@ class Validators extends Component {
                 console.log('A user for that e-mail address already exists. Please use a different e-mail address')    
             }
         }else{
-            console.log('passwords does not match')
+            console.log('Agregar usuario e email')
         }
-    }
-    async confirmSignUp(newUser, authCode){
-        try {
-            await Auth.confirmSignUp( newUser.username, authCode )
-            let tempUser = {
-                id: newUser.id,
-                isProfileUpdated:true
-            }
-            await API.graphql(graphqlOperation(updateUser, { input: tempUser }))
-            this.cleanUserOnCreate()
-        } catch (error) {
-            console.log('code does not match')
-        }
-    }
-    handleLoadUser(validator){
-        let tempNewUser = {
-            id: validator.id,
-            username: validator.name,
-            password: '',
-            email: '',
-            role: 'validator'
-        }
-
-        this.setState({newUser: tempNewUser, showModal:true})
     }
     render() {
-        let { validators, newUser, confirmationCode, showModal } = this.state
+        let { validators, newUser } = this.state
         const renderValidators = () => {
             if (validators.length > 0) {
                 return (
@@ -190,7 +139,7 @@ class Validators extends Component {
                                         {validator.createdAt}
                                     </td>
                                     <td>
-                                        {validator.isProfileUpdated? 'Confirmed' : <Button onClick={() => this.handleLoadUser(validator)}>Confirmar</Button>}
+                                        {validator.isProfileUpdated? 'Confirmed' : 'Pendiente'}
                                     </td>
                                 </tr>
                             ))}
@@ -200,41 +149,6 @@ class Validators extends Component {
                 )
             }
         
-        }
-        const modalValidation = () => {
-
-            if (showModal) {
-            return (
-                <Modal
-                    show={showModal}
-                    onHide={(e) => this.handleHideModal()}
-                    size="sm"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                    >
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title-vcenter">
-                            Confirmation code
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Row className='mb-3'>
-                            <Form.Group >
-                                <Form.Control
-                                type='number'
-                                placeholder='confirmation code'
-                                name='confirmationCode'
-                                onChange={(e) => this.handleOnChangeInputForm(e)}
-                                />
-                            </Form.Group>
-                        </Row>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button disabled={confirmationCode.length === 0?true:false} onClick={(e) => this.confirmSignUp(this.state.newUser, this.state.confirmationCode)}>Confirm</Button>
-                    </Modal.Footer>
-                </Modal>
-            )
-            }
         }
         return (
             <Container style={{display: 'flex', flexDirection: 'column'}}>
@@ -260,15 +174,6 @@ class Validators extends Component {
                                     value={newUser.email}
                                     onChange={(e) => this.handleOnChangeInputForm(e)} />
                             </Form.Group>
-                            <Form.Group as={Col}>
-                                <Form.Label>password</Form.Label>
-                                <Form.Control
-                                    type='password'
-                                    placeholder='Password'
-                                    name='newUser.password'
-                                    value={newUser.password}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
                         </Row>
 
                         <Row className='mb-1'>
@@ -281,7 +186,6 @@ class Validators extends Component {
                     </Form>
                 </Container>
                 {renderValidators()}
-                {modalValidation()}
             </Container>
         
         )
