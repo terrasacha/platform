@@ -94,9 +94,9 @@ export const getActualPeriod = async (actualDate, periods) => {
     const periodo = periods[i];
     const fechaFin = new Date(periodo.date);
 
-    console.log("actualDate", actualDate);
-    console.log("fechaInicio", fechaInicio);
-    console.log("fechaFin", fechaFin);
+    // console.log("actualDate", actualDate);
+    // console.log("fechaInicio", fechaInicio);
+    // console.log("fechaFin", fechaFin);
     // Verifica si la fecha actual está dentro del rango desde "fechaInicio" hasta "fechaFin".
     if (actualDate >= fechaInicio && actualDate <= fechaFin) {
       return { period: periodo.period, amount: periodo.amount, price:periodo.price, fechaInicio, fechaFin };

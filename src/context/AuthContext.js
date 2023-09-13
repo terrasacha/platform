@@ -2,7 +2,6 @@ import { Auth, API, graphqlOperation } from "aws-amplify";
 import React, { useContext, useEffect, useState } from "react";
 import { getUser } from "../utilities/customQueries";
 
-
 const AuthContext = React.createContext();
 
 export function useAuth() {
@@ -10,30 +9,26 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState()
+  const [user, setUser] = useState();
 
-  useEffect(() =>{
-    checkUser()
-    
-  },[])
+  useEffect(() => {
+    checkUser();
+  }, []);
+  async function checkUser() {
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser();
+      const response = await API.graphql(
+        graphqlOperation(getUser, { id: currentUser.attributes.sub })
+      );
 
-  async function checkUser(){
-      try {
-          const currentUser = await Auth.currentAuthenticatedUser()
-          const response = await API.graphql(graphqlOperation(getUser, { id: currentUser.attributes.sub }));
+      console.log("response", response)
 
-          setUser(response.data.getUser)
-          localStorage.setItem('role', currentUser.attributes['custom:role'])
-      } catch (error) {
-          
-      }
+      setUser(response.data.getUser);
+      localStorage.setItem("role", currentUser.attributes["custom:role"]);
+    } catch (error) {}
   }
   const value = {
     user,
   };
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

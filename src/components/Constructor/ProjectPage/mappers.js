@@ -3,19 +3,25 @@ import {
   convertAWSDatetimeToDate,
   getElapsedTime,
   capitalizeWords,
-  getActualPeriod
+  getActualPeriod,
 } from "./utils";
 
 const mapProjectVerifiers = async (data) => {
-  const verifiablePF = data.productFeatures.items.filter(
-    (pf) => pf.feature.isVerifable === true
-  );
-  let projectVerifiers = [];
-  verifiablePF.forEach((pf) => {
-    pf.verifications.items.forEach((vf) => {
-      projectVerifiers.push(vf.userVerifierID);
+  // const verifiablePF = data.productFeatures.items.filter(
+  //   (pf) => pf.feature.isVerifable === true
+  // );
+  // let projectVerifiers = [];
+  // verifiablePF.forEach((pf) => {
+  //   pf.verifications.items.forEach((vf) => {
+  //     projectVerifiers.push(vf.userVerifierID);
+  //   });
+  // });
+
+  const projectVerifiers = data.userProducts.items
+    .filter((up) => up.user.role === "validator")
+    .map((userProduct) => {
+      return userProduct.user.id;
     });
-  });
 
   return projectVerifiers;
 };
@@ -65,21 +71,23 @@ const mapDocumentsData = async (data) => {
   );
 
   const documentsPromises = verifiablePF.map((pf) =>
-    pf.documents.items.filter(document => document.status !== "validatorFile").map(async (document) => {
-      return {
-        id: document.id,
-        pfID: pf.id,
-        title: PFNameMapper[pf.feature.name],
-        url: document.url,
-        signed: document.signed,
-        signedHash: document.signedHash,
-        isUploadedToBlockChain: document.isUploadedToBlockChain,
-        isApproved: document.isApproved,
-        verification: await mapVerificationsData(pf.verifications.items),
-        updatedAt: await convertAWSDatetimeToDate(pf.updatedAt),
-        status: document.status,
-      };
-    })
+    pf.documents.items
+      .filter((document) => document.status !== "validatorFile")
+      .map(async (document) => {
+        return {
+          id: document.id,
+          pfID: pf.id,
+          title: PFNameMapper[pf.feature.name],
+          url: document.url,
+          signed: document.signed,
+          signedHash: document.signedHash,
+          isUploadedToBlockChain: document.isUploadedToBlockChain,
+          isApproved: document.isApproved,
+          verification: await mapVerificationsData(pf.verifications.items),
+          updatedAt: await convertAWSDatetimeToDate(pf.updatedAt),
+          status: document.status,
+        };
+      })
   );
   const documents = await Promise.all(documentsPromises.flat());
   return documents;
@@ -328,16 +336,15 @@ export const mapProjectData = async (data) => {
     })[0]?.value || "[]"
   );
 
-  
-  const periods = tokenHistoricalData.map(tkhd => {
+  const periods = tokenHistoricalData.map((tkhd) => {
     return {
       period: tkhd.period,
       date: new Date(tkhd.date),
       price: tkhd.price,
       amount: tkhd.amount,
-    }
-  })
-  const actualPeriod = await getActualPeriod(Date.now(), periods)
+    };
+  });
+  const actualPeriod = await getActualPeriod(Date.now(), periods);
 
   const pfProjectValidatorDocumentsID =
     data.productFeatures.items.filter((item) => {
@@ -454,8 +461,9 @@ export const mapProjectData = async (data) => {
     })[0]?.value || "";
 
   const postulantID =
-    data.userProducts.items.filter((up) => up.user.role === "constructor")[0]
+    data.userProducts.items.filter((up) => up.user?.role === "constructor")[0]
       ?.user.id || "";
+  console.log(postulantID)
 
   return {
     projectInfo: {
@@ -476,9 +484,9 @@ export const mapProjectData = async (data) => {
         historicalData: tokenHistoricalData,
         transactionsNumber: data.transactions.items.length,
         name: tokenName,
-        actualPeriodTokenPrice: actualPeriod.price,
+        actualPeriodTokenPrice: actualPeriod?.price || "",
         priceCurrency: "USD",
-        actualPeriodTokenAmount: actualPeriod.amount,
+        actualPeriodTokenAmount: actualPeriod?.amount || "",
       },
       location: {
         vereda: vereda,

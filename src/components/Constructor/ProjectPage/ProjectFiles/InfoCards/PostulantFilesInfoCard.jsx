@@ -227,6 +227,7 @@ export default function PostulantFilesInfoCard(props) {
       denied: "Negado",
     };
     if (file.status === "pending" && isVerifier) {
+      console.log("entro")
       if (isValidating) {
         return (
           <>
