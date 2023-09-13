@@ -8,6 +8,7 @@ const SES_EMAIL = process.env.SES_EMAIL
 const ses = new SESClient({ region: "us-east-1" })
 
 async function updateDocumentConstructor(query, documentID) {
+  console.log('entra aqui')
   try {
     const variables = { id: documentID }
     const options = {

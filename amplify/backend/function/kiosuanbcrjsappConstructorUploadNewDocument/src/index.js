@@ -45,20 +45,19 @@ query GetDocument($id: ID!) {
  */
 exports.handler = async(event) => {
   for (const record of event.Records) {
-    console.log(record.eventID);
     console.log(record.eventName);
     console.log('DynamoDB Record: %j', record.dynamodb);
     if (record.eventName === 'INSERT' && record.dynamodb.NewImage.status.S === 'validatorFile') {
-      newValidatorDocument(query, record.dynamodb.NewImage.id.S)
+      return await newValidatorDocument(query, record.dynamodb.NewImage.id.S)
 
     } else if (record.eventName === 'MODIFY') {
 
         if (record.dynamodb.NewImage.status.S === 'denied' || record.dynamodb.NewImage.status.S === 'accepted') {
-          validatorChangeTheStatus(query, record.dynamodb.NewImage.id.S)
+          return await validatorChangeTheStatus(query, record.dynamodb.NewImage.id.S)
         }
 
         if (record.dynamodb.OldImage.status.S === 'denied' && record.dynamodb.NewImage.status.S === 'pending') {
-          updateDocumentConstructor(query, record.dynamodb.NewImage.id.S)
+          return await updateDocumentConstructor(query, record.dynamodb.NewImage.id.S)
         }
     }
 

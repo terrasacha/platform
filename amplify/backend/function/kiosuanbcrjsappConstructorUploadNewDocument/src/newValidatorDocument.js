@@ -1,13 +1,14 @@
 const fetch = require('node-fetch')
 const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses")
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY
-const SES_EMAIL = process.env.SES_EMAIL
+const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || 'https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql'
+const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY || 'da2-zmafzaqndbc5blfoqw4kqddtlq'
+const SES_EMAIL = process.env.SES_EMAIL || 'notificaciones@suan.global'
 
 const ses = new SESClient({ region: "us-east-1" })
 
 async function newValidatorDocument(query, documentID) {
+  console.log('entra aqui')
   try {
     const variables = { id: documentID }
     const options = {
