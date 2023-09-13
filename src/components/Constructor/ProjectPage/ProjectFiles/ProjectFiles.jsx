@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { API, graphqlOperation } from "aws-amplify";
 
-import FilesInfoCard from "./InfoCards/FilesInfoCard";
+import PostulantFilesInfoCard from "./InfoCards/PostulantFilesInfoCard";
+import ValidatorFilesInfoCard from "./InfoCards/ValidatorFilesInfoCard";
 import MessagesHistoryCard from "./InfoCards/MessagesHistoryCard";
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import { useAuth } from "../../../../context/AuthContext";
@@ -35,7 +36,7 @@ export default function ProjectFiles() {
     setIsMessageCardActive(!isMessageCardActive);
     setSelectedVerificationId(file.verification.id);
     setIsDocApproved(file.isApproved);
-    setIsFileVerifier(file.verification.verifierID === user?.id ? true : false)
+    setIsFileVerifier(file.verification.verifierID === user?.id ? true : false);
     setMessages(file.verification.messages);
   };
 
@@ -69,7 +70,7 @@ export default function ProjectFiles() {
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       <div className={isMessageCardActive ? "col" : "col-12 col-xl-12"}>
-        <FilesInfoCard
+        <PostulantFilesInfoCard
           projectFiles={projectData.projectFiles}
           handleMessageButtonClick={handleMessageButtonClick}
           setIsDocApproved={setIsDocApproved}
@@ -91,6 +92,13 @@ export default function ProjectFiles() {
           />
         </div>
       )}
+      <div className="col-12 col-xl-12">
+        <ValidatorFilesInfoCard
+          projectValidatorFiles={projectData.projectFilesValidators.projectValidatorDocuments}
+          isVerifier={isVerifier}
+          isPostulant={isPostulant}
+        />
+      </div>
     </div>
   );
 }

@@ -69,6 +69,16 @@ export function ProjectDataProvider({ children }) {
     }));
   };
 
+  const handleUpdateContextProjectFileValidators = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectFilesValidators: {
+        ...prevData.projectFilesValidators,
+        ...data,
+      },
+    }));
+  };
+
   const contextProps = {
     projectData,
     handleProjectData,
@@ -77,6 +87,7 @@ export function ProjectDataProvider({ children }) {
     handleUpdateContextFileVerification,
     handleUpdateContextProjectInfo,
     handleUpdateContextVerifiers,
+    handleUpdateContextProjectFileValidators
   };
 
   return (

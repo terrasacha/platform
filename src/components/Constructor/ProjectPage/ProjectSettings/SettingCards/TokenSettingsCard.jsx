@@ -267,7 +267,6 @@ export default function TokenSettingsCard(props) {
     }
   };
 
-  console.log("tokenHistoricalData", tokenHistoricalData);
   return (
     <>
       <Card className={className}>
@@ -293,9 +292,9 @@ export default function TokenSettingsCard(props) {
               <thead className="text-center">
                 <tr>
                   <th style={{ width: "80px" }}>Periodo</th>
-                  <th style={{ width: "100px" }}>Año</th>
-                  <th style={{ width: "100px" }}>Cantidad</th>
-                  <th style={{ width: "100px" }}>Precio</th>
+                  <th style={{ width: "100px" }}>Fecha</th>
+                  <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
+                  <th style={{ width: "100px" }}>Precio (USD)</th>
                   <th style={{ width: "120px" }}></th>
                 </tr>
               </thead>
@@ -318,7 +317,7 @@ export default function TokenSettingsCard(props) {
                           <td>
                             <Form.Control
                               size="sm"
-                              type="number"
+                              type="date"
                               value={data.date}
                               className="text-center"
                               name={`token_date_${index}`}

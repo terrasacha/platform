@@ -16,7 +16,7 @@ export const parseSerializedKoboData = async (data) => {
   return parsedData;
 };
 
-export const convertAWSDatetimeToDate = async (AWSDatetime) => {
+export const convertAWSDatetimeToDate = (AWSDatetime) => {
   const fechaObjeto = new Date(AWSDatetime);
   const anio = fechaObjeto.getFullYear();
   const mes = String(fechaObjeto.getMonth() + 1).padStart(2, "0");
@@ -29,8 +29,8 @@ export const getYearFromAWSDatetime = (AWSDatetime) => {
   const fechaObjeto = new Date(AWSDatetime);
   const anio = fechaObjeto.getFullYear();
 
-    return anio
-}
+  return anio;
+};
 
 export const formatNumberWithThousandsSeparator = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -58,7 +58,7 @@ export const getElapsedTime = async (initDate, endDate = new Date()) => {
 export const capitalizeWords = async (str) => {
   const lowercaseStr = str.toLowerCase();
 
-  const words = lowercaseStr.split(' ');
+  const words = lowercaseStr.split(" ");
 
   const capitalizedWords = words.map((word) => {
     if (word.length > 0) {
@@ -74,10 +74,37 @@ export const capitalizeWords = async (str) => {
 export const getImagesCategories = (category) => {
   try {
     let url = `https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/category-projects-images/${category}.jpg`;
-    url = url.replace("REDD+", "REDD%2B")
-    return url
+    url = url.replace("REDD+", "REDD%2B");
+    return url;
   } catch (error) {
     console.error(error);
     return;
   }
-}
+};
+
+export const getActualPeriod = async (actualDate, periods) => {
+  actualDate = new Date(actualDate);
+
+  periods.sort((a, b) => a.date - b.date);
+
+  // Inicializamos fechaInicio de la primera iteración como menos infinito.
+  let fechaInicio = new Date(-8640000000000000); // Un día antes del mínimo valor de Date.
+
+  for (let i = 0; i < periods.length; i++) {
+    const periodo = periods[i];
+    const fechaFin = new Date(periodo.date);
+
+    console.log("actualDate", actualDate);
+    console.log("fechaInicio", fechaInicio);
+    console.log("fechaFin", fechaFin);
+    // Verifica si la fecha actual está dentro del rango desde "fechaInicio" hasta "fechaFin".
+    if (actualDate >= fechaInicio && actualDate <= fechaFin) {
+      return { period: periodo.period, amount: periodo.amount, price:periodo.price, fechaInicio, fechaFin };
+    }
+
+    // Actualiza "fechaInicio" para la próxima iteración.
+    fechaInicio = new Date(periodo.date);
+  }
+
+  return null;
+};

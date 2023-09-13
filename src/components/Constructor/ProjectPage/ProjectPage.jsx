@@ -87,20 +87,20 @@ export default function ProjectPage() {
                     className="me-2 bg-dark text-white"
                   />
                 )}
-                {projectData.projectInfo?.token.amount && (
+                {projectData.projectInfo?.token.actualPeriodTokenAmount && (
                   <MiniInfoCard
                     label="Cantidad de tokens"
                     value={formatNumberWithThousandsSeparator(
-                      projectData.projectInfo?.token.amount
+                      projectData.projectInfo?.token.actualPeriodTokenAmount
                     )}
                     className="me-2 bg-dark text-white"
                   />
                 )}
-                {projectData.projectInfo?.token.price && (
+                {projectData.projectInfo?.token.actualPeriodTokenPrice && (
                   <MiniInfoCard
                     label="Valor del token"
                     value={
-                      projectData.projectInfo?.token.price +
+                      projectData.projectInfo?.token.actualPeriodTokenPrice +
                       " " +
                       projectData.projectInfo?.token.priceCurrency
                     }

@@ -18,7 +18,7 @@ import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { useAuth } from "../../../../../context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
 
-export default function FilesInfoCard(props) {
+export default function PostulantFilesInfoCard(props) {
   const {
     className,
     projectFiles,
@@ -271,6 +271,7 @@ export default function FilesInfoCard(props) {
 
   return (
     <Card className={className}>
+      <Card.Header title="Documentos del postulante" sep="true"/>
       <Card.Body>
         <Table className="text-center" responsive>
           <thead>
@@ -313,7 +314,7 @@ export default function FilesInfoCard(props) {
                         </Button>
                       </>
                     )}
-                    <a href={file.url}>
+                    <a href={file.url} target="_blank" rel="noreferrer">
                       <Button
                         className="m-1"
                         size="sm"

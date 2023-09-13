@@ -3,6 +3,7 @@ import {
   convertAWSDatetimeToDate,
   getElapsedTime,
   capitalizeWords,
+  getActualPeriod
 } from "./utils";
 
 const mapProjectVerifiers = async (data) => {
@@ -64,7 +65,7 @@ const mapDocumentsData = async (data) => {
   );
 
   const documentsPromises = verifiablePF.map((pf) =>
-    pf.documents.items.map(async (document) => {
+    pf.documents.items.filter(document => document.status !== "validatorFile").map(async (document) => {
       return {
         id: document.id,
         pfID: pf.id,
@@ -298,20 +299,19 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
     })[0]?.id || "";
 
-  const tokenPrice =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "GLOBAL_TOKEN_PRICE";
-    })[0]?.value || "0";
+  // const tokenPrice =
+  //   data.productFeatures.items.filter((item) => {
+  //     return item.featureID === "GLOBAL_TOKEN_PRICE";
+  //   })[0]?.value || "0";
   const pfTokenPriceID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_PRICE";
     })[0]?.id || "";
 
-  const tokenAmount =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
-    })[0]?.value || "0";
-
+  // const tokenAmount =
+  //   data.productFeatures.items.filter((item) => {
+  //     return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
+  //   })[0]?.value || "0";
   const pfTokenAmountID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
@@ -325,6 +325,28 @@ export const mapProjectData = async (data) => {
   const tokenHistoricalData = JSON.parse(
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA";
+    })[0]?.value || "[]"
+  );
+
+  
+  const periods = tokenHistoricalData.map(tkhd => {
+    return {
+      period: tkhd.period,
+      date: new Date(tkhd.date),
+      price: tkhd.price,
+      amount: tkhd.amount,
+    }
+  })
+  const actualPeriod = await getActualPeriod(Date.now(), periods)
+
+  const pfProjectValidatorDocumentsID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_PROJECT_VALIDATOR_FILES";
+    })[0]?.id || "";
+
+  const projectValidatorDocuments = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_PROJECT_VALIDATOR_FILES";
     })[0]?.value || "[]"
   );
 
@@ -454,9 +476,9 @@ export const mapProjectData = async (data) => {
         historicalData: tokenHistoricalData,
         transactionsNumber: data.transactions.items.length,
         name: tokenName,
-        price: tokenPrice,
+        actualPeriodTokenPrice: actualPeriod.price,
         priceCurrency: "USD",
-        amount: tokenAmount,
+        actualPeriodTokenAmount: actualPeriod.amount,
       },
       location: {
         vereda: vereda,
@@ -495,6 +517,10 @@ export const mapProjectData = async (data) => {
       communityGroups: communityGroups,
     },
     projectFiles: await mapDocumentsData(data),
+    projectFilesValidators: {
+      pfProjectValidatorDocumentsID: pfProjectValidatorDocumentsID,
+      projectValidatorDocuments: projectValidatorDocuments,
+    },
     projectVerifiers: await mapProjectVerifiers(data),
   };
 };
