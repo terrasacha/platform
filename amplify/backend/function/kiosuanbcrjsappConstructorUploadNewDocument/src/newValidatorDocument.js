@@ -60,4 +60,4 @@ async function newValidatorDocument(query, documentID) {
   }
 }
 
-export default newValidatorDocument
+module.exports = newValidatorDocument;

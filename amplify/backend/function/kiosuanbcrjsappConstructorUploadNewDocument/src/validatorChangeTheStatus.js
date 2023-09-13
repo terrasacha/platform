@@ -59,5 +59,4 @@ async function validatorChangeTheStatus(query, documentID) {
     return { status: 'error', msg: error.message || 'An error occurred' }
   }
 }
-
-export default validatorChangeTheStatus
+module.exports = validatorChangeTheStatus;
