@@ -1,7 +1,7 @@
 
-import newValidatorDocument from './newValidatorDocument';
-import validatorChangeTheStatus from './validatorChangeTheStatus';
-import upddateDocumentConstructor from './updateDocumentConstructor';
+const newValidatorDocument = require('./newValidatorDocument');
+const validatorChangeTheStatus = require('./validatorChangeTheStatus');
+const updateDocumentConstructor = require('./updateDocumentConstructor');
 
 const query = /* GraphQL */ `
 query GetDocument($id: ID!) {
@@ -58,7 +58,7 @@ exports.handler = async(event) => {
         }
 
         if (record.dynamobd.OldImage.status.S === 'denied' && record.dynamobd.NewImage.status.S === 'pending') {
-          upddateDocumentConstructor(query, record.dynamodb.NewImage.id.S)
+          updateDocumentConstructor(query, record.dynamodb.NewImage.id.S)
         }
     }
 

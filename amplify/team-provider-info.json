@@ -22,7 +22,7 @@
         },
         "kiosuanbcrjappRejectedDocumentNotificaction": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjappRejectedDocumentNotificaction-695938616b31636a5245-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjappRejectedDocumentNotificaction-58706e66687a45477046-build.zip"
         },
         "kiosuanbcrjsappAssignValidator": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
@@ -38,7 +38,7 @@
         },
         "kiosuanbcrjsappConstructorUploadNewDocument": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappConstructorUploadNewDocument-51504162477148716b64-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappConstructorUploadNewDocument-74313754554c63734f73-build.zip"
         },
         "kiosuanbcrjsappNotifyAdmonAndCreateUser": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",

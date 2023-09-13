@@ -38,7 +38,7 @@ query GetDocument($id: ID!) {
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async(event) => {
-  console.log(event)
+ /*  console.log(event)
   for (const record of event.Records) {
     console.log(record);
     console.log(record.eventID);
@@ -50,9 +50,9 @@ exports.handler = async(event) => {
       let oldImage = record.dynamodb.OldImage;
       let documentID = record.dynamodb.NewImage.id.S
       if(oldImage.status.S !== newImage.status.S && newImage.status.S === 'denied'){
-        const variables = { id: documentID };
+        const variables = { id: documentID }; */
         /** @type {import('node-fetch').RequestInit} */
-        const options = {
+   /*      const options = {
           method: 'POST',
           headers: {
             'x-api-key': GRAPHQL_API_KEY, //GRAPHQL_API_KEY
@@ -104,5 +104,5 @@ exports.handler = async(event) => {
         console.log('NO CAMBIO EL STATUS')
       }
     }
-  }
+  } */
 };

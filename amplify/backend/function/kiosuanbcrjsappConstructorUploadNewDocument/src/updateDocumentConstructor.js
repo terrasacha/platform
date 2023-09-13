@@ -7,7 +7,7 @@ const SES_EMAIL = process.env.SES_EMAIL
 
 const ses = new SESClient({ region: "us-east-1" })
 
-async function upddateDocumentConstructor(query, documentID) {
+async function updateDocumentConstructor(query, documentID) {
   try {
     const variables = { id: documentID }
     const options = {
@@ -60,4 +60,4 @@ async function upddateDocumentConstructor(query, documentID) {
   }
 }
 
-export default upddateDocumentConstructor
+module.exports = updateDocumentConstructor;
