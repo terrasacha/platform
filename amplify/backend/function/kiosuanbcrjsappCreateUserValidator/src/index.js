@@ -22,7 +22,7 @@ async function checkUserExistenceInCognito(usuario, email) {
     const existingUser = await cognito.adminGetUser(params).promise()
     const sub = existingUser.UserAttributes.find(attr => attr.Name === 'sub').Value
     console.log('User already exists in Cognito, returning existing sub:', sub)
-    return { sub, alreadyExist: true }
+    return { alreadyExist: true }
   } catch (error) {
     if (error.code === 'UserNotFoundException') {
       return { alreadyExist: false }
@@ -53,7 +53,7 @@ async function createUserInCognito(usuario, email, role) {
       Password: VALIDATOR_PASSWORD,
       Permanent: true
     }).promise()
-    return { sub, alreadyExist: false }
+    return sub 
   } catch (error) {
     console.error('Error creating user in Cognito', error)
     throw error
@@ -151,15 +151,15 @@ exports.handler = async (event) => {
         await deleteUserInGraphQL(id)
         console.log(email, usuario, role)
 
-        const { sub, alreadyExist } = await checkUserExistenceInCognito(usuario, email)
+        const { alreadyExist } = await checkUserExistenceInCognito(usuario, email)
 
         if (!alreadyExist) {
-          await createUserInCognito(usuario, email, role)
+          const sub = await createUserInCognito(usuario, email, role)
+          await createUserInGraphQL(sub, usuario, email, role)
+          await ses.send(verifyEmailIdentityCommand)
+          return { status: 'done', msg: 'Process completed successfully' }
         }
 
-        await createUserInGraphQL(sub, usuario, email, role)
-        await ses.send(verifyEmailIdentityCommand)
-        return { status: 'done', msg: 'Process completed successfully' }
       } catch (error) {
         console.error('An error occurred during processing', error)
         return { status: 'error', msg: 'An error occurred during processing' }

@@ -1,17 +1,13 @@
 
-const fetch = require('node-fetch');
-const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses");
-const ses = new SESClient({ region: "us-east-1" });
-const { Request } = fetch
-
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY;
-const SES_EMAIL = process.env.SES_EMAIL
+import newValidatorDocument from './newValidatorDocument';
+import validatorChangeTheStatus from './validatorChangeTheStatus';
+import upddateDocumentConstructor from './updateDocumentConstructor';
 
 const query = /* GraphQL */ `
 query GetDocument($id: ID!) {
     getDocument(id: $id) {
       id
+      status
       createdAt
       productFeature {
         id
@@ -28,6 +24,16 @@ query GetDocument($id: ID!) {
         product {
           id
           name
+          userProducts {
+            items {
+              id
+              user {
+                email
+                name
+                role
+              }
+            }
+          }
           createdAt
         }
       }
@@ -42,66 +48,19 @@ exports.handler = async(event) => {
     console.log(record.eventID);
     console.log(record.eventName);
     console.log('DynamoDB Record: %j', record.dynamodb);
-    
-    if (record.eventName === 'INSERT' && record.dynamodb.NewImage) {
-      let documentID = record.dynamodb.NewImage.id.S
-        const variables = { id: documentID };
-        /** @type {import('node-fetch').RequestInit} */
-        const options = {
-          method: 'POST',
-          headers: {
-            'x-api-key': GRAPHQL_API_KEY, 
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ query, variables })
-        };
-  
-        const request = new Request(GRAPHQL_ENDPOINT, options); 
-  
-        let statusCode = 200;
-        let body;
-        let response;
-        let userVerifierEmail = ''
-        let userVerifierName = ''
-        let msInOneDay = 86400000
-        let diffMsDates = ''
-        let bodyInfo = {}
-        try {
-          response = await fetch(request);
-          body = await response.json();
-          let timestamp1 = new Date(body.data.getDocument.productFeature.product.createdAt).getTime();
-          let timestamp2 = new Date(body.data.getDocument.createdAt).getTime();
-          diffMsDates = Math.abs(timestamp2 - timestamp1)
-          userVerifierEmail = body.data.getDocument.productFeature.verifications.items[0].userVerifier.email
-          userVerifierName = body.data.getDocument.productFeature.verifications.items[0].userVerifier.name
-          bodyInfo = {productName: body.data.getDocument.productFeature.product.name, featureID: body.data.getDocument.productFeature.featureID}
-          if (body.errors) statusCode = 400;
-        } catch (error) {
-          statusCode = 400;
-          console.log(error)
+    if (record.eventName === 'INSERT' && record.dynamobd.NewImage.status.S === 'validatorFile') {
+      newValidatorDocument(query, record.dynamodb.NewImage.id.S)
+
+    } else if (record.eventName === 'MODIFY') {
+
+        if (record.dynamobd.NewImage.status.S === 'denied' || record.dynamobd.NewImage.status.S === 'accepted') {
+          validatorChangeTheStatus(query, record.dynamodb.NewImage.id.S)
         }
-        if(diffMsDates > msInOneDay){
-          const fromMail = SES_EMAIL
-          const toMail = [userVerifierEmail]
-          const data3 =   `El propietario del proyecto ${bodyInfo.productName} ha subido nueva documentación referida a ${bodyInfo.featureID}.`
-          const templateData = {
-            data: data3,
-            user: userVerifierName
-          };
-          try {
-            const data = await ses.send(new SendTemplatedEmailCommand({
-              Source: fromMail,
-              Destination: {
-                ToAddresses: toMail,
-              },
-              Template: "AWS-SES-HTML-Email-Default-Template",
-              TemplateData: JSON.stringify(templateData),
-            }));
-            return { status: 'done', msg: data }
-          } catch (error) {
-            return { status: 'error', msg: error }
-          }
+
+        if (record.dynamobd.OldImage.status.S === 'denied' && record.dynamobd.NewImage.status.S === 'pending') {
+          upddateDocumentConstructor(query, record.dynamodb.NewImage.id.S)
         }
     }
+
   }
 };
