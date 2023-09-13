@@ -76,14 +76,18 @@ export default function ValidatorFilesInfoCard(props) {
                           <DownloadIcon />
                         </Button>
                       </a>
-                      <Button
-                        className="m-1"
-                        variant="outline-danger"
-                        size="sm"
-                        onClick={() => handleDeleteVerificatorFile(fileIndex)}
-                      >
-                        <TrashIcon />
-                      </Button>
+                      {
+                        isVerifier && (
+                          <Button
+                            className="m-1"
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => handleDeleteVerificatorFile(fileIndex)}
+                          >
+                            <TrashIcon />
+                          </Button>
+                        )
+                      }
                     </td>
                   </tr>
                 );
