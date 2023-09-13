@@ -20,6 +20,7 @@ import UOM from './UOM/UOM';
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
 import AssignPF from './AssignPF/AssignPF';
+import { ToastContainer } from 'react-toastify';
 
 export default class Admon extends Component {
 
@@ -481,6 +482,7 @@ export default class Admon extends Component {
                         />}
                 </Row>
 
+                <ToastContainer></ToastContainer>
             </Container>
         )
     }

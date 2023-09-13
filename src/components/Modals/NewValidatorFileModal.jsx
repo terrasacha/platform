@@ -54,7 +54,7 @@ export default function NewValidatorFileModal(props) {
       .toLowerCase()
       .trim()
       .replaceAll(" ", "_");
-    return formattedFilename;
+    return encodeURIComponent(formattedFilename);
   };
 
   const uploadFilesToS3 = async (files) => {

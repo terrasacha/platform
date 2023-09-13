@@ -128,7 +128,7 @@ export default function ProjectPage() {
                 Archivos
               </Nav.Link>
             </Nav.Item>
-            {user?.role === "validator" && (
+            {projectData.projectVerifiers?.includes(user?.id) && (
               <Nav.Item>
                 <Nav.Link
                   href="#settings"
@@ -142,7 +142,7 @@ export default function ProjectPage() {
         </div>
         {activeSection === "details" && <ProjectDetails />}
         {activeSection === "files" && <ProjectFiles />}
-        {activeSection === "settings" && user?.role === "validator" && (
+        {activeSection === "settings" && projectData?.projectVerifiers.includes(user?.id) && (
           <ProjectSettings />
         )}
       </div>
