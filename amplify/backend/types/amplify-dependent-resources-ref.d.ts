@@ -81,6 +81,13 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
+    "kiosuanbcrjsappc0136629": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "kiosuanrjsappSendVerificationEmailUserCreated": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
