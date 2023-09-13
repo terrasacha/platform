@@ -28,9 +28,6 @@ export default function ProjectFiles() {
     if (user && projectData) {
       if (projectData.projectPostulant.id === user.id) setIsPostulant(true);
       if (projectData.projectVerifiers.includes(user.id)) setIsVerifier(true);
-      console.log(user, "user")
-      console.log("projectData.projectVerifiers", projectData.projectVerifiers)
-      console.log("hola")
     }
   }, [user, projectData]);
 

@@ -109,6 +109,22 @@ export default function ProjectPage() {
                 )}
               </div>
             </section>
+            {
+              projectData.projectVerifierNames?.length > 0 && (
+                <section>
+                  <p className="fs-6 mb-0 fw-bold">Validadores:</p>
+                  <Stack direction="horizontal" gap={2}>
+                    {projectData.projectVerifierNames?.map((pvn, index) => {
+                      return (
+                        <Badge bg="success" className="w-auto">
+                          Validador {index + 1}: {pvn}
+                        </Badge>
+                      );
+                    })}
+                  </Stack>
+                </section>
+              )
+            }
           </div>
           <Nav
             variant="tabs"
@@ -142,9 +158,10 @@ export default function ProjectPage() {
         </div>
         {activeSection === "details" && <ProjectDetails />}
         {activeSection === "files" && <ProjectFiles />}
-        {activeSection === "settings" && projectData?.projectVerifiers.includes(user?.id) && (
-          <ProjectSettings />
-        )}
+        {activeSection === "settings" &&
+          projectData?.projectVerifiers.includes(user?.id) && (
+            <ProjectSettings />
+          )}
       </div>
       <ToastContainer></ToastContainer>
     </div>

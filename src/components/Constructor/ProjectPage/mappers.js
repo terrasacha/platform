@@ -26,6 +26,17 @@ const mapProjectVerifiers = async (data) => {
   return projectVerifiers;
 };
 
+const mapProjectVerifiersNames = async (data) => {
+
+  const projectVerifiersNames = data.userProducts.items
+    .filter((up) => up.user.role === "validator")
+    .map((userProduct) => {
+      return userProduct.user.name;
+    });
+
+  return projectVerifiersNames;
+};
+
 const mapVerificationsData = async (verifications) => {
   const verificationData = verifications.map(async (verification) => {
     return {
@@ -463,7 +474,6 @@ export const mapProjectData = async (data) => {
   const postulantID =
     data.userProducts.items.filter((up) => up.user?.role === "constructor")[0]
       ?.user.id || "";
-  console.log(postulantID)
 
   return {
     projectInfo: {
@@ -530,5 +540,6 @@ export const mapProjectData = async (data) => {
       projectValidatorDocuments: projectValidatorDocuments,
     },
     projectVerifiers: await mapProjectVerifiers(data),
+    projectVerifierNames: await mapProjectVerifiersNames(data)
   };
 };

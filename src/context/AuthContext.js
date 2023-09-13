@@ -21,8 +21,6 @@ export function AuthProvider({ children }) {
         graphqlOperation(getUser, { id: currentUser.attributes.sub })
       );
 
-      console.log("response", response)
-
       setUser(response.data.getUser);
       localStorage.setItem("role", currentUser.attributes["custom:role"]);
     } catch (error) {}

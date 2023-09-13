@@ -302,7 +302,14 @@ class ValidatorAdmon extends Component {
 
   async loadVerifierProducts() {
     const response = await API.graphql(graphqlOperation(listProducts));
-    this.setState({ products: response.data.listProducts });
+    const verifierAssignedProducts = response.data.listProducts.items.filter(
+      (product) => {
+        const isProjectVerifier = product.userProducts?.items.some(up => up.user.id === this.state.actualUser);
+        return isProjectVerifier;
+      }
+    );
+
+    this.setState({ products: verifierAssignedProducts });
   }
 
   //   async loadDocuments() {
@@ -786,11 +793,11 @@ class ValidatorAdmon extends Component {
     const { products } = this.state;
     const renderValidatingProjects = () => {
       console.log("products", products);
-      if (products.items) {
+      if (products) {
         return (
           <div className="row row-cols-1 row-cols-lg-3 g-2">
-            {products.items.length > 0 &&
-              products.items.map((product, index) => {
+            {products.length > 0 &&
+              products.map((product, index) => {
                 return (
                   <Card key={product.id} className="p-0">
                     <img

@@ -33,7 +33,6 @@ export default function PostulantFilesInfoCard(props) {
     handleUpdateContextDocumentStatus,
     handleUpdateContextFileVerification,
     handleUpdateContextProjectInfo,
-    handleUpdateContextVerifiers,
     projectData,
   } = useProjectData();
   const { user } = useAuth();
@@ -67,7 +66,6 @@ export default function PostulantFilesInfoCard(props) {
         verifierName: user.name,
       };
       await handleUpdateContextFileVerification(fileIndex, localVerification);
-      await handleUpdateContextVerifiers([...projectData.projectVerifiers, user.id])
     } else {
       if (file.verification.verifierID !== user.id) {
         notify({
@@ -227,7 +225,6 @@ export default function PostulantFilesInfoCard(props) {
       denied: "Negado",
     };
     if (file.status === "pending" && isVerifier) {
-      console.log("entro")
       if (isValidating) {
         return (
           <>

@@ -147,6 +147,15 @@ export default function TokenSettingsCard(props) {
   const handleSaveHistoricalData = async (indexToSave) => {
     let error = false;
 
+    const isAlreadyExistingPeriod = projectData.projectInfo.token.historicalData.some(hd => hd.period===tokenHistoricalData[indexToSave].period)
+    if(isAlreadyExistingPeriod) {
+      notify({
+        msg: "El periodo que intentas guardar ya esta definido",
+        type: "error",
+      });
+      return;
+    }
+
     if (
       tokenHistoricalData[indexToSave].period &&
       tokenHistoricalData[indexToSave].date &&
