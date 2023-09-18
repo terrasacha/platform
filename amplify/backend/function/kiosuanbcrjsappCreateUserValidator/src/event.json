@@ -19,16 +19,16 @@
               "S": "User"
           },
           "name": {
-              "S": "ignaciovalidator"
+              "S": "VALIDADOR_PRUEBA"
           },
           "isProfileUpdated": {
-              "BOOL": true
+              "BOOL": false
           },
           "id": {
               "S": "222"
           },
           "email": {
-              "S": "ignaciodiaznanni@gmail.com"
+              "S": "diaznannignacio@gmail.com"
           },
           "updatedAt": {
               "S": "2023-09-11T17:32:10.988Z"

@@ -19,7 +19,7 @@ export default function LogIn() {
     const [explain, setExplain] = useState('Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente')
     
     useEffect(() => {
-        checkUser()
+        /* checkUser() */
         setAuthListener()
     }, [])
     async function setAuthListener(){
@@ -121,12 +121,13 @@ export default function LogIn() {
         }
     }
 
-    async function signIn(){
+   /*  async function signIn(){
         const { username, password } = formState
         try {
             setError("")
             setLoading(true)
-            await Auth.signIn( username, password  )
+            let response = await Auth.signIn( username, password  )
+            console.log('authsignIn ',response)
             updateFormState(() => ({...formState, formType: 'signedIn' }))
             let currentUser = await Auth.currentAuthenticatedUser()
             currentUser = currentUser.attributes['custom:role']
@@ -135,8 +136,34 @@ export default function LogIn() {
             setError("Combination of account name and user name does not exist.")
         }
         setLoading(false)
-    }
-    
+    } */
+    async function signIn() {
+        const { username, password } = formState;
+        
+        try {
+          setError("");
+          setLoading(true);
+          
+          const response = await Auth.signIn(username, password);
+
+          if (response.challengeName === 'NEW_PASSWORD_REQUIRED') {
+            setLoading(false);
+            updateUser(response)
+            updateFormState(() => ({ ...formState, formType: 'changePassword' }));
+          } else {
+            // Si no se necesita un cambio de contraseña, continuar con el flujo normal
+            updateFormState(() => ({ ...formState, formType: 'signedIn' }));
+            let currentUser = await Auth.currentAuthenticatedUser();
+            currentUser = currentUser.attributes['custom:role'];
+            localStorage.setItem('role', currentUser);
+          }
+        } catch (error) {
+          setError("Combination of account name and user name does not exist.");
+        }
+        setLoading(false);
+      }
+      
+      
     async function forgotPassword(){
         const { username } = formState
         try {
@@ -163,6 +190,24 @@ export default function LogIn() {
         }
         setLoading(false)
     }
+    async function changePassword() {
+        const { newPassword, confirmNewPassword } = formState;
+        try {
+          setError("");
+          setLoading(true);
+      
+          if (newPassword === confirmNewPassword) {
+            await Auth.completeNewPassword(user, newPassword); 
+            updateFormState(() => ({ ...formState, formType: 'signedIn' }));
+          } else {
+            setError("Las contraseñas no coinciden.");
+          }
+        } catch (error) {
+          setError("Error al cambiar la contraseña.");
+        }
+        setLoading(false);
+      }
+      
   return (
     <div className={s.container} >
         <div className={s.firstContainer}>
@@ -345,6 +390,33 @@ export default function LogIn() {
                 </div>
             )
         }
+        {
+            formType === 'changePassword' && (
+                <div>
+                <div className={s.containerCard}>
+                    <div className={s.containerTitle}>
+                    <h2 className="text-center mb-4">Cambio de Contraseña requerido</h2>
+                    </div>
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    <form className={s.inputContainer}>
+                    <p style={{color: '#797979', fontSize:'.8em'}}>{`Para poder ingresar a la plataforma como ${formState.username} primero debe cambiar la contraseña`}</p>
+                    <fieldset>
+                        <legend>Nueva Contraseña</legend>
+                        <input type="password" name="newPassword" onChange={onChange} />
+                    </fieldset>
+                    <fieldset>
+                        <legend>Confirmar Contraseña</legend>
+                        <input type="password" name="confirmNewPassword" onChange={onChange} />
+                    </fieldset>
+                    <button disabled={loading} onClick={changePassword}>
+                        {loading ? 'Cargando' : 'Cambiar Contraseña'}
+                    </button>
+                    </form>
+                </div>
+                </div>
+            )
+            }
+
         {
             formType === 'signedIn' && (
                 window.location.href="/"

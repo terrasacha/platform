@@ -6,9 +6,9 @@ AWS.config.update({ region: 'us-east-1' })
 const ses = new SESClient({ region: "us-east-1" })
 const cognito = new AWS.CognitoIdentityServiceProvider()
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY
-const USER_POOL_ID = process.env.USER_POOL_ID
+const GRAPHQL_ENDPOINT = 'https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql'
+const GRAPHQL_API_KEY = 'da2-zmafzaqndbc5blfoqw4kqddtlq'
+const USER_POOL_ID = 'us-east-1_DFaBfYrB1'
 const VALIDATOR_PASSWORD = 'validatorPassword'
 const MESSAGE_ACTION_SUPPRESS = 'SUPPRESS'
 
@@ -51,8 +51,14 @@ async function createUserInCognito(usuario, email, role) {
       UserPoolId: USER_POOL_ID,
       Username: usuario,
       Password: VALIDATOR_PASSWORD,
-      Permanent: true
+      Permanent: false
     }).promise()
+    
+     await cognito.adminUpdateUserAttributes({
+      UserPoolId: USER_POOL_ID,
+      Username: usuario,
+      UserAttributes: [{ Name: 'email_verified', Value: 'true' }]
+    }).promise();
     return sub 
   } catch (error) {
     console.error('Error creating user in Cognito', error)
@@ -152,7 +158,7 @@ exports.handler = async (event) => {
         console.log(email, usuario, role)
 
         const { alreadyExist } = await checkUserExistenceInCognito(usuario, email)
-
+        
         if (!alreadyExist) {
           const sub = await createUserInCognito(usuario, email, role)
           await createUserInGraphQL(sub, usuario, email, role)
