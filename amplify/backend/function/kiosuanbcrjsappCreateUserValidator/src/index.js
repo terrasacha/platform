@@ -6,9 +6,9 @@ AWS.config.update({ region: 'us-east-1' })
 const ses = new SESClient({ region: "us-east-1" })
 const cognito = new AWS.CognitoIdentityServiceProvider()
 
-const GRAPHQL_ENDPOINT = 'https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql'
-const GRAPHQL_API_KEY = 'da2-zmafzaqndbc5blfoqw4kqddtlq'
-const USER_POOL_ID = 'us-east-1_DFaBfYrB1'
+const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT
+const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY
+const USER_POOL_ID = process.env.USER_POOL_ID
 const VALIDATOR_PASSWORD = 'validatorPassword'
 const MESSAGE_ACTION_SUPPRESS = 'SUPPRESS'
 

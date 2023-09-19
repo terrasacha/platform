@@ -20,14 +20,6 @@
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanbcrjsappSendMailNotByComment-42506635726373596244-build.zip"
         },
-        "kiosuanbcrjappRejectedDocumentNotificaction": {
-          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjappRejectedDocumentNotificaction-58706e66687a45477046-build.zip"
-        },
-        "kiosuanbcrjsappAssignValidator": {
-          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappAssignValidator-656b622b77726464666f-build.zip"
-        },
         "kiosuanbcrjsappChangeProductStatus": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanbcrjsappChangeProductStatus-2f56426948726e306639-build.zip"
@@ -42,7 +34,7 @@
         },
         "kiosuanbcrjsappNotifyAdmonAndCreateUser": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappNotifyAdmonAndCreateUser-4458717247694b73326b-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappNotifyAdmonAndCreateUser-544253484b54732b7552-build.zip"
         },
         "kiosuanbcrjsappSuccessfullyProductCreated": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
@@ -54,7 +46,7 @@
         },
         "kiosuanbcrjsappCreateUserValidator": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappCreateUserValidator-7743676e58504b493237-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappCreateUserValidator-327a5071683141547532-build.zip"
         },
         "kiosuanbcrjsappc0136629": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",

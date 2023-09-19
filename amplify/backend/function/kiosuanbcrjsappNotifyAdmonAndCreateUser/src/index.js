@@ -50,8 +50,13 @@ async function createUserInCognito(usuario, email, role, tempPassword) {
           UserPoolId: USER_POOL_ID,
           Username: usuario,
           Password: tempPassword,
-          Permanent: true
+          Permanent: false
         }).promise()
+        await cognito.adminUpdateUserAttributes({
+          UserPoolId: USER_POOL_ID,
+          Username: usuario,
+          UserAttributes: [{ Name: 'email_verified', Value: 'true' }]
+        }).promise();
         alreadyExist = false
         return { sub, alreadyExist }
       } catch (createUserError) {
