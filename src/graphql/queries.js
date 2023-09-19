@@ -1953,7 +1953,12 @@ export const listProductFeatures = /* GraphQL */ `
           nextToken
         }
         documents {
-          nextToken
+          items {
+            id
+            status
+            url
+            isApproved
+          }
         }
         productFeatureResults {
           nextToken

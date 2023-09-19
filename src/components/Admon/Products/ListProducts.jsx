@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Button, Image, Modal, Table, Form, Col, ListGroup } from 'react-bootstrap';
 import { deleteAllInfoProduct } from './functions';
 // GraphQL
-import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { listProductFeatureResults } from '../../../graphql/queries';
 import { deleteProductFeatureResult, deleteVerification, deleteVerificationComment, updateProduct, deleteProductFeature } from '../../../graphql/mutations';
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,6 +15,7 @@ export default class ListProducts extends Component {
             PFR: [],
             isRenderModalProductFeatures: false,
             isRenderModalProductDescription: false,
+            isRenderModalVerifications: false,
             isRenderModalDeleteProductFeatureConfirmation: false,
             selectedProductToShow: null,
             selectedProductFeatureToDelete: null,
@@ -62,6 +63,9 @@ export default class ListProducts extends Component {
         if (pModal === 'show_modal_product_description') {
             this.setState({isRenderModalProductDescription: true, selectedProductToShow: pProduct})
         }
+        if (pModal === 'show_modal_verifications') {
+            this.setState({isRenderModalVerifications: true, selectedProductToShow: pProduct})
+        }
     }
 
     async handleShowModalDeteleProductFeatureConfirmation(event, pProductFeature) {
@@ -83,6 +87,9 @@ export default class ListProducts extends Component {
     async handleHideModalProductDescription(event) {
         this.setState({isRenderModalProductDescription: !this.state.isRenderModalProductDescription})
     }
+    async handleHideModalProductVerification(event) {
+        this.setState({isRenderModalVerifications: !this.state.isRenderModalVerifications})
+    }
     async handleHideModalDeleteProductFeatureConfirmation() {
         this.setState
             ({
@@ -91,6 +98,22 @@ export default class ListProducts extends Component {
                 selectedProductFeatureToDeleteConfirmationCheck: false,
             })
     }
+    handleDownload = async (pf) => {
+        try {
+            let doc = pf.documents.items[0]
+            const partes = doc.url.split('/');
+            const product = partes[partes.length - 2];
+            const id = partes.pop();
+            const response = await Storage.get(`${product}/${id}`, { download: true });
+            const url = URL.createObjectURL(response.Body);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = id;
+            link.click();
+        } catch (error) {
+          console.log('Error al descargar el archivo:', error);
+        }
+      };
 
     handleDeleteProductFeature = async() => {
 
@@ -175,6 +198,7 @@ export default class ListProducts extends Component {
                 isRenderModalProductFeatures,
                 isRenderModalProductImages,
                 isRenderModalProductDescription,
+                isRenderModalVerifications,
                 isRenderModalDeleteProductFeatureConfirmation,
                 selectedProductFeatureToDelete,
                 selectedProductFeatureToDeleteHasDocuments,
@@ -210,6 +234,7 @@ export default class ListProducts extends Component {
                                 <th>Description</th>
                                 <th>Images</th>
                                 <th>Product Features</th>
+                                <th>Verifications</th>
                                 <th>Is Active</th>
                                 <th>Action</th>
                                 <th>Certify</th>
@@ -271,6 +296,13 @@ export default class ListProducts extends Component {
                                                 size='sm' 
                                                 onClick={(e) => this.handleLoadSelectedProduct(e, product, 'show_modal_product_features')}
                                             >Product Features</Button>
+                                    </td>
+                                    <td>
+                                        <Button 
+                                                variant='outline-primary'
+                                                size='sm' 
+                                                onClick={(e) => this.handleLoadSelectedProduct(e, product, 'show_modal_verifications')}
+                                            >Verifications</Button>
                                     </td>
                                     <td>
                                         <Button 
@@ -389,7 +421,7 @@ export default class ListProducts extends Component {
                 <Modal
                     show={isRenderModalProductFeatures}
                     onHide={(e) => this.handleHideModalProductFeatures(e)}
-                    size="lg"
+                    size="xl"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                     >
@@ -416,7 +448,7 @@ export default class ListProducts extends Component {
                         {productFeaturesCopy?.map((pfeature, idx) => (
                             <tr key={pfeature.id}>
                                 <td>
-                                    {pfeature.feature.name} / {pfeature.feature.description}
+                                    {pfeature.feature.name}
                                 </td>
                                 <td>
                                     {pfeature.value}
@@ -478,6 +510,95 @@ export default class ListProducts extends Component {
             )
         }
     }
+    const modalProductVerification = () => {
+        if (isRenderModalVerifications && selectedProductToShow !== null) {
+            let productFeatures = listPF.filter(pf => pf.productID === selectedProductToShow.id && pf.feature.isVerifable && pf.documents.items.length > 0);
+            let productFeaturesCopy = productFeatures
+            for(let i = 0; i < productFeaturesCopy.length; i++){
+                let productFeatureResult = this.state.PFR.filter(pfr => pfr.productFeatureID === productFeaturesCopy[i].id)
+                productFeaturesCopy[i].productFeatureResults2 = productFeatureResult
+            }
+            for(let i = 0; i < productFeaturesCopy.length; i++){ //renderiza pfr directamente desde pfr porque al hacer update de pf se rompe 
+                if(productFeaturesCopy[i].productFeatureResults2?.length > 0){
+                    let filteredIsActivePFR = productFeaturesCopy[i].productFeatureResults2.filter(pfr => pfr.isActive === true)
+                    productFeaturesCopy[i].productFeatureResults2 = filteredIsActivePFR
+                }
+            }
+            if(productFeaturesCopy.length > 0){
+                console.log(productFeaturesCopy)
+            return (
+                <Modal
+                    show={isRenderModalVerifications}
+                    onHide={(e) => this.handleHideModalProductVerification(e)}
+                    size="xl"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    >
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Product Features
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <ToastContainer/>
+                    <Table striped hover size="sm" borderless>
+                        <thead>
+                        <tr>
+                            <th>Feature ID</th>
+                            <th>Is Verifable?</th>
+                            <th>Get Document</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {productFeaturesCopy?.map((pfeature, idx) => (
+                            <tr key={pfeature.id}>
+                                <td>
+                                    {pfeature.feature.name}
+                                </td>
+                                <td>
+                                    {pfeature.feature.isVerifable? 'YES' : 'NO'}
+                                </td>
+                                <td>
+                                <Button
+                                    variant="outline-primary"
+                                    size="sm"
+                                    /* onClick={() =>
+                                        this.setState({
+                                        showModalDocument: true,
+                                        selectedDocument: document,
+                                        })
+                                    } */
+                                    onClick={() => this.handleDownload(pfeature)}
+                                    >
+                                        Download Document
+                                    </Button>
+                                </td>
+                                <td>
+                                    <Form.Group >
+                                            <Form.Select
+                                                type='text'
+                                                size='sm'
+                                                value={pfeature.documents.items[0].status}
+                                                onChange={(e) => this.props.handleUpdateDocumentStatus(pfeature.documents.items[0].id, e.target.value)}>
+                                                {['pending', 'accepted', 'rejected'].map(
+                                                    op => (<option value={op} key={op}>{op}</option>)
+                                                )}
+                                            </Form.Select>
+                                        </Form.Group>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={(e) => this.handleHideModalProductVerification(e)}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
+            )}
+        }
+    }
     const modalDeleteProductFeatureConfirmation = () => {
         if (isRenderModalDeleteProductFeatureConfirmation && selectedProductFeatureToDelete !== null) {
             return (
@@ -531,6 +652,7 @@ export default class ListProducts extends Component {
                 {renderProducts()}
                 {modalProductImages()}
                 {modalProductFeatures()}
+                {modalProductVerification()}
                 {modalProductDescription()}
                 {modalDeleteProductFeatureConfirmation()}
             </>

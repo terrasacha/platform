@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 import { Alert, Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap'
 // GraphQL
 import { API, Auth, graphqlOperation } from 'aws-amplify'
-import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateImage, updateProduct } from '../../../graphql/mutations'
+import { createImage, createProduct, createProductFeature, createUserProduct, deleteFeature, deleteImage, deleteProduct, updateDocument, updateImage, updateProduct } from '../../../graphql/mutations'
 import { listCategories, listFeatures, listProductFeatures } from '../../../graphql/queries'
 import { listProducts } from '../../Investor/querys'
-import { onCreateProduct, onCreateVerification, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature, onDeleteProduct } from '../../../graphql/subscriptions'
+import { onCreateProduct, onCreateVerification, onCreateProductFeature, onUpdateProduct, onUpdateProductFeature, onDeleteProductFeature, onDeleteProduct, onUpdateDocument } from '../../../graphql/subscriptions'
 import checkIfUserExists from '../../../utilities/checkIfIDuserExist'
 // Utils 
 import Select from 'react-select'
@@ -55,6 +55,7 @@ class Products extends Component {
         this.handleOnSelectCategory = this.handleOnSelectCategory.bind(this)
         this.handleOnSelectFeature = this.handleOnSelectFeature.bind(this)
         this.handleUpdateProductIsActive = this.handleUpdateProductIsActive.bind(this)
+        this.handleUpdateDocumentStatus = this.handleUpdateDocumentStatus.bind(this)
         this.handleUpdateProductStatus = this.handleUpdateProductStatus.bind(this)
         this.handleLoadEditProduct = this.handleLoadEditProduct.bind(this)
         this.handleShowAreYouSureDeleteProduct = this.handleShowAreYouSureDeleteProduct.bind(this)
@@ -110,6 +111,22 @@ class Products extends Component {
                     .catch(error => {
                     console.log(error);
                     });
+                }
+            });
+            this.updateDocument = API.graphql(graphqlOperation(onUpdateDocument))
+            .subscribe({
+                next: updatedDocumentData => {
+                    console.log(updatedDocumentData)
+                    let tempProductFeatures = this.state.listPF.map((mapPF) => {
+                        if (updatedDocumentData.value.data.onUpdateDocument.productFeatureID === mapPF.id && mapPF.documents.items[0].id === updatedDocumentData.value.data.onUpdateDocument.id) {
+                            mapPF.documents.items[0].status = updatedDocumentData.value.data.onUpdateDocument.status
+                            return mapPF
+                        } else {
+                            return mapPF
+                        }
+                    })
+                    tempProductFeatures.sort((a, b) => (a.order > b.order) ? 1 : -1)
+                    this.setState((state) => ({listPF: tempProductFeatures}))
                 }
             });
             // OnUpdate ProductFeature
@@ -413,6 +430,15 @@ class Products extends Component {
         }
         await API.graphql(graphqlOperation(updateProduct, { input:  tempProduct }))
 
+    }
+    handleUpdateDocumentStatus = async(documentID, status) => {
+        let tempDocument = {
+            id : documentID,
+            status: status
+        }
+        console.log(tempDocument)
+        let result = await API.graphql(graphqlOperation(updateDocument, { input:  tempDocument }))
+        console.log(result)
     }
     
     handleDeleteImageProduct= async(pProduct, pImage, event) => {
@@ -839,6 +865,7 @@ class Products extends Component {
                         handleLoadEditProduct={this.handleLoadEditProduct}
                         handleDeleteFeatureProduct={this.handleDeleteFeatureProduct}
                         handleDeleteImageProduct={this.handleDeleteImageProduct}
+                        handleUpdateDocumentStatus={this.handleUpdateDocumentStatus}
                         handleUpdateProductIsActive={this.handleUpdateProductIsActive}
                         handleUpdateProductStatus={this.handleUpdateProductStatus}
                         />
