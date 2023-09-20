@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 //Bootstrap
-import { Button, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
+import { Button, Col, Container, Row, Table, Form } from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
-import { v4 as uuidv4 } from 'uuid';
-import { createUserProduct, updateUser, createVerification } from '../../../graphql/mutations';
+import {  createVerification } from '../../../graphql/mutations';
 import { onCreateVerification } from '../../../graphql/subscriptions';
 import { listUsers } from '../../../graphql/queries';
-import { graphql } from 'graphql';
 
 
 export const listproductsAssignPF = /* GraphQL */ `
