@@ -51,6 +51,7 @@ const listProducts = /* GraphQL */ `
               items {
                 id
                 isApproved
+                url
                 signed
         }
             }
