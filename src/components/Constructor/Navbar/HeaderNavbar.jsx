@@ -72,8 +72,8 @@ export default class HeaderNavbar extends Component {
                                 <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_products')}>Mis Proyectos</Nav.Link>
                                 {/* <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documentos</Nav.Link> */}
                                 {/* <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link> */}
-                                {/* <Nav.Link href="#upload_product" onClick={(e) => this.props.changeHeaderNavBarRequest('upload_product')}>Nuevo Proyecto</Nav.Link> */}
-                                <Nav.Link  onClick={() => window.location.href="/creating_wallet"}>¿Cómo crear tu billetera?</Nav.Link>
+                                <Nav.Link onClick={() => window.location.href="/new_project"}>Nuevo Proyecto</Nav.Link>
+                                <Nav.Link onClick={() => window.location.href="/creating_wallet"}>¿Cómo crear tu billetera?</Nav.Link>
                                 {localStorage.getItem('role')?
                                 <button className={s.signing} onClick={() => this.handleSignOut()}>Desconectar</button>:
                                 <button className={s.signing} onClick={() => window.location.href="/login"}>Conectar</button>

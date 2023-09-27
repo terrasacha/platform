@@ -116,7 +116,7 @@ export default function ProjectPage() {
                   <Stack direction="horizontal" gap={2}>
                     {projectData.projectVerifierNames?.map((pvn, index) => {
                       return (
-                        <Badge bg="success" className="w-auto">
+                        <Badge bg="success" className="w-auto" key={index}>
                           Validador {index + 1}: {pvn}
                         </Badge>
                       );

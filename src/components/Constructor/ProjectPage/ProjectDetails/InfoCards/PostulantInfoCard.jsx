@@ -26,7 +26,10 @@ export default function PostulantInfoCard(props) {
                 disabled
                 label="Tipo de documento"
                 inputType="radio"
-                optionList={["CC", "NIT"]}
+                optionList={[
+                  { label: "CC", value: "CC" },
+                  { label: "NIT", value: "NIT" },
+                ]}
                 optionCheckedList={projectData.projectPostulant?.docType}
               />
             </div>

@@ -26,6 +26,7 @@ import TermCondition from './components/views/terms&conditions/TermCondition'
 import PrivacyPolicy from './components/views/privacyPolicy/PrivacyPolicy'
 import UseTerms from './components/views/useTerms/UseTerms';
 import ProjectPage from './components/Constructor/ProjectPage/ProjectPage';
+import NewProject from 'components/Constructor/NewProject/NewProject';
 
 function App(){
   return(
@@ -45,6 +46,13 @@ function App(){
               <ProjectDataProvider>
                 <ProjectPage />
               </ProjectDataProvider>
+            }
+            exact
+          />
+          <Route
+            path="/new_project"
+            element={
+                <NewProject />
             }
             exact
           />
