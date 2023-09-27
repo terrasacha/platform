@@ -10,8 +10,8 @@ export default class MapCard extends Component {
   }
 
   render() {
-    const coords = this.props.coords;
-    const zoom = this.props.zoom;
+    const coords = this.props.coords || { lat: 7, lng: -73 };
+    const zoom = this.props.zoom || 12;
 
     return (
       <Card>

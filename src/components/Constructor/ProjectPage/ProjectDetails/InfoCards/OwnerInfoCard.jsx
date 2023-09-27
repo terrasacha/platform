@@ -10,10 +10,7 @@ export default function OwnerInfoCard(props) {
 
   return (
     <Card className={className}>
-      <Card.Header
-        title="Información del titular"
-        sep={true}
-      />
+      <Card.Header title="Información del titular" sep={true} />
       <Card.Body>
         <div className="row">
           <div className="col-12 col-md-6">
@@ -30,7 +27,10 @@ export default function OwnerInfoCard(props) {
                   disabled
                   label="Tipo de documento"
                   inputType="radio"
-                  optionList={["CC", "NIT"]}
+                  optionList={[
+                    { label: "CC", value: "CC" },
+                    { label: "NIT", value: "NIT" },
+                  ]}
                   optionCheckedList={projectData.projectOwner?.docType}
                 />
               </div>

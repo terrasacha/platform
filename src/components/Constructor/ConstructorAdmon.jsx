@@ -32,6 +32,7 @@ import HeaderNavbar from "./Navbar/HeaderNavbar";
 import ProductsBuyed from "./ProductsBuyed/ProductsBuyed";
 import NewProduct from "./NewProduct/NewProduct";
 import DocumentStatus from "./Documents/DocumentStatus";
+import NewProject from "./NewProject/NewProject";
 
 class ConstructorAdmon extends Component {
   constructor(props) {

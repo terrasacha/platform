@@ -40,7 +40,13 @@ export default function ProjectInfoCard(props) {
               disabled
               label="Categoria del proyecto"
               inputType="radio"
-              optionList={["REDD+", "Proyecto Plantaciones"]}
+              optionList={[
+                { label: "REDD+", value: "REDD+" },
+                {
+                  label: "Proyecto Plantaciones",
+                  value: "Proyecto Plantaciones",
+                },
+              ]}
               optionCheckedList={projectData.projectInfo?.category}
             />
           </div>

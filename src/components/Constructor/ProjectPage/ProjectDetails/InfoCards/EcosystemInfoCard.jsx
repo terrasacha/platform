@@ -21,19 +21,41 @@ export default function EcosystemInfoCard(props) {
               disabled
               label="¿Existen Nacimientos de agua?"
               inputType="radio"
-              optionList={["Si", "No"]}
+              optionList={[{ label: "Si", value: "Si" }, { label: "No", value: "No" }]}
               optionCheckedList={projectData.projectEcosystem?.waterSprings.exist}
             />
           </div>
+          {
+            projectData.projectEcosystem?.waterSprings.exist === "Si" &&
+            <div className="col">
+              <FormGroup
+                disabled
+                inputType="text"
+                label="¿Cuántos nacimientos de agua existen?"
+                inputValue={projectData.projectEcosystem?.waterSprings.quantity}
+              />
+            </div>
+          }
           <div className="col">
             <FormGroup
               disabled
               label="¿Existen concesiones de agua?"
               inputType="radio"
-              optionList={["Si", "No"]}
+              optionList={[{ label: "Si", value: "Si" }, { label: "No", value: "No" }]}
               optionCheckedList={projectData.projectEcosystem?.concessions.exist}
             />
           </div>
+          {
+            projectData.projectEcosystem?.concessions.exist === "Si" &&
+            <div className="col">
+              <FormGroup
+                disabled
+                inputType="text"
+                label="Quien concede el agua"
+                inputValue={projectData.projectEcosystem?.concessions.entity}
+              />
+            </div>
+          }
           <div className="col">
             <FormGroup
               disabled

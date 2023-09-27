@@ -21,7 +21,7 @@ export default function PropertyInfoCard(props) {
               disabled
               label="¿Usted habita el predio?"
               inputType="radio"
-              optionList={["Si", "No"]}
+              optionList={[{ label: "Si", value: "Si" }, { label: "No", value: "No" }]}
               optionCheckedList={
                 projectData.projectGeneralAspects?.postulant.livesOnProperty
               }
@@ -32,7 +32,7 @@ export default function PropertyInfoCard(props) {
               disabled
               label="¿Existen caminos vecinales o servidumbres de paso a otras fincas?"
               inputType="radio"
-              optionList={["Si", "No"]}
+              optionList={[{ label: "Si", value: "Si" }, { label: "No", value: "No" }]}
               optionCheckedList={
                 projectData.projectGeneralAspects?.neighborhoodRoads
               }
@@ -82,6 +82,18 @@ export default function PropertyInfoCard(props) {
               inputValue={projectData.projectGeneralAspects?.familiesNumber}
             />
           </div>
+          {
+            parseInt(projectData.projectGeneralAspects?.membersPerFamily) > 0 && (
+              <div className="col">
+              <FormGroup
+                disabled
+                inputType="text"
+                label="¿En promedio, cuántos miembros en cada familia?"
+                inputValue={projectData.projectGeneralAspects?.membersPerFamily}
+              />
+            </div>
+            )
+          }
           <div className="col">
             <FormGroup
               disabled

@@ -5,6 +5,7 @@ import {
   capitalizeWords,
   getActualPeriod,
 } from "./utils";
+import WebAppConfig from "components/common/_conf/WebAppConfig";
 
 const mapProjectVerifiers = async (data) => {
   // const verifiablePF = data.productFeatures.items.filter(
@@ -73,6 +74,7 @@ const mapVerificationsData = async (verifications) => {
 };
 
 const mapDocumentsData = async (data) => {
+
   const PFNameMapper = {
     B_owner_certificado: "Certificado de tradición",
     C_plano_predio: "Plano del predio",

@@ -19,13 +19,22 @@ export default function ActualUseAndPotentialInfoCard(props) {
               label="Uso actual del suelo del predio"
               inputType="checkbox"
               optionList={[
-                "Potreros",
-                "Plantaciones Forestales 1",
-                "Plantaciones Forestales 2",
-                "Plantaciones Forestales 3",
-                "Frutales 1",
-                "Frutales 2",
-                "Otros",
+                { label: "Potreros", value: "Potreros" },
+                {
+                  label: "Plantaciones Forestales 1",
+                  value: "Plantaciones Forestales 1",
+                },
+                {
+                  label: "Plantaciones Forestales 2",
+                  value: "Plantaciones Forestales 2",
+                },
+                {
+                  label: "Plantaciones Forestales 3",
+                  value: "Plantaciones Forestales 3",
+                },
+                { label: "Frutales 1", value: "Frutales 1" },
+                { label: "Frutales 2", value: "Frutales 2" },
+                { label: "Otros", value: "Otros" },
               ]}
               optionCheckedList={projectData.projectUses?.actualUse.types}
             />
@@ -211,13 +220,22 @@ export default function ActualUseAndPotentialInfoCard(props) {
               label="Usos actuales remplazables"
               inputType="checkbox"
               optionList={[
-                "Potreros",
-                "Plantaciones Forestales 1",
-                "Plantaciones Forestales 2",
-                "Plantaciones Forestales 3",
-                "Frutales 1",
-                "Frutales 2",
-                "Otros",
+                { label: "Potreros", value: "Potreros" },
+                {
+                  label: "Plantaciones Forestales 1",
+                  value: "Plantaciones Forestales 1",
+                },
+                {
+                  label: "Plantaciones Forestales 2",
+                  value: "Plantaciones Forestales 2",
+                },
+                {
+                  label: "Plantaciones Forestales 3",
+                  value: "Plantaciones Forestales 3",
+                },
+                { label: "Frutales 1", value: "Frutales 1" },
+                { label: "Frutales 2", value: "Frutales 2" },
+                { label: "Otros", value: "Otros" },
               ]}
               optionCheckedList={projectData.projectUses?.replaceUse.types}
             />

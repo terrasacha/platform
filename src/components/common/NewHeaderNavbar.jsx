@@ -63,12 +63,19 @@ export default function NewHeaderNavbar() {
               <Nav className={s.navGroup}>
                 {role === "constructor" && (
                   <>
+                  <Nav.Link
+                    onClick={() =>
+                      (window.location.href = "/constructor")
+                    }
+                  >
+                    Mis Proyectos
+                  </Nav.Link>
                     <Nav.Link
                       onClick={() =>
-                        (window.location.href = "/constructor")
+                        (window.location.href = "/new_project")
                       }
                     >
-                      Mis Proyectos
+                      Postular proyecto
                     </Nav.Link>
                     <Nav.Link
                       onClick={() =>
