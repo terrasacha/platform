@@ -52,7 +52,10 @@ function App(){
           <Route
             path="/new_project"
             element={
-                <NewProject />
+              <ConstructorMiddleware>
+              <NewProject />
+
+              </ConstructorMiddleware>
             }
             exact
           />

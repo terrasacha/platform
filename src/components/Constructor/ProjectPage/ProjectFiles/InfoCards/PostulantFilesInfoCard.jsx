@@ -69,7 +69,7 @@ export default function PostulantFilesInfoCard(props) {
     } else {
       if (file.verification.verifierID !== user.id) {
         notify({
-          msg: "El archivo ya fue asignado a otro verificador",
+          msg: "El archivo ya esta siendo validado por otro verificador",
           type: "error",
         });
         return;
@@ -77,22 +77,22 @@ export default function PostulantFilesInfoCard(props) {
     }
 
     // En caso de que el proyecto no tenga ningun verificador, se actualiza el estado del proyecto a En Verificación
-    const isProjectOnVerification = projectData.projectFiles.filter(
-      (proyectFile) => proyectFile.verification !== undefined
-    );
-    if (isProjectOnVerification.length === 0) {
-      console.log("entro a actualizar a on_verification")
-      await handleUpdateContextProjectInfo({ status: "En verificación" });
+    // const isProjectOnVerification = projectData.projectFiles.filter(
+    //   (proyectFile) => proyectFile.verification !== undefined
+    // );
+    // if (isProjectOnVerification.length === 0) {
+    //   console.log("entro a actualizar a on_verification")
+    //   await handleUpdateContextProjectInfo({ status: "En verificación" });
 
-      await API.graphql(
-        graphqlOperation(updateProduct, {
-          input: {
-            id: projectData.projectInfo.id,
-            status: "on_verification",
-          },
-        })
-      );
-    }
+    //   await API.graphql(
+    //     graphqlOperation(updateProduct, {
+    //       input: {
+    //         id: projectData.projectInfo.id,
+    //         status: "on_verification",
+    //       },
+    //     })
+    //   );
+    // }
 
     // Actualización de estado de documento
     const updateDocumentStatus = {
@@ -135,20 +135,20 @@ export default function PostulantFilesInfoCard(props) {
     }
 
     // En caso de que todos los documentos sean aprobados, se actualiza el estado del proyecto a Verificado
-    const approvedDocuments = projectData.projectFiles.filter(projectFile => projectFile.isApproved === true)
-    if(projectData.projectFiles.length === approvedDocuments.length + status ? 1 : 0) {
-      console.log("entro a actualizar verified")
-      await handleUpdateContextProjectInfo({ status: "Verificado" });
+    // const approvedDocuments = projectData.projectFiles.filter(projectFile => projectFile.isApproved === true)
+    // if(projectData.projectFiles.length === approvedDocuments.length + status ? 1 : 0) {
+    //   console.log("entro a actualizar verified")
+    //   await handleUpdateContextProjectInfo({ status: "Verificado" });
 
-      await API.graphql(
-        graphqlOperation(updateProduct, {
-          input: {
-            id: projectData.projectInfo.id,
-            status: "verified",
-          },
-        })
-      );
-    }
+    //   await API.graphql(
+    //     graphqlOperation(updateProduct, {
+    //       input: {
+    //         id: projectData.projectInfo.id,
+    //         status: "verified",
+    //       },
+    //     })
+    //   );
+    // }
   };
 
   const handleUpdateDocumentFile = async (e, fileIndex, file) => {

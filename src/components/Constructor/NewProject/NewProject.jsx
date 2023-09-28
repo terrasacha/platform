@@ -337,6 +337,17 @@ export default function NewProject() {
       "C_plano_predio",
     ];
 
+    // Creación de pf Token Name GLOBAL_TOKEN_NAME
+    const newProductFeatureTokenName = {
+      featureID: "GLOBAL_TOKEN_NAME",
+      productID: productID,
+      value: `SUAN-${productID.split("-")[4]}`,
+    };
+    console.log("newProductFeature:", newProductFeatureTokenName);
+    await API.graphql(
+      graphqlOperation(createProductFeature, { input: newProductFeatureTokenName })
+    );
+
     // Creación de pf normales
     for (let i = 0; i < productFeaturesToCreate.length; i++) {
       const feature = productFeaturesToCreate[i];
@@ -499,10 +510,6 @@ export default function NewProject() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    notify({
-      msg: "El proyecto será cargado, pronto será redirigido",
-      type: "success",
-    });
     setIsLoading(true)
 
     const errors = validateFormData();
@@ -519,8 +526,13 @@ export default function NewProject() {
         msg: "Hicieron falta algunos campos por completar",
         type: "error",
       });
+      setIsLoading(false)
       return;
     }
+    notify({
+      msg: "El proyecto será cargado, pronto será redirigido",
+      type: "success",
+    });
 
     const productID = uuidv4();
     // Subir datos a la base de datos con API de graphql
