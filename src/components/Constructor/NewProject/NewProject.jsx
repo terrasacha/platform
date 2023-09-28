@@ -2,7 +2,7 @@ import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { useEffect, useState } from "react";
 import useXLSXForm from "hooks/useXLSXForm";
 import FormGroup from "components/common/FormGroup";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { API, Storage, graphqlOperation } from "aws-amplify";
 import {
   createDocument,
@@ -13,15 +13,18 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
+import { notify } from "utilities/notify";
+import { ToastContainer } from "react-toastify";
 
 export default function NewProject() {
   const formURL =
     "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS.xlsx";
 
   const { user } = useAuth();
-  const { data, isLoading, isError } = useXLSXForm(formURL);
+  const { data } = useXLSXForm(formURL);
   const [formData, setFormData] = useState({});
   const [formDataErrors, setFormDataErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const mapXLSXFormFieldsToFormData = (fields) => {
@@ -250,50 +253,6 @@ export default function NewProject() {
       }
     }
     return errors;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const errors = validateFormData();
-    setFormDataErrors(errors);
-
-    const firstErrorField = document.querySelector(
-      `[name="${Object.keys(errors)[0]}"]`
-    );
-    if (firstErrorField) {
-      firstErrorField.focus();
-      console.log("Datos del formulario:", formData);
-      console.log("Errores:", errors);
-      return;
-    }
-
-    const productID = uuidv4();
-    // Subir datos a la base de datos con API de graphql
-    const newProduct = {
-      id: productID,
-      name: formData["A_asset_names"],
-      description: formData["A_description"],
-      isActive: false,
-      status: "draft",
-      categoryID: formData["A_category"],
-      order: 0,
-    };
-    console.log("newProduct:", newProduct);
-    await API.graphql(graphqlOperation(createProduct, { input: newProduct }));
-
-    // const newUserProduct = {
-    //   productID: productID,
-    //   userID: user.id,
-    // };
-    // console.log("newUserProduct:", newUserProduct);
-    // await API.graphql(
-    //   graphqlOperation(createUserProduct, { input: newUserProduct })
-    // );
-
-    await createProductFeatures(productID);
-
-    console.log("Datos del formulario:", formData);
-    console.log("Errores:", errors);
   };
 
   const createProductFeatures = async (productID) => {
@@ -537,6 +496,65 @@ export default function NewProject() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    notify({
+      msg: "El proyecto será cargado, pronto será redirigido",
+      type: "success",
+    });
+    setIsLoading(true)
+
+    const errors = validateFormData();
+    setFormDataErrors(errors);
+
+    const firstErrorField = document.querySelector(
+      `[name="${Object.keys(errors)[0]}"]`
+    );
+    if (firstErrorField) {
+      firstErrorField.focus();
+      console.log("Datos del formulario:", formData);
+      console.log("Errores:", errors);
+      notify({
+        msg: "Hicieron falta algunos campos por completar",
+        type: "error",
+      });
+      return;
+    }
+
+    const productID = uuidv4();
+    // Subir datos a la base de datos con API de graphql
+    const newProduct = {
+      id: productID,
+      name: formData["A_asset_names"],
+      description: formData["A_description"],
+      isActive: false,
+      status: "draft",
+      categoryID: formData["A_category"],
+      order: 0,
+    };
+    console.log("newProduct:", newProduct);
+    await API.graphql(graphqlOperation(createProduct, { input: newProduct }));
+
+    // const newUserProduct = {
+    //   productID: productID,
+    //   userID: user.id,
+    // };
+    // console.log("newUserProduct:", newUserProduct);
+    // await API.graphql(
+    //   graphqlOperation(createUserProduct, { input: newUserProduct })
+    // );
+
+    await createProductFeatures(productID);
+
+    console.log("Datos del formulario:", formData);
+    console.log("Errores:", errors);
+
+    setIsLoading(false)
+
+    return (window.location.href = `/project/${productID}`);
+  };
+
   return (
     <div className="container-sm">
       <div className="mb-5">
@@ -562,8 +580,17 @@ export default function NewProject() {
         <div className="row row-cols-1 border p-2 g-2">
           {data && getForm(data.survey, data.options)}
         </div>
-        <Button type="submit">Enviar</Button>
+        <div className="d-flex justify-content-center my-5">
+          <Button type="submit">
+            {isLoading ? (
+              <Spinner size="sm" className="p-2"></Spinner>
+            ) : (
+              "Postular este proyecto"
+            )}
+          </Button>
+        </div>
       </form>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }
