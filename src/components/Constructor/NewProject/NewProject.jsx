@@ -541,7 +541,7 @@ export default function NewProject() {
       name: formData["A_asset_names"],
       description: formData["A_description"],
       isActive: false,
-      status: "draft",
+      status: "Prefactibilidad",
       categoryID: formData["A_category"],
       order: 0,
     };
