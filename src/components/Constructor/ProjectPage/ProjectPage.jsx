@@ -29,6 +29,19 @@ export default function ProjectPage() {
   const { user } = useAuth();
 
   const [activeSection, setActiveSection] = useState("details");
+  
+  const projectStatusMapper = {
+    "draft": "En borrador",
+    "verified": "Verificado",
+    "on_verification": "En verificación",
+    "in_blockchain": "En blockchain",
+    "in_equilibrium": "En equilibrio",
+    "Prefactibilidad": "En Prefactibilidad",
+    "Factibilidad": "En Factibilidad",
+    "Documento de diseño del proyecto": "En diseño de documento del proyecto",
+    "Validación externa": "En validación externa",
+    "Registro del proyecto": "Registrado",
+  };
 
   useEffect(() => {
     const getProjectData = async () => {
@@ -53,7 +66,7 @@ export default function ProjectPage() {
             <header className="d-flex justify-content-between">
               <p className="fs-3 mb-0">{projectData.projectInfo?.title}</p>
               <Stack direction="horizontal" gap={2}>
-                <Badge bg="primary">{projectData.projectInfo?.status}</Badge>
+                <Badge bg="primary">{projectStatusMapper[projectData.projectInfo?.status]}</Badge>
                 <Badge
                   bg={
                     projectData.projectVerifiers?.length > 0

@@ -128,14 +128,20 @@ const mapLocationData = async (location) => {
 
 const mapStatus = async (obj) => {
   const mapper = {
-    draft: "En borrador",
-    verified: "Verificado",
-    on_verification: "En verificación",
-    in_blockchain: "En blockchain",
-    in_equilibrium: "En equilibrio",
+    "draft": "En borrador",
+    "verified": "Verificado",
+    "on_verification": "En verificación",
+    "in_blockchain": "En blockchain",
+    "in_equilibrium": "En equilibrio",
+    "Prefactibilidad": "En Prefactibilidad",
+    "Factibilidad": "En Factibilidad",
+    "Documento de diseño del proyecto": "En diseño de documento del proyecto",
+    "Validación externa": "En validación externa",
+    "Registro del proyecto": "Registrado",
   };
 
-  return mapper[obj] || false;
+  //return mapper[obj] || false;
+  return obj
 };
 
 const mapCategory = async (obj) => {

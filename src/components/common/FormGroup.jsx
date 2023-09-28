@@ -66,21 +66,27 @@ export default class FormGroup extends Component {
           />
         );
       }
-      // if (inputType === "select") {
-      //   return (
-      //     <Form.Select
-      //       disabled={disabled}
-      //       size={inputSize}
-      //       name={inputName}
-      //       value={inputValue}
-      //       onChange={onChangeInputValue}
-      //     >
-      //       {optionList.map((option) => (
-      //         <option>{option}</option>
-      //       ))}
-      //     </Form.Select>
-      //   );
-      // }
+      if (inputType === "select") {
+        return (
+          <Form.Select
+            disabled={disabled}
+            size={inputSize}
+            name={inputName}
+            value={inputValue}
+            onChange={onChangeInputValue}
+          >
+            {optionList.map(({ label, value }, index) => {
+              return (
+                <option key={index}
+                  value={value}
+                >
+                  {label}
+                </option>
+              );
+            })}
+          </Form.Select>
+        );
+      }
       if (inputType === "switch") {
         return (
           <Form.Check
