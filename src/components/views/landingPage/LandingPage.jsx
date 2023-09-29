@@ -12,6 +12,7 @@ import HeaderNavbar from '../Navbars/HeaderNavbar'
 import Products from '../Products'
 import s from './LandingPage.module.css'
 import ProductCard from '../../productCard/ProductCard'
+import { Storage } from 'aws-amplify'
 
 export default class LandingPage extends Component {
 
@@ -26,6 +27,7 @@ export default class LandingPage extends Component {
 
   componentDidMount = async () => {
     await this.loadProducts()
+    await this.listObjectsInFolder()
   }
 
   async loadProducts() {
@@ -135,7 +137,6 @@ export default class LandingPage extends Component {
     window.location.href="/"
     localStorage.removeItem('role')
   }
-
   render() {
     const urlS3Image = WebAppConfig.url_s3_public_images
     return (
