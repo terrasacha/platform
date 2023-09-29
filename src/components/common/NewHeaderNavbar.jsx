@@ -77,13 +77,13 @@ export default function NewHeaderNavbar() {
                     >
                       Postular proyecto
                     </Nav.Link>
-                    <Nav.Link
+                    {/* <Nav.Link
                       onClick={() =>
                         (window.location.href = "/creating_wallet")
                       }
                     >
                       ¿Cómo crear tu billetera?
-                    </Nav.Link>
+                    </Nav.Link> */}
                   </>
                 )}
                 {role === "validator" && (

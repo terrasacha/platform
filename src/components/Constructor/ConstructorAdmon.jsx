@@ -33,6 +33,7 @@ import ProductsBuyed from "./ProductsBuyed/ProductsBuyed";
 import NewProduct from "./NewProduct/NewProduct";
 import DocumentStatus from "./Documents/DocumentStatus";
 import NewProject from "./NewProject/NewProject";
+import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 class ConstructorAdmon extends Component {
   constructor(props) {
@@ -460,10 +461,11 @@ class ConstructorAdmon extends Component {
     return (
       <div className="container-sm" style={{ paddingTop: 60, minHeight: "100vh" }}>
         <Row>
-          <HeaderNavbar
+          <NewHeaderNavbar/>
+          {/* <HeaderNavbar
             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
             handleSignOut={this.handleSignOut}
-          ></HeaderNavbar>
+          ></HeaderNavbar> */}
         </Row>
 
         <div className="mt-4">
