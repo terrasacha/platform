@@ -52,6 +52,7 @@ const ListS3 = () => {
             setSelectedFolder(selectedFolder[propertyName].data)
             setCurrentPath([...currentPath, propertyName])
         } else if (selectedItem.type === 'file') {
+            handleDownload(selectedItem.key)
             console.log(`Archivo ${propertyName}:`, selectedItem)
         }
     }
@@ -61,6 +62,7 @@ const ListS3 = () => {
         return object[propertyName].data
     } else if (selectedItem.type === 'file') {
         console.log(`Archivo ${propertyName}:`, selectedItem)
+
     }
 }
     const backToFolder = () => {
@@ -80,9 +82,9 @@ const ListS3 = () => {
     const backToAnyFolder = (path) => {
         const pathToBack = path
 
-        const index = currentPath.indexOf(pathToBack);
+        const index = currentPath.indexOf(pathToBack)
         if (index !== -1) {
-        const goBackArray = currentPath.slice(0, index + 1);
+        const goBackArray = currentPath.slice(0, index + 1)
         let tempState = s3Objects
         let aux = null
         for(let i = 0; i < goBackArray.length; i++){
@@ -96,7 +98,19 @@ const ListS3 = () => {
         }
 
     }
-
+    const handleDownload = async (doc) => {
+        try {
+        let id = doc
+        const response = await Storage.get(id, { download: true });
+        const url = URL.createObjectURL(response.Body);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = id;
+        link.click();
+        } catch (error) {
+        console.log('Error al descargar el archivo:', error);
+        }
+    };
     return (
         <div>
             <h2>S3</h2>
