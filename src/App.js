@@ -26,6 +26,7 @@ import TermCondition from './components/views/terms&conditions/TermCondition'
 import PrivacyPolicy from './components/views/privacyPolicy/PrivacyPolicy'
 import UseTerms from './components/views/useTerms/UseTerms';
 import ProjectPage from './components/Constructor/ProjectPage/ProjectPage';
+import ListS3 from 'components/ListS3';
 import NewProject from 'components/Constructor/NewProject/NewProject';
 
 function App(){
@@ -140,6 +141,12 @@ function App(){
             path="/login"
             element={
               <LogIn/>
+            }
+          />
+          <Route
+            path="/lists3"
+            element={
+              <ListS3/>
             }
           />
           <Route
