@@ -20,6 +20,7 @@ import { fetchProjectDataByProjectID } from "./api";
 import { formatNumberWithThousandsSeparator } from "./utils";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { Auth } from "aws-amplify";
+import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -29,15 +30,15 @@ export default function ProjectPage() {
   const { user } = useAuth();
 
   const [activeSection, setActiveSection] = useState("details");
-  
+
   const projectStatusMapper = {
-    "draft": "En borrador",
-    "verified": "Verificado",
-    "on_verification": "En verificación",
-    "in_blockchain": "En blockchain",
-    "in_equilibrium": "En equilibrio",
-    "Prefactibilidad": "En Prefactibilidad",
-    "Factibilidad": "En Factibilidad",
+    draft: "En borrador",
+    verified: "Verificado",
+    on_verification: "En verificación",
+    in_blockchain: "En blockchain",
+    in_equilibrium: "En equilibrio",
+    Prefactibilidad: "En Prefactibilidad",
+    Factibilidad: "En Factibilidad",
     "Documento de diseño del proyecto": "En diseño de documento del proyecto",
     "Validación externa": "En validación externa",
     "Registro del proyecto": "Registrado",
@@ -66,7 +67,9 @@ export default function ProjectPage() {
             <header className="d-flex justify-content-between">
               <p className="fs-3 mb-0">{projectData.projectInfo?.title}</p>
               <Stack direction="horizontal" gap={2}>
-                <Badge bg="primary">{projectStatusMapper[projectData.projectInfo?.status]}</Badge>
+                <Badge bg="primary">
+                  {projectStatusMapper[projectData.projectInfo?.status]}
+                </Badge>
                 <Badge
                   bg={
                     projectData.projectVerifiers?.length > 0
@@ -122,22 +125,20 @@ export default function ProjectPage() {
                 )}
               </div>
             </section>
-            {
-              projectData.projectVerifierNames?.length > 0 && (
-                <section>
-                  <p className="fs-6 mb-0 fw-bold">Validadores:</p>
-                  <Stack direction="horizontal" gap={2}>
-                    {projectData.projectVerifierNames?.map((pvn, index) => {
-                      return (
-                        <Badge bg="success" className="w-auto" key={index}>
-                          Validador {index + 1}: {pvn}
-                        </Badge>
-                      );
-                    })}
-                  </Stack>
-                </section>
-              )
-            }
+            {projectData.projectVerifierNames?.length > 0 && (
+              <section>
+                <p className="fs-6 mb-0 fw-bold">Validadores:</p>
+                <Stack direction="horizontal" gap={2}>
+                  {projectData.projectVerifierNames?.map((pvn, index) => {
+                    return (
+                      <Badge bg="success" className="w-auto" key={index}>
+                        Validador {index + 1}: {pvn}
+                      </Badge>
+                    );
+                  })}
+                </Stack>
+              </section>
+            )}
           </div>
           <Nav
             variant="tabs"
@@ -158,18 +159,29 @@ export default function ProjectPage() {
               </Nav.Link>
             </Nav.Item>
             {projectData.projectVerifiers?.includes(user?.id) && (
-              <Nav.Item>
-                <Nav.Link
-                  href="#settings"
-                  onClick={() => setActiveSection("settings")}
-                >
-                  Configuración
-                </Nav.Link>
-              </Nav.Item>
+              <>
+                <Nav.Item>
+                  <Nav.Link
+                    href="#file_manager"
+                    onClick={() => setActiveSection("file_manager")}
+                  >
+                    Sistema de datos
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    href="#settings"
+                    onClick={() => setActiveSection("settings")}
+                  >
+                    Configuración
+                  </Nav.Link>
+                </Nav.Item>
+              </>
             )}
           </Nav>
         </div>
         {activeSection === "details" && <ProjectDetails />}
+        {activeSection === "file_manager" && <ProjectFileManager />}
         {activeSection === "files" && <ProjectFiles />}
         {activeSection === "settings" &&
           projectData?.projectVerifiers.includes(user?.id) && (

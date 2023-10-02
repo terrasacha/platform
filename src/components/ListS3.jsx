@@ -81,6 +81,7 @@ const ListS3 = () => {
     }
     const backToAnyFolder = (path) => {
         const pathToBack = path
+        console.log(pathToBack, "pathToBack")
 
         const index = currentPath.indexOf(pathToBack)
         if (index !== -1) {
