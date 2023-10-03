@@ -92,13 +92,13 @@ export default function ProjectFiles() {
           />
         </div>
       )}
-      <div className="col-12 col-xl-12">
+      {/* <div className="col-12 col-xl-12">
         <ValidatorFilesInfoCard
           projectValidatorFiles={projectData.projectFilesValidators.projectValidatorDocuments}
           isVerifier={isVerifier}
           isPostulant={isPostulant}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default function ProjectFileManager() {
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       <div className="col-12 col-xl-12">
-        <FileManager rootFolder={"Ubicaciones"}/>
+        <FileManager rootFolder={projectData.projectInfo.id}/>
       </div>
     </div>
   );

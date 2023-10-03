@@ -44,18 +44,34 @@ export default function NewProject() {
       return result;
     };
 
-    if (data) {
+    if (data && user) {
       const formDataFields = mapXLSXFormFieldsToFormData(data.survey);
       setFormData(formDataFields);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        A_postulante_email: user.email,
+      }));
     }
-  }, [data]);
+  }, [data, user]);
 
   console.log(data);
   const fieldComponents = {
     note: ({ label }) => <div className="col-12 col-12-lg">{label}</div>,
     text: ({ name, label, appearance, hint, required }) => {
       const inputType = appearance === "multiline" ? "textarea" : "text";
-      return renderFormGroup(inputType, name, label, hint, required);
+      let disabled = false;
+      if (name === "A_postulante_email") {
+        disabled = true;
+      }
+      return renderFormGroup(
+        inputType,
+        name,
+        label,
+        hint,
+        required,
+        [],
+        disabled
+      );
     },
     integer: ({ name, label, hint, required }) => {
       return renderFormGroup("number", name, label, hint, required);
@@ -125,10 +141,12 @@ export default function NewProject() {
     label,
     hint,
     required,
-    optionList = []
+    optionList = [],
+    disabled = false
   ) => {
     return (
       <FormGroup
+        disabled={disabled}
         inputType={inputType}
         inputSize="md"
         label={label}
@@ -345,7 +363,9 @@ export default function NewProject() {
     };
     console.log("newProductFeature:", newProductFeatureTokenName);
     await API.graphql(
-      graphqlOperation(createProductFeature, { input: newProductFeatureTokenName })
+      graphqlOperation(createProductFeature, {
+        input: newProductFeatureTokenName,
+      })
     );
 
     // Creación de pf normales
@@ -509,8 +529,8 @@ export default function NewProject() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    setIsLoading(true)
+
+    setIsLoading(true);
 
     const errors = validateFormData();
     setFormDataErrors(errors);
@@ -526,7 +546,7 @@ export default function NewProject() {
         msg: "Hicieron falta algunos campos por completar",
         type: "error",
       });
-      setIsLoading(false)
+      setIsLoading(false);
       return;
     }
     notify({
@@ -562,7 +582,7 @@ export default function NewProject() {
     console.log("Datos del formulario:", formData);
     console.log("Errores:", errors);
 
-    setIsLoading(false)
+    setIsLoading(false);
 
     return (window.location.href = `/project/${productID}`);
   };

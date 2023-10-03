@@ -155,7 +155,7 @@ export default function ProjectPage() {
             </Nav.Item>
             <Nav.Item>
               <Nav.Link href="#files" onClick={() => setActiveSection("files")}>
-                Archivos
+                Validación
               </Nav.Link>
             </Nav.Item>
             {projectData.projectVerifiers?.includes(user?.id) && (

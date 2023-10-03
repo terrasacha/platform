@@ -8,7 +8,12 @@ import { Button, Form, Table } from "react-bootstrap";
 import { FolderIcon } from "components/common/icons/FolderIcon";
 import { AddFolderIcon } from "components/common/icons/AddFolderIcon";
 import { convertAWSDatetimeToDate } from "../utils";
-import { Storage } from "aws-amplify";
+import { API, Storage, graphqlOperation } from "aws-amplify";
+import UploadFileModal from "components/Modals/UploadFileModal";
+import { deleteDocument, updateProductFeature } from "graphql/mutations";
+import { useProjectData } from "context/ProjectDataContext";
+import { moveToBackupFolderS3 } from "utilities/moveToBackupS3";
+import NewFolderOnS3Modal from "components/Modals/NewFolderOnS3Modal";
 
 export default function FileManager(props) {
   const { className, rootFolder } = props;
@@ -16,6 +21,9 @@ export default function FileManager(props) {
   const [s3Objects, setS3Objects] = useState({});
   const [selectedFolder, setSelectedFolder] = useState({});
   const [currentPath, setCurrentPath] = useState([]);
+
+  const { projectData, handleUpdateContextProjectFileValidators, refresh } =
+    useProjectData();
 
   useEffect(() => {
     listObjectsInFolder(rootFolder)
@@ -27,7 +35,7 @@ export default function FileManager(props) {
       .catch((error) => {
         console.error("Error al listar objetos:", error);
       });
-  }, []);
+  }, [projectData]);
 
   async function listObjectsInFolder(folder) {
     try {
@@ -128,6 +136,93 @@ export default function FileManager(props) {
     }
   };
 
+  const handleDeleteFile = async (key) => {
+    await moveToBackupFolderS3(key);
+
+    const updatedDocsData =
+      projectData.projectFilesValidators.projectValidatorDocuments.filter(
+        (file, index) => file.filePathS3 !== key
+      );
+    await handleUpdateContextProjectFileValidators({
+      projectValidatorDocuments: updatedDocsData,
+    });
+
+    const fileToDeleteID =
+      projectData.projectFilesValidators.projectValidatorDocuments.filter(
+        (file) => file.filePathS3 === key
+      )[0].id;
+
+    let docToDelete = {
+      id: fileToDeleteID,
+    };
+    await API.graphql(graphqlOperation(deleteDocument, { input: docToDelete }));
+
+    let tempProductFeature = {
+      id: projectData.projectFilesValidators.pfProjectValidatorDocumentsID,
+      value: JSON.stringify(updatedDocsData),
+    };
+    await API.graphql(
+      graphqlOperation(updateProductFeature, { input: tempProductFeature })
+    );
+  };
+
+  // function to convert bytes into friendly format
+  const bytesToSize = (bytes) => {
+    var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    if (bytes === 0) return "0 Byte";
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i)) + " " + sizes[i];
+  };
+
+  const getVisibleStatus = (key) => {
+    const file =
+      projectData.projectFilesValidators.projectValidatorDocuments.filter(
+        (file) => file.filePathS3 === key
+      )[0];
+    if (file) {
+      if (file.visible) {
+        return (
+          <Form.Check
+            checked={true}
+            onChange={() => handleUpdateVisibleStatus(file.id, false)}
+          ></Form.Check>
+        );
+      } else {
+        return (
+          <Form.Check
+            checked={false}
+            onChange={() => handleUpdateVisibleStatus(file.id, true)}
+          ></Form.Check>
+        );
+      }
+    } else {
+      return "";
+    }
+  };
+
+  const handleUpdateVisibleStatus = async (id, status) => {
+    const updatedDocsData =
+      projectData.projectFilesValidators.projectValidatorDocuments.map(
+        (file, index) => {
+          if (file.id === id) {
+            file.visible = status;
+          }
+          return file;
+        }
+      );
+    await handleUpdateContextProjectFileValidators({
+      projectValidatorDocuments: updatedDocsData,
+    });
+
+    let tempProductFeature = {
+      id: projectData.projectFilesValidators.pfProjectValidatorDocumentsID,
+      value: JSON.stringify(updatedDocsData),
+    };
+    await API.graphql(
+      graphqlOperation(updateProductFeature, { input: tempProductFeature })
+    );
+  };
+
   console.log(s3Objects, "s3Objects");
   console.log(Object.keys(selectedFolder), "selectedFolder");
   console.log(selectedFolder, "selectedFolder");
@@ -150,12 +245,8 @@ export default function FileManager(props) {
             ))}
           </Breadcrumb>
           <div className="d-flex gap-2">
-            <Button variant="primary" size="md">
-              <AddFolderIcon />
-            </Button>
-            <Button variant="primary " size="md">
-              Subir archivo
-            </Button>
+            <NewFolderOnS3Modal uploadRoute={currentPath.join("/")} />
+            <UploadFileModal uploadRoute={currentPath.join("/")} />
           </div>
         </div>
         <Table responsive>
@@ -171,16 +262,20 @@ export default function FileManager(props) {
             </tr>
           </thead>
           <tbody className="align-middle">
-            {Object.keys(selectedFolder).length === 0 && (
+            {/* {Object.keys(selectedFolder).length === 0 && (
               <tr>
                 <td colSpan="5" className="text-center">
                   No hay archivos en esta carpeta
                 </td>
               </tr>
-            )}
+            )} */}
             {currentPath.length > 1 && (
               <tr>
-                <td onClick={() => backToAnyFolder(currentPath[currentPath.length - 2])}>
+                <td
+                  onClick={() =>
+                    backToAnyFolder(currentPath[currentPath.length - 2])
+                  }
+                >
                   <div>
                     <FolderIcon />
                     <span className="fs-6 ms-2">...</span>
@@ -195,7 +290,10 @@ export default function FileManager(props) {
             {Object.keys(selectedFolder).map((folder, index) => {
               return (
                 <tr key={index}>
-                  <td>
+                  <td
+                    onClick={() => handleClickSelect(folder)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <div>
                       {selectedFolder[folder].type === "folder" ? (
                         <FolderIcon />
@@ -203,16 +301,14 @@ export default function FileManager(props) {
                         <></>
                       )}
 
-                      <span
-                        className="fs-6 ms-2"
-                        onClick={() => handleClickSelect(folder)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {folder}
-                      </span>
+                      <span className="fs-6 ms-2">{folder}</span>
                     </div>
                   </td>
-                  <td className="text-center">{selectedFolder[folder].size}</td>
+                  <td className="text-center">
+                    {selectedFolder[folder].size
+                      ? bytesToSize(selectedFolder[folder].size)
+                      : ""}
+                  </td>
                   <td className="text-center">
                     {selectedFolder[folder].lastModified
                       ? convertAWSDatetimeToDate(
@@ -223,7 +319,7 @@ export default function FileManager(props) {
                   <td className="text-center">
                     {selectedFolder[folder].type === "file" && (
                       <div className="d-flex justify-content-center">
-                        <Form.Check></Form.Check>
+                        {getVisibleStatus(selectedFolder[folder].key)}
                       </div>
                     )}
                   </td>
@@ -234,11 +330,25 @@ export default function FileManager(props) {
                       drop="end"
                       size="sm"
                     >
-                      <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
-                      <Dropdown.Item eventKey="2">Cambiar nombre</Dropdown.Item>
-                      <Dropdown.Item eventKey="1">Descargar</Dropdown.Item>
+                      {/* <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
+                      <Dropdown.Item eventKey="2">Cambiar nombre</Dropdown.Item> */}
+                      <Dropdown.Item
+                        eventKey="3"
+                        onClick={() =>
+                          handleDownload(selectedFolder[folder].key)
+                        }
+                      >
+                        Descargar
+                      </Dropdown.Item>
                       <Dropdown.Divider />
-                      <Dropdown.Item eventKey="4">Eliminar</Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey="4"
+                        onClick={() =>
+                          handleDeleteFile(selectedFolder[folder].key)
+                        }
+                      >
+                        Eliminar
+                      </Dropdown.Item>
                     </DropdownButton>
                   </td>
                 </tr>
