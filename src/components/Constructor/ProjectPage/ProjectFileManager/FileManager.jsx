@@ -232,7 +232,7 @@ export default function FileManager(props) {
     <Card className={className}>
       <Card.Body>
         <div className="d-flex justify-content-between">
-          <Breadcrumb>
+          <Breadcrumb className="border pt-3 px-3 ">
             {currentPath.map((path, index) => (
               <Breadcrumb.Item
                 href="#"
