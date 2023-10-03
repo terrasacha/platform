@@ -375,6 +375,35 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_PROJECT_VALIDATOR_FILES";
     })[0]?.value || "[]"
   );
+  const productsOfCycleProject = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO";
+    })[0]?.value || "[]"
+  );
+  const revenuesByProduct = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_INGRESOS_POR_PRODUCTO";
+    })[0]?.value || "[]"
+  );
+  const cashFlowResume = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_RESUMEN_FLUJO_DE_CAJA";
+    })[0]?.value || "[]"
+  );
+  const productsOfCycleProjectID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO";
+    })[0]?.id || null
+  ;
+  const revenuesByProductID = 
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_INGRESOS_POR_PRODUCTO";
+    })[0]?.id || null
+  const cashFlowResumeID = 
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_RESUMEN_FLUJO_DE_CAJA";
+    })[0]?.id || null
+
 
   // A
   const postulantName =
@@ -548,6 +577,11 @@ export const mapProjectData = async (data) => {
       projectValidatorDocuments: projectValidatorDocuments,
     },
     projectVerifiers: await mapProjectVerifiers(data),
-    projectVerifierNames: await mapProjectVerifiersNames(data)
+    projectVerifierNames: await mapProjectVerifiersNames(data),
+    projectFinancialInfo: {
+      revenuesByProduct: {revenuesByProductID,revenuesByProduct},
+      projectProductByCycle: {productsOfCycleProjectID,productsOfCycleProject},
+      cashFlowResume: {cashFlowResumeID,cashFlowResume} 
+    },
   };
 };
