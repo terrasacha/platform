@@ -2,12 +2,10 @@ import React from "react";
 
 
 import { useProjectData } from "../../../../context/ProjectDataContext";
-import { useAuth } from "../../../../context/AuthContext";
 import FileManager from "./FileManager";
 
 export default function ProjectFileManager() {
 
-  const { user } = useAuth();
   const { projectData } = useProjectData();
 
   // projectData.projectInfo.id

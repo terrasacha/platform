@@ -287,7 +287,7 @@ export default function FileManager(props) {
                 <td></td>
               </tr>
             )}
-            {Object.keys(selectedFolder).map((folder, index) => {
+            {Object.keys(selectedFolder).filter(sf => sf !== "backup").map((folder, index) => {
               return (
                 <tr key={index}>
                   <td
