@@ -2,6 +2,7 @@ import React from "react";
 
 import ProjectSettingsCard from "./SettingCards/ProjectSettingsCard";
 import TokenSettingsCard from "./SettingCards/TokenSettingsCard";
+import CashFlowSettings from "./SettingCards/CashFlowSettings";
 
 export default function ProjectSettings() {
 
@@ -12,6 +13,9 @@ export default function ProjectSettings() {
       </div>
       <div className="col">
         <TokenSettingsCard />
+      </div>
+      <div className="col">
+        <CashFlowSettings />
       </div>
     </div>
   );
