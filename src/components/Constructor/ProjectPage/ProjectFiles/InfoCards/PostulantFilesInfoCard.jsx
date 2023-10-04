@@ -12,7 +12,6 @@ import { XIcon } from "../../../../common/icons/XIcon";
 import {
   createVerification,
   updateDocument,
-  updateProduct,
 } from "../../../../../graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { useAuth } from "../../../../../context/AuthContext";
@@ -26,13 +25,13 @@ export default function PostulantFilesInfoCard(props) {
     setIsDocApproved,
     isVerifier,
     isPostulant,
+    handleSendMessage
   } = props;
   const [isValidating, setIsValidating] = useState(false);
   const [isLoadingDoc, setIsLoadingDoc] = useState(false);
   const {
     handleUpdateContextDocumentStatus,
     handleUpdateContextFileVerification,
-    handleUpdateContextProjectInfo,
     projectData,
   } = useProjectData();
   const { user } = useAuth();
@@ -41,6 +40,8 @@ export default function PostulantFilesInfoCard(props) {
 
   const handleUpdateDocumentStatus = async (fileIndex, docId, status) => {
     const file = projectData.projectFiles[fileIndex];
+    let verificationId
+    
     if (!file.verification) {
       const newVerification = {
         productFeatureID: file.pfID,
@@ -57,8 +58,9 @@ export default function PostulantFilesInfoCard(props) {
       );
 
       const verification = createVerificationResult.data.createVerification;
+      verificationId = verification.id;
       const localVerification = {
-        id: verification.id,
+        id: verificationId,
         messages: [],
         postulantID: projectData.projectPostulant.id,
         postulantName: projectData.projectPostulant.name,
@@ -67,6 +69,7 @@ export default function PostulantFilesInfoCard(props) {
       };
       await handleUpdateContextFileVerification(fileIndex, localVerification);
     } else {
+      verificationId = file.verification.id;
       if (file.verification.verifierID !== user.id) {
         notify({
           msg: "El archivo ya esta siendo validado por otro verificador",
@@ -115,11 +118,13 @@ export default function PostulantFilesInfoCard(props) {
       setIsDocApproved(status);
 
       if (status) {
+        await handleSendMessage("Tú archivo fue aceptado", verificationId)
         notify({
           msg: "El archivo fue aceptado",
           type: "success",
         });
       } else {
+        await handleSendMessage("Tú archivo fue rechazado, por favor sube un nuevo archivo con la documentación correcta", verificationId)
         notify({
           msg: "El archivo fue rechazado, el postulante deberá subir un nuevo archivo",
           type: "success",
@@ -157,6 +162,8 @@ export default function PostulantFilesInfoCard(props) {
     const newFile = e.target.files[0];
 
     const getFilePathRegex = /\/public\/(.+)$/;
+
+    const verificationId = file.verification.id;
 
     if (newFile) {
       const fileToDeleteName = decodeURIComponent(
@@ -203,6 +210,9 @@ export default function PostulantFilesInfoCard(props) {
         isApproved: false,
         status: "pending",
       });
+
+      // Agregar comentario al componente de Messages
+      await handleSendMessage("Se ha subido un nuevo archivo, por favor verifícalo", verificationId)
 
       notify({
         msg: "Archivo subido y enviado a validación exitosamente",

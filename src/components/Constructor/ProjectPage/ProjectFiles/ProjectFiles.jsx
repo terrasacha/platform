@@ -45,7 +45,7 @@ export default function ProjectFiles() {
       id: uuidv4(),
       comment: newMessage,
       createdAt: await convertAWSDatetimeToDate(Date.now()),
-      isCommentByVerifier: false,
+      isCommentByVerifier: user.role === "validator" ? true : false,
       userName: await capitalizeWords(user.name),
       elapsedTime: "Hace un momento",
     };
@@ -67,6 +67,31 @@ export default function ProjectFiles() {
     setNewMessage("");
   };
 
+  const handleSendMessage = async (message, verificationID) => {
+    const localMessage = {
+      id: uuidv4(),
+      comment: message,
+      createdAt: await convertAWSDatetimeToDate(Date.now()),
+      isCommentByVerifier: user.role === "validator" ? true : false,
+      userName: await capitalizeWords(user.name),
+      elapsedTime: "Hace un momento",
+    };
+    const updateMessages = [...messages, localMessage];
+    setMessages(updateMessages);
+
+    const newVerificationComment = {
+      verificationID: verificationID,
+      comment: message,
+      isCommentByVerifier: user.role === "validator" ? true : false,
+    };
+
+    await API.graphql(
+      graphqlOperation(createVerificationComment, {
+        input: newVerificationComment,
+      })
+    );
+  };
+
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       <div className={isMessageCardActive ? "col" : "col-12 col-xl-12"}>
@@ -76,6 +101,7 @@ export default function ProjectFiles() {
           setIsDocApproved={setIsDocApproved}
           isVerifier={isVerifier}
           isPostulant={isPostulant}
+          handleSendMessage={handleSendMessage}
         />
       </div>
       {isMessageCardActive && (
