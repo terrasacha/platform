@@ -4,49 +4,22 @@ import TableEdit from "components/common/TableEdit";
 import Card from "../../../../common/Card";
 import FormGroup from "../../../../common/FormGroup";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
-import { v4 as uuidv4 } from 'uuid'
 import {
   createProductFeature,
   updateProductFeature,
 } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
-import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
-import { TrashIcon } from "components/common/icons/TrashIcon";
-import { PlusIcon } from "components/common/icons/PlusIcon";
-import { EditIcon } from "components/common/icons/EditIcon";
-import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 
 export default function CashFlowSettings(props) {
   const { className } = props;
 
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
-  const [tokenName, setTokenName] = useState("");
   const [cashFlowResume, setCashFlowResume] = useState([])
   const [TIR, setTIR] = useState(null)
   const [VAN, setVAN] = useState(null)
   const [pfID, setPfID] = useState(null)
-  const [isDisabledTokenName, setIsDisabledTokenName] = useState(false);
-  const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
   useEffect(() => {
     if (projectData) {
-      if (projectData.projectInfo.token.transactionsNumber !== 0) {
-        setIsDisabledTokenName(true);
-      }
-      setTokenName(projectData.projectInfo.token.name);
-
-      const sortedHistoricalData = [
-        ...projectData.projectInfo.token.historicalData,
-      ]
-        .sort((a, b) => a.period - b.period)
-        .map((tokenHD) => {
-          return {
-            ...tokenHD,
-            editing: false,
-          };
-        });
-      setTokenHistoricalData(sortedHistoricalData);
       if(projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID || null){
         setPfID(projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID || [])
         setCashFlowResume(projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.flujos_de_caja || [])
@@ -108,7 +81,7 @@ export default function CashFlowSettings(props) {
       return;
     }
 
-    if (name.includes("cash-")) {
+    if (name.includes("input-")) {
         const [_, column, indexRow] = name.split("-");
         console.log(column, indexRow)
       setCashFlowResume((prevState) =>
@@ -272,7 +245,7 @@ export default function CashFlowSettings(props) {
   return (
     <>
       <Card className={className}>
-        <Card.Header title="Configuración del Token" sep={true} />
+        <Card.Header title="Flujo de caja del proyecto" sep={true} />
         <Card.Body>
             <FormGroup
                 type="flex"
