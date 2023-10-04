@@ -23,7 +23,7 @@ export default function TableEdit({ infoTable, handleEditValue, handleChangeInpu
           {columns.map((column) => {
             return (
               <th scope="col" className="px-6 py-3" key={column}>
-                {column}
+                {column.replace("_", " ")}
               </th>
             );
           })}
@@ -42,10 +42,10 @@ export default function TableEdit({ infoTable, handleEditValue, handleChangeInpu
                   {row.editing?
                   <Form.Control
                   size="sm"
-                  type="number"
+                  type="text"
                   value={data[index][column]}
                   className="text-center"
-                  name={`cash-${column}-${index}`}
+                  name={`input-${column}-${index}`}
                   onChange={(e) => handleChangeInputValue(e)}
                 />:
                 row[column]
