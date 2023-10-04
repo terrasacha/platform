@@ -9,7 +9,7 @@ import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 export default function TableEdit({ infoTable, handleEditValue, handleChangeInputValue, columns, handleAddCashFlow, handleSaveHistoricalData, handleDeleteHistoricalData }) {
   const [data, setData] = useState([]);
   useEffect(() => {
-    if (infoTable && infoTable.length > 0) {
+    if (infoTable) {
         setData(infoTable);
 
     }

@@ -135,22 +135,25 @@ export default function GenericInputTable(props) {
     const tempRevenuesByProduct = revenuesByProduct.filter(
       (_, index) => index !== indexToDelete
     );
-    tempRevenuesByProduct.map(item => {return{CONCEPTO: item.CONCEPTO, CANTIDAD: item.CANTIDAD, UNIDAD: item.UNIDAD}})
+
+    const updatedRevenuesByProduct = tempRevenuesByProduct.map((item) => {
+    const { editing, ...rest } = item;
+    return rest;
+  });
     setRevenuesByProduct(tempRevenuesByProduct);
 
     if (pfID) {
       let tempProductFeature = {
-        id:pfID,
-        value: JSON.stringify(tempRevenuesByProduct),
+        id: pfID,
+        value: JSON.stringify(updatedRevenuesByProduct),
       };
       const response = await API.graphql(
         graphqlOperation(updateProductFeature, { input: tempProductFeature })
       );
-
+  
       if (!response.data.updateProductFeature) error = true;
-    }{
-
     }
+  
     if (!error) {
       notify({
         msg: "Valores borrados exitosamente",
