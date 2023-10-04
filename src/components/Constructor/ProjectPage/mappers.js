@@ -580,7 +580,7 @@ export const mapProjectData = async (data) => {
     projectVerifierNames: await mapProjectVerifiersNames(data),
     projectFinancialInfo: {
       revenuesByProduct: {revenuesByProductID,revenuesByProduct},
-      projectProductByCycle: {productsOfCycleProjectID,productsOfCycleProject},
+      productsOfCycleProject: {productsOfCycleProjectID,productsOfCycleProject},
       cashFlowResume: {cashFlowResumeID,cashFlowResume} 
     },
   };
