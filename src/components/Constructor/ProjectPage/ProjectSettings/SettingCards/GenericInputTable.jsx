@@ -154,6 +154,7 @@ export default function GenericInputTable(props) {
       if (!response.data.updateProductFeature) error = true
     }
   
+  
     if (!error) {
       notify({
         msg: "Valores borrados exitosamente",
