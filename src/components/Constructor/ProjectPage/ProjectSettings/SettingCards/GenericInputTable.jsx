@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { API, graphqlOperation } from "aws-amplify";
-import TableEdit from "components/common/TableEdit";
-import Card from "../../../../common/Card";
-import { useProjectData } from "../../../../../context/ProjectDataContext";
+import React, { useEffect, useState } from "react"
+import { API, graphqlOperation } from "aws-amplify"
+import TableEdit from "components/common/TableEdit"
+import Card from "../../../../common/Card"
+import { useProjectData } from "../../../../../context/ProjectDataContext"
 import {
   createProductFeature,
   updateProductFeature,
-} from "../../../../../graphql/mutations";
-import { notify } from "../../../../../utilities/notify";
+} from "../../../../../graphql/mutations"
+import { notify } from "../../../../../utilities/notify"
 
 export default function GenericInputTable(props) {
-  const { className, title, fID, financialInfoType } = props;
+  const { className, title, fID, financialInfoType } = props
 
-  const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
+  const { projectData, handleUpdateContextProjectTokenData } = useProjectData()
   const [revenuesByProduct, setRevenuesByProduct] = useState([])
   const [pfID, setPfID] = useState(null)
 
@@ -25,41 +25,41 @@ export default function GenericInputTable(props) {
   }, [projectData])
 
   const handleChangeInputValue = async (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     if (name.includes("input-")) {
-        const [_, column, indexRow] = name.split("-");
+        const [_, column, indexRow] = name.split("-")
       setRevenuesByProduct((prevState) =>
         prevState.map((item, index) =>
           index === parseInt(indexRow)
             ? { ...item, [column]: value }
             : item
         )
-      );
+      )
     }
-  };
+  }
 
   const handleEditValue = async (indexToStartEditing) => {
     const isEditingSomeHistoryData = revenuesByProduct.some(
       (obj) => obj.editing === true
-    );
+    )
     if (!isEditingSomeHistoryData) {
       setRevenuesByProduct((prevState) =>
         prevState.map((item, index) =>
           index === indexToStartEditing ? { ...item, editing: true } : item
         )
-      );
+      )
     } else {
       notify({
         msg: "Termina la edición antes de realizar una nueva",
         type: "error",
-      });
+      })
     }
-  };
+  }
 
   const handleSaveHistoricalData = async (indexToSave) => {
-    let error = false;
+    let error = false
     let isAlreadyExistingPeriod = false
-    const newPeriod = revenuesByProduct[indexToSave].CONCEPTO;
+    const newPeriod = revenuesByProduct[indexToSave].CONCEPTO
     if(projectData.projectFinancialInfo.revenuesByProduct.revenuesByProduct.length > 0){
         isAlreadyExistingPeriod = projectData.projectFinancialInfo.revenuesByProduct.revenuesByProduct.some((hd, index) => hd.CONCEPTO === newPeriod && index !== indexToSave)
     }
@@ -68,8 +68,8 @@ export default function GenericInputTable(props) {
       notify({
         msg: "El periodo que intentas guardar ya esta definido",
         type: "error",
-      });
-      return;
+      })
+      return
     }
     let revenueByProductToUpload = revenuesByProduct.map(rbp =>{return{CONCEPTO: rbp.CONCEPTO, CANTIDAD: rbp.CANTIDAD, UNIDAD: rbp.UNIDAD}})
     if (
@@ -83,18 +83,18 @@ export default function GenericInputTable(props) {
             index === indexToSave ? { ...item, editing: false } : item
           )
           .sort((a, b) => a.period - b.period)
-      );
+      )
       if (pfID) {
         let tempProductFeature = {
           id: pfID,
           value: JSON.stringify(revenueByProductToUpload),
-        };
+        }
         console.log(tempProductFeature, 'ya existe')
         const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
-        );
+        )
 
-        if (!response.data.updateProductFeature) error = true;
+        if (!response.data.updateProductFeature) error = true
       } else {
         let tempProductFeature = {
           value: JSON.stringify(revenueByProductToUpload),
@@ -102,7 +102,7 @@ export default function GenericInputTable(props) {
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
           featureID: fID,
-        };
+        }
         console.log(tempProductFeature, 'no existe')
 
         API.graphql(
@@ -117,54 +117,57 @@ export default function GenericInputTable(props) {
       notify({
         msg: "Completa todos los campos antes de guardar",
         type: "error",
-      });
-      return;
+      })
+      return
     }
 
     if (!error) {
       notify({
         msg: "Datos historicos guardados exitosamente",
         type: "success",
-      });
+      })
     }
-  };
+  }
 
   const handleDeleteHistoricalData = async (indexToDelete) => {
-    let error = false;
+    let error = false
 
     const tempRevenuesByProduct = revenuesByProduct.filter(
       (_, index) => index !== indexToDelete
-    );
-    tempRevenuesByProduct.map(item => {return{CONCEPTO: item.CONCEPTO, CANTIDAD: item.CANTIDAD, UNIDAD: item.UNIDAD}})
-    setRevenuesByProduct(tempRevenuesByProduct);
+    )
+
+    const updatedRevenuesByProduct = tempRevenuesByProduct.map((item) => {
+    const { editing, ...rest } = item
+    return rest
+  })
+    setRevenuesByProduct(tempRevenuesByProduct)
 
     if (pfID) {
       let tempProductFeature = {
-        id:pfID,
-        value: JSON.stringify(tempRevenuesByProduct),
-      };
+        id: pfID,
+        value: JSON.stringify(updatedRevenuesByProduct),
+      }
       const response = await API.graphql(
         graphqlOperation(updateProductFeature, { input: tempProductFeature })
-      );
-
-      if (!response.data.updateProductFeature) error = true;
-    }{
-
+      )
+  
+      if (!response.data.updateProductFeature) error = true
     }
+  
     if (!error) {
       notify({
         msg: "Valores borrados exitosamente",
         type: "success",
-      });
+      })
     }
-  };
+  }
 
   const handleAddCashFlow = async () => {
     let isEditingSomeHistoryData = false
     if(revenuesByProduct.length > 0){
         isEditingSomeHistoryData = revenuesByProduct.some(
             (tokenHD) => tokenHD.editing === true
-          );
+          )
     }
     if (!isEditingSomeHistoryData) {
       setRevenuesByProduct((prevState) => {
@@ -176,15 +179,15 @@ export default function GenericInputTable(props) {
             UNIDAD: "",
             editing: true,
           },
-        ];
-      });
+        ]
+      })
     } else {
       notify({
         msg: "Guarda primero los datos antes de agregar una nueva fila",
         type: "error",
-      });
+      })
     }
-  };
+  }
 
   return (
     <>
@@ -198,5 +201,5 @@ export default function GenericInputTable(props) {
         </Card.Body>
       </Card>
     </>
-  );
+  )
 }
