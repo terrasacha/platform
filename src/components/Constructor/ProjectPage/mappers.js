@@ -7,6 +7,20 @@ import {
 } from "./utils";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 
+
+export const mapGeoData = async (validatorDocuments) => {
+  const extensionesPermitidas = [".kml", ".kmz"];
+
+  const archivosFiltrados = validatorDocuments.filter((archivo) => {
+    const filePath = archivo.filePathS3;
+    const extension = filePath.slice(filePath.lastIndexOf("."));
+
+    return extensionesPermitidas.includes(extension);
+  });
+
+  return archivosFiltrados;
+};
+
 const mapProjectVerifiers = async (data) => {
   // const verifiablePF = data.productFeatures.items.filter(
   //   (pf) => pf.feature.isVerifable === true
@@ -578,6 +592,7 @@ export const mapProjectData = async (data) => {
     },
     projectVerifiers: await mapProjectVerifiers(data),
     projectVerifierNames: await mapProjectVerifiersNames(data),
+    projectGeoData: await mapGeoData(projectValidatorDocuments),
     projectFinancialInfo: {
       revenuesByProduct: {revenuesByProductID,revenuesByProduct},
       productsOfCycleProject: {productsOfCycleProjectID,productsOfCycleProject},

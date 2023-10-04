@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import GoogleMapReact from "google-map-react";
-import Card from "./Card";
+import Card from "../../../../common/Card";
 // Borrar despues de pasar a componentes
 
-export default class MapCard extends Component {
+export default class GeodataInfoCard extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -12,6 +12,7 @@ export default class MapCard extends Component {
   render() {
     const coords = this.props.coords || { lat: 7, lng: -73 };
     const zoom = this.props.zoom || 12;
+    const geoData = this.props.geoData || null;
 
     return (
       <Card>
@@ -24,6 +25,22 @@ export default class MapCard extends Component {
               }}
               defaultCenter={coords}
               defaultZoom={zoom}
+              onGoogleApiLoaded={({ map, maps }) => {
+                geoData.map((data) => {
+                  new maps.KmlLayer(data.fileURLS3, {
+                    suppressInfoWindows: true,
+                    preserveViewport: false,
+                    map: map,
+                  }).addListener("click", function (event) {
+                    // infowindow.open({
+                    //   anchor: this,
+                    //   map,
+                    // });
+                    console.log("Hizo click");
+                  });
+                });
+              }}
+              yesIWantToUseGoogleMapApiInternals
             ></GoogleMapReact>
           )}
         </div>

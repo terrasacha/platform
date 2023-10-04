@@ -6,7 +6,7 @@ import ActualUseAndPotentialInfoCard from "./InfoCards/ActualUseAndPotentialInfo
 import EcosystemInfoCard from "./InfoCards/EcosystemInfoCard";
 import PropertyInfoCard from "./InfoCards/PropertyInfoCard";
 import RelationsInfoCard from "./InfoCards/RelationsInfoCard";
-import MapCard from "../../../common/MapCard";
+import GeodataInfoCard from "./InfoCards/GeodataInfoCard";
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import UseRestrictionsInfoCard from "./InfoCards/UseRestrictionsInfoCard";
 export default function ProjectDetails() {
@@ -24,7 +24,7 @@ export default function ProjectDetails() {
         <ProjectInfoCard />
       </div>
       <div className="col">
-        <MapCard coords={coords} zoom={15} />
+        <GeodataInfoCard coords={coords} zoom={10} geoData ={projectData?.projectGeoData} />
       </div>
       <div className="col">
         <OwnerInfoCard />
