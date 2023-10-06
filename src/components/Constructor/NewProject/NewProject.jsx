@@ -368,6 +368,19 @@ export default function NewProject() {
       })
     );
 
+    // Creación de pf Token Name GLOBAL_PROJECT_VALIDATOR_FILES
+    const newProductFeatureGlobalProjectValidatorFiles = {
+      featureID: "GLOBAL_PROJECT_VALIDATOR_FILES",
+      productID: productID,
+      value: "",
+    };
+    console.log("newProductFeature:", newProductFeatureGlobalProjectValidatorFiles);
+    await API.graphql(
+      graphqlOperation(createProductFeature, {
+        input: newProductFeatureGlobalProjectValidatorFiles,
+      })
+    );
+
     // Creación de pf normales
     for (let i = 0; i < productFeaturesToCreate.length; i++) {
       const feature = productFeaturesToCreate[i];

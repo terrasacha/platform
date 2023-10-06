@@ -93,7 +93,7 @@ export default function UploadFileModal(props) {
   const createDocumentsFromFileURL = async (urls, userID, pfID) => {
     const results = await Promise.all(
       urls.map(async (filePath, index) => {
-        const awsUrlFullPath = WebAppConfig.url_s3_public_images + filePath;
+        const awsUrlFullPath = WebAppConfig.url_s3_public_images + encodeURIComponent(filePath);
 
         const segments = filePath.split('/');
         const fileName = segments.pop();

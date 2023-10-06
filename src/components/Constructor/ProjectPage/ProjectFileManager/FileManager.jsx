@@ -12,7 +12,7 @@ import { API, Storage, graphqlOperation } from "aws-amplify";
 import UploadFileModal from "components/Modals/UploadFileModal";
 import { deleteDocument, updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "context/ProjectDataContext";
-import { moveToBackupFolderS3 } from "utilities/moveToBackupS3";
+import { moveToBackupFolderS3, removeFolderS3 } from "utilities/moveToBackupS3";
 import NewFolderOnS3Modal from "components/Modals/NewFolderOnS3Modal";
 
 export default function FileManager(props) {
@@ -134,6 +134,46 @@ export default function FileManager(props) {
     } catch (error) {
       console.log("Error al descargar el archivo:", error);
     }
+  };
+
+  const handleDeleteFolder = async (folder) => {
+    const folderToDelete = currentPath.join("/") + "/" + folder;
+    console.log(folderToDelete);
+    const updatedDocsData =
+      projectData.projectFilesValidators.projectValidatorDocuments.filter(
+        (file, index) => !file.filePathS3.includes(folderToDelete)
+      );
+
+    const filesToDelete =
+      projectData.projectFilesValidators.projectValidatorDocuments.filter(
+        (file, index) => file.filePathS3.includes(folderToDelete)
+      );
+    for (let i = 0; i < filesToDelete.length; i++) {
+      await moveToBackupFolderS3(filesToDelete[i].filePathS3);
+
+      const fileToDeleteID = filesToDelete[i].id;
+
+      let docToDelete = {
+        id: fileToDeleteID,
+      };
+      await API.graphql(
+        graphqlOperation(deleteDocument, { input: docToDelete })
+      );
+    }
+
+    let tempProductFeature = {
+      id: projectData.projectFilesValidators.pfProjectValidatorDocumentsID,
+      value: JSON.stringify(updatedDocsData),
+    };
+    await API.graphql(
+      graphqlOperation(updateProductFeature, { input: tempProductFeature })
+    );
+
+    await removeFolderS3(folderToDelete);
+
+    await handleUpdateContextProjectFileValidators({
+      projectValidatorDocuments: updatedDocsData,
+    });
   };
 
   const handleDeleteFile = async (key) => {
@@ -287,73 +327,84 @@ export default function FileManager(props) {
                 <td></td>
               </tr>
             )}
-            {Object.keys(selectedFolder).filter(sf => sf !== "backup").map((folder, index) => {
-              return (
-                <tr key={index}>
-                  <td
-                    onClick={() => handleClickSelect(folder)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div>
-                      {selectedFolder[folder].type === "folder" ? (
-                        <FolderIcon />
-                      ) : (
-                        <></>
-                      )}
-
-                      <span className="fs-6 ms-2">{folder}</span>
-                    </div>
-                  </td>
-                  <td className="text-center">
-                    {selectedFolder[folder].size
-                      ? bytesToSize(selectedFolder[folder].size)
-                      : ""}
-                  </td>
-                  <td className="text-center">
-                    {selectedFolder[folder].lastModified
-                      ? convertAWSDatetimeToDate(
-                          selectedFolder[folder].lastModified
-                        )
-                      : ""}
-                  </td>
-                  <td className="text-center">
-                    {selectedFolder[folder].type === "file" && (
-                      <div className="d-flex justify-content-center">
-                        {getVisibleStatus(selectedFolder[folder].key)}
-                      </div>
-                    )}
-                  </td>
-                  <td className="text-end">
-                    <DropdownButton
-                      align="end"
-                      title="Acciones"
-                      drop="end"
-                      size="sm"
+            {Object.keys(selectedFolder)
+              .filter((sf) => sf !== "backup")
+              .map((folder, index) => {
+                return (
+                  <tr key={index}>
+                    <td
+                      onClick={() => handleClickSelect(folder)}
+                      style={{ cursor: "pointer" }}
                     >
-                      {/* <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
+                      <div>
+                        {selectedFolder[folder].type === "folder" ? (
+                          <FolderIcon />
+                        ) : (
+                          <></>
+                        )}
+
+                        <span className="fs-6 ms-2">{folder}</span>
+                      </div>
+                    </td>
+                    <td className="text-center">
+                      {selectedFolder[folder].size
+                        ? bytesToSize(selectedFolder[folder].size)
+                        : ""}
+                    </td>
+                    <td className="text-center">
+                      {selectedFolder[folder].lastModified
+                        ? convertAWSDatetimeToDate(
+                            selectedFolder[folder].lastModified
+                          )
+                        : ""}
+                    </td>
+                    <td className="text-center">
+                      {selectedFolder[folder].type === "file" && (
+                        <div className="d-flex justify-content-center">
+                          {getVisibleStatus(selectedFolder[folder].key)}
+                        </div>
+                      )}
+                    </td>
+                    <td className="text-end">
+                      <DropdownButton
+                        align="end"
+                        title="Acciones"
+                        drop="end"
+                        size="sm"
+                      >
+                        {/* <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
                       <Dropdown.Item eventKey="2">Cambiar nombre</Dropdown.Item> */}
-                      <Dropdown.Item
-                        eventKey="3"
-                        onClick={() =>
-                          handleDownload(selectedFolder[folder].key)
-                        }
-                      >
-                        Descargar
-                      </Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item
-                        eventKey="4"
-                        onClick={() =>
-                          handleDeleteFile(selectedFolder[folder].key)
-                        }
-                      >
-                        Eliminar
-                      </Dropdown.Item>
-                    </DropdownButton>
-                  </td>
-                </tr>
-              );
-            })}
+                        {selectedFolder[folder].type === "file" && (
+                          <>
+                          <Dropdown.Item
+                            eventKey="3"
+                            onClick={() =>
+                              handleDownload(selectedFolder[folder].key)
+                            }
+                          >
+                            Descargar
+                          </Dropdown.Item>
+                          <Dropdown.Divider />
+                          </>
+                        )}
+                        <Dropdown.Item
+                          eventKey="4"
+                          onClick={() => {
+                            if (selectedFolder[folder].type === "file") {
+                              handleDeleteFile(selectedFolder[folder].key);
+                            }
+                            if (selectedFolder[folder].type === "folder") {
+                              handleDeleteFolder(folder);
+                            }
+                          }}
+                        >
+                          Eliminar
+                        </Dropdown.Item>
+                      </DropdownButton>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </Table>
       </Card.Body>
