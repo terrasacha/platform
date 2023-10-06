@@ -4,6 +4,7 @@ import ProjectSettingsCard from "./SettingCards/ProjectSettingsCard";
 import TokenSettingsCard from "./SettingCards/TokenSettingsCard";
 import CashFlowSettings from "./SettingCards/CashFlowSettings";
 import GenericInputTable from "./SettingCards/GenericInputTable";
+import DescriptionValidator from "./SettingCards/DescriptionValidator";
 
 export default function ProjectSettings() {
 
@@ -11,6 +12,9 @@ export default function ProjectSettings() {
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       <div className="col">
         <ProjectSettingsCard />
+      </div>
+      <div className="col">
+        <DescriptionValidator />
       </div>
       <div className="col">
         <TokenSettingsCard />
