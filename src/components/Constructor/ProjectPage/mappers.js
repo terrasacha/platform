@@ -317,6 +317,14 @@ export const mapProjectData = async (data) => {
   const projectID = data.id;
   const projecIsActive = data.isActive;
 
+  const verifierDescription =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_VERIFIER_DESCRIPTION";
+    })[0]?.value || "";
+  const verifierDescriptionID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_VERIFIER_DESCRIPTION";
+    })[0]?.id || "";
   const tokenName =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
@@ -578,6 +586,10 @@ export const mapProjectData = async (data) => {
     },
     projectVerifiers: await mapProjectVerifiers(data),
     projectVerifierNames: await mapProjectVerifiersNames(data),
+    projectVerifierInfo:{
+      verifierDescription: verifierDescription,
+      verifierDescriptionID: verifierDescriptionID,
+    },
     projectFinancialInfo: {
       revenuesByProduct: {revenuesByProductID,revenuesByProduct},
       projectProductByCycle: {productsOfCycleProjectID,productsOfCycleProject},

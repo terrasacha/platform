@@ -7,7 +7,7 @@ import {  createUser } from '../../../graphql/mutations'
 import s from './Login.module.css'
 import LOGO from '../_images/SuanLogoName.svg'
 const initialFormState ={
-    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn' ,terms: false,privacy_policy:false, role: 'investor', code: ''
+    username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn' ,terms: false,privacy_policy:false, role: 'constructor', code: ''
 }
 
 export default function LogIn() {
@@ -48,7 +48,6 @@ export default function LogIn() {
         e.persist()
         updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
         if(e.target.name === 'username') setInputError(prevState => ({...prevState, username: validarString(e.target.value, /^[a-zA-Z_]+$/) }));
-        if(e.target.value === 'investor') setExplain('Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente')
         if(e.target.value === 'constructor') setExplain('Dueño de un predio interesado en transformar un predio en un activo ambiental monetizable')
     }
     function validarString(str, regex) {
@@ -237,7 +236,6 @@ export default function LogIn() {
                             <fieldset>
                                 <legend>Role</legend>
                                 <select name="role" onChange={onChange}>
-                                    <option value="investor">Inversionista</option>
                                     <option value="constructor">Propietario</option>
                                 </select>
                             </fieldset>
