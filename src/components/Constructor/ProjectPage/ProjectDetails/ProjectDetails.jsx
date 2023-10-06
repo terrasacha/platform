@@ -24,7 +24,7 @@ export default function ProjectDetails() {
         <ProjectInfoCard />
       </div>
       <div className="col">
-        <GeodataInfoCard coords={coords} zoom={10} geoData ={projectData?.projectGeoData} />
+        <GeodataInfoCard coords={coords} zoom={15} geoData ={projectData?.projectGeoData} />
       </div>
       <div className="col">
         <OwnerInfoCard />

@@ -15,13 +15,14 @@ import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { notify } from "utilities/notify";
 import { ToastContainer } from "react-toastify";
+import DynamicForm from "components/DynamicForm/DynamicForm";
 
 export default function NewProject() {
   const formURL =
     "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS.xlsx";
 
   const { user } = useAuth();
-  const { data } = useXLSXForm(formURL);
+  const { data } = useXLSXForm(formURL); 
   const [formData, setFormData] = useState({});
   const [formDataErrors, setFormDataErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -527,32 +528,30 @@ export default function NewProject() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // setIsLoading(true);
 
-    setIsLoading(true);
+    // const errors = validateFormData();
+    // setFormDataErrors(errors);
 
-    const errors = validateFormData();
-    setFormDataErrors(errors);
-
-    const firstErrorField = document.querySelector(
-      `[name="${Object.keys(errors)[0]}"]`
-    );
-    if (firstErrorField) {
-      firstErrorField.focus();
-      console.log("Datos del formulario:", formData);
-      console.log("Errores:", errors);
-      notify({
-        msg: "Hicieron falta algunos campos por completar",
-        type: "error",
-      });
-      setIsLoading(false);
-      return;
-    }
-    notify({
-      msg: "El proyecto será cargado, pronto será redirigido",
-      type: "success",
-    });
+    // const firstErrorField = document.querySelector(
+    //   `[name="${Object.keys(errors)[0]}"]`
+    // );
+    // if (firstErrorField) {
+    //   firstErrorField.focus();
+    //   console.log("Datos del formulario:", formData);
+    //   console.log("Errores:", errors);
+    //   notify({
+    //     msg: "Hicieron falta algunos campos por completar",
+    //     type: "error",
+    //   });
+    //   setIsLoading(false);
+    //   return;
+    // }
+    // notify({
+    //   msg: "El proyecto será cargado, pronto será redirigido",
+    //   type: "success",
+    // });
 
     const productID = uuidv4();
     // Subir datos a la base de datos con API de graphql
@@ -579,10 +578,7 @@ export default function NewProject() {
 
     await createProductFeatures(productID);
 
-    console.log("Datos del formulario:", formData);
-    console.log("Errores:", errors);
-
-    setIsLoading(false);
+    // setIsLoading(false);
 
     return (window.location.href = `/project/${productID}`);
   };
@@ -608,7 +604,16 @@ export default function NewProject() {
           contrato en el que se te especificará como continuar el proceso.
         </p>
       </section>
-      <form onSubmit={handleSubmit}>
+      <DynamicForm
+        XLSFormURL={formURL}
+        formData={formData}
+        setFormData={setFormData}
+        formDataErrors={formDataErrors}
+        setFormDataErrors={setFormDataErrors}
+        handleSubmit={handleSubmit}
+        submitBtnLabel="Postular este proyecto"
+      />
+      {/* <form onSubmit={handleSubmit}>
         <div className="row row-cols-1 border p-2 g-2">
           {data && getForm(data.survey, data.options)}
         </div>
@@ -621,8 +626,8 @@ export default function NewProject() {
             )}
           </Button>
         </div>
-      </form>
-      <ToastContainer></ToastContainer>
+      </form> 
+      <ToastContainer></ToastContainer>*/}
     </div>
   );
 }
