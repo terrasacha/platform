@@ -27,11 +27,11 @@ export default function LogIn() {
             switch (data.payload.event) {
               case 'signOut':
                 updateFormState(() => ({...formState, formType: 'signUp' }))
-                  break;
+                  break
                 default:
-                    break;
+                    break
             }
-          });
+          })
     }
 
     async function checkUser(){
@@ -47,7 +47,7 @@ export default function LogIn() {
     function onChange(e){
         e.persist()
         updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
-        if(e.target.name === 'username') setInputError(prevState => ({...prevState, username: validarString(e.target.value, /^[a-zA-Z0-9_]+$/)    }));
+        if(e.target.name === 'username') setInputError(prevState => ({...prevState, username: validarString(e.target.value, /^[a-zA-Z0-9_]+$/)    }))
         if(e.target.value === 'constructor') setExplain('Dueño de un predio interesado en transformar un predio en un activo ambiental monetizable')
     }
     function validarString(str, regex) {
@@ -62,21 +62,20 @@ export default function LogIn() {
         e.preventDefault()
         const { username, email, password, role, confirmPassword, terms, privacy_policy } = formState
         
-        // Verificar que la contraseña cumple con los requisitos
         if (password.length < 8) {
-            setError('La contraseña debe tener al menos 8 caracteres');            
-            return;
+            setError('La contraseña debe tener al menos 8 caracteres')            
+            return
         }
     
         if (!/\d/.test(password)) {
-            setError('La contraseña debe contener al menos un valor numérico');
-            return;
+            setError('La contraseña debe contener al menos un valor numérico')
+            return
         }
     
-        if(!terms) setError('Debe aceptar términos y condiciones');
-        if(!privacy_policy) setError('Debe aceptar la politica de privacidad');
-        if(username.length < 1) setError('Debe ingresar un nombre de usuario');
-        if(email.length < 1) setError('Debe ingresar un email');
+        if(!terms) setError('Debe aceptar términos y condiciones')
+        if(!privacy_policy) setError('Debe aceptar la politica de privacidad')
+        if(username.length < 1) setError('Debe ingresar un nombre de usuario')
+        if(email.length < 1) setError('Debe ingresar un email')
         if(password === confirmPassword && password.length > 8 && confirmPassword.length > 8){
             try {
                 setError("")
@@ -121,48 +120,30 @@ export default function LogIn() {
             setError('code does not match')
         }
     }
-
-   /*  async function signIn(){
-        const { username, password } = formState
-        try {
-            setError("")
-            setLoading(true)
-            let response = await Auth.signIn( username, password  )
-            console.log('authsignIn ',response)
-            updateFormState(() => ({...formState, formType: 'signedIn' }))
-            let currentUser = await Auth.currentAuthenticatedUser()
-            currentUser = currentUser.attributes['custom:role']
-            localStorage.setItem('role', currentUser)    
-        } catch (error) {
-            setError("Combination of account name and user name does not exist.")
-        }
-        setLoading(false)
-    } */
     async function signIn(e) {
-        e.preventDefault();
-        const { username, password } = formState;
+        e.preventDefault()
+        const { username, password } = formState
         
         try {
-          setError("");
-          setLoading(true);
+          setError("")
+          setLoading(true)
           
-          const response = await Auth.signIn(username, password);
+          const response = await Auth.signIn(username, password)
 
           if (response.challengeName === 'NEW_PASSWORD_REQUIRED') {
-            setLoading(false);
+            setLoading(false)
             updateUser(response)
-            updateFormState(() => ({ ...formState, formType: 'changePassword' }));
+            updateFormState(() => ({ ...formState, formType: 'changePassword' }))
           } else {
-            // Si no se necesita un cambio de contraseña, continuar con el flujo normal
-            updateFormState(() => ({ ...formState, formType: 'signedIn' }));
-            let currentUser = await Auth.currentAuthenticatedUser();
-            currentUser = currentUser.attributes['custom:role'];
-            localStorage.setItem('role', currentUser);
+            updateFormState(() => ({ ...formState, formType: 'signedIn' }))
+            let currentUser = await Auth.currentAuthenticatedUser()
+            currentUser = currentUser.attributes['custom:role']
+            localStorage.setItem('role', currentUser)
           }
         } catch (error) {
-          setError("Combination of account name and user name does not exist.");
+          setError("Combination of account name and user name does not exist.")
         }
-        setLoading(false);
+        setLoading(false)
       }
       
       
@@ -172,7 +153,6 @@ export default function LogIn() {
         try {
             setError("")
             setLoading(true)
-            // Send confirmation code to user's email
             await Auth.forgotPassword(username)
             updateFormState(() => ({...formState, formType: 'confirmFPcode' }))
         } catch (error) {
@@ -186,7 +166,6 @@ export default function LogIn() {
         try {
             setError("")
             setLoading(true)
-            // Send confirmation code to user's email
             await Auth.forgotPasswordSubmit(username, code, password)
             updateFormState(() => ({...formState, formType: 'signIn' }))
         } catch (error) {
@@ -195,37 +174,36 @@ export default function LogIn() {
         setLoading(false)
     }
     async function changePassword(e) {
-        e.preventDefault();
-        const { newPassword, confirmNewPassword } = formState;
+        e.preventDefault()
+        const { newPassword, confirmNewPassword } = formState
         
-        // Verificar que la contraseña cumple con los requisitos
         if (newPassword.length < 8) {
-            setError('La nueva contraseña debe tener al menos 8 caracteres');
-            setLoading(false);
-            return;
+            setError('La nueva contraseña debe tener al menos 8 caracteres')
+            setLoading(false)
+            return
         }
     
         if (!/\d/.test(newPassword)) {
-            setError('La nueva contraseña debe contener al menos un valor numérico');
-            setLoading(false);
-            return;
+            setError('La nueva contraseña debe contener al menos un valor numérico')
+            setLoading(false)
+            return
         }
     
         try {
-            setError("");
-            setLoading(true);
+            setError("")
+            setLoading(true)
             console.log(newPassword, confirmNewPassword)
             if (newPassword === confirmNewPassword) {
-                await Auth.completeNewPassword(user, newPassword); 
-                updateFormState(() => ({ ...formState, formType: 'signedIn' }));
+                await Auth.completeNewPassword(user, newPassword) 
+                updateFormState(() => ({ ...formState, formType: 'signedIn' }))
             } else {
-                setError("Las contraseñas no coinciden.");
+                setError("Las contraseñas no coinciden.")
             }
         } catch (error) {
             console.log(error)
-            setError("Error al cambiar la contraseña.");
+            setError("Error al cambiar la contraseña.")
         }
-        setLoading(false);
+        setLoading(false)
     }
     
       
