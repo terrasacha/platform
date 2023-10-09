@@ -15,6 +15,7 @@ export default function CashFlowSettings(props) {
 
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
   const [cashFlowResume, setCashFlowResume] = useState([])
+  const [excelData, setExcelData] = useState("");
   const [TIR, setTIR] = useState(null)
   const [VAN, setVAN] = useState(null)
   const [pfID, setPfID] = useState(null)
@@ -29,13 +30,75 @@ export default function CashFlowSettings(props) {
     }
   }, [projectData]);
 
-
-  const handleSaveBtn = async (toSave) => {
+  const parseExcelData = (excelData) => {
+    const lines = excelData.split("\t");
+    const data = [];
+  
+    let currentYear = null;
+    let resultado_anual = null;
+    let resultado_acumulado = null;
+  
+    lines.forEach((line) => {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith("AÑO ")) {
+        if (currentYear !== null) {
+          data.push({
+            año: currentYear,
+            resultado_anual: parseFloat(resultado_anual.replace(/\./g, "").replace(/,/g, ".")),
+            resultado_acumulado: parseFloat(resultado_acumulado.replace(/\./g, "").replace(/,/g, ".")),
+          });
+        }
+        currentYear = trimmedLine.replace("AÑO ", "");
+        resultado_anual = null;
+        resultado_acumulado = null;
+      } else {
+        if (resultado_anual === null) {
+          resultado_anual = trimmedLine;
+        } else if (resultado_acumulado === null) {
+          resultado_acumulado = trimmedLine;
+        }
+      }
+    });
+  
+    if (currentYear !== null && resultado_anual !== null && resultado_acumulado !== null) {
+      data.push({
+        año: currentYear,
+        resultado_anual: parseFloat(resultado_anual.replace(/\./g, "").replace(/,/g, ".")),
+        resultado_acumulado: parseFloat(resultado_acumulado.replace(/\./g, "").replace(/,/g, ".")),
+      });
+    }
+  
+    return data;
+  };
+  
+  const handlePasteFromExcel = () => {
+    const parsedData = parseExcelData(excelData)
+    if (isValidParsedData(parsedData)) {
+      setCashFlowResume(parsedData)
+      handleSaveBtn(parsedData)
+    } else {
+    }
+  };
+  const isValidParsedData = (data) => {
+    return (
+      Array.isArray(data) &&
+      data.every((item) =>
+        typeof item === "object" &&
+        item.hasOwnProperty("año") &&
+        item.hasOwnProperty("resultado_anual") &&
+        item.hasOwnProperty("resultado_acumulado") &&
+        typeof item.año === "string" && 
+        typeof item.resultado_anual === "number" &&
+        typeof item.resultado_acumulado === "number"
+      )
+    );
+  };
+  const handleSaveBtn = async (data) => {
     let error = false;
     if (pfID) {
         let tempProductFeature = {
           id: pfID,
-          value: JSON.stringify({TIR,VAN,flujos_de_caja: cashFlowResume}),
+          value: JSON.stringify({TIR,VAN,flujos_de_caja: data? data : cashFlowResume}),
         };
         console.log(tempProductFeature, 'ya existe')
         const response = await API.graphql(
@@ -68,6 +131,13 @@ export default function CashFlowSettings(props) {
         type: "error",
       });
     }
+    if (!error) {
+      notify({
+        msg: "Datos historicos guardados exitosamente",
+        type: "success",
+      });
+    }
+    setExcelData("")
   };
 
   const handleChangeInputValue = async (e) => {
@@ -78,6 +148,10 @@ export default function CashFlowSettings(props) {
     }
     if (name === "VAN") {
       setVAN(value);
+      return;
+    }
+    if(name === "Excel"){ 
+      setExcelData(value)
       return;
     }
 
@@ -270,9 +344,22 @@ export default function CashFlowSettings(props) {
                 saveBtnDisabled={
                 false
                 }
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
                 onClickSaveBtn={() => handleSaveBtn("VAN")}
             />
+            <FormGroup
+                  type="flex"
+                  placeholder="Paste Excel data here..."
+                  inputType="text"
+                  inputSize="md"
+                  label="Excel data"
+                  inputName="Excel"
+                  inputValue={excelData}
+                  saveBtnDisabled={
+                    false
+                    }
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                  onClickSaveBtn={() => handlePasteFromExcel()}
+              />
           <p className="mb-3">Flujo de caja del proyecto</p>
           <div>
             <TableEdit columns={['año', 'resultado_anual', 'resultado_acumulado']} infoTable={cashFlowResume} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
