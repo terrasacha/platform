@@ -1,15 +1,15 @@
 const AWS = require('aws-sdk')
-const { SESClient, VerifyEmailIdentityCommand } = require("@aws-sdk/client-ses")
-
+const { SESClient, VerifyEmailIdentityCommand, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses")
+const generator = require('generate-password');
 AWS.config.update({ region: 'us-east-1' })
 
 const ses = new SESClient({ region: "us-east-1" })
 const cognito = new AWS.CognitoIdentityServiceProvider()
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY
-const USER_POOL_ID = process.env.USER_POOL_ID
-const VALIDATOR_PASSWORD = 'validatorPassword'
+const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql"
+const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY || 'da2-zmafzaqndbc5blfoqw4kqddtlq'
+const SES_EMAIL = process.env.SES_EMAIL || 'notificaciones@suan.global'
+const USER_POOL_ID = process.env.USER_POOL_ID || 'us-east-1_DFaBfYrB1'
 const MESSAGE_ACTION_SUPPRESS = 'SUPPRESS'
 
 async function checkUserExistenceInCognito(usuario, email) {
@@ -32,7 +32,7 @@ async function checkUserExistenceInCognito(usuario, email) {
   }
 }
 
-async function createUserInCognito(usuario, email, role) {
+async function createUserInCognito(usuario, email, role, password) {
   const params = {
     UserPoolId: USER_POOL_ID,
     Username: usuario,
@@ -46,11 +46,11 @@ async function createUserInCognito(usuario, email, role) {
   try {
     const createUserResult = await cognito.adminCreateUser(params).promise()
     const sub = createUserResult.User.Attributes.find(attr => attr.Name === 'sub').Value
-    console.log('User created in Cognito with temporary password')
+    console.log(`User created in Cognito with temporary password. ${password}`)
     await cognito.adminSetUserPassword({
       UserPoolId: USER_POOL_ID,
       Username: usuario,
-      Password: VALIDATOR_PASSWORD,
+      Password: password,
       Permanent: false
     }).promise()
     
@@ -141,7 +141,9 @@ async function deleteUserInGraphQL(id) {
 }
 
 exports.handler = async (event) => {
-  console.log(event)
+  /* const verifyEmailIdentityCommand = new VerifyEmailIdentityCommand({ EmailAddress: 'diaznannignacio@gmail.com' })
+  await ses.send(verifyEmailIdentityCommand) */
+
 
   for (const record of event.Records) {
     if (record.eventName === 'INSERT' && record.dynamodb.NewImage && record.dynamodb.NewImage.role.S === 'validator' && !record.dynamodb.NewImage.isProfileUpdated.BOOL) {
@@ -149,7 +151,10 @@ exports.handler = async (event) => {
       const email = record.dynamodb.NewImage.email.S
       const usuario = record.dynamodb.NewImage.name.S
       const role = 'validator'
-
+      const password = generator.generate({
+        length: 12,
+        numbers: true
+      });
       const verifyEmailIdentityCommand = new VerifyEmailIdentityCommand({ EmailAddress: email })
       console.log(id, email, usuario, role)
 
@@ -160,10 +165,29 @@ exports.handler = async (event) => {
         const { alreadyExist } = await checkUserExistenceInCognito(usuario, email)
         
         if (!alreadyExist) {
-          const sub = await createUserInCognito(usuario, email, role)
+          const sub = await createUserInCognito(usuario, email, role, password)
           await createUserInGraphQL(sub, usuario, email, role)
           await ses.send(verifyEmailIdentityCommand)
-          return { status: 'done', msg: 'Process completed successfully' }
+          const fromMail = SES_EMAIL
+          const toMail = [email]
+          const data3 =   `Su usuario para ingresar a la plataforma es ${usuario} y su contraseña temporal es ${password}`
+          const templateData = {
+            data: data3,
+            user: 'test'
+          };
+          try {
+            const data = await ses.send(new SendTemplatedEmailCommand({
+              Source: fromMail,
+              Destination: {
+                ToAddresses: toMail,
+              },
+              Template: "AWS-SES-HTML-Email-Default-Template",
+              TemplateData: JSON.stringify(templateData),
+            }));
+            return { status: 'done', msg: data }
+          } catch (error) {
+            return { status: 'error', msg: error }
+          }
         }
 
       } catch (error) {

@@ -47,7 +47,7 @@ export default function LogIn() {
     function onChange(e){
         e.persist()
         updateFormState(() => ({...formState, [e.target.name]: e.target.value}))
-        if(e.target.name === 'username') setInputError(prevState => ({...prevState, username: validarString(e.target.value, /^[a-zA-Z_]+$/) }));
+        if(e.target.name === 'username') setInputError(prevState => ({...prevState, username: validarString(e.target.value, /^[a-zA-Z0-9_]+$/)    }));
         if(e.target.value === 'constructor') setExplain('Dueño de un predio interesado en transformar un predio en un activo ambiental monetizable')
     }
     function validarString(str, regex) {
@@ -58,14 +58,26 @@ export default function LogIn() {
       }
 
     const { formType } = formState
-
-    async function signUp(){
+    async function signUp(e){
+        e.preventDefault()
         const { username, email, password, role, confirmPassword, terms, privacy_policy } = formState
-        if(!terms) setError('Debe aceptar términos y condiciones')
-        if(!privacy_policy) setError('Debe aceptar la politica de privacidad')
-        if(username.length < 1) setError('Debe ingresar un nombre de usuario')
-        if(email.length < 1) setError('Debe ingresar un email')
-        if(password === confirmPassword && password.length > 2 && confirmPassword.length > 2){
+        
+        // Verificar que la contraseña cumple con los requisitos
+        if (password.length < 8) {
+            setError('La contraseña debe tener al menos 8 caracteres');            
+            return;
+        }
+    
+        if (!/\d/.test(password)) {
+            setError('La contraseña debe contener al menos un valor numérico');
+            return;
+        }
+    
+        if(!terms) setError('Debe aceptar términos y condiciones');
+        if(!privacy_policy) setError('Debe aceptar la politica de privacidad');
+        if(username.length < 1) setError('Debe ingresar un nombre de usuario');
+        if(email.length < 1) setError('Debe ingresar un email');
+        if(password === confirmPassword && password.length > 8 && confirmPassword.length > 8){
             try {
                 setError("")
                 setLoading(true)
@@ -90,11 +102,12 @@ export default function LogIn() {
                 setError('A user for that e-mail address already exists. Please use a different e-mail address')    
             }
         }else{
-            setError('passwords does not match')
+            setError('Las contraseñas no coinciden o no cumplen con los requisitos mínimos')
         }
     }
-
-    async function confirmSignUp(){
+    
+    async function confirmSignUp(e){
+        e.preventDefault()
         try {
             setError("")
             const { username, authCode } = formState
@@ -125,7 +138,8 @@ export default function LogIn() {
         }
         setLoading(false)
     } */
-    async function signIn() {
+    async function signIn(e) {
+        e.preventDefault();
         const { username, password } = formState;
         
         try {
@@ -152,7 +166,8 @@ export default function LogIn() {
       }
       
       
-    async function forgotPassword(){
+    async function forgotPassword(e){
+        e.preventDefault()
         const { username } = formState
         try {
             setError("")
@@ -165,7 +180,8 @@ export default function LogIn() {
         }
         setLoading(false)
     }
-    async function confirmNewPassword(){
+    async function confirmNewPassword(e){
+        e.preventDefault()
         const { username, code, password} = formState
         try {
             setError("")
@@ -178,23 +194,40 @@ export default function LogIn() {
         }
         setLoading(false)
     }
-    async function changePassword() {
+    async function changePassword(e) {
+        e.preventDefault();
         const { newPassword, confirmNewPassword } = formState;
+        
+        // Verificar que la contraseña cumple con los requisitos
+        if (newPassword.length < 8) {
+            setError('La nueva contraseña debe tener al menos 8 caracteres');
+            setLoading(false);
+            return;
+        }
+    
+        if (!/\d/.test(newPassword)) {
+            setError('La nueva contraseña debe contener al menos un valor numérico');
+            setLoading(false);
+            return;
+        }
+    
         try {
-          setError("");
-          setLoading(true);
-      
-          if (newPassword === confirmNewPassword) {
-            await Auth.completeNewPassword(user, newPassword); 
-            updateFormState(() => ({ ...formState, formType: 'signedIn' }));
-          } else {
-            setError("Las contraseñas no coinciden.");
-          }
+            setError("");
+            setLoading(true);
+            console.log(newPassword, confirmNewPassword)
+            if (newPassword === confirmNewPassword) {
+                await Auth.completeNewPassword(user, newPassword); 
+                updateFormState(() => ({ ...formState, formType: 'signedIn' }));
+            } else {
+                setError("Las contraseñas no coinciden.");
+            }
         } catch (error) {
-          setError("Error al cambiar la contraseña.");
+            console.log(error)
+            setError("Error al cambiar la contraseña.");
         }
         setLoading(false);
-      }
+    }
+    
       
   return (
     <div className={s.container} >
@@ -248,7 +281,7 @@ export default function LogIn() {
                                 <input type="checkbox"  name="privacy_policy" onChange={() => updateFormState(() => ({...formState, privacy_policy: !formState.privacy_policy}))}/>
                                 <label>Acepto la <a href='/privacy_policy' target="_blank">Politica de privacidad</a></label>
                             </fieldset>
-                            <button onClick={signUp} disabled={loading || !formState.terms || !formState.privacy_policy}>{loading?'Loading': 'Sign Up'}</button>
+                            <button type="submit" onClick={(e) => signUp(e)} disabled={loading || !formState.terms || !formState.privacy_policy}>{loading?'Loading': 'Sign Up'}</button>
                         </form>
                         <div className={s.needAccount}>
                             Already have an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
@@ -275,7 +308,7 @@ export default function LogIn() {
                                     <legend>Confirmation Code</legend>
                                     <input name='authCode' onChange={onChange}/>
                                 </fieldset>
-                                <button onClick={confirmSignUp} disabled={loading}>
+                                <button type="submit" onClick={(e) => confirmSignUp(e)} disabled={loading}>
                                     {loading?'Loading': 'Confirm Sign Up'}
                                 </button>
                             </form>
@@ -306,7 +339,7 @@ export default function LogIn() {
                             onClick={() => updateFormState(() => ({
                                     ...formState, formType: 'ForgotPassword'
                                 }))}>Olvidaste tu contraseña?</span>
-                        <button disabled={loading} onClick={signIn} >
+                        <button type="submit" disabled={loading} onClick={(e) => signIn(e)} >
                             {loading?'Loading': 'Ingresar'}
                         </button>
                     </form>
@@ -334,7 +367,7 @@ export default function LogIn() {
                                 <input name='username' onChange={onChange}/>
                             </fieldset>
                             <span className={s.forgotPasswordSpan}>The password will be sent to the email address associated with the user</span>
-                            <button disabled={loading} onClick={forgotPassword} >
+                            <button type="submit" disabled={loading} onClick={(e) => forgotPassword(e)} >
                                 {loading?'Sending': 'Send new code'}
                             </button>
                         </form>
@@ -369,7 +402,7 @@ export default function LogIn() {
                                 <legend>New Password</legend>
                                 <input type="password" name='password' onChange={onChange}/>
                             </fieldset>
-                            <button disabled={loading} onClick={confirmNewPassword} >
+                            <button type="submit" disabled={loading} onClick={(e) => confirmNewPassword(e)} >
                                 {loading?'Loading': 'Confirm new password'}
                             </button>
                         </form>
@@ -395,7 +428,7 @@ export default function LogIn() {
                         <legend>Confirmar Contraseña</legend>
                         <input type="password" name="confirmNewPassword" onChange={onChange} />
                     </fieldset>
-                    <button disabled={loading} onClick={changePassword}>
+                    <button type="submit" disabled={loading} onClick={(e) => changePassword(e)}>
                         {loading ? 'Cargando' : 'Cambiar Contraseña'}
                     </button>
                     </form>
