@@ -44,8 +44,8 @@ export default function CashFlowSettings(props) {
         if (currentYear !== null) {
           data.push({
             año: currentYear,
-            resultado_anual: parseFloat(resultado_anual.replace(/\./g, "").replace(/,/g, ".")),
-            resultado_acumulado: parseFloat(resultado_acumulado.replace(/\./g, "").replace(/,/g, ".")),
+            resultado_anual: resultado_anual,
+            resultado_acumulado: resultado_acumulado,
           });
         }
         currentYear = trimmedLine.replace("AÑO ", "");
@@ -87,9 +87,7 @@ export default function CashFlowSettings(props) {
         item.hasOwnProperty("año") &&
         item.hasOwnProperty("resultado_anual") &&
         item.hasOwnProperty("resultado_acumulado") &&
-        typeof item.año === "string" && 
-        typeof item.resultado_anual === "number" &&
-        typeof item.resultado_acumulado === "number"
+        typeof item.año === "string"
       )
     );
   };
@@ -161,7 +159,7 @@ export default function CashFlowSettings(props) {
       setCashFlowResume((prevState) =>
         prevState.map((item, index) =>
           index === parseInt(indexRow)
-            ? { ...item, [column]: parseInt(value) }
+            ? { ...item, [column]: value }
             : item
         )
       );
