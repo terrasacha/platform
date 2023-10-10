@@ -63,8 +63,8 @@ export default function CashFlowSettings(props) {
     if (currentYear !== null && resultado_anual !== null && resultado_acumulado !== null) {
       data.push({
         año: currentYear,
-        resultado_anual: parseFloat(resultado_anual.replace(/\./g, "").replace(/,/g, ".")),
-        resultado_acumulado: parseFloat(resultado_acumulado.replace(/\./g, "").replace(/,/g, ".")),
+        resultado_anual: resultado_anual,
+        resultado_acumulado: resultado_acumulado,
       });
     }
   
