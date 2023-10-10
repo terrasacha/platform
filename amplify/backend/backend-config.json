@@ -103,6 +103,21 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "kiosuanbcrjsappDeleteUserValidator": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjsappNotifyAdmonAndCreateUser": {
       "build": true,
       "dependsOn": [
@@ -247,6 +262,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappCreateUserValidator"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappDeleteUserValidator_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappDeleteUserValidator"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappDeleteUserValidator_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappDeleteUserValidator"
         }
       ]
     },

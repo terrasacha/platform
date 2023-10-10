@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Col, Container, Form, Row, Table, Modal } from 'react-bootstrap';
 
-import { Auth } from 'aws-amplify'
-import { API, graphqlOperation } from 'aws-amplify'
-import { onCreateUser, onUpdateUser } from '../../../graphql/subscriptions';
-import { createUser, updateUser } from '../../../graphql/mutations';
+import { API, graphqlOperation, Auth } from 'aws-amplify'
+import { onCreateUser, onUpdateUser, onDeleteUser } from '../../../graphql/subscriptions';
+import { createUser, updateUser, deleteUser} from '../../../graphql/mutations';
 import { listUsers } from '../../../graphql/queries';
 import { v4 as uuidv4 } from 'uuid'
 
@@ -20,7 +19,9 @@ class Validators extends Component {
                 email: '',
                 role: 'validator'
             },
-            userToConfirm: ''
+            userToConfirm: '',
+            showModal: false, 
+            userToDelete: null,
         }
         this.handleCRUDUser = this.handleCRUDUser.bind(this)
     }
@@ -31,6 +32,12 @@ class Validators extends Component {
         this.createValidatorListener = API.graphql(graphqlOperation(onCreateUser))
         .subscribe({
             next: createdUser => {
+                this.loadValidatorUsers()
+            }
+        })
+        this.deleteValidatorListener = API.graphql(graphqlOperation(onDeleteUser))
+        .subscribe({
+            next: deleteUser => {
                 this.loadValidatorUsers()
             }
         })
@@ -48,8 +55,33 @@ class Validators extends Component {
             }
         })
     }
-    componentWillUnmount() {
-      }
+    handleDeleteUser = async (id) => { 
+        const input = { id }
+        try {
+            await API.graphql(graphqlOperation(deleteUser, { input }))
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    showModalDelete(user) {
+        // Set the user to delete and show the modal
+        this.setState({
+            userToDelete: user,
+            showModal: true,
+        });
+    }
+
+    confirmDeleteUser() {
+        const { userToDelete } = this.state;
+        if (userToDelete) {
+            this.handleDeleteUser(userToDelete);
+            this.setState({
+                userToDelete: null,
+                showModal: false, // Hide the modal after confirmation
+            });
+        }
+    }
     async loadValidatorUsers() {
         let filter = {
             role: {
@@ -121,9 +153,11 @@ class Validators extends Component {
                             <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Email</th>
                                 <th>Role</th>
                                 <th>Created at</th>
                                 <th>Confirmation</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -133,13 +167,24 @@ class Validators extends Component {
                                         {validator.name}
                                     </td>
                                     <td>
+                                        {validator.email}
+                                    </td>
+                                    <td>
                                         {validator.role}
                                     </td>
                                     <td>
-                                        {validator.createdAt}
+                                        {validator.createdAt.split('T')[0].split('-')[2] + '-' + validator.createdAt.split('T')[0].split('-')[1] + '-' + validator.createdAt.split('T')[0].split('-')[0]}
                                     </td>
                                     <td>
                                         {validator.isProfileUpdated? 'Confirmed' : 'Pendiente'}
+                                    </td>
+                                    <td>
+                                        <Button
+                                            variant='danger'
+                                            size='sm'
+                                            disabled={!validator.isProfileUpdated}
+                                            onClick={() => this.showModalDelete(validator.id)}
+                                        >Delete</Button>
                                     </td>
                                 </tr>
                             ))}
@@ -186,6 +231,22 @@ class Validators extends Component {
                     </Form>
                 </Container>
                 {renderValidators()}
+                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm Delete</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to delete this user?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ showModal: false })}>
+                            Cancel
+                        </Button>
+                        <Button variant="danger" onClick={() => this.confirmDeleteUser()}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </Container>
         
         )

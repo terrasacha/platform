@@ -51,6 +51,10 @@
         "kiosuanbcrjsappc0136629": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
           "s3Key": "amplify-builds/kiosuanbcrjsappc0136629-5054374c637866366c65-build.zip"
+        },
+        "kiosuanbcrjsappDeleteUserValidator": {
+          "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
+          "s3Key": "amplify-builds/kiosuanbcrjsappDeleteUserValidator-4f783558436551397251-build.zip"
         }
       },
       "hosting": {
