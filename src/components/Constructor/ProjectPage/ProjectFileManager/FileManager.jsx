@@ -214,6 +214,18 @@ export default function FileManager(props) {
     return Math.round(bytes / Math.pow(1024, i)) + " " + sizes[i];
   };
 
+  const getUploadedByName = (key) => {
+    const file =
+      projectData.projectFilesValidators.projectValidatorDocuments.filter(
+        (file) => file.filePathS3 === key
+      )[0];
+    if (file) {
+      return file.uploadedBy;
+    } else {
+      return "-";
+    }
+  }
+
   const getVisibleStatus = (key) => {
     const file =
       projectData.projectFilesValidators.projectValidatorDocuments.filter(
@@ -297,6 +309,9 @@ export default function FileManager(props) {
               <th className="text-center" style={{ width: "100px" }}>
                 Ultima modificación
               </th>
+              <th className="text-center" style={{ width: "100px" }}>
+                Subido por
+              </th>
               <th className="text-center">Visible</th>
               <th></th>
             </tr>
@@ -321,6 +336,7 @@ export default function FileManager(props) {
                     <span className="fs-6 ms-2">...</span>
                   </div>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -358,6 +374,7 @@ export default function FileManager(props) {
                           )
                         : ""}
                     </td>
+                    <td className="text-center">{getUploadedByName(selectedFolder[folder].key)}</td>
                     <td className="text-center">
                       {selectedFolder[folder].type === "file" && (
                         <div className="d-flex justify-content-center">

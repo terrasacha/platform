@@ -21,6 +21,7 @@ export default function UploadFileModal(props) {
   const [fileNames, setFileNames] = useState([]);
   const [isLoadingDoc, setIsLoadingDoc] = useState(false);
 
+
   const { projectData, handleUpdateContextProjectFileValidators } =
     useProjectData();
   const { user } = useAuth();
@@ -118,6 +119,7 @@ export default function UploadFileModal(props) {
           fileURLS3: awsUrlFullPath,
           filePathS3: filePath,
           createdAt: Date.now(),
+          uploadedBy: user.name,
           visible: false,
         };
       })

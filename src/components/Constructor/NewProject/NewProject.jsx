@@ -15,6 +15,7 @@ import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { notify } from "utilities/notify";
 import { ToastContainer } from "react-toastify";
+import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
 
 export default function NewProject() {
   const formURL =
@@ -359,7 +360,7 @@ export default function NewProject() {
     const newProductFeatureTokenName = {
       featureID: "GLOBAL_TOKEN_NAME",
       productID: productID,
-      value: `SUAN-${productID.split("-")[4]}`,
+      value: `SUAN-${productID.split("-")[4].toUpperCase()}`,
     };
     console.log("newProductFeature:", newProductFeatureTokenName);
     await API.graphql(
@@ -538,6 +539,10 @@ export default function NewProject() {
         );
       }
     }
+
+    // Creación de carpetas base
+    await makeFolderOnS3(`${productID}/Técnica/`);
+    await makeFolderOnS3(`${productID}/Financiera/`);
   };
 
   const handleSubmit = async (e) => {

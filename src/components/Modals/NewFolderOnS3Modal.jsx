@@ -5,6 +5,7 @@ import { useProjectData } from "context/ProjectDataContext";
 import { Storage } from "aws-amplify";
 import { AddFolderIcon } from "components/common/icons/AddFolderIcon";
 import FormGroup from "components/common/FormGroup";
+import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
 
 export default function NewFolderOnS3Modal(props) {
   const { uploadRoute } = props;
@@ -23,20 +24,12 @@ export default function NewFolderOnS3Modal(props) {
     setNewFolderName("");
   };
 
-  const makeFolderOnS3 = async (folderName) => {
+  const handleCreateFolderOnS3 = async (folderName) => {
     const folderPath = `${uploadRoute}/${folderName}/`;
-    try {
-      const folderResult = await Storage.put(folderPath, "", {
-        level: "public",
-        contentType: "application/x-directory",
-      });
-      refresh();
-      console.log("folderPath", folderPath);
-      console.log("folderResult", folderResult);
-    } catch (error) {
-      console.error("Error al crear la carpeta:", error);
-      throw new Error("Error al crear la carpeta");
-    }
+
+    await makeFolderOnS3(folderPath);
+
+    refresh();
     closeModal();
   };
 
@@ -68,7 +61,7 @@ export default function NewFolderOnS3Modal(props) {
           </Button>
           <Button
             variant="primary"
-            onClick={() => makeFolderOnS3(newFolderName)}
+            onClick={() => handleCreateFolderOnS3(newFolderName)}
           >
             Crear
           </Button>
