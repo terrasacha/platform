@@ -124,12 +124,19 @@ export default function FileManager(props) {
   };
   const handleDownload = async (doc) => {
     try {
-      let id = doc;
+      const id = doc;
       const response = await Storage.get(id, { download: true });
+  
+      // Extraer el nombre del archivo de la ruta de S3
+      const fileName = id.split("/").pop();
+  
       const url = URL.createObjectURL(response.Body);
       const link = document.createElement("a");
       link.href = url;
-      link.download = id;
+  
+      // Usar el nombre del archivo para el atributo 'download'
+      link.download = fileName;
+  
       link.click();
     } catch (error) {
       console.log("Error al descargar el archivo:", error);
