@@ -1,19 +1,25 @@
 const { Storage } = require("aws-amplify");
 
 export async function moveToBackupFolderS3(sourceKey) {
-  console.log(sourceKey,"sourceKey")
+  console.log(sourceKey, "sourceKey");
+
+  // Codifica la ruta sourceKey
+  const encodedSourceKey = encodeURIComponent(sourceKey);
+  console.log(encodedSourceKey, "encodedSourceKey");
   const segments = sourceKey.split("/");
 
-  const productID = segments[0]
+  const productID = segments[0];
   const item = segments.pop();
 
   console.log(item);
   try {
+    // Copia el archivo codificado a la carpeta de respaldo
     await Storage.copy(
-      { key: sourceKey },
+      { key: encodedSourceKey },
       { key: `${productID}/backup/${item}` }
     );
 
+    // Elimina el archivo original codificado
     await Storage.remove(sourceKey);
 
     console.log(`File moved from ${sourceKey} to ${productID}/backup/${item}`);
