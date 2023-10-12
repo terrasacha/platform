@@ -3,8 +3,8 @@ import { Button, Col, Container, Form, Row, Table, Modal } from 'react-bootstrap
 
 import { API, graphqlOperation, Auth } from 'aws-amplify'
 import { onCreateUser, onUpdateUser, onDeleteUser } from '../../../graphql/subscriptions';
-import { createUser, updateUser, deleteUser} from '../../../graphql/mutations';
-import { listUsers } from '../../../graphql/queries';
+import { createUser, updateUser, deleteUser, deleteUserProduct} from '../../../graphql/mutations';
+import { listUsers, listUserProducts } from '../../../graphql/queries';
 import { v4 as uuidv4 } from 'uuid'
 
 class Validators extends Component {
@@ -57,12 +57,20 @@ class Validators extends Component {
     }
     handleDeleteUser = async (id) => { 
         const input = { id }
-        try {
-            await API.graphql(graphqlOperation(deleteUser, { input }))
-            
-        } catch (error) {
+        let promises = []
+        API.graphql(graphqlOperation(listUserProducts, {filter: {userID: {eq: id}}})).then((result) => {
+            if(result.data.listUserProducts.items.length > 0){
+                result.data.listUserProducts.items.map((mapUserProducts) => {
+                    promises.push(API.graphql(graphqlOperation(deleteUserProduct, {input: {id: mapUserProducts.id}})))
+                })
+            }
+        })
+        promises.push(API.graphql(graphqlOperation(deleteUser, {input: input})))
+        await Promise.all(promises).then((result) => {
+            console.log('información eliminada exitosamente')
+        }).catch((error) => {  
             console.log(error)
-        }
+        })  
     }
     showModalDelete(user) {
         // Set the user to delete and show the modal
