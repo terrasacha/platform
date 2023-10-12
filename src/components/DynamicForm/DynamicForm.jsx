@@ -178,9 +178,10 @@ export default function DynamicForm(props) {
 
   const fieldComponents = {
     note: ({ label }) => <div className="col-12 col-12-lg">{label}</div>,
-    text: ({ name, label, appearance, hint, required }) => {
+    text: ({ name, label, appearance, hint, required, readonly }) => {
       const inputType = appearance === "multiline" ? "textarea" : "text";
-      return renderFormGroup(inputType, name, label, hint, required, []);
+      const disabled = readonly === "true";
+      return renderFormGroup(inputType, name, label, hint, required, [], disabled);
     },
     integer: ({ name, label, hint, required }) => {
       return renderFormGroup("number", name, label, hint, required);
