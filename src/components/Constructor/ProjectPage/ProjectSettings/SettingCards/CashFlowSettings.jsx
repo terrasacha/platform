@@ -98,12 +98,11 @@ export default function CashFlowSettings(props) {
           id: pfID,
           value: JSON.stringify({TIR,VAN,flujos_de_caja: data ? data : cashFlowResume}),
         };
-        console.log(tempProductFeature, 'ya existe')
-        /* const response = await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
 
-        if (!response.data.updateProductFeature) error = true; */
+        if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
           value: JSON.stringify({TIR,VAN,flujos_de_caja: cashFlowResume}),
@@ -113,13 +112,13 @@ export default function CashFlowSettings(props) {
           featureID: "GLOBAL_RESUMEN_FLUJO_DE_CAJA",
         };
         console.log(tempProductFeature, 'no existe')
-/* 
+
         API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         )
         .then(response => setPfID(response.data.createProductFeature.id))
         .catch(err => error = true)
- */
+
 
       }
 
