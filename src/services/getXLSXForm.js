@@ -46,17 +46,32 @@ export const getXLSXForm = async (url) => {
     const inputsJsonData = XLSX.utils.sheet_to_json(inputsSheet, { header: 1 });
     const optionsJsonData = XLSX.utils.sheet_to_json(optionsSheet, { header: 1 });
 
+    // Obtener indices de los headers para su identificacion
+    const headers = inputsJsonData[0]
+
+    const typeIndex = headers.indexOf("type")
+    const nameIndex = headers.indexOf("name")
+    const labelIndex = headers.indexOf("label")
+    const hintIndex = headers.indexOf("hint")
+    const requiredIndex = headers.indexOf("required")
+    const readonlyIndex = headers.indexOf("readonly")
+    const appearanceIndex = headers.indexOf("appearance")
+    const relevantIndex = headers.indexOf("relevant")
+    const constraintIndex = headers.indexOf("constraint")
+    const requiredMessageIndex = headers.indexOf("required_message")
+
     // Convierte la hoja de inputs en un objeto JSON y mapea
     const formattedInputsJsonData = inputsJsonData.map((row, index) => ({
-      type: row[0],
-      name: row[1],
-      label: row[2],
-      hint: row[3],
-      required: row[4],
-      appearance: row[5],
-      relevant: row[6],
-      constraint: row[7],
-      required_message: row[8],
+      type: row[typeIndex],
+      name: row[nameIndex],
+      label: row[labelIndex],
+      hint: row[hintIndex],
+      required: row[requiredIndex],
+      readonly: row[readonlyIndex],
+      appearance: row[appearanceIndex],
+      relevant: row[relevantIndex],
+      constraint: row[constraintIndex],
+      required_message: row[requiredMessageIndex],
     }));
     formattedInputsJsonData.shift();
 
