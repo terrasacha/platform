@@ -32,13 +32,14 @@ async function checkUserExistenceInCognito(usuario, email) {
   }
 }
 
-async function createUserInCognito(usuario, email, role, password) {
+async function createUserInCognito(usuario, email, role, password, subrole) {
   const params = {
     UserPoolId: USER_POOL_ID,
     Username: usuario,
     UserAttributes: [
       { Name: 'email', Value: email },
-      { Name: 'custom:role', Value: role }
+      { Name: 'custom:role', Value: role },
+      { Name: 'custom:subrole', Value: subrole },
     ],
     MessageAction: MESSAGE_ACTION_SUPPRESS
   }
@@ -146,17 +147,18 @@ exports.handler = async (event) => {
 
 
   for (const record of event.Records) {
-    if (record.eventName === 'INSERT' && record.dynamodb.NewImage && record.dynamodb.NewImage.role.S === 'validator' && !record.dynamodb.NewImage.isProfileUpdated.BOOL) {
+    if (record.eventName === 'INSERT' && record.dynamodb.NewImage && record.dynamodb.NewImage.role.S.includes('validator') && !record.dynamodb.NewImage.isProfileUpdated.BOOL) {
       const id = record.dynamodb.NewImage.id.S
       const email = record.dynamodb.NewImage.email.S
       const usuario = record.dynamodb.NewImage.name.S
-      const role = 'validator'
+      const role = record.dynamodb.NewImage.role.S.split('_')[0]
+      const subrole = record.dynamodb.NewImage.role.S.split('_')[1]
       const password = generator.generate({
         length: 12,
         numbers: true
       });
       const verifyEmailIdentityCommand = new VerifyEmailIdentityCommand({ EmailAddress: email })
-      console.log(id, email, usuario, role)
+      console.log(id, email, usuario, role, subrole)
 
       try {
         await deleteUserInGraphQL(id)
@@ -165,7 +167,7 @@ exports.handler = async (event) => {
         const { alreadyExist } = await checkUserExistenceInCognito(usuario, email)
         
         if (!alreadyExist) {
-          const sub = await createUserInCognito(usuario, email, role, password)
+          const sub = await createUserInCognito(usuario, email, role, password, subrole)
           await createUserInGraphQL(sub, usuario, email, role)
           await ses.send(verifyEmailIdentityCommand)
           const fromMail = SES_EMAIL

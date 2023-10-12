@@ -10,7 +10,7 @@ import { updateProductFeature } from "graphql/mutations";
 import { API, graphqlOperation } from "aws-amplify";
 
 export default function DescriptionValidator(props) {
-  const { className } = props;
+  const { className, canEdit } = props;
 
   const { projectData } = useProjectData();
   const [projectDescription, setProjectDescription] = useState("");
@@ -64,12 +64,13 @@ export default function DescriptionValidator(props) {
             as="textarea"
             style={{ minHeight:'10rem', maxHeight: "20rem", resize: "none" }}
             value={projectDescription}
+            disabled={canEdit}
             onChange={handleOnChange}
             />
         <div className="d-flex justify-content-end mt-3">
             <Button
             variant="success"
-            disabled={projectDescription.length === 0 || projectDescription === projectData.projectVerifierInfo.verifierDescription}
+            disabled={projectDescription.length === 0 || projectDescription === projectData.projectVerifierInfo.verifierDescription || canEdit}
             onClick={() => saveVerifierDescription()}
             >
             <SaveDiskIcon />

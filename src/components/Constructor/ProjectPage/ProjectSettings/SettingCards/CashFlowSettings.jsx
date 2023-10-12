@@ -11,7 +11,7 @@ import {
 import { notify } from "../../../../../utilities/notify";
 
 export default function CashFlowSettings(props) {
-  const { className } = props;
+  const { className, canEdit } = props;
 
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
   const [cashFlowResume, setCashFlowResume] = useState([])
@@ -96,14 +96,14 @@ export default function CashFlowSettings(props) {
     if (pfID) {
         let tempProductFeature = {
           id: pfID,
-          value: JSON.stringify({TIR,VAN,flujos_de_caja: data? data : cashFlowResume}),
+          value: JSON.stringify({TIR,VAN,flujos_de_caja: data ? data : cashFlowResume}),
         };
         console.log(tempProductFeature, 'ya existe')
-        const response = await API.graphql(
+        /* const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
 
-        if (!response.data.updateProductFeature) error = true;
+        if (!response.data.updateProductFeature) error = true; */
       } else {
         let tempProductFeature = {
           value: JSON.stringify({TIR,VAN,flujos_de_caja: cashFlowResume}),
@@ -113,13 +113,13 @@ export default function CashFlowSettings(props) {
           featureID: "GLOBAL_RESUMEN_FLUJO_DE_CAJA",
         };
         console.log(tempProductFeature, 'no existe')
-
+/* 
         API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         )
         .then(response => setPfID(response.data.createProductFeature.id))
         .catch(err => error = true)
-
+ */
 
       }
 
@@ -325,12 +325,10 @@ export default function CashFlowSettings(props) {
                 inputSize="md"
                 label="TIR"
                 inputName="TIR"
+                disabled={canEdit}
+                saveBtnDisabled={canEdit}
                 inputValue={TIR}
-                saveBtnDisabled={
-                false
-                }
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() => handleSaveBtn("TIR")}
+                onClickSaveBtn={() => handleSaveBtn()}
             />
             <FormGroup
                 type="flex"
@@ -338,11 +336,11 @@ export default function CashFlowSettings(props) {
                 inputSize="md"
                 label="VAN"
                 inputName="VAN"
+                disabled={canEdit}
+                saveBtnDisabled={canEdit}
                 inputValue={VAN}
-                saveBtnDisabled={
-                false
-                }
-                onClickSaveBtn={() => handleSaveBtn("VAN")}
+                onChangeInputValue={(e) => handleChangeInputValue(e)}
+                onClickSaveBtn={() => handleSaveBtn()}
             />
             <FormGroup
                   type="flex"
@@ -352,15 +350,14 @@ export default function CashFlowSettings(props) {
                   label="Excel data"
                   inputName="Excel"
                   inputValue={excelData}
-                  saveBtnDisabled={
-                    false
-                    }
+                  disabled={canEdit}
+                  saveBtnDisabled={canEdit}
                   onChangeInputValue={(e) => handleChangeInputValue(e)}
                   onClickSaveBtn={() => handlePasteFromExcel()}
               />
           <p className="mb-3">Flujo de caja del proyecto</p>
           <div>
-            <TableEdit columns={['año', 'resultado_anual', 'resultado_acumulado']} infoTable={cashFlowResume} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
+            <TableEdit  canEdit={canEdit} columns={['año', 'resultado_anual', 'resultado_acumulado']} infoTable={cashFlowResume} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
           </div>
         </Card.Body>
       </Card>

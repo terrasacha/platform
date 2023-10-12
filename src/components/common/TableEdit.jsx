@@ -6,10 +6,11 @@ import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
-export default function TableEdit({ infoTable, handleEditValue, handleChangeInputValue, columns, handleAddCashFlow, handleSaveHistoricalData, handleDeleteHistoricalData }) {
+export default function TableEdit({ canEdit, infoTable, handleEditValue, handleChangeInputValue, columns, handleAddCashFlow, handleSaveHistoricalData, handleDeleteHistoricalData }) {
   const [data, setData] = useState([]);
   useEffect(() => {
     if (infoTable) {
+        console.log(infoTable)
         setData(infoTable);
 
     }
@@ -67,6 +68,7 @@ export default function TableEdit({ infoTable, handleEditValue, handleChangeInpu
                               size="sm"
                               variant="warning"
                               className="m-1"
+                              disabled={canEdit}
                               onClick={() => handleEditValue(index)}
                             >
                               <EditIcon />
@@ -75,6 +77,7 @@ export default function TableEdit({ infoTable, handleEditValue, handleChangeInpu
                               size="sm"
                               variant="danger"
                               className="m-1"
+                              disabled={canEdit}
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
                               <TrashIcon />
@@ -90,6 +93,7 @@ export default function TableEdit({ infoTable, handleEditValue, handleChangeInpu
                         size="sm"
                         variant="secondary"
                         className="w-100"
+                        disabled={canEdit}
                         onClick={() => handleAddCashFlow()}
                       >
                         <PlusIcon></PlusIcon>

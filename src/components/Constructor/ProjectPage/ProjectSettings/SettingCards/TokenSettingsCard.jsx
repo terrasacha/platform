@@ -18,8 +18,8 @@ import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 
 export default function TokenSettingsCard(props) {
-  const { className } = props;
-
+  const { className, canEdit} = props;
+  console.log(canEdit)
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
@@ -385,6 +385,7 @@ export default function TokenSettingsCard(props) {
                               size="sm"
                               variant="warning"
                               className="m-1"
+                              disabled={canEdit}
                               onClick={() => handleEditHistoricalData(index)}
                             >
                               <EditIcon />
@@ -393,6 +394,7 @@ export default function TokenSettingsCard(props) {
                               size="sm"
                               variant="danger"
                               className="m-1"
+                              disabled={canEdit}
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
                               <TrashIcon />
@@ -410,6 +412,8 @@ export default function TokenSettingsCard(props) {
                         size="sm"
                         variant="secondary"
                         className="w-100"
+                        disabled={canEdit}
+
                         onClick={() => handleAddNewPeriodToHistoricalData()}
                       >
                         <PlusIcon></PlusIcon>

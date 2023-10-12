@@ -17,7 +17,8 @@ class Validators extends Component {
                 id: '',
                 username: '',
                 email: '',
-                role: 'validator'
+                role: 'validator',
+                subRole: 'financial'
             },
             userToConfirm: '',
             showModal: false, 
@@ -107,6 +108,9 @@ class Validators extends Component {
         if (event.target.name === 'newUser.email') {
             tempNewUser.email = event.target.value
         }
+        if (event.target.name === 'newUser.subRole') {
+            tempNewUser.subRole = event.target.value
+        }
         
         this.setState({newUser: tempNewUser})      
     }
@@ -124,13 +128,14 @@ class Validators extends Component {
                 id: '',
                 username: '',
                 email: '',
-                role: 'validator'
+                role: 'validator',
+                subRole: 'financial'
             },
             userToConfirm: ''
         })
     }
     async signUp(){
-        const { username, email, role } = this.state.newUser
+        const { username, email, role, subRole } = this.state.newUser
         if(username !== '' && email !== ''){
             try {
                 
@@ -139,7 +144,7 @@ class Validators extends Component {
                     name: username,
                     email: email,
                     isProfileUpdated: false,
-                    role: role
+                    role: `${role}_${subRole}`
                 }
                 await API.graphql(graphqlOperation(createUser, { input: userPayload }))   
             } catch (error) {
@@ -227,6 +232,18 @@ class Validators extends Component {
                                     value={newUser.email}
                                     onChange={(e) => this.handleOnChangeInputForm(e)} />
                             </Form.Group>
+                            <Form.Group as={Col}>
+                                <Form.Label>Validator type</Form.Label>
+                                <Form.Select
+                                    name='newUser.subRole'
+                                    value={newUser.subRole}
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}
+                                >
+                                    <option value="financial">Financial</option>
+                                    <option value="technical">Technical</option>
+                                </Form.Select>
+                            </Form.Group>
+
                         </Row>
 
                         <Row className='mb-1'>
