@@ -22,15 +22,27 @@ export default function FileManager(props) {
   const [selectedFolder, setSelectedFolder] = useState({});
   const [currentPath, setCurrentPath] = useState([]);
 
-  const { projectData, handleUpdateContextProjectFileValidators, refresh } =
+  const { projectData, handleUpdateContextProjectFileValidators } =
     useProjectData();
 
   useEffect(() => {
     listObjectsInFolder(rootFolder)
       .then((data) => {
+        // const actualFolder = currentPath.length === 0 ? rootFolder : currentPath.join("/");
         setS3Objects(data);
-        setSelectedFolder(data[rootFolder].data);
-        setCurrentPath([rootFolder]);
+        if(currentPath.length === 0) {
+          setSelectedFolder(data[rootFolder].data);
+          setCurrentPath([rootFolder]);
+        } else {
+          let currentData = data;
+          
+          // Itera a través de currentPath para navegar por la estructura de datos
+          for (const pathSegment of currentPath) {
+            currentData = currentData[pathSegment].data;
+          }
+          setSelectedFolder(currentData);
+          setCurrentPath([...currentPath]);
+        }
       })
       .catch((error) => {
         console.error("Error al listar objetos:", error);
