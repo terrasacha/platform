@@ -327,6 +327,7 @@ export default function CashFlowSettings(props) {
                 disabled={canEdit}
                 saveBtnDisabled={canEdit}
                 inputValue={TIR}
+                onChangeInputValue={(e) => handleChangeInputValue(e)}
                 onClickSaveBtn={() => handleSaveBtn()}
             />
             <FormGroup
