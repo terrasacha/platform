@@ -10,7 +10,6 @@ export default function TableEdit({ canEdit, infoTable, handleEditValue, handleC
   const [data, setData] = useState([]);
   useEffect(() => {
     if (infoTable) {
-        console.log(infoTable)
         setData(infoTable);
 
     }

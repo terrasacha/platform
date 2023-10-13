@@ -39,23 +39,23 @@ export default function ProjectSettings() {
       {activeSection === 'technical' &&
         <>
           <div className="col">
-            <DescriptionValidator canEdit={activeSection !== validatorSubRole}/>
+            <DescriptionValidator canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
           </div>
           <div className="col">
-            <GenericInputTable canEdit={activeSection !== validatorSubRole} title={'Ingresos por producto'} fID={'GLOBAL_INGRESOS_POR_PRODUCTO'} financialInfoType={'revenuesByProduct'}/>
+            <GenericInputTable  title={'Ingresos por producto'} fID={'GLOBAL_INGRESOS_POR_PRODUCTO'} financialInfoType={'revenuesByProduct'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
           </div>
           <div className="col">
-            <GenericInputTable  canEdit={activeSection !== validatorSubRole} title={'Productos del ciclo del proyecto'} fID={'GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO'} financialInfoType={'productsOfCycleProject'}/>
+            <GenericInputTable  title={'Productos del ciclo del proyecto'} fID={'GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO'} financialInfoType={'productsOfCycleProject'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole} />
           </div>
         </>
       }
       {activeSection === 'financial' &&
         <>
           <div className="col">
-            <TokenSettingsCard canEdit={activeSection !== validatorSubRole}/>
+            <TokenSettingsCard canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
           </div>
           <div className="col">
-            <CashFlowSettings  canEdit={activeSection !== validatorSubRole}/>
+            <CashFlowSettings  canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
           </div>
         </>
       }
