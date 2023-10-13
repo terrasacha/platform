@@ -20,9 +20,9 @@ class Validators extends Component {
                 role: 'validator',
                 subRole: 'financial'
             },
-            userToConfirm: '',
             showModal: false, 
-            userToDelete: null,
+            showModalCreate: false, 
+            userToDelete: {id: null, username: null},
         }
         this.handleCRUDUser = this.handleCRUDUser.bind(this)
     }
@@ -73,6 +73,11 @@ class Validators extends Component {
             console.log(error)
         })  
     }
+    showModalCreate() {
+        this.setState({
+            showModalCreate: true,
+        });
+    }
     showModalDelete(user) {
         // Set the user to delete and show the modal
         this.setState({
@@ -81,12 +86,20 @@ class Validators extends Component {
         });
     }
 
+    async confirmCreateUser() {
+        const { newUser } = this.state;
+        if (newUser) {
+            await this.handleCRUDUser()
+            this.cleanUserOnCreate()
+        }
+    }
+
     confirmDeleteUser() {
         const { userToDelete } = this.state;
         if (userToDelete) {
-            this.handleDeleteUser(userToDelete);
+            this.handleDeleteUser(userToDelete.id);
             this.setState({
-                userToDelete: null,
+                userToDelete: {id: null, username: null},
                 showModal: false, // Hide the modal after confirmation
             });
         }
@@ -117,10 +130,12 @@ class Validators extends Component {
     async handleCRUDUser() {
         let tempNewUser = this.state.newUser
         await this.signUp(tempNewUser.username, tempNewUser.email, tempNewUser.role)
-        this.cleanUserOnCreate()
     }
     handleHideModal() {
         this.setState({showModal: !this.state.showModal})
+    }
+    handleHideModalCreate() {
+        this.setState({showModalCreate: !this.state.showModalCreate})
     }
     cleanUserOnCreate(){
         this.setState({
@@ -131,7 +146,7 @@ class Validators extends Component {
                 role: 'validator',
                 subRole: 'financial'
             },
-            userToConfirm: ''
+            showModalCreate: false
         })
     }
     async signUp(){
@@ -196,7 +211,7 @@ class Validators extends Component {
                                             variant='danger'
                                             size='sm'
                                             disabled={!validator.isProfileUpdated}
-                                            onClick={() => this.showModalDelete(validator.id)}
+                                            onClick={() => this.showModalDelete({id: validator.id, username: validator.name})}
                                         >Delete</Button>
                                     </td>
                                 </tr>
@@ -239,8 +254,8 @@ class Validators extends Component {
                                     value={newUser.subRole}
                                     onChange={(e) => this.handleOnChangeInputForm(e)}
                                 >
-                                    <option value="financial">Financial</option>
-                                    <option value="technical">Technical</option>
+                                    <option value="financial">Financiero</option>
+                                    <option value="technical">Técnico</option>
                                 </Form.Select>
                             </Form.Group>
 
@@ -250,18 +265,18 @@ class Validators extends Component {
                             <Button
                             variant='primary'
                             size='sm'
-                            onClick={this.handleCRUDUser}
-                            >crear</Button>
+                            onClick={() => this.showModalCreate()}
+                            >Crear</Button>
                         </Row>
                     </Form>
                 </Container>
                 {renderValidators()}
                 <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Confirm Delete</Modal.Title>
+                        <Modal.Title>Confirmar eliminación</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Are you sure you want to delete this user?
+                        {`¿Estás seguro que quieres borrar el usuario ${this.state.userToDelete.username}?`}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={() => this.setState({ showModal: false })}>
@@ -269,6 +284,47 @@ class Validators extends Component {
                         </Button>
                         <Button variant="danger" onClick={() => this.confirmDeleteUser()}>
                             Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.showModalCreate} onHide={() => this.setState({ showModalCreate: false })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirmar datos de nuevo usuario</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Sub role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {this.state.newUser.username}
+                                    </td>
+                                    <td>
+                                        {this.state.newUser.email}
+                                    </td>
+                                    <td>
+                                        {this.state.newUser.role}
+                                    </td>
+                                    <td>
+                                        {this.state.newUser.subRole}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ showModalCreate: false })}>
+                            Cancel
+                        </Button>
+                        <Button variant="success" onClick={() => this.confirmCreateUser()}>
+                            Confirmar
                         </Button>
                     </Modal.Footer>
                 </Modal>
