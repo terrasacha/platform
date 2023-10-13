@@ -5,6 +5,7 @@ import ProjectSettingsCard from "./SettingCards/ProjectSettingsCard";
 import TokenSettingsCard from "./SettingCards/TokenSettingsCard";
 import CashFlowSettings from "./SettingCards/CashFlowSettings";
 import GenericInputTable from "./SettingCards/GenericInputTable";
+import FinancialIndicators from "./SettingCards/FinancialIndicators";
 import DescriptionValidator from "./SettingCards/DescriptionValidator";
 
 export default function ProjectSettings() {
@@ -46,6 +47,9 @@ export default function ProjectSettings() {
           </div>
           <div className="col">
             <GenericInputTable  title={'Productos del ciclo del proyecto'} fID={'GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO'} financialInfoType={'productsOfCycleProject'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole} />
+          </div>
+          <div className="col">
+            <FinancialIndicators  title={'Indicadores financieros'} fID={'GLOBAL_INDICADORES_FINANCIEROS'} financialInfoType={'financialIndicators'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole} />
           </div>
         </>
       }

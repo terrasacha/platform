@@ -412,6 +412,11 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_RESUMEN_FLUJO_DE_CAJA";
     })[0]?.value || "[]"
   );
+  const financialIndicators = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_INDICADORES_FINANCIEROS";
+    })[0]?.value || "[]"
+  );
   const productsOfCycleProjectID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO";
@@ -424,6 +429,10 @@ export const mapProjectData = async (data) => {
   const cashFlowResumeID = 
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_RESUMEN_FLUJO_DE_CAJA";
+    })[0]?.id || null
+  const financialIndicatorsID = 
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_INDICADORES_FINANCIEROS";
     })[0]?.id || null
 
 
@@ -608,7 +617,8 @@ export const mapProjectData = async (data) => {
     projectFinancialInfo: {
       revenuesByProduct: {revenuesByProductID,revenuesByProduct},
       productsOfCycleProject: {productsOfCycleProjectID,productsOfCycleProject},
-      cashFlowResume: {cashFlowResumeID,cashFlowResume} 
+      cashFlowResume: {cashFlowResumeID,cashFlowResume},
+      financialIndicators: {financialIndicatorsID,financialIndicators},
     },
   };
 };
