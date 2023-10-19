@@ -233,7 +233,17 @@ export default function DynamicForm(props) {
         />
       );
     },
-    group: ({ label, items }, options) => (
+    begin_group: ({ label, items }, options) => (
+      <div className="col-12 col-12-lg border p-3">
+        <div className="row">
+          <div className="col-12 col-12-lg">
+            <h4>{label}</h4>
+          </div>
+          {getFormFields(items, options)}
+        </div>
+      </div>
+    ),
+    begin_repeat: ({ label, items }, options) => (
       <div className="col-12 col-12-lg border p-3">
         <div className="row">
           <div className="col-12 col-12-lg">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PostulantInfoCard from "./InfoCards/PostulantInfoCard";
 import ProjectInfoCard from "./InfoCards/ProjectInfoCard";
 import OwnerInfoCard from "./InfoCards/OwnerInfoCard";
@@ -9,8 +9,21 @@ import RelationsInfoCard from "./InfoCards/RelationsInfoCard";
 import GeodataInfoCard from "./InfoCards/GeodataInfoCard";
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import UseRestrictionsInfoCard from "./InfoCards/UseRestrictionsInfoCard";
+import { useAuth } from "context/AuthContext";
+
 export default function ProjectDetails() {
   const { projectData } = useProjectData();
+  const [autorizedUser, setAutorizedUser] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user && projectData) {
+      const verifiers = projectData?.projectVerifiers;
+      const postulant = projectData?.projectPostulant?.id;
+      const authorizedUsers = [...verifiers, postulant];
+      setAutorizedUser(authorizedUsers.includes(user.id));
+    }
+  }, [projectData]);
 
   console.log(projectData);
   const coords = {
@@ -21,31 +34,50 @@ export default function ProjectDetails() {
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       <div className="col">
-        <ProjectInfoCard />
+        <ProjectInfoCard autorizedUser={autorizedUser} />
       </div>
       <div className="col">
-        <GeodataInfoCard coords={coords} zoom={15} geoData ={projectData?.projectGeoData} />
+        <GeodataInfoCard
+          coords={coords}
+          zoom={15}
+          geoData={projectData?.projectGeoData}
+          autorizedUser={autorizedUser}
+        />
       </div>
       <div className="col">
-        <OwnerInfoCard />
+        <OwnerInfoCard autorizedUser={autorizedUser} />
       </div>
       <div className="col">
-        <PostulantInfoCard />
+        <PostulantInfoCard autorizedUser={autorizedUser} />
       </div>
-      <div className={(projectData.projectUses?.replaceUse.types.length > 0 || projectData.projectUses?.actualUse.types.length > 0) ? "col-12 col-lg-12" : "col-12"}>
-        <ActualUseAndPotentialInfoCard />
+      <div
+        className={
+          projectData.projectUses?.replaceUse.types.length > 0 ||
+          projectData.projectUses?.actualUse.types.length > 0
+            ? "col-12 col-lg-12"
+            : "col-12"
+        }
+      >
+        <ActualUseAndPotentialInfoCard autorizedUser={autorizedUser} />
       </div>
-      <div className={(projectData.projectUses?.replaceUse.types.length > 0 || projectData.projectUses?.actualUse.types.length > 0) ? "col-12 col-lg-12" : "col-12"}>
-        <UseRestrictionsInfoCard />
+      <div
+        className={
+          projectData.projectUses?.replaceUse.types.length > 0 ||
+          projectData.projectUses?.actualUse.types.length > 0
+            ? "col-12 col-lg-12"
+            : "col-12"
+        }
+      >
+        <UseRestrictionsInfoCard autorizedUser={autorizedUser} />
       </div>
       <div className="col-12 col-lg-12">
-        <EcosystemInfoCard />
+        <EcosystemInfoCard autorizedUser={autorizedUser} />
       </div>
       <div className="col">
-        <PropertyInfoCard />
+        <PropertyInfoCard autorizedUser={autorizedUser} />
       </div>
       <div className="col">
-        <RelationsInfoCard />
+        <RelationsInfoCard autorizedUser={autorizedUser} />
       </div>
     </div>
   );
