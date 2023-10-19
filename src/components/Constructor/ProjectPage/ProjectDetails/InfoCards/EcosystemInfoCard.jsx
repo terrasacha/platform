@@ -7,6 +7,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
 import { Button } from "react-bootstrap";
+import { notify } from "../../../../../utilities/notify";
 
 export default function EcosystemInfoCard(props) {
   const { className, autorizedUser } = props;
@@ -119,6 +120,8 @@ export default function EcosystemInfoCard(props) {
         );
       }
     }
+    
+    notify({ msg: "Información actualizada", type: "success" });
   };
 
   return (
@@ -239,9 +242,13 @@ export default function EcosystemInfoCard(props) {
             />
           </div>
         </div>
-        <div className="d-flex justify-content-center">
-          <Button onClick={() => handleSaveBtn()} variant="success">Guardar</Button>
-        </div>
+        {autorizedUser && (
+          <div className="d-flex justify-content-center">
+            <Button onClick={() => handleSaveBtn()} variant="success">
+              Guardar
+            </Button>
+          </div>
+        )}
       </Card.Body>
     </Card>
   );

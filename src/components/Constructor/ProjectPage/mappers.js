@@ -170,7 +170,7 @@ const mapStatus = async (obj) => {
 
 const mapCategory = async (obj) => {
   const mapper = {
-    PROYECTO_PLANTACIONES: "Proyecto Plantaciones",
+    PROYECTO_PLANTACIONES: "PROYECTO_PLANTACIONES",
     "REDD+": "REDD+",
   };
 

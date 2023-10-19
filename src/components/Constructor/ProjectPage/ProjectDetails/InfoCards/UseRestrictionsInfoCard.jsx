@@ -6,6 +6,7 @@ import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { useAuth } from "context/AuthContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
+import { notify } from "../../../../../utilities/notify";
 
 export default function UseRestrictionsInfoCard(props) {
   const { className, autorizedUser } = props;
@@ -109,6 +110,8 @@ export default function UseRestrictionsInfoCard(props) {
         other: formData.projectRestrictionsOther,
       });
     }
+    
+    notify({ msg: "Información actualizada", type: "success" });
   };
 
   return (

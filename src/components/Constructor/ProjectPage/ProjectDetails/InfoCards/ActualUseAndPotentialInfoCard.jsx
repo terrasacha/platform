@@ -7,6 +7,7 @@ import { useAuth } from "context/AuthContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { Button } from "react-bootstrap";
+import { notify } from "../../../../../utilities/notify";
 
 export default function ActualUseAndPotentialInfoCard(props) {
   const { className, autorizedUser } = props;
@@ -174,6 +175,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
         );
       }
     }
+    
+    notify({ msg: "Información actualizada", type: "success" });
   };
 
   return (
@@ -414,9 +417,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="¿A qué tipo de Uso de Suelo?"
-                    inputValue={
-                      formData.D_replace_potrero_use
-                    }
+                    inputValue={formData.D_replace_potrero_use}
                     inputName="D_replace_potrero_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -441,9 +442,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="¿A qué tipo de Uso de Suelo?"
-                    inputValue={
-                      formData.D_replace_plantaciones1_use
-                    }
+                    inputValue={formData.D_replace_plantaciones1_use}
                     inputName="D_replace_plantaciones1_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -451,9 +450,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="Cantidad de área a remplazar"
-                    inputValue={
-                      formData.D_replace_ha_plantaciones1_use
-                    }
+                    inputValue={formData.D_replace_ha_plantaciones1_use}
                     inputName="D_replace_ha_plantaciones1_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -470,9 +467,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="¿A qué tipo de Uso de Suelo?"
-                    inputValue={
-                      formData.D_replace_plantaciones2_use
-                    }
+                    inputValue={formData.D_replace_plantaciones2_use}
                     inputName="D_replace_plantaciones2_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -480,9 +475,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="Cantidad de área a remplazar"
-                    inputValue={
-                      formData.D_replace_ha_plantaciones2_use
-                    }
+                    inputValue={formData.D_replace_ha_plantaciones2_use}
                     inputName="D_replace_ha_plantaciones2_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -499,9 +492,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="¿A qué tipo de Uso de Suelo?"
-                    inputValue={
-                      formData.D_replace_plantaciones3_use
-                    }
+                    inputValue={formData.D_replace_plantaciones3_use}
                     inputName="D_replace_plantaciones3_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -509,9 +500,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="Cantidad de área a remplazar"
-                    inputValue={
-                      formData.D_replace_ha_plantaciones3_use
-                    }
+                    inputValue={formData.D_replace_ha_plantaciones3_use}
                     inputName="D_replace_ha_plantaciones3_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -528,9 +517,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="¿A qué tipo de Uso de Suelo?"
-                    inputValue={
-                      formData.D_replace_frutales1_use
-                    }
+                    inputValue={formData.D_replace_frutales1_use}
                     inputName="D_replace_frutales1_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -538,9 +525,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="Cantidad de área a remplazar"
-                    inputValue={
-                      formData.D_replace_ha_frutales1_use
-                    }
+                    inputValue={formData.D_replace_ha_frutales1_use}
                     inputName="D_replace_ha_frutales1_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -557,9 +542,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="¿A qué tipo de Uso de Suelo?"
-                    inputValue={
-                      formData.D_replace_frutales2_use
-                    }
+                    inputValue={formData.D_replace_frutales2_use}
                     inputName="D_replace_frutales2_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -567,9 +550,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="Cantidad de área a remplazar"
-                    inputValue={
-                      formData.D_replace_ha_frutales2_use
-                    }
+                    inputValue={formData.D_replace_ha_frutales2_use}
                     inputName="D_replace_ha_frutales2_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -586,9 +567,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     disabled={!autorizedUser}
                     inputType="text"
                     label="¿A qué tipo de Uso de Suelo?"
-                    inputValue={
-                      formData.D_replace_otros_use
-                    }
+                    inputValue={formData.D_replace_otros_use}
                     inputName="D_replace_otros_use"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
@@ -605,11 +584,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
             )}
           </div>
         </div>
-        <div className="d-flex justify-content-center">
-          <Button onClick={() => handleSaveBtn()} variant="success">
-            Guardar
-          </Button>
-        </div>
+        {autorizedUser && (
+          <div className="d-flex justify-content-center">
+            <Button onClick={() => handleSaveBtn()} variant="success">
+              Guardar
+            </Button>
+          </div>
+        )}
       </Card.Body>
     </Card>
   );

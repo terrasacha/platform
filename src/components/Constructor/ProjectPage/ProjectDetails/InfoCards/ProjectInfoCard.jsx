@@ -10,6 +10,7 @@ import {
   updateProductFeature,
 } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
+import { notify } from "../../../../../utilities/notify";
 
 export default function ProjectInfoCard(props) {
   const { className, autorizedUser } = props;
@@ -29,6 +30,7 @@ export default function ProjectInfoCard(props) {
         projectInfoTitle: projectData.projectInfo?.title,
         projectInfoArea: projectData.projectInfo?.area,
         projectInfoDescription: projectData.projectInfo?.description,
+        projectInfoCategory: projectData.projectInfo?.category,
         projectInfoLocationVereda: projectData.projectInfo?.location.vereda,
         projectInfoLocationMunicipio:
           projectData.projectInfo?.location.municipio,
@@ -60,6 +62,13 @@ export default function ProjectInfoCard(props) {
       setFormData((prevState) => ({
         ...prevState,
         projectInfoDescription: value,
+      }));
+      return;
+    }
+    if (name === "projectInfoCategory") {
+      setFormData((prevState) => ({
+        ...prevState,
+        projectInfoCategory: value,
       }));
       return;
     }
@@ -121,6 +130,21 @@ export default function ProjectInfoCard(props) {
       );
       handleUpdateContextProjectInfo({
         description: formData.projectInfoDescription,
+      });
+    }
+
+    if (toSave === "projectInfoCategory") {
+      const updatedProduct = {
+        id: projectData.projectInfo.id,
+        categoryID: formData.projectInfoCategory,
+      };
+      await API.graphql(
+        graphqlOperation(updateProduct, {
+          input: updatedProduct,
+        })
+      );
+      handleUpdateContextProjectInfo({
+        category: formData.projectInfoCategory,
       });
     }
 
@@ -286,6 +310,8 @@ export default function ProjectInfoCard(props) {
         fichaCatrastal: formData.projectInfoLocationFichaCatrastral,
       });
     }
+
+    notify({ msg: "Información actualizada", type: "success" });
   };
 
   return (
@@ -351,17 +377,27 @@ export default function ProjectInfoCard(props) {
             className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}
           >
             <FormGroup
-              disabled
+              disabled={!autorizedUser}
+              type={autorizedUser && "flex"}
               label="Categoria del proyecto"
               inputType="radio"
               optionList={[
                 { label: "REDD+", value: "REDD+" },
                 {
-                  label: "Proyecto Plantaciones",
-                  value: "Proyecto Plantaciones",
+                  label: "PROYECTO_PLANTACIONES",
+                  value: "PROYECTO_PLANTACIONES",
                 },
               ]}
-              optionCheckedList={projectData.projectInfo?.category}
+              optionCheckedList={formData.projectInfoCategory}
+              inputName="projectInfoCategory"
+              saveBtnDisabled={
+                projectData.projectInfo?.category ===
+                formData.projectInfoCategory
+                  ? true
+                  : false
+              }
+              onChangeInputValue={(e) => handleChangeInputValue(e)}
+              onClickSaveBtn={() => handleSaveBtn("projectInfoCategory")}
             />
           </div>
           <div className="col-12">

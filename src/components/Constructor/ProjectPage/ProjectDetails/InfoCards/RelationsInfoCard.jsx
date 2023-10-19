@@ -6,6 +6,7 @@ import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
+import { notify } from "../../../../../utilities/notify";
 
 export default function RelationsInfoCard(props) {
   const { className, autorizedUser } = props;
@@ -151,6 +152,8 @@ export default function RelationsInfoCard(props) {
         communityGroups: formData.projectRelationsCommunityGroups,
       });
     }
+    
+    notify({ msg: "Información actualizada", type: "success" });
   };
 
   return (
