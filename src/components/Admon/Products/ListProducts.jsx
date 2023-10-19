@@ -25,6 +25,7 @@ export default class ListProducts extends Component {
             selectedProductFeatureToDeleteHasResults: null,
             selectedProductFeatureToDeleteConfirmationCheck: false,
             isRenderModalProductImages: false,
+            showModalDeleteProduct: false
         }
         this.handleShowAreYouSureDeleteProduct = this.props.handleShowAreYouSureDeleteProduct.bind(this)
         this.handleUpdateProductIsActive = this.props.handleUpdateProductIsActive.bind(this)
@@ -248,7 +249,7 @@ export default class ListProducts extends Component {
                                             <Button 
                                                 variant={'danger'}
                                                 size='sm' 
-                                                onClick={(e) => deleteAllInfoProduct(product)}
+                                                onClick={(e) => this.setState({ showModalDeleteProduct: true, selectedProductToShow: product })}
                                             >Delete</Button> : ''}
                                     </td>
                                     <td>
@@ -510,6 +511,28 @@ export default class ListProducts extends Component {
             )
         }
     }
+    const modalDeleteProduct = () => {
+        if (this.state.showModalDeleteProduct) {
+            return (
+                <Modal show={this.state.showModalDeleteProduct} onHide={() => this.setState({ showModalDeleteProduct: false })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirmar eliminación</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {`¿Estás seguro que quieres borrar el proyectoa?`}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.setState({ showModalDeleteProduct: false })}>
+                            Cancel
+                        </Button>
+                        <Button variant="danger" onClick={() => deleteAllInfoProduct(this.state.selectedProductToShow)}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )
+        }
+    }
     const modalProductVerification = () => {
         if (isRenderModalVerifications && selectedProductToShow !== null) {
             let productFeatures = listPF.filter(pf => pf.productID === selectedProductToShow.id && pf.feature.isVerifable && pf.documents.items.length > 0);
@@ -563,12 +586,6 @@ export default class ListProducts extends Component {
                                 <Button
                                     variant="outline-primary"
                                     size="sm"
-                                    /* onClick={() =>
-                                        this.setState({
-                                        showModalDocument: true,
-                                        selectedDocument: document,
-                                        })
-                                    } */
                                     onClick={() => this.handleDownload(pfeature)}
                                     >
                                         Download Document
@@ -655,6 +672,7 @@ export default class ListProducts extends Component {
                 {modalProductVerification()}
                 {modalProductDescription()}
                 {modalDeleteProductFeatureConfirmation()}
+                {modalDeleteProduct()}
             </>
         )
     }

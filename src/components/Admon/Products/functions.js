@@ -12,8 +12,8 @@ export async function deleteAllInfoProduct(product) {
   if (!product) {
     return;
   }
-
-  const promises = [
+  console.log('product en functions ', product)
+  /* const promises = [
     API.graphql(graphqlOperation(deleteProduct, { input: { id: product.id } })),
   ];
 
@@ -71,6 +71,6 @@ async function moveObjectS3(sourceKey, productID) {
     } else {
       console.error("Error moving the file:", error);
     }
-  }
+  } */
 }
 
