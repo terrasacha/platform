@@ -20,10 +20,16 @@ export function AuthProvider({ children }) {
       const response = await API.graphql(
         graphqlOperation(getUser, { id: currentUser.attributes.sub })
       );
-
       setUser(response.data.getUser);
       localStorage.setItem("role", currentUser.attributes["custom:role"]);
-    } catch (error) {}
+    } catch (error) {
+      setUser({
+        id: "",
+        username: "",
+        email: "",
+        role: "",
+      });
+    }
   }
   const value = {
     user,

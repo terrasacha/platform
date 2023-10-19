@@ -20,6 +20,66 @@ export function ProjectDataProvider({ children }) {
     }));
   };
 
+  const handleUpdateContextProjectRestrictions = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectRestrictions: { ...prevData.projectRestrictions, ...data },
+    }));
+  };
+
+  const handleUpdateContextProjectRelations = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectRelations: { ...prevData.projectRelations, ...data },
+    }));
+  };
+
+  const handleUpdateContextProjectEcosystem = async (data, obj = null) => {
+    if (obj === "waterSprings") {
+      setProjectData((prevData) => ({
+        ...prevData,
+        projectEcosystem: {
+          ...prevData.projectEcosystem,
+          waterSprings: { ...prevData.projectEcosystem.waterSprings, ...data },
+        },
+      }));
+    }
+    if (obj === "concessions") {
+      setProjectData((prevData) => ({
+        ...prevData,
+        projectEcosystem: {
+          ...prevData.projectEcosystem,
+          concessions: { ...prevData.projectEcosystem.concessions, ...data },
+        },
+      }));
+    }
+    if (obj === "diversity") {
+      setProjectData((prevData) => ({
+        ...prevData,
+        projectEcosystem: {
+          ...prevData.projectEcosystem,
+          diversity: { ...prevData.projectEcosystem.diversity, ...data },
+        },
+      }));
+    }
+    if (obj === null) {
+      setProjectData((prevData) => ({
+        ...prevData,
+        projectEcosystem: { ...prevData.projectEcosystem, ...data },
+      }));
+    }
+  };
+
+  const handleUpdateContextProjectInfoLocation = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectInfo: {
+        ...prevData.projectInfo,
+        location: { ...prevData.projectInfo.location, ...data },
+      },
+    }));
+  };
+
   const handleUpdateContextVerifiers = async (data) => {
     setProjectData((prevData) => ({
       ...prevData,
@@ -92,6 +152,10 @@ export function ProjectDataProvider({ children }) {
     handleUpdateContextProjectTokenData,
     handleUpdateContextFileVerification,
     handleUpdateContextProjectInfo,
+    handleUpdateContextProjectInfoLocation,
+    handleUpdateContextProjectRestrictions,
+    handleUpdateContextProjectRelations,
+    handleUpdateContextProjectEcosystem,
     handleUpdateContextVerifiers,
     handleUpdateContextProjectFileValidators,
     refresh,

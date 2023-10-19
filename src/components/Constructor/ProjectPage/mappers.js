@@ -41,6 +41,16 @@ const mapProjectVerifiers = async (data) => {
   return projectVerifiers;
 };
 
+const mapProductFeatures = async (productFeatures) => {
+  return productFeatures.map((pf) => {
+    return {
+      id: pf.id,
+      featureID: pf.featureID,
+      value: pf.value,
+    };
+  });
+}
+
 const mapProjectVerifiersNames = async (data) => {
 
   const projectVerifiersNames = data.userProducts.items
@@ -188,8 +198,8 @@ const mapUseTypes = async (types) => {
 
 const mapTrueOrFalseAnswers = async (answer) => {
   const mapper = {
-    yes: "Si",
-    no: "No",
+    yes: "yes",
+    no: "no",
   };
 
   return mapper[answer] || false;
@@ -197,8 +207,8 @@ const mapTrueOrFalseAnswers = async (answer) => {
 
 const mapTemporalOrPermanent = async (answer) => {
   const mapper = {
-    temporal: "Temporal",
-    permanente: "Permanente",
+    temporal: "temporal",
+    permanente: "permanente",
   };
 
   return mapper[answer] || false;
@@ -264,7 +274,7 @@ const mapProjectUses = async (data) => {
 
   return {
     actualUse: {
-      types: (await mapUseTypes(parsedData?.D_actual_use)) || [],
+      types: parsedData?.D_actual_use || [],
       potreros: {
         ha: parsedData?.D_area_potrero || "",
       },
@@ -294,7 +304,7 @@ const mapProjectUses = async (data) => {
       },
     },
     replaceUse: {
-      types: (await mapUseTypes(parsedData?.D_replace_use)) || [],
+      types: parsedData?.D_replace_use || [],
       potreros: {
         newUse: parsedData?.D_replace_potrero_use || "",
         ha: parsedData?.D_replace_ha_potrero_use || "",
@@ -620,5 +630,6 @@ export const mapProjectData = async (data) => {
       cashFlowResume: {cashFlowResumeID,cashFlowResume},
       financialIndicators: {financialIndicatorsID,financialIndicators},
     },
+    projectFeatures: await mapProductFeatures(data.productFeatures.items),
   };
 };
