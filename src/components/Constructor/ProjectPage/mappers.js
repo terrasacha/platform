@@ -375,6 +375,18 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
     })[0]?.id || "";
+    
+  // Owners Data
+  const pfOwnersDataID =
+  data.productFeatures.items.filter((item) => {
+    return item.featureID === "B_owners";
+  })[0]?.id || "";
+
+  const ownersData = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "B_owners";
+    })[0]?.value || "[]"
+  );
 
   const pfTokenHistoricalDataID =
     data.productFeatures.items.filter((item) => {
@@ -597,6 +609,10 @@ export const mapProjectData = async (data) => {
       name: ownerName,
       docType: ownerDocType.toUpperCase(),
       docNumber: ownerDocNumber,
+    },
+    projectOwners: {
+      pfID: pfOwnersDataID,
+      owners: ownersData,
     },
     projectUses: await mapProjectUses(projectUses),
     projectRestrictions: {

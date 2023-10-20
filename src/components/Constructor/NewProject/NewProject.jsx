@@ -279,16 +279,16 @@ export default function NewProject() {
     const productFeaturesToCreate = [
       "A_postulante_doctype",
       "A_matricula",
-      "B_owner_id",
+      "B_owner_id", // Eliminar
       "D_area",
       "A_postulante_id",
       "A_postulante_email",
       "A_vereda",
       "C_ubicacion",
       "A_ficha_catastral",
-      "B_owner_doctype",
+      "B_owner_doctype", // Eliminar
       "A_municipio",
-      "B_owner",
+      "B_owner", // Eliminar
       "A_postulante_name",
       "E_restriccion_desc",
       "E_resctriccion_other",
@@ -380,6 +380,24 @@ export default function NewProject() {
     await API.graphql(
       graphqlOperation(createProductFeature, {
         input: newProductFeatureGlobalProjectValidatorFiles,
+      })
+    );
+
+    // Creación de pf Owners
+    const owners = JSON.stringify([{
+      name: formData["B_owner"].toUpperCase(),
+      docType: formData["B_owner_doctype"],
+      docNumber: formData["B_owner_id"],
+    }])
+    const newProductFeatureOwners = {
+      featureID: "B_owners",
+      productID: productID,
+      value: owners,
+    };
+    console.log("newProductFeature:", newProductFeatureOwners);
+    await API.graphql(
+      graphqlOperation(createProductFeature, {
+        input: newProductFeatureOwners,
       })
     );
 
