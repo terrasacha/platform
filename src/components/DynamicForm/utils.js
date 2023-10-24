@@ -13,7 +13,6 @@ export const getFieldRelevantCondition = (relevant) => {
   return null;
 };
 
-
 export const findObjectByName = (objArray, nameToFind) => {
   for (let i = 0; i < objArray.length; i++) {
     const currentObject = objArray[i];
@@ -26,5 +25,5 @@ export const findObjectByName = (objArray, nameToFind) => {
       }
     }
   }
-  return null;
+  return { required: "", required_message: "" };
 };

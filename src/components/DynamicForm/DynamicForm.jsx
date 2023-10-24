@@ -7,7 +7,15 @@ import { ToastContainer } from "react-toastify";
 import FormGroup from "components/common/FormGroup";
 
 export default function DynamicForm(props) {
-  const { XLSFormURL, handleSubmit, submitBtnLabel, formData, setFormData, formDataErrors, setFormDataErrors } = props;
+  const {
+    XLSFormURL,
+    handleSubmit,
+    submitBtnLabel,
+    formData,
+    setFormData,
+    formDataErrors,
+    setFormDataErrors,
+  } = props;
 
   // Get form data from XLSFormURL
   const { data } = useXLSXForm(XLSFormURL);
@@ -35,6 +43,7 @@ export default function DynamicForm(props) {
     if (data) {
       const formDataFields = mapXLSXFormFieldsToFormData(data.survey);
       setFormData(formDataFields);
+      console.log(data);
     }
   }, [data]);
 
@@ -68,7 +77,7 @@ export default function DynamicForm(props) {
     });
   };
 
-  const getFormFields = (fields, options) => {
+  const getFormFields = (fields, options, idx = "") => {
     return fields.map((field, index) => {
       let type = field.type;
       if (field.type.includes("select_one")) type = "select_one";
@@ -93,7 +102,7 @@ export default function DynamicForm(props) {
         }
       }
 
-      return fieldComponent(field, options);
+      return fieldComponent(field, options, idx);
     });
   };
 
@@ -120,7 +129,7 @@ export default function DynamicForm(props) {
     e.preventDefault();
 
     setIsLoading(true);
-    
+
     const errors = validateFormData();
     setFormDataErrors(errors);
 
@@ -181,18 +190,34 @@ export default function DynamicForm(props) {
     text: ({ name, label, appearance, hint, required, readonly }) => {
       const inputType = appearance === "multiline" ? "textarea" : "text";
       const disabled = readonly === "true";
-      return renderFormGroup(inputType, name, label, hint, required, [], disabled);
+      return renderFormGroup(
+        inputType,
+        name,
+        label,
+        hint,
+        required,
+        [],
+        disabled
+      );
     },
     integer: ({ name, label, hint, required }) => {
       return renderFormGroup("number", name, label, hint, required);
     },
-    select_one: ({ type, name, label, hint, required }, options) => {
+    select_one: ({ type, name, label, hint, required }, options, idx) => {
       const listName = type.split(" ")[1];
       const optionList = options[listName].map((option) => ({
         label: option.label,
         value: option.name,
       }));
-      return renderFormGroup("radio", name, label, hint, required, optionList);
+      const final_name = name + idx;
+      return renderFormGroup(
+        "radio",
+        final_name,
+        label,
+        hint,
+        required,
+        optionList
+      );
     },
     select_multiple: ({ type, name, label, hint, required }, options) => {
       const listName = type.split(" ")[1];
@@ -243,17 +268,36 @@ export default function DynamicForm(props) {
         </div>
       </div>
     ),
-    begin_repeat: ({ label, items }, options) => (
-      <div className="col-12 col-12-lg border p-3">
-        <div className="row">
-          <div className="col-12 col-12-lg">
-            <h4>{label}</h4>
-          </div>
-          {getFormFields(items, options)}
-        </div>
-      </div>
-    ),
+    // begin_repeat: ({ label, items }, options) => {
+    //   return <RepeatFormFields label={label} items={items} options={options}/>
+    // },
   };
+
+  // function RepeatFormFields({ label, items, options }) {
+  //   const [repeatCount, setRepeatCount] = useState(0);
+
+  //   const addNewRecord = () => {
+  //     setRepeatCount(repeatCount + 1);
+  //   };
+  //   const deletRecord = () => {
+  //     setRepeatCount(repeatCount - 1);
+  //   }
+
+  //   return (
+  //     <div className="col-12 col-12-lg border p-3">
+  //       <div className="row">
+  //         <div className="col-12 col-12-lg">
+  //           <h4>{label}</h4>
+  //         </div>
+  //         {Array.from({ length: repeatCount }).map((_, index) => (
+  //           <div key={index} className="border p-3 my-2">{getFormFields(items, options, index)}</div>
+  //         ))}
+  //         <Button onClick={addNewRecord}>Nuevo registro</Button>
+  //         <Button onClick={deletRecord} variant="danger">Eliminar registro</Button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>

@@ -1,279 +1,36 @@
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { useEffect, useState } from "react";
 import useXLSXForm from "hooks/useXLSXForm";
-import FormGroup from "components/common/FormGroup";
-import { Button, Spinner } from "react-bootstrap";
 import { API, Storage, graphqlOperation } from "aws-amplify";
 import {
   createDocument,
   createProduct,
   createProductFeature,
-  createUserProduct,
 } from "graphql/mutations";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
-import { notify } from "utilities/notify";
-import { ToastContainer } from "react-toastify";
 import DynamicForm from "components/DynamicForm/DynamicForm";
 import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
 
 export default function NewProject() {
-  const formURL =
-    "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS.xlsx";
+  const formURL = "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS.xlsx";
+  //const formURL = "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+TEST.xlsx"
+
 
   const { user } = useAuth();
-  const { data } = useXLSXForm(formURL); 
   const [formData, setFormData] = useState({});
   const [formDataErrors, setFormDataErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const mapXLSXFormFieldsToFormData = (fields) => {
-      const result = {};
 
-      function addObjectNamesToResult(obj) {
-        if (obj.name) {
-          result[obj.name] = "";
-        }
-        if (obj.items && Array.isArray(obj.items)) {
-          obj.items.forEach(addObjectNamesToResult);
-        }
-      }
-
-      fields.forEach(addObjectNamesToResult);
-
-      return result;
-    };
-
-    if (data && user) {
-      const formDataFields = mapXLSXFormFieldsToFormData(data.survey);
-      setFormData(formDataFields);
+    if (user) {
       setFormData((prevFormData) => ({
         ...prevFormData,
         A_postulante_email: user.email,
       }));
     }
-  }, [data, user]);
-
-  console.log(data);
-  const fieldComponents = {
-    note: ({ label }) => <div className="col-12 col-12-lg">{label}</div>,
-    text: ({ name, label, appearance, hint, required }) => {
-      const inputType = appearance === "multiline" ? "textarea" : "text";
-      let disabled = false;
-      if (name === "A_postulante_email") {
-        disabled = true;
-      }
-      return renderFormGroup(
-        inputType,
-        name,
-        label,
-        hint,
-        required,
-        [],
-        disabled
-      );
-    },
-    integer: ({ name, label, hint, required }) => {
-      return renderFormGroup("number", name, label, hint, required);
-    },
-    select_one: ({ type, name, label, hint, required }, options) => {
-      const listName = type.split(" ")[1];
-      const optionList = options[listName].map((option) => ({
-        label: option.label,
-        value: option.name,
-      }));
-      return renderFormGroup("radio", name, label, hint, required, optionList);
-    },
-    select_multiple: ({ type, name, label, hint, required }, options) => {
-      const listName = type.split(" ")[1];
-      const optionList = options[listName].map((option) => ({
-        label: option.label,
-        value: option.name,
-      }));
-
-      return renderFormGroup(
-        "checkbox",
-        name,
-        label,
-        hint,
-        required,
-        optionList
-      );
-    },
-    file: ({ name, label, hint, required }) => {
-      return renderFormGroup("file", name, label, hint, required);
-    },
-    image: ({ name, label, hint, required }) => {
-      return renderFormGroup("file", name, label, hint, required);
-    },
-    geopoint: ({ name, label, hint, required }) => {
-      function onMapClick({ x, y, lat, lng, event }) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: [{ lat, lng }],
-        }));
-      }
-
-      return (
-        <FormGroup
-          inputType="geopoint"
-          label={label}
-          markers={formData[name] || []}
-          onMapClick={onMapClick}
-        />
-      );
-    },
-    group: ({ label, items }, options) => (
-      <div className="col-12 col-12-lg border p-3">
-        <div className="row">
-          <div className="col-12 col-12-lg">
-            <h4>{label}</h4>
-          </div>
-          {getForm(items, options)}
-        </div>
-      </div>
-    ),
-  };
-
-  const renderFormGroup = (
-    inputType,
-    inputName,
-    label,
-    hint,
-    required,
-    optionList = [],
-    disabled = false
-  ) => {
-    return (
-      <FormGroup
-        disabled={disabled}
-        inputType={inputType}
-        inputSize="md"
-        label={label}
-        hint={hint}
-        required={required === "yes"}
-        inputName={inputName}
-        inputValue={formData[inputName] || ""}
-        inputError={formDataErrors[inputName] || ""}
-        optionCheckedList={formData[inputName] || ""}
-        optionList={optionList}
-        onChangeInputValue={handleFieldChange}
-      />
-    );
-  };
-
-  function getFieldCondition(relevant) {
-    const regex =
-      /(?:selected\(\$\{(.*?)\},\s*'([^']+)'\)|\$\{(.*?)\}='([^']+)')/;
-
-    const match = relevant.match(regex);
-
-    if (match) {
-      const relevantField = match[1] || match[3];
-      const relevantValue = match[2] || match[4];
-
-      return { relevantField, relevantValue };
-    }
-    return null;
-  }
-
-  const getForm = (fields, options) => {
-    if (!fields) return null;
-
-    return fields.map((field, index) => {
-      let type = field.type;
-      if (field.type.includes("select_one")) type = "select_one";
-      if (field.type.includes("select_multiple")) type = "select_multiple";
-      const fieldComponent = fieldComponents[type];
-
-      const relevant = field.relevant;
-      if (relevant) {
-        const relevantData = getFieldCondition(relevant);
-        if (
-          relevantData &&
-          !Array.isArray(formData[relevantData.relevantField]) &&
-          formData[relevantData.relevantField] !== relevantData.relevantValue
-        )
-          return null;
-        if (
-          relevantData &&
-          Array.isArray(formData[relevantData.relevantField]) &&
-          !formData[relevantData.relevantField].includes(
-            relevantData.relevantValue
-          )
-        )
-          return null;
-      }
-
-      return fieldComponent ? fieldComponent(field, options) : null;
-    });
-  };
-
-  const handleFieldChange = (event) => {
-    const { name, type, value, checked } = event.target;
-
-    setFormData((prevFormData) => {
-      const updatedFormData = { ...prevFormData };
-
-      if (type === "checkbox") {
-        if (!Array.isArray(updatedFormData[name])) {
-          updatedFormData[name] = [];
-        }
-
-        if (checked && !updatedFormData[name].includes(value)) {
-          updatedFormData[name].push(value);
-        } else if (!checked) {
-          updatedFormData[name] = updatedFormData[name].filter(
-            (val) => val !== value
-          );
-        }
-      } else if (type === "radio" && checked) {
-        updatedFormData[name] = value;
-      } else if (type === "file") {
-        updatedFormData[name] = event.target.files[0];
-      } else {
-        updatedFormData[name] = value;
-      }
-
-      return updatedFormData;
-    });
-  };
-
-  const findObjectByName = (objArray, nameToFind) => {
-    for (let i = 0; i < objArray.length; i++) {
-      const currentObject = objArray[i];
-      if (currentObject.name === nameToFind) {
-        return currentObject;
-      } else if (currentObject.items && Array.isArray(currentObject.items)) {
-        const nestedObject = findObjectByName(currentObject.items, nameToFind);
-        if (nestedObject) {
-          return nestedObject;
-        }
-      }
-    }
-    return null;
-  };
-
-  const validateFormData = () => {
-    const errors = {};
-    for (const fieldName in formData) {
-      // toDo evaluate constraints too
-      const value = formData[fieldName];
-
-      const { required, required_message } = findObjectByName(
-        data.survey,
-        fieldName
-      );
-      const isRequired = required === "yes";
-
-      if (isRequired && (value === undefined || value === "")) {
-        errors[fieldName] = required_message || "Este campo es requerido";
-      }
-    }
-    return errors;
-  };
+  }, [user]);
 
   const createProductFeatures = async (productID) => {
     const productFeaturesToCreate = [
@@ -565,29 +322,6 @@ export default function NewProject() {
   };
 
   const handleSubmit = async () => {
-    // setIsLoading(true);
-
-    // const errors = validateFormData();
-    // setFormDataErrors(errors);
-
-    // const firstErrorField = document.querySelector(
-    //   `[name="${Object.keys(errors)[0]}"]`
-    // );
-    // if (firstErrorField) {
-    //   firstErrorField.focus();
-    //   console.log("Datos del formulario:", formData);
-    //   console.log("Errores:", errors);
-    //   notify({
-    //     msg: "Hicieron falta algunos campos por completar",
-    //     type: "error",
-    //   });
-    //   setIsLoading(false);
-    //   return;
-    // }
-    // notify({
-    //   msg: "El proyecto será cargado, pronto será redirigido",
-    //   type: "success",
-    // });
 
     const productID = uuidv4();
     // Subir datos a la base de datos con API de graphql
@@ -603,18 +337,7 @@ export default function NewProject() {
     console.log("newProduct:", newProduct);
     await API.graphql(graphqlOperation(createProduct, { input: newProduct }));
 
-    // const newUserProduct = {
-    //   productID: productID,
-    //   userID: user.id,
-    // };
-    // console.log("newUserProduct:", newUserProduct);
-    // await API.graphql(
-    //   graphqlOperation(createUserProduct, { input: newUserProduct })
-    // );
-
     await createProductFeatures(productID);
-
-    // setIsLoading(false);
 
     return (window.location.href = `/project/${productID}`);
   };
@@ -649,21 +372,6 @@ export default function NewProject() {
         handleSubmit={handleSubmit}
         submitBtnLabel="Postular este proyecto"
       />
-      {/* <form onSubmit={handleSubmit}>
-        <div className="row row-cols-1 border p-2 g-2">
-          {data && getForm(data.survey, data.options)}
-        </div>
-        <div className="d-flex justify-content-center my-5">
-          <Button type="submit">
-            {isLoading ? (
-              <Spinner size="sm" className="p-2"></Spinner>
-            ) : (
-              "Postular este proyecto"
-            )}
-          </Button>
-        </div>
-      </form> 
-      <ToastContainer></ToastContainer>*/}
     </div>
   );
 }

@@ -18,13 +18,15 @@ import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 
 export default function TokenSettingsCard(props) {
-  const { className, canEdit} = props;
-  console.log(canEdit)
+  const { className, canEdit } = props;
+  console.log(canEdit);
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
   const [isDisabledTokenName, setIsDisabledTokenName] = useState(false);
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
+
+  const [tokenDistributionForm, setTokenDistributionForm] = useState({});
 
   useEffect(() => {
     if (projectData) {
@@ -44,6 +46,15 @@ export default function TokenSettingsCard(props) {
           };
         });
       setTokenHistoricalData(sortedHistoricalData);
+
+      setTokenDistributionForm((prevState) => ({
+        ...prevState,
+        investor: projectData.projectInfo?.token.amountDistribution.investor,
+        owner: projectData.projectInfo?.token.amountDistribution.owner,
+        suan: projectData.projectInfo?.token.amountDistribution.suan,
+        comunity: projectData.projectInfo?.token.amountDistribution.comunity,
+        buffer: projectData.projectInfo?.token.amountDistribution.buffer,
+      }));
     }
   }, []);
 
@@ -97,6 +108,65 @@ export default function TokenSettingsCard(props) {
       }
     }
 
+    if (toSave === "tokenDistributionForm") {
+      const totalPercentage =
+        parseFloat(tokenDistributionForm.owner) +
+        parseFloat(tokenDistributionForm.investor) +
+        parseFloat(tokenDistributionForm.suan) +
+        parseFloat(tokenDistributionForm.comunity) +
+        parseFloat(tokenDistributionForm.buffer);
+
+      if (totalPercentage) {
+        if (totalPercentage === 100) {
+          if (projectData.projectInfo.token.pfIDs.pfTokenAmountDistributionID) {
+            let tempProductFeature = {
+              id: projectData.projectInfo.token.pfIDs
+                .pfTokenAmountDistributionID,
+              value: JSON.stringify(tokenDistributionForm),
+            };
+            const response = await API.graphql(
+              graphqlOperation(updateProductFeature, {
+                input: tempProductFeature,
+              })
+            );
+
+            if (!response.data.updateProductFeature) error = true;
+          } else {
+            let tempProductFeature = {
+              value: JSON.stringify(tokenDistributionForm),
+              isToBlockChain: false,
+              isOnMainCard: false,
+              productID: projectData.projectInfo.id,
+              featureID: "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION",
+            };
+
+            const response = await API.graphql(
+              graphqlOperation(createProductFeature, {
+                input: tempProductFeature,
+              })
+            );
+
+            if (!response.data.createProductFeature) error = true;
+          }
+          notify({
+            msg: "La distribución de tokens ha sido modificada exitosamente",
+            type: "success",
+          });
+        } else {
+          notify({
+            msg: "La suma de los porcentajes no corresponde a 100%",
+            type: "error",
+          });
+        }
+      } else {
+        notify({
+          msg: "Todos los campos deben ser correctamente llenados",
+          type: "error",
+        });
+      }
+      console.log(totalPercentage, "totalPercentage");
+    }
+
     if (error) {
       notify({
         msg: "Ups!, parece que algo ha fallado",
@@ -113,7 +183,6 @@ export default function TokenSettingsCard(props) {
     }
 
     if (name.includes("token_")) {
-      console.log("entro");
       const [_, tokenHistoryFeature, tokenHistoryIndex] = name.split("_");
 
       setTokenHistoricalData((prevState) =>
@@ -124,6 +193,34 @@ export default function TokenSettingsCard(props) {
         )
       );
     }
+  };
+
+  const handleChangeInputValueForm = async (e) => {
+    const { name, type, value, checked } = e.target;
+
+    setTokenDistributionForm((prevFormData) => {
+      const updatedFormData = { ...prevFormData };
+
+      if (type === "checkbox") {
+        if (!Array.isArray(updatedFormData[name])) {
+          updatedFormData[name] = [];
+        }
+
+        if (checked && !updatedFormData[name].includes(value)) {
+          updatedFormData[name].push(value);
+        } else if (!checked) {
+          updatedFormData[name] = updatedFormData[name].filter(
+            (val) => val !== value
+          );
+        }
+      } else if (type === "radio" && checked) {
+        updatedFormData[name] = value;
+      } else {
+        updatedFormData[name] = value;
+      }
+
+      return updatedFormData;
+    });
   };
 
   const handleEditHistoricalData = async (indexToStartEditing) => {
@@ -148,9 +245,12 @@ export default function TokenSettingsCard(props) {
     let error = false;
     const newPeriod = tokenHistoricalData[indexToSave].period;
     // const count = projectData.projectInfo.token.historicalData.reduce((acc, hd) => (hd.period === tokenHistoricalData[indexToSave].period ? acc + 1 : acc), 0);
-    const isAlreadyExistingPeriod = projectData.projectInfo.token.historicalData.some((hd, index) => hd.period===newPeriod && index !== indexToSave)
-    
-    if(isAlreadyExistingPeriod) {
+    const isAlreadyExistingPeriod =
+      projectData.projectInfo.token.historicalData.some(
+        (hd, index) => hd.period === newPeriod && index !== indexToSave
+      );
+
+    if (isAlreadyExistingPeriod) {
       notify({
         msg: "El periodo que intentas guardar ya esta definido",
         type: "error",
@@ -297,6 +397,18 @@ export default function TokenSettingsCard(props) {
             onChangeInputValue={(e) => handleChangeInputValue(e)}
             onClickSaveBtn={() => handleSaveBtn("tokenName")}
           />
+          <FormGroup
+            disabled={true}
+            type="flex"
+            inputType="text"
+            inputSize="md"
+            label="Cantidad total de tokens"
+            inputName="tokenName"
+            inputValue={
+              projectData.projectInfo?.token.totalTokenAmount || "Sin definir" 
+            }
+            saveBtnDisabled={true}
+          />
           <p className="mb-3">Historico del token</p>
           <div>
             <Table responsive>
@@ -413,7 +525,6 @@ export default function TokenSettingsCard(props) {
                         variant="secondary"
                         className="w-100"
                         disabled={canEdit}
-
                         onClick={() => handleAddNewPeriodToHistoricalData()}
                       >
                         <PlusIcon></PlusIcon>
@@ -423,6 +534,67 @@ export default function TokenSettingsCard(props) {
                 </tr>
               </tbody>
             </Table>
+          </div>
+          <div className="border p-3">
+            <p className="mb-3 text-center">Distribución volumen de tokens</p>
+            <FormGroup
+              type="flex"
+              inputType="number"
+              inputSize="md"
+              label="Inversionista (%)"
+              inputName="investor"
+              inputValue={tokenDistributionForm.investor}
+              saveBtnVisible={false}
+              onChangeInputValue={(e) => handleChangeInputValueForm(e)}
+            />
+            <FormGroup
+              type="flex"
+              inputType="number"
+              inputSize="md"
+              label="Propietario (%)"
+              inputName="owner"
+              inputValue={tokenDistributionForm.owner}
+              saveBtnVisible={false}
+              onChangeInputValue={(e) => handleChangeInputValueForm(e)}
+            />
+            <FormGroup
+              type="flex"
+              inputType="number"
+              inputSize="md"
+              label="SUAN (%)"
+              inputName="suan"
+              inputValue={tokenDistributionForm.suan}
+              saveBtnVisible={false}
+              onChangeInputValue={(e) => handleChangeInputValueForm(e)}
+            />
+            <FormGroup
+              type="flex"
+              inputType="number"
+              inputSize="md"
+              label="Comunidad (%)"
+              inputName="comunity"
+              inputValue={tokenDistributionForm.comunity}
+              saveBtnVisible={false}
+              onChangeInputValue={(e) => handleChangeInputValueForm(e)}
+            />
+            <FormGroup
+              type="flex"
+              inputType="number"
+              inputSize="md"
+              label="Buffer (%)"
+              inputName="buffer"
+              inputValue={tokenDistributionForm.buffer}
+              saveBtnVisible={false}
+              onChangeInputValue={(e) => handleChangeInputValueForm(e)}
+            />
+            <div className="d-flex justify-content-center">
+              <Button
+                onClick={() => handleSaveBtn("tokenDistributionForm")}
+                variant="success"
+              >
+                Guardar
+              </Button>
+            </div>
           </div>
         </Card.Body>
       </Card>

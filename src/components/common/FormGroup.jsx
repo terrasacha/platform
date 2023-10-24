@@ -24,6 +24,7 @@ export default class FormGroup extends Component {
     const optionList = this.props.optionList || [];
     const optionCheckedList = this.props.optionCheckedList || [];
     const disabled = this.props.disabled || false;
+    const saveBtnVisible = this.props.saveBtnVisible === false ? false : true; // Existe un problema al usar || si la condicion que se quiere por defecto es true. Al enviar un parametro false lo ignora y setea true.
     const saveBtnDisabled = this.props.saveBtnDisabled || false;
     const onClickSaveBtn = this.props.onClickSaveBtn;
     const onChangeInputValue = this.props.onChangeInputValue;
@@ -222,15 +223,19 @@ export default class FormGroup extends Component {
               </Form.Label>
             )}
             <div className="col">{handleInputRenderByInputType(inputType)}</div>
-            <div className="col-auto">
-              <Button
-                disabled={saveBtnDisabled}
-                variant="success"
-                onClick={onClickSaveBtn}
-              >
-                <SaveDiskIcon />
-              </Button>
-            </div>
+            {
+              saveBtnVisible && (
+                <div className="col-auto">
+                  <Button
+                    disabled={saveBtnDisabled}
+                    variant="success"
+                    onClick={onClickSaveBtn}
+                  >
+                    <SaveDiskIcon />
+                  </Button>
+                </div>
+              )
+            }
           </div>
         </Form.Group>
       );
