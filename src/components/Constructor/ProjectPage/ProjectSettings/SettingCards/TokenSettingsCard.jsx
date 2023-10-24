@@ -25,8 +25,10 @@ export default function TokenSettingsCard(props) {
   const [tokenName, setTokenName] = useState("");
   const [isDisabledTokenName, setIsDisabledTokenName] = useState(false);
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
+  const [tokenHistoricalDataPfID, setTokenHistoricalDataPfID] = useState(null);
 
   const [tokenDistributionForm, setTokenDistributionForm] = useState({});
+  const [tokenDistributionPfID, setTokenDistributionPfID] = useState(null);
 
   useEffect(() => {
     if (projectData) {
@@ -46,6 +48,7 @@ export default function TokenSettingsCard(props) {
           };
         });
       setTokenHistoricalData(sortedHistoricalData);
+      setTokenHistoricalDataPfID(projectData.projectInfo?.token.pfIDs.pfTokenHistoricalDataID)
 
       setTokenDistributionForm((prevState) => ({
         ...prevState,
@@ -55,6 +58,7 @@ export default function TokenSettingsCard(props) {
         comunity: projectData.projectInfo?.token.amountDistribution.comunity,
         buffer: projectData.projectInfo?.token.amountDistribution.buffer,
       }));
+      setTokenDistributionPfID(projectData.projectInfo?.token.pfIDs.pfTokenAmountDistributionID)
     }
   }, []);
 
@@ -118,7 +122,7 @@ export default function TokenSettingsCard(props) {
 
       if (totalPercentage) {
         if (totalPercentage === 100) {
-          if (projectData.projectInfo.token.pfIDs.pfTokenAmountDistributionID) {
+          if (tokenDistributionPfID) {
             let tempProductFeature = {
               id: projectData.projectInfo.token.pfIDs
                 .pfTokenAmountDistributionID,
@@ -145,6 +149,8 @@ export default function TokenSettingsCard(props) {
                 input: tempProductFeature,
               })
             );
+
+            setTokenDistributionPfID(response.data.createProductFeature.id)
 
             if (!response.data.createProductFeature) error = true;
           }
@@ -272,9 +278,9 @@ export default function TokenSettingsCard(props) {
           .sort((a, b) => a.period - b.period)
       );
 
-      if (projectData.projectInfo.token.pfIDs.pfTokenHistoricalDataID) {
+      if (tokenHistoricalDataPfID) {
         let tempProductFeature = {
-          id: projectData.projectInfo.token.pfIDs.pfTokenHistoricalDataID,
+          id: tokenHistoricalDataPfID,
           value: JSON.stringify(getImportantValues(tokenHistoricalData)),
         };
         const response = await API.graphql(
@@ -293,6 +299,8 @@ export default function TokenSettingsCard(props) {
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
+
+        setTokenHistoricalDataPfID(response.data.createProductFeature.id)
 
         if (!response.data.createProductFeature) error = true;
       }
@@ -320,9 +328,9 @@ export default function TokenSettingsCard(props) {
     );
     setTokenHistoricalData(tempTokenHistoricalData);
 
-    if (projectData.projectInfo.token.pfIDs.pfTokenHistoricalDataID) {
+    if (tokenHistoricalDataPfID) {
       let tempProductFeature = {
-        id: projectData.projectInfo.token.pfIDs.pfTokenHistoricalDataID,
+        id: tokenHistoricalDataPfID,
         value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
       };
       const response = await API.graphql(
@@ -341,6 +349,8 @@ export default function TokenSettingsCard(props) {
       const response = await API.graphql(
         graphqlOperation(createProductFeature, { input: tempProductFeature })
       );
+      
+      setTokenHistoricalDataPfID(response.data.createProductFeature.id)
 
       if (!response.data.createProductFeature) error = true;
     }
