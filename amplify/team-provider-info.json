@@ -18,27 +18,27 @@
           "graphqlEndpoint": "https://hswl67byrvf7nkerr72oxbw62e.appsync-api.us-east-1.amazonaws.com/graphql",
           "sesEmail": "notificaciones@suan.global",
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappSendMailNotByComment-42506635726373596244-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappSendMailNotByComment-4b326c5a77665372716f-build.zip"
         },
         "kiosuanbcrjsappChangeProductStatus": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappChangeProductStatus-2f56426948726e306639-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappChangeProductStatus-485a4b5030635a65574d-build.zip"
         },
         "kiosuanbcrjsappCheckTimeOnVerification": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappCheckTimeOnVerification-4430422b484670774756-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappCheckTimeOnVerification-525a76584e3976506668-build.zip"
         },
         "kiosuanbcrjsappConstructorUploadNewDocument": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappConstructorUploadNewDocument-517a62364d6636327473-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappConstructorUploadNewDocument-386d4a5756674b542b6a-build.zip"
         },
         "kiosuanbcrjsappNotifyAdmonAndCreateUser": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappNotifyAdmonAndCreateUser-544253484b54732b7552-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappNotifyAdmonAndCreateUser-34624f674557744b3059-build.zip"
         },
         "kiosuanbcrjsappSuccessfullyProductCreated": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappSuccessfullyProductCreated-35636f7036744767354a-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappSuccessfullyProductCreated-4d7138797633764d3565-build.zip"
         },
         "kiosuanrjsappSendVerificationEmailUserCreated": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
@@ -46,7 +46,7 @@
         },
         "kiosuanbcrjsappCreateUserValidator": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappCreateUserValidator-2b6462413159677a726d-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappCreateUserValidator-30434e4d38376a6d4d42-build.zip"
         },
         "kiosuanbcrjsappc0136629": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",

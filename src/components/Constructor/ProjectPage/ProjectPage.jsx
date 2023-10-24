@@ -21,6 +21,7 @@ import { formatNumberWithThousandsSeparator } from "./utils";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { Auth } from "aws-amplify";
 import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
+import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -55,6 +56,7 @@ export default function ProjectPage() {
     getProjectData();
   }, []);
 
+  
   return (
     <div className="container-sm">
       <div className="mb-5">
@@ -158,6 +160,11 @@ export default function ProjectPage() {
                 Validación
               </Nav.Link>
             </Nav.Item>
+            <Nav.Item>
+              <Nav.Link href="#finance" onClick={() => setActiveSection("finance")}>
+                Finanzas
+              </Nav.Link>
+            </Nav.Item>
             {projectData.projectVerifiers?.includes(user?.id) && (
               <>
                 <Nav.Item>
@@ -183,6 +190,7 @@ export default function ProjectPage() {
         {activeSection === "details" && <ProjectDetails />}
         {activeSection === "file_manager" && <ProjectFileManager />}
         {activeSection === "files" && <ProjectFiles />}
+        {activeSection === "finance" && <FinanceCard />}
         {activeSection === "settings" &&
           projectData?.projectVerifiers.includes(user?.id) && (
             <ProjectSettings />

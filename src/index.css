@@ -15,7 +15,14 @@ code {
   margin-top: auto;
   padding: 16px;
 }
-
+.confirmacion_finan {
+        border: 2px solid #b50000;
+        border-radius: 10px;
+        margin-top:10px;
+      }
+.confirmacion_finan svg{
+        color: #b50000;
+}
 .scale-up-ver-top {
 	-webkit-animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
 	        animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
