@@ -7,7 +7,6 @@ import {
 } from "./utils";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 
-
 export const mapGeoData = async (validatorDocuments) => {
   const extensionesPermitidas = [".kml", ".kmz"];
 
@@ -49,10 +48,9 @@ const mapProductFeatures = async (productFeatures) => {
       value: pf.value,
     };
   });
-}
+};
 
 const mapProjectVerifiersNames = async (data) => {
-
   const projectVerifiersNames = data.userProducts.items
     .filter((up) => up.user.role === "validator")
     .map((userProduct) => {
@@ -98,7 +96,6 @@ const mapVerificationsData = async (verifications) => {
 };
 
 const mapDocumentsData = async (data) => {
-
   const PFNameMapper = {
     B_owner_certificado: "Certificado de tradición",
     C_plano_predio: "Plano del predio",
@@ -152,20 +149,20 @@ const mapLocationData = async (location) => {
 
 const mapStatus = async (obj) => {
   const mapper = {
-    "draft": "En borrador",
-    "verified": "Verificado",
-    "on_verification": "En verificación",
-    "in_blockchain": "En blockchain",
-    "in_equilibrium": "En equilibrio",
-    "Prefactibilidad": "En Prefactibilidad",
-    "Factibilidad": "En Factibilidad",
+    draft: "En borrador",
+    verified: "Verificado",
+    on_verification: "En verificación",
+    in_blockchain: "En blockchain",
+    in_equilibrium: "En equilibrio",
+    Prefactibilidad: "En Prefactibilidad",
+    Factibilidad: "En Factibilidad",
     "Documento de diseño del proyecto": "En diseño de documento del proyecto",
     "Validación externa": "En validación externa",
     "Registro del proyecto": "Registrado",
   };
 
   //return mapper[obj] || false;
-  return obj
+  return obj;
 };
 
 const mapCategory = async (obj) => {
@@ -375,12 +372,12 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
     })[0]?.id || "";
-    
+
   // Owners Data
   const pfOwnersDataID =
-  data.productFeatures.items.filter((item) => {
-    return item.featureID === "B_owners";
-  })[0]?.id || "";
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "B_owners";
+    })[0]?.id || "";
 
   const ownersData = JSON.parse(
     data.productFeatures.items.filter((item) => {
@@ -419,7 +416,10 @@ export const mapProjectData = async (data) => {
     };
   });
   const actualPeriod = await getActualPeriod(Date.now(), periods);
-  const totalTokenAmount = periods.reduce((total, item) => total + item.amount, 0);
+  const totalTokenAmount = periods.reduce(
+    (total, item) => total + item.amount,
+    0
+  );
 
   const pfProjectValidatorDocumentsID =
     data.productFeatures.items.filter((item) => {
@@ -454,21 +454,19 @@ export const mapProjectData = async (data) => {
   const productsOfCycleProjectID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO";
-    })[0]?.id || null
-  ;
-  const revenuesByProductID = 
+    })[0]?.id || null;
+  const revenuesByProductID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_INGRESOS_POR_PRODUCTO";
-    })[0]?.id || null
-  const cashFlowResumeID = 
+    })[0]?.id || null;
+  const cashFlowResumeID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_RESUMEN_FLUJO_DE_CAJA";
-    })[0]?.id || null
-  const financialIndicatorsID = 
+    })[0]?.id || null;
+  const financialIndicatorsID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_INDICADORES_FINANCIEROS";
-    })[0]?.id || null
-
+    })[0]?.id || null;
 
   // A
   const postulantName =
@@ -651,15 +649,22 @@ export const mapProjectData = async (data) => {
     projectVerifiers: await mapProjectVerifiers(data),
     projectVerifierNames: await mapProjectVerifiersNames(data),
     projectGeoData: await mapGeoData(projectValidatorDocuments),
-    projectVerifierInfo:{
+    projectVerifierInfo: {
       verifierDescription: verifierDescription,
       verifierDescriptionID: verifierDescriptionID,
     },
     projectFinancialInfo: {
-      revenuesByProduct: {revenuesByProductID,revenuesByProduct},
-      productsOfCycleProject: {productsOfCycleProjectID,productsOfCycleProject},
-      cashFlowResume: {cashFlowResumeID,cashFlowResume},
-      financialIndicators: {financialIndicatorsID,financialIndicators},
+      revenuesByProduct: { revenuesByProductID, revenuesByProduct },
+      productsOfCycleProject: {
+        productsOfCycleProjectID,
+        productsOfCycleProject,
+      },
+      cashFlowResume: { cashFlowResumeID, cashFlowResume },
+      financialIndicators: { financialIndicatorsID, financialIndicators },
+      tokenAmountDistribution: {
+        tokenAmountDistributionID: pfTokenAmountDistributionID,
+        tokenAmountDistribution,
+      },
     },
     projectFeatures: await mapProductFeatures(data.productFeatures.items),
   };
