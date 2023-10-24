@@ -34,8 +34,6 @@ export default function FinanceCard(props) {
 	const dataIndicador = projectData.projectFinancialInfo.financialIndicators;
 
 	const isValid = validateProjectFeatures(projectData.projectFeatures);
-	console.log(isValid);
-
 	return isValid ? (
 		<div className="container">
 			<DistributionToken infoTable={dataToken} />
