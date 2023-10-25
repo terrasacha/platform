@@ -16,16 +16,12 @@ export default function CashFlowSettings(props) {
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
   const [cashFlowResume, setCashFlowResume] = useState([])
   const [excelData, setExcelData] = useState("");
-  const [TIR, setTIR] = useState(null)
-  const [VAN, setVAN] = useState(null)
   const [pfID, setPfID] = useState(null)
   useEffect(() => {
     if (projectData) {
       if(projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID || null){
         setPfID(projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID || [])
         setCashFlowResume(projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.flujos_de_caja || [])
-        setTIR(projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.TIR || "")
-        setVAN(projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.VAN || "")
       }
     }
   }, [projectData]);
@@ -96,22 +92,23 @@ export default function CashFlowSettings(props) {
     if (pfID) {
         let tempProductFeature = {
           id: pfID,
-          value: JSON.stringify({TIR,VAN,flujos_de_caja: data ? data : cashFlowResume}),
+          value: JSON.stringify({flujos_de_caja: data ? data : cashFlowResume}),
         };
         const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
-
+          console.log(tempProductFeature, 'tempProductFeature')
         if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
-          value: JSON.stringify({TIR,VAN,flujos_de_caja: cashFlowResume}),
+          value: JSON.stringify({flujos_de_caja: cashFlowResume}),
           isToBlockChain: false,
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
           featureID: "GLOBAL_RESUMEN_FLUJO_DE_CAJA",
         };
         console.log(tempProductFeature, 'no existe')
+          console.log(tempProductFeature, 'tempProductFeature')
 
         API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
@@ -139,14 +136,6 @@ export default function CashFlowSettings(props) {
 
   const handleChangeInputValue = async (e) => {
     const { name, value } = e.target;
-    if (name === "TIR") {
-      setTIR(value);
-      return;
-    }
-    if (name === "VAN") {
-      setVAN(value);
-      return;
-    }
     if(name === "Excel"){ 
       setExcelData(value)
       return;
@@ -215,9 +204,10 @@ export default function CashFlowSettings(props) {
       if (pfID) {
         let tempProductFeature = {
           id: pfID,
-          value: JSON.stringify({TIR,VAN,flujos_de_caja: cashFlowResumeToUpload}),
+          value: JSON.stringify({flujos_de_caja: cashFlowResumeToUpload}),
         };
         console.log(tempProductFeature, 'ya existe')
+        console.log(tempProductFeature, 'tempProductFeature')
         const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
@@ -225,7 +215,7 @@ export default function CashFlowSettings(props) {
         if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
-          value: JSON.stringify({TIR,VAN,flujos_de_caja: cashFlowResumeToUpload}),
+          value: JSON.stringify({flujos_de_caja: cashFlowResumeToUpload}),
           isToBlockChain: false,
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
@@ -268,8 +258,9 @@ export default function CashFlowSettings(props) {
     if (pfID) {
       let tempProductFeature = {
         id:pfID,
-        value: JSON.stringify({TIR, VAN, flujos_de_caja: tempCashFlowResume}),
+        value: JSON.stringify({flujos_de_caja: tempCashFlowResume}),
       };
+      console.log(tempProductFeature,'delete tempProductFeature')
       const response = await API.graphql(
         graphqlOperation(updateProductFeature, { input: tempProductFeature })
       );
@@ -318,30 +309,6 @@ export default function CashFlowSettings(props) {
       <Card className={className}>
         <Card.Header title="Flujo de caja del proyecto" sep={true} />
         <Card.Body>
-            <FormGroup
-                type="flex"
-                inputType="text"
-                inputSize="md"
-                label="TIR"
-                inputName="TIR"
-                disabled={canEdit}
-                saveBtnDisabled={canEdit}
-                inputValue={TIR}
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() => handleSaveBtn()}
-            />
-            <FormGroup
-                type="flex"
-                inputType="text"
-                inputSize="md"
-                label="VAN"
-                inputName="VAN"
-                disabled={canEdit}
-                saveBtnDisabled={canEdit}
-                inputValue={VAN}
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() => handleSaveBtn()}
-            />
             <FormGroup
                   type="flex"
                   placeholder="Paste Excel data here..."
