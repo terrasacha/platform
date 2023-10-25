@@ -99,7 +99,13 @@ export const getActualPeriod = async (actualDate, periods) => {
     // console.log("fechaFin", fechaFin);
     // Verifica si la fecha actual está dentro del rango desde "fechaInicio" hasta "fechaFin".
     if (actualDate >= fechaInicio && actualDate <= fechaFin) {
-      return { period: periodo.period, amount: periodo.amount, price:periodo.price, fechaInicio, fechaFin };
+      return {
+        period: periodo.period,
+        amount: periodo.amount,
+        price: periodo.price,
+        fechaInicio,
+        fechaFin,
+      };
     }
 
     // Actualiza "fechaInicio" para la próxima iteración.
@@ -107,4 +113,16 @@ export const getActualPeriod = async (actualDate, periods) => {
   }
 
   return null;
+};
+
+export const getElapsedDays = async (fechaISO) => {
+  const fechaSeleccionada = new Date(fechaISO);
+
+  const fechaActual = new Date();
+
+  const diferenciaEnMilisegundos = fechaActual - fechaSeleccionada;
+
+  const diasTranscurridos = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+
+  return Math.floor(diasTranscurridos);
 };

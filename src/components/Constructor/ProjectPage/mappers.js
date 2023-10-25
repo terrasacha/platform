@@ -4,6 +4,7 @@ import {
   getElapsedTime,
   capitalizeWords,
   getActualPeriod,
+  getElapsedDays,
 } from "./utils";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 
@@ -610,6 +611,7 @@ export const mapProjectData = async (data) => {
       },
       verificationLimitDate: data.timeOnVerification,
       createdAt: await convertAWSDatetimeToDate(data.createdAt),
+      projectAge: await getElapsedDays(data.createdAt)
     },
     projectPostulant: {
       id: postulantID,
