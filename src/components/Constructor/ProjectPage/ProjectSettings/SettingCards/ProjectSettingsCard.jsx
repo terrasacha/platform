@@ -6,7 +6,6 @@ import FormGroup from "../../../../common/FormGroup";
 
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import {
-  createProductFeature,
   updateProduct,
 } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
@@ -17,7 +16,7 @@ import { fetchProjectDataByProjectID } from "../../api";
 export default function ProjectSettingsCard(props) {
   const { className } = props;
 
-  const { projectData, handleUpdateContextProjectData } = useProjectData();
+  const { projectData } = useProjectData();
   const [projectIsActive, setProjectIsActive] = useState(false);
   const [projectStatus, setProjectStatus] = useState("");
 
@@ -70,55 +69,6 @@ export default function ProjectSettingsCard(props) {
     });
   };
 
-  const handleSetValidatorDataComplete = async (item) => {
-    const updatedProjectData = await fetchProjectDataByProjectID(
-      projectData.projectInfo.id
-    );
-    console.log(updatedProjectData, "updatedProjectData");
-    let newProductFeature = {
-      productID: projectData.projectInfo.id,
-      value: true,
-    };
-    if (item === "technicalInfo") {
-      if (!updatedProjectData.isTechnicalComplete) {
-        notify({
-          msg: "Información técnica incompleta. Primero registra toda la información técnica",
-          type: "error",
-        });
-        return;
-      }
-      handleUpdateContextProjectData({isTechnicalFreeze: true})
-      newProductFeature.featureID = "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
-
-      notify({
-        msg: "Se ha oficializado la información técnica.",
-        type: "success",
-      });
-    }
-    if (item === "financialInfo") {
-      if (!updatedProjectData.isFinancialComplete) {
-        notify({
-          msg: "Información financiera incompleta. Primero registra toda la información técnica",
-          type: "error",
-        });
-        return;
-      }
-      handleUpdateContextProjectData({isFinancialFreeze: true})
-      newProductFeature.featureID = "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
-      
-      notify({
-        msg: "Se ha oficializado la información financiera.",
-        type: "success",
-      });
-    }
-
-    console.log(newProductFeature);
-
-    await API.graphql(
-      graphqlOperation(createProductFeature, { input: newProductFeature })
-    );
-  };
-
   return (
     <Card className={className}>
       <Card.Header title="Configuración del Proyecto" sep={true} />
@@ -151,20 +101,6 @@ export default function ProjectSettingsCard(props) {
           checked={projectIsActive}
           onChangeInputValue={() => handleChangeProjectIsActiveStatus()}
         />
-        <div className="d-flex justify-content-center gap-4">
-          <Button
-            disabled={projectData.isTechnicalFreeze}
-            onClick={() => handleSetValidatorDataComplete("technicalInfo")}
-          >
-            Oficializar información técnica
-          </Button>
-          <Button
-            disabled={projectData.isFinancialFreeze}
-            onClick={() => handleSetValidatorDataComplete("financialInfo")}
-          >
-            Oficializar información financiera
-          </Button>
-        </div>
       </Card.Body>
     </Card>
   );
