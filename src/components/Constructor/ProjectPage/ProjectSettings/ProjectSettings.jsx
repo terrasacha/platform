@@ -7,10 +7,12 @@ import CashFlowSettings from "./SettingCards/CashFlowSettings";
 import GenericInputTable from "./SettingCards/GenericInputTable";
 import FinancialIndicators from "./SettingCards/FinancialIndicators";
 import DescriptionValidator from "./SettingCards/DescriptionValidator";
+import { useProjectData } from "context/ProjectDataContext";
 
 export default function ProjectSettings() {
   const [activeSection, setActiveSection] = useState('technical');  
   const [validatorSubRole, setValidatorSubRole] = useState("");
+  const { projectData } = useProjectData();
 
   useEffect(() => { 
     Auth.currentAuthenticatedUser()
@@ -40,26 +42,26 @@ export default function ProjectSettings() {
       {activeSection === 'technical' &&
         <>
           <div className="col">
-            <DescriptionValidator canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <DescriptionValidator canEdit={(validatorSubRole === undefined? false : activeSection !== validatorSubRole) || projectData.isTechnicalFreeze}/>
           </div>
           <div className="col">
-            <GenericInputTable  title={'Ingresos por producto'} fID={'GLOBAL_INGRESOS_POR_PRODUCTO'} financialInfoType={'revenuesByProduct'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <GenericInputTable  title={'Ingresos por producto'} fID={'GLOBAL_INGRESOS_POR_PRODUCTO'} financialInfoType={'revenuesByProduct'} canEdit={(validatorSubRole === undefined? false : activeSection !== validatorSubRole) || projectData.isTechnicalFreeze}/>
           </div>
           <div className="col">
-            <GenericInputTable  title={'Productos del ciclo del proyecto'} fID={'GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO'} financialInfoType={'productsOfCycleProject'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole} />
+            <GenericInputTable  title={'Productos del ciclo del proyecto'} fID={'GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO'} financialInfoType={'productsOfCycleProject'} canEdit={(validatorSubRole === undefined? false : activeSection !== validatorSubRole) || projectData.isTechnicalFreeze} />
           </div>
           <div className="col">
-            <FinancialIndicators  title={'Indicadores financieros'} fID={'GLOBAL_INDICADORES_FINANCIEROS'} financialInfoType={'financialIndicators'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole} />
+            <FinancialIndicators  title={'Indicadores financieros'} fID={'GLOBAL_INDICADORES_FINANCIEROS'} financialInfoType={'financialIndicators'} canEdit={(validatorSubRole === undefined? false : activeSection !== validatorSubRole) || projectData.isTechnicalFreeze} />
           </div>
         </>
       }
       {activeSection === 'financial' &&
         <>
           <div className="col">
-            <TokenSettingsCard canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <TokenSettingsCard canEdit={(validatorSubRole === undefined? false : activeSection !== validatorSubRole) || projectData.isFinancialFreeze}/>
           </div>
           <div className="col">
-            <CashFlowSettings  canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <CashFlowSettings  canEdit={(validatorSubRole === undefined? false : activeSection !== validatorSubRole) || projectData.isFinancialFreeze}/>
           </div>
         </>
       }
