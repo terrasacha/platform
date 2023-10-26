@@ -13,6 +13,13 @@ export function ProjectDataProvider({ children }) {
     setProjectData(data);
   };
 
+  const handleUpdateContextProjectData = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      ...data,
+    }));
+  };
+
   const handleUpdateContextProjectInfo = async (data) => {
     setProjectData((prevData) => ({
       ...prevData,
@@ -148,6 +155,7 @@ export function ProjectDataProvider({ children }) {
   const contextProps = {
     projectData,
     handleProjectData,
+    handleUpdateContextProjectData,
     handleUpdateContextDocumentStatus,
     handleUpdateContextProjectTokenData,
     handleUpdateContextFileVerification,

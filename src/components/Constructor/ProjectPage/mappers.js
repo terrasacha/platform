@@ -21,6 +21,8 @@ export const mapGeoData = async (validatorDocuments) => {
   return archivosFiltrados;
 };
 
+const validateFinatialInfoIsComplete = async () => {};
+
 const mapProjectVerifiers = async (data) => {
   // const verifiablePF = data.productFeatures.items.filter(
   //   (pf) => pf.feature.isVerifable === true
@@ -576,6 +578,41 @@ export const mapProjectData = async (data) => {
     data.userProducts.items.filter((up) => up.user?.role === "constructor")[0]
       ?.user.id || "";
 
+
+  // ETADO DE INFORMACIÓN TECNICA Y FINANCIERA
+  let isTechnicalComplete = false;
+  if (
+    verifierDescription !== "" &&
+    revenuesByProduct.length > 0 &&
+    productsOfCycleProject.length > 0 &&
+    financialIndicators.length > 0
+  ) {
+    isTechnicalComplete = true;
+  }
+
+  let isFinancialComplete = false;
+  if (
+    tokenHistoricalData.length > 0 &&
+    Object.keys(tokenAmountDistribution).length > 0 &&
+    Object.keys(cashFlowResume).length > 0
+  ) {
+    isFinancialComplete = true;
+  }
+
+  const isTechnicalFreeze =
+    Boolean(
+      data.productFeatures.items.filter((item) => {
+        return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+      })[0]?.value
+    ) || false;
+
+  const isFinancialFreeze =
+    Boolean(
+      data.productFeatures.items.filter((item) => {
+        return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+      })[0]?.value
+    ) || false;
+
   return {
     projectInfo: {
       id: projectID,
@@ -611,7 +648,7 @@ export const mapProjectData = async (data) => {
       },
       verificationLimitDate: data.timeOnVerification,
       createdAt: await convertAWSDatetimeToDate(data.createdAt),
-      projectAge: await getElapsedDays(data.createdAt)
+      projectAge: await getElapsedDays(data.createdAt),
     },
     projectPostulant: {
       id: postulantID,
@@ -669,5 +706,9 @@ export const mapProjectData = async (data) => {
       },
     },
     projectFeatures: await mapProductFeatures(data.productFeatures.items),
+    isTechnicalComplete: isTechnicalComplete,
+    isFinancialComplete: isFinancialComplete,
+    isTechnicalFreeze: isTechnicalFreeze,
+    isFinancialFreeze: isFinancialFreeze,
   };
 };

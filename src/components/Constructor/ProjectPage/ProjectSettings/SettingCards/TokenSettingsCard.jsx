@@ -48,7 +48,9 @@ export default function TokenSettingsCard(props) {
           };
         });
       setTokenHistoricalData(sortedHistoricalData);
-      setTokenHistoricalDataPfID(projectData.projectInfo?.token.pfIDs.pfTokenHistoricalDataID)
+      setTokenHistoricalDataPfID(
+        projectData.projectInfo?.token.pfIDs.pfTokenHistoricalDataID
+      );
 
       setTokenDistributionForm((prevState) => ({
         ...prevState,
@@ -58,7 +60,9 @@ export default function TokenSettingsCard(props) {
         comunity: projectData.projectInfo?.token.amountDistribution.comunity,
         buffer: projectData.projectInfo?.token.amountDistribution.buffer,
       }));
-      setTokenDistributionPfID(projectData.projectInfo?.token.pfIDs.pfTokenAmountDistributionID)
+      setTokenDistributionPfID(
+        projectData.projectInfo?.token.pfIDs.pfTokenAmountDistributionID
+      );
     }
   }, []);
 
@@ -150,7 +154,7 @@ export default function TokenSettingsCard(props) {
               })
             );
 
-            setTokenDistributionPfID(response.data.createProductFeature.id)
+            setTokenDistributionPfID(response.data.createProductFeature.id);
 
             if (!response.data.createProductFeature) error = true;
           }
@@ -300,7 +304,7 @@ export default function TokenSettingsCard(props) {
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
 
-        setTokenHistoricalDataPfID(response.data.createProductFeature.id)
+        setTokenHistoricalDataPfID(response.data.createProductFeature.id);
 
         if (!response.data.createProductFeature) error = true;
       }
@@ -349,8 +353,8 @@ export default function TokenSettingsCard(props) {
       const response = await API.graphql(
         graphqlOperation(createProductFeature, { input: tempProductFeature })
       );
-      
-      setTokenHistoricalDataPfID(response.data.createProductFeature.id)
+
+      setTokenHistoricalDataPfID(response.data.createProductFeature.id);
 
       if (!response.data.createProductFeature) error = true;
     }
@@ -415,7 +419,7 @@ export default function TokenSettingsCard(props) {
             label="Cantidad total de tokens"
             inputName="tokenName"
             inputValue={
-              projectData.projectInfo?.token.totalTokenAmount || "Sin definir" 
+              projectData.projectInfo?.token.totalTokenAmount || "Sin definir"
             }
             saveBtnDisabled={true}
           />
@@ -507,7 +511,9 @@ export default function TokenSettingsCard(props) {
                               size="sm"
                               variant="warning"
                               className="m-1"
-                              disabled={canEdit}
+                              disabled={
+                                canEdit || projectData.isFinancialFreeze
+                              }
                               onClick={() => handleEditHistoricalData(index)}
                             >
                               <EditIcon />
@@ -516,7 +522,9 @@ export default function TokenSettingsCard(props) {
                               size="sm"
                               variant="danger"
                               className="m-1"
-                              disabled={canEdit}
+                              disabled={
+                                canEdit || projectData.isFinancialFreeze
+                              }
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
                               <TrashIcon />
@@ -548,6 +556,7 @@ export default function TokenSettingsCard(props) {
           <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
             <FormGroup
+              disabled={canEdit}
               type="flex"
               inputType="number"
               inputSize="md"
@@ -558,6 +567,7 @@ export default function TokenSettingsCard(props) {
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
             <FormGroup
+              disabled={canEdit}
               type="flex"
               inputType="number"
               inputSize="md"
@@ -568,6 +578,7 @@ export default function TokenSettingsCard(props) {
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
             <FormGroup
+              disabled={canEdit}
               type="flex"
               inputType="number"
               inputSize="md"
@@ -578,6 +589,7 @@ export default function TokenSettingsCard(props) {
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
             <FormGroup
+              disabled={canEdit}
               type="flex"
               inputType="number"
               inputSize="md"
@@ -588,6 +600,7 @@ export default function TokenSettingsCard(props) {
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
             <FormGroup
+              disabled={canEdit}
               type="flex"
               inputType="number"
               inputSize="md"
@@ -599,6 +612,7 @@ export default function TokenSettingsCard(props) {
             />
             <div className="d-flex justify-content-center">
               <Button
+                disabled={canEdit}
                 onClick={() => handleSaveBtn("tokenDistributionForm")}
                 variant="success"
               >

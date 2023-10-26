@@ -24,12 +24,12 @@ export default function ProjectDetails() {
       const authorizedUsers =
         projectData?.projectInfo.projectAge < 20
           ? [...verifiers, postulant]
-          : [];
+          : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
+      console.log(projectData, "projectData");
     }
   }, [projectData]);
 
-  console.log(projectData);
   const coords = {
     lat: projectData?.projectInfo?.location.coords.lat,
     lng: projectData?.projectInfo?.location.coords.lng,
@@ -40,7 +40,7 @@ export default function ProjectDetails() {
       {projectData?.projectInfo?.projectAge < 20 && (
         <div className="col-12 col-xl-12">
           <Alert variant="success">
-            <Alert.Heading>Hola, {user.name}</Alert.Heading>
+            <Alert.Heading>Hola, {user?.name}</Alert.Heading>
             <p>
               Podras realizar ajustes a la información del proyecto durante los primeros 20 dias despues de su postulación. Posterior a esto se congelan los cambios a menos que exista solicitud formal y se abra manualmente en casos excepcionales.
             </p>
