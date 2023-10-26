@@ -40,10 +40,13 @@ export default function FinanceCard(props) {
 			<div className="row p-3 m-2 confirmacion_finan">
 				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
 				Por favor, verifica cuidadosamente los siguientes indicadores financieros. Estas serán las tendencias y la evolución que tendrá el proyecto, según nuestros expertos. Debes estar de acuerdo con esto para que tu proyecto sea publicado en nuestro Marketplace<br></br>
-				<label htmlFor="acuerdo_finanzas" className="m-2">
-					<input type="checkbox" name="acuerdo_finanzas" id="check_finazes" className="mx-2" />
-					Confirmo que leí y estoy deacuerdo con los indicadores presentados por SUAN
-				</label>
+					Confirmo que leí y estoy deacuerdo con los indicadores presentados por SUAN <br></br>
+				<Button
+					className="m-auto d-block w-25 mt-3"
+				>
+					Aceptar información financiera
+				</Button>
+				
 			</div>
 		<div className="container">
 			<div className="row">
