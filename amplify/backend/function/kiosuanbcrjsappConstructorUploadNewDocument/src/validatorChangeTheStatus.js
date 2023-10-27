@@ -1,13 +1,11 @@
 const fetch = require('node-fetch')
 const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses")
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY
 const SES_EMAIL = process.env.SES_EMAIL
 
 const ses = new SESClient({ region: "us-east-1" })
 
-async function validatorChangeTheStatus(query, documentID) {
+async function validatorChangeTheStatus(query, documentID, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY) {
   try {
     const variables = { id: documentID }
     const options = {

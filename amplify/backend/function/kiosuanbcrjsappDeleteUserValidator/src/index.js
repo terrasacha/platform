@@ -2,14 +2,18 @@ const AWS = require('aws-sdk')
 AWS.config.update({ region: 'us-east-1' })
 const cognito = new AWS.CognitoIdentityServiceProvider()
 
-const USER_POOL_ID = process.env.USER_POOL_ID;
-
 exports.handler = async (event) => {
   for (const record of event.Records) {
     console.log(record.eventID);
     console.log(record.eventName);
     console.log('DynamoDB Record: %j', record.dynamodb);
     if (record.eventName === 'REMOVE' && record.dynamodb.OldImage && record.dynamodb.OldImage.role.S === 'validator' && record.dynamodb.OldImage.isProfileUpdated.BOOL) {
+      const sourceEvent = record.eventSourceARN.split('/')[1]
+      let USER_POOL_ID = process.env.SUANTABLE === sourceEvent ? process.env.USER_POOL_ID_SUAN : process.env.USER_POOL_ID_TERRASASHA
+      console.log({
+        USER_POOL_ID: USER_POOL_ID,
+        sourceEvent: sourceEvent
+      })
       const id = record.dynamodb.OldImage.id.S;
       const usuario = record.dynamodb.OldImage.name.S;
 

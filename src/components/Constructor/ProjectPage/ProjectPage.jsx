@@ -150,18 +150,18 @@ export default function ProjectPage() {
             <Nav.Item>
               <Nav.Link
                 href="#details"
-                onClick={() => setActiveSection("details")}
+                onClick={(e) =>{ e.preventDefault();setActiveSection("details")}}
               >
                 Detalles
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link href="#files" onClick={() => setActiveSection("files")}>
+              <Nav.Link href="#files" onClick={(e) => {e.preventDefault();setActiveSection("files")}}>
                 Validación
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link href="#finance" onClick={() => setActiveSection("finance")}>
+              <Nav.Link href="#finance" onClick={(e) =>{e.preventDefault() ;setActiveSection("finance")}}>
                 Finanzas
               </Nav.Link>
             </Nav.Item>
@@ -170,7 +170,7 @@ export default function ProjectPage() {
                 <Nav.Item>
                   <Nav.Link
                     href="#file_manager"
-                    onClick={() => setActiveSection("file_manager")}
+                    onClick={(e) => {e.preventDefault();setActiveSection("file_manager")}}
                   >
                     Sistema de datos
                   </Nav.Link>
@@ -178,7 +178,7 @@ export default function ProjectPage() {
                 <Nav.Item>
                   <Nav.Link
                     href="#settings"
-                    onClick={() => setActiveSection("settings")}
+                    onClick={(e) => {e.preventDefault();setActiveSection("settings")}}
                   >
                     Configuración
                   </Nav.Link>

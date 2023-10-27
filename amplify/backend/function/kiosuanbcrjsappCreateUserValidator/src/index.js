@@ -6,13 +6,10 @@ AWS.config.update({ region: 'us-east-1' })
 const ses = new SESClient({ region: "us-east-1" })
 const cognito = new AWS.CognitoIdentityServiceProvider()
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT 
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY
 const SES_EMAIL = process.env.SES_EMAIL
-const USER_POOL_ID = process.env.USER_POOL_ID
 const MESSAGE_ACTION_SUPPRESS = 'SUPPRESS'
 
-async function checkUserExistenceInCognito(usuario, email) {
+async function checkUserExistenceInCognito(usuario, email, USER_POOL_ID) {
   const params = {
     UserPoolId: USER_POOL_ID,
     Username: usuario,
@@ -32,7 +29,7 @@ async function checkUserExistenceInCognito(usuario, email) {
   }
 }
 
-async function createUserInCognito(usuario, email, role, password, subrole) {
+async function createUserInCognito(usuario, email, role, password, subrole, USER_POOL_ID) {
   const params = {
     UserPoolId: USER_POOL_ID,
     Username: usuario,
@@ -67,7 +64,7 @@ async function createUserInCognito(usuario, email, role, password, subrole) {
   }
 }
 
-async function createUserInGraphQL(sub, usuario, email, role) {
+async function createUserInGraphQL(sub, usuario, email, role, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY) {
   const fetchOptionsUser = {
     method: 'POST',
     headers: {
@@ -107,7 +104,7 @@ async function createUserInGraphQL(sub, usuario, email, role) {
   }
 }
 
-async function deleteUserInGraphQL(id) {
+async function deleteUserInGraphQL(id, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY) {
   const fetchOptionsUser = {
     method: 'POST',
     headers: {
@@ -148,6 +145,16 @@ exports.handler = async (event) => {
 
   for (const record of event.Records) {
     if (record.eventName === 'INSERT' && record.dynamodb.NewImage && record.dynamodb.NewImage.role.S.includes('validator') && !record.dynamodb.NewImage.isProfileUpdated.BOOL) {
+      const sourceEvent = record.eventSourceARN.split('/')[1]
+      let GRAPHQL_ENDPOINT = process.env.SUANTABLE === sourceEvent ? process.env.GRAPHQL_ENDPOINT_SUAN : process.env.GRAPHQL_ENDPOINT_TERRASASHA
+      let GRAPHQL_API_KEY = process.env.SUANTABLE === sourceEvent ? process.env.GRAPHQL_API_KEY_SUAN : process.env.GRAPHQL_API_KEY_TERRASASHA
+      let USER_POOL_ID = process.env.SUANTABLE === sourceEvent ? process.env.USER_POOL_ID_SUAN : process.env.USER_POOL_ID_TERRASASHA
+      console.log({
+        GRAPHQL_ENDPOINT: GRAPHQL_ENDPOINT,
+        GRAPHQL_API_KEY: GRAPHQL_API_KEY,
+        USER_POOL_ID: USER_POOL_ID,
+        sourceEvent: sourceEvent
+      })
       const id = record.dynamodb.NewImage.id.S
       const email = record.dynamodb.NewImage.email.S
       const usuario = record.dynamodb.NewImage.name.S
@@ -161,14 +168,14 @@ exports.handler = async (event) => {
       console.log(id, email, usuario, role, subrole)
 
       try {
-        await deleteUserInGraphQL(id)
+        await deleteUserInGraphQL(id, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY)
         console.log(email, usuario, role)
 
-        const { alreadyExist } = await checkUserExistenceInCognito(usuario, email)
+        const { alreadyExist } = await checkUserExistenceInCognito(usuario, email, USER_POOL_ID)
         
         if (!alreadyExist) {
-          const sub = await createUserInCognito(usuario, email, role, password, subrole)
-          await createUserInGraphQL(sub, usuario, email, role)
+          const sub = await createUserInCognito(usuario, email, role, password, subrole, USER_POOL_ID)
+          await createUserInGraphQL(sub, usuario, email, role, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY)
           await ses.send(verifyEmailIdentityCommand)
           const fromMail = SES_EMAIL
           const toMail = [email]
