@@ -7,7 +7,7 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Auth } from 'aws-amplify'
 
 // Import images
-import LOGO from '../../common/_images/SuanLogo.png'
+import LOGO from '../../common/_images/suan_logo.png'
 import s from './HeaderNavbar.module.css'
 export default class HeaderNavbar extends Component {
   async logOut(){

@@ -1,4 +1,4 @@
-import LOGO from './logo_suan_horizontal-web_white - Copy.png';
+import LOGO from '../../common/_images/suan_logo.png';
 const Footer = () => {
     const year = new Date().getFullYear();
   

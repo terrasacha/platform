@@ -6,7 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 
 // Import images
-import LOGO from "components/common/_images/SuanLogo.png";
+import LOGO from "components/common/_images/suan_logo.png";
 import { Auth } from "aws-amplify";
 import s from "components/Constructor/Navbar/HeaderNavbar.module.css";
 export default function NewHeaderNavbar() {

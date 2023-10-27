@@ -6,7 +6,7 @@ import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
 
 // Import images
-import LOGO from '../../common/_images/SuanLogoName.svg'
+import LOGO from '../../common/_images/suan_logo.png'
 
 export default class HeaderNavbar extends Component {
 

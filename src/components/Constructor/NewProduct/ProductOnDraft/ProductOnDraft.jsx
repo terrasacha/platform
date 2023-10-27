@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap';
 import s from './ProductOnDraft.module.css'
-import LOGO from '../../../common/_images/SuanLogoName.svg'
+import LOGO from '../../../common/_images/suan_logo.png'
 import 'react-toastify/dist/ReactToastify.css';
 import { deleteAllProduct } from '../../functions/functions';
 export default class ProductOnDraft extends Component {

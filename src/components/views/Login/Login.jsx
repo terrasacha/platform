@@ -5,7 +5,7 @@ import { Alert } from "react-bootstrap"
 import { API, graphqlOperation } from 'aws-amplify'
 import {  createUser } from '../../../graphql/mutations'
 import s from './Login.module.css'
-import LOGO from '../_images/SuanLogoName.svg'
+import LOGO from '../../common/_images/suan_logo.png'
 const initialFormState ={
     username: '', password: '',confirmPassword: '', email: '', authCode: '', formType: 'signIn' ,terms: false,privacy_policy:false, role: 'constructor', code: ''
 }
@@ -222,7 +222,7 @@ export default function LogIn() {
                 <div className={s.containerLogin}>
                     <div className={s.containerCard}>
                         <div className={s.containerTitle}>
-                            <img src={LOGO} style={{width:'150px'}} alt='logo'/>
+                            <img src={LOGO} style={{width:'60px'}} alt='logo'/>
                             <h2 className="text-center mb-4">Sign up</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
                         </div>
@@ -276,7 +276,7 @@ export default function LogIn() {
                 <div className={s.containerLogin}>
                     <div className={s.containerCard}>
                             <div className={s.containerTitle}>
-                                <img src={LOGO} style={{width:'150px'}} alt='logo'/>
+                                <img src={LOGO} style={{width:'60px'}} alt='logo'/>
                                 <h2 className="text-center mb-4">Confirmation</h2>
                             </div>
                             <Alert>Verification code send to {formState.email}</Alert>
@@ -299,7 +299,7 @@ export default function LogIn() {
             <div className={s.containerLogin}>
                 <div className={s.containerCard}>
                     <div className={s.containerTitle}>
-                        <img src={LOGO} style={{width:'150px'}} alt='logo'/>
+                        <img src={LOGO} style={{width:'60px'}} alt='logo'/>
                         <h2 className="text-center mb-4">Inicio de sesión</h2>
                         {error && <Alert variant="danger">{error}</Alert>}
                     </div>
@@ -335,7 +335,7 @@ export default function LogIn() {
                 <div>
                     <div className={s.containerCard}>
                         <div className={s.containerTitle}>
-                            <img src={LOGO} style={{width:'150px'}} alt='logo'/>
+                            <img src={LOGO} style={{width:'60px'}} alt='logo'/>
                             <h2 className="text-center mb-4">Forgot Password</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
                         </div>
@@ -363,7 +363,7 @@ export default function LogIn() {
                 <div>
                     <div className={s.containerCard}>
                         <div className={s.containerTitle}>
-                            <img src={LOGO} style={{width:'150px'}} alt='logo'/>
+                            <img src={LOGO} style={{width:'60px'}} alt='logo'/>
                             <h2 className="text-center mb-4">Confirm code</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
                         </div>

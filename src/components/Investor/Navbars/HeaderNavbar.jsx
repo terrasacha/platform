@@ -4,7 +4,7 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import s from "./HeaderNavbar.module.css";
 // Import images
-import LOGO from "../../common/_images/SuanLogo.png";
+import LOGO from "../../common/_images/suan_logo.png";
 
 export default class HeaderNavbar extends Component {
   constructor(props) {
