@@ -56,6 +56,7 @@ export default function ProjectPage() {
     getProjectData();
   }, []);
 
+  const postulante = projectData.projectPostulant;
   
   return (
     <div className="container-sm">
@@ -160,11 +161,16 @@ export default function ProjectPage() {
                 Validación
               </Nav.Link>
             </Nav.Item>
-            <Nav.Item>
-              <Nav.Link href="#finance" onClick={(e) =>{e.preventDefault() ;setActiveSection("finance")}}>
-                Finanzas
-              </Nav.Link>
-            </Nav.Item>
+            {user?.id && projectData.projectPostulant?.id.includes(user.id) && (
+              <>
+                <Nav.Item>
+                  <Nav.Link href="#finance" onClick={() => setActiveSection("finance")}>
+                    Finanzas
+                  </Nav.Link>
+                </Nav.Item>
+              </>
+            )}
+
             {projectData.projectVerifiers?.includes(user?.id) && (
               <>
                 <Nav.Item>

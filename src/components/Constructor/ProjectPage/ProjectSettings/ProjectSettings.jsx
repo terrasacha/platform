@@ -1,69 +1,201 @@
-import React, { useState, useEffect} from "react";
-import { Auth } from "aws-amplify";
-import s from '../css/ProjectSettings.module.css'
+import React, { useState, useEffect } from "react";
+import { API, Auth, graphqlOperation } from "aws-amplify";
+import s from "../css/ProjectSettings.module.css";
 import ProjectSettingsCard from "./SettingCards/ProjectSettingsCard";
 import TokenSettingsCard from "./SettingCards/TokenSettingsCard";
 import CashFlowSettings from "./SettingCards/CashFlowSettings";
 import GenericInputTable from "./SettingCards/GenericInputTable";
 import FinancialIndicators from "./SettingCards/FinancialIndicators";
 import DescriptionValidator from "./SettingCards/DescriptionValidator";
+import { useProjectData } from "context/ProjectDataContext";
+import { Button } from "react-bootstrap";
+import { notify } from "utilities/notify";
+import { fetchProjectDataByProjectID } from "../api";
+import { createProductFeature } from "graphql/mutations";
 
 export default function ProjectSettings() {
-  const [activeSection, setActiveSection] = useState('technical');  
+  const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
+  const { projectData, handleUpdateContextProjectData } = useProjectData();
 
-  useEffect(() => { 
+  useEffect(() => {
     Auth.currentAuthenticatedUser()
-    .then(data =>{
-      if(data.attributes['custom:subrole']){
-        console.log(data.attributes['custom:subrole'])
-        setValidatorSubRole(data.attributes['custom:subrole'])
-      }else{
-        setValidatorSubRole(undefined)
+      .then((data) => {
+        if (data.attributes["custom:subrole"]) {
+          console.log(data.attributes["custom:subrole"]);
+          setValidatorSubRole(data.attributes["custom:subrole"]);
+        } else {
+          setValidatorSubRole(undefined);
+        }
+      })
+      .catch((error) => setValidatorSubRole(undefined));
+  }, []);
+
+  const handleSetValidatorDataComplete = async (item) => {
+    const updatedProjectData = await fetchProjectDataByProjectID(
+      projectData.projectInfo.id
+    );
+    console.log(updatedProjectData, "updatedProjectData");
+    let newProductFeature = {
+      productID: projectData.projectInfo.id,
+      value: true,
+    };
+    if (item === "technicalInfo") {
+      if (!updatedProjectData.isTechnicalComplete) {
+        notify({
+          msg: "Información técnica incompleta. Primero registra toda la información técnica",
+          type: "error",
+        });
+        return;
       }
-    })
-    .catch(error =>setValidatorSubRole(undefined))
-  }, [])
+      handleUpdateContextProjectData({ isTechnicalFreeze: true });
+      newProductFeature.featureID = "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+
+      notify({
+        msg: "Se ha oficializado la información técnica.",
+        type: "success",
+      });
+    }
+    if (item === "financialInfo") {
+      if (!updatedProjectData.isFinancialComplete) {
+        notify({
+          msg: "Información financiera incompleta. Primero registra toda la información técnica",
+          type: "error",
+        });
+        return;
+      }
+      handleUpdateContextProjectData({ isFinancialFreeze: true });
+      newProductFeature.featureID = "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+
+      notify({
+        msg: "Se ha oficializado la información financiera.",
+        type: "success",
+      });
+    }
+
+    console.log(newProductFeature);
+
+    await API.graphql(
+      graphqlOperation(createProductFeature, { input: newProductFeature })
+    );
+  };
+
   return (
     <div className="row row-cols-1  g-4">
       <div className="col">
         <ProjectSettingsCard />
       </div>
       <div className={s.selectSettingTypeContainer}>
-        <button 
-        className={`${s.selectSettingType} ${activeSection === 'technical' ? s.selectSettingTypeActive : ''}`}
-        onClick={() => setActiveSection('technical')}>Configuración técnica</button>
-        <button 
-        className={`${s.selectSettingType} ${activeSection === 'financial' ? s.selectSettingTypeActive : ''}`}
-        onClick={() => setActiveSection('financial')}>Configuración financiera</button>
+        <button
+          className={`${s.selectSettingType} ${
+            activeSection === "technical" ? s.selectSettingTypeActive : ""
+          }`}
+          onClick={() => setActiveSection("technical")}
+        >
+          Configuración técnica
+        </button>
+        <button
+          className={`${s.selectSettingType} ${
+            activeSection === "financial" ? s.selectSettingTypeActive : ""
+          }`}
+          onClick={() => setActiveSection("financial")}
+        >
+          Configuración financiera
+        </button>
       </div>
-      {activeSection === 'technical' &&
+      {activeSection === "technical" && (
         <>
           <div className="col">
-            <DescriptionValidator canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <DescriptionValidator
+              canEdit={
+                (validatorSubRole === undefined
+                  ? false
+                  : activeSection !== validatorSubRole) ||
+                projectData.isTechnicalFreeze
+              }
+            />
           </div>
           <div className="col">
-            <GenericInputTable  title={'Ingresos por producto'} fID={'GLOBAL_INGRESOS_POR_PRODUCTO'} financialInfoType={'revenuesByProduct'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <GenericInputTable
+              title={"Ingresos por producto"}
+              fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
+              financialInfoType={"revenuesByProduct"}
+              canEdit={
+                (validatorSubRole === undefined
+                  ? false
+                  : activeSection !== validatorSubRole) ||
+                projectData.isTechnicalFreeze
+              }
+            />
           </div>
           <div className="col">
-            <GenericInputTable  title={'Productos del ciclo del proyecto'} fID={'GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO'} financialInfoType={'productsOfCycleProject'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole} />
+            <GenericInputTable
+              title={"Productos del ciclo del proyecto"}
+              fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
+              financialInfoType={"productsOfCycleProject"}
+              canEdit={
+                (validatorSubRole === undefined
+                  ? false
+                  : activeSection !== validatorSubRole) ||
+                projectData.isTechnicalFreeze
+              }
+            />
           </div>
           <div className="col">
-            <FinancialIndicators  title={'Indicadores financieros'} fID={'GLOBAL_INDICADORES_FINANCIEROS'} financialInfoType={'financialIndicators'} canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole} />
+            <FinancialIndicators
+              title={"Indicadores financieros"}
+              fID={"GLOBAL_INDICADORES_FINANCIEROS"}
+              financialInfoType={"financialIndicators"}
+              canEdit={
+                (validatorSubRole === undefined
+                  ? false
+                  : activeSection !== validatorSubRole) ||
+                projectData.isTechnicalFreeze
+              }
+            />
+          </div>
+          <div className="d-flex justify-content-center mb-2">
+            <Button
+              disabled={projectData.isTechnicalFreeze}
+              onClick={() => handleSetValidatorDataComplete("technicalInfo")}
+            >
+              Oficializar información técnica
+            </Button>
           </div>
         </>
-      }
-      {activeSection === 'financial' &&
+      )}
+      {activeSection === "financial" && (
         <>
           <div className="col">
-            <TokenSettingsCard canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <TokenSettingsCard
+              canEdit={
+                (validatorSubRole === undefined
+                  ? false
+                  : activeSection !== validatorSubRole) ||
+                projectData.isFinancialFreeze
+              }
+            />
           </div>
           <div className="col">
-            <CashFlowSettings  canEdit={validatorSubRole === undefined? false : activeSection !== validatorSubRole}/>
+            <CashFlowSettings
+              canEdit={
+                (validatorSubRole === undefined
+                  ? false
+                  : activeSection !== validatorSubRole) ||
+                projectData.isFinancialFreeze
+              }
+            />
+          </div>
+          <div className="d-flex justify-content-center mb-2">
+            <Button
+              disabled={projectData.isFinancialFreeze}
+              onClick={() => handleSetValidatorDataComplete("financialInfo")}
+            >
+              Oficializar información financiera
+            </Button>
           </div>
         </>
-      }
-     
+      )}
     </div>
   );
 }

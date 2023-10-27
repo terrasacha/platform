@@ -5,8 +5,13 @@ import Card from "../../../../common/Card";
 import FormGroup from "../../../../common/FormGroup";
 
 import { useProjectData } from "../../../../../context/ProjectDataContext";
-import { updateProduct } from "../../../../../graphql/mutations";
+import {
+  updateProduct,
+} from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
+import { Button } from "react-bootstrap";
+
+import { fetchProjectDataByProjectID } from "../../api";
 
 export default function ProjectSettingsCard(props) {
   const { className } = props;
@@ -62,7 +67,7 @@ export default function ProjectSettingsCard(props) {
       msg: "El estado del proyecto ha sido actualizado",
       type: "success",
     });
-  }
+  };
 
   return (
     <Card className={className}>

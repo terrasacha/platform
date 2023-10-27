@@ -20,7 +20,6 @@ export default function OwnerInfoCard(props) {
 
   useEffect(() => {
     if (projectData && projectData.projectOwners) {
-      console.log(projectData, "projectData");
 
       const ownersData =
         [...projectData.projectOwners.owners].map((ownerData) => {
