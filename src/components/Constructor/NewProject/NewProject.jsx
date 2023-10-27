@@ -140,6 +140,45 @@ export default function NewProject() {
       })
     );
 
+    // Creación de GLOBAL_OWNER_ACCEPTS_CONDITIONS
+    const newProductFeatureGlobalOwnerAcceptsConditions = {
+      featureID: "GLOBAL_OWNER_ACCEPTS_CONDITIONS",
+      productID: productID,
+      value: "false",
+    };
+    console.log("newProductFeature:", newProductFeatureGlobalOwnerAcceptsConditions);
+    await API.graphql(
+      graphqlOperation(createProductFeature, {
+        input: newProductFeatureGlobalOwnerAcceptsConditions,
+      })
+    );
+
+    // Creación de GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS
+    const newProductFeatureGlobalValidatorSetFinantialConditions = {
+      featureID: "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS",
+      productID: productID,
+      value: "false",
+    };
+    console.log("newProductFeature:", newProductFeatureGlobalValidatorSetFinantialConditions);
+    await API.graphql(
+      graphqlOperation(createProductFeature, {
+        input: newProductFeatureGlobalValidatorSetFinantialConditions,
+      })
+    );
+
+    // Creación de GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS
+    const newProductFeatureGlobalValidatorSetThecnicalConditions = {
+      featureID: "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS",
+      productID: productID,
+      value: "false",
+    };
+    console.log("newProductFeature:", newProductFeatureGlobalValidatorSetThecnicalConditions);
+    await API.graphql(
+      graphqlOperation(createProductFeature, {
+        input: newProductFeatureGlobalValidatorSetThecnicalConditions,
+      })
+    );
+
     // Creación de pf Owners
     const owners = JSON.stringify([{
       name: formData["B_owner"].toUpperCase(),
