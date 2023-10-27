@@ -12,11 +12,6 @@ const ses = new SESClient({ region: "us-east-1" });
 
 const { Request } = fetch
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY;
-
-console.log(GRAPHQL_ENDPOINT)
-console.log(GRAPHQL_API_KEY)
 
 const query = /* GraphQL */ `
 query GetVerification($id: ID!) {
@@ -46,6 +41,15 @@ exports.handler = async (event) => {
     //console.log(streamedItem.eventName);
     //console.log('DynamoDB Record: %j', streamedItem.dynamodb);
     if (streamedItem.eventName === 'INSERT') {
+      const sourceEvent = streamedItem.eventSourceARN.split('/')[1]
+      let GRAPHQL_ENDPOINT = process.env.SUANTABLE === sourceEvent ? process.env.GRAPHQL_ENDPOINT_SUAN : process.env.GRAPHQL_ENDPOINT_TERRASASHA
+      let GRAPHQL_API_KEY = process.env.SUANTABLE === sourceEvent ? process.env.GRAPHQL_API_KEY_SUAN : process.env.GRAPHQL_API_KEY_TERRASASHA
+
+      console.log({
+        GRAPHQL_ENDPOINT: GRAPHQL_ENDPOINT,
+        GRAPHQL_API_KEY: GRAPHQL_API_KEY,
+        sourceEvent: sourceEvent
+      })
       verificationID = streamedItem.dynamodb.NewImage.verificationID.S;
       isCommentByVerifier = streamedItem.dynamodb.NewImage.isCommentByVerifier.BOOL;
       console.log(verificationID)

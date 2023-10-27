@@ -4,8 +4,6 @@ const { SESClient, SendTemplatedEmailCommand } = require("@aws-sdk/client-ses");
 const ses = new SESClient({ region: "us-east-1" });
 const { Request } = fetch
 
-const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
-const GRAPHQL_API_KEY = process.env.GRAPHQL_API_KEY;
 const SES_EMAIL = process.env.SES_EMAIL
 
 const query = /* GraphQL */ `
@@ -39,6 +37,15 @@ exports.handler = async(event) => {
     console.log('DynamoDB Record: %j', record.dynamodb);
     
     if (record.eventName === 'INSERT' && record.dynamodb.NewImage) {
+      const sourceEvent = record.eventSourceARN.split('/')[1]
+      let GRAPHQL_ENDPOINT = process.env.SUANTABLE === sourceEvent ? process.env.GRAPHQL_ENDPOINT_SUAN : process.env.GRAPHQL_ENDPOINT_TERRASASHA
+      let GRAPHQL_API_KEY = process.env.SUANTABLE === sourceEvent ? process.env.GRAPHQL_API_KEY_SUAN : process.env.GRAPHQL_API_KEY_TERRASASHA
+
+      console.log({
+        GRAPHQL_ENDPOINT: GRAPHQL_ENDPOINT,
+        GRAPHQL_API_KEY: GRAPHQL_API_KEY,
+        sourceEvent: sourceEvent
+      })
       let productID = record.dynamodb.NewImage.id.S
         const variables = { id: productID };
         /** @type {import('node-fetch').RequestInit} */
