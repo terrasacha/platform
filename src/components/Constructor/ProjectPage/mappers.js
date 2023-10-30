@@ -578,7 +578,6 @@ export const mapProjectData = async (data) => {
     data.userProducts.items.filter((up) => up.user?.role === "constructor")[0]
       ?.user.id || "";
 
-
   // ETADO DE INFORMACIÓN TECNICA Y FINANCIERA
   let isTechnicalComplete = false;
   if (
@@ -600,18 +599,14 @@ export const mapProjectData = async (data) => {
   }
 
   const isTechnicalFreeze =
-    Boolean(
-      data.productFeatures.items.filter((item) => {
-        return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
-      })[0]?.value
-    ) || false;
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+    })[0]?.value === "true" || false;
 
   const isFinancialFreeze =
-    Boolean(
-      data.productFeatures.items.filter((item) => {
-        return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
-      })[0]?.value
-    ) || false;
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+    })[0]?.value === "true" || false;
 
   return {
     projectInfo: {

@@ -11,7 +11,7 @@ import { useProjectData } from "context/ProjectDataContext";
 import { Button } from "react-bootstrap";
 import { notify } from "utilities/notify";
 import { fetchProjectDataByProjectID } from "../api";
-import { createProductFeature } from "graphql/mutations";
+import { createProductFeature, updateProductFeature } from "graphql/mutations";
 
 export default function ProjectSettings() {
   const [activeSection, setActiveSection] = useState("technical");
@@ -36,10 +36,6 @@ export default function ProjectSettings() {
       projectData.projectInfo.id
     );
     console.log(updatedProjectData, "updatedProjectData");
-    let newProductFeature = {
-      productID: projectData.projectInfo.id,
-      value: true,
-    };
     if (item === "technicalInfo") {
       if (!updatedProjectData.isTechnicalComplete) {
         notify({
@@ -49,7 +45,22 @@ export default function ProjectSettings() {
         return;
       }
       handleUpdateContextProjectData({ isTechnicalFreeze: true });
-      newProductFeature.featureID = "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+
+      const technicalInfoPfID =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+        })[0]?.id || null;
+
+      const updatedProductFeature = {
+        id: technicalInfoPfID,
+        value: "true",
+      };
+
+      await API.graphql(
+        graphqlOperation(updateProductFeature, {
+          input: updatedProductFeature,
+        })
+      );
 
       notify({
         msg: "Se ha oficializado la información técnica.",
@@ -65,7 +76,22 @@ export default function ProjectSettings() {
         return;
       }
       handleUpdateContextProjectData({ isFinancialFreeze: true });
-      newProductFeature.featureID = "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+
+      const financialInfoPfID =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+        })[0]?.id || null;
+
+      const updatedProductFeature = {
+        id: financialInfoPfID,
+        value: "true",
+      };
+
+      await API.graphql(
+        graphqlOperation(updateProductFeature, {
+          input: updatedProductFeature,
+        })
+      );
 
       notify({
         msg: "Se ha oficializado la información financiera.",
@@ -73,11 +99,6 @@ export default function ProjectSettings() {
       });
     }
 
-    console.log(newProductFeature);
-
-    await API.graphql(
-      graphqlOperation(createProductFeature, { input: newProductFeature })
-    );
   };
 
   return (
