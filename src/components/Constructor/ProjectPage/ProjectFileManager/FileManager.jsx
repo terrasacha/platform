@@ -14,6 +14,7 @@ import { deleteDocument, updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "context/ProjectDataContext";
 import { moveToBackupFolderS3, removeFolderS3 } from "utilities/moveToBackupS3";
 import NewFolderOnS3Modal from "components/Modals/NewFolderOnS3Modal";
+import UploadZipButton from "./UploadZipButton";
 
 export default function FileManager(props) {
   const { className, rootFolder } = props;
@@ -315,9 +316,10 @@ export default function FileManager(props) {
               </Breadcrumb.Item>
             ))}
           </Breadcrumb>
-          <div className="d-flex gap-2">
+          <div className="d-flex align-items-center gap-2">
             <NewFolderOnS3Modal uploadRoute={currentPath.join("/")} />
             <UploadFileModal uploadRoute={currentPath.join("/")} />
+            <UploadZipButton actualRoute={currentPath.join("/")}/>
           </div>
         </div>
         <Table responsive>
