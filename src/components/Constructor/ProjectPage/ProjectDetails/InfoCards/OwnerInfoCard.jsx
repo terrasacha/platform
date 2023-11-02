@@ -574,7 +574,7 @@ export default function OwnerInfoCard(props) {
                         <td>
                           <Form.Control
                             size="sm"
-                            type="number"
+                            type="text"
                             value={data.docNumber}
                             className="text-center"
                             name={`owner_docNumber_${index}`}
