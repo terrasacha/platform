@@ -21,7 +21,7 @@ export default function ProjectInfoCard(props) {
   } = useProjectData();
   const { user } = useAuth();
 
-  const [formData, setFormData] = useState([{}]);
+  const [formData, setFormData] = useState({});
 
   useEffect(() => {
     if (projectData && user) {
@@ -121,7 +121,7 @@ export default function ProjectInfoCard(props) {
     if (toSave === "projectInfoDescription") {
       const updatedProduct = {
         id: projectData.projectInfo.id,
-        name: formData.projectInfoDescription,
+        description: formData.projectInfoDescription,
       };
       await API.graphql(
         graphqlOperation(updateProduct, {

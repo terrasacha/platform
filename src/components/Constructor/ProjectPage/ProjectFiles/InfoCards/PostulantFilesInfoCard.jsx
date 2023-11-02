@@ -284,7 +284,7 @@ export default function PostulantFilesInfoCard(props) {
         <Table className="text-center" responsive>
           <thead>
             <tr>
-              <th>Nombre</th>
+              <th>Tipo</th>
               <th>Ultima actualización</th>
               <th>Estado Validación</th>
               <th></th>

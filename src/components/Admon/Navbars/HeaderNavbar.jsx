@@ -41,8 +41,8 @@ export default class HeaderNavbar extends Component {
                     <Navbar style={{backgroundColor: '#fff'}} fixed="top">
                         <Container>
                             <Navbar.Brand href="/"><img src={LOGO} 
-                                        width="80"
-                                        height="auto"
+                                        width="auto"
+                                        height="40"
                                         className="d-inline-block align-top"
                                         alt="ATP"
                             /></Navbar.Brand>

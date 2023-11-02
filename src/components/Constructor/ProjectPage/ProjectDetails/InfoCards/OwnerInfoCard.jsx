@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Card from "../../../../common/Card";
-import FormGroup from "../../../../common/FormGroup";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { Button, Form, Table } from "react-bootstrap";
@@ -9,18 +8,34 @@ import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { notify } from "../../../../../utilities/notify";
-import { API, graphqlOperation } from "aws-amplify";
-import { createProductFeature, updateProductFeature } from "graphql/mutations";
+import { API, Storage, graphqlOperation } from "aws-amplify";
+import {
+  createDocument,
+  createProductFeature,
+  deleteDocument,
+  deleteProductFeature,
+  deleteVerification,
+  deleteVerificationComment,
+  updateDocument,
+  updateProductFeature,
+} from "graphql/mutations";
+import Swal from "sweetalert2";
+import WebAppConfig from "components/common/_conf/WebAppConfig";
+import { useAuth } from "context/AuthContext";
+import { fetchProjectDataByProjectID } from "../../api";
 
 export default function OwnerInfoCard(props) {
   const { className, autorizedUser } = props;
-  const { projectData } = useProjectData();
+  const { projectData, handleUpdateContextProjectFile } = useProjectData();
+  const { user } = useAuth();
+
+  const fileInputRef = useRef(null);
 
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
+  const [executedOnce, setExecutedOnce] = useState(false);
 
   useEffect(() => {
-    if (projectData && projectData.projectOwners) {
-
+    if (projectData && projectData.projectOwners && !executedOnce) {
       const ownersData =
         [...projectData.projectOwners.owners].map((ownerData) => {
           return {
@@ -30,8 +45,34 @@ export default function OwnerInfoCard(props) {
         }) || [];
 
       setTokenHistoricalData(ownersData);
+      setExecutedOnce(true);
     }
   }, [projectData]);
+
+  const handleUploadButton = (index) => {
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "Este archivo será cargado y enviado a validación!",
+      showCancelButton: true,
+      confirmButtonText: "Cargar archivo",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        fileInputRef.current.click();
+      }
+    });
+  };
+
+  const handleFileChange = (e, indexToSaveFile) => {
+    setTokenHistoricalData((prevState) =>
+      prevState.map((item, index) =>
+        index === indexToSaveFile
+          ? { ...item, certificate: e.target.files[0] }
+          : item
+      )
+    );
+  };
 
   const handleEditHistoricalData = async (indexToStartEditing) => {
     const isEditingSomeHistoryData = tokenHistoricalData.some(
@@ -80,6 +121,7 @@ export default function OwnerInfoCard(props) {
             name: "",
             docNumber: "",
             docType: "",
+            certificate: null,
             editing: true,
           },
         ];
@@ -98,9 +140,142 @@ export default function OwnerInfoCard(props) {
         name: ownerData.name.toUpperCase(),
         docType: ownerData.docType,
         docNumber: ownerData.docNumber,
+        documentID: ownerData.documentID,
       };
     });
   }
+
+  const formatFileName = (fileName) => {
+    const removeAccents = (str) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+    const formattedFilename = fileName
+      .toLowerCase()
+      .trim()
+      .replaceAll(" ", "_");
+    const filenameWithoutAccents = removeAccents(formattedFilename);
+    return encodeURIComponent(filenameWithoutAccents);
+  };
+
+  const saveFileOnDB = async (fileToSave, documentID = null) => {
+    let docID = documentID;
+    const urlPath = `${projectData.projectInfo.id}/${formatFileName(
+      fileToSave.name
+    )}`;
+
+    if (documentID) {
+      const oldDocument = projectData.projectFiles.find(
+        (item) => item.id === documentID
+      );
+      // Si toca actualizar
+      const getFilePathRegex = /\/public\/(.+)$/;
+
+      // Eliminar archivo viejo de S3
+      const fileToDeleteName = decodeURIComponent(
+        oldDocument.url.match(getFilePathRegex)[1]
+      );
+      try {
+        await Storage.remove(fileToDeleteName);
+      } catch (error) {
+        console.error("Error removing the file:", error);
+      }
+
+      //  Cargar archivo nuevo a S3
+      try {
+        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
+          level: "public",
+          contentType: "*/*",
+        });
+
+        console.log("Archivo seleccionado:", fileToSave);
+        console.log("Archivo subido:", uploadImageResult);
+      } catch (error) {
+        notify({
+          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
+          type: "error",
+        });
+        return;
+      }
+
+      // Actualizar base de datos (Product Feature y Documento)
+      const updatedProductFeature = {
+        id: oldDocument.pfID,
+        value: fileToSave.name,
+      };
+      console.log("updatedProductFeature:", updatedProductFeature);
+      await API.graphql(
+        graphqlOperation(updateProductFeature, { input: updatedProductFeature })
+      );
+
+      const updatedDocument = {
+        id: oldDocument.id,
+        timeStamp: Date.now(),
+        status: "pending",
+        isApproved: false,
+        isUploadedToBlockChain: false,
+        url: WebAppConfig.url_s3_public_images + urlPath,
+      };
+
+      await API.graphql(
+        graphqlOperation(updateDocument, { input: updatedDocument })
+      );
+    } else {
+      // Crear pf y document
+      try {
+        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
+          level: "public",
+          contentType: "*/*",
+        });
+
+        console.log("Archivo seleccionado:", fileToSave);
+        console.log("Archivo subido:", uploadImageResult);
+      } catch (error) {
+        notify({
+          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
+          type: "error",
+        });
+        return;
+      }
+
+      const newProductFeature = {
+        featureID: "B_owner_certificado",
+        productID: projectData.projectInfo.id,
+        value: fileToSave.name,
+      };
+      console.log("newProductFeature:", newProductFeature);
+      const createProductFeatureResponse = await API.graphql(
+        graphqlOperation(createProductFeature, { input: newProductFeature })
+      );
+
+      const newDocument = {
+        productFeatureID:
+          createProductFeatureResponse.data.createProductFeature.id,
+        userID: user.id,
+        timeStamp: Date.now(),
+        status: "pending",
+        isApproved: false,
+        isUploadedToBlockChain: false,
+        url: WebAppConfig.url_s3_public_images + urlPath,
+      };
+
+      const createDocumentResponse = await API.graphql(
+        graphqlOperation(createDocument, { input: newDocument })
+      );
+
+      docID = createDocumentResponse.data.createDocument.id;
+    }
+
+    const updatedProjectData = await fetchProjectDataByProjectID(
+      projectData.projectInfo.id
+    );
+
+    const mappedDocument = updatedProjectData.projectFiles.find(
+      (item) => item.id === docID
+    );
+
+    await handleUpdateContextProjectFile(docID, mappedDocument);
+    return docID;
+  };
 
   const handleSaveHistoricalData = async (indexToSave) => {
     let error = false;
@@ -119,23 +294,53 @@ export default function OwnerInfoCard(props) {
       return;
     }
 
+    const certificate = tokenHistoricalData[indexToSave].certificate;
+
     if (
       tokenHistoricalData[indexToSave].name &&
       tokenHistoricalData[indexToSave].docType &&
-      tokenHistoricalData[indexToSave].docNumber
+      tokenHistoricalData[indexToSave].docNumber &&
+      (certificate || tokenHistoricalData[indexToSave].documentID)
     ) {
+      let documentID = tokenHistoricalData[indexToSave].documentID;
+      let docID = null;
+      if (certificate) {
+        docID = await saveFileOnDB(
+          certificate,
+          documentID !== undefined ? documentID : null
+        );
+      }
+
+      let tempTokenHD = tokenHistoricalData;
+
       setTokenHistoricalData((prevState) =>
         prevState.map((item, index) =>
           index === indexToSave
-            ? { ...item, editing: false, updatedAt: Date.now() }
+            ? {
+                ...item,
+                documentID: docID,
+                editing: false,
+                updatedAt: Date.now(),
+              }
             : item
         )
+      );
+
+      const tempTokenHistoricalData = tempTokenHD.map((item, index) =>
+        index === indexToSave
+          ? {
+              ...item,
+              documentID: docID,
+              editing: false,
+              updatedAt: Date.now(),
+            }
+          : item
       );
 
       if (projectData.projectOwners.pfID) {
         let tempProductFeature = {
           id: projectData.projectOwners.pfID,
-          value: JSON.stringify(getImportantValues(tokenHistoricalData)),
+          value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
         };
         const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
@@ -144,7 +349,7 @@ export default function OwnerInfoCard(props) {
         if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
-          value: JSON.stringify(getImportantValues(tokenHistoricalData)),
+          value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
           isToBlockChain: false,
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
@@ -175,6 +380,65 @@ export default function OwnerInfoCard(props) {
   const handleDeleteHistoricalData = async (indexToDelete) => {
     let error = false;
 
+    const documentToDelete = projectData.projectFiles.find(
+      (item) => item.id === tokenHistoricalData[indexToDelete].documentID
+    );
+
+    if (documentToDelete) {
+      // Borrar de S3
+      const getFilePathRegex = /\/public\/(.+)$/;
+
+      const fileToDeleteName = decodeURIComponent(
+        documentToDelete.url.match(getFilePathRegex)[1]
+      );
+      try {
+        await Storage.remove(fileToDeleteName);
+      } catch (error) {
+        console.error("Error removing the file:", error);
+      }
+
+      // Borrar product feature del documento
+      const pfToDelete = {
+        id: documentToDelete.pfID,
+      };
+      await API.graphql(
+        graphqlOperation(deleteProductFeature, { input: pfToDelete })
+      );
+
+      // Borrar documento
+      const docToDelete = {
+        id: documentToDelete.id,
+      };
+      await API.graphql(
+        graphqlOperation(deleteDocument, { input: docToDelete })
+      );
+
+      if (documentToDelete.verification) {
+        // Borrar verification (si existe)
+        const verificationToDelete = {
+          id: documentToDelete.verification.id,
+        };
+        await API.graphql(
+          graphqlOperation(deleteVerification, { input: verificationToDelete })
+        );
+
+        // Borrar verification comments (si existe)
+        if (documentToDelete.verification.messages.length > 0) {
+          documentToDelete.verification.messages.forEach(async (item) => {
+            const verificationCommentToDelete = {
+              id: item.id,
+            };
+            await API.graphql(
+              graphqlOperation(deleteVerificationComment, {
+                input: verificationCommentToDelete,
+              })
+            );
+          });
+        }
+      }
+    }
+
+    // Actualizar tokenHistoricalData
     const tempTokenHistoricalData = tokenHistoricalData.filter(
       (_, index) => index !== indexToDelete
     );
@@ -212,6 +476,23 @@ export default function OwnerInfoCard(props) {
       });
     }
   };
+
+  const renderFileLinkByDocumentID = (documentID) => {
+    if (documentID) {
+      const document = projectData.projectFiles.find(
+        (item) => item.id === documentID
+      );
+      return (
+        <a href={document?.url} target="_blank" rel="noreferrer">
+          Archivo
+        </a>
+      );
+    } else {
+      return "Sin archivo";
+    }
+  };
+
+  console.log(tokenHistoricalData);
 
   return (
     <Card className={className}>
@@ -256,6 +537,7 @@ export default function OwnerInfoCard(props) {
                 <th style={{ width: "300px" }}>Nombre</th>
                 <th style={{ width: "120px" }}>Tipo Documento</th>
                 <th style={{ width: "120px" }}>Numero Documento</th>
+                <th style={{ width: "120px" }}>Certificado de tradición</th>
                 <th style={{ width: "120px" }}></th>
               </tr>
             </thead>
@@ -299,6 +581,19 @@ export default function OwnerInfoCard(props) {
                             onChange={(e) => handleChangeInputValue(e)}
                           />
                         </td>
+                        <td>
+                          <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={(e) => handleFileChange(e, index)}
+                          />
+                          <Button onClick={handleUploadButton} size="sm">
+                            {data.certificate || data.documentID !== undefined
+                              ? "Actualizar"
+                              : "Cargar"}
+                          </Button>
+                        </td>
                         <td className="text-end">
                           <Button
                             size="sm"
@@ -323,6 +618,7 @@ export default function OwnerInfoCard(props) {
                         <td>{data.name?.toUpperCase()}</td>
                         <td>{data.docType?.toUpperCase()}</td>
                         <td>{data.docNumber}</td>
+                        <td>{renderFileLinkByDocumentID(data.documentID)}</td>
                         <td className="text-end">
                           <Button
                             size="sm"
