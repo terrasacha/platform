@@ -15,6 +15,7 @@ type User @model
   addresss: String
   cellphone: AWSPhone
   role: String!
+  subrole: String
   status: String
   email: AWSEmail
   wallets: [Wallet] @hasMany(indexName: "byUser", fields: ["id"])
