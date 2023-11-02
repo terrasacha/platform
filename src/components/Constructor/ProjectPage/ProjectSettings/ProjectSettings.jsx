@@ -100,7 +100,6 @@ export default function ProjectSettings() {
     }
 
   };
-
   return (
     <div className="row row-cols-1  g-4">
       <div className="col">
@@ -128,11 +127,11 @@ export default function ProjectSettings() {
         <>
           <div className="col">
             <DescriptionValidator
-              canEdit={
-                (validatorSubRole === undefined
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
+                /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
-                projectData.isTechnicalFreeze
+                !projectData.isTechnicalFreeze */
               }
             />
           </div>
@@ -141,11 +140,7 @@ export default function ProjectSettings() {
               title={"Ingresos por producto"}
               fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
               financialInfoType={"revenuesByProduct"}
-              canEdit={
-                (validatorSubRole === undefined
-                  ? false
-                  : activeSection !== validatorSubRole) ||
-                projectData.isTechnicalFreeze
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
               }
             />
           </div>
@@ -154,11 +149,7 @@ export default function ProjectSettings() {
               title={"Productos del ciclo del proyecto"}
               fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
               financialInfoType={"productsOfCycleProject"}
-              canEdit={
-                (validatorSubRole === undefined
-                  ? false
-                  : activeSection !== validatorSubRole) ||
-                projectData.isTechnicalFreeze
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
               }
             />
           </div>
@@ -167,11 +158,7 @@ export default function ProjectSettings() {
               title={"Indicadores financieros"}
               fID={"GLOBAL_INDICADORES_FINANCIEROS"}
               financialInfoType={"financialIndicators"}
-              canEdit={
-                (validatorSubRole === undefined
-                  ? false
-                  : activeSection !== validatorSubRole) ||
-                projectData.isTechnicalFreeze
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
               }
             />
           </div>
@@ -189,21 +176,17 @@ export default function ProjectSettings() {
         <>
           <div className="col">
             <TokenSettingsCard
-              canEdit={
-                (validatorSubRole === undefined
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isTechnicalFreeze) ? false : true
+                /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
-                projectData.isFinancialFreeze
+                projectData.isFinancialFreeze */
               }
             />
           </div>
           <div className="col">
             <CashFlowSettings
-              canEdit={
-                (validatorSubRole === undefined
-                  ? false
-                  : activeSection !== validatorSubRole) ||
-                projectData.isFinancialFreeze
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isTechnicalFreeze) ? false : true
               }
             />
           </div>
