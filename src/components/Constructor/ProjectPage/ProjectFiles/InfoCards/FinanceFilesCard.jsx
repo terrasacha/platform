@@ -1,26 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import { API, graphqlOperation, Storage } from "aws-amplify";
-import Card from "../../../../common/Card";
-import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
-import { DownloadIcon } from "../../../../common/icons/DownloadIcon";
-import { MessagesIcon } from "../../../../common/icons/MessagesIcon";
-import { CheckIcon } from "../../../../common/icons/CheckIcon";
-import { XIcon } from "../../../../common/icons/XIcon";
-import {
-	createProductFeature,
-	createVerification,
-	updateDocument,
-} from "../../../../../graphql/mutations";
+import { updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
-import { useAuth } from "../../../../../context/AuthContext";
-import { notify } from "../../../../../utilities/notify";
 import { validateProjectFeatures } from './validateProjectFeatures';  // Asegúrate de proporcionar la ruta correcta
-
-
-
 
 export default function FinanceCard(props) {
 	const {
@@ -29,32 +14,32 @@ export default function FinanceCard(props) {
 		projectFeatures,
 	} = props;
 
-	const { projectData,
-	} = useProjectData();
+	const { projectData } = useProjectData();
+	const [validadorShow, setValidadorShow] = useState(true);
 	const dataToken = projectData.projectFinancialInfo.tokenAmountDistribution.tokenAmountDistribution;
 	const dataCash = projectData.projectFinancialInfo.cashFlowResume;
 	const dataRevenues = projectData.projectFinancialInfo.revenuesByProduct;
 	const dataIndicador = projectData.projectFinancialInfo.financialIndicators;
-	console.log(projectData)
 	const isValid = validateProjectFeatures(projectData.projectFeatures);
-	console.log(isValid, "valid");
+	//const isValid = validateProjectFeatures(projectFeature);
 
 	const handleBotoncheckpostulant = async () => {
-		let newProductFeature = {
-			featureID: "GLOBAL_OWNER_ACCEPTS_CONDITIONS",
-			productID: projectData.projectInfo.id,
-			value: true,
-		};
-		await API.graphql(
-			graphqlOperation(createProductFeature, { input: newProductFeature })
+		const newProductFeature = projectData.projectFeatures.find(
+			(item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
 		);
-	}
+	
+		if (newProductFeature) {
+			newProductFeature.value = "false";
+			await API.graphql(
+				graphqlOperation(updateProductFeature, { input: newProductFeature })
+			);
+		}
+		setValidadorShow(false);
+	};
 
-	console.log()
-
-	return isValid ? (
+	return isValid && validadorShow ? (
 		<>
-			<div className="row p-3 m-2 confirmacion_finan">
+		<div className="row p-3 m-2 confirmacion_finan">
 				<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
 				Por favor, verifica cuidadosamente los siguientes indicadores financieros. Estas serán las tendencias y la evolución que tendrá el proyecto, según nuestros expertos. Debes estar de acuerdo con esto para que tu proyecto sea publicado en nuestro Marketplace<br></br>
 				Confirmo que leí y estoy deacuerdo con los indicadores presentados por SUAN <br></br>
@@ -66,7 +51,6 @@ export default function FinanceCard(props) {
 				>
 					Aceptar información financiera
 				</Button>
-
 			</div>
 			<div className="container">
 				<div className="row">
@@ -98,12 +82,12 @@ function DistributionToken({ infoTable, typeInfo }) {
 
 	return (
 		<div className="col">
-			<div className="row align-items-start">
-				<div className="col p-3 m-2">
+			<div className="row align-items-start ">
+				<div className="col p-3 m-2 box-postulant">
 					<h5>Distribución de Tokens del proyecto</h5>
 					<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
 						<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-							<tr>
+							<tr className="distribution">
 								{Object.keys(infoTable).map((key) => (
 									<th scope="col" className="px-3 py-2" key={key}>
 										{key}
@@ -112,7 +96,7 @@ function DistributionToken({ infoTable, typeInfo }) {
 							</tr>
 						</thead>
 						<tbody>
-							<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+							<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 distribution">
 								{Object.values(infoTable).map((value, index) => (
 									<td className="px-3 py-2" key={index}>
 										{value}
@@ -121,6 +105,7 @@ function DistributionToken({ infoTable, typeInfo }) {
 							</tr>
 						</tbody>
 					</table>
+					<PieChartComponent infoTable={infoTable} />
 				</div>
 			</div>
 		</div>
@@ -137,8 +122,8 @@ function CashProducts({ infoTable, typeInfo }) {
 
 	return (
 		<div className="col">
-			<div className="row align-items-start">
-				<div className="col p-3 m-2 ">
+			<div className="row align-items-start ">
+				<div className="col p-3 m-2 box-postulant">
 					<h5>Productos del ciclo del proyecto</h5>
 					<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
 						<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -175,7 +160,7 @@ function IndicatorsProducts({ infoTable, typeInfo }) {
 	const columns = ["Concepto", "Cantidad", "Unidad"];
 
 	return (
-		<div className="col p-3 m-2">
+		<div className="col p-3 m-2 box-postulant">
 			<h5>Indicadores Financieros</h5>
 			<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
 				<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -209,8 +194,8 @@ function RevenuesProducts({ infoTable, typeInfo }) {
 	const columns = ["Concepto", "Cantidad", "Unidad"];
 
 	return (
-		<div>
-			<div>Ingresos por productos</div>
+		<div className=" col p-3 m-2 box-postulant">
+			<h5>Ingresos por productos</h5>
 			<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
 				<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 					<tr>
@@ -234,3 +219,45 @@ function RevenuesProducts({ infoTable, typeInfo }) {
 		</div>
 	);
 }
+
+const PieChartComponent = ({ infoTable }) => {
+	const [chartData, setChartData] = useState([]);
+
+	useEffect(() => {
+		if (infoTable) {
+			const newChartData = Object.keys(infoTable).map((key) => ({
+				name: key,
+				value: Number(infoTable[key]),
+			}));
+			setChartData(newChartData);
+		}
+	}, [infoTable]);
+
+
+	const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF1942', '#00FF99', '#FF6600', '#8A2BE2'];
+
+	return (
+		<div className="w-full flex items-center justify-center">
+			<ResponsiveContainer width="100%" height={300}>
+				<PieChart width={300} height={300}>
+					<Pie
+						dataKey="value"
+						data={chartData}
+						cx="50%"
+						cy="50%"
+						outerRadius={100}
+						innerRadius={50}
+						fill="#8884d8"
+						labelLine={false}
+					>
+						{chartData.map((entry, index) => (
+							<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+						))}
+					</Pie>
+					<Tooltip />
+					<Legend layout="vertical" align="left" verticalAlign="middle" />
+				</PieChart>
+			</ResponsiveContainer>
+		</div>
+	);
+};

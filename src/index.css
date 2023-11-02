@@ -5,9 +5,27 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-code {
+.box-postulant{
+        border: 1px solid #b9b6b69e;
+        border-radius: 20px;
+        margin: 5px;
+        box-shadow: 3px 5px #d3d1d11f;     
+        }
+.distribution th.px-3.py-2:nth-child(2) {
+        background: rgba(3,102,103,1);
+        border-radius: 9px 9px 0px 0px;
+        color: white;
+    }
+.distribution td{
+        text-align: center;
 }
+    .distribution td.px-3.py-2:nth-child(2) {
+      background: #036667;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 0px 0px 9px 9px;
+    }
+
 .footer {
   background-color: #000;
   color: #f4f4f4;
