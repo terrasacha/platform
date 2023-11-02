@@ -171,7 +171,7 @@ export default function ProjectPage() {
               </>
             )}
 
-            {projectData.projectVerifiers?.includes(user?.id) && (
+            {(projectData.projectVerifiers?.includes(user?.id) || user?.role === 'admon')&& (
               <>
                 <Nav.Item>
                   <Nav.Link
@@ -198,7 +198,7 @@ export default function ProjectPage() {
         {activeSection === "files" && <ProjectFiles />}
         {activeSection === "finance" && <FinanceCard />}
         {activeSection === "settings" &&
-          projectData?.projectVerifiers.includes(user?.id) && (
+          (projectData?.projectVerifiers.includes(user?.id) || user?.role === 'admon') && (
             <ProjectSettings />
           )}
       </div>
