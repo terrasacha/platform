@@ -4,9 +4,29 @@ import { Button, Col, Container, Form, Row, Table, Modal } from 'react-bootstrap
 import { API, graphqlOperation, Auth } from 'aws-amplify'
 import { onCreateUser, onUpdateUser, onDeleteUser } from '../../../graphql/subscriptions';
 import { createUser, updateUser, deleteUser, deleteUserProduct} from '../../../graphql/mutations';
-import { listUsers, listUserProducts } from '../../../graphql/queries';
+import { listUserProducts } from '../../../graphql/queries';
 import { v4 as uuidv4 } from 'uuid'
-
+const listUserValidators = `
+query ListUsers(
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      email
+      isProfileUpdated
+      role
+      subrole
+      status
+      createdAt
+    }
+    nextToken
+  }
+}
+`
 class Validators extends Component {
 
     constructor(props) {
@@ -110,7 +130,7 @@ class Validators extends Component {
                 eq: 'validator'
             }
           }
-        const listUsersResult = await API.graphql({ query: listUsers, variables: { filter: filter}})
+        const listUsersResult = await API.graphql({ query: listUserValidators, variables: { filter: filter}})
         this.setState({validators: listUsersResult.data.listUsers.items})
     }
     handleOnChangeInputForm = async(event) => {
@@ -198,7 +218,7 @@ class Validators extends Component {
                                         {validator.email}
                                     </td>
                                     <td>
-                                        {validator.role}
+                                        {validator.subrole}
                                     </td>
                                     <td>
                                         {validator.createdAt.split('T')[0].split('-')[2] + '-' + validator.createdAt.split('T')[0].split('-')[1] + '-' + validator.createdAt.split('T')[0].split('-')[0]}
