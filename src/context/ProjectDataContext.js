@@ -110,6 +110,29 @@ export function ProjectDataProvider({ children }) {
     }));
   };
 
+  const handleUpdateContextProjectFile = async (docID, data) => {
+    if (projectData.projectFiles.find(item => item.id === docID)) {
+      setProjectData((prevData) => ({
+        ...prevData,
+        projectFiles: prevData.projectFiles.map((file) => {
+          if (file.id === docID) {
+            return {
+              ...file,
+              ...data,
+            };
+          } else {
+            return file;
+          }
+        }),
+      }));
+    } else {
+      setProjectData((prevData) => ({
+        ...prevData,
+        projectFiles: [...prevData.projectFiles, data],
+      }));
+    }
+  };
+
   const handleUpdateContextProjectTokenData = async (data) => {
     setProjectData((prevData) => ({
       ...prevData,
@@ -157,6 +180,7 @@ export function ProjectDataProvider({ children }) {
     handleProjectData,
     handleUpdateContextProjectData,
     handleUpdateContextDocumentStatus,
+    handleUpdateContextProjectFile,
     handleUpdateContextProjectTokenData,
     handleUpdateContextFileVerification,
     handleUpdateContextProjectInfo,

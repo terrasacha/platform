@@ -6,6 +6,7 @@ import {
   createDocument,
   createProduct,
   createProductFeature,
+  createUserProduct,
 } from "graphql/mutations";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "context/AuthContext";
@@ -14,16 +15,16 @@ import DynamicForm from "components/DynamicForm/DynamicForm";
 import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
 
 export default function NewProject() {
-  const formURL = "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS.xlsx";
+  const formURL =
+    "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+SIMPLIFICADO.xlsx";
+  //const formURL = "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS.xlsx";
   //const formURL = "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+TEST.xlsx"
-
 
   const { user } = useAuth();
   const [formData, setFormData] = useState({});
   const [formDataErrors, setFormDataErrors] = useState({});
 
   useEffect(() => {
-
     if (user) {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -35,82 +36,82 @@ export default function NewProject() {
   const createProductFeatures = async (productID) => {
     const productFeaturesToCreate = [
       "A_postulante_doctype",
-      "A_matricula",
-      "B_owner_id", // Eliminar
-      "D_area",
+      // "A_matricula",
+      // "B_owner_id", // Eliminar
+      // "D_area",
       "A_postulante_id",
       "A_postulante_email",
-      "A_vereda",
+      // "A_vereda",
       "C_ubicacion",
-      "A_ficha_catastral",
-      "B_owner_doctype", // Eliminar
-      "A_municipio",
-      "B_owner", // Eliminar
+      // "A_ficha_catastral",
+      // "B_owner_doctype", // Eliminar
+      // "A_municipio",
+      // "B_owner", // Eliminar
       "A_postulante_name",
-      "E_restriccion_desc",
-      "E_resctriccion_other",
-      "H_asistance_desc",
-      "H_aliados_estrategicos_desc",
-      "H_grupo_comunitario_desc",
+      // "E_restriccion_desc",
+      // "E_resctriccion_other",
+      // "H_asistance_desc",
+      // "H_aliados_estrategicos_desc",
+      // "H_grupo_comunitario_desc",
     ];
     const productFeaturesGroupsToCreate1 = [
-      "D_actual_use",
-      "D_area_potrero",
-      "D_especie_plantaciones1",
-      "D_ha_plantaciones1",
-      "D_especie_plantaciones2",
-      "D_ha_plantaciones2",
-      "D_especie_plantaciones3",
-      "D_ha_plantaciones3",
-      "D_especie_frutales1",
-      "D_ha_frutales1",
-      "D_especie_frutales2",
-      "D_ha_frutales2",
-      "D_especie_otros",
-      "D_ha_otros",
-      "D_replace_use",
-      "D_replace_potrero_use",
-      "D_replace_ha_potrero_use",
-      "D_replace_plantaciones1_use",
-      "D_replace_ha_plantaciones1_use",
-      "D_replace_plantaciones2_use",
-      "D_replace_ha_plantaciones2_use",
-      "D_replace_plantaciones3_use",
-      "D_replace_ha_plantaciones3_use",
-      "D_replace_frutales1_use",
-      "D_replace_ha_frutales1_use",
-      "D_replace_frutales2_use",
-      "D_replace_ha_frutales2_use",
-      "D_replace_otros_use",
-      "D_replace_ha_otros_use",
+      //   "D_actual_use",
+      //   "D_area_potrero",
+      //   "D_especie_plantaciones1",
+      //   "D_ha_plantaciones1",
+      //   "D_especie_plantaciones2",
+      //   "D_ha_plantaciones2",
+      //   "D_especie_plantaciones3",
+      //   "D_ha_plantaciones3",
+      //   "D_especie_frutales1",
+      //   "D_ha_frutales1",
+      //   "D_especie_frutales2",
+      //   "D_ha_frutales2",
+      //   "D_especie_otros",
+      //   "D_ha_otros",
+      //   "D_replace_use",
+      //   "D_replace_potrero_use",
+      //   "D_replace_ha_potrero_use",
+      //   "D_replace_plantaciones1_use",
+      //   "D_replace_ha_plantaciones1_use",
+      //   "D_replace_plantaciones2_use",
+      //   "D_replace_ha_plantaciones2_use",
+      //   "D_replace_plantaciones3_use",
+      //   "D_replace_ha_plantaciones3_use",
+      //   "D_replace_frutales1_use",
+      //   "D_replace_ha_frutales1_use",
+      //   "D_replace_frutales2_use",
+      //   "D_replace_ha_frutales2_use",
+      //   "D_replace_otros_use",
+      //   "D_replace_ha_otros_use",
     ]; // storage on D_actual_use
     const productFeaturesGroupsToCreate2 = [
-      "G_habita_predio",
-      "G_Temporal_permanente",
-      "G_habita_years",
-      "G_viviendas_number",
-      "G_familias",
-      "G_familias_miembros",
-      "G_vias_state",
-      "G_distancia_predio_municipal",
-      "G_transport_mean",
-      "G_caminos_existence",
-      "G_risks_erosion_derrumbe",
+      //   "G_habita_predio",
+      //   "G_Temporal_permanente",
+      //   "G_habita_years",
+      //   "G_viviendas_number",
+      //   "G_familias",
+      //   "G_familias_miembros",
+      //   "G_vias_state",
+      //   "G_distancia_predio_municipal",
+      //   "G_transport_mean",
+      //   "G_caminos_existence",
+      //   "G_risks_erosion_derrumbe",
     ]; // storage on G_habita_predio
     const productFeaturesGroupsToCreate3 = [
-      "F_nacimiento_agua",
-      "F_nacimiento_agua_quantity",
-      "F_agua_concede",
-      "F_agua_concede_entity",
-      "F_amenazas_defo_desc",
-      "F_conservacion_desc",
-      "F_especies_fauna",
-      "F_especies_mamiferos",
-      "F_especies_aves",
-      "F_especies_flora",
+      //   "F_nacimiento_agua",
+      //   "F_nacimiento_agua_quantity",
+      //   "F_agua_concede",
+      //   "F_agua_concede_entity",
+      //   "F_amenazas_defo_desc",
+      //   "F_conservacion_desc",
+      //   "F_especies_fauna",
+      //   "F_especies_mamiferos",
+      //   "F_especies_aves",
+      //   "F_especies_flora",
     ]; // storage on F_nacimiento_agua
     const productFeaturesWithFilesToCreate = [
-      "B_owner_certificado",
+      // "B_owner_certificado",
       "C_plano_predio",
     ];
 
@@ -133,7 +134,10 @@ export default function NewProject() {
       productID: productID,
       value: "",
     };
-    console.log("newProductFeature:", newProductFeatureGlobalProjectValidatorFiles);
+    console.log(
+      "newProductFeature:",
+      newProductFeatureGlobalProjectValidatorFiles
+    );
     await API.graphql(
       graphqlOperation(createProductFeature, {
         input: newProductFeatureGlobalProjectValidatorFiles,
@@ -146,7 +150,10 @@ export default function NewProject() {
       productID: productID,
       value: "false",
     };
-    console.log("newProductFeature:", newProductFeatureGlobalOwnerAcceptsConditions);
+    console.log(
+      "newProductFeature:",
+      newProductFeatureGlobalOwnerAcceptsConditions
+    );
     await API.graphql(
       graphqlOperation(createProductFeature, {
         input: newProductFeatureGlobalOwnerAcceptsConditions,
@@ -159,7 +166,10 @@ export default function NewProject() {
       productID: productID,
       value: "false",
     };
-    console.log("newProductFeature:", newProductFeatureGlobalValidatorSetFinantialConditions);
+    console.log(
+      "newProductFeature:",
+      newProductFeatureGlobalValidatorSetFinantialConditions
+    );
     await API.graphql(
       graphqlOperation(createProductFeature, {
         input: newProductFeatureGlobalValidatorSetFinantialConditions,
@@ -172,7 +182,10 @@ export default function NewProject() {
       productID: productID,
       value: "false",
     };
-    console.log("newProductFeature:", newProductFeatureGlobalValidatorSetThecnicalConditions);
+    console.log(
+      "newProductFeature:",
+      newProductFeatureGlobalValidatorSetThecnicalConditions
+    );
     await API.graphql(
       graphqlOperation(createProductFeature, {
         input: newProductFeatureGlobalValidatorSetThecnicalConditions,
@@ -180,22 +193,22 @@ export default function NewProject() {
     );
 
     // Creación de pf Owners
-    const owners = JSON.stringify([{
-      name: formData["B_owner"].toUpperCase(),
-      docType: formData["B_owner_doctype"],
-      docNumber: formData["B_owner_id"],
-    }])
-    const newProductFeatureOwners = {
-      featureID: "B_owners",
-      productID: productID,
-      value: owners,
-    };
-    console.log("newProductFeature:", newProductFeatureOwners);
-    await API.graphql(
-      graphqlOperation(createProductFeature, {
-        input: newProductFeatureOwners,
-      })
-    );
+    // const owners = JSON.stringify([{
+    //   name: formData["B_owner"].toUpperCase(),
+    //   docType: formData["B_owner_doctype"],
+    //   docNumber: formData["B_owner_id"],
+    // }])
+    // const newProductFeatureOwners = {
+    //   featureID: "B_owners",
+    //   productID: productID,
+    //   value: owners,
+    // };
+    // console.log("newProductFeature:", newProductFeatureOwners);
+    // await API.graphql(
+    //   graphqlOperation(createProductFeature, {
+    //     input: newProductFeatureOwners,
+    //   })
+    // );
 
     // Creación de pf normales
     for (let i = 0; i < productFeaturesToCreate.length; i++) {
@@ -354,14 +367,13 @@ export default function NewProject() {
         );
       }
     }
-    
+
     // Creación de carpetas base
     await makeFolderOnS3(`${productID}/Técnica/`);
     await makeFolderOnS3(`${productID}/Financiera/`);
   };
 
   const handleSubmit = async () => {
-
     const productID = uuidv4();
     // Subir datos a la base de datos con API de graphql
     const newProduct = {
@@ -375,6 +387,14 @@ export default function NewProject() {
     };
     console.log("newProduct:", newProduct);
     await API.graphql(graphqlOperation(createProduct, { input: newProduct }));
+
+    const newUserProduct = {
+      productID: productID,
+      userID: user.id,
+    };
+    await API.graphql(
+      graphqlOperation(createUserProduct, { input: newUserProduct })
+    );
 
     await createProductFeatures(productID);
 
