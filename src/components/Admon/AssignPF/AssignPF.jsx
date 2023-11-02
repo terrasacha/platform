@@ -154,6 +154,27 @@ export const listProductsAssign = /* GraphQL */ `
     }
   }
 `;
+const listUserValidators = `
+query ListUsers(
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      email
+      isProfileUpdated
+      role
+      subrole
+      status
+      createdAt
+    }
+    nextToken
+  }
+}
+`
 export default class AssignPF extends Component {
   constructor(props) {
     super(props);
@@ -196,7 +217,7 @@ export default class AssignPF extends Component {
       },
     };
     const listUsersResults = await API.graphql({
-      query: listUsers,
+      query: listUserValidators,
       variables: { filter: filter },
     });
     this.setState({
@@ -291,7 +312,7 @@ export default class AssignPF extends Component {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Role</th>
+                  <th>Subrole</th>
                 </tr>
               </thead>
               <tbody>
@@ -303,16 +324,7 @@ export default class AssignPF extends Component {
                     >
                       <td>{user.name}</td>
                       <td>
-                        {user.role ? (
-                          user.role
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={(e) => this.assignRole(user)}
-                          >
-                            Assign role on DB
-                          </Button>
-                        )}
+                      {user.subrole}
                       </td>
                     </tr>
                   );

@@ -202,7 +202,7 @@ class Validators extends Component {
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th>
+                                <th>Subrole</th>
                                 <th>Created at</th>
                                 <th>Confirmation</th>
                                 <th></th>
