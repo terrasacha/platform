@@ -19,6 +19,10 @@ body {
 .distribution td{
         text-align: center;
 }
+.text-tok-post{
+        font-size: 12px;
+        color:#cd0505;
+}
     .distribution td.px-3.py-2:nth-child(2) {
       background: #036667;
       color: #fff;
@@ -73,4 +77,14 @@ body {
     -webkit-transform-origin: 100% 0%;
             transform-origin: 100% 0%;
   }
+}
+
+@media only screen and (max-width: 720px) {
+
+        .box-postulant thead, .box-postulant tbody{
+                font-size: 0.7rem;;
+        }
+        .container{
+                height: 100%;
+        }
 }

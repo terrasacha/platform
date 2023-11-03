@@ -147,7 +147,7 @@ export default function ProjectPage() {
             variant="tabs"
             className="mt-3"
             defaultActiveKey={"#" + activeSection}
-          >
+            >
             <Nav.Item>
               <Nav.Link
                 href="#details"
@@ -161,7 +161,10 @@ export default function ProjectPage() {
                 Validación
               </Nav.Link>
             </Nav.Item>
-            {user?.id && projectData.projectPostulant?.id.includes(user.id) && (
+            {user?.id && (
+                projectData.projectPostulant?.id.includes(user.id) ||
+                projectData.projectVerifiers?.includes(user.id)
+              ) && (
               <>
                 <Nav.Item>
                   <Nav.Link href="#finance" onClick={() => setActiveSection("finance")}>
@@ -177,7 +180,7 @@ export default function ProjectPage() {
                   <Nav.Link
                     href="#file_manager"
                     onClick={(e) => {e.preventDefault();setActiveSection("file_manager")}}
-                  >
+                    >
                     Sistema de datos
                   </Nav.Link>
                 </Nav.Item>
@@ -185,7 +188,7 @@ export default function ProjectPage() {
                   <Nav.Link
                     href="#settings"
                     onClick={(e) => {e.preventDefault();setActiveSection("settings")}}
-                  >
+                    >
                     Configuración
                   </Nav.Link>
                 </Nav.Item>
