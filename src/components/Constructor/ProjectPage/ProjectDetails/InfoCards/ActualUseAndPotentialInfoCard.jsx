@@ -322,7 +322,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     inputType="text"
                     label="Cantidad de hectáreas"
                     inputValue={formData.D_ha_frutales1}
-                    inputName="D_especie_frutales1"
+                    inputName="D_ha_frutales1"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>

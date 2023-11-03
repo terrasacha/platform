@@ -253,7 +253,7 @@ export default class ListProducts extends Component {
                                             >Delete</Button> : ''}
                                     </td>
                                     <td>
-                                        {product.name?product.name : ""}
+                                        <a href={`/project/${product.id}`} target='_blank'>{product.name?product.name : ""}</a>
                                     </td>
                                     <td>
                                         {product.category? product.category.name: ""}

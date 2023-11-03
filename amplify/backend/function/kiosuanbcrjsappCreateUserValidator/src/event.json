@@ -13,7 +13,7 @@
               "S": "2023-09-11T17:32:10.988Z"
           },
           "role": {
-              "S": "validator"
+              "S": "validator_financial"
           },
           "__typename": {
               "S": "User"

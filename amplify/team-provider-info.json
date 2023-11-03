@@ -42,7 +42,7 @@
         },
         "kiosuanbcrjsappCreateUserValidator": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappCreateUserValidator-77724b4c4b797645544d-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappCreateUserValidator-65716e7264316d4c6938-build.zip"
         },
         "kiosuanbcrjsappc0136629": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",

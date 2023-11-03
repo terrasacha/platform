@@ -64,7 +64,7 @@ async function createUserInCognito(usuario, email, role, password, subrole, USER
   }
 }
 
-async function createUserInGraphQL(sub, usuario, email, role, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY) {
+async function createUserInGraphQL(sub, usuario, email, role, subrole, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY) {
   const fetchOptionsUser = {
     method: 'POST',
     headers: {
@@ -78,6 +78,7 @@ async function createUserInGraphQL(sub, usuario, email, role, GRAPHQL_ENDPOINT, 
             id
             name
             role
+            subrole
             email
           }
         }
@@ -88,6 +89,7 @@ async function createUserInGraphQL(sub, usuario, email, role, GRAPHQL_ENDPOINT, 
           name: usuario,
           email,
           role,
+          subrole,
           isProfileUpdated: true
         }
       }
@@ -175,7 +177,7 @@ exports.handler = async (event) => {
         
         if (!alreadyExist) {
           const sub = await createUserInCognito(usuario, email, role, password, subrole, USER_POOL_ID)
-          await createUserInGraphQL(sub, usuario, email, role, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY)
+          await createUserInGraphQL(sub, usuario, email, role, subrole, GRAPHQL_ENDPOINT, GRAPHQL_API_KEY)
           await ses.send(verifyEmailIdentityCommand)
           const fromMail = SES_EMAIL
           const toMail = [email]

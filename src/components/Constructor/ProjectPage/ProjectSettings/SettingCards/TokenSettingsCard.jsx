@@ -117,15 +117,14 @@ export default function TokenSettingsCard(props) {
     }
 
     if (toSave === "tokenDistributionForm") {
-      const totalPercentage =
+      const totalPercentage = 
         parseFloat(tokenDistributionForm.owner) +
         parseFloat(tokenDistributionForm.investor) +
         parseFloat(tokenDistributionForm.suan) +
         parseFloat(tokenDistributionForm.comunity) +
         parseFloat(tokenDistributionForm.buffer);
-
       if (totalPercentage) {
-        if (totalPercentage === 100) {
+        if (totalPercentage.toFixed(2) === "100.00") {
           if (tokenDistributionPfID) {
             let tempProductFeature = {
               id: projectData.projectInfo.token.pfIDs
