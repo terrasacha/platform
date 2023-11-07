@@ -14,9 +14,31 @@ export default function RelationsInfoCard(props) {
   const { user } = useAuth();
 
   const [formData, setFormData] = useState([{}]);
+  const [executedOnce, setExecutedOnce] = useState(false);
+  const [asistenciaPfID, setAsistenciaPfID] = useState(null);
+  const [aliadosPfID, setAliadosPfID] = useState(null);
+  const [grupoPfID, setGrupoPfID] = useState(null);
 
   useEffect(() => {
-    if (projectData && user) {
+    if (projectData && projectData.projectFeatures && user && !executedOnce) {
+      const pfIDAsistencia =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "H_asistance_desc";
+        })[0]?.id || null;
+      setAsistenciaPfID(pfIDAsistencia);
+
+      const pfIDAliados =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "H_aliados_estrategicos_desc";
+        })[0]?.id || null;
+      setAliadosPfID(pfIDAliados);
+
+      const pfIDGrupo =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "H_grupo_comunitario_desc";
+        })[0]?.id || null;
+      setGrupoPfID(pfIDGrupo);
+
       setFormData((prevState) => ({
         ...prevState,
         projectRelationsTechnicalAssitance:
@@ -26,6 +48,7 @@ export default function RelationsInfoCard(props) {
         projectRelationsCommunityGroups:
           projectData.projectRelations?.communityGroups,
       }));
+      setExecutedOnce(true);
     }
   }, [projectData, user]);
 
@@ -55,13 +78,9 @@ export default function RelationsInfoCard(props) {
   };
   const handleSaveBtn = async (toSave) => {
     if (toSave === "projectRelationsTechnicalAssitance") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "H_asistance_desc";
-        })[0]?.id || null;
-      if (pfID) {
+      if (asistenciaPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: asistenciaPfID,
           value: formData.projectRelationsTechnicalAssitance,
         };
         await API.graphql(
@@ -76,11 +95,12 @@ export default function RelationsInfoCard(props) {
           value: formData.projectRelationsTechnicalAssitance,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setAsistenciaPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectRelations({
         technicalAssistance: formData.projectRelationsTechnicalAssitance,
@@ -88,13 +108,9 @@ export default function RelationsInfoCard(props) {
     }
 
     if (toSave === "projectRelationsStrategicAllies") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "H_aliados_estrategicos_desc";
-        })[0]?.id || null;
-      if (pfID) {
+      if (aliadosPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: aliadosPfID,
           value: formData.projectRelationsStrategicAllies,
         };
         await API.graphql(
@@ -109,11 +125,12 @@ export default function RelationsInfoCard(props) {
           value: formData.projectRelationsStrategicAllies,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setAliadosPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectRelations({
         strategicAllies: formData.projectRelationsStrategicAllies,
@@ -121,13 +138,9 @@ export default function RelationsInfoCard(props) {
     }
 
     if (toSave === "projectRelationsCommunityGroups") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "H_grupo_comunitario_desc";
-        })[0]?.id || null;
-      if (pfID) {
+      if (grupoPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: grupoPfID,
           value: formData.projectRelationsCommunityGroups,
         };
         await API.graphql(
@@ -142,17 +155,18 @@ export default function RelationsInfoCard(props) {
           value: formData.projectRelationsCommunityGroups,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setGrupoPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectRelations({
         communityGroups: formData.projectRelationsCommunityGroups,
       });
     }
-    
+
     notify({ msg: "Información actualizada", type: "success" });
   };
 

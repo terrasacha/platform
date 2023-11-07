@@ -66,13 +66,15 @@ export default function GeodataInfoCard(props) {
   }, [projectData]);
 
   function onMapClick({ x, y, lat, lng, event }) {
-    setFormData((prevState) => ({
-      ...prevState,
-      coords: {
-        lat: lat,
-        lng: lng,
-      },
-    }));
+    if (autorizedUser) {
+      setFormData((prevState) => ({
+        ...prevState,
+        coords: {
+          lat: lat,
+          lng: lng,
+        },
+      }));
+    }
   }
 
   const Marker = ({ show, place }) => {
@@ -112,9 +114,10 @@ export default function GeodataInfoCard(props) {
         value: `${formData.coords.lat}, ${formData.coords.lng} 0 0`,
       };
       console.log("newProductFeature:", newProductFeature);
-      await API.graphql(
+      const response = await API.graphql(
         graphqlOperation(createProductFeature, { input: newProductFeature })
       );
+      setUbicacionPfId(response.data.createProductFeature.id);
     }
     notify({ msg: "Ubicación del predio actualizada", type: "success" });
   };

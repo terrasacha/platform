@@ -15,14 +15,30 @@ export default function UseRestrictionsInfoCard(props) {
   const { user } = useAuth();
 
   const [formData, setFormData] = useState([{}]);
+  const [executedOnce, setExecutedOnce] = useState(false);
+  const [resDescPfID, setResDescPfID] = useState(null);
+  const [resOtherPfID, setResOtherPfID] = useState(null);
 
   useEffect(() => {
-    if (projectData && user) {
+    if (projectData && projectData.projectFeatures && user && !executedOnce) {
+      const pfIDResDesc =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "E_restriccion_desc";
+        })[0]?.id || null;
+      setResDescPfID(pfIDResDesc);
+
+      const pfIDResOther =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "E_resctriccion_other";
+        })[0]?.id || null;
+      setResOtherPfID(pfIDResOther);
+
       setFormData((prevState) => ({
         ...prevState,
         projectRestrictionsDesc: projectData.projectRestrictions?.desc,
         projectRestrictionsOther: projectData.projectRestrictions?.other,
       }));
+      setExecutedOnce(true);
     }
   }, [projectData, user]);
 
@@ -44,15 +60,10 @@ export default function UseRestrictionsInfoCard(props) {
     }
   };
   const handleSaveBtn = async (toSave) => {
-
     if (toSave === "projectRestrictionsDesc") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "E_restriccion_desc";
-        })[0]?.id || null;
-      if (pfID) {
+      if (resDescPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: resDescPfID,
           value: formData.projectRestrictionsDesc,
         };
         await API.graphql(
@@ -67,11 +78,12 @@ export default function UseRestrictionsInfoCard(props) {
           value: formData.projectRestrictionsDesc,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setResDescPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectRestrictions({
         desc: formData.projectRestrictionsDesc,
@@ -79,13 +91,9 @@ export default function UseRestrictionsInfoCard(props) {
     }
 
     if (toSave === "projectRestrictionsOther") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "E_resctriccion_other";
-        })[0]?.id || null;
-      if (pfID) {
+      if (resOtherPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: resOtherPfID,
           value: formData.projectRestrictionsOther,
         };
         await API.graphql(
@@ -100,17 +108,18 @@ export default function UseRestrictionsInfoCard(props) {
           value: formData.projectRestrictionsOther,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setResDescPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectRestrictions({
         other: formData.projectRestrictionsOther,
       });
     }
-    
+
     notify({ msg: "Información actualizada", type: "success" });
   };
 

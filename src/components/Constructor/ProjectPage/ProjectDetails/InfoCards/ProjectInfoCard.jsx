@@ -11,6 +11,7 @@ import {
 } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
+import useCategories from "hooks/useCategories";
 
 export default function ProjectInfoCard(props) {
   const { className, autorizedUser } = props;
@@ -20,11 +21,53 @@ export default function ProjectInfoCard(props) {
     handleUpdateContextProjectInfoLocation,
   } = useProjectData();
   const { user } = useAuth();
+  const { categoryList } = useCategories();
 
   const [formData, setFormData] = useState({});
+  const [executedOnce, setExecutedOnce] = useState(false);
+  const [areaPfID, setAreaPfID] = useState(null);
+  const [veredaPfID, setVeredaPfID] = useState(null);
+  const [municipioPfID, setMunicipioPfID] = useState(null);
+  const [matriculaPfID, setMatriculaPfID] = useState(null);
+  const [fichaPfID, setFichaPfID] = useState(null);
 
   useEffect(() => {
-    if (projectData && user) {
+    if (
+      projectData.projectInfo &&
+      projectData.projectFeatures &&
+      user &&
+      !executedOnce
+    ) {
+      const pfIDArea =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "D_area";
+        })[0]?.id || null;
+      setAreaPfID(pfIDArea);
+
+      const pfIDVereda =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "A_vereda";
+        })[0]?.id || null;
+      setVeredaPfID(pfIDVereda);
+
+      const pfIDMunicipio =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "A_municipio";
+        })[0]?.id || null;
+      setMunicipioPfID(pfIDMunicipio);
+
+      const pfIDMatricula =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "A_matricula";
+        })[0]?.id || null;
+      setMatriculaPfID(pfIDMatricula);
+
+      const pfIDFicha =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "A_ficha_catastral";
+        })[0]?.id || null;
+      setFichaPfID(pfIDFicha);
+
       setFormData((prevState) => ({
         ...prevState,
         projectInfoTitle: projectData.projectInfo?.title,
@@ -39,6 +82,8 @@ export default function ProjectInfoCard(props) {
         projectInfoLocationFichaCatrastral:
           projectData.projectInfo?.location.fichaCatrastal,
       }));
+      setExecutedOnce(true);
+      console.log("categorias", categoryList);
     }
   }, [projectData, user]);
 
@@ -149,13 +194,9 @@ export default function ProjectInfoCard(props) {
     }
 
     if (toSave === "projectInfoArea") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "D_area";
-        })[0]?.id || null;
-      if (pfID) {
+      if (areaPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: areaPfID,
           value: formData.projectInfoArea,
         };
         await API.graphql(
@@ -170,23 +211,20 @@ export default function ProjectInfoCard(props) {
           value: formData.projectInfoArea,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setAreaPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectInfo({ area: formData.projectInfoArea });
     }
 
     if (toSave === "projectInfoLocationVereda") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "A_vereda";
-        })[0]?.id || null;
-      if (pfID) {
+      if (veredaPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: veredaPfID,
           value: formData.projectInfoLocationVereda,
         };
         await API.graphql(
@@ -201,11 +239,12 @@ export default function ProjectInfoCard(props) {
           value: formData.projectInfoLocationVereda,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setVeredaPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectInfoLocation({
         vereda: formData.projectInfoLocationVereda,
@@ -213,13 +252,9 @@ export default function ProjectInfoCard(props) {
     }
 
     if (toSave === "projectInfoLocationMunicipio") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "A_municipio";
-        })[0]?.id || null;
-      if (pfID) {
+      if (municipioPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: municipioPfID,
           value: formData.projectInfoLocationMunicipio,
         };
         await API.graphql(
@@ -234,11 +269,12 @@ export default function ProjectInfoCard(props) {
           value: formData.projectInfoLocationMunicipio,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setMunicipioPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectInfoLocation({
         municipio: formData.projectInfoLocationMunicipio,
@@ -246,13 +282,9 @@ export default function ProjectInfoCard(props) {
     }
 
     if (toSave === "projectInfoLocationMatricula") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "A_matricula";
-        })[0]?.id || null;
-      if (pfID) {
+      if (matriculaPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: matriculaPfID,
           value: formData.projectInfoLocationMatricula,
         };
         await API.graphql(
@@ -267,11 +299,12 @@ export default function ProjectInfoCard(props) {
           value: formData.projectInfoLocationMatricula,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setMatriculaPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectInfoLocation({
         matricula: formData.projectInfoLocationMatricula,
@@ -279,13 +312,9 @@ export default function ProjectInfoCard(props) {
     }
 
     if (toSave === "projectInfoLocationFichaCatrastral") {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "A_ficha_catastral";
-        })[0]?.id || null;
-      if (pfID) {
+      if (fichaPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: fichaPfID,
           value: formData.projectInfoLocationFichaCatrastral,
         };
         await API.graphql(
@@ -300,11 +329,12 @@ export default function ProjectInfoCard(props) {
           value: formData.projectInfoLocationFichaCatrastral,
         };
 
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, {
             input: newProductFeature,
           })
         );
+        setFichaPfID(response.data.createProductFeature.id);
       }
       handleUpdateContextProjectInfoLocation({
         fichaCatrastal: formData.projectInfoLocationFichaCatrastral,
@@ -381,13 +411,12 @@ export default function ProjectInfoCard(props) {
               type={autorizedUser && "flex"}
               label="Categoria del proyecto"
               inputType="radio"
-              optionList={[
-                { label: "REDD+", value: "REDD+" },
-                {
-                  label: "PROYECTO_PLANTACIONES",
-                  value: "PROYECTO_PLANTACIONES",
-                },
-              ]}
+              optionList={categoryList.map((category) => {
+                return {
+                  label: category,
+                  value: category,
+                };
+              })}
               optionCheckedList={formData.projectInfoCategory}
               inputName="projectInfoCategory"
               saveBtnDisabled={

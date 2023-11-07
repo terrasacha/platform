@@ -14,7 +14,9 @@ export default function ActualUseAndPotentialInfoCard(props) {
   const { projectData } = useProjectData();
   const { user } = useAuth();
 
-  const [formData, setFormData] = useState([{}]);
+  const [formData, setFormData] = useState({});
+  const [executedOnce, setExecutedOnce] = useState(false);
+  const [usesPfID, setUsesPfID] = useState(null);
 
   const productFeaturesGroup = [
     "D_actual_use",
@@ -49,7 +51,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
   ];
 
   useEffect(() => {
-    if (projectData && user) {
+    if (projectData && projectData.projectFeatures && user && !executedOnce) {
+      const pfIDUse =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "D_actual_use";
+        })[0]?.id || null;
+        setUsesPfID(pfIDUse);
+
       setFormData((prevState) => ({
         ...prevState,
         D_actual_use: projectData.projectUses?.actualUse.types,
@@ -102,6 +110,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
         D_replace_otros_use: projectData.projectUses?.replaceUse.otros.newUse,
         D_replace_ha_otros_use: projectData.projectUses?.replaceUse.otros.ha,
       }));
+      setExecutedOnce(true);
     }
   }, [projectData, user]);
 
@@ -134,11 +143,6 @@ export default function ActualUseAndPotentialInfoCard(props) {
   };
 
   const handleSaveBtn = async () => {
-    const pfID =
-      projectData.projectFeatures.filter((item) => {
-        return item.featureID === "D_actual_use";
-      })[0]?.id || null;
-
     // Construir product feature
     const values = [];
     for (let i = 0; i < productFeaturesGroup.length; i++) {
@@ -152,9 +156,9 @@ export default function ActualUseAndPotentialInfoCard(props) {
     }
 
     if (values.length > 0) {
-      if (pfID) {
+      if (usesPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: usesPfID,
           value: `[${values.join(", ")}]`,
         };
         console.log("newProductFeature:", updatedProductFeature);
@@ -170,12 +174,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
           value: `[${values.join(", ")}]`,
         };
         console.log("newProductFeature:", newProductFeature);
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );
+        setUsesPfID(response.data.createProductFeature.id)
       }
     }
-    
+
     notify({ msg: "Información actualizada", type: "success" });
   };
 

@@ -228,3 +228,26 @@ export const getUserProjects = /* GraphQL */ `
     }
   }
 `;
+
+
+export const listCategories = /* GraphQL */ `
+  query ListCategories(
+    $filter: ModelCategoryFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCategories(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        isSelected
+        products {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

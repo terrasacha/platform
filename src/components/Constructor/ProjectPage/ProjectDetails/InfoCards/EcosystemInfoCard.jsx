@@ -15,6 +15,8 @@ export default function EcosystemInfoCard(props) {
   const { user } = useAuth();
 
   const [formData, setFormData] = useState([{}]);
+  const [executedOnce, setExecutedOnce] = useState(false);
+  const [nacimientoPfID, setNacimientoPfID] = useState(null);
 
   const productFeaturesGroup = [
     "F_nacimiento_agua",
@@ -30,7 +32,13 @@ export default function EcosystemInfoCard(props) {
   ];
 
   useEffect(() => {
-    if (projectData && user) {
+    if (projectData && projectData.projectFeatures && user && !executedOnce) {
+      const pfIDNacimiento =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "F_nacimiento_agua";
+        })[0]?.id || null;
+      setNacimientoPfID(pfIDNacimiento);
+
       setFormData((prevState) => ({
         ...prevState,
         F_nacimiento_agua: projectData.projectEcosystem?.waterSprings.exist,
@@ -46,6 +54,7 @@ export default function EcosystemInfoCard(props) {
         F_especies_aves: projectData.projectEcosystem?.diversity.birds,
         F_especies_flora: projectData.projectEcosystem?.diversity.flora,
       }));
+      setExecutedOnce(true);
     }
   }, [projectData, user]);
 
@@ -78,12 +87,6 @@ export default function EcosystemInfoCard(props) {
   };
 
   const handleSaveBtn = async () => {
-    
-    const pfID =
-      projectData.projectFeatures.filter((item) => {
-        return item.featureID === "F_nacimiento_agua";
-      })[0]?.id || null;
-
     // Construir product feature
     const values = [];
     for (let i = 0; i < productFeaturesGroup.length; i++) {
@@ -97,9 +100,9 @@ export default function EcosystemInfoCard(props) {
     }
 
     if (values.length > 0) {
-      if (pfID) {
+      if (nacimientoPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: nacimientoPfID,
           value: `[${values.join(", ")}]`,
         };
         console.log("newProductFeature:", updatedProductFeature);
@@ -115,12 +118,13 @@ export default function EcosystemInfoCard(props) {
           value: `[${values.join(", ")}]`,
         };
         console.log("newProductFeature:", newProductFeature);
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );
+        setNacimientoPfID(response.data.createProductFeature.id)
       }
     }
-    
+
     notify({ msg: "Información actualizada", type: "success" });
   };
 

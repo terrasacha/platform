@@ -26,6 +26,7 @@ export default function ProjectDetails() {
           ? [...verifiers, postulant]
           : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
+      console.log("projectData", projectData)
     }
   }, [projectData]);
 
