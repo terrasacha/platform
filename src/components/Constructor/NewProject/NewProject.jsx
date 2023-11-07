@@ -115,6 +115,33 @@ export default function NewProject() {
       "C_plano_predio",
     ];
 
+    // Validadores por defecto
+    let tempUserProduct
+    // Moxie
+    tempUserProduct = {
+      productID: productID,
+      userID: "8d244cec-b39a-42f0-83e8-d8a289947ba2",
+    };
+    await API.graphql(
+      graphqlOperation(createUserProduct, { input: tempUserProduct })
+    );
+    // Sebastian Azcona
+    tempUserProduct = {
+      productID: productID,
+      userID: "cf7e52c6-5f1a-482f-b7a5-0ec8a4bac38c",
+    };
+    await API.graphql(
+      graphqlOperation(createUserProduct, { input: tempUserProduct })
+    );
+    // Carlos Soto
+    tempUserProduct = {
+      productID: productID,
+      userID: "7c77daea-73f5-4653-8bdd-2769ce60f037",
+    };
+    await API.graphql(
+      graphqlOperation(createUserProduct, { input: tempUserProduct })
+    );
+
     // Creación de pf Token Name GLOBAL_TOKEN_NAME
     const newProductFeatureTokenName = {
       featureID: "GLOBAL_TOKEN_NAME",
