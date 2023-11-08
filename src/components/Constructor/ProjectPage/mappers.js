@@ -98,7 +98,7 @@ const mapVerificationsData = async (verifications) => {
   return resolvedVerificationData[0];
 };
 
-const mapDocumentsData = async (data) => {
+const mapDocumentsData = async (data, ownersData) => {
   const PFNameMapper = {
     B_owner_certificado: "Certificado de tradición",
     C_plano_predio: "Plano del predio",
@@ -111,10 +111,15 @@ const mapDocumentsData = async (data) => {
     pf.documents.items
       .filter((document) => document.status !== "validatorFile")
       .map(async (document) => {
+        const ownerName =
+          ownersData.find((owner) => owner.documentID === document.id)?.name ||
+          null;
         return {
           id: document.id,
           pfID: pf.id,
-          title: PFNameMapper[pf.feature.name],
+          title: `${PFNameMapper[pf.feature.name]} ${
+            ownerName ? `(${ownerName})` : ""
+          }`,
           url: document.url,
           signed: document.signed,
           signedHash: document.signedHash,
@@ -172,6 +177,7 @@ const mapCategory = async (obj) => {
   const mapper = {
     PROYECTO_PLANTACIONES: "PROYECTO_PLANTACIONES",
     "REDD+": "REDD+",
+    MIXTO: "MIXTO",
   };
 
   return mapper[obj] || false;
@@ -615,7 +621,7 @@ export const mapProjectData = async (data) => {
       isActive: projecIsActive,
       title: data.name,
       description: data.description,
-      category: await mapCategory(data.categoryID),
+      category: data.categoryID,
       area: area,
       token: {
         pfIDs: {
@@ -675,7 +681,7 @@ export const mapProjectData = async (data) => {
       strategicAllies: strategicAllies,
       communityGroups: communityGroups,
     },
-    projectFiles: await mapDocumentsData(data),
+    projectFiles: await mapDocumentsData(data, ownersData),
     projectFilesValidators: {
       pfProjectValidatorDocumentsID: pfProjectValidatorDocumentsID,
       projectValidatorDocuments: projectValidatorDocuments,

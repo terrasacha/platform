@@ -176,7 +176,7 @@ export default function ProjectSettings() {
         <>
           <div className="col">
             <TokenSettingsCard
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isTechnicalFreeze) ? false : true
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isFinancialFreeze) ? false : true
                 /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
@@ -186,7 +186,7 @@ export default function ProjectSettings() {
           </div>
           <div className="col">
             <CashFlowSettings
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isTechnicalFreeze) ? false : true
+              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isFinancialFreeze) ? false : true
               }
             />
           </div>

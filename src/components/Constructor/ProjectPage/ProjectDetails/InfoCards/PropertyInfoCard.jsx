@@ -15,6 +15,8 @@ export default function PropertyInfoCard(props) {
   const { user } = useAuth();
 
   const [formData, setFormData] = useState([{}]);
+  const [executedOnce, setExecutedOnce] = useState(false);
+  const [habitaPfID, setHabitaPfID] = useState(null);
 
   const productFeaturesGroup = [
     "G_habita_predio",
@@ -31,7 +33,13 @@ export default function PropertyInfoCard(props) {
   ];
 
   useEffect(() => {
-    if (projectData && user) {
+    if (projectData && projectData.projectFeatures && user && !executedOnce) {
+      const pfIDHabita =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "G_habita_predio";
+        })[0]?.id || null;
+      setHabitaPfID(pfIDHabita);
+
       setFormData((prevState) => ({
         ...prevState,
         G_habita_predio:
@@ -53,6 +61,7 @@ export default function PropertyInfoCard(props) {
         G_risks_erosion_derrumbe:
           projectData.projectGeneralAspects?.collapseRisk,
       }));
+      setExecutedOnce(true);
     }
   }, [projectData, user]);
 
@@ -85,11 +94,6 @@ export default function PropertyInfoCard(props) {
   };
 
   const handleSaveBtn = async () => {
-    const pfID =
-      projectData.projectFeatures.filter((item) => {
-        return item.featureID === "G_habita_predio";
-      })[0]?.id || null;
-
     // Construir product feature
     const values = [];
     for (let i = 0; i < productFeaturesGroup.length; i++) {
@@ -103,9 +107,9 @@ export default function PropertyInfoCard(props) {
     }
 
     if (values.length > 0) {
-      if (pfID) {
+      if (habitaPfID) {
         const updatedProductFeature = {
-          id: pfID,
+          id: habitaPfID,
           value: `[${values.join(", ")}]`,
         };
         console.log("newProductFeature:", updatedProductFeature);
@@ -121,12 +125,13 @@ export default function PropertyInfoCard(props) {
           value: `[${values.join(", ")}]`,
         };
         console.log("newProductFeature:", newProductFeature);
-        await API.graphql(
+        const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );
+        setHabitaPfID(response.data.createProductFeature.id);
       }
     }
-    
+
     notify({ msg: "Información actualizada", type: "success" });
   };
 

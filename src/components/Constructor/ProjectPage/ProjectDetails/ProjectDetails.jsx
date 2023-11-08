@@ -26,13 +26,9 @@ export default function ProjectDetails() {
           ? [...verifiers, postulant]
           : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
+      console.log("projectData", projectData)
     }
   }, [projectData]);
-
-  const coords = {
-    lat: projectData?.projectInfo?.location.coords.lat,
-    lng: projectData?.projectInfo?.location.coords.lng,
-  };
 
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
@@ -58,12 +54,7 @@ export default function ProjectDetails() {
         <ProjectInfoCard autorizedUser={autorizedUser} />
       </div>
       <div className="col">
-        <GeodataInfoCard
-          coords={coords}
-          zoom={15}
-          geoData={projectData?.projectGeoData}
-          autorizedUser={autorizedUser}
-        />
+        <GeodataInfoCard autorizedUser={autorizedUser} />
       </div>
       <div className="col">
         <OwnerInfoCard autorizedUser={autorizedUser} />
