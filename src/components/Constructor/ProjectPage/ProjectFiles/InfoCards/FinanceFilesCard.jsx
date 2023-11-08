@@ -5,7 +5,7 @@ import { API, graphqlOperation, Storage } from "aws-amplify";
 import Button from "react-bootstrap/Button";
 import { updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
-import { validateProjectFeatures } from './validateProjectFeatures';  // Asegúrate de proporcionar la ruta correcta
+import { validateProjectFeatures } from './validateProjectFeatures';  
 import { useAuth } from "context/AuthContext";
 
 export default function FinanceCard(props) {
