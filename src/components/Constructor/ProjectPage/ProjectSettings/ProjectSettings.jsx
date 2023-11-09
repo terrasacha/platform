@@ -173,7 +173,7 @@ export default function ProjectSettings() {
           </div>
           <div className="col">
             <FinancialIndicators
-              title={"Indicadores financieros"}
+              title={"Indicadores financieros (Proyecto)"}
               fID={"GLOBAL_INDICADORES_FINANCIEROS"}
               financialInfoType={"financialIndicators"}
               canEdit={checkIfIsEditable('technical')}
@@ -204,6 +204,14 @@ export default function ProjectSettings() {
             <CashFlowSettings
               canEdit={checkIfIsEditable('financial')
               }
+            />
+          </div>
+          <div className="col">
+            <FinancialIndicators
+              title={"Indicadores financieros (Token)"}
+              fID={"GLOBAL_INDICADORES_FINANCIEROS_TOKEN"}
+              financialInfoType={"financialIndicatorsToken"}
+              canEdit={checkIfIsEditable('financial')}
             />
           </div>
           <div className="d-flex justify-content-center mb-2">

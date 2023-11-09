@@ -16,6 +16,7 @@ import { getProjectProgress } from "services/getProjectProgress";
 export default function ProjectDetails() {
   const { projectData } = useProjectData();
   const [autorizedUser, setAutorizedUser] = useState(false);
+  const [isPostulant, setIsPostulant] = useState(false);
   const { user } = useAuth();
 
   const [progressChange, setProgressChange] = useState(false);
@@ -30,16 +31,18 @@ export default function ProjectDetails() {
           ? [...verifiers, postulant]
           : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
+      setIsPostulant(postulant === user.id)
       console.log("projectData", projectData);
     }
   }, [projectData]);
 
   useEffect(() => {
-    if (projectData.projectInfo) {
+    if (user && projectData.projectInfo) {
       const progress = async () => {
         try {
           // Llama a tu servicio asincrónico
-          const obj = await getProjectProgress(projectData?.projectInfo.id);
+          console.log("user", user)
+          const obj = await getProjectProgress(projectData?.projectInfo.id, user.role);
           // Actualiza el estado con los datos obtenidos
           setProgressObj(obj);
         } catch (error) {
@@ -84,26 +87,11 @@ export default function ProjectDetails() {
               {!progressObj.sectionsStatus.geodataInfo && <li>Ubicación</li>}
               {!progressObj.sectionsStatus.ownersInfo && (
                 <li className="fw-bold">
-                  Información de titulares{" "}
+                  Información de titulares
                   <span className="fs-6 fw-light">
                     (Requerido para iniciar proceso de validación)
                   </span>
                 </li>
-              )}
-              {!progressObj.sectionsStatus.actualUseInfo && (
-                <li>Uso actual y potencial</li>
-              )}
-              {!progressObj.sectionsStatus.limitationsInfo && (
-                <li>Limitaciones de uso de suelo</li>
-              )}
-              {!progressObj.sectionsStatus.ecosystemInfo && (
-                <li>Aspectos generales del ecosistema</li>
-              )}
-              {!progressObj.sectionsStatus.generalInfo && (
-                <li>Aspectos generales del predio</li>
-              )}
-              {!progressObj.sectionsStatus.relationsInfo && (
-                <li>Relaciones con entidades y aliados estratégicos</li>
               )}
             </ul>
             <hr />

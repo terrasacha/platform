@@ -1,3 +1,6 @@
+import { useAuth } from "context/AuthContext";
+
+
 const calcularPorcentajeTrue = (objeto) => {
   // Obtén las claves del objeto
   const claves = Object.keys(objeto);
@@ -161,26 +164,29 @@ const getRelationsInfoStatus = (data) => {
   return tempStatus;
 };
 
-export const mapProjectFillProgress = async (data) => {
+export const mapProjectFillProgress = async (data, userRole) => {
   let sectionsStatus = {
     projectInfo: false,
     geodataInfo: false,
     ownersInfo: false,
-    actualUseInfo: false,
-    limitationsInfo: false,
-    ecosystemInfo: false,
-    generalInfo: false,
-    relationsInfo: false,
+    // actualUseInfo: false,
+    // limitationsInfo: false,
+    // ecosystemInfo: false,
+    // generalInfo: false,
+    // relationsInfo: false,
   };
+
+  console.log(userRole)
+  if(userRole === "validator")
 
   sectionsStatus.projectInfo = getProjectInfoStatus(data);
   sectionsStatus.geodataInfo = getGeodataInfoStatus(data);
   sectionsStatus.ownersInfo = getOwnersInfoStatus(data);
-  sectionsStatus.actualUseInfo = getActualUseInfoStatus(data);
-  sectionsStatus.limitationsInfo = getLimitationsInfoStatus(data);
-  sectionsStatus.ecosystemInfo = getEcosystemInfoStatus(data);
-  sectionsStatus.generalInfo = getGeneralInfoStatus(data);
-  sectionsStatus.relationsInfo = getRelationsInfoStatus(data);
+  // sectionsStatus.actualUseInfo = getActualUseInfoStatus(data);
+  // sectionsStatus.limitationsInfo = getLimitationsInfoStatus(data);
+  // sectionsStatus.ecosystemInfo = getEcosystemInfoStatus(data);
+  // sectionsStatus.generalInfo = getGeneralInfoStatus(data);
+  // sectionsStatus.relationsInfo = getRelationsInfoStatus(data);
 
   return {
     sectionsStatus: sectionsStatus,

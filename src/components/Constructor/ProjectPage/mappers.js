@@ -460,6 +460,11 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_INDICADORES_FINANCIEROS";
     })[0]?.value || "[]"
   );
+  const financialIndicatorsToken = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_INDICADORES_FINANCIEROS_TOKEN";
+    })[0]?.value || "[]"
+  );
   const productsOfCycleProjectID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO";
@@ -475,6 +480,10 @@ export const mapProjectData = async (data) => {
   const financialIndicatorsID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_INDICADORES_FINANCIEROS";
+    })[0]?.id || null;
+  const financialIndicatorsTokenID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_INDICADORES_FINANCIEROS_TOKEN";
     })[0]?.id || null;
 
   // A
@@ -599,7 +608,8 @@ export const mapProjectData = async (data) => {
   if (
     tokenHistoricalData.length > 0 &&
     Object.keys(tokenAmountDistribution).length > 0 &&
-    Object.keys(cashFlowResume).length > 0
+    Object.keys(cashFlowResume).length > 0 &&
+    financialIndicatorsToken.length > 0
   ) {
     isFinancialComplete = true;
   }
@@ -701,6 +711,10 @@ export const mapProjectData = async (data) => {
       },
       cashFlowResume: { cashFlowResumeID, cashFlowResume },
       financialIndicators: { financialIndicatorsID, financialIndicators },
+      financialIndicatorsToken: {
+        financialIndicatorsTokenID,
+        financialIndicatorsToken,
+      },
       tokenAmountDistribution: {
         tokenAmountDistributionID: pfTokenAmountDistributionID,
         tokenAmountDistribution,

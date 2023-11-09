@@ -185,6 +185,7 @@ export const getUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      subrole
       status
       email
       wallets {

@@ -28,6 +28,7 @@ export function AuthProvider({ children }) {
         username: "",
         email: "",
         role: "",
+        subrole: "",
       });
     }
   }
