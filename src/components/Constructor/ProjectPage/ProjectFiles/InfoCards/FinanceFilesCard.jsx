@@ -93,11 +93,26 @@ function DistributionToken({ infoTable, typeInfo }) {
 					<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
 						<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 							<tr className="distribution">
-								{Object.keys(infoTable).map((key) => (
+								<th scope="col" className="px-3 py-2">
+									Inversionista
+								</th>
+								<th scope="col" className="px-3 py-2">
+									Propietario
+								</th>
+								<th scope="col" className="px-3 py-2">
+									Suan
+								</th>
+								<th scope="col" className="px-3 py-2">
+									Comunidad
+								</th>
+								<th scope="col" className="px-3 py-2">
+									Buffer
+								</th>
+								{/* {Object.keys(infoTable).map((key) => (
 									<th scope="col" className="px-3 py-2" key={key}>
 										{key}
 									</th>
-								))}
+								))} */}
 							</tr>
 						</thead>
 						<tbody>

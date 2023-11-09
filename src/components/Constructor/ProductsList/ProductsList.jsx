@@ -14,11 +14,13 @@ import useUserProjects from "hooks/useUserProjects";
 export default function ProductsList() {
   const { userProjects } = useUserProjects();
   return (
-    <div className="row row-cols-1 row-cols-lg-3 g-2">
+    <>
+    <h2 className="mt-5">Tus Proyectos</h2>
+    <div className="row row-cols-1 row-cols-lg-3 g-2 m-4">
       {userProjects.map((product) => {
         return (
-          <div className="col">
-            <Card key={product.id}>
+          <div className="p-3">
+            <Card key={product.id} className="p-0">
               <img
                 variant="top"
                 src={getImagesCategories(product?.product.categoryID)}
@@ -36,7 +38,7 @@ export default function ProductsList() {
                 </div>
                 <p className="fs-5 my-2">{product?.product.name}</p>
                 <hr className="mb-2" />
-                <p className="fs-6 my-2">{product?.product.description}</p>
+                <p className="fs-6 my-2 text-h">{product?.product.description}</p>
               </Card.Body>
               <Card.Footer>
                 <div className="d-flex justify-content-center align-items-center">
@@ -50,5 +52,6 @@ export default function ProductsList() {
         );
       })}
     </div>
+    </>
   );
 }

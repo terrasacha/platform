@@ -5,6 +5,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.text-h{
+        height: 200px;
+        overflow-y: scroll;
+}
 .box-postulant{
         border: 1px solid #b9b6b69e;
         border-radius: 20px;
