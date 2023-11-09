@@ -17,7 +17,8 @@ export default function ProjectSettings() {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
   const { projectData, handleUpdateContextProjectData } = useProjectData();
-
+  
+  console.log(projectData, 'projectData');
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((data) => {
@@ -100,6 +101,26 @@ export default function ProjectSettings() {
     }
 
   };
+  const checkIfIsEditable = (type) => {
+    switch(type){
+      case 'technical':
+        if(projectData.isTechnicalFreeze){
+          return true
+        }else{
+          if(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical') return false
+        }
+        break
+      case 'financial':
+        if(projectData.isFinancialFreeze){
+          return true
+        }else{
+          if(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial') return false
+        }
+        break
+      default:
+        return true
+    }
+  } 
   return (
     <div className="row row-cols-1  g-4">
       <div className="col">
@@ -127,12 +148,11 @@ export default function ProjectSettings() {
         <>
           <div className="col">
             <DescriptionValidator
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
+              canEdit={checkIfIsEditable('technical')}
                 /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
                 !projectData.isTechnicalFreeze */
-              }
             />
           </div>
           <div className="col">
@@ -140,8 +160,7 @@ export default function ProjectSettings() {
               title={"Ingresos por producto"}
               fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
               financialInfoType={"revenuesByProduct"}
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
-              }
+              canEdit={checkIfIsEditable('technical')}
             />
           </div>
           <div className="col">
@@ -149,8 +168,7 @@ export default function ProjectSettings() {
               title={"Productos del ciclo del proyecto"}
               fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
               financialInfoType={"productsOfCycleProject"}
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
-              }
+              canEdit={checkIfIsEditable('technical')}
             />
           </div>
           <div className="col">
@@ -158,8 +176,7 @@ export default function ProjectSettings() {
               title={"Indicadores financieros"}
               fID={"GLOBAL_INDICADORES_FINANCIEROS"}
               financialInfoType={"financialIndicators"}
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical' || !projectData.isTechnicalFreeze) ? false : true
-              }
+              canEdit={checkIfIsEditable('technical')}
             />
           </div>
           <div className="d-flex justify-content-center mb-2">
@@ -176,17 +193,16 @@ export default function ProjectSettings() {
         <>
           <div className="col">
             <TokenSettingsCard
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isFinancialFreeze) ? false : true
+              canEdit={checkIfIsEditable('financial')}
                 /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
                 projectData.isFinancialFreeze */
-              }
             />
           </div>
           <div className="col">
             <CashFlowSettings
-              canEdit={(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial' || !projectData.isFinancialFreeze) ? false : true
+              canEdit={checkIfIsEditable('financial')
               }
             />
           </div>

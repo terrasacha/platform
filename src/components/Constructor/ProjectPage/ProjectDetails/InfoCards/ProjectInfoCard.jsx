@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Card from "../../../../common/Card";
 import FormGroup from "../../../../common/FormGroup";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
-import { API, graphqlOperation } from "aws-amplify";
+import { API, Storage, graphqlOperation } from "aws-amplify";
 import {
+  createDocument,
   createProductFeature,
+  updateDocument,
   updateProduct,
   updateProductFeature,
 } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
 import useCategories from "hooks/useCategories";
+import { Button, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
+import WebAppConfig from "components/common/_conf/WebAppConfig";
+import { fetchProjectDataByProjectID } from "../../api";
 
 export default function ProjectInfoCard(props) {
   const { className, autorizedUser } = props;
@@ -19,6 +25,7 @@ export default function ProjectInfoCard(props) {
     projectData,
     handleUpdateContextProjectInfo,
     handleUpdateContextProjectInfoLocation,
+    handleUpdateContextProjectFile,
   } = useProjectData();
   const { user } = useAuth();
   const { categoryList } = useCategories();
@@ -30,6 +37,10 @@ export default function ProjectInfoCard(props) {
   const [municipioPfID, setMunicipioPfID] = useState(null);
   const [matriculaPfID, setMatriculaPfID] = useState(null);
   const [fichaPfID, setFichaPfID] = useState(null);
+  const [planoPfID, setPlanoPfID] = useState(null);
+  const [planoURL, setPlanoURL] = useState(null);
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (
@@ -68,6 +79,18 @@ export default function ProjectInfoCard(props) {
         })[0]?.id || null;
       setFichaPfID(pfIDFicha);
 
+      const pfIDPlano =
+        projectData.projectFeatures.filter((item) => {
+          return item.featureID === "C_plano_predio";
+        })[0]?.id || null;
+      setPlanoPfID(pfIDPlano);
+      const planoFile = projectData.projectFiles.find(
+        (item) => item.pfID === pfIDPlano
+      );
+      if (planoFile) {
+        setPlanoURL(planoFile.url);
+      }
+
       setFormData((prevState) => ({
         ...prevState,
         projectInfoTitle: projectData.projectInfo?.title,
@@ -87,8 +110,166 @@ export default function ProjectInfoCard(props) {
     }
   }, [projectData, user]);
 
+  const handleUploadButton = (index) => {
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "Este archivo será cargado y enviado a validación!",
+      showCancelButton: true,
+      confirmButtonText: "Cargar archivo",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        fileInputRef.current.click();
+      }
+    });
+  };
+
+  const formatFileName = (fileName) => {
+    const removeAccents = (str) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+    const formattedFilename = fileName
+      .toLowerCase()
+      .trim()
+      .replaceAll(" ", "_");
+    const filenameWithoutAccents = removeAccents(formattedFilename);
+    return encodeURIComponent(filenameWithoutAccents);
+  };
+
+  const saveFileOnDB = async (fileToSave) => {
+    let docID = null;
+    let pfID = planoPfID
+    const urlPath = `${projectData.projectInfo.id}/${formatFileName(
+      fileToSave.name
+    )}`;
+
+    if (pfID) {
+      const oldDocument = projectData.projectFiles.find(
+        (item) => item.pfID === planoPfID
+      );
+      docID = oldDocument.id;
+      // Si toca actualizar
+      const getFilePathRegex = /\/public\/(.+)$/;
+
+      // Eliminar archivo viejo de S3
+      const fileToDeleteName = decodeURIComponent(
+        oldDocument.url.match(getFilePathRegex)[1]
+      );
+      try {
+        await Storage.remove(fileToDeleteName);
+      } catch (error) {
+        console.error("Error removing the file:", error);
+      }
+
+      //  Cargar archivo nuevo a S3
+      try {
+        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
+          level: "public",
+          contentType: "*/*",
+        });
+
+        console.log("Archivo seleccionado:", fileToSave);
+        console.log("Archivo subido:", uploadImageResult);
+      } catch (error) {
+        notify({
+          msg:
+            "Ups!, parece que algo ha fallado al intentar subir el archivo" +
+            error,
+          type: "error",
+        });
+        return;
+      }
+
+      // Actualizar base de datos (Product Feature y Documento)
+      const updatedProductFeature = {
+        id: oldDocument.pfID,
+        value: fileToSave.name,
+      };
+      console.log("updatedProductFeature:", updatedProductFeature);
+      await API.graphql(
+        graphqlOperation(updateProductFeature, { input: updatedProductFeature })
+      );
+
+      const updatedDocument = {
+        id: oldDocument.id,
+        timeStamp: Date.now(),
+        status: "pending",
+        isApproved: false,
+        isUploadedToBlockChain: false,
+        url: WebAppConfig.url_s3_public_images + urlPath,
+      };
+
+      await API.graphql(
+        graphqlOperation(updateDocument, { input: updatedDocument })
+      );
+    } else {
+      // Crear pf y document
+      try {
+        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
+          level: "public",
+          contentType: "*/*",
+        });
+
+        console.log("Archivo seleccionado:", fileToSave);
+        console.log("Archivo subido:", uploadImageResult);
+      } catch (error) {
+        notify({
+          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
+          type: "error",
+        });
+        return;
+      }
+
+      const newProductFeature = {
+        featureID: "C_plano_predio",
+        productID: projectData.projectInfo.id,
+        value: fileToSave.name,
+      };
+      console.log("newProductFeature:", newProductFeature);
+      const createProductFeatureResponse = await API.graphql(
+        graphqlOperation(createProductFeature, { input: newProductFeature })
+      );
+
+      setPlanoPfID(createProductFeatureResponse.data.createProductFeature.id);
+      pfID = createProductFeatureResponse.data.createProductFeature.id
+
+      const newDocument = {
+        productFeatureID:
+          createProductFeatureResponse.data.createProductFeature.id,
+        userID: user.id,
+        timeStamp: Date.now(),
+        status: "pending",
+        isApproved: false,
+        isUploadedToBlockChain: false,
+        url: WebAppConfig.url_s3_public_images + urlPath,
+      };
+
+      const createDocumentResponse = await API.graphql(
+        graphqlOperation(createDocument, { input: newDocument })
+      );
+
+      docID = createDocumentResponse.data.createDocument.id;
+    }
+    setPlanoURL(WebAppConfig.url_s3_public_images + urlPath);
+
+    const updatedProjectData = await fetchProjectDataByProjectID(
+      projectData.projectInfo.id
+    );
+
+    const mappedDocument = updatedProjectData.projectFiles.find(
+      (item) => item.pfID === pfID
+    );
+
+    await handleUpdateContextProjectFile(docID, mappedDocument);
+    notify({
+      msg: "Archivo subido correctamente.",
+      type: "success",
+    });
+  };
+
   const handleChangeInputValue = async (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     if (name === "projectInfoTitle") {
       setFormData((prevState) => ({
         ...prevState,
@@ -143,6 +324,13 @@ export default function ProjectInfoCard(props) {
         ...prevState,
         projectInfoLocationFichaCatrastral: value,
       }));
+      return;
+    }
+    if (name === "projectInfoLocationFile") {
+      const fileToSave = files[0];
+      if (fileToSave) {
+        await saveFileOnDB(fileToSave);
+      }
       return;
     }
   };
@@ -505,6 +693,37 @@ export default function ProjectInfoCard(props) {
                   handleSaveBtn("projectInfoLocationFichaCatrastral")
                 }
               />
+              <div>
+                <Form.Group className="mb-3">
+                  <div className="row align-items-center">
+                    <Form.Label column sm="5">
+                      Cargue un plano del predio (puede ser a mano alzada)
+                    </Form.Label>
+                    <div className="col">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        name="projectInfoLocationFile"
+                        onChange={(e) => handleChangeInputValue(e)}
+                      />
+                      {planoURL && (
+                        <a href={planoURL} target="_blank" rel="noreferrer">
+                          Archivo
+                        </a>
+                      )}
+                      <Button
+                        disabled={!autorizedUser}
+                        className="ms-3"
+                        onClick={handleUploadButton}
+                        size="md"
+                      >
+                        {planoPfID ? "Actualizar" : "Cargar"}
+                      </Button>
+                    </div>
+                  </div>
+                </Form.Group>
+              </div>
             </div>
           </div>
         </div>
