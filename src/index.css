@@ -9,6 +9,12 @@ body {
         height: 200px;
         overflow-y: scroll;
 }
+.p-0.card img {
+        border-radius: 12px 12px 0px 0px;
+    }
+.card {
+border-radius: 20px 20px 20px 20px !important;
+}
 .box-postulant{
         border: 1px solid #b9b6b69e;
         border-radius: 20px;
