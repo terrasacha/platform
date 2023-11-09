@@ -161,19 +161,6 @@ export default function ProjectPage() {
                 Validación
               </Nav.Link>
             </Nav.Item>
-            {user?.id && (
-                projectData.projectPostulant?.id.includes(user.id) ||
-                projectData.projectVerifiers?.includes(user.id)
-              ) && (
-              <>
-                <Nav.Item>
-                  <Nav.Link href="#finance" onClick={() => setActiveSection("finance")}>
-                    Finanzas
-                  </Nav.Link>
-                </Nav.Item>
-              </>
-            )}
-
             {(projectData.projectVerifiers?.includes(user?.id) || user?.role === 'admon')&& (
               <>
                 <Nav.Item>
@@ -190,6 +177,18 @@ export default function ProjectPage() {
                     onClick={(e) => {e.preventDefault();setActiveSection("settings")}}
                     >
                     Configuración
+                  </Nav.Link>
+                </Nav.Item>
+              </>
+            )}
+            {user?.id && (
+                projectData.projectPostulant?.id.includes(user.id) ||
+                projectData.projectVerifiers?.includes(user.id)
+              ) && (
+              <>
+                <Nav.Item>
+                  <Nav.Link href="#finance" onClick={() => setActiveSection("finance")}>
+                    Finanzas
                   </Nav.Link>
                 </Nav.Item>
               </>
