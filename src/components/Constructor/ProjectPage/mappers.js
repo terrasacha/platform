@@ -359,6 +359,10 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
     })[0]?.value || "";
+  const totalTokenAmount =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_TOTAL_AMOUNT";
+    })[0]?.value || 0;
   const pfTokenNameID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
@@ -394,6 +398,11 @@ export const mapProjectData = async (data) => {
     })[0]?.value || "[]"
   );
 
+  const pfTotalTokenAmountID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_TOTAL_AMOUNT";
+    })[0]?.id || "";
+
   const pfTokenAmountDistributionID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION";
@@ -425,10 +434,10 @@ export const mapProjectData = async (data) => {
     };
   });
   const actualPeriod = await getActualPeriod(Date.now(), periods);
-  const totalTokenAmount = periods.reduce(
-    (total, item) => total + item.amount,
-    0
-  );
+  // const totalTokenAmount = periods.reduce(
+  //   (total, item) => total + item.amount,
+  //   0
+  // );
 
   const pfProjectValidatorDocumentsID =
     data.productFeatures.items.filter((item) => {
@@ -640,6 +649,7 @@ export const mapProjectData = async (data) => {
           pfTokenAmountID: pfTokenAmountID,
           pfTokenHistoricalDataID: pfTokenHistoricalDataID,
           pfTokenAmountDistributionID: pfTokenAmountDistributionID,
+          pfTotalTokenAmountID: pfTotalTokenAmountID,
         },
         historicalData: tokenHistoricalData,
         amountDistribution: tokenAmountDistribution,

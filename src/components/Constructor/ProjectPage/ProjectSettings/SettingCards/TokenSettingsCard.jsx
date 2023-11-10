@@ -23,6 +23,9 @@ export default function TokenSettingsCard(props) {
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
+  const [totalTokenAmount, setTotalTokenAmount] = useState(0);
+  const [totalTokenAmountPfID, setTotalTokenAmountPfID] = useState(null);
+
   const [isDisabledTokenName, setIsDisabledTokenName] = useState(false);
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
   const [tokenHistoricalDataPfID, setTokenHistoricalDataPfID] = useState(null);
@@ -36,6 +39,10 @@ export default function TokenSettingsCard(props) {
         setIsDisabledTokenName(true);
       }
       setTokenName(projectData.projectInfo.token.name);
+      setTotalTokenAmount(projectData.projectInfo.token.totalTokenAmount);
+      setTotalTokenAmountPfID(
+        projectData.projectInfo.token.pfIDs.pfTotalTokenAmountID
+      );
 
       const sortedHistoricalData = [
         ...projectData.projectInfo.token.historicalData,
@@ -115,9 +122,49 @@ export default function TokenSettingsCard(props) {
         });
       }
     }
+    if (toSave === "totalTokenAmount") {
+      await handleUpdateContextProjectTokenData({
+        totalTokenAmount: totalTokenAmount,
+      });
+
+      if (totalTokenAmountPfID) {
+        let tempProductFeature = {
+          id: totalTokenAmountPfID,
+          value: totalTokenAmount,
+        };
+        const response = await API.graphql(
+          graphqlOperation(updateProductFeature, { input: tempProductFeature })
+        );
+
+        if (!response.data.updateProductFeature) error = true;
+      } else {
+        let tempProductFeature = {
+          value: totalTokenAmount,
+          isToBlockChain: false,
+          isOnMainCard: false,
+          productID: projectData.projectInfo.id,
+          featureID: "GLOBAL_TOKEN_TOTAL_AMOUNT",
+        };
+
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, { input: tempProductFeature })
+        );
+
+        setTotalTokenAmountPfID(response.data.createProductFeature.id);
+
+        if (!response.data.createProductFeature) error = true;
+      }
+
+      if (!error) {
+        notify({
+          msg: "El total de tokens ha sido modificado exitosamente",
+          type: "success",
+        });
+      }
+    }
 
     if (toSave === "tokenDistributionForm") {
-      const totalPercentage = 
+      const totalPercentage =
         parseFloat(tokenDistributionForm.owner) +
         parseFloat(tokenDistributionForm.investor) +
         parseFloat(tokenDistributionForm.suan) +
@@ -188,6 +235,10 @@ export default function TokenSettingsCard(props) {
     const { name, value } = e.target;
     if (name === "tokenName") {
       setTokenName(value);
+      return;
+    }
+    if (name === "totalTokenAmount") {
+      setTotalTokenAmount(value);
       return;
     }
 
@@ -411,16 +462,23 @@ export default function TokenSettingsCard(props) {
             onClickSaveBtn={() => handleSaveBtn("tokenName")}
           />
           <FormGroup
-            disabled={true}
             type="flex"
-            inputType="text"
+            disabled={
+              canEdit || projectData.isFinancialFreeze
+            }
+            inputType="number"
             inputSize="md"
             label="Cantidad total de tokens"
-            inputName="tokenName"
-            inputValue={
-              projectData.projectInfo?.token.totalTokenAmount || "Sin definir"
+            inputName="totalTokenAmount"
+            inputValue={totalTokenAmount}
+            saveBtnDisabled={
+              projectData.projectInfo?.token.totalTokenAmount ===
+              totalTokenAmount
+                ? true
+                : false
             }
-            saveBtnDisabled={true}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("totalTokenAmount")}
           />
           <p className="mb-3">Historico del token</p>
           <div>
