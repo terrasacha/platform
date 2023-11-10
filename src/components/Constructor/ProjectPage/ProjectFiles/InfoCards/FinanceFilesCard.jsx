@@ -242,11 +242,18 @@ function RevenuesProducts({ infoTable, typeInfo }) {
 
 const PieChartComponent = ({ infoTable }) => {
 	const [chartData, setChartData] = useState([]);
+	const traducciones = {
+		buffer: "Buffer",
+		comunity: "Comunidad",
+		investor: "Inversionista",
+		owner: "Propietario",
+		suan: "Suan",
+	  };
 
 	useEffect(() => {
 		if (infoTable) {
 			const newChartData = Object.keys(infoTable).map((key) => ({
-				name: key,
+				name: traducciones[key] || key,
 				value: Number(infoTable[key]),
 			}));
 			setChartData(newChartData);
