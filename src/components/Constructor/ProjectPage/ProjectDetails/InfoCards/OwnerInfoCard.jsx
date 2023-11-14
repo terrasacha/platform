@@ -25,7 +25,7 @@ import { useAuth } from "context/AuthContext";
 import { fetchProjectDataByProjectID } from "../../api";
 
 export default function OwnerInfoCard(props) {
-  const { className, autorizedUser } = props;
+  const { className, autorizedUser, setProgressChange } = props;
   const { projectData, handleUpdateContextProjectFile } = useProjectData();
   const { user } = useAuth();
 
@@ -370,6 +370,7 @@ export default function OwnerInfoCard(props) {
     }
 
     if (!error) {
+      setProgressChange(true)
       notify({
         msg: "Propietarios guardados exitosamente",
         type: "success",
@@ -470,6 +471,7 @@ export default function OwnerInfoCard(props) {
     }
 
     if (!error) {
+      setProgressChange(true)
       notify({
         msg: "Valores borrados exitosamente",
         type: "success",

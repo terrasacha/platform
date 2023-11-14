@@ -16,6 +16,7 @@ import { TrashIcon } from "components/common/icons/TrashIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
+import { formatCurrency } from "utilities/formatCurrency";
 
 export default function TokenSettingsCard(props) {
   const { className, canEdit } = props;
@@ -164,14 +165,14 @@ export default function TokenSettingsCard(props) {
     }
 
     if (toSave === "tokenDistributionForm") {
-      const totalPercentage =
-        parseFloat(tokenDistributionForm.owner) +
-        parseFloat(tokenDistributionForm.investor) +
-        parseFloat(tokenDistributionForm.suan) +
-        parseFloat(tokenDistributionForm.comunity) +
-        parseFloat(tokenDistributionForm.buffer);
-      if (totalPercentage) {
-        if (totalPercentage.toFixed(2) === "100.00") {
+      const totalTokenDistribution =
+        parseInt(tokenDistributionForm.owner) +
+        parseInt(tokenDistributionForm.investor) +
+        parseInt(tokenDistributionForm.suan) +
+        parseInt(tokenDistributionForm.comunity) +
+        parseInt(tokenDistributionForm.buffer);
+      if (totalTokenDistribution) {
+        if (totalTokenDistribution === parseInt(totalTokenAmount)) {
           if (tokenDistributionPfID) {
             let tempProductFeature = {
               id: projectData.projectInfo.token.pfIDs
@@ -210,7 +211,7 @@ export default function TokenSettingsCard(props) {
           });
         } else {
           notify({
-            msg: "La suma de los porcentajes no corresponde a 100%",
+            msg: "Los tokens distribuidos no corresponden con la cantidad total de tokens",
             type: "error",
           });
         }
@@ -220,7 +221,7 @@ export default function TokenSettingsCard(props) {
           type: "error",
         });
       }
-      console.log(totalPercentage, "totalPercentage");
+      console.log(totalTokenDistribution, "totalTokenDistribution");
     }
 
     if (error) {
@@ -461,25 +462,6 @@ export default function TokenSettingsCard(props) {
             onChangeInputValue={(e) => handleChangeInputValue(e)}
             onClickSaveBtn={() => handleSaveBtn("tokenName")}
           />
-          <FormGroup
-            type="flex"
-            disabled={
-              canEdit || projectData.isFinancialFreeze
-            }
-            inputType="number"
-            inputSize="md"
-            label="Cantidad total de tokens"
-            inputName="totalTokenAmount"
-            inputValue={totalTokenAmount}
-            saveBtnDisabled={
-              projectData.projectInfo?.token.totalTokenAmount ===
-              totalTokenAmount
-                ? true
-                : false
-            }
-            onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() => handleSaveBtn("totalTokenAmount")}
-          />
           <p className="mb-3">Historico del token</p>
           <div>
             <Table responsive>
@@ -610,14 +592,34 @@ export default function TokenSettingsCard(props) {
               </tbody>
             </Table>
           </div>
+          <FormGroup
+            type="flex"
+            disabled={
+              canEdit || projectData.isFinancialFreeze
+            }
+            inputType="number"
+            inputSize="md"
+            label="Cantidad total de tokens"
+            inputName="totalTokenAmount"
+            inputValue={totalTokenAmount}
+            saveBtnDisabled={
+              projectData.projectInfo?.token.totalTokenAmount ===
+              totalTokenAmount
+                ? true
+                : false
+            }
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("totalTokenAmount")}
+          />
           <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
+            <p>Al tratarse de unidades de tokens, procure que los valores de la distribución sean enteros y no decimales. Adicionalmente, la suma de estos valores debe ser exactamente igual a la cantidad total de tokens del proyecto.</p>
             <FormGroup
               disabled={canEdit}
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Inversionista (%)"
+              label={`Inversionista (Tokens)`}
               inputName="investor"
               inputValue={tokenDistributionForm.investor}
               saveBtnVisible={false}
@@ -628,7 +630,7 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Propietario (%)"
+              label={`Propietario (Tokens)`}
               inputName="owner"
               inputValue={tokenDistributionForm.owner}
               saveBtnVisible={false}
@@ -639,7 +641,7 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="SUAN (%)"
+              label={`SUAN (Tokens)`}
               inputName="suan"
               inputValue={tokenDistributionForm.suan}
               saveBtnVisible={false}
@@ -650,7 +652,7 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Comunidad (%)"
+              label={`Comunidad (Tokens)`}
               inputName="comunity"
               inputValue={tokenDistributionForm.comunity}
               saveBtnVisible={false}
@@ -661,12 +663,24 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Buffer (%)"
+              label={`Buffer (Tokens)`}
               inputName="buffer"
               inputValue={tokenDistributionForm.buffer}
               saveBtnVisible={false}
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
+            {/* <div className="border p-3 mx-auto my-3" style={{width: "300px"}}>
+                <div className="d-flex justify-content-center mb-3">Resumen</div>
+                <div>
+                  <ul>
+                    <li>Inversionista: {(totalTokenAmount * tokenDistributionForm.investor) / 100 || 0} Tokens</li>
+                    <li>Propietario: {(totalTokenAmount * tokenDistributionForm.owner) / 100  || 0} Tokens</li>
+                    <li>SUAN: {(totalTokenAmount * tokenDistributionForm.suan) / 100  || 0} Tokens</li>
+                    <li>Comunidad: {(totalTokenAmount * tokenDistributionForm.comunity) / 100  || 0} Tokens</li>
+                    <li>Buffer: {(totalTokenAmount * tokenDistributionForm.buffer) / 100  || 0} Tokens</li>
+                  </ul>
+                </div>
+            </div> */}
             <div className="d-flex justify-content-center">
               <Button
                 disabled={canEdit}

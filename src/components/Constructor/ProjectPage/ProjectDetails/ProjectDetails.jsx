@@ -42,7 +42,7 @@ export default function ProjectDetails() {
         try {
           // Llama a tu servicio asincrónico
           console.log("user", user)
-          const obj = await getProjectProgress(projectData?.projectInfo.id, user.role);
+          const obj = await getProjectProgress(projectData?.projectInfo.id, user.subrole);
           // Actualiza el estado con los datos obtenidos
           setProgressObj(obj);
         } catch (error) {
@@ -58,7 +58,7 @@ export default function ProjectDetails() {
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       {autorizedUser && !(user?.role === "validator") && (
         <div className="col-12 col-xl-12">
-          <Alert variant="success">
+          <Alert variant="success" className="mb-0">
             <Alert.Heading>Hola, {user?.name}</Alert.Heading>
             <p>
               Podras realizar ajustes a la información del proyecto durante los
@@ -76,9 +76,9 @@ export default function ProjectDetails() {
       )}
       {autorizedUser && progressObj && progressObj.progressValue < 100 && (
         <div className="col-12 col-xl-12">
-          <Alert variant="danger">
+          <Alert variant="danger" className="mb-0">
             <Alert.Heading>
-              Completa la información de tú proyecto
+              Pendiente por completar
             </Alert.Heading>
             <ul>
               {!progressObj.sectionsStatus.projectInfo && (
@@ -93,6 +93,9 @@ export default function ProjectDetails() {
                   </span>
                 </li>
               )}
+              {!progressObj.sectionsStatus.technicalInfo && ["fullaccessvalidator", "technical"].includes(user.subrole) && <li>Información Técnica</li>}
+              {!progressObj.sectionsStatus.financialInfo && ["fullaccessvalidator", "financial"].includes(user.subrole) && <li>Información Financiera</li>}
+              {!progressObj.sectionsStatus.validationsComplete && ["fullaccessvalidator", "financial", "technical"].includes(user.subrole) && <li>Validación de documentos</li>}
             </ul>
             <hr />
             <div>
@@ -108,13 +111,13 @@ export default function ProjectDetails() {
         </div>
       )}
       <div className="col">
-        <ProjectInfoCard autorizedUser={autorizedUser} />
+        <ProjectInfoCard autorizedUser={autorizedUser} setProgressChange={setProgressChange}/>
       </div>
       <div className="col">
-        <GeodataInfoCard autorizedUser={autorizedUser} />
+        <GeodataInfoCard autorizedUser={autorizedUser} setProgressChange={setProgressChange}/>
       </div>
       <div className="col">
-        <OwnerInfoCard autorizedUser={autorizedUser} />
+        <OwnerInfoCard autorizedUser={autorizedUser} setProgressChange={setProgressChange}/>
       </div>
       <div className="col">
         <PostulantInfoCard autorizedUser={autorizedUser} />

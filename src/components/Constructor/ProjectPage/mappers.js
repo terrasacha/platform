@@ -616,6 +616,7 @@ export const mapProjectData = async (data) => {
   let isFinancialComplete = false;
   if (
     tokenHistoricalData.length > 0 &&
+    totalTokenAmount !== 0 &&
     Object.keys(tokenAmountDistribution).length > 0 &&
     Object.keys(cashFlowResume).length > 0 &&
     financialIndicatorsToken.length > 0

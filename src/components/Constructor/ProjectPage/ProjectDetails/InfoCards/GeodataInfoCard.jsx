@@ -9,7 +9,7 @@ import { notify } from "utilities/notify";
 // Borrar despues de pasar a componentes
 
 export default function GeodataInfoCard(props) {
-  const { autorizedUser } = props;
+  const { autorizedUser, setProgressChange } = props;
   const { projectData } = useProjectData();
 
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
@@ -119,6 +119,7 @@ export default function GeodataInfoCard(props) {
       );
       setUbicacionPfId(response.data.createProductFeature.id);
     }
+    setProgressChange(true)
     notify({ msg: "Ubicación del predio actualizada", type: "success" });
   };
 

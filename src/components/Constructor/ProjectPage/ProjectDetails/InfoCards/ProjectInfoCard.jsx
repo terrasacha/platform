@@ -20,7 +20,7 @@ import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { fetchProjectDataByProjectID } from "../../api";
 
 export default function ProjectInfoCard(props) {
-  const { className, autorizedUser } = props;
+  const { className, autorizedUser, setProgressChange } = props;
   const {
     projectData,
     handleUpdateContextProjectInfo,
@@ -329,7 +329,9 @@ export default function ProjectInfoCard(props) {
     if (name === "projectInfoLocationFile") {
       const fileToSave = files[0];
       if (fileToSave) {
+        setPlanoURL(null)
         await saveFileOnDB(fileToSave);
+        setProgressChange(true)
       }
       return;
     }
@@ -528,6 +530,7 @@ export default function ProjectInfoCard(props) {
         fichaCatrastal: formData.projectInfoLocationFichaCatrastral,
       });
     }
+    setProgressChange(true)
 
     notify({ msg: "Información actualizada", type: "success" });
   };
@@ -700,26 +703,27 @@ export default function ProjectInfoCard(props) {
                       Cargue un plano del predio (puede ser a mano alzada)
                     </Form.Label>
                     <div className="col">
+                      {planoURL ? (
+                        <a href={planoURL} target="_blank" rel="noreferrer">
+                          Ver Archivo
+                        </a>
+                      ): "No se ha subido plano de predio"}
                       <input
                         type="file"
+                        disabled={!autorizedUser}
                         ref={fileInputRef}
-                        style={{ display: "none" }}
                         name="projectInfoLocationFile"
                         onChange={(e) => handleChangeInputValue(e)}
+                        hidden={!autorizedUser}
                       />
-                      {planoURL && (
-                        <a href={planoURL} target="_blank" rel="noreferrer">
-                          Archivo
-                        </a>
-                      )}
-                      <Button
+                      {/* <Button
                         disabled={!autorizedUser}
                         className="ms-3"
                         onClick={handleUploadButton}
                         size="md"
                       >
                         {planoPfID ? "Actualizar" : "Cargar"}
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                 </Form.Group>

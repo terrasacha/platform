@@ -1,6 +1,5 @@
 import { useAuth } from "context/AuthContext";
 
-
 const calcularPorcentajeTrue = (objeto) => {
   // Obtén las claves del objeto
   const claves = Object.keys(objeto);
@@ -71,12 +70,13 @@ const getGeodataInfoStatus = (data) => {
 const getOwnersInfoStatus = (data) => {
   let tempStatus = true;
 
-  const titulares =
+  const ownersData = JSON.parse(
     data.productFeatures.items.filter((item) => {
       return item.featureID === "B_owners";
-    })[0]?.value || null;
+    })[0]?.value || "[]"
+  );
 
-  if (!titulares) tempStatus = false;
+  if (Object.keys(ownersData).length === 0) tempStatus = false;
 
   return tempStatus;
 };
@@ -164,6 +164,73 @@ const getRelationsInfoStatus = (data) => {
   return tempStatus;
 };
 
+const getFinancialInfoStatus = (data) => {
+  let tempStatus = true;
+
+  const financialConditions =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+    })[0]?.value || null;
+
+  if (financialConditions !== "true") tempStatus = false;
+
+  return tempStatus;
+};
+
+const getTechnicalInfoStatus = (data) => {
+  let tempStatus = true;
+
+  const technicalConditions =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+    })[0]?.value || null;
+
+  if (technicalConditions !== "true") tempStatus = false;
+
+  return tempStatus;
+};
+
+const getValidationsCompleteInfoStatus = (data) => {
+  let tempStatus = true;
+  const PFNameMapper = {
+    B_owner_certificado: "Certificado de tradición",
+    C_plano_predio: "Plano del predio",
+  };
+
+  const ownersData = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "B_owners";
+    })[0]?.value || "[]"
+  );
+
+  const verifiablePF = data.productFeatures.items.filter(
+    (pf) => pf.feature.isVerifable === true
+  );
+  
+  const documents = verifiablePF.map((pf) =>
+    pf.documents.items
+      .filter((document) => document.status !== "validatorFile")
+      .map((document) => {
+        const ownerName =
+          ownersData.find((owner) => owner.documentID === document.id)?.name ||
+          null;
+        return {
+          id: document.id,
+          pfID: pf.id,
+          title: `${PFNameMapper[pf.feature.name]} ${
+            ownerName ? `(${ownerName})` : ""
+          }`,
+          isApproved: document.isApproved,
+        };
+      })
+  ).flat();
+
+  const approvedDocuments = documents.filter(projectFile => projectFile.isApproved === true)
+  if(documents.length !== approvedDocuments.length) tempStatus = false
+  
+  return tempStatus;
+};
+
 export const mapProjectFillProgress = async (data, userRole) => {
   let sectionsStatus = {
     projectInfo: false,
@@ -176,8 +243,19 @@ export const mapProjectFillProgress = async (data, userRole) => {
     // relationsInfo: false,
   };
 
-  console.log(userRole)
-  if(userRole === "validator")
+  if (userRole === "fullaccessvalidator") {
+    sectionsStatus.financialInfo = getFinancialInfoStatus(data);
+    sectionsStatus.technicalInfo = getTechnicalInfoStatus(data);
+  }
+  if (userRole === "financial") {
+    sectionsStatus.financialInfo = getFinancialInfoStatus(data);
+  }
+  if (userRole === "technical") {
+    sectionsStatus.technicalInfo = getTechnicalInfoStatus(data);
+  }
+  if (userRole === "fullaccessvalidator" || userRole === "financial" || userRole === "technical") {
+    sectionsStatus.validationsComplete = getValidationsCompleteInfoStatus(data);
+  }
 
   sectionsStatus.projectInfo = getProjectInfoStatus(data);
   sectionsStatus.geodataInfo = getGeodataInfoStatus(data);
