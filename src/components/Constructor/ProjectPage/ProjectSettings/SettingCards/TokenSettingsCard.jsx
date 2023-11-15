@@ -24,6 +24,8 @@ export default function TokenSettingsCard(props) {
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
+  const [tokenCurrency, setTokenCurrency] = useState("");
+  const [tokenCurrencyPfID, setTokenCurrencyPfID] = useState(null);
   const [totalTokenAmount, setTotalTokenAmount] = useState(0);
   const [totalTokenAmountPfID, setTotalTokenAmountPfID] = useState(null);
 
@@ -43,6 +45,10 @@ export default function TokenSettingsCard(props) {
       setTotalTokenAmount(projectData.projectInfo.token.totalTokenAmount);
       setTotalTokenAmountPfID(
         projectData.projectInfo.token.pfIDs.pfTotalTokenAmountID
+      );
+      setTokenCurrency(projectData.projectInfo.token.currency)
+      setTokenCurrencyPfID(
+        projectData.projectInfo.token.pfIDs.pfTokenCurrencyID
       );
 
       const sortedHistoricalData = [
@@ -81,7 +87,6 @@ export default function TokenSettingsCard(props) {
         date: tokenData.date,
         price: parseFloat(tokenData.price),
         amount: parseInt(tokenData.amount),
-        currency: tokenData.currency,
       };
     });
   }
@@ -189,6 +194,44 @@ export default function TokenSettingsCard(props) {
       }
     }
 
+    if (toSave === "tokenCurrency") {
+      await handleUpdateContextProjectTokenData({ currency: tokenCurrency });
+
+      if (tokenCurrencyPfID) {
+        let tempProductFeature = {
+          id: tokenCurrencyPfID,
+          value: tokenCurrency,
+        };
+        const response = await API.graphql(
+          graphqlOperation(updateProductFeature, { input: tempProductFeature })
+        );
+
+        if (!response.data.updateProductFeature) error = true;
+      } else {
+        let tempProductFeature = {
+          value: tokenCurrency,
+          isToBlockChain: false,
+          isOnMainCard: false,
+          productID: projectData.projectInfo.id,
+          featureID: "GLOBAL_TOKEN_CURRENCY",
+        };
+
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, { input: tempProductFeature })
+        );
+        setTokenCurrencyPfID(response.data.createProductFeature.id)
+
+        if (!response.data.createProductFeature) error = true;
+      }
+
+      if (!error) {
+        notify({
+          msg: "La divisa de comercialización ha sido modificada exitosamente",
+          type: "success",
+        });
+      }
+    }
+
     if (toSave === "tokenDistributionForm") {
       const totalTokenDistribution =
         parseInt(tokenDistributionForm.owner) +
@@ -228,6 +271,10 @@ export default function TokenSettingsCard(props) {
     const { name, value } = e.target;
     if (name === "tokenName") {
       setTokenName(value);
+      return;
+    }
+    if (name === "tokenCurrency") {
+      setTokenCurrency(value);
       return;
     }
     if (name === "totalTokenAmount") {
@@ -315,8 +362,7 @@ export default function TokenSettingsCard(props) {
       tokenHistoricalData[indexToSave].period &&
       tokenHistoricalData[indexToSave].date &&
       tokenHistoricalData[indexToSave].amount &&
-      tokenHistoricalData[indexToSave].price &&
-      tokenHistoricalData[indexToSave].currency
+      tokenHistoricalData[indexToSave].price
     ) {
       setTokenHistoricalData((prevState) =>
         prevState
@@ -455,6 +501,26 @@ export default function TokenSettingsCard(props) {
             onChangeInputValue={(e) => handleChangeInputValue(e)}
             onClickSaveBtn={() => handleSaveBtn("tokenName")}
           />
+          <FormGroup
+            disabled={canEdit}
+            type="flex"
+            label="Divisa de comercialización"
+            inputType="select"
+            inputSize="md"
+            inputName="tokenCurrency"
+            optionList={[
+              { value: "COP", label: "COP" },
+              { value: "USD", label: "USD" },
+            ]}
+            inputValue={tokenCurrency}
+            saveBtnDisabled={
+              projectData.projectInfo?.token.currency === tokenCurrency
+                ? true
+                : false
+            }
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("tokenCurrency")}
+          />
           <p className="mb-3">Historico del token</p>
           <div>
             <Table responsive>
@@ -464,7 +530,6 @@ export default function TokenSettingsCard(props) {
                   <th style={{ width: "100px" }}>Fecha</th>
                   <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
                   <th style={{ width: "100px" }}>Precio</th>
-                  <th style={{ width: "100px" }}>Divisa</th>
                   <th style={{ width: "120px" }}></th>
                 </tr>
               </thead>
@@ -514,20 +579,6 @@ export default function TokenSettingsCard(props) {
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
-                          <td>
-                            <Form.Select
-                              size="sm"
-                              type="text"
-                              value={data.currency || ""}
-                              className="text-center"
-                              name={`token_currency_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
-                            >
-                              <option disabled value=""></option>
-                              <option value="COP">COP</option>
-                              <option value="USD">USD</option>
-                            </Form.Select>
-                          </td>
                           <td className="text-end">
                             <Button
                               size="sm"
@@ -553,7 +604,6 @@ export default function TokenSettingsCard(props) {
                           <td>{data.date}</td>
                           <td>{data.amount}</td>
                           <td>{data.price}</td>
-                          <td>{data.currency}</td>
                           <td className="text-end">
                             <Button
                               size="sm"

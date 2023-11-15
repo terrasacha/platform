@@ -359,6 +359,10 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
     })[0]?.value || "";
+  const tokenCurrency =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_CURRENCY";
+    })[0]?.value || "";
   const totalTokenAmount =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_TOTAL_AMOUNT";
@@ -366,6 +370,10 @@ export const mapProjectData = async (data) => {
   const pfTokenNameID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
+    })[0]?.id || "";
+  const pfTokenCurrencyID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_TOKEN_CURRENCY";
     })[0]?.id || "";
 
   // const tokenPrice =
@@ -651,11 +659,13 @@ export const mapProjectData = async (data) => {
           pfTokenHistoricalDataID: pfTokenHistoricalDataID,
           pfTokenAmountDistributionID: pfTokenAmountDistributionID,
           pfTotalTokenAmountID: pfTotalTokenAmountID,
+          pfTokenCurrencyID: pfTokenCurrencyID,
         },
         historicalData: tokenHistoricalData,
         amountDistribution: tokenAmountDistribution,
         transactionsNumber: data.transactions.items.length,
         name: tokenName,
+        currency: tokenCurrency,
         totalTokenAmount: totalTokenAmount,
         actualPeriodTokenPrice: actualPeriod?.price || "",
         priceCurrency: "USD",
