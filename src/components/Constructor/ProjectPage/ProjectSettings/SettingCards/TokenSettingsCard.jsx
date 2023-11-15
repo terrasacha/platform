@@ -81,9 +81,74 @@ export default function TokenSettingsCard(props) {
         date: tokenData.date,
         price: parseFloat(tokenData.price),
         amount: parseInt(tokenData.amount),
+        currency: tokenData.currency,
       };
     });
   }
+
+  const handleSetTotalTokenAmountFeature = async (value) => {
+    await handleUpdateContextProjectTokenData({
+      totalTokenAmount: value,
+    });
+
+    if (totalTokenAmountPfID) {
+      let tempProductFeature = {
+        id: totalTokenAmountPfID,
+        value: value,
+      };
+      await API.graphql(
+        graphqlOperation(updateProductFeature, { input: tempProductFeature })
+      );
+    } else {
+      let tempProductFeature = {
+        value: value,
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_TOKEN_TOTAL_AMOUNT",
+      };
+
+      const response = await API.graphql(
+        graphqlOperation(createProductFeature, { input: tempProductFeature })
+      );
+
+      setTotalTokenAmountPfID(response.data.createProductFeature.id);
+    }
+  };
+
+  const handleSetTokenDistributionFeature = async (value) => {
+    await handleUpdateContextProjectTokenData({
+      amountDistribution: value,
+    });
+
+    if (tokenDistributionPfID) {
+      let tempProductFeature = {
+        id: projectData.projectInfo.token.pfIDs.pfTokenAmountDistributionID,
+        value: JSON.stringify(tokenDistributionForm),
+      };
+      await API.graphql(
+        graphqlOperation(updateProductFeature, {
+          input: tempProductFeature,
+        })
+      );
+    } else {
+      let tempProductFeature = {
+        value: JSON.stringify(tokenDistributionForm),
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION",
+      };
+
+      const response = await API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: tempProductFeature,
+        })
+      );
+
+      setTokenDistributionPfID(response.data.createProductFeature.id);
+    }
+  };
 
   const handleSaveBtn = async (toSave) => {
     let error = false;
@@ -123,46 +188,6 @@ export default function TokenSettingsCard(props) {
         });
       }
     }
-    if (toSave === "totalTokenAmount") {
-      await handleUpdateContextProjectTokenData({
-        totalTokenAmount: totalTokenAmount,
-      });
-
-      if (totalTokenAmountPfID) {
-        let tempProductFeature = {
-          id: totalTokenAmountPfID,
-          value: totalTokenAmount,
-        };
-        const response = await API.graphql(
-          graphqlOperation(updateProductFeature, { input: tempProductFeature })
-        );
-
-        if (!response.data.updateProductFeature) error = true;
-      } else {
-        let tempProductFeature = {
-          value: totalTokenAmount,
-          isToBlockChain: false,
-          isOnMainCard: false,
-          productID: projectData.projectInfo.id,
-          featureID: "GLOBAL_TOKEN_TOTAL_AMOUNT",
-        };
-
-        const response = await API.graphql(
-          graphqlOperation(createProductFeature, { input: tempProductFeature })
-        );
-
-        setTotalTokenAmountPfID(response.data.createProductFeature.id);
-
-        if (!response.data.createProductFeature) error = true;
-      }
-
-      if (!error) {
-        notify({
-          msg: "El total de tokens ha sido modificado exitosamente",
-          type: "success",
-        });
-      }
-    }
 
     if (toSave === "tokenDistributionForm") {
       const totalTokenDistribution =
@@ -171,56 +196,23 @@ export default function TokenSettingsCard(props) {
         parseInt(tokenDistributionForm.suan) +
         parseInt(tokenDistributionForm.comunity) +
         parseInt(tokenDistributionForm.buffer);
-      if (totalTokenDistribution) {
-        if (totalTokenDistribution === parseInt(totalTokenAmount)) {
-          if (tokenDistributionPfID) {
-            let tempProductFeature = {
-              id: projectData.projectInfo.token.pfIDs
-                .pfTokenAmountDistributionID,
-              value: JSON.stringify(tokenDistributionForm),
-            };
-            const response = await API.graphql(
-              graphqlOperation(updateProductFeature, {
-                input: tempProductFeature,
-              })
-            );
 
-            if (!response.data.updateProductFeature) error = true;
-          } else {
-            let tempProductFeature = {
-              value: JSON.stringify(tokenDistributionForm),
-              isToBlockChain: false,
-              isOnMainCard: false,
-              productID: projectData.projectInfo.id,
-              featureID: "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION",
-            };
-
-            const response = await API.graphql(
-              graphqlOperation(createProductFeature, {
-                input: tempProductFeature,
-              })
-            );
-
-            setTokenDistributionPfID(response.data.createProductFeature.id);
-
-            if (!response.data.createProductFeature) error = true;
-          }
-          notify({
-            msg: "La distribución de tokens ha sido modificada exitosamente",
-            type: "success",
-          });
-        } else {
-          notify({
-            msg: "Los tokens distribuidos no corresponden con la cantidad total de tokens",
-            type: "error",
-          });
-        }
-      } else {
+      if (!totalTokenDistribution) {
         notify({
           msg: "Todos los campos deben ser correctamente llenados",
           type: "error",
         });
+        return;
       }
+
+      await handleSetTotalTokenAmountFeature(totalTokenDistribution);
+      await handleSetTokenDistributionFeature(tokenDistributionForm);
+
+      notify({
+        msg: "La distribución de tokens ha sido modificada exitosamente",
+        type: "success",
+      });
+
       console.log(totalTokenDistribution, "totalTokenDistribution");
     }
 
@@ -323,7 +315,8 @@ export default function TokenSettingsCard(props) {
       tokenHistoricalData[indexToSave].period &&
       tokenHistoricalData[indexToSave].date &&
       tokenHistoricalData[indexToSave].amount &&
-      tokenHistoricalData[indexToSave].price
+      tokenHistoricalData[indexToSave].price &&
+      tokenHistoricalData[indexToSave].currency
     ) {
       setTokenHistoricalData((prevState) =>
         prevState
@@ -470,7 +463,8 @@ export default function TokenSettingsCard(props) {
                   <th style={{ width: "80px" }}>Periodo</th>
                   <th style={{ width: "100px" }}>Fecha</th>
                   <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
-                  <th style={{ width: "100px" }}>Precio (USD)</th>
+                  <th style={{ width: "100px" }}>Precio</th>
+                  <th style={{ width: "100px" }}>Divisa</th>
                   <th style={{ width: "120px" }}></th>
                 </tr>
               </thead>
@@ -520,6 +514,20 @@ export default function TokenSettingsCard(props) {
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
+                          <td>
+                            <Form.Select
+                              size="sm"
+                              type="text"
+                              value={data.currency || ""}
+                              className="text-center"
+                              name={`token_currency_${index}`}
+                              onChange={(e) => handleChangeInputValue(e)}
+                            >
+                              <option disabled value=""></option>
+                              <option value="COP">COP</option>
+                              <option value="USD">USD</option>
+                            </Form.Select>
+                          </td>
                           <td className="text-end">
                             <Button
                               size="sm"
@@ -545,6 +553,7 @@ export default function TokenSettingsCard(props) {
                           <td>{data.date}</td>
                           <td>{data.amount}</td>
                           <td>{data.price}</td>
+                          <td>{data.currency}</td>
                           <td className="text-end">
                             <Button
                               size="sm"
@@ -575,7 +584,7 @@ export default function TokenSettingsCard(props) {
                   );
                 })}
                 <tr>
-                  <td colSpan={5}>
+                  <td colSpan={6}>
                     <div className="d-flex">
                       <Button
                         size="sm"
@@ -592,28 +601,14 @@ export default function TokenSettingsCard(props) {
               </tbody>
             </Table>
           </div>
-          <FormGroup
-            type="flex"
-            disabled={
-              canEdit || projectData.isFinancialFreeze
-            }
-            inputType="number"
-            inputSize="md"
-            label="Cantidad total de tokens"
-            inputName="totalTokenAmount"
-            inputValue={totalTokenAmount}
-            saveBtnDisabled={
-              projectData.projectInfo?.token.totalTokenAmount ===
-              totalTokenAmount
-                ? true
-                : false
-            }
-            onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() => handleSaveBtn("totalTokenAmount")}
-          />
           <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
-            <p>Al tratarse de unidades de tokens, procure que los valores de la distribución sean enteros y no decimales. Adicionalmente, la suma de estos valores debe ser exactamente igual a la cantidad total de tokens del proyecto.</p>
+            <p>
+              Al tratarse de unidades de tokens, procure que los valores de la
+              distribución sean enteros y no decimales. Adicionalmente, la suma
+              de estos valores debe ser exactamente igual a la cantidad total de
+              tokens del proyecto.
+            </p>
             <FormGroup
               disabled={canEdit}
               type="flex"

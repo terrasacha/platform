@@ -15,11 +15,13 @@ export default function FinancialIndicators(props) {
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData()
   const [revenuesByProduct, setRevenuesByProduct] = useState([])
   const [pfID, setPfID] = useState(null)
+  const [executedOnce, setExecutedOnce] = useState(false);
 
   useEffect(() => {
-      if(projectData.projectFinancialInfo[financialInfoType]){
+      if(projectData.projectFinancialInfo[financialInfoType] && !executedOnce){
         setPfID(projectData.projectFinancialInfo[financialInfoType][`${financialInfoType}ID`] || null)
         setRevenuesByProduct(projectData.projectFinancialInfo[financialInfoType][financialInfoType] || [])
+        setExecutedOnce(true);
       }
 
   }, [projectData])

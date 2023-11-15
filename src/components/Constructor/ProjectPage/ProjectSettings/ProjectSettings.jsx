@@ -71,7 +71,7 @@ export default function ProjectSettings() {
     if (item === "financialInfo") {
       if (!updatedProjectData.isFinancialComplete) {
         notify({
-          msg: "Información financiera incompleta. Primero registra toda la información técnica",
+          msg: "Información financiera incompleta. Primero registra toda la información financiera",
           type: "error",
         });
         return;
