@@ -24,10 +24,12 @@ export default function TokenSettingsCard(props) {
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
+  const [tokenCurrency, setTokenCurrency] = useState("COP");
   const [totalTokenAmount, setTotalTokenAmount] = useState(0);
   const [totalTokenAmountPfID, setTotalTokenAmountPfID] = useState(null);
 
   const [isDisabledTokenName, setIsDisabledTokenName] = useState(false);
+  const [isDisabledTokenCurrency, setIsDisabledTokenCurrency] = useState(false);
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
   const [tokenHistoricalDataPfID, setTokenHistoricalDataPfID] = useState(null);
 
@@ -107,6 +109,42 @@ export default function TokenSettingsCard(props) {
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
           featureID: "GLOBAL_TOKEN_NAME",
+        };
+
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, { input: tempProductFeature })
+        );
+
+        if (!response.data.createProductFeature) error = true;
+      }
+
+      if (!error) {
+        notify({
+          msg: "El nombre del token ha sido modificado exitosamente",
+          type: "success",
+        });
+      }
+    }
+    if (toSave === "tokenCurrency") {
+      await handleUpdateContextProjectTokenData({ currency: tokenCurrency });
+
+      if (projectData.projectInfo.token.pfIDs.pfTokenCurrencyID) {
+        let tempProductFeature = {
+          id: projectData.projectInfo.token.pfIDs.pfTokenCurrencyID,
+          value: tokenCurrency,
+        };
+        const response = await API.graphql(
+          graphqlOperation(updateProductFeature, { input: tempProductFeature })
+        );
+
+        if (!response.data.updateProductFeature) error = true;
+      } else {
+        let tempProductFeature = {
+          value: tokenCurrency,
+          isToBlockChain: false,
+          isOnMainCard: false,
+          productID: projectData.projectInfo.id,
+          featureID: "GLOBAL_TOKEN_CURRENCY",
         };
 
         const response = await API.graphql(
@@ -236,6 +274,10 @@ export default function TokenSettingsCard(props) {
     const { name, value } = e.target;
     if (name === "tokenName") {
       setTokenName(value);
+      return;
+    }
+    if (name === "tokenCurrency") {
+      setTokenCurrency(value);
       return;
     }
     if (name === "totalTokenAmount") {
@@ -462,6 +504,21 @@ export default function TokenSettingsCard(props) {
             onChangeInputValue={(e) => handleChangeInputValue(e)}
             onClickSaveBtn={() => handleSaveBtn("tokenName")}
           />
+          <FormGroup
+            disabled={isDisabledTokenCurrency}
+            type="flex"
+            inputType="select"
+            optionList={[{label: 'USD', value: 'USD'}, {label: 'COP', value: 'COP'}]}
+            inputSize="md"
+            label="Divisa de comercialización"
+            inputName="tokenCurrency"
+            inputValue={tokenCurrency}
+            saveBtnDisabled={
+              projectData.projectInfo?.token.currency === tokenCurrency ? true : false
+            }
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("tokenCurrency")}
+          />
           <p className="mb-3">Historico del token</p>
           <div>
             <Table responsive>
@@ -470,7 +527,7 @@ export default function TokenSettingsCard(props) {
                   <th style={{ width: "80px" }}>Periodo</th>
                   <th style={{ width: "100px" }}>Fecha</th>
                   <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
-                  <th style={{ width: "100px" }}>Precio (USD)</th>
+                  <th style={{ width: "100px" }}>Precio ({tokenCurrency})</th>
                   <th style={{ width: "120px" }}></th>
                 </tr>
               </thead>
