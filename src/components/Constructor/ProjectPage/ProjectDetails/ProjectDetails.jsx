@@ -156,7 +156,7 @@ export default function ProjectDetails() {
                   ) Validación de documentos
                 </p>
                 <p className="fw-normal">
-                  La validación de documentos, como
+                  La validación de documentos, como {" "}
                   <span className="fs-6 fw-bold">
                     certificados de tradición y plano del predio
                   </span>
