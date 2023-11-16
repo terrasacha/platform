@@ -76,6 +76,7 @@ export default class FormGroup extends Component {
             value={inputValue}
             onChange={onChangeInputValue}
           >
+            <option disabled value=""></option>
             {optionList.map(({ label, value }, index) => {
               return (
                 <option key={index}

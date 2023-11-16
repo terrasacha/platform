@@ -16,6 +16,7 @@ import { TrashIcon } from "components/common/icons/TrashIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
+import { formatCurrency } from "utilities/formatCurrency";
 
 export default function TokenSettingsCard(props) {
   const { className, canEdit } = props;
@@ -23,6 +24,8 @@ export default function TokenSettingsCard(props) {
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
+  const [tokenCurrency, setTokenCurrency] = useState("");
+  const [tokenCurrencyPfID, setTokenCurrencyPfID] = useState(null);
   const [totalTokenAmount, setTotalTokenAmount] = useState(0);
   const [totalTokenAmountPfID, setTotalTokenAmountPfID] = useState(null);
 
@@ -42,6 +45,10 @@ export default function TokenSettingsCard(props) {
       setTotalTokenAmount(projectData.projectInfo.token.totalTokenAmount);
       setTotalTokenAmountPfID(
         projectData.projectInfo.token.pfIDs.pfTotalTokenAmountID
+      );
+      setTokenCurrency(projectData.projectInfo.token.currency);
+      setTokenCurrencyPfID(
+        projectData.projectInfo.token.pfIDs.pfTokenCurrencyID
       );
 
       const sortedHistoricalData = [
@@ -84,6 +91,70 @@ export default function TokenSettingsCard(props) {
     });
   }
 
+  const handleSetTotalTokenAmountFeature = async (value) => {
+    await handleUpdateContextProjectTokenData({
+      totalTokenAmount: value,
+    });
+
+    if (totalTokenAmountPfID) {
+      let tempProductFeature = {
+        id: totalTokenAmountPfID,
+        value: value,
+      };
+      await API.graphql(
+        graphqlOperation(updateProductFeature, { input: tempProductFeature })
+      );
+    } else {
+      let tempProductFeature = {
+        value: value,
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_TOKEN_TOTAL_AMOUNT",
+      };
+
+      const response = await API.graphql(
+        graphqlOperation(createProductFeature, { input: tempProductFeature })
+      );
+
+      setTotalTokenAmountPfID(response.data.createProductFeature.id);
+    }
+  };
+
+  const handleSetTokenDistributionFeature = async (value) => {
+    await handleUpdateContextProjectTokenData({
+      amountDistribution: value,
+    });
+
+    if (tokenDistributionPfID) {
+      let tempProductFeature = {
+        id: projectData.projectInfo.token.pfIDs.pfTokenAmountDistributionID,
+        value: JSON.stringify(tokenDistributionForm),
+      };
+      await API.graphql(
+        graphqlOperation(updateProductFeature, {
+          input: tempProductFeature,
+        })
+      );
+    } else {
+      let tempProductFeature = {
+        value: JSON.stringify(tokenDistributionForm),
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION",
+      };
+
+      const response = await API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: tempProductFeature,
+        })
+      );
+
+      setTokenDistributionPfID(response.data.createProductFeature.id);
+    }
+  };
+
   const handleSaveBtn = async (toSave) => {
     let error = false;
     if (toSave === "tokenName") {
@@ -122,15 +193,14 @@ export default function TokenSettingsCard(props) {
         });
       }
     }
-    if (toSave === "totalTokenAmount") {
-      await handleUpdateContextProjectTokenData({
-        totalTokenAmount: totalTokenAmount,
-      });
 
-      if (totalTokenAmountPfID) {
+    if (toSave === "tokenCurrency") {
+      await handleUpdateContextProjectTokenData({ currency: tokenCurrency });
+
+      if (tokenCurrencyPfID) {
         let tempProductFeature = {
-          id: totalTokenAmountPfID,
-          value: totalTokenAmount,
+          id: tokenCurrencyPfID,
+          value: tokenCurrency,
         };
         const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
@@ -139,88 +209,69 @@ export default function TokenSettingsCard(props) {
         if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
-          value: totalTokenAmount,
+          value: tokenCurrency,
           isToBlockChain: false,
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
-          featureID: "GLOBAL_TOKEN_TOTAL_AMOUNT",
+          featureID: "GLOBAL_TOKEN_CURRENCY",
         };
 
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
-
-        setTotalTokenAmountPfID(response.data.createProductFeature.id);
+        setTokenCurrencyPfID(response.data.createProductFeature.id);
 
         if (!response.data.createProductFeature) error = true;
       }
 
       if (!error) {
         notify({
-          msg: "El total de tokens ha sido modificado exitosamente",
+          msg: "La divisa de comercialización ha sido modificada exitosamente",
           type: "success",
         });
       }
     }
 
     if (toSave === "tokenDistributionForm") {
-      const totalPercentage =
-        parseFloat(tokenDistributionForm.owner) +
-        parseFloat(tokenDistributionForm.investor) +
-        parseFloat(tokenDistributionForm.suan) +
-        parseFloat(tokenDistributionForm.comunity) +
-        parseFloat(tokenDistributionForm.buffer);
-      if (totalPercentage) {
-        if (totalPercentage.toFixed(2) === "100.00") {
-          if (tokenDistributionPfID) {
-            let tempProductFeature = {
-              id: projectData.projectInfo.token.pfIDs
-                .pfTokenAmountDistributionID,
-              value: JSON.stringify(tokenDistributionForm),
-            };
-            const response = await API.graphql(
-              graphqlOperation(updateProductFeature, {
-                input: tempProductFeature,
-              })
-            );
+      const isDecimal = (value) => !isNaN(value) && value.toString().includes('.');
 
-            if (!response.data.updateProductFeature) error = true;
-          } else {
-            let tempProductFeature = {
-              value: JSON.stringify(tokenDistributionForm),
-              isToBlockChain: false,
-              isOnMainCard: false,
-              productID: projectData.projectInfo.id,
-              featureID: "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION",
-            };
+      const totalTokenDistribution =
+        parseInt(tokenDistributionForm.owner) +
+        parseInt(tokenDistributionForm.investor) +
+        parseInt(tokenDistributionForm.suan) +
+        parseInt(tokenDistributionForm.comunity) +
+        parseInt(tokenDistributionForm.buffer);
 
-            const response = await API.graphql(
-              graphqlOperation(createProductFeature, {
-                input: tempProductFeature,
-              })
-            );
-
-            setTokenDistributionPfID(response.data.createProductFeature.id);
-
-            if (!response.data.createProductFeature) error = true;
-          }
-          notify({
-            msg: "La distribución de tokens ha sido modificada exitosamente",
-            type: "success",
-          });
-        } else {
-          notify({
-            msg: "La suma de los porcentajes no corresponde a 100%",
-            type: "error",
-          });
-        }
-      } else {
+      if (!totalTokenDistribution) {
         notify({
           msg: "Todos los campos deben ser correctamente llenados",
           type: "error",
         });
+        return;
       }
-      console.log(totalPercentage, "totalPercentage");
+      if (
+        isDecimal(tokenDistributionForm.owner) ||
+        isDecimal(tokenDistributionForm.investor) ||
+        isDecimal(tokenDistributionForm.suan) ||
+        isDecimal(tokenDistributionForm.comunity) ||
+        isDecimal(tokenDistributionForm.buffer)
+      ) {
+        notify({
+          msg: "Solo puedes ingresar valores enteros",
+          type: "error",
+        });
+        return;
+      }
+
+      await handleSetTotalTokenAmountFeature(totalTokenDistribution);
+      await handleSetTokenDistributionFeature(tokenDistributionForm);
+
+      notify({
+        msg: "La distribución de tokens ha sido modificada exitosamente",
+        type: "success",
+      });
+
+      console.log(totalTokenDistribution, "totalTokenDistribution");
     }
 
     if (error) {
@@ -235,6 +286,10 @@ export default function TokenSettingsCard(props) {
     const { name, value } = e.target;
     if (name === "tokenName") {
       setTokenName(value);
+      return;
+    }
+    if (name === "tokenCurrency") {
+      setTokenCurrency(value);
       return;
     }
     if (name === "totalTokenAmount") {
@@ -462,23 +517,24 @@ export default function TokenSettingsCard(props) {
             onClickSaveBtn={() => handleSaveBtn("tokenName")}
           />
           <FormGroup
+            disabled={canEdit}
             type="flex"
-            disabled={
-              canEdit || projectData.isFinancialFreeze
-            }
-            inputType="number"
+            label="Divisa de comercialización"
+            inputType="select"
             inputSize="md"
-            label="Cantidad total de tokens"
-            inputName="totalTokenAmount"
-            inputValue={totalTokenAmount}
+            inputName="tokenCurrency"
+            optionList={[
+              { value: "COP", label: "COP" },
+              { value: "USD", label: "USD" },
+            ]}
+            inputValue={tokenCurrency}
             saveBtnDisabled={
-              projectData.projectInfo?.token.totalTokenAmount ===
-              totalTokenAmount
+              projectData.projectInfo?.token.currency === tokenCurrency
                 ? true
                 : false
             }
             onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() => handleSaveBtn("totalTokenAmount")}
+            onClickSaveBtn={() => handleSaveBtn("tokenCurrency")}
           />
           <p className="mb-3">Historico del token</p>
           <div>
@@ -488,7 +544,7 @@ export default function TokenSettingsCard(props) {
                   <th style={{ width: "80px" }}>Periodo</th>
                   <th style={{ width: "100px" }}>Fecha</th>
                   <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
-                  <th style={{ width: "100px" }}>Precio (USD)</th>
+                  <th style={{ width: "100px" }}>Precio</th>
                   <th style={{ width: "120px" }}></th>
                 </tr>
               </thead>
@@ -593,7 +649,7 @@ export default function TokenSettingsCard(props) {
                   );
                 })}
                 <tr>
-                  <td colSpan={5}>
+                  <td colSpan={6}>
                     <div className="d-flex">
                       <Button
                         size="sm"
@@ -612,12 +668,18 @@ export default function TokenSettingsCard(props) {
           </div>
           <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
+            <p>
+              Al tratarse de unidades de tokens, los valores de la distribución
+              deben ser enteros y no decimales. Adicionalmente, la suma de estos
+              valores debe ser exactamente igual a la cantidad total de tokens
+              del proyecto.
+            </p>
             <FormGroup
               disabled={canEdit}
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Inversionista (%)"
+              label={`Inversionista (Tokens)`}
               inputName="investor"
               inputValue={tokenDistributionForm.investor}
               saveBtnVisible={false}
@@ -628,7 +690,7 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Propietario (%)"
+              label={`Propietario (Tokens)`}
               inputName="owner"
               inputValue={tokenDistributionForm.owner}
               saveBtnVisible={false}
@@ -639,7 +701,7 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="SUAN (%)"
+              label={`SUAN (Tokens)`}
               inputName="suan"
               inputValue={tokenDistributionForm.suan}
               saveBtnVisible={false}
@@ -650,7 +712,7 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Comunidad (%)"
+              label={`Comunidad (Tokens)`}
               inputName="comunity"
               inputValue={tokenDistributionForm.comunity}
               saveBtnVisible={false}
@@ -661,12 +723,24 @@ export default function TokenSettingsCard(props) {
               type="flex"
               inputType="number"
               inputSize="md"
-              label="Buffer (%)"
+              label={`Buffer (Tokens)`}
               inputName="buffer"
               inputValue={tokenDistributionForm.buffer}
               saveBtnVisible={false}
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
+            {/* <div className="border p-3 mx-auto my-3" style={{width: "300px"}}>
+                <div className="d-flex justify-content-center mb-3">Resumen</div>
+                <div>
+                  <ul>
+                    <li>Inversionista: {(totalTokenAmount * tokenDistributionForm.investor) / 100 || 0} Tokens</li>
+                    <li>Propietario: {(totalTokenAmount * tokenDistributionForm.owner) / 100  || 0} Tokens</li>
+                    <li>SUAN: {(totalTokenAmount * tokenDistributionForm.suan) / 100  || 0} Tokens</li>
+                    <li>Comunidad: {(totalTokenAmount * tokenDistributionForm.comunity) / 100  || 0} Tokens</li>
+                    <li>Buffer: {(totalTokenAmount * tokenDistributionForm.buffer) / 100  || 0} Tokens</li>
+                  </ul>
+                </div>
+            </div> */}
             <div className="d-flex justify-content-center">
               <Button
                 disabled={canEdit}
