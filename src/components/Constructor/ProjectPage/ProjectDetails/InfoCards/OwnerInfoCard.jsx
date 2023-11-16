@@ -25,7 +25,7 @@ import { useAuth } from "context/AuthContext";
 import { fetchProjectDataByProjectID } from "../../api";
 
 export default function OwnerInfoCard(props) {
-  const { className, autorizedUser, setProgressChange } = props;
+  const { className, autorizedUser, setProgressChange, tooltip } = props;
   const { projectData, handleUpdateContextProjectFile } = useProjectData();
   const { user } = useAuth();
 
@@ -498,7 +498,7 @@ export default function OwnerInfoCard(props) {
 
   return (
     <Card className={className}>
-      <Card.Header title="Información de titulares" sep={true} />
+      <Card.Header title="Información de titulares" sep={true} tooltip={tooltip}/>
       <Card.Body>
         {/* <div className="row">
           <div className="col-12 col-md-6">

@@ -22,6 +22,10 @@ import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { Auth } from "aws-amplify";
 import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
+import { getProjectProgress } from "services/getProjectProgress";
+import { CheckIcon } from "components/common/icons/CheckIcon";
+import { AlertCircleIcon } from "components/common/icons/AlertCircleIcon";
+import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -30,6 +34,7 @@ export default function ProjectPage() {
   const { projectData, handleProjectData } = useProjectData();
   const { user } = useAuth();
 
+  const [progressObj, setProgressObj] = useState(null);
   const [activeSection, setActiveSection] = useState("details");
 
   const projectStatusMapper = {
@@ -56,8 +61,25 @@ export default function ProjectPage() {
     getProjectData();
   }, []);
 
+  useEffect(() => {
+    if (user && projectData.projectInfo) {
+      const progress = async () => {
+        try {
+          const obj = await getProjectProgress(
+            projectData?.projectInfo.id,
+            user.subrole
+          );
+          setProgressObj(obj);
+        } catch (error) {
+          console.error("Error al obtener datos:", error);
+        }
+      };
+      progress();
+    }
+  }, [projectData]);
+
   const postulante = projectData.projectPostulant;
-  
+
   return (
     <div className="container-sm">
       <div className="mb-5">
@@ -121,7 +143,7 @@ export default function ProjectPage() {
                     value={
                       projectData.projectInfo?.token.actualPeriodTokenPrice +
                       " " +
-                      projectData.projectInfo?.token.priceCurrency
+                      projectData.projectInfo?.token.currency
                     }
                     className="me-2 bg-dark text-white"
                   />
@@ -147,52 +169,81 @@ export default function ProjectPage() {
             variant="tabs"
             className="mt-3"
             defaultActiveKey={"#" + activeSection}
-            >
+          >
             <Nav.Item>
               <Nav.Link
                 href="#details"
-                onClick={(e) =>{ e.preventDefault();setActiveSection("details")}}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveSection("details");
+                }}
               >
                 Detalles
+                {(!progressObj?.sectionsStatus.projectInfo ||
+                  !progressObj?.sectionsStatus.geodataInfo ||
+                  !progressObj?.sectionsStatus.ownersInfo) && (
+                  <AlertCircleIcon className="text-danger ms-2" />
+                )}
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link href="#files" onClick={(e) => {e.preventDefault();setActiveSection("files")}}>
+              <Nav.Link
+                href="#files"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveSection("files");
+                }}
+              >
                 Validación
+                {(!progressObj?.sectionsStatus.validationsComplete) && (
+                  <HourGlassIcon className="text-primary ms-2" />
+                )}
               </Nav.Link>
             </Nav.Item>
-            {(projectData.projectVerifiers?.includes(user?.id) || user?.role === 'admon')&& (
+            {(projectData.projectVerifiers?.includes(user?.id) ||
+              user?.role === "admon") && (
               <>
                 <Nav.Item>
                   <Nav.Link
                     href="#file_manager"
-                    onClick={(e) => {e.preventDefault();setActiveSection("file_manager")}}
-                    >
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("file_manager");
+                    }}
+                  >
                     Sistema de datos
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
                     href="#settings"
-                    onClick={(e) => {e.preventDefault();setActiveSection("settings")}}
-                    >
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("settings");
+                    }}
+                  >
                     Configuración
+                    {(!progressObj?.sectionsStatus.technicalInfo || !progressObj?.sectionsStatus.financialInfo) && (
+                      <HourGlassIcon className="text-primary ms-2" />
+                    )}
                   </Nav.Link>
                 </Nav.Item>
               </>
             )}
-            {user?.id && (
-                projectData.projectPostulant?.id.includes(user.id) ||
-                projectData.projectVerifiers?.includes(user.id)
-              ) && (
-              <>
-                <Nav.Item>
-                  <Nav.Link href="#finance" onClick={() => setActiveSection("finance")}>
-                    Finanzas
-                  </Nav.Link>
-                </Nav.Item>
-              </>
-            )}
+            {user?.id &&
+              (projectData.projectPostulant?.id.includes(user.id) ||
+                projectData.projectVerifiers?.includes(user.id)) && (
+                <>
+                  <Nav.Item>
+                    <Nav.Link
+                      href="#finance"
+                      onClick={() => setActiveSection("finance")}
+                    >
+                      Finanzas
+                    </Nav.Link>
+                  </Nav.Item>
+                </>
+              )}
           </Nav>
         </div>
         {activeSection === "details" && <ProjectDetails />}
@@ -200,9 +251,8 @@ export default function ProjectPage() {
         {activeSection === "files" && <ProjectFiles />}
         {activeSection === "finance" && <FinanceCard />}
         {activeSection === "settings" &&
-          (projectData?.projectVerifiers.includes(user?.id) || user?.role === 'admon') && (
-            <ProjectSettings />
-          )}
+          (projectData?.projectVerifiers.includes(user?.id) ||
+            user?.role === "admon") && <ProjectSettings />}
       </div>
       <ToastContainer></ToastContainer>
     </div>

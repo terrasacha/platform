@@ -190,6 +190,19 @@ const getTechnicalInfoStatus = (data) => {
   return tempStatus;
 };
 
+const getOwnerAcceptsConditionsInfoStatus = (data) => {
+  let tempStatus = true;
+
+  const technicalConditions =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS";
+    })[0]?.value || null;
+
+  if (technicalConditions !== "true") tempStatus = false;
+
+  return tempStatus;
+};
+
 const getValidationsCompleteInfoStatus = (data) => {
   let tempStatus = true;
   const PFNameMapper = {
@@ -236,30 +249,28 @@ export const mapProjectFillProgress = async (data, userRole) => {
     projectInfo: false,
     geodataInfo: false,
     ownersInfo: false,
+    financialInfo: false,
+    technicalInfo: false,
+    validationsComplete: false,
+    ownerAcceptsConditions: false
     // actualUseInfo: false,
     // limitationsInfo: false,
     // ecosystemInfo: false,
     // generalInfo: false,
     // relationsInfo: false,
   };
-
-  if (userRole === "fullaccessvalidator") {
-    sectionsStatus.financialInfo = getFinancialInfoStatus(data);
-    sectionsStatus.technicalInfo = getTechnicalInfoStatus(data);
-  }
-  if (userRole === "financial") {
-    sectionsStatus.financialInfo = getFinancialInfoStatus(data);
-  }
-  if (userRole === "technical") {
-    sectionsStatus.technicalInfo = getTechnicalInfoStatus(data);
-  }
-  if (userRole === "fullaccessvalidator" || userRole === "financial" || userRole === "technical") {
-    sectionsStatus.validationsComplete = getValidationsCompleteInfoStatus(data);
-  }
-
+  
+  // Requerimientos postulante
   sectionsStatus.projectInfo = getProjectInfoStatus(data);
   sectionsStatus.geodataInfo = getGeodataInfoStatus(data);
   sectionsStatus.ownersInfo = getOwnersInfoStatus(data);
+  sectionsStatus.ownerAcceptsConditions = getOwnerAcceptsConditionsInfoStatus(data)
+
+  // Requerimientos equipo SUAN
+  sectionsStatus.financialInfo = getFinancialInfoStatus(data);
+  sectionsStatus.technicalInfo = getTechnicalInfoStatus(data);
+  sectionsStatus.validationsComplete = getValidationsCompleteInfoStatus(data);
+
   // sectionsStatus.actualUseInfo = getActualUseInfoStatus(data);
   // sectionsStatus.limitationsInfo = getLimitationsInfoStatus(data);
   // sectionsStatus.ecosystemInfo = getEcosystemInfoStatus(data);

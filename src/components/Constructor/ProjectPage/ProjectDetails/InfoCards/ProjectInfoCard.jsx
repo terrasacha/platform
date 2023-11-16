@@ -20,7 +20,7 @@ import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { fetchProjectDataByProjectID } from "../../api";
 
 export default function ProjectInfoCard(props) {
-  const { className, autorizedUser, setProgressChange } = props;
+  const { className, autorizedUser, setProgressChange, tooltip } = props;
   const {
     projectData,
     handleUpdateContextProjectInfo,
@@ -537,7 +537,7 @@ export default function ProjectInfoCard(props) {
 
   return (
     <Card className={className}>
-      <Card.Header title="Información del proyecto" sep={true} />
+      <Card.Header title="Información del proyecto" sep={true} tooltip={tooltip}/>
       <Card.Body>
         <div className="row">
           <div

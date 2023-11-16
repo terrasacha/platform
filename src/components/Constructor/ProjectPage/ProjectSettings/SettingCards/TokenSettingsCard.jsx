@@ -46,7 +46,7 @@ export default function TokenSettingsCard(props) {
       setTotalTokenAmountPfID(
         projectData.projectInfo.token.pfIDs.pfTotalTokenAmountID
       );
-      setTokenCurrency(projectData.projectInfo.token.currency)
+      setTokenCurrency(projectData.projectInfo.token.currency);
       setTokenCurrencyPfID(
         projectData.projectInfo.token.pfIDs.pfTokenCurrencyID
       );
@@ -219,7 +219,7 @@ export default function TokenSettingsCard(props) {
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
-        setTokenCurrencyPfID(response.data.createProductFeature.id)
+        setTokenCurrencyPfID(response.data.createProductFeature.id);
 
         if (!response.data.createProductFeature) error = true;
       }
@@ -233,6 +233,8 @@ export default function TokenSettingsCard(props) {
     }
 
     if (toSave === "tokenDistributionForm") {
+      const isDecimal = (value) => !isNaN(value) && value.toString().includes('.');
+
       const totalTokenDistribution =
         parseInt(tokenDistributionForm.owner) +
         parseInt(tokenDistributionForm.investor) +
@@ -243,6 +245,19 @@ export default function TokenSettingsCard(props) {
       if (!totalTokenDistribution) {
         notify({
           msg: "Todos los campos deben ser correctamente llenados",
+          type: "error",
+        });
+        return;
+      }
+      if (
+        isDecimal(tokenDistributionForm.owner) ||
+        isDecimal(tokenDistributionForm.investor) ||
+        isDecimal(tokenDistributionForm.suan) ||
+        isDecimal(tokenDistributionForm.comunity) ||
+        isDecimal(tokenDistributionForm.buffer)
+      ) {
+        notify({
+          msg: "Solo puedes ingresar valores enteros",
           type: "error",
         });
         return;
@@ -654,10 +669,10 @@ export default function TokenSettingsCard(props) {
           <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
             <p>
-              Al tratarse de unidades de tokens, procure que los valores de la
-              distribución sean enteros y no decimales. Adicionalmente, la suma
-              de estos valores debe ser exactamente igual a la cantidad total de
-              tokens del proyecto.
+              Al tratarse de unidades de tokens, los valores de la distribución
+              deben ser enteros y no decimales. Adicionalmente, la suma de estos
+              valores debe ser exactamente igual a la cantidad total de tokens
+              del proyecto.
             </p>
             <FormGroup
               disabled={canEdit}

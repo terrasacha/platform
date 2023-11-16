@@ -9,7 +9,7 @@ import { notify } from "utilities/notify";
 // Borrar despues de pasar a componentes
 
 export default function GeodataInfoCard(props) {
-  const { autorizedUser, setProgressChange } = props;
+  const { autorizedUser, setProgressChange, tooltip } = props;
   const { projectData } = useProjectData();
 
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
@@ -125,7 +125,7 @@ export default function GeodataInfoCard(props) {
 
   return (
     <Card>
-      <Card.Header title="Ubicación" sep={true} />
+      <Card.Header title="Ubicación Geográfica" sep={true} tooltip={tooltip}/>
       <div style={{ height: "570px", width: "100%" }}>
         {geoData.loaded && (
           <GoogleMapReact
