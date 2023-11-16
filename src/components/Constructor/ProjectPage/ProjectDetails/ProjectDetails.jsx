@@ -132,7 +132,7 @@ export default function ProjectDetails() {
               </li>
               <li className="fw-bold">
                 (
-                {progressObj.sectionsStatus.geodataInfo ? (
+                {progressObj.sectionsStatus.ownerAcceptsConditions ? (
                   <CheckIcon className="text-success" />
                 ) : (
                   <HourGlassIcon className="text-danger" />
@@ -227,21 +227,21 @@ export default function ProjectDetails() {
         <ProjectInfoCard
           autorizedUser={autorizedUser}
           setProgressChange={setProgressChange}
-          tooltip={progressObj?.sectionsStatus.projectInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>}
+          tooltip={autorizedUser && (progressObj?.sectionsStatus.projectInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>)}
         />
       </div>
       <div className="col">
         <GeodataInfoCard
           autorizedUser={autorizedUser}
           setProgressChange={setProgressChange}
-          tooltip={progressObj?.sectionsStatus.geodataInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>}
+          tooltip={autorizedUser && (progressObj?.sectionsStatus.geodataInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>)}
         />
       </div>
       <div className="col">
         <OwnerInfoCard
           autorizedUser={autorizedUser}
           setProgressChange={setProgressChange}
-          tooltip={progressObj?.sectionsStatus.ownersInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>}
+          tooltip={autorizedUser && (progressObj?.sectionsStatus.ownersInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>)}
         />
       </div>
       <div className="col">

@@ -36,6 +36,7 @@ export default function ProjectPage() {
 
   const [progressObj, setProgressObj] = useState(null);
   const [activeSection, setActiveSection] = useState("details");
+  const [autorizedUser, setAutorizedUser] = useState(false);
 
   const projectStatusMapper = {
     draft: "En borrador",
@@ -60,6 +61,18 @@ export default function ProjectPage() {
 
     getProjectData();
   }, []);
+
+  useEffect(() => {
+    if (user && projectData) {
+      const verifiers = projectData?.projectVerifiers;
+      const postulant = projectData?.projectPostulant?.id;
+      const authorizedUsers =
+        projectData?.projectInfo.projectAge < 20
+          ? [...verifiers, postulant]
+          : [...verifiers];
+      setAutorizedUser(authorizedUsers.includes(user.id));
+    }
+  }, [projectData]);
 
   useEffect(() => {
     if (user && projectData.projectInfo) {
@@ -179,7 +192,7 @@ export default function ProjectPage() {
                 }}
               >
                 Detalles
-                {(!progressObj?.sectionsStatus.projectInfo ||
+                {autorizedUser && (!progressObj?.sectionsStatus.projectInfo ||
                   !progressObj?.sectionsStatus.geodataInfo ||
                   !progressObj?.sectionsStatus.ownersInfo) && (
                   <AlertCircleIcon className="text-danger ms-2" />
@@ -195,7 +208,7 @@ export default function ProjectPage() {
                 }}
               >
                 Validación
-                {(!progressObj?.sectionsStatus.validationsComplete) && (
+                {autorizedUser && (!progressObj?.sectionsStatus.validationsComplete) && (
                   <HourGlassIcon className="text-primary ms-2" />
                 )}
               </Nav.Link>
@@ -223,7 +236,7 @@ export default function ProjectPage() {
                     }}
                   >
                     Configuración
-                    {(!progressObj?.sectionsStatus.technicalInfo || !progressObj?.sectionsStatus.financialInfo) && (
+                    {autorizedUser && (!progressObj?.sectionsStatus.technicalInfo || !progressObj?.sectionsStatus.financialInfo) && (
                       <HourGlassIcon className="text-primary ms-2" />
                     )}
                   </Nav.Link>
@@ -240,6 +253,9 @@ export default function ProjectPage() {
                       onClick={() => setActiveSection("finance")}
                     >
                       Finanzas
+                      {autorizedUser && (!progressObj?.sectionsStatus.ownerAcceptsConditions) && (
+                        <HourGlassIcon className="text-danger ms-2" />
+                      )}
                     </Nav.Link>
                   </Nav.Item>
                 </>
