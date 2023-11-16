@@ -32,7 +32,6 @@ export default function ProjectDetails() {
           : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
       setIsPostulant(postulant === user.id)
-      console.log("projectData", projectData);
     }
   }, [projectData]);
 
@@ -40,10 +39,7 @@ export default function ProjectDetails() {
     if (user && projectData.projectInfo) {
       const progress = async () => {
         try {
-          // Llama a tu servicio asincrónico
-          console.log("user", user)
           const obj = await getProjectProgress(projectData?.projectInfo.id, user.role);
-          // Actualiza el estado con los datos obtenidos
           setProgressObj(obj);
         } catch (error) {
           console.error("Error al obtener datos:", error);
@@ -53,7 +49,6 @@ export default function ProjectDetails() {
     }
   }, [projectData, progressChange]);
 
-  console.log(progressObj, "progress");
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       {autorizedUser && !(user?.role === "validator") && (

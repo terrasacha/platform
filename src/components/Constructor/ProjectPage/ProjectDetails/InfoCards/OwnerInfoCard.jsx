@@ -492,8 +492,6 @@ export default function OwnerInfoCard(props) {
     }
   };
 
-  console.log(tokenHistoricalData);
-
   return (
     <Card className={className}>
       <Card.Header title="Información de titulares" sep={true} />
