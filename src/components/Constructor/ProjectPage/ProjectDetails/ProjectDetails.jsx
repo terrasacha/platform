@@ -78,6 +78,7 @@ export default function ProjectDetails() {
           </Alert>
         </div>
       )}
+      
       {autorizedUser && progressObj && (
         <div className="col-12 col-xl-12">
           <Alert variant="warning" className="mb-0">
@@ -97,113 +98,93 @@ export default function ProjectDetails() {
               condiciones antes de que un proyecto pueda ser visualizado en el
               Marketplace para su comercialización:
             </p>
-            <p>
-              Como <span className="fs-6 fw-bold">postulante</span> asegúrate de
-              completar los siguientes detalles con precisión, proporcionando la
-              base sólida que necesitas para destacar en nuestro Marketplace.
-            </p>
-            <ul>
-              <li className="fw-bold">
-                (
-                {progressObj.sectionsStatus.projectInfo ? (
-                  <CheckIcon className="text-success" />
-                ) : (
-                  <HourGlassIcon className="text-danger" />
-                )}
-                ) Completar información del proyecto
-              </li>
-              <li className="fw-bold">
-                (
-                {progressObj.sectionsStatus.ownersInfo ? (
-                  <CheckIcon className="text-success" />
-                ) : (
-                  <HourGlassIcon className="text-danger" />
-                )}
-                ) Completar información de titulares y certificados de tradición
-              </li>
-              <li className="fw-bold">
-                (
-                {progressObj.sectionsStatus.geodataInfo ? (
-                  <CheckIcon className="text-success" />
-                ) : (
-                  <HourGlassIcon className="text-danger" />
-                )}
-                ) Completar ubicación geográfica
-              </li>
-              <li className="fw-bold">
-                (
-                {progressObj.sectionsStatus.ownerAcceptsConditions ? (
-                  <CheckIcon className="text-success" />
-                ) : (
-                  <HourGlassIcon className="text-danger" />
-                )}
-                ) Aceptar condiciones financieras
-              </li>
-            </ul>
-            <p>
-              Estado de verificación del proyecto por parte del equipo de
-              validadores SUAN.
-            </p>
-            <ul>
-              <li className="fw-bold">
+            <div className="row row-cols-2">
+              <div>
                 <p className="mb-0">
-                  (
-                  {progressObj.sectionsStatus.validationsComplete ? (
-                    <CheckIcon className="text-success" />
-                  ) : (
-                    <HourGlassIcon className="text-primary" />
-                  )}
-                  ) Validación de documentos
+                  Requerimientos del postulante
                 </p>
-                <p className="fw-normal">
-                  La validación de documentos, como {" "}
-                  <span className="fs-6 fw-bold">
-                    certificados de tradición y plano del predio
-                  </span>
-                  , por parte de nuestros especialistas asegura la autenticidad
-                  y legalidad del proyecto. Esto es esencial para proteger a
-                  todas las partes involucradas y brindar la seguridad necesaria
-                  para el desarrollo del proyecto.
-                </p>
-              </li>
-              <li className="fw-bold">
+                <ul>
+                  <li className="fw-bold">
+                    (
+                    {progressObj.sectionsStatus.projectInfo ? (
+                      <CheckIcon className="text-success" />
+                    ) : (
+                      <HourGlassIcon className="text-danger" />
+                    )}
+                    ) Completar información del proyecto
+                  </li>
+                  <li className="fw-bold">
+                    (
+                    {progressObj.sectionsStatus.ownersInfo ? (
+                      <CheckIcon className="text-success" />
+                    ) : (
+                      <HourGlassIcon className="text-danger" />
+                    )}
+                    ) Completar información de titulares y certificados de
+                    tradición
+                  </li>
+                  <li className="fw-bold">
+                    (
+                    {progressObj.sectionsStatus.geodataInfo ? (
+                      <CheckIcon className="text-success" />
+                    ) : (
+                      <HourGlassIcon className="text-danger" />
+                    )}
+                    ) Completar ubicación geográfica
+                  </li>
+                  <li className="fw-bold">
+                    (
+                    {progressObj.sectionsStatus.ownerAcceptsConditions ? (
+                      <CheckIcon className="text-success" />
+                    ) : (
+                      <HourGlassIcon className="text-danger" />
+                    )}
+                    ) Aceptar condiciones financieras
+                  </li>
+                </ul>
+              </div>
+              <div>
                 <p className="mb-0">
-                  (
-                  {progressObj.sectionsStatus.technicalInfo ? (
-                    <CheckIcon className="text-success" />
-                  ) : (
-                    <HourGlassIcon className="text-primary" />
-                  )}
-                  ) Oficialización de información Técnica
+                  Estado de verificación del proyecto por parte del equipo de
+                  validadores SUAN.
                 </p>
-                <p className="fw-normal">
-                  La validación de la información técnica por parte de nuestro
-                  validador técnico garantizar la viabilidad y conformidad del
-                  proyecto con base a los estándares establecidos. Esto no solo
-                  ayuda a mitigar riesgos para los inversores, sino que también
-                  contribuye a la reputación positiva de los proyectos en
-                  nuestra plataforma.
-                </p>
-              </li>
-              <li className="fw-bold">
-                <p className="mb-0">
-                  (
-                  {progressObj.sectionsStatus.financialInfo ? (
-                    <CheckIcon className="text-success" />
-                  ) : (
-                    <HourGlassIcon className="text-primary" />
-                  )}
-                  ) Oficialización de información Financiera
-                </p>
-                <p className="fw-normal">
-                  La validación de la información financiera por parte de
-                  nuestro validador financiero es crucial para asegurar la
-                  solidez económica del proyecto. Los inversores confían en que
-                  esta información sea precisa y verificada, permitiéndoles
-                  tomar decisiones informadas sobre su participación.
-                </p>
-              </li>
-            </ul>
+                <ul>
+                  <li className="fw-bold">
+                    <p className="mb-0">
+                      (
+                      {progressObj.sectionsStatus.validationsComplete ? (
+                        <CheckIcon className="text-success" />
+                      ) : (
+                        <HourGlassIcon className="text-primary" />
+                      )}
+                      ) Validación de documentos
+                    </p>
+                  </li>
+                  <li className="fw-bold">
+                    <p className="mb-0">
+                      (
+                      {progressObj.sectionsStatus.technicalInfo ? (
+                        <CheckIcon className="text-success" />
+                      ) : (
+                        <HourGlassIcon className="text-primary" />
+                      )}
+                      ) Oficialización de información Técnica
+                    </p>
+                  </li>
+                  <li className="fw-bold">
+                    <p className="mb-0">
+                      (
+                      {progressObj.sectionsStatus.financialInfo ? (
+                        <CheckIcon className="text-success" />
+                      ) : (
+                        <HourGlassIcon className="text-primary" />
+                      )}
+                      ) Oficialización de información Financiera
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
             <hr />
             <p className="mb-0">
               {progressObj.progressValue === 100
@@ -227,21 +208,42 @@ export default function ProjectDetails() {
         <ProjectInfoCard
           autorizedUser={autorizedUser}
           setProgressChange={setProgressChange}
-          tooltip={autorizedUser && (progressObj?.sectionsStatus.projectInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>)}
+          tooltip={
+            autorizedUser &&
+            (progressObj?.sectionsStatus.projectInfo ? (
+              <CheckIcon className="text-success" />
+            ) : (
+              <AlertCircleIcon className="text-danger" />
+            ))
+          }
         />
       </div>
       <div className="col">
         <GeodataInfoCard
           autorizedUser={autorizedUser}
           setProgressChange={setProgressChange}
-          tooltip={autorizedUser && (progressObj?.sectionsStatus.geodataInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>)}
+          tooltip={
+            autorizedUser &&
+            (progressObj?.sectionsStatus.geodataInfo ? (
+              <CheckIcon className="text-success" />
+            ) : (
+              <AlertCircleIcon className="text-danger" />
+            ))
+          }
         />
       </div>
       <div className="col">
         <OwnerInfoCard
           autorizedUser={autorizedUser}
           setProgressChange={setProgressChange}
-          tooltip={autorizedUser && (progressObj?.sectionsStatus.ownersInfo ? <CheckIcon className="text-success"/> : <AlertCircleIcon className="text-danger"/>)}
+          tooltip={
+            autorizedUser &&
+            (progressObj?.sectionsStatus.ownersInfo ? (
+              <CheckIcon className="text-success" />
+            ) : (
+              <AlertCircleIcon className="text-danger" />
+            ))
+          }
         />
       </div>
       <div className="col">

@@ -87,6 +87,13 @@ type Category @model
   products: [Product] @hasMany(indexName: "byCategory", fields: ["id"])
 }
 
+type Concept @model 
+{
+  id: ID!
+  name: String!
+  type: String!
+}
+
 type Product @model 
 {
   id: ID!
