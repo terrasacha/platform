@@ -35,8 +35,7 @@ export default function ProjectDetails() {
           ? [...verifiers, postulant]
           : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
-      setIsPostulant(postulant === user.id);
-      console.log("projectData", projectData);
+      setIsPostulant(postulant === user.id)
     }
   }, [projectData]);
 
@@ -57,7 +56,6 @@ export default function ProjectDetails() {
     }
   }, [projectData, progressChange]);
 
-  console.log(progressObj, "progress");
   return (
     <div className="row row-cols-1 row-cols-xl-2 g-4">
       {autorizedUser && !(user?.role === "validator") && (

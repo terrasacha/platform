@@ -106,7 +106,6 @@ export default function ProjectInfoCard(props) {
           projectData.projectInfo?.location.fichaCatrastal,
       }));
       setExecutedOnce(true);
-      console.log("categorias", categoryList);
     }
   }, [projectData, user]);
 
