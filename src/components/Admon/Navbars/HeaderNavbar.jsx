@@ -71,15 +71,15 @@ export default class HeaderNavbar extends Component {
                                 <Nav.Link href="#categorys" onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}>
                                     Categorías
                                 </Nav.Link>
-                                <Nav.Link href="#concepts" onClick={(e) => this.changeHeaderNavBarRequest('concepts', e)}>
-                                    Conceptos
+                                <Nav.Link href="#items" onClick={(e) => this.changeHeaderNavBarRequest('items', e)}>
+                                    Items de proyectos
                                 </Nav.Link>
                                 <Nav.Link href="#features" onClick={(e) => this.changeHeaderNavBarRequest('features', e)}>
                                     Features
                                 </Nav.Link>
 
                                 <Nav.Link href="#uom" onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}>
-                                    OUM
+                                    UOM
                                 </Nav.Link>                            
                             </Nav>
                             <Nav>

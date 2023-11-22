@@ -895,9 +895,9 @@ export const listCategories = /* GraphQL */ `
     }
   }
 `;
-export const getConcept = /* GraphQL */ `
-  query GetConcept($id: ID!) {
-    getConcept(id: $id) {
+export const getProductItem = /* GraphQL */ `
+  query GetProductItem($id: ID!) {
+    getProductItem(id: $id) {
       id
       name
       type
@@ -907,13 +907,13 @@ export const getConcept = /* GraphQL */ `
     }
   }
 `;
-export const listConcepts = /* GraphQL */ `
-  query ListConcepts(
-    $filter: ModelConceptFilterInput
+export const listProductItems = /* GraphQL */ `
+  query ListProductItems(
+    $filter: ModelProductItemFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listConcepts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listProductItems(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         name

@@ -24,7 +24,6 @@ import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
-import { AlertCircleIcon } from "components/common/icons/AlertCircleIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
@@ -195,7 +194,7 @@ export default function ProjectPage() {
                 {autorizedUser && (!progressObj?.sectionsStatus.projectInfo ||
                   !progressObj?.sectionsStatus.geodataInfo ||
                   !progressObj?.sectionsStatus.ownersInfo) && (
-                  <AlertCircleIcon className="text-danger ms-2" />
+                  <HourGlassIcon className="text-danger ms-2" />
                 )}
               </Nav.Link>
             </Nav.Item>
@@ -209,7 +208,7 @@ export default function ProjectPage() {
               >
                 Validación
                 {autorizedUser && (!progressObj?.sectionsStatus.validationsComplete) && (
-                  <HourGlassIcon className="text-primary ms-2" />
+                  <HourGlassIcon className="text-danger ms-2" />
                 )}
               </Nav.Link>
             </Nav.Item>
@@ -237,7 +236,7 @@ export default function ProjectPage() {
                   >
                     Configuración
                     {autorizedUser && (!progressObj?.sectionsStatus.technicalInfo || !progressObj?.sectionsStatus.financialInfo) && (
-                      <HourGlassIcon className="text-primary ms-2" />
+                      <HourGlassIcon className="text-danger ms-2" />
                     )}
                   </Nav.Link>
                 </Nav.Item>

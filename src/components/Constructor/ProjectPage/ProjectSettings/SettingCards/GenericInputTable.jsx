@@ -10,7 +10,7 @@ import {
 import { notify } from "../../../../../utilities/notify"
 
 export default function GenericInputTable(props) {
-  const { className, title, fID, financialInfoType, canEdit } = props
+  const { className, title, fID, financialInfoType, canEdit, conceptOptions } = props
 
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData()
   const [revenuesByProduct, setRevenuesByProduct] = useState([])
@@ -197,7 +197,7 @@ export default function GenericInputTable(props) {
         <Card.Body>
           <p className="mb-3">{title}</p>
           <div>
-            <TableEdit canEdit={canEdit} columns={['CONCEPTO', 'CANTIDAD', 'UNIDAD']} infoTable={revenuesByProduct} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
+            <TableEdit canEdit={canEdit} conceptOptions={conceptOptions} columns={['CONCEPTO', 'CANTIDAD', 'UNIDAD']} infoTable={revenuesByProduct} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
           </div>
         </Card.Body>
       </Card>

@@ -1738,12 +1738,12 @@ export const deleteCategory = /* GraphQL */ `
     }
   }
 `;
-export const createConcept = /* GraphQL */ `
-  mutation CreateConcept(
-    $input: CreateConceptInput!
-    $condition: ModelConceptConditionInput
+export const createProductItem = /* GraphQL */ `
+  mutation CreateProductItem(
+    $input: CreateProductItemInput!
+    $condition: ModelProductItemConditionInput
   ) {
-    createConcept(input: $input, condition: $condition) {
+    createProductItem(input: $input, condition: $condition) {
       id
       name
       type
@@ -1753,12 +1753,12 @@ export const createConcept = /* GraphQL */ `
     }
   }
 `;
-export const updateConcept = /* GraphQL */ `
-  mutation UpdateConcept(
-    $input: UpdateConceptInput!
-    $condition: ModelConceptConditionInput
+export const updateProductItem = /* GraphQL */ `
+  mutation UpdateProductItem(
+    $input: UpdateProductItemInput!
+    $condition: ModelProductItemConditionInput
   ) {
-    updateConcept(input: $input, condition: $condition) {
+    updateProductItem(input: $input, condition: $condition) {
       id
       name
       type
@@ -1768,12 +1768,12 @@ export const updateConcept = /* GraphQL */ `
     }
   }
 `;
-export const deleteConcept = /* GraphQL */ `
-  mutation DeleteConcept(
-    $input: DeleteConceptInput!
-    $condition: ModelConceptConditionInput
+export const deleteProductItem = /* GraphQL */ `
+  mutation DeleteProductItem(
+    $input: DeleteProductItemInput!
+    $condition: ModelProductItemConditionInput
   ) {
-    deleteConcept(input: $input, condition: $condition) {
+    deleteProductItem(input: $input, condition: $condition) {
       id
       name
       type

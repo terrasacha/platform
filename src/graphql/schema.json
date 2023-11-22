@@ -387,7 +387,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "getConcept",
+          "name" : "getProductItem",
           "description" : null,
           "args" : [ {
             "name" : "id",
@@ -405,20 +405,20 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Concept",
+            "name" : "ProductItem",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "listConcepts",
+          "name" : "listProductItems",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptFilterInput",
+              "name" : "ModelProductItemFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
@@ -443,7 +443,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "ModelConceptConnection",
+            "name" : "ModelProductItemConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -10394,7 +10394,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "Concept",
+        "name" : "ProductItem",
         "description" : null,
         "fields" : [ {
           "name" : "id",
@@ -10478,7 +10478,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "ModelConceptConnection",
+        "name" : "ModelProductItemConnection",
         "description" : null,
         "fields" : [ {
           "name" : "items",
@@ -10492,7 +10492,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "OBJECT",
-                "name" : "Concept",
+                "name" : "ProductItem",
                 "ofType" : null
               }
             }
@@ -10517,7 +10517,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "ModelConceptFilterInput",
+        "name" : "ModelProductItemFilterInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -10555,7 +10555,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptFilterInput",
+              "name" : "ModelProductItemFilterInput",
               "ofType" : null
             }
           },
@@ -10568,7 +10568,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptFilterInput",
+              "name" : "ModelProductItemFilterInput",
               "ofType" : null
             }
           },
@@ -10578,7 +10578,7 @@
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
-            "name" : "ModelConceptFilterInput",
+            "name" : "ModelProductItemFilterInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -11625,7 +11625,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "createConcept",
+          "name" : "createProductItem",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -11635,7 +11635,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "CreateConceptInput",
+                "name" : "CreateProductItemInput",
                 "ofType" : null
               }
             },
@@ -11645,20 +11645,20 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptConditionInput",
+              "name" : "ModelProductItemConditionInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Concept",
+            "name" : "ProductItem",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "updateConcept",
+          "name" : "updateProductItem",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -11668,7 +11668,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "UpdateConceptInput",
+                "name" : "UpdateProductItemInput",
                 "ofType" : null
               }
             },
@@ -11678,20 +11678,20 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptConditionInput",
+              "name" : "ModelProductItemConditionInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Concept",
+            "name" : "ProductItem",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "deleteConcept",
+          "name" : "deleteProductItem",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -11701,7 +11701,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "DeleteConceptInput",
+                "name" : "DeleteProductItemInput",
                 "ofType" : null
               }
             },
@@ -11711,14 +11711,14 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptConditionInput",
+              "name" : "ModelProductItemConditionInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Concept",
+            "name" : "ProductItem",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -15263,7 +15263,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "CreateConceptInput",
+        "name" : "CreateProductItemInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -15307,7 +15307,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "ModelConceptConditionInput",
+        "name" : "ModelProductItemConditionInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -15336,7 +15336,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptConditionInput",
+              "name" : "ModelProductItemConditionInput",
               "ofType" : null
             }
           },
@@ -15349,7 +15349,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelConceptConditionInput",
+              "name" : "ModelProductItemConditionInput",
               "ofType" : null
             }
           },
@@ -15359,7 +15359,7 @@
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
-            "name" : "ModelConceptConditionInput",
+            "name" : "ModelProductItemConditionInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -15369,7 +15369,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "UpdateConceptInput",
+        "name" : "UpdateProductItemInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -15409,7 +15409,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "DeleteConceptInput",
+        "name" : "DeleteProductItemInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -20617,61 +20617,61 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onCreateConcept",
+          "name" : "onCreateProductItem",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionConceptFilterInput",
+              "name" : "ModelSubscriptionProductItemFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Concept",
+            "name" : "ProductItem",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onUpdateConcept",
+          "name" : "onUpdateProductItem",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionConceptFilterInput",
+              "name" : "ModelSubscriptionProductItemFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Concept",
+            "name" : "ProductItem",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onDeleteConcept",
+          "name" : "onDeleteProductItem",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionConceptFilterInput",
+              "name" : "ModelSubscriptionProductItemFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Concept",
+            "name" : "ProductItem",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -22798,7 +22798,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "ModelSubscriptionConceptFilterInput",
+        "name" : "ModelSubscriptionProductItemFilterInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -22836,7 +22836,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionConceptFilterInput",
+              "name" : "ModelSubscriptionProductItemFilterInput",
               "ofType" : null
             }
           },
@@ -22849,7 +22849,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionConceptFilterInput",
+              "name" : "ModelSubscriptionProductItemFilterInput",
               "ofType" : null
             }
           },
@@ -25471,12 +25471,28 @@
         "onFragment" : false,
         "onField" : true
       }, {
-        "name" : "aws_subscribe",
-        "description" : "Tells the service which mutation triggers this subscription.",
+        "name" : "aws_iam",
+        "description" : "Tells the service this field/object has access authorized by sigv4 signing.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_api_key",
+        "description" : "Tells the service this field/object has access authorized by an API key.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_auth",
+        "description" : "Directs the schema to enforce authorization on a field",
         "locations" : [ "FIELD_DEFINITION" ],
         "args" : [ {
-          "name" : "mutations",
-          "description" : "List of mutations which will trigger this subscription when they are called.",
+          "name" : "cognito_groups",
+          "description" : "List of cognito user pool groups which have access on this field",
           "type" : {
             "kind" : "LIST",
             "name" : null,
@@ -25488,22 +25504,6 @@
           },
           "defaultValue" : null
         } ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_oidc",
-        "description" : "Tells the service this field/object has access authorized by an OIDC token.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_api_key",
-        "description" : "Tells the service this field/object has access authorized by an API key.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false
@@ -25533,6 +25533,48 @@
         "onFragment" : false,
         "onField" : false
       }, {
+        "name" : "aws_cognito_user_pools",
+        "description" : "Tells the service this field/object has access authorized by a Cognito User Pools token.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ {
+          "name" : "cognito_groups",
+          "description" : "List of cognito user pool groups which have access on this field",
+          "type" : {
+            "kind" : "LIST",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "String",
+              "ofType" : null
+            }
+          },
+          "defaultValue" : null
+        } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_subscribe",
+        "description" : "Tells the service which mutation triggers this subscription.",
+        "locations" : [ "FIELD_DEFINITION" ],
+        "args" : [ {
+          "name" : "mutations",
+          "description" : "List of mutations which will trigger this subscription when they are called.",
+          "type" : {
+            "kind" : "LIST",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "String",
+              "ofType" : null
+            }
+          },
+          "defaultValue" : null
+        } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
         "name" : "aws_publish",
         "description" : "Tells the service which subscriptions will be published to when this mutation is called. This directive is deprecated use @aws_susbscribe directive instead.",
         "locations" : [ "FIELD_DEFINITION" ],
@@ -25554,52 +25596,10 @@
         "onFragment" : false,
         "onField" : false
       }, {
-        "name" : "aws_iam",
-        "description" : "Tells the service this field/object has access authorized by sigv4 signing.",
+        "name" : "aws_oidc",
+        "description" : "Tells the service this field/object has access authorized by an OIDC token.",
         "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
         "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_auth",
-        "description" : "Directs the schema to enforce authorization on a field",
-        "locations" : [ "FIELD_DEFINITION" ],
-        "args" : [ {
-          "name" : "cognito_groups",
-          "description" : "List of cognito user pool groups which have access on this field",
-          "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            }
-          },
-          "defaultValue" : null
-        } ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_cognito_user_pools",
-        "description" : "Tells the service this field/object has access authorized by a Cognito User Pools token.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ {
-          "name" : "cognito_groups",
-          "description" : "List of cognito user pool groups which have access on this field",
-          "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            }
-          },
-          "defaultValue" : null
-        } ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false

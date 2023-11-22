@@ -15,7 +15,6 @@ import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
 import { XIcon } from "components/common/icons/XIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
-import { AlertCircleIcon } from "components/common/icons/AlertCircleIcon";
 
 export default function ProjectDetails() {
   const { projectData } = useProjectData();
@@ -153,7 +152,7 @@ export default function ProjectDetails() {
                       {progressObj.sectionsStatus.validationsComplete ? (
                         <CheckIcon className="text-success" />
                       ) : (
-                        <HourGlassIcon className="text-primary" />
+                        <HourGlassIcon className="text-danger" />
                       )}
                       ) Validación de documentos
                     </p>
@@ -164,7 +163,7 @@ export default function ProjectDetails() {
                       {progressObj.sectionsStatus.technicalInfo ? (
                         <CheckIcon className="text-success" />
                       ) : (
-                        <HourGlassIcon className="text-primary" />
+                        <HourGlassIcon className="text-danger" />
                       )}
                       ) Oficialización de información Técnica
                     </p>
@@ -175,7 +174,7 @@ export default function ProjectDetails() {
                       {progressObj.sectionsStatus.financialInfo ? (
                         <CheckIcon className="text-success" />
                       ) : (
-                        <HourGlassIcon className="text-primary" />
+                        <HourGlassIcon className="text-danger" />
                       )}
                       ) Oficialización de información Financiera
                     </p>
@@ -211,7 +210,7 @@ export default function ProjectDetails() {
             (progressObj?.sectionsStatus.projectInfo ? (
               <CheckIcon className="text-success" />
             ) : (
-              <AlertCircleIcon className="text-danger" />
+              <HourGlassIcon className="text-danger" />
             ))
           }
         />
@@ -225,7 +224,7 @@ export default function ProjectDetails() {
             (progressObj?.sectionsStatus.geodataInfo ? (
               <CheckIcon className="text-success" />
             ) : (
-              <AlertCircleIcon className="text-danger" />
+              <HourGlassIcon className="text-danger" />
             ))
           }
         />
@@ -239,7 +238,7 @@ export default function ProjectDetails() {
             (progressObj?.sectionsStatus.ownersInfo ? (
               <CheckIcon className="text-success" />
             ) : (
-              <AlertCircleIcon className="text-danger" />
+              <HourGlassIcon className="text-danger" />
             ))
           }
         />

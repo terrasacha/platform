@@ -1696,9 +1696,11 @@ export const onDeleteCategory = /* GraphQL */ `
     }
   }
 `;
-export const onCreateConcept = /* GraphQL */ `
-  subscription OnCreateConcept($filter: ModelSubscriptionConceptFilterInput) {
-    onCreateConcept(filter: $filter) {
+export const onCreateProductItem = /* GraphQL */ `
+  subscription OnCreateProductItem(
+    $filter: ModelSubscriptionProductItemFilterInput
+  ) {
+    onCreateProductItem(filter: $filter) {
       id
       name
       type
@@ -1708,9 +1710,11 @@ export const onCreateConcept = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateConcept = /* GraphQL */ `
-  subscription OnUpdateConcept($filter: ModelSubscriptionConceptFilterInput) {
-    onUpdateConcept(filter: $filter) {
+export const onUpdateProductItem = /* GraphQL */ `
+  subscription OnUpdateProductItem(
+    $filter: ModelSubscriptionProductItemFilterInput
+  ) {
+    onUpdateProductItem(filter: $filter) {
       id
       name
       type
@@ -1720,9 +1724,11 @@ export const onUpdateConcept = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteConcept = /* GraphQL */ `
-  subscription OnDeleteConcept($filter: ModelSubscriptionConceptFilterInput) {
-    onDeleteConcept(filter: $filter) {
+export const onDeleteProductItem = /* GraphQL */ `
+  subscription OnDeleteProductItem(
+    $filter: ModelSubscriptionProductItemFilterInput
+  ) {
+    onDeleteProductItem(filter: $filter) {
       id
       name
       type

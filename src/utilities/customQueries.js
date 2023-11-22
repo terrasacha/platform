@@ -252,3 +252,24 @@ export const listCategories = /* GraphQL */ `
     }
   }
 `;
+
+export const listProductItems = /* GraphQL */ `
+  query ListProductItems(
+    $filter: ModelProductItemFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProductItems(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        type
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;

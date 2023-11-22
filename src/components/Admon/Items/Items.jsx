@@ -6,16 +6,16 @@ import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 // GraphQL
 import { API, graphqlOperation } from "aws-amplify";
 import {
-  createConcept,
-  updateConcept,
+  createProductItem,
+  updateProductItem,
 } from "../../../graphql/mutations";
-import { listConcepts } from "../../../graphql/queries";
+import { listProductItems } from "../../../graphql/queries";
 import {
-  onCreateConcept,
-  onUpdateConcept,
+  onCreateProductItem,
+  onUpdateProductItem,
 } from "../../../graphql/subscriptions";
 
-class Concepts extends Component {
+class Items extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,29 +30,29 @@ class Concepts extends Component {
   }
 
   componentDidMount = async () => {
-    await this.loadConcepts();
+    await this.loadItems();
 
     // Subscriptions
     // OnCreate Category
     this.createCategoryListener = API.graphql(
-      graphqlOperation(onCreateConcept)
+      graphqlOperation(onCreateProductItem)
     ).subscribe({
       next: async (createdCategoryData) => {
-        await this.loadConcepts();
+        await this.loadItems();
       },
     });
 
     // OnUpdate Category
     this.updateCategoryListener = API.graphql(
-      graphqlOperation(onUpdateConcept)
+      graphqlOperation(onUpdateProductItem)
     ).subscribe({
       next: (updatedCategoryData) => {
         let tempCategorys = this.state.categorys.map((mapCategory) => {
           if (
-            updatedCategoryData.value.data.onUpdateConcept.id ===
+            updatedCategoryData.value.data.onUpdateProductItem.id ===
             mapCategory.id
           ) {
-            return updatedCategoryData.value.data.onUpdateConcept;
+            return updatedCategoryData.value.data.onUpdateProductItem;
           } else {
             return mapCategory;
           }
@@ -65,15 +65,15 @@ class Concepts extends Component {
   };
   componentWillUnmount() {}
 
-  async loadConcepts() {
-    const listConceptsResult = await API.graphql(
-      graphqlOperation(listConcepts)
+  async loadItems() {
+    const listProductItemsResult = await API.graphql(
+      graphqlOperation(listProductItems)
     );
-    listConceptsResult.data.listConcepts.items.sort((a, b) =>
+    listProductItemsResult.data.listProductItems.items.sort((a, b) =>
       a.type > b.type ? 1 : -1
     );
     this.setState({
-      categorys: listConceptsResult.data.listConcepts.items,
+      categorys: listProductItemsResult.data.listProductItems.items,
     });
   }
 
@@ -100,7 +100,7 @@ class Concepts extends Component {
 
     if (this.state.CRUDButtonName === "CREATE") {
       const resposne = await API.graphql(
-        graphqlOperation(createConcept, { input: tempNewCategory })
+        graphqlOperation(createProductItem, { input: tempNewCategory })
       );
       console.log(tempNewCategory)
       console.log(resposne)
@@ -114,7 +114,7 @@ class Concepts extends Component {
         type: this.state.newCategory.type
       };
       await API.graphql(
-        graphqlOperation(updateConcept, { input: tempNewCategory })
+        graphqlOperation(updateProductItem, { input: tempNewCategory })
       );
       await this.cleanCategoryOnCreate();
     }
@@ -240,4 +240,4 @@ class Concepts extends Component {
   }
 }
 
-export default Concepts;
+export default Items;
