@@ -183,7 +183,7 @@ class Items extends Component {
       <Container style={{ display: "flex", flexDirection: "column" }}>
         <Container>
           <h2>
-            {CRUDButtonName} Categoría: {newCategory.name}
+            {CRUDButtonName} Items de proyecto: {newCategory.name}
           </h2>
           <Form>
             <Row className="mb-2">
