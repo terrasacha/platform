@@ -7,6 +7,7 @@ import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 import { API, graphqlOperation } from "aws-amplify";
 import {
   createProductItem,
+  updateProductFeature,
   updateProductItem,
 } from "../../../graphql/mutations";
 import { listProductItems } from "../../../graphql/queries";
@@ -14,6 +15,8 @@ import {
   onCreateProductItem,
   onUpdateProductItem,
 } from "../../../graphql/subscriptions";
+import { getFilteredProductFeatures } from "services/getFilteredProductFeatures";
+import { getProductItemName } from "services/getProductItemName";
 
 class Items extends Component {
   constructor(props) {
@@ -95,15 +98,25 @@ class Items extends Component {
     }
   }
 
+  filterByConcept = (productFeatures, concept) => {
+    return productFeatures.filter(objeto => {
+      // Parsear el valor del atributo "value" como un array de objetos
+      const valores = JSON.parse(objeto.value);
+  
+      // Verificar si alguno de los objetos tiene el concepto buscado
+      return valores.some(valor => valor.CONCEPTO.replace(/\t/g, '') === concept);
+    });
+  }
+
   async handleCRUDCategory() {
     let tempNewCategory = this.state.newCategory;
 
     if (this.state.CRUDButtonName === "CREATE") {
-      const resposne = await API.graphql(
+      const response = await API.graphql(
         graphqlOperation(createProductItem, { input: tempNewCategory })
       );
-      console.log(tempNewCategory)
-      console.log(resposne)
+      console.log(tempNewCategory);
+      console.log(response);
       await this.cleanCategoryOnCreate();
     }
 
@@ -111,12 +124,51 @@ class Items extends Component {
       let tempNewCategory = {
         id: this.state.newCategory.id,
         name: this.state.newCategory.name,
-        type: this.state.newCategory.type
+        type: this.state.newCategory.type,
       };
+      const oldName = await getProductItemName(tempNewCategory.id)
       await API.graphql(
         graphqlOperation(updateProductItem, { input: tempNewCategory })
       );
       await this.cleanCategoryOnCreate();
+
+      // Update al product features related to GLOBAL_INGRESOS_POR_PRODUCTO	GLOBAL_INDICADORES_FINANCIEROS GLOBAL_INDICADORES_FINANCIEROS_TOKEN GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO
+      let featureID
+      if (tempNewCategory.type === "Ingresos por producto") {
+        featureID = "GLOBAL_INGRESOS_POR_PRODUCTO"
+      }
+      if (tempNewCategory.type === "Productos del ciclo del proyecto") {
+        featureID = "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"
+      }
+      if (tempNewCategory.type === "Indicadores financieros (Proyecto)") {
+        featureID = "GLOBAL_INDICADORES_FINANCIEROS"
+      }
+      if (tempNewCategory.type === "Indicadores financieros (Token)") {
+        featureID = "GLOBAL_INDICADORES_FINANCIEROS_TOKEN"
+      }
+
+      const productFeatures = await getFilteredProductFeatures(featureID)
+      const productFeaturesFiltered = this.filterByConcept(productFeatures, oldName)
+      productFeaturesFiltered.forEach(async (pf) => {
+        let pfValue = JSON.parse(pf.value);
+
+        pfValue.forEach(valor => {
+          if (valor.CONCEPTO.replace(/\t/g, '') === oldName) {
+            valor.CONCEPTO = tempNewCategory.name;
+          }
+        });
+
+        let tempUpdatedProductFeature = {
+          id: pf.id,
+          value: JSON.stringify(pfValue),
+        };
+        await API.graphql(
+          graphqlOperation(updateProductFeature, { input: tempUpdatedProductFeature })
+        );
+      });
+      console.log("oldName", oldName)
+      console.log("productFeatures", productFeatures)
+      console.log("productFeaturesFiltered", productFeaturesFiltered)
     }
   }
 
