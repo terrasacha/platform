@@ -12,13 +12,15 @@ import { Button } from "react-bootstrap";
 import { notify } from "utilities/notify";
 import { fetchProjectDataByProjectID } from "../api";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
+import useProjectItems from "hooks/useProjectItems";
 
 export default function ProjectSettings() {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
   const { projectData, handleUpdateContextProjectData } = useProjectData();
-  
-  console.log(projectData, 'projectData');
+  const { projectItems } = useProjectItems();
+
+  console.log(projectData, "projectData");
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((data) => {
@@ -32,6 +34,7 @@ export default function ProjectSettings() {
       .catch((error) => setValidatorSubRole(undefined));
   }, []);
 
+  console.log("projectItems", projectItems);
   const handleSetValidatorDataComplete = async (item) => {
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
@@ -99,28 +102,35 @@ export default function ProjectSettings() {
         type: "success",
       });
     }
-
   };
   const checkIfIsEditable = (type) => {
-    switch(type){
-      case 'technical':
-        if(projectData.isTechnicalFreeze){
-          return true
-        }else{
-          if(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'technical') return false
+    switch (type) {
+      case "technical":
+        if (projectData.isTechnicalFreeze) {
+          return true;
+        } else {
+          if (
+            validatorSubRole === "fullaccessvalidator" ||
+            validatorSubRole === "technical"
+          )
+            return false;
         }
-        break
-      case 'financial':
-        if(projectData.isFinancialFreeze){
-          return true
-        }else{
-          if(validatorSubRole === 'fullaccessvalidator' || validatorSubRole === 'financial') return false
+        break;
+      case "financial":
+        if (projectData.isFinancialFreeze) {
+          return true;
+        } else {
+          if (
+            validatorSubRole === "fullaccessvalidator" ||
+            validatorSubRole === "financial"
+          )
+            return false;
         }
-        break
+        break;
       default:
-        return true
+        return true;
     }
-  } 
+  };
   return (
     <div className="row row-cols-1  g-4">
       <div className="col">
@@ -148,8 +158,8 @@ export default function ProjectSettings() {
         <>
           <div className="col">
             <DescriptionValidator
-              canEdit={checkIfIsEditable('technical')}
-                /* (validatorSubRole === undefined
+              canEdit={checkIfIsEditable("technical")}
+              /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
                 !projectData.isTechnicalFreeze */
@@ -160,7 +170,8 @@ export default function ProjectSettings() {
               title={"Ingresos por producto"}
               fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
               financialInfoType={"revenuesByProduct"}
-              canEdit={checkIfIsEditable('technical')}
+              canEdit={checkIfIsEditable("technical")}
+              conceptOptions={projectItems["Ingresos por producto"]}
             />
           </div>
           <div className="col">
@@ -168,15 +179,17 @@ export default function ProjectSettings() {
               title={"Productos del ciclo del proyecto"}
               fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
               financialInfoType={"productsOfCycleProject"}
-              canEdit={checkIfIsEditable('technical')}
+              canEdit={checkIfIsEditable("technical")}
+              conceptOptions={projectItems["Productos del ciclo del proyecto"]}
             />
           </div>
           <div className="col">
-            <FinancialIndicators
+            <GenericInputTable
               title={"Indicadores financieros (Proyecto)"}
               fID={"GLOBAL_INDICADORES_FINANCIEROS"}
               financialInfoType={"financialIndicators"}
-              canEdit={checkIfIsEditable('technical')}
+              canEdit={checkIfIsEditable("technical")}
+              conceptOptions={projectItems["Indicadores financieros (Proyecto)"]}
             />
           </div>
           <div className="d-flex justify-content-center mb-2">
@@ -193,25 +206,23 @@ export default function ProjectSettings() {
         <>
           <div className="col">
             <TokenSettingsCard
-              canEdit={checkIfIsEditable('financial')}
-                /* (validatorSubRole === undefined
+              canEdit={checkIfIsEditable("financial")}
+              /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
                 projectData.isFinancialFreeze */
             />
           </div>
           <div className="col">
-            <CashFlowSettings
-              canEdit={checkIfIsEditable('financial')
-              }
-            />
+            <CashFlowSettings canEdit={checkIfIsEditable("financial")} />
           </div>
           <div className="col">
-            <FinancialIndicators
+            <GenericInputTable
               title={"Indicadores financieros (Token)"}
               fID={"GLOBAL_INDICADORES_FINANCIEROS_TOKEN"}
               financialInfoType={"financialIndicatorsToken"}
-              canEdit={checkIfIsEditable('financial')}
+              canEdit={checkIfIsEditable("financial")}
+              conceptOptions={projectItems["Indicadores financieros (Token)"]}
             />
           </div>
           <div className="d-flex justify-content-center mb-2">

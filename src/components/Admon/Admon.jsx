@@ -7,6 +7,7 @@ import { Alert, Col, Container, Row } from 'react-bootstrap';
 import UserProducts from './UserProducts/UserProducts';
 import AdmonProfile from './AdmonProfile/AdmonProfile';
 import Categorys from './Categorys/Categorys';
+import Items from './Items/Items';
 import Configure from './Configure/Configure';
 import Documents from './Documents/Documents';
 import Features from './Features/Features';
@@ -106,6 +107,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: true,
                 isShowNotAuthorize: false,
@@ -123,6 +125,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: true,
@@ -142,6 +145,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: true,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -160,6 +164,26 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: true,
+                isShowItems: false,
+                isShowFeatures: false,
+                isShowAdmonProfile: false,
+                isShowNotAuthorize: false,
+                isShowUOM: false,
+                isShowFormulas:false,
+                isShowValidators: false,
+                isShowResults: false,
+                isShowDocuments: false,
+                isShowAProducts: false,
+                isShowConfigure: false,
+                isShowAPF: false
+            })
+        }
+
+        if (pRequest === 'items') {
+            this.setState({
+                isShowProducts: false,
+                isShowCategorys: false,
+                isShowItems: true,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -177,6 +201,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: true,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -194,6 +219,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -211,6 +237,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -228,6 +255,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -245,6 +273,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -262,6 +291,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -280,6 +310,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -297,6 +328,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -314,6 +346,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -331,6 +364,7 @@ export default class Admon extends Component {
             this.setState({
                 isShowProducts: false,
                 isShowCategorys: false,
+                isShowItems: false,
                 isShowFeatures: false,
                 isShowAdmonProfile: false,
                 isShowNotAuthorize: false,
@@ -390,6 +424,7 @@ export default class Admon extends Component {
     render() {
         let {isShowProducts,
             isShowCategorys,
+            isShowItems,
             isShowFeatures,
             isShowAdmonProfile,
             isShowNotAuthorize,
@@ -433,6 +468,12 @@ export default class Admon extends Component {
                         />}
                     {isShowCategorys && 
                         <Categorys 
+                        user={this.state.user}
+                        changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                        handleCUUser={this.handleCUUser}
+                    />}
+                    {isShowItems && 
+                        <Items 
                         user={this.state.user}
                         changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                         handleCUUser={this.handleCUUser}

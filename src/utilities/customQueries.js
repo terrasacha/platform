@@ -204,7 +204,6 @@ export const getUser = /* GraphQL */ `
   }
 `;
 
-
 export const getUserProjects = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
@@ -230,7 +229,6 @@ export const getUserProjects = /* GraphQL */ `
   }
 `;
 
-
 export const listCategories = /* GraphQL */ `
   query ListCategories(
     $filter: ModelCategoryFilterInput
@@ -249,6 +247,59 @@ export const listCategories = /* GraphQL */ `
         updatedAt
       }
       nextToken
+    }
+  }
+`;
+
+export const listProductItems = /* GraphQL */ `
+  query ListProductItems(
+    $filter: ModelProductItemFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProductItems(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        type
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+
+export const getFeature = /* GraphQL */ `
+  query GetFeature($id: ID!) {
+    getFeature(id: $id) {
+      id
+      name
+      productFeatures {
+        items {
+          id
+          value
+          productID
+        }
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+
+export const getProductItem = /* GraphQL */ `
+  query GetProductItem($id: ID!) {
+    getProductItem(id: $id) {
+      id
+      name
+      type
+      createdAt
+      updatedAt
+      __typename
     }
   }
 `;

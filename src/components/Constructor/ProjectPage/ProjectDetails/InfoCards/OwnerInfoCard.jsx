@@ -33,6 +33,7 @@ export default function OwnerInfoCard(props) {
 
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
   const [executedOnce, setExecutedOnce] = useState(false);
+  const [projectOwnersPfID, setProjectOwnersPfID] = useState(null);
 
   useEffect(() => {
     if (projectData && projectData.projectOwners && !executedOnce) {
@@ -44,6 +45,7 @@ export default function OwnerInfoCard(props) {
           };
         }) || [];
 
+      setProjectOwnersPfID(projectData.projectOwners.pfID);
       setTokenHistoricalData(ownersData);
       setExecutedOnce(true);
     }
@@ -337,9 +339,9 @@ export default function OwnerInfoCard(props) {
           : item
       );
 
-      if (projectData.projectOwners.pfID) {
+      if (projectOwnersPfID) {
         let tempProductFeature = {
-          id: projectData.projectOwners.pfID,
+          id: projectOwnersPfID,
           value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
         };
         const response = await API.graphql(
@@ -359,6 +361,8 @@ export default function OwnerInfoCard(props) {
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
 
+        setProjectOwnersPfID(response.data.createProductFeature.id)
+
         if (!response.data.createProductFeature) error = true;
       }
     } else {
@@ -370,7 +374,7 @@ export default function OwnerInfoCard(props) {
     }
 
     if (!error) {
-      setProgressChange(true)
+      setProgressChange(true);
       notify({
         msg: "Propietarios guardados exitosamente",
         type: "success",
@@ -445,9 +449,9 @@ export default function OwnerInfoCard(props) {
     );
     setTokenHistoricalData(tempTokenHistoricalData);
 
-    if (projectData.projectOwners.pfID) {
+    if (projectOwnersPfID) {
       let tempProductFeature = {
-        id: projectData.projectOwners.pfID,
+        id: projectOwnersPfID,
         value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
       };
       const response = await API.graphql(
@@ -466,12 +470,13 @@ export default function OwnerInfoCard(props) {
       const response = await API.graphql(
         graphqlOperation(createProductFeature, { input: tempProductFeature })
       );
+      setProjectOwnersPfID(response.data.createProductFeature.id)
 
       if (!response.data.createProductFeature) error = true;
     }
 
     if (!error) {
-      setProgressChange(true)
+      setProgressChange(true);
       notify({
         msg: "Valores borrados exitosamente",
         type: "success",
@@ -496,7 +501,11 @@ export default function OwnerInfoCard(props) {
 
   return (
     <Card className={className}>
-      <Card.Header title="Información de titulares" sep={true} tooltip={tooltip}/>
+      <Card.Header
+        title="Información de titulares"
+        sep={true}
+        tooltip={tooltip}
+      />
       <Card.Body>
         {/* <div className="row">
           <div className="col-12 col-md-6">
