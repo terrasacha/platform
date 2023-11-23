@@ -7,13 +7,9 @@ import { updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { validateProjectFeatures } from './validateProjectFeatures';
 import { useAuth } from "context/AuthContext";
+import { CheckIcon } from "components/common/icons/CheckIcon";
 
 export default function FinanceCard(props) {
-	const {
-		className,
-		projectFiles,
-		projectFeatures,
-	} = props;
 
 	const { user } = useAuth();
 
@@ -27,6 +23,9 @@ export default function FinanceCard(props) {
 	const totalOwner = projectData.projectFeatures.find(
 		(item) => item.featureID === "GLOBAL_TOKEN_TOTAL_AMOUNT"
 	);
+	const [newProduct, setNewProduct] = useState(false);
+	const [newProductFeature, setNewProductFeature] = useState(null);
+
 
 	const handleBotoncheckpostulant = async () => {
 		const newProductFeature = projectData.projectFeatures.find(
@@ -41,6 +40,18 @@ export default function FinanceCard(props) {
 		}
 		setValidadorShow(false);
 	};
+	useEffect(() => {
+		const newProductFeature = projectData.projectFeatures.find(
+			(item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
+		);
+
+		const foundFeature = newProductFeature.value;
+
+		setNewProductFeature(foundFeature);
+		setNewProduct(!!foundFeature);
+
+	}, []);
+
 	return isValid && validadorShow ? (
 		<>
 			{user?.id && projectData.projectPostulant?.id.includes(user.id) && (
@@ -69,6 +80,12 @@ export default function FinanceCard(props) {
 	) :
 		<>
 			<div className="container">
+				{newProduct && (
+					<div className="flex">
+						<CheckIcon />
+						<p>La información financiera ya fue leída y aceptada correctamente</p>
+					</div>
+				)}
 				<div className="row">
 					<DistributionToken infoTable={dataToken} totalOwner={totalOwner} />
 					<CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />

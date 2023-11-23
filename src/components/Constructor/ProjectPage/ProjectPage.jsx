@@ -19,11 +19,9 @@ import { useAuth } from "context/AuthContext";
 import { fetchProjectDataByProjectID } from "./api";
 import { formatNumberWithThousandsSeparator } from "./utils";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
-import { Auth } from "aws-amplify";
 import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
-import { CheckIcon } from "components/common/icons/CheckIcon";
 import { AlertCircleIcon } from "components/common/icons/AlertCircleIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 // Mostrar si tiene asignado validador
