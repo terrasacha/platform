@@ -9,6 +9,14 @@ body {
         height: 200px;
         overflow-y: scroll;
 }
+.accept{
+    background: #198754;
+    padding: 5px;
+    border-radius: 9px;
+    margin: 6px 1px;
+    color: #fff;
+    height: 36px;
+}
 .p-0.card img {
         border-radius: 12px 12px 0px 0px;
     }

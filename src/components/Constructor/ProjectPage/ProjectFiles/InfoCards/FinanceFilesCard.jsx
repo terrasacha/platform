@@ -81,9 +81,9 @@ export default function FinanceCard(props) {
 		<>
 			<div className="container">
 				{newProduct && (
-					<div className="flex">
-						<CheckIcon />
-						<p>La información financiera ya fue leída y aceptada correctamente</p>
+					<div className="row accept">
+						<CheckIcon className="col col-1" />
+						<p className="col col-11">La información financiera ya fue leída y aceptada correctamente</p>
 					</div>
 				)}
 				<div className="row">
