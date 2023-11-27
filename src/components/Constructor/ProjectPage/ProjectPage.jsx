@@ -34,6 +34,8 @@ export default function ProjectPage() {
   const [progressObj, setProgressObj] = useState(null);
   const [activeSection, setActiveSection] = useState("details");
   const [autorizedUser, setAutorizedUser] = useState(false);
+  const [isPostulant, setIsPostulant] = useState(false);
+  const [isVerifier, setIsVerifier] = useState(false);
 
   const projectStatusMapper = {
     draft: "En borrador",
@@ -68,6 +70,8 @@ export default function ProjectPage() {
           ? [...verifiers, postulant]
           : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
+      setIsPostulant(postulant === user.id);
+      setIsVerifier(verifiers.includes(user.id));
     }
   }, [projectData]);
 
@@ -189,11 +193,12 @@ export default function ProjectPage() {
                 }}
               >
                 Detalles
-                {autorizedUser && (!progressObj?.sectionsStatus.projectInfo ||
-                  !progressObj?.sectionsStatus.geodataInfo ||
-                  !progressObj?.sectionsStatus.ownersInfo) && (
-                  <HourGlassIcon className="text-danger ms-2" />
-                )}
+                {(autorizedUser || isPostulant) &&
+                  (!progressObj?.sectionsStatus.projectInfo ||
+                    !progressObj?.sectionsStatus.geodataInfo ||
+                    !progressObj?.sectionsStatus.ownersInfo) && (
+                    <HourGlassIcon className="text-danger ms-2" />
+                  )}
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -205,13 +210,13 @@ export default function ProjectPage() {
                 }}
               >
                 Validación
-                {autorizedUser && (!progressObj?.sectionsStatus.validationsComplete) && (
-                  <HourGlassIcon className="text-danger ms-2" />
-                )}
+                {(autorizedUser || isPostulant) &&
+                  !progressObj?.sectionsStatus.validationsComplete && (
+                    <HourGlassIcon className="text-danger ms-2" />
+                  )}
               </Nav.Link>
             </Nav.Item>
-            {(projectData.projectVerifiers?.includes(user?.id) ||
-              user?.role === "admon") && (
+            {(isVerifier || user?.role === "admon") && (
               <>
                 <Nav.Item>
                   <Nav.Link
@@ -233,30 +238,31 @@ export default function ProjectPage() {
                     }}
                   >
                     Configuración
-                    {autorizedUser && (!progressObj?.sectionsStatus.technicalInfo || !progressObj?.sectionsStatus.financialInfo) && (
-                      <HourGlassIcon className="text-danger ms-2" />
-                    )}
+                    {autorizedUser &&
+                      (!progressObj?.sectionsStatus.technicalInfo ||
+                        !progressObj?.sectionsStatus.financialInfo) && (
+                        <HourGlassIcon className="text-danger ms-2" />
+                      )}
                   </Nav.Link>
                 </Nav.Item>
               </>
             )}
-            {user?.id &&
-              (projectData.projectPostulant?.id.includes(user.id) ||
-                projectData.projectVerifiers?.includes(user.id)) && (
-                <>
-                  <Nav.Item>
-                    <Nav.Link
-                      href="#finance"
-                      onClick={() => setActiveSection("finance")}
-                    >
-                      Finanzas
-                      {autorizedUser && (!progressObj?.sectionsStatus.ownerAcceptsConditions) && (
+            {user?.id && (isPostulant || isVerifier) && (
+              <>
+                <Nav.Item>
+                  <Nav.Link
+                    href="#finance"
+                    onClick={() => setActiveSection("finance")}
+                  >
+                    Finanzas
+                    {(autorizedUser || isPostulant) &&
+                      !progressObj?.sectionsStatus.ownerAcceptsConditions && (
                         <HourGlassIcon className="text-danger ms-2" />
                       )}
-                    </Nav.Link>
-                  </Nav.Item>
-                </>
-              )}
+                  </Nav.Link>
+                </Nav.Item>
+              </>
+            )}
           </Nav>
         </div>
         {activeSection === "details" && <ProjectDetails />}
@@ -264,8 +270,7 @@ export default function ProjectPage() {
         {activeSection === "files" && <ProjectFiles />}
         {activeSection === "finance" && <FinanceCard />}
         {activeSection === "settings" &&
-          (projectData?.projectVerifiers.includes(user?.id) ||
-            user?.role === "admon") && <ProjectSettings />}
+          (isVerifier || user?.role === "admon") && <ProjectSettings />}
       </div>
       <ToastContainer></ToastContainer>
     </div>
