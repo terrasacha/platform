@@ -706,7 +706,7 @@ export default function ProjectInfoCard(props) {
                         <a href={planoURL} target="_blank" rel="noreferrer">
                           Ver Archivo
                         </a>
-                      ): "No se ha subido plano de predio"}
+                      ): <p className="text-danger">No se ha subido plano de predio</p>}
                       <input
                         type="file"
                         disabled={!autorizedUser}
