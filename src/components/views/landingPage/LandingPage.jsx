@@ -158,14 +158,14 @@ export default class LandingPage extends Component {
         ))}
         </Carousel> */}
         <div className={s.container}>
-          <h1 className='p-4 mx-2'>Aceleramos la
+          <h1 className='p-2 mx-2'>Aceleramos la
               transición hacia un<br></br>
               mundo de
               <strong> carbono neutral</strong></h1>
-          <p className='p-4 mx-3 w-1/2'>Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
+          <p className='p-2 mx-3 w-1/2'>Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
               fácil, rápido y seguro.</p>
           <div className='row'>
-            <div className='col p-4 mx-3'>
+            <div className='col p-2 mx-3'>
               <a className='m-2 fondo-azul btn' href='https://marketplace.suan.global/'>Ver proyectos</a>
               <a className='m-2 fondo-azul btn'href='https://platform.suan.global/login'>Tengo un proyecto</a>
             </div>
@@ -174,14 +174,14 @@ export default class LandingPage extends Component {
           </div>
         </div>
         <div className='container'>
-          <div className='row m-4 p-2'>
-            <div className='col'>
+          <div className='row m-sm-4 p-sm-2'>
+            <div className='col-sm-6'>
               <div className={s.titleContainerProducts}>
                 <h2 className='titulo-landing'>REDUCIMOS EL CO2</h2>
                  <p className='p-5'>Adquiere la capacidad de <strong>neutralizar carbono</strong>, respalda la agricultura regenerativa y genera un impacto en el que puedas confiar plenamente. Cada Tonelada está respaldada por <strong>tecnología Blockchain</strong>, y se entrega con un certificado que ofrece una transparencia total sobre el proyecto específico de eliminación de carbono.</p>
               </div>
             </div>
-            <div className='col'>
+            <div className='col-sm-6'>
               <img src={marketImage} alt="imagen plataforma" className='img-market'/>
             </div>
           </div>

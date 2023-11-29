@@ -9,7 +9,9 @@
     color: white;
     padding-left: 2%;
 }
-
+a{
+    text-decoration: none;
+}
 .container h1{
     font-family: 'Merriweather', serif;
     font-size: 3em;
@@ -99,9 +101,7 @@
     background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
 }
 @media (max-width: 600px) {
-    .container{
-        padding-top: 30%;
-    }
+
     .container h1{
         font-size: 2.2em;
     }
