@@ -71,13 +71,18 @@ export default class HeaderNavbar extends Component {
                     >
                       Proyectos Asignados
                     </Nav.Link>
+
                     {localStorage.getItem("role") ? (
-                      <button
+                      <div>
+
+                        <button
                         className={s.signing}
                         onClick={() => this.handleSignOut()}
-                      >
-                        Desconectar
-                      </button>
+                        >
+                          Desconectar
+                        </button>
+                        <button className='role'>{role}</button>
+                      </div>
                     ) : (
                       <button
                         className={s.signing}

@@ -9,6 +9,43 @@ body {
         height: 200px;
         overflow-y: scroll;
 }
+.role{
+        background-color: #1C3541;
+        color: #fff;
+        border-radius: 8px;
+        padding: 0px 13px !important;
+        text-align: center;
+        cursor: inherit !important;
+        margin-left:2rem;
+}
+.bg-porque{
+        background-color: #F4F8F9;
+}
+.titulo-landing{
+        color: #1C3541;
+}
+.titulo-azul{
+        color:#1C3541;
+}
+.btn{
+        border-radius: 10px;
+}
+.fondo-azul{
+        background:#1C3541 !important;
+        color: #fff !important;
+}
+.img-market{
+        max-width: 300px;
+        display: block;
+        margin: auto;
+}
+.btn-landing{
+        background-color: #fff;
+        color: #1C3541;
+        border-radius: 10px;
+        border: solid #1C3541;
+        padding: 5px !important;
+}
 .accept{
     background: #198754;
     padding: 5px;
@@ -17,6 +54,11 @@ body {
     color: #fff;
     height: 36px;
 }
+.bg-tecnologia{
+        background-image: url('components/views/_images/bg-platform.jpg');
+        background-repeat: no-repeat;   
+        background-size: cover;
+    }
 .p-0.card img {
         border-radius: 12px 12px 0px 0px;
     }

@@ -12,6 +12,7 @@ import HeaderNavbar from '../Navbars/HeaderNavbar'
 import Products from '../Products'
 import s from './LandingPage.module.css'
 import ProductCard from '../../productCard/ProductCard'
+import marketImage from '../_images/market.jpg';
 
 export default class LandingPage extends Component {
 
@@ -157,25 +158,126 @@ export default class LandingPage extends Component {
         ))}
         </Carousel> */}
         <div className={s.container}>
-          <h1>Aceleramos la
-              transición hacia un
+          <h1 className='p-4 mx-2'>Aceleramos la
+              transición hacia un<br></br>
               mundo de
-              carbono neutral</h1>
-          <p>Una plataforma para invertir en activos  ambientales en desarrollo ,
+              <strong> carbono neutral</strong></h1>
+          <p className='p-4 mx-3 w-1/2'>Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
               fácil, rápido y seguro.</p>
-          {/* <button>EXPLORE MARKET</button> */}
+          <div className='row'>
+            <div className='col p-4 mx-3'>
+              <a className='m-2 fondo-azul btn' href='https://marketplace.suan.global/'>Ver proyectos</a>
+              <a className='m-2 fondo-azul btn'href='https://platform.suan.global/login'>Tengo un proyecto</a>
+            </div>
+            <div className='col'>
+            </div>
+          </div>
         </div>
-        <div className={s.titleContainerProducts}>
-          <h1 className={s.title}>Proyectos que puedes apoyar</h1>
-            {/* <h3>Featured Projects</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore quidem nulla blanditiis odio dolorem exercitationem culpa nobis ea nam deleniti accusamus corporis, animi hic magnam a illum </p> */}
+        <div className='container'>
+          <div className='row m-4 p-2'>
+            <div className='col'>
+              <div className={s.titleContainerProducts}>
+                <h2 className='titulo-landing'>REDUCIMOS EL CO2</h2>
+                 <p className='p-5'>Adquiere la capacidad de <strong>neutralizar carbono</strong>, respalda la agricultura regenerativa y genera un impacto en el que puedas confiar plenamente. Cada Tonelada está respaldada por <strong>tecnología Blockchain</strong>, y se entrega con un certificado que ofrece una transparencia total sobre el proyecto específico de eliminación de carbono.</p>
+              </div>
+            </div>
+            <div className='col'>
+              <img src={marketImage} alt="imagen plataforma" className='img-market'/>
+            </div>
+          </div>
+          </div>
+          <div className='container-fluid bg-porque p-5'>
+            <div className='row m-4 p-2'>
+              <h2 className='text-center'>¿POR QUÉ SUAN?</h2>
+            </div>
+            <div className='row'>
+              <div className='col'>
+                <div >
+                  <svg className='m-auto d-block' xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M80-160v-120h80v-440q0-33 23.5-56.5T240-800h600v80H240v440h240v120H80Zm520 0q-17 0-28.5-11.5T560-200v-400q0-17 11.5-28.5T600-640h240q17 0 28.5 11.5T880-600v400q0 17-11.5 28.5T840-160H600Zm40-120h160v-280H640v280Zm0 0h160-160Z"/></svg>
+                  <h4 className='text-center titulo-azul'>Tecnología</h4>
+                  <p>Nuestra plataforma se apalanca en tecnología blockchain para lograr total transparencia en los proyectos</p>
+                </div>
+              </div>
+              <div className='col'>
+                <div >
+                <svg className='m-auto d-block' xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M480-80 120-280v-400l360-200 360 200v400L480-80ZM364-590q23-24 53-37t63-13q33 0 63 13t53 37l120-67-236-131-236 131 120 67Zm76 396v-131q-54-14-87-57t-33-98q0-11 1-20.5t4-19.5l-125-70v263l240 133Zm40-206q33 0 56.5-23.5T560-480q0-33-23.5-56.5T480-560q-33 0-56.5 23.5T400-480q0 33 23.5 56.5T480-400Zm40 206 240-133v-263l-125 70q3 10 4 19.5t1 20.5q0 55-33 98t-87 57v131Z"/></svg>
+                  <h4 className='text-center titulo-azul'>Confianza</h4>
+                  <p>Tus inversiones se verán reflejadas en tokens que con el tiempo aumentarán su valor</p>
+                </div>
+              </div>
+              <div className='col'>
+                <div >
+                <svg className='m-auto d-block' xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M280-80v-160H0l154-240H80l280-400 120 172 120-172 280 400h-74l154 240H680v160H520v-160h-80v160H280Zm389-240h145L659-560h67L600-740l-71 101 111 159h-74l103 160Zm-523 0h428L419-560h67L360-740 234-560h67L146-320Zm0 0h155-67 252-67 155-428Zm523 0H566h74-111 197-67 155-145Zm-149 80h160-160Zm201 0Z"/></svg>
+                  <h4 className='text-center titulo-azul'>Compromiso</h4>
+                  <p>Estamos comprometidos 100% con el medio ambiente</p>
+                </div>
+              </div>
+              <div className='col'>
+                <div >
+                <svg className='m-auto d-block' xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M480-100q-79 0-148-30t-120.5-81.5Q160-263 130-332t-30-148q0-79 30-148t81.5-120.5Q263-800 332-830t148-30v-100l160 160-160 160v-100q-108 0-184 76t-76 184q0 66 30.5 122.5T332-266q16-28 47.5-47.5T452-338q-3-21-8-42t-12-39q-11 9-24 14t-28 5q-33 0-56.5-23.5T300-480v-40q0-17-5.5-32T280-580q50-1 89 9 34 9 62 29.5t29 61.5q0 9-1.5 16.5T453-448q-13-10-26-18t-27-14q17 13 39 40t41 64q20-49 50-96.5t70-87.5q-23 16-44 34t-41 38q-7-11-11-24.5t-4-27.5q0-42 29-71t71-29h40q23 0 38-6t25-14q11-9 17-20 4 67-7 120-9 45-34 82.5T600-440q-15 0-28.5-4T547-455q-7 19-16 50.5T517-337q38 7 67 26t44 45q51-35 81.5-91T740-480h120q0 79-30 148t-81.5 120.5Q697-160 628-130t-148 30Z"/></svg>
+                  <h4 className='text-center titulo-azul'>Experiencia</h4>
+                  <p>Contamos con un equipo de expertos que se asegurarán de completar y calificar cada proyecto.</p>
+                </div>
+              </div>
+            </div>
+        </div>
+          <div className='container-fluid bg-tecnologia p-5'>
+            <div className='row m-4 p-2'>
+              <h2 className='text-center titulo-landing'>NUESTRA TECNOLOGÍA</h2>
+            </div>
+            <div className='row'>
+              <div className=''>
+                <div >
+                  <h4 className=''>BLOCKCHAIN</h4>
+                  <p>Revolucionamos los mercados de carbono al hacer públicas e inmutables todas las transacciones, estableciendo un estándar inigualable de transparencia. Cada proceso de eliminación de carbono se origina, rastrea y completa en la cadena de bloques.</p>
+                </div>
+              </div>
+              <div className=''>
+                <div >
+                  <h4 className=''>DRONES</h4>
+                  <p>Utilizamos drones para la revisión de los terrenos y emitir los resultados de la reducción de CO2</p>
+                </div>
+              </div>
+              <div className=''>
+                <div >
+                  <h4 className=''>PLATAFORMA SUAN</h4>
+                  <p>Ten control total de tus proyectos y de tus inversiones desde nuestra plataforma,  conecta facilmente tu wallet con nosotros y obten tus tokens de manera inmediata.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='container-fluid fondo-azul p-5'>
+            <div className='row '>
+              <div className='col'>
+                  <h2>SÉ PARTE DE NOSOTROS</h2>
+              </div>
+              <div className='col'>
+                  <button className='m-2 btn-landing'>Ver proyectos</button>
+                  <button className='m-2 btn-landing'>Tengo un proyecto</button>
+              </div>
+
+            </div>
+        </div>
+        <div className='container'>
+            <h2 className='p-4'>¿Quieres conocer más?</h2>
+              <div className='row'>
+                <div className='col'>
+                  <a className='m-auto d-block btn-landing text-center' href='https://suan-1.gitbook.io/documentacion-suan-sandbox/' target="_blank" rel='noreferrer'>
+                  ¿Como entrar?
+                  </a>
+                </div>
+                <div className='col'>
+                  <a className='m-auto d-block btn-landing text-center' href='https://suan-1.gitbook.io/documentacion-suan/' target="_blank" rel='noreferrer'>
+                  Documentación tecnica
+                  </a>
+                </div>
+                <div className='col'>
+                  <a  className='m-auto d-block btn-landing text-center' href='https://suan.global/about_us'>Conocer más</a>
+                </div>
+              </div>
         </div>
         <div  className={s.containerFeaturedProducts}>
           {this.state.productsLanding.map(product => <ProductCard product={product} urlS3Image={urlS3Image} key={product.id}/>)}
-        </div>
-        <div className={s.contactContainer}>
-            <h2>Conoce más acerca de Suan</h2>
-            <a href='https://suan.global/about_us'><button>Conocer más</button></a>
         </div>
       </div>
     )

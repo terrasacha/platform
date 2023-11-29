@@ -63,7 +63,10 @@ export default class HeaderNavbar extends Component {
               {/* <Nav.Link href="#home" onClick={() => window.location.href="/"}>Inicio</Nav.Link> */}
               {/* <Nav.Link href="#products" onClick={() => window.location.href="/products"}>Proyectos</Nav.Link> */}
               {localStorage.getItem('role')?
-              <button className={s.signing} onClick={() => this.logOut()}>Desconectar</button>:
+              <div>
+                <button className={s.signing} onClick={() => this.logOut()}>Desconectar</button>
+                <button className='role'>{role}</button>
+              </div>:
               <button className={s.signing} onClick={() => window.location.href="/login"}>Ingresar</button>
               }
             </Nav>

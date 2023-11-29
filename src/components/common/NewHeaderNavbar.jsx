@@ -98,9 +98,13 @@ export default function NewHeaderNavbar() {
                   </>
                 )}
                 {localStorage.getItem("role") ? (
-                  <button className={s.signing} onClick={() => handleSignOut()}>
-                    Desconectar
-                  </button>
+                  <div>
+                    <button className={s.signing} onClick={() => handleSignOut()}>
+                      Desconectar
+                    </button>
+                    <button className='role'>{role}</button>
+                  </div>
+
                 ) : (
                   <button
                     className={s.signing}
