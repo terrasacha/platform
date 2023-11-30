@@ -249,11 +249,11 @@ export default class LandingPage extends Component {
           <div className='container-fluid fondo-azul p-5'>
             <div className='row '>
               <div className='col'>
-                  <h2>SÉ PARTE DE NOSOTROS</h2>
+                  <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
               </div>
               <div className='col'>
-                  <button className='m-2 btn-landing'>Ver proyectos</button>
-                  <button className='m-2 btn-landing'>Tengo un proyecto</button>
+                  <button className='m-2 btn-cta'>Ver proyectos</button>
+                  <button className='m-2 btn-cta'>Tengo un proyecto</button>
               </div>
 
             </div>

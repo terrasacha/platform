@@ -6,13 +6,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 a{
-        text-decoration: none;
+        text-decoration: none !important;
 }
 .item-menu{
         color: #000 !important;
         text-decoration: none !important;
 
 }
+.btn-cta {
+        width: 200px;
+        font-weight: 600;
+        border-radius: 13px;
+        border: none;
+        padding: 6px;
+        color: #fff;
+        background: #6B8E0F;
+    }
 .text-h{
         height: 200px;
         overflow-y: scroll;
@@ -41,12 +50,18 @@ a{
 }
 .titulo-landing{
         color: #1C3541;
+        font-weight: 500;
 }
 .titulo-azul{
         color:#1C3541;
 }
 .btn{
         border-radius: 10px;
+        font-weight: 500;;
+}
+.btn:hover, .btn-landing:hover{
+        color:#6B8E0F !important; 
+        border:solid 2px #6B8E0F;
 }
 .fondo-azul{
         background:#1C3541 !important;
