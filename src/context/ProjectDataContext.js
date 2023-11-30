@@ -111,7 +111,7 @@ export function ProjectDataProvider({ children }) {
   };
 
   const handleUpdateContextProjectFile = async (docID, data) => {
-    if (projectData.projectFiles.find(item => item.id === docID)) {
+    if (projectData.projectFiles.find((item) => item.id === docID)) {
       setProjectData((prevData) => ({
         ...prevData,
         projectFiles: prevData.projectFiles.map((file) => {
@@ -131,6 +131,13 @@ export function ProjectDataProvider({ children }) {
         projectFiles: [...prevData.projectFiles, data],
       }));
     }
+  };
+
+  const handleSetContextProjectFile = async (updatedProjectFiles) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectFiles: updatedProjectFiles,
+    }));
   };
 
   const handleUpdateContextProjectTokenData = async (data) => {
@@ -181,6 +188,7 @@ export function ProjectDataProvider({ children }) {
     handleUpdateContextProjectData,
     handleUpdateContextDocumentStatus,
     handleUpdateContextProjectFile,
+    handleSetContextProjectFile,
     handleUpdateContextProjectTokenData,
     handleUpdateContextFileVerification,
     handleUpdateContextProjectInfo,
