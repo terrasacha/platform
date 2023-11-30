@@ -88,7 +88,7 @@ a{
     height: 36px;
 }
 .bg-tecnologia{
-        /*background-image: url('components/views/_images/bg-platform.jpg');*/
+        background-image: url('components/views/_images/bg-platform.jpg');
         background-repeat: no-repeat;   
         background-size: cover;
     }
