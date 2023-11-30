@@ -5,9 +5,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+a{
+        text-decoration: none;
+}
+.item-menu{
+        color: #000 !important;
+        text-decoration: none !important;
+
+}
 .text-h{
         height: 200px;
         overflow-y: scroll;
+}
+.input_login{
+        border-radius: 10px;
+}
+.btn-login{
+        border-radius: 10px;
+        background-color: #1C3541 !important;
+        color: #fff !important;
 }
 .role{
         background-color: #1C3541;
@@ -17,6 +33,8 @@ body {
         text-align: center;
         cursor: inherit !important;
         margin-left:2rem;
+        border: none;
+        box-shadow: 2px 2px #8080806e;
 }
 .bg-porque{
         background-color: #F4F8F9;

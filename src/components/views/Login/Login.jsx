@@ -222,31 +222,27 @@ export default function LogIn() {
                 <div className={s.containerLogin}>
                     <div className={s.containerCard}>
                         <div className={s.containerTitle}>
-                            <img src={LOGO} style={{width:'60px'}} alt='logo'/>
-                            <h2 className="text-center mb-4">Sign up</h2>
+                            <img src={LOGO} style={{width:'30px'}} alt='logo'/>
+                            <h2 className="text-center mb-4">Registro</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
                         </div>
                         <form className={s.inputContainer}>
                             <fieldset>
-                                <legend>User Name</legend>
-                                <input name='username' onChange={onChange} placeholder='user name' />
+                                <input name='username' onChange={onChange} placeholder='Usuario' className='input_login' />
                                 {inputError.username && <span style={{color:'red', fontSize:'.8em'}}>{inputError.username}</span>}
                             </fieldset>
                             <fieldset>
-                                <legend>Email</legend>
-                                <input type='email'name='email' onChange={onChange} placeholder='example@example.com'/>
+                                <input type='email'name='email' onChange={onChange} placeholder='example@example.com' className='input_login'/>
                             </fieldset>
                             <fieldset>
-                                <legend>Password</legend>
-                                <input name='password' type='password' onChange={onChange} placeholder='password'/>
+                                <input name='password' type='password' onChange={onChange} placeholder='contraseña' className='input_login'/>
                             </fieldset>
                             <fieldset>
-                                <legend>Confirm password</legend>
-                                <input name='confirmPassword' type='password' onChange={onChange} placeholder='confirm password'/>
+                                <input name='confirmPassword' type='password' onChange={onChange} placeholder='Confirmar Contraseña' className='input_login'/>
                             </fieldset>
                             <fieldset>
-                                <legend>Role</legend>
-                                <select name="role" onChange={onChange}>
+                                <legend>Rol</legend>
+                                <select name="role" onChange={onChange} className='input_login'>
                                     <option value="constructor">Propietario</option>
                                 </select>
                             </fieldset>
@@ -259,12 +255,12 @@ export default function LogIn() {
                                 <input type="checkbox"  name="privacy_policy" onChange={() => updateFormState(() => ({...formState, privacy_policy: !formState.privacy_policy}))}/>
                                 <label>Acepto la <a href='/privacy_policy' target="_blank">Politica de privacidad</a></label>
                             </fieldset>
-                            <button type="submit" onClick={(e) => signUp(e)} disabled={loading || !formState.terms || !formState.privacy_policy}>{loading?'Loading': 'Sign Up'}</button>
+                            <button type="submit" onClick={(e) => signUp(e)} disabled={loading || !formState.terms || !formState.privacy_policy} className='btn-login'>{loading?'Loading': 'Registrarse'}</button>
                         </form>
                         <div className={s.needAccount}>
-                            Already have an account? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
+                            ¿Ya tienes una cuenta? <span style={{cursor: 'pointer'}}onClick={() => updateFormState(() => ({
                             ...formState, formType: 'signIn'
-                        }))}>Log In</span>
+                        }))}>Ingresar</span>
                         </div>
                     </div>
                 </div>
@@ -277,13 +273,13 @@ export default function LogIn() {
                     <div className={s.containerCard}>
                             <div className={s.containerTitle}>
                                 <img src={LOGO} style={{width:'60px'}} alt='logo'/>
-                                <h2 className="text-center mb-4">Confirmation</h2>
+                                <h2 className="text-center mb-4">Confirmación</h2>
                             </div>
-                            <Alert>Verification code send to {formState.email}</Alert>
+                            <Alert>Codigo de verificación enviado a {formState.email}</Alert>
                             {error && <Alert variant="danger">{error}</Alert>}
                             <form className={s.inputContainer}>
                                 <fieldset>
-                                    <legend>Confirmation Code</legend>
+                                    <legend>Codigo de verificación</legend>
                                     <input name='authCode' onChange={onChange}/>
                                 </fieldset>
                                 <button type="submit" onClick={(e) => confirmSignUp(e)} disabled={loading}>
@@ -299,25 +295,25 @@ export default function LogIn() {
             <div className={s.containerLogin}>
                 <div className={s.containerCard}>
                     <div className={s.containerTitle}>
-                        <img src={LOGO} style={{width:'60px'}} alt='logo'/>
+                        <img src={LOGO} style={{width:'30px'}} alt='logo'/>
                         <h2 className="text-center mb-4">Inicio de sesión</h2>
                         {error && <Alert variant="danger">{error}</Alert>}
                     </div>
                     <form className={s.inputContainer}>
                         <fieldset>
-                            <legend>User Name</legend>
-                            <input name='username' onChange={onChange}/>
+                            <legend>Usuario</legend>
+                            <input name='username' onChange={onChange} className='input_login'/>
                         </fieldset>
                         <fieldset>
-                            <legend>Password</legend>
-                            <input type="password" name='password' onChange={onChange}/>
+                            <legend>Contraseña</legend>
+                            <input type="password" name='password' onChange={onChange} className='input_login'/>
                         </fieldset>
                         <span 
                             style={{cursor: 'pointer',width: '100%',fontSize: '.9em',color:'rgba(77,188,94,1)',textAlign: 'end'}}
                             onClick={() => updateFormState(() => ({
                                     ...formState, formType: 'ForgotPassword'
                                 }))}>Olvidaste tu contraseña?</span>
-                        <button type="submit" disabled={loading} onClick={(e) => signIn(e)} >
+                        <button type="submit" disabled={loading} onClick={(e) => signIn(e)} className='btn-login'>
                             {loading?'Loading': 'Ingresar'}
                         </button>
                     </form>

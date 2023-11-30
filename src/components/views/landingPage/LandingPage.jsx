@@ -186,12 +186,12 @@ export default class LandingPage extends Component {
             </div>
           </div>
           </div>
-          <div className='container-fluid bg-porque p-5'>
+          <div className='container-fluid bg-porque p-5' id="porque">
             <div className='row m-4 p-2'>
               <h2 className='text-center'>¿POR QUÉ SUAN?</h2>
             </div>
             <div className='row'>
-              <div className='col'>
+              <div className='col' >
                 <div >
                   <svg className='m-auto d-block' xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M80-160v-120h80v-440q0-33 23.5-56.5T240-800h600v80H240v440h240v120H80Zm520 0q-17 0-28.5-11.5T560-200v-400q0-17 11.5-28.5T600-640h240q17 0 28.5 11.5T880-600v400q0 17-11.5 28.5T840-160H600Zm40-120h160v-280H640v280Zm0 0h160-160Z"/></svg>
                   <h4 className='text-center titulo-azul'>Tecnología</h4>
@@ -221,7 +221,7 @@ export default class LandingPage extends Component {
               </div>
             </div>
         </div>
-          <div className='container-fluid bg-tecnologia p-5'>
+          <div className='container-fluid bg-tecnologia p-5'id="tecnologia">
             <div className='row m-4 p-2'>
               <h2 className='text-center titulo-landing'>NUESTRA TECNOLOGÍA</h2>
             </div>
