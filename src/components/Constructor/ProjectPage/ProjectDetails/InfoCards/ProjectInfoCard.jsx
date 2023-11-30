@@ -7,7 +7,8 @@ import { API, Storage, graphqlOperation } from "aws-amplify";
 import {
   createDocument,
   createProductFeature,
-  updateDocument,
+  deleteDocument,
+  deleteProductFeature,
   updateProduct,
   updateProductFeature,
 } from "graphql/mutations";
@@ -18,6 +19,7 @@ import { Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { fetchProjectDataByProjectID } from "../../api";
+import { XIcon } from "components/common/icons/XIcon";
 
 export default function ProjectInfoCard(props) {
   const { className, autorizedUser, setProgressChange, tooltip } = props;
@@ -25,7 +27,8 @@ export default function ProjectInfoCard(props) {
     projectData,
     handleUpdateContextProjectInfo,
     handleUpdateContextProjectInfoLocation,
-    handleUpdateContextProjectFile,
+    handleSetContextProjectFile,
+    refresh,
   } = useProjectData();
   const { user } = useAuth();
   const { categoryList } = useCategories();
@@ -37,8 +40,7 @@ export default function ProjectInfoCard(props) {
   const [municipioPfID, setMunicipioPfID] = useState(null);
   const [matriculaPfID, setMatriculaPfID] = useState(null);
   const [fichaPfID, setFichaPfID] = useState(null);
-  const [planoPfID, setPlanoPfID] = useState(null);
-  const [planoURL, setPlanoURL] = useState(null);
+  const [planosPredio, setPlanosPredio] = useState([]);
 
   const fileInputRef = useRef(null);
 
@@ -78,18 +80,33 @@ export default function ProjectInfoCard(props) {
           return item.featureID === "A_ficha_catastral";
         })[0]?.id || null;
       setFichaPfID(pfIDFicha);
+      
 
-      const pfIDPlano =
-        projectData.projectFeatures.filter((item) => {
+      let pfIDPlanos = projectData.projectFeatures
+        .filter((item) => {
           return item.featureID === "C_plano_predio";
-        })[0]?.id || null;
-      setPlanoPfID(pfIDPlano);
-      const planoFile = projectData.projectFiles.find(
-        (item) => item.pfID === pfIDPlano
-      );
-      if (planoFile) {
-        setPlanoURL(planoFile.url);
-      }
+        })
+        .map((pf) => {
+          return pf.id;
+        });
+      let planosPredioFiles = projectData.projectFiles
+        .filter((item) => pfIDPlanos.includes(item.pfID))
+        .map((file) => {
+          const urlObj = new URL(file.url);
+          const pathname = urlObj.pathname;
+          const pathParts = pathname.split("/");
+          const nombreArchivo = pathParts.pop();
+
+          return {
+            id: file.id,
+            pfId: file.pfID,
+            nombre: nombreArchivo,
+            url: file.url,
+          };
+        });
+
+      setPlanosPredio(planosPredioFiles);
+      console.log(projectData);
 
       setFormData((prevState) => ({
         ...prevState,
@@ -108,6 +125,33 @@ export default function ProjectInfoCard(props) {
       setExecutedOnce(true);
     }
   }, [projectData, user]);
+
+
+  const getPlanosPredios = async (data) => {
+    let pfIDPlanos = data.projectFeatures
+      .filter((item) => {
+        return item.featureID === "C_plano_predio";
+      })
+      .map((pf) => {
+        return pf.id;
+      });
+    let planosPredioFiles = data.projectFiles
+      .filter((item) => pfIDPlanos.includes(item.pfID))
+      .map((file) => {
+        const urlObj = new URL(file.url);
+        const pathname = urlObj.pathname;
+        const pathParts = pathname.split("/");
+        const nombreArchivo = pathParts.pop();
+
+        return {
+          id: file.id,
+          pfId: file.pfID,
+          nombre: nombreArchivo,
+          url: file.url,
+        };
+      });
+    return planosPredioFiles;
+  };
 
   const handleUploadButton = (index) => {
     Swal.fire({
@@ -136,39 +180,60 @@ export default function ProjectInfoCard(props) {
     return encodeURIComponent(filenameWithoutAccents);
   };
 
-  const saveFileOnDB = async (fileToSave) => {
-    let docID = null;
-    let pfID = planoPfID
-    const urlPath = `${projectData.projectInfo.id}/${formatFileName(
-      fileToSave.name
-    )}`;
+  const handleDeleteFile = async (file) => {
+    console.log(file, "file");
+    // Eliminar S3
+    const getFilePathRegex = /\/public\/(.+)$/;
+    const fileToDeleteName = decodeURIComponent(
+      file.url.match(getFilePathRegex)[1]
+    );
+    try {
+      await Storage.remove(fileToDeleteName);
+    } catch (error) {
+      console.error("Error removing the file:", error);
+    }
 
-    if (pfID) {
-      const oldDocument = projectData.projectFiles.find(
-        (item) => item.pfID === planoPfID
-      );
-      docID = oldDocument.id;
-      // Si toca actualizar
-      const getFilePathRegex = /\/public\/(.+)$/;
+    // Eliminar product feature
+    const productFeatureToDelete = {
+      id: file.pfId,
+    };
+    console.log("productFeatureToDelete:", productFeatureToDelete);
+    await API.graphql(
+      graphqlOperation(deleteProductFeature, { input: productFeatureToDelete })
+    );
 
-      // Eliminar archivo viejo de S3
-      const fileToDeleteName = decodeURIComponent(
-        oldDocument.url.match(getFilePathRegex)[1]
-      );
+    // Eliminar document
+    const documentToDelete = {
+      id: file.id,
+    };
+    console.log("documentToDelete:", documentToDelete);
+    await API.graphql(
+      graphqlOperation(deleteDocument, { input: documentToDelete })
+    );
+    const updatedProjectData = await fetchProjectDataByProjectID(
+      projectData.projectInfo.id
+    );
+
+    const updatedProjectDataFiles = updatedProjectData.projectFiles;
+    await handleSetContextProjectFile(updatedProjectDataFiles)
+    console.log(updatedProjectDataFiles)
+    const planosPredios = await getPlanosPredios(updatedProjectData);
+    setPlanosPredio(planosPredios);
+  };
+
+  const saveFileOnDB = async (filesToSave) => {
+
+    for (var i = 0; i < filesToSave.length; i++) {
+      const urlPath = `${projectData.projectInfo.id}/${formatFileName(
+        filesToSave[i].name
+      )}`;
       try {
-        await Storage.remove(fileToDeleteName);
-      } catch (error) {
-        console.error("Error removing the file:", error);
-      }
-
-      //  Cargar archivo nuevo a S3
-      try {
-        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
+        const uploadImageResult = await Storage.put(urlPath, filesToSave[i], {
           level: "public",
           contentType: "*/*",
         });
 
-        console.log("Archivo seleccionado:", fileToSave);
+        console.log("Archivo seleccionado:", filesToSave[i]);
         console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
         notify({
@@ -180,58 +245,15 @@ export default function ProjectInfoCard(props) {
         return;
       }
 
-      // Actualizar base de datos (Product Feature y Documento)
-      const updatedProductFeature = {
-        id: oldDocument.pfID,
-        value: fileToSave.name,
-      };
-      console.log("updatedProductFeature:", updatedProductFeature);
-      await API.graphql(
-        graphqlOperation(updateProductFeature, { input: updatedProductFeature })
-      );
-
-      const updatedDocument = {
-        id: oldDocument.id,
-        timeStamp: Date.now(),
-        status: "pending",
-        isApproved: false,
-        isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + urlPath,
-      };
-
-      await API.graphql(
-        graphqlOperation(updateDocument, { input: updatedDocument })
-      );
-    } else {
-      // Crear pf y document
-      try {
-        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
-          level: "public",
-          contentType: "*/*",
-        });
-
-        console.log("Archivo seleccionado:", fileToSave);
-        console.log("Archivo subido:", uploadImageResult);
-      } catch (error) {
-        notify({
-          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
-          type: "error",
-        });
-        return;
-      }
-
       const newProductFeature = {
         featureID: "C_plano_predio",
         productID: projectData.projectInfo.id,
-        value: fileToSave.name,
+        value: filesToSave[i].name,
       };
       console.log("newProductFeature:", newProductFeature);
       const createProductFeatureResponse = await API.graphql(
         graphqlOperation(createProductFeature, { input: newProductFeature })
       );
-
-      setPlanoPfID(createProductFeatureResponse.data.createProductFeature.id);
-      pfID = createProductFeatureResponse.data.createProductFeature.id
 
       const newDocument = {
         productFeatureID:
@@ -244,23 +266,20 @@ export default function ProjectInfoCard(props) {
         url: WebAppConfig.url_s3_public_images + urlPath,
       };
 
-      const createDocumentResponse = await API.graphql(
+      await API.graphql(
         graphqlOperation(createDocument, { input: newDocument })
       );
-
-      docID = createDocumentResponse.data.createDocument.id;
     }
-    setPlanoURL(WebAppConfig.url_s3_public_images + urlPath);
-
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
     );
 
-    const mappedDocument = updatedProjectData.projectFiles.find(
-      (item) => item.pfID === pfID
-    );
+    const updatedProjectDataFiles = updatedProjectData.projectFiles;
+    await handleSetContextProjectFile(updatedProjectDataFiles)
 
-    await handleUpdateContextProjectFile(docID, mappedDocument);
+    const planosPredios = await getPlanosPredios(updatedProjectData);
+    setPlanosPredio(planosPredios);
+
     notify({
       msg: "Archivo subido correctamente.",
       type: "success",
@@ -326,11 +345,9 @@ export default function ProjectInfoCard(props) {
       return;
     }
     if (name === "projectInfoLocationFile") {
-      const fileToSave = files[0];
-      if (fileToSave) {
-        setPlanoURL(null)
-        await saveFileOnDB(fileToSave);
-        setProgressChange(true)
+      //const fileToSave = files[0];
+      if (files) {
+        await saveFileOnDB(files);
       }
       return;
     }
@@ -529,14 +546,18 @@ export default function ProjectInfoCard(props) {
         fichaCatrastal: formData.projectInfoLocationFichaCatrastral,
       });
     }
-    setProgressChange(true)
+    setProgressChange(true);
 
     notify({ msg: "Información actualizada", type: "success" });
   };
 
   return (
     <Card className={className}>
-      <Card.Header title="Información del proyecto" sep={true} tooltip={tooltip}/>
+      <Card.Header
+        title="Información del proyecto"
+        sep={true}
+        tooltip={tooltip}
+      />
       <Card.Body>
         <div className="row">
           <div
@@ -699,30 +720,52 @@ export default function ProjectInfoCard(props) {
                 <Form.Group className="mb-3">
                   <div className="row align-items-center">
                     <Form.Label column sm="5">
-                      Cargue un plano del predio (puede ser a mano alzada)
+                      Cargue planos del predio (pueden ser a mano alzada)
                     </Form.Label>
                     <div className="col">
-                      {planoURL ? (
-                        <a href={planoURL} target="_blank" rel="noreferrer">
-                          Ver Archivo
-                        </a>
-                      ): <p className="text-danger">No se ha subido plano de predio</p>}
+                      {planosPredio.length > 0 ? (
+                        <>
+                          {planosPredio.map((file) => (
+                            <div key={file.id} className="mb-2">
+                              <Button
+                                onClick={() => handleDeleteFile(file)}
+                                size="sm"
+                                className="me-2"
+                                variant="danger"
+                              >
+                                <XIcon />
+                              </Button>
+                              <a
+                                href={file.url}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {file.nombre}
+                              </a>
+                            </div>
+                          ))}
+                        </>
+                      ) : (
+                        <p className="text-danger">
+                          No se han subido planos de predio
+                        </p>
+                      )}
                       <input
                         type="file"
+                        multiple
                         disabled={!autorizedUser}
                         ref={fileInputRef}
                         name="projectInfoLocationFile"
                         onChange={(e) => handleChangeInputValue(e)}
-                        hidden={!autorizedUser}
+                        hidden
                       />
-                      {/* <Button
+                      <Button
                         disabled={!autorizedUser}
-                        className="ms-3"
                         onClick={handleUploadButton}
                         size="md"
                       >
-                        {planoPfID ? "Actualizar" : "Cargar"}
-                      </Button> */}
+                        Cargar nuevo archivo
+                      </Button>
                     </div>
                   </div>
                 </Form.Group>

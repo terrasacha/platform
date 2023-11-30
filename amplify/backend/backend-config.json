@@ -118,6 +118,22 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "kiosuanbcrjsappProjectsResumeEndpoint": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "kiosuanbcrjsapp"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "kiosuanbcrjsappSendMailNotByComment": {
       "build": true,
       "dependsOn": [
@@ -263,6 +279,22 @@
         {
           "category": "function",
           "resourceName": "kiosuanbcrjsappDeleteUserValidator"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappProjectsResumeEndpoint_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappProjectsResumeEndpoint"
+        }
+      ]
+    },
+    "AMPLIFY_function_kiosuanbcrjsappProjectsResumeEndpoint_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "kiosuanbcrjsappProjectsResumeEndpoint"
         }
       ]
     },

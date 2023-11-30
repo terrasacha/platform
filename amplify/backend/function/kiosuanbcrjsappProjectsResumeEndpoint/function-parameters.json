@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "api": {
+      "kiosuanbcrjsapp": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
