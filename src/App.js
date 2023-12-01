@@ -28,6 +28,7 @@ import UseTerms from './components/views/useTerms/UseTerms';
 import ProjectPage from './components/Constructor/ProjectPage/ProjectPage';
 import ListS3 from 'components/ListS3';
 import NewProject from 'components/Constructor/NewProject/NewProject';
+import Dashboard from 'components/Dashboard/Dashboard';
 
 function App(){
   return(
@@ -47,6 +48,13 @@ function App(){
               <ProjectDataProvider>
                 <ProjectPage />
               </ProjectDataProvider>
+            }
+            exact
+          />
+          <Route
+            path="/admindash"
+            element={
+              <Dashboard />
             }
             exact
           />
