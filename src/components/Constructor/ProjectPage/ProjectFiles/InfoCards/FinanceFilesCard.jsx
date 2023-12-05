@@ -37,30 +37,31 @@ export default function FinanceCard(props) {
   const totalOwner = projectData.projectFeatures.find(
     (item) => item.featureID === "GLOBAL_TOKEN_TOTAL_AMOUNT"
   );
-  const [newProduct, setNewProduct] = useState(false);
-  const [newProductFeature, setNewProductFeature] = useState(null);
+  const [globalOwnerAcceptsPfID, setGlobalOwnerAcceptsPfID] = useState(null);
+  const [isAccepted, setIsAccepted] = useState(false);
 
   const handleBotoncheckpostulant = async () => {
-    const newProductFeature = projectData.projectFeatures.find(
-      (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
-    );
-
-    if (newProductFeature) {
-      newProductFeature.value = "true";
+    if (globalOwnerAcceptsPfID) {
+      const updatedProductFeature = {
+        id: globalOwnerAcceptsPfID,
+        value: "true"
+      }
       await API.graphql(
-        graphqlOperation(updateProductFeature, { input: newProductFeature })
+        graphqlOperation(updateProductFeature, { input: updatedProductFeature })
       );
     }
     setValidadorShow(false);
   };
   useEffect(() => {
-    const newProductFeature = projectData.projectFeatures.find(
+    const pf = projectData.projectFeatures.find(
       (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
     );
 
-    const foundFeature = newProductFeature.value;
-    setNewProductFeature(foundFeature);
-    setNewProduct(!!foundFeature);
+    const pfID = pf.id
+    const pfValue = pf.value
+
+    setGlobalOwnerAcceptsPfID(pfID);
+    setIsAccepted(pfValue === "true" ? true : false)
   }, []);
 
   return isValid && validadorShow ? (
@@ -107,7 +108,7 @@ export default function FinanceCard(props) {
   ) : (
     <>
       <div className="container">
-        {newProduct && (
+        {isAccepted && (
           <div className="row accept">
             <CheckIcon className="col col-1" />
             <p className="col col-11">
@@ -118,7 +119,7 @@ export default function FinanceCard(props) {
         <div className="row">
           {user?.id &&
             projectData.projectPostulant?.id.includes(user.id) &&
-            newProduct && (
+            isAccepted && (
               <ClaimTokens
                 tokenName={projectData.projectInfo?.token.name}
                 ownerTokensAmount={
@@ -281,10 +282,11 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
         distribuirlos entre los diferentes propietarios del proyecto según tu
         preferencia.
       </p>
+      <p>No tienes una billetera? Crea una <a href="https://marketplace.suan.global/generate-wallet" target="_blank" rel="noreferrer">aquí.</a></p>
       <Table responsive>
         <thead className="text-center">
           <tr>
-            <th style={{ width: "300px" }}>Stake Address</th>
+            <th style={{ width: "300px" }}>Dirección de billetera</th>
             <th style={{ width: "120px" }}>Cantidad</th>
             <th style={{ width: "120px" }}></th>
           </tr>

@@ -5,50 +5,29 @@
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
+//import { listProducts } from "./customQueries.js";
+//import { mapProjectsData } from "./mapProjectsData.js";
+const { Request } = require("node-fetch");
+const fetch = require("node-fetch");
+const { listProducts } = require("./lib/customQueries.js");
+const { mapProjectsData } = require("./lib/mapProjectsData.js");
 
 const GRAPHQL_ENDPOINT =
   process.env.API_KIOSUANBCRJSAPP_GRAPHQLAPIENDPOINTOUTPUT;
 const GRAPHQL_API_KEY = process.env.API_KIOSUANBCRJSAPP_GRAPHQLAPIKEYOUTPUT;
-
-export const listCategories = /* GraphQL */ `
-  query ListCategories(
-    $filter: ModelCategoryFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listCategories(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        name
-        isSelected
-        products {
-          nextToken
-          __typename
-        }
-        createdAt
-        updatedAt
-        __typename
-      }
-      nextToken
-      __typename
-    }
-  }
-`;
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
-
-  /** @type {import('node-fetch').RequestInit} */
   const options = {
     method: "POST",
     headers: {
       "x-api-key": GRAPHQL_API_KEY,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ listCategories }),
+    body: JSON.stringify({ query: listProducts }),
   };
 
   const request = new Request(GRAPHQL_ENDPOINT, options);
@@ -56,10 +35,12 @@ exports.handler = async (event) => {
   let statusCode = 200;
   let body;
   let response;
+  let mappedResponse;
 
   try {
     response = await fetch(request);
     body = await response.json();
+    mappedResponse = await mapProjectsData(body.data.listProducts.items);
     if (body.errors) statusCode = 400;
   } catch (error) {
     statusCode = 400;
@@ -76,6 +57,6 @@ exports.handler = async (event) => {
 
   return {
     statusCode,
-    body: JSON.stringify(body),
+    body: JSON.stringify(mappedResponse),
   };
 };

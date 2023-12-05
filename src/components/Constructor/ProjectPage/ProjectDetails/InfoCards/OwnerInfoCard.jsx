@@ -161,7 +161,7 @@ export default function OwnerInfoCard(props) {
 
   const saveFileOnDB = async (fileToSave, documentID = null) => {
     let docID = documentID;
-    const urlPath = `${projectData.projectInfo.id}/${formatFileName(
+    const urlPath = `${projectData.projectInfo.id}/Archivos del postulante/Certificados de tradición/${formatFileName(
       fileToSave.name
     )}`;
 
@@ -215,7 +215,7 @@ export default function OwnerInfoCard(props) {
         status: "pending",
         isApproved: false,
         isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + urlPath,
+        url: WebAppConfig.url_s3_public_images + encodeURIComponent(urlPath),
       };
 
       await API.graphql(
@@ -257,7 +257,7 @@ export default function OwnerInfoCard(props) {
         status: "pending",
         isApproved: false,
         isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + urlPath,
+        url: WebAppConfig.url_s3_public_images + encodeURIComponent(urlPath),
       };
 
       const createDocumentResponse = await API.graphql(
