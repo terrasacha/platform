@@ -224,7 +224,7 @@ export default function ProjectInfoCard(props) {
   const saveFileOnDB = async (filesToSave) => {
 
     for (var i = 0; i < filesToSave.length; i++) {
-      const urlPath = `${projectData.projectInfo.id}/Archivos del postulante/Planos del predio/${formatFileName(
+      const urlPath = `${projectData.projectInfo.id}/archivos_postulante/planos_predio/${formatFileName(
         filesToSave[i].name
       )}`;
       try {
@@ -263,7 +263,7 @@ export default function ProjectInfoCard(props) {
         status: "pending",
         isApproved: false,
         isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + encodeURIComponent(urlPath),
+        url: WebAppConfig.url_s3_public_images + urlPath,
       };
 
       await API.graphql(
