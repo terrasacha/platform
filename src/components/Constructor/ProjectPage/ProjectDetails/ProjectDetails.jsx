@@ -31,7 +31,7 @@ export default function ProjectDetails() {
       const verifiers = projectData?.projectVerifiers;
       const postulant = projectData?.projectPostulant?.id;
       const authorizedUsers =
-        projectData?.projectInfo.projectAge < 30
+        projectData?.projectInfo.projectAge < 20
           ? [...verifiers, postulant]
           : [...verifiers];
       setAutorizedUser(authorizedUsers.includes(user.id));
