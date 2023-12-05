@@ -93,7 +93,7 @@ export default function ProjectInfoCard(props) {
         .filter((item) => pfIDPlanos.includes(item.pfID))
         .map((file) => {
           const urlObj = new URL(file.url);
-          const pathname = urlObj.pathname;
+          const pathname = decodeURIComponent(urlObj.pathname);
           const pathParts = pathname.split("/");
           const nombreArchivo = pathParts.pop();
 
@@ -139,7 +139,7 @@ export default function ProjectInfoCard(props) {
       .filter((item) => pfIDPlanos.includes(item.pfID))
       .map((file) => {
         const urlObj = new URL(file.url);
-        const pathname = urlObj.pathname;
+        const pathname = decodeURIComponent(urlObj.pathname);
         const pathParts = pathname.split("/");
         const nombreArchivo = pathParts.pop();
 
@@ -224,7 +224,7 @@ export default function ProjectInfoCard(props) {
   const saveFileOnDB = async (filesToSave) => {
 
     for (var i = 0; i < filesToSave.length; i++) {
-      const urlPath = `${projectData.projectInfo.id}/${formatFileName(
+      const urlPath = `${projectData.projectInfo.id}/Archivos del postulante/Planos del predio/${formatFileName(
         filesToSave[i].name
       )}`;
       try {
@@ -263,7 +263,7 @@ export default function ProjectInfoCard(props) {
         status: "pending",
         isApproved: false,
         isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + urlPath,
+        url: WebAppConfig.url_s3_public_images + encodeURIComponent(urlPath),
       };
 
       await API.graphql(

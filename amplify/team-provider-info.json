@@ -54,7 +54,7 @@
         },
         "kiosuanbcrjsappProjectsResumeEndpoint": {
           "deploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-          "s3Key": "amplify-builds/kiosuanbcrjsappProjectsResumeEndpoint-6858523268454b744446-build.zip"
+          "s3Key": "amplify-builds/kiosuanbcrjsappProjectsResumeEndpoint-77456d412f6351763878-build.zip"
         }
       },
       "hosting": {
