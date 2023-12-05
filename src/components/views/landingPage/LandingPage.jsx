@@ -270,8 +270,8 @@ export default class LandingPage extends Component {
                   <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
               </div>
               <div className='col'>
-                  <button className='m-2 btn-cta'>Ver proyectos</button>
-                  <button className='m-2 btn-cta'>Tengo un proyecto</button>
+                  <a href="https://marketplace.suan.global/" target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
+                  <a href="https://platform.suan.global/login" target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Tengo un proyecto</button></a>
               </div>
 
             </div>

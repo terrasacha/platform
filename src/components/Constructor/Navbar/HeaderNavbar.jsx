@@ -31,7 +31,7 @@ export default class HeaderNavbar extends Component {
     }
 
     render() {
-        let role = localStorage.getItem('role')
+        
         return (
         <Navbar key='sm' bg="light" expand='lg' fixed="top">
             <Container fluid>
@@ -77,7 +77,6 @@ export default class HeaderNavbar extends Component {
                                 {localStorage.getItem('role')?
                                 <div>
                                 <button className={s.signing} onClick={() => this.handleSignOut()}>Desconectar</button>
-                                <p>Role actual: {role}</p>
                             </div>
                             :
                                 <button className={s.signing} onClick={() => window.location.href="/login"}>Conectar</button>
