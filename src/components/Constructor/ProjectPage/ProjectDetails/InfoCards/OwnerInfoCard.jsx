@@ -161,7 +161,9 @@ export default function OwnerInfoCard(props) {
 
   const saveFileOnDB = async (fileToSave, documentID = null) => {
     let docID = documentID;
-    const urlPath = `${projectData.projectInfo.id}/archivos_postulante/certificados_tradicion/${formatFileName(
+    const urlPath = `${
+      projectData.projectInfo.id
+    }/archivos_postulante/certificados_tradicion/${formatFileName(
       fileToSave.name
     )}`;
 
@@ -307,16 +309,42 @@ export default function OwnerInfoCard(props) {
       let documentID = tokenHistoricalData[indexToSave].documentID;
       let docID = null;
       if (certificate) {
+        console.log("entro aca");
         docID = await saveFileOnDB(
           certificate,
           documentID !== undefined ? documentID : null
         );
+        setTokenHistoricalData((prevState) =>
+          prevState.map((item, index) =>
+            index === indexToSave
+              ? {
+                  ...item,
+                  documentID: docID,
+                  editing: false,
+                  updatedAt: Date.now(),
+                }
+              : item
+          )
+        );
+      } else {
+        setTokenHistoricalData((prevState) =>
+          prevState.map((item, index) =>
+            index === indexToSave
+              ? {
+                  ...item,
+                  editing: false,
+                  updatedAt: Date.now(),
+                }
+              : item
+          )
+        );
       }
 
       let tempTokenHD = tokenHistoricalData;
+      let tempTokenHistoricalData
 
-      setTokenHistoricalData((prevState) =>
-        prevState.map((item, index) =>
+      if (certificate) {
+        tempTokenHistoricalData = tempTokenHD.map((item, index) =>
           index === indexToSave
             ? {
                 ...item,
@@ -325,20 +353,19 @@ export default function OwnerInfoCard(props) {
                 updatedAt: Date.now(),
               }
             : item
-        )
-      );
-
-      const tempTokenHistoricalData = tempTokenHD.map((item, index) =>
-        index === indexToSave
-          ? {
-              ...item,
-              documentID: docID,
-              editing: false,
-              updatedAt: Date.now(),
-            }
-          : item
-      );
-
+        );
+      } else {
+        tempTokenHistoricalData = tempTokenHD.map((item, index) =>
+          index === indexToSave
+            ? {
+                ...item,
+                editing: false,
+                updatedAt: Date.now(),
+              }
+            : item
+        );
+      }
+      
       if (projectOwnersPfID) {
         let tempProductFeature = {
           id: projectOwnersPfID,
@@ -361,7 +388,7 @@ export default function OwnerInfoCard(props) {
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
 
-        setProjectOwnersPfID(response.data.createProductFeature.id)
+        setProjectOwnersPfID(response.data.createProductFeature.id);
 
         if (!response.data.createProductFeature) error = true;
       }
@@ -470,7 +497,7 @@ export default function OwnerInfoCard(props) {
       const response = await API.graphql(
         graphqlOperation(createProductFeature, { input: tempProductFeature })
       );
-      setProjectOwnersPfID(response.data.createProductFeature.id)
+      setProjectOwnersPfID(response.data.createProductFeature.id);
 
       if (!response.data.createProductFeature) error = true;
     }
