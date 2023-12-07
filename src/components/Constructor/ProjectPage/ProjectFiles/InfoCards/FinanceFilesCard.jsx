@@ -44,8 +44,8 @@ export default function FinanceCard(props) {
     if (globalOwnerAcceptsPfID) {
       const updatedProductFeature = {
         id: globalOwnerAcceptsPfID,
-        value: "true"
-      }
+        value: "true",
+      };
       await API.graphql(
         graphqlOperation(updateProductFeature, { input: updatedProductFeature })
       );
@@ -57,11 +57,11 @@ export default function FinanceCard(props) {
       (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
     );
 
-    const pfID = pf.id
-    const pfValue = pf.value
+    const pfID = pf.id;
+    const pfValue = pf.value;
 
     setGlobalOwnerAcceptsPfID(pfID);
-    setIsAccepted(pfValue === "true" ? true : false)
+    setIsAccepted(pfValue === "true" ? true : false);
   }, []);
 
   return isValid && validadorShow ? (
@@ -282,7 +282,16 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
         distribuirlos entre los diferentes propietarios del proyecto según tu
         preferencia.
       </p>
-      <p>No tienes una billetera? Crea una <a href="https://marketplace.suan.global/generate-wallet" target="_blank" rel="noreferrer">aquí.</a></p>
+      <p>
+        No tienes una billetera? Crea una{" "}
+        <a
+          href="https://marketplace.suan.global/generate-wallet"
+          target="_blank"
+          rel="noreferrer"
+        >
+          aquí.
+        </a>
+      </p>
       <Table responsive>
         <thead className="text-center">
           <tr>
@@ -516,7 +525,7 @@ function IndicatorsProducts({ infoTable, typeInfo }) {
               key={index}
             >
               <td className="px-3 py-2">{row.CONCEPTO}</td>
-              <td className="px-3 py-2">{row.VALOR}</td>
+              <td className="px-3 py-2">{row.CANTIDAD}</td>
               <td className="px-3 py-2">COP</td>
             </tr>
           ))}
@@ -552,7 +561,7 @@ function RevenuesProducts({ infoTable, typeInfo }) {
               key={index}
             >
               <td className="px-3 py-2">{row.CONCEPTO}</td>
-              <td className="px-3 py-2">{row.VALOR}</td>
+              <td className="px-3 py-2">{row.CANTIDAD}</td>
               <td className="px-3 py-2">COP</td>
             </tr>
           ))}
