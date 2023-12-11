@@ -26,19 +26,19 @@ import { fetchProjectDataByProjectID } from "../../api";
 
 export default function OwnerInfoCard(props) {
   const { className, autorizedUser, setProgressChange, tooltip } = props;
-  const { projectData, handleUpdateContextProjectFile } = useProjectData();
+  const { projectData, handleUpdateContextProjectFile, handleUpdateContextProjectOwners, handleSetContextProjectFile } = useProjectData();
   const { user } = useAuth();
 
   const fileInputRef = useRef(null);
 
-  const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
+  const [tokenHistoricalData, setTokenHistoricalData] = useState([]);
   const [executedOnce, setExecutedOnce] = useState(false);
   const [projectOwnersPfID, setProjectOwnersPfID] = useState(null);
 
   useEffect(() => {
-    if (projectData && projectData.projectOwners && !executedOnce) {
-      const ownersData =
-        [...projectData.projectOwners.owners].map((ownerData) => {
+    if (projectData && projectData.projectOwners) {
+      let ownersData =
+        [...(projectData.projectOwners.owners)].map((ownerData) => {
           return {
             ...ownerData,
             editing: false,
@@ -47,7 +47,6 @@ export default function OwnerInfoCard(props) {
 
       setProjectOwnersPfID(projectData.projectOwners.pfID);
       setTokenHistoricalData(ownersData);
-      setExecutedOnce(true);
     }
   }, [projectData]);
 
@@ -268,16 +267,6 @@ export default function OwnerInfoCard(props) {
 
       docID = createDocumentResponse.data.createDocument.id;
     }
-
-    const updatedProjectData = await fetchProjectDataByProjectID(
-      projectData.projectInfo.id
-    );
-
-    const mappedDocument = updatedProjectData.projectFiles.find(
-      (item) => item.id === docID
-    );
-
-    await handleUpdateContextProjectFile(docID, mappedDocument);
     return docID;
   };
 
@@ -309,7 +298,6 @@ export default function OwnerInfoCard(props) {
       let documentID = tokenHistoricalData[indexToSave].documentID;
       let docID = null;
       if (certificate) {
-        console.log("entro aca");
         docID = await saveFileOnDB(
           certificate,
           documentID !== undefined ? documentID : null
@@ -341,7 +329,7 @@ export default function OwnerInfoCard(props) {
       }
 
       let tempTokenHD = tokenHistoricalData;
-      let tempTokenHistoricalData
+      let tempTokenHistoricalData;
 
       if (certificate) {
         tempTokenHistoricalData = tempTokenHD.map((item, index) =>
@@ -365,7 +353,7 @@ export default function OwnerInfoCard(props) {
             : item
         );
       }
-      
+
       if (projectOwnersPfID) {
         let tempProductFeature = {
           id: projectOwnersPfID,
@@ -392,6 +380,18 @@ export default function OwnerInfoCard(props) {
 
         if (!response.data.createProductFeature) error = true;
       }
+
+      const updatedProjectData = await fetchProjectDataByProjectID(
+        projectData.projectInfo.id
+      );
+
+      const mappedDocument = updatedProjectData.projectFiles.find(
+        (item) => item.id === docID
+      );
+      const projectOwnersData = updatedProjectData.projectOwners
+
+      await handleUpdateContextProjectFile(docID, mappedDocument);
+      await handleUpdateContextProjectOwners(projectOwnersData)
     } else {
       notify({
         msg: "Completa todos los campos antes de guardar",
@@ -501,6 +501,15 @@ export default function OwnerInfoCard(props) {
 
       if (!response.data.createProductFeature) error = true;
     }
+
+    const updatedProjectData = await fetchProjectDataByProjectID(
+      projectData.projectInfo.id
+    );
+
+    const projectOwnersData = updatedProjectData.projectOwners
+
+    await handleUpdateContextProjectOwners(projectOwnersData)
+    await handleSetContextProjectFile(updatedProjectData.projectFiles)
 
     if (!error) {
       setProgressChange(true);
