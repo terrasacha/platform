@@ -66,6 +66,15 @@ export default function TableEdit({
                             </option>
                           ))}
                         </Form.Select>
+                      ) : column === "CANTIDAD" ? (
+                        <Form.Control
+                          size="sm"
+                          type="number"
+                          value={data[index][column]}
+                          className="text-center"
+                          name={`input-${column}-${index}`}
+                          onChange={(e) => handleChangeInputValue(e)}
+                        />
                       ) : (
                         <Form.Control
                           size="sm"
@@ -76,6 +85,8 @@ export default function TableEdit({
                           onChange={(e) => handleChangeInputValue(e)}
                         />
                       )
+                    ) : column === "CANTIDAD" ? (
+                      parseFloat(row[column]).toLocaleString('es-ES')
                     ) : (
                       row[column]
                     )}

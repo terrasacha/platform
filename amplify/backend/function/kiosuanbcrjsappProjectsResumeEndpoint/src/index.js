@@ -41,6 +41,7 @@ exports.handler = async (event) => {
     response = await fetch(request);
     body = await response.json();
     mappedResponse = await mapProjectsData(body.data.listProducts.items);
+    console.log(mappedResponse)
     if (body.errors) statusCode = 400;
   } catch (error) {
     statusCode = 400;
