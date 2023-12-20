@@ -18,7 +18,7 @@ export function ProjectDataProvider({ children }) {
     }
     const fetchDataToContext = async () => {
       const data = await fetchProjectDataByProjectID(projectID);
-
+      console.log(data)
       handleProjectData(data);
     };
 

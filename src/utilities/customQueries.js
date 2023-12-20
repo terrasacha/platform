@@ -7,6 +7,7 @@ export const getProduct = /* GraphQL */ `
       isActive
       order
       status
+      showOn
       timeOnVerification
       projectReadiness
       categoryID

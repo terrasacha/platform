@@ -650,6 +650,7 @@ export const mapProjectData = async (data) => {
       title: data.name,
       description: data.description,
       category: data.categoryID,
+      showOn: data.showOn,
       area: area,
       token: {
         pfIDs: {

@@ -53,13 +53,6 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
-    "kiosuanbcrjsappProjectsResumeEndpoint": {
-      "Arn": "string",
-      "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
-      "Name": "string",
-      "Region": "string"
-    },
     "kiosuanbcrjsappSendMailNotByComment": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
