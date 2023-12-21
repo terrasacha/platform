@@ -63,6 +63,13 @@ const mapProjectsData = async (projects) => {
         "estado",
         "area",
         "progressValue",
+        // "projectInfo",
+        // "geodataInfo",
+        // "ownersInfo",
+        // "financialInfo",
+        // "technicalInfo",
+        // "validationsComplete",
+        // "ownerAcceptsConditions",
         ...indicadoresFinacierosFields,
         ...indicadoresFinacierosTokenFields,
         ...ingresosProductoFields,
@@ -219,6 +226,27 @@ const mapProjectsData = async (projects) => {
         }
         if (field === "progressValue") {
           value = progressData.progressValue;
+        }
+        if (field === "projectInfo") {
+          value = progressData.projectInfo;
+        }
+        if (field === "geodataInfo") {
+          value = progressData.geodataInfo;
+        }
+        if (field === "ownersInfo") {
+          value = progressData.ownersInfo;
+        }
+        if (field === "financialInfo") {
+          value = progressData.financialInfo;
+        }
+        if (field === "technicalInfo") {
+          value = progressData.technicalInfo;
+        }
+        if (field === "validationsComplete") {
+          value = progressData.validationsComplete;
+        }
+        if (field === "ownerAcceptsConditions") {
+          value = progressData.ownerAcceptsConditions;
         }
 
         // Indicador Financiero
