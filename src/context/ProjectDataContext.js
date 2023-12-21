@@ -54,6 +54,13 @@ export function ProjectDataProvider({ children }) {
     }));
   };
 
+  const handleUpdateContextProjectCadastralRecordsData = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectCadastralRecords: data,
+    }));
+  };
+
   const handleUpdateContextProjectRestrictions = async (data) => {
     setProjectData((prevData) => ({
       ...prevData,
@@ -138,7 +145,7 @@ export function ProjectDataProvider({ children }) {
   };
 
   const handleUpdateContextProjectFile = async (docID, data) => {
-    if (projectData.projectFiles.find((item) => item.id === docID)) {
+    if (docID && projectData.projectFiles.find((item) => item.id === docID)) {
       setProjectData((prevData) => ({
         ...prevData,
         projectFiles: prevData.projectFiles.map((file) => {
@@ -215,6 +222,7 @@ export function ProjectDataProvider({ children }) {
     handleProjectData,
     setNewProjectID,
     handleUpdateContextProjectOwners,
+    handleUpdateContextProjectCadastralRecordsData,
     handleUpdateContextProjectData,
     handleUpdateContextDocumentStatus,
     handleUpdateContextProjectFile,
