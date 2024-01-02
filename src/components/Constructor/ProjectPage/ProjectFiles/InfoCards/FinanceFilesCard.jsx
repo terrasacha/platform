@@ -22,7 +22,7 @@ import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { Form, Table } from "react-bootstrap";
 import { notify } from "utilities/notify";
 
-export default function FinanceCard(props) {
+export default function FinanceCard({ visible }) {
   const { user } = useAuth();
 
   const { projectData } = useProjectData();
@@ -44,8 +44,8 @@ export default function FinanceCard(props) {
     if (globalOwnerAcceptsPfID) {
       const updatedProductFeature = {
         id: globalOwnerAcceptsPfID,
-        value: "true"
-      }
+        value: "true",
+      };
       await API.graphql(
         graphqlOperation(updateProductFeature, { input: updatedProductFeature })
       );
@@ -57,83 +57,86 @@ export default function FinanceCard(props) {
       (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
     );
 
-    const pfID = pf.id
-    const pfValue = pf.value
+    const pfID = pf.id;
+    const pfValue = pf.value;
 
     setGlobalOwnerAcceptsPfID(pfID);
-    setIsAccepted(pfValue === "true" ? true : false)
+    setIsAccepted(pfValue === "true" ? true : false);
   }, []);
 
-  return isValid && validadorShow ? (
-    <>
-      {user?.id && projectData.projectPostulant?.id.includes(user.id) && (
-        <div className="row p-3 m-2 confirmacion_finan">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24"
-            viewBox="0 -960 960 960"
-            width="24"
-          >
-            <path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" />
-          </svg>
-          Por favor, verifica cuidadosamente los siguientes indicadores
-          financieros. Estas serán las tendencias y la evolución que tendrá el
-          proyecto, según nuestros expertos. Debes estar de acuerdo con esto
-          para que tu proyecto sea publicado en nuestro Marketplace.<br></br>
-          <br></br>
-          <span className="text-center">
-            Confirmo que leí y estoy deacuerdo con los indicadores presentados
-            por SUAN.{" "}
-          </span>
-          <br></br>
-          <Button
-            className="m-auto d-block w-25 mt-3"
-            onClick={() => {
-              handleBotoncheckpostulant();
-            }}
-          >
-            Aceptar información financiera
-          </Button>
-        </div>
-      )}
-      <div className="container">
-        <div className="row">
-          <DistributionToken infoTable={dataToken} />
-          <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
-          <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
-          <RevenuesProducts infoTable={dataRevenues.revenuesByProduct} />
-        </div>
-      </div>
-    </>
-  ) : (
-    <>
-      <div className="container">
-        {isAccepted && (
-          <div className="row accept">
-            <CheckIcon className="col col-1" />
-            <p className="col col-11">
-              La información financiera ya fue leída y aceptada correctamente
-            </p>
+  return (
+    visible &&
+    (isValid && validadorShow ? (
+      <>
+        {user?.id && projectData.projectPostulant?.id.includes(user.id) && (
+          <div className="row p-3 m-2 confirmacion_finan">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              viewBox="0 -960 960 960"
+              width="24"
+            >
+              <path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" />
+            </svg>
+            Por favor, verifica cuidadosamente los siguientes indicadores
+            financieros. Estas serán las tendencias y la evolución que tendrá el
+            proyecto, según nuestros expertos. Debes estar de acuerdo con esto
+            para que tu proyecto sea publicado en nuestro Marketplace.<br></br>
+            <br></br>
+            <span className="text-center">
+              Confirmo que leí y estoy deacuerdo con los indicadores presentados
+              por SUAN.{" "}
+            </span>
+            <br></br>
+            <Button
+              className="m-auto d-block w-25 mt-3"
+              onClick={() => {
+                handleBotoncheckpostulant();
+              }}
+            >
+              Aceptar información financiera
+            </Button>
           </div>
         )}
-        <div className="row">
-          {user?.id &&
-            projectData.projectPostulant?.id.includes(user.id) &&
-            isAccepted && (
-              <ClaimTokens
-                tokenName={projectData.projectInfo?.token.name}
-                ownerTokensAmount={
-                  projectData.projectInfo?.token.amountDistribution.owner
-                }
-              />
-            )}
-          <DistributionToken infoTable={dataToken} totalOwner={totalOwner} />
-          <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
-          <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
-          <RevenuesProducts infoTable={dataRevenues.revenuesByProduct} />
+        <div className="container">
+          <div className="row">
+            <DistributionToken infoTable={dataToken} />
+            <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
+            <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
+            <RevenuesProducts infoTable={dataRevenues.revenuesByProduct} />
+          </div>
         </div>
-      </div>
-    </>
+      </>
+    ) : (
+      <>
+        <div className="container">
+          {isAccepted && (
+            <div className="row accept">
+              <CheckIcon className="col col-1" />
+              <p className="col col-11">
+                La información financiera ya fue leída y aceptada correctamente
+              </p>
+            </div>
+          )}
+          <div className="row">
+            {user?.id &&
+              projectData.projectPostulant?.id.includes(user.id) &&
+              isAccepted && (
+                <ClaimTokens
+                  tokenName={projectData.projectInfo?.token.name}
+                  ownerTokensAmount={
+                    projectData.projectInfo?.token.amountDistribution.owner
+                  }
+                />
+              )}
+            <DistributionToken infoTable={dataToken} totalOwner={totalOwner} />
+            <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
+            <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
+            <RevenuesProducts infoTable={dataRevenues.revenuesByProduct} />
+          </div>
+        </div>
+      </>
+    ))
   );
 }
 
@@ -282,7 +285,16 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
         distribuirlos entre los diferentes propietarios del proyecto según tu
         preferencia.
       </p>
-      <p>No tienes una billetera? Crea una <a href="https://marketplace.suan.global/generate-wallet" target="_blank" rel="noreferrer">aquí.</a></p>
+      <p>
+        No tienes una billetera? Crea una{" "}
+        <a
+          href="https://marketplace.suan.global/generate-wallet"
+          target="_blank"
+          rel="noreferrer"
+        >
+          aquí.
+        </a>
+      </p>
       <Table responsive>
         <thead className="text-center">
           <tr>
@@ -516,7 +528,7 @@ function IndicatorsProducts({ infoTable, typeInfo }) {
               key={index}
             >
               <td className="px-3 py-2">{row.CONCEPTO}</td>
-              <td className="px-3 py-2">{row.VALOR}</td>
+              <td className="px-3 py-2">{row.CANTIDAD}</td>
               <td className="px-3 py-2">COP</td>
             </tr>
           ))}
@@ -552,7 +564,7 @@ function RevenuesProducts({ infoTable, typeInfo }) {
               key={index}
             >
               <td className="px-3 py-2">{row.CONCEPTO}</td>
-              <td className="px-3 py-2">{row.VALOR}</td>
+              <td className="px-3 py-2">{row.CANTIDAD}</td>
               <td className="px-3 py-2">COP</td>
             </tr>
           ))}

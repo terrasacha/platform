@@ -11,7 +11,7 @@ import { createVerificationComment } from "../../../../graphql/mutations";
 import { convertAWSDatetimeToDate, capitalizeWords } from "../utils";
 import { v4 as uuidv4 } from "uuid";
 
-export default function ProjectFiles() {
+export default function ProjectFiles({ visible }) {
   const [isMessageCardActive, setIsMessageCardActive] = useState(false);
   const [selectedVerificationId, setSelectedVerificationId] = useState(null);
   const [newMessage, setNewMessage] = useState("");
@@ -93,38 +93,42 @@ export default function ProjectFiles() {
   };
 
   return (
-    <div className="row row-cols-1 row-cols-xl-2 g-4">
-      <div className={isMessageCardActive ? "col" : "col-12 col-xl-12"}>
-        <PostulantFilesInfoCard
-          projectFiles={projectData.projectFiles}
-          handleMessageButtonClick={handleMessageButtonClick}
-          setIsDocApproved={setIsDocApproved}
-          isVerifier={isVerifier}
-          isPostulant={isPostulant}
-          handleSendMessage={handleSendMessage}
-        />
-      </div>
-      {isMessageCardActive && (
-        <div className="col">
-          <MessagesHistoryCard
-            className="scale-up-ver-top"
-            messages={messages}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-            handleSendMessageButtonClick={handleSendMessageButtonClick}
-            isPostulant={isPostulant}
-            isFileVerifier={isFileVerifier}
-            isDocApproved={isDocApproved}
-          />
+    <>
+      {visible && (
+        <div className="row row-cols-1 row-cols-xl-2 g-4">
+          <div className={isMessageCardActive ? "col" : "col-12 col-xl-12"}>
+            <PostulantFilesInfoCard
+              projectFiles={projectData.projectFiles}
+              handleMessageButtonClick={handleMessageButtonClick}
+              setIsDocApproved={setIsDocApproved}
+              isVerifier={isVerifier}
+              isPostulant={isPostulant}
+              handleSendMessage={handleSendMessage}
+            />
+          </div>
+          {isMessageCardActive && (
+            <div className="col">
+              <MessagesHistoryCard
+                className="scale-up-ver-top"
+                messages={messages}
+                newMessage={newMessage}
+                setNewMessage={setNewMessage}
+                handleSendMessageButtonClick={handleSendMessageButtonClick}
+                isPostulant={isPostulant}
+                isFileVerifier={isFileVerifier}
+                isDocApproved={isDocApproved}
+              />
+            </div>
+          )}
+          {/* <div className="col-12 col-xl-12">
+      <ValidatorFilesInfoCard
+        projectValidatorFiles={projectData.projectFilesValidators.projectValidatorDocuments}
+        isVerifier={isVerifier}
+        isPostulant={isPostulant}
+      />
+    </div> */}
         </div>
       )}
-      {/* <div className="col-12 col-xl-12">
-        <ValidatorFilesInfoCard
-          projectValidatorFiles={projectData.projectFilesValidators.projectValidatorDocuments}
-          isVerifier={isVerifier}
-          isPostulant={isPostulant}
-        />
-      </div> */}
-    </div>
+    </>
   );
 }

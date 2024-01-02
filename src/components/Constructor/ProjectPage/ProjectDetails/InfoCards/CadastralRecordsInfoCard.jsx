@@ -3,12 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "../../../../common/Card";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { TrashIcon } from "components/common/icons/TrashIcon";
-import { Button, Form, Table } from "react-bootstrap";
+import { Button, Form, InputGroup, Table } from "react-bootstrap";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { notify } from "../../../../../utilities/notify";
 import { API, Storage, graphqlOperation } from "aws-amplify";
+import Swal from "sweetalert2";
 import {
   createDocument,
   createProductFeature,
@@ -19,36 +20,116 @@ import {
   updateDocument,
   updateProductFeature,
 } from "graphql/mutations";
-import Swal from "sweetalert2";
-import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { useAuth } from "context/AuthContext";
 import { fetchProjectDataByProjectID } from "../../api";
+import WebAppConfig from "components/common/_conf/WebAppConfig";
+import { XIcon } from "components/common/icons/XIcon";
+import { CheckIcon } from "components/common/icons/CheckIcon";
 
-export default function OwnerInfoCard(props) {
+export default function CadastralRecordsInfoCard(props) {
   const { className, autorizedUser, setProgressChange, tooltip } = props;
-  const { projectData, handleUpdateContextProjectFile, handleUpdateContextProjectOwners, handleSetContextProjectFile } = useProjectData();
+  const {
+    projectData,
+    handleUpdateContextProjectCadastralRecordsData,
+    handleUpdateContextProjectFile,
+    handleSetContextProjectFile,
+  } = useProjectData();
   const { user } = useAuth();
 
   const fileInputRef = useRef(null);
 
-  const [tokenHistoricalData, setTokenHistoricalData] = useState([]);
+  const [multipleData, setMultipleData] = useState([]);
   const [executedOnce, setExecutedOnce] = useState(false);
-  const [projectOwnersPfID, setProjectOwnersPfID] = useState(null);
+  const [cadastralData, setCadastralDataPfID] = useState(null);
+  const [predialFetchedData, setPredialFetchedData] = useState({});
 
   useEffect(() => {
-    if (projectData && projectData.projectOwners) {
+    if (projectData && projectData.projectCadastralRecords) {
       let ownersData =
-        [...(projectData.projectOwners.owners)].map((ownerData) => {
-          return {
-            ...ownerData,
-            editing: false,
-          };
-        }) || [];
+        [...projectData.projectCadastralRecords.cadastralRecords].map(
+          (cadastralData) => {
+            return {
+              ...cadastralData,
+              editing: false,
+            };
+          }
+        ) || [];
 
-      setProjectOwnersPfID(projectData.projectOwners.pfID);
-      setTokenHistoricalData(ownersData);
+      setCadastralDataPfID(projectData.projectCadastralRecords.pfID);
+      setMultipleData(ownersData);
     }
   }, [projectData]);
+
+  useEffect(() => {
+    if (multipleData.length > 0 && !executedOnce) {
+      getPredialDataByCadastralNumber(); // Llamada a la función getData
+      setExecutedOnce(true);
+    }
+    if (multipleData.length > 0 && executedOnce) {
+      const obj = multipleData.filter((data) => data.editing === true)[0];
+      console.log(obj);
+
+      if (obj) {
+        let cadastralNumberLength = obj.cadastralNumber.length;
+        if (cadastralNumberLength === 20 || cadastralNumberLength === 30) {
+          getPredialDataByCadastralNumber();
+        }
+      }
+    }
+  }, [multipleData]);
+
+  const getPredialDataByCadastralNumber = async () => {
+    // URL de la consulta
+    const url =
+      "https://services2.arcgis.com/RVvWzU3lgJISqdke/arcgis/rest/services/CATASTRO_PUBLICO_Noviembre_2023_gdb/FeatureServer/17/query";
+    const cadastralNumbersArray = multipleData.map(
+      (item) => item.cadastralNumber
+    );
+
+    const whereClause = `NUMERO_DEL_PREDIO IN ('${cadastralNumbersArray.join(
+      "','"
+    )}')`;
+
+    // Parámetros de la consulta
+    const queryParams = {
+      where: whereClause,
+      outFields: "*",
+      f: "pjson",
+      token: "", // Asegúrate de reemplazar "tu_token_aqui" con el token real
+    };
+
+    // Construir la URL completa con los parámetros
+    const fullUrl = `${url}?${new URLSearchParams(queryParams)}`;
+
+    try {
+      const response = await fetch(fullUrl);
+      const data = await response.json();
+      const mappedData = data.features.reduce((result, feature) => {
+        const numeroDelPredio = feature.attributes.NUMERO_DEL_PREDIO;
+        const areaTerreno = feature.attributes.AREA_TERRENO;
+        const direccionPredio = feature.attributes.DIRECCION;
+
+        result[numeroDelPredio] = {
+          area: areaTerreno,
+          predio: direccionPredio,
+        };
+        return result;
+      }, {});
+      setPredialFetchedData(mappedData);
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+    }
+  };
+
+  const handleFileChange = (e, indexToSaveFile) => {
+    setMultipleData((prevState) =>
+      prevState.map((item, index) =>
+        index === indexToSaveFile
+          ? { ...item, certificate: e.target.files[0] }
+          : item
+      )
+    );
+  };
 
   const handleUploadButton = (index) => {
     Swal.fire({
@@ -65,22 +146,12 @@ export default function OwnerInfoCard(props) {
     });
   };
 
-  const handleFileChange = (e, indexToSaveFile) => {
-    setTokenHistoricalData((prevState) =>
-      prevState.map((item, index) =>
-        index === indexToSaveFile
-          ? { ...item, certificate: e.target.files[0] }
-          : item
-      )
-    );
-  };
-
   const handleEditHistoricalData = async (indexToStartEditing) => {
-    const isEditingSomeHistoryData = tokenHistoricalData.some(
-      (ownerData) => ownerData.editing === true
+    const isEditingSomeHistoryData = multipleData.some(
+      (cadastralData) => cadastralData.editing === true
     );
     if (!isEditingSomeHistoryData) {
-      setTokenHistoricalData((prevState) =>
+      setMultipleData((prevState) =>
         prevState.map((item, index) =>
           index === indexToStartEditing ? { ...item, editing: true } : item
         )
@@ -96,14 +167,13 @@ export default function OwnerInfoCard(props) {
   const handleChangeInputValue = async (e) => {
     const { name, value } = e.target;
 
-    if (name.includes("owner_")) {
-      console.log("entro");
-      const [_, tokenHistoryFeature, tokenHistoryIndex] = name.split("_");
+    if (name.includes("cadastraldata_")) {
+      const [_, multipleDataFeature, multipleDataIndex] = name.split("_");
 
-      setTokenHistoricalData((prevState) =>
+      setMultipleData((prevState) =>
         prevState.map((item, index) =>
-          index === parseInt(tokenHistoryIndex)
-            ? { ...item, [tokenHistoryFeature]: value }
+          index === parseInt(multipleDataIndex)
+            ? { ...item, [multipleDataFeature]: value }
             : item
         )
       );
@@ -111,17 +181,17 @@ export default function OwnerInfoCard(props) {
   };
 
   const handleAddNewPeriodToHistoricalData = async () => {
-    const isEditingSomeHistoryData = tokenHistoricalData.some(
-      (ownerData) => ownerData.editing === true
+    const isEditingSomeHistoryData = multipleData.some(
+      (cadastralData) => cadastralData.editing === true
     );
     if (!isEditingSomeHistoryData) {
-      setTokenHistoricalData((prevState) => {
+      setMultipleData((prevState) => {
         return [
           ...prevState,
           {
             name: "",
-            docNumber: "",
-            docType: "",
+            cadastralNumber: "",
+            matricula: "",
             certificate: null,
             editing: true,
           },
@@ -135,13 +205,12 @@ export default function OwnerInfoCard(props) {
     }
   };
 
-  function getImportantValues(ownersDataFixed) {
-    return ownersDataFixed.map((ownerData) => {
+  function getImportantValues(cadastralDataFixed) {
+    return cadastralDataFixed.map((cadastralData) => {
       return {
-        name: ownerData.name.toUpperCase(),
-        docType: ownerData.docType,
-        docNumber: ownerData.docNumber,
-        documentID: ownerData.documentID,
+        cadastralNumber: cadastralData.cadastralNumber,
+        matricula: cadastralData.matricula,
+        documentID: cadastralData.documentID,
       };
     });
   }
@@ -272,14 +341,16 @@ export default function OwnerInfoCard(props) {
 
   const handleSaveHistoricalData = async (indexToSave) => {
     let error = false;
-    const newDocNumber = tokenHistoricalData[indexToSave].docNumber;
-    // const count = projectData.projectInfo.token.historicalData.reduce((acc, hd) => (hd.period === tokenHistoricalData[indexToSave].period ? acc + 1 : acc), 0);
-    const isAlreadyExistingDocNumber =
-      projectData.projectInfo.token.historicalData.some(
-        (hd, index) => hd.docNumber === newDocNumber && index !== indexToSave
+    const newCadastralNumber = multipleData[indexToSave].cadastralNumber;
+    const certificate = multipleData[indexToSave].certificate;
+    // const count = projectData.projectInfo.token.historicalData.reduce((acc, hd) => (hd.period === multipleData[indexToSave].period ? acc + 1 : acc), 0);
+    const isAlreadyExistingCadastralNumber =
+      projectData.projectCadastralRecords.cadastralRecords.some(
+        (cd, index) =>
+          cd.cadastralNumber === newCadastralNumber && index !== indexToSave
       );
 
-    if (isAlreadyExistingDocNumber) {
+    if (isAlreadyExistingCadastralNumber) {
       notify({
         msg: "El periodo que intentas guardar ya esta definido",
         type: "error",
@@ -287,22 +358,15 @@ export default function OwnerInfoCard(props) {
       return;
     }
 
-    const certificate = tokenHistoricalData[indexToSave].certificate;
-
-    if (
-      tokenHistoricalData[indexToSave].name &&
-      tokenHistoricalData[indexToSave].docType &&
-      tokenHistoricalData[indexToSave].docNumber &&
-      (certificate || tokenHistoricalData[indexToSave].documentID)
-    ) {
-      let documentID = tokenHistoricalData[indexToSave].documentID;
+    if (multipleData[indexToSave].cadastralNumber) {
+      let documentID = multipleData[indexToSave].documentID;
       let docID = null;
       if (certificate) {
         docID = await saveFileOnDB(
           certificate,
           documentID !== undefined ? documentID : null
         );
-        setTokenHistoricalData((prevState) =>
+        setMultipleData((prevState) =>
           prevState.map((item, index) =>
             index === indexToSave
               ? {
@@ -315,7 +379,7 @@ export default function OwnerInfoCard(props) {
           )
         );
       } else {
-        setTokenHistoricalData((prevState) =>
+        setMultipleData((prevState) =>
           prevState.map((item, index) =>
             index === indexToSave
               ? {
@@ -328,11 +392,11 @@ export default function OwnerInfoCard(props) {
         );
       }
 
-      let tempTokenHD = tokenHistoricalData;
-      let tempTokenHistoricalData;
+      let tempMD = multipleData;
+      let tempMultipleData;
 
       if (certificate) {
-        tempTokenHistoricalData = tempTokenHD.map((item, index) =>
+        tempMultipleData = tempMD.map((item, index) =>
           index === indexToSave
             ? {
                 ...item,
@@ -343,7 +407,7 @@ export default function OwnerInfoCard(props) {
             : item
         );
       } else {
-        tempTokenHistoricalData = tempTokenHD.map((item, index) =>
+        tempMultipleData = tempMD.map((item, index) =>
           index === indexToSave
             ? {
                 ...item,
@@ -354,10 +418,22 @@ export default function OwnerInfoCard(props) {
         );
       }
 
-      if (projectOwnersPfID) {
+      setMultipleData((prevState) =>
+        prevState.map((item, index) =>
+          index === indexToSave
+            ? {
+                ...item,
+                editing: false,
+                updatedAt: Date.now(),
+              }
+            : item
+        )
+      );
+
+      if (cadastralData) {
         let tempProductFeature = {
-          id: projectOwnersPfID,
-          value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
+          id: cadastralData,
+          value: JSON.stringify(getImportantValues(tempMultipleData)),
         };
         const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
@@ -366,17 +442,17 @@ export default function OwnerInfoCard(props) {
         if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
-          value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
+          value: JSON.stringify(getImportantValues(tempMultipleData)),
           isToBlockChain: false,
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
-          featureID: "B_owners",
+          featureID: "A_predio_ficha_catastral",
         };
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         );
 
-        setProjectOwnersPfID(response.data.createProductFeature.id);
+        setCadastralDataPfID(response.data.createProductFeature.id);
 
         if (!response.data.createProductFeature) error = true;
       }
@@ -388,10 +464,16 @@ export default function OwnerInfoCard(props) {
       const mappedDocument = updatedProjectData.projectFiles.find(
         (item) => item.id === docID
       );
-      const projectOwnersData = updatedProjectData.projectOwners
 
-      await handleUpdateContextProjectFile(docID, mappedDocument);
-      await handleUpdateContextProjectOwners(projectOwnersData)
+      const projectCadastralRecordsData =
+        updatedProjectData.projectCadastralRecords;
+
+      if (certificate) {
+        await handleUpdateContextProjectFile(docID, mappedDocument);
+      }
+      await handleUpdateContextProjectCadastralRecordsData(
+        projectCadastralRecordsData
+      );
     } else {
       notify({
         msg: "Completa todos los campos antes de guardar",
@@ -413,7 +495,7 @@ export default function OwnerInfoCard(props) {
     let error = false;
 
     const documentToDelete = projectData.projectFiles.find(
-      (item) => item.id === tokenHistoricalData[indexToDelete].documentID
+      (item) => item.id === multipleData[indexToDelete].documentID
     );
 
     if (documentToDelete) {
@@ -470,16 +552,16 @@ export default function OwnerInfoCard(props) {
       }
     }
 
-    // Actualizar tokenHistoricalData
-    const tempTokenHistoricalData = tokenHistoricalData.filter(
+    // Actualizar multipleData
+    const tempMultipleData = multipleData.filter(
       (_, index) => index !== indexToDelete
     );
-    setTokenHistoricalData(tempTokenHistoricalData);
+    setMultipleData(tempMultipleData);
 
-    if (projectOwnersPfID) {
+    if (cadastralData) {
       let tempProductFeature = {
-        id: projectOwnersPfID,
-        value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
+        id: cadastralData,
+        value: JSON.stringify(getImportantValues(tempMultipleData)),
       };
       const response = await API.graphql(
         graphqlOperation(updateProductFeature, { input: tempProductFeature })
@@ -488,16 +570,16 @@ export default function OwnerInfoCard(props) {
       if (!response.data.updateProductFeature) error = true;
     } else {
       let tempProductFeature = {
-        value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
+        value: JSON.stringify(getImportantValues(tempMultipleData)),
         isToBlockChain: false,
         isOnMainCard: false,
         productID: projectData.projectInfo.id,
-        featureID: "B_owners",
+        featureID: "A_predio_ficha_catastral",
       };
       const response = await API.graphql(
         graphqlOperation(createProductFeature, { input: tempProductFeature })
       );
-      setProjectOwnersPfID(response.data.createProductFeature.id);
+      setCadastralDataPfID(response.data.createProductFeature.id);
 
       if (!response.data.createProductFeature) error = true;
     }
@@ -506,10 +588,13 @@ export default function OwnerInfoCard(props) {
       projectData.projectInfo.id
     );
 
-    const projectOwnersData = updatedProjectData.projectOwners
+    const projectCadastralRecordsData =
+      updatedProjectData.projectCadastralRecords;
 
-    await handleUpdateContextProjectOwners(projectOwnersData)
-    await handleSetContextProjectFile(updatedProjectData.projectFiles)
+    await handleUpdateContextProjectCadastralRecordsData(
+      projectCadastralRecordsData
+    );
+    await handleSetContextProjectFile(updatedProjectData.projectFiles);
 
     if (!error) {
       setProgressChange(true);
@@ -535,94 +620,72 @@ export default function OwnerInfoCard(props) {
     }
   };
 
+  const renderAreaByCadastralNumber = (cadastralNumber) => {
+    if (cadastralNumber in predialFetchedData) {
+      return (
+        parseFloat(predialFetchedData[cadastralNumber].area).toLocaleString(
+          "es-ES"
+        ) + " m2"
+      );
+    } else {
+      return "...";
+    }
+  };
+
+  const renderPredioNameByCadastralNumber = (cadastralNumber) => {
+    if (cadastralNumber in predialFetchedData) {
+      return predialFetchedData[cadastralNumber].predio;
+    } else {
+      return "...";
+    }
+  };
+
   return (
     <Card className={className}>
-      <Card.Header
-        title="Información de titulares"
-        sep={true}
-        tooltip={tooltip}
-      />
+      <Card.Header title="Información predial" sep={true} tooltip={tooltip} />
       <Card.Body>
-        {/* <div className="row">
-          <div className="col-12 col-md-6">
-            <FormGroup
-              disabled
-              label="Nombre del titular"
-              inputValue={projectData.projectOwner?.name}
-            />
-          </div>
-          <div className="col-12">
-            <div className="row">
-              <div className="col-6">
-                <FormGroup
-                  disabled
-                  label="Tipo de documento"
-                  inputType="radio"
-                  optionList={[
-                    { label: "CC", value: "CC" },
-                    { label: "NIT", value: "NIT" },
-                  ]}
-                  optionCheckedList={projectData.projectOwner?.docType}
-                />
-              </div>
-              <div className="col-6">
-                <FormGroup
-                  disabled
-                  label="Número de identificación"
-                  inputValue={projectData.projectOwner?.docNumber}
-                />
-              </div>
-            </div>
-          </div>
-        </div> */}
         <div className="row">
           <Table responsive>
             <thead className="text-center">
               <tr>
-                <th style={{ width: "300px" }}>Nombre</th>
-                <th style={{ width: "120px" }}>Tipo Documento</th>
-                <th style={{ width: "120px" }}>Numero Documento</th>
-                <th style={{ width: "120px" }}>Certificado de tradición</th>
+                <th style={{ width: "240px" }}>Identificador catastral</th>
+                <th style={{ width: "180px" }}>Matrícula inmobiliaria</th>
+                <th style={{ width: "180px" }}>Certificado de tradición</th>
+                <th style={{ width: "180px" }}>Nombre de predio</th>
+                <th style={{ width: "180px" }}>Área</th>
                 <th style={{ width: "120px" }}></th>
               </tr>
             </thead>
             <tbody className="align-middle">
-              {tokenHistoricalData.map((data, index) => {
+              {multipleData.map((data, index) => {
                 return (
                   <tr key={index} className="text-center">
                     {data.editing ? (
                       <>
                         <td>
-                          <Form.Control
-                            size="sm"
-                            type="text"
-                            value={data.name}
-                            className="text-center"
-                            name={`owner_name_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          />
-                        </td>
-                        <td>
-                          <Form.Select
-                            size="sm"
-                            type="text"
-                            value={data.docType}
-                            className="text-center"
-                            name={`owner_docType_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          >
-                            <option disabled value=""></option>
-                            <option value="cc">CC</option>
-                            <option value="nit">NIT</option>
-                          </Form.Select>
+                          <div className="d-flex align-items-center">
+                            <Form.Control
+                              size="sm"
+                              type="text"
+                              value={data.cadastralNumber}
+                              className="text-center"
+                              name={`cadastraldata_cadastralNumber_${index}`}
+                              onChange={(e) => handleChangeInputValue(e)}
+                            />
+                            {data.cadastralNumber in predialFetchedData ? (
+                              <CheckIcon className="ms-2 text-success" />
+                            ) : (
+                              <XIcon className="ms-2 text-danger" />
+                            )}
+                          </div>
                         </td>
                         <td>
                           <Form.Control
                             size="sm"
                             type="text"
-                            value={data.docNumber}
+                            value={data.matricula}
                             className="text-center"
-                            name={`owner_docNumber_${index}`}
+                            name={`cadastraldata_matricula_${index}`}
                             onChange={(e) => handleChangeInputValue(e)}
                           />
                         </td>
@@ -638,6 +701,14 @@ export default function OwnerInfoCard(props) {
                               ? "Actualizar"
                               : "Cargar"}
                           </Button>
+                        </td>
+                        <td>
+                          {renderPredioNameByCadastralNumber(
+                            data.cadastralNumber
+                          )}
+                        </td>
+                        <td>
+                          {renderAreaByCadastralNumber(data.cadastralNumber)}
                         </td>
                         <td className="text-end">
                           <Button
@@ -660,10 +731,19 @@ export default function OwnerInfoCard(props) {
                       </>
                     ) : (
                       <>
-                        <td>{data.name?.toUpperCase()}</td>
-                        <td>{data.docType?.toUpperCase()}</td>
-                        <td>{data.docNumber}</td>
+                        <td className="text-break">
+                          {data.cadastralNumber?.toUpperCase()}
+                        </td>
+                        <td className="text-break">{data.matricula}</td>
                         <td>{renderFileLinkByDocumentID(data.documentID)}</td>
+                        <td className="text-break">
+                          {renderPredioNameByCadastralNumber(
+                            data.cadastralNumber
+                          )}
+                        </td>
+                        <td>
+                          {renderAreaByCadastralNumber(data.cadastralNumber)}
+                        </td>
                         <td className="text-end">
                           <Button
                             size="sm"
@@ -690,7 +770,7 @@ export default function OwnerInfoCard(props) {
                 );
               })}
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <div className="d-flex">
                     <Button
                       size="sm"

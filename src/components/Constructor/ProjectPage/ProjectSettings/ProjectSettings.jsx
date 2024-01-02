@@ -14,7 +14,7 @@ import { fetchProjectDataByProjectID } from "../api";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import useProjectItems from "hooks/useProjectItems";
 
-export default function ProjectSettings() {
+export default function ProjectSettings({ visible }) {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
   const { projectData, handleUpdateContextProjectData } = useProjectData();
@@ -34,7 +34,6 @@ export default function ProjectSettings() {
       .catch((error) => setValidatorSubRole(undefined));
   }, []);
 
-  console.log("projectItems", projectItems);
   const handleSetValidatorDataComplete = async (item) => {
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
@@ -132,109 +131,123 @@ export default function ProjectSettings() {
     }
   };
   return (
-    <div className="row row-cols-1  g-4">
-      <div className="col">
-        <ProjectSettingsCard />
-      </div>
-      <div className={s.selectSettingTypeContainer}>
-        <button
-          className={`${s.selectSettingType} ${
-            activeSection === "technical" ? s.selectSettingTypeActive : ""
-          }`}
-          onClick={() => setActiveSection("technical")}
-        >
-          Configuración técnica
-        </button>
-        <button
-          className={`${s.selectSettingType} ${
-            activeSection === "financial" ? s.selectSettingTypeActive : ""
-          }`}
-          onClick={() => setActiveSection("financial")}
-        >
-          Configuración financiera
-        </button>
-      </div>
-      {activeSection === "technical" && (
-        <>
+    <>
+      {visible && (
+        <div className="row row-cols-1  g-4">
           <div className="col">
-            <DescriptionValidator
-              canEdit={checkIfIsEditable("technical")}
-              /* (validatorSubRole === undefined
+            <ProjectSettingsCard />
+          </div>
+          <div className={s.selectSettingTypeContainer}>
+            <button
+              className={`${s.selectSettingType} ${
+                activeSection === "technical" ? s.selectSettingTypeActive : ""
+              }`}
+              onClick={() => setActiveSection("technical")}
+            >
+              Configuración técnica
+            </button>
+            <button
+              className={`${s.selectSettingType} ${
+                activeSection === "financial" ? s.selectSettingTypeActive : ""
+              }`}
+              onClick={() => setActiveSection("financial")}
+            >
+              Configuración financiera
+            </button>
+          </div>
+          {activeSection === "technical" && (
+            <>
+              <div className="col">
+                <DescriptionValidator
+                  canEdit={checkIfIsEditable("technical")}
+                  /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
                 !projectData.isTechnicalFreeze */
-            />
-          </div>
-          <div className="col">
-            <GenericInputTable
-              title={"Ingresos por producto"}
-              fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
-              financialInfoType={"revenuesByProduct"}
-              canEdit={checkIfIsEditable("technical")}
-              conceptOptions={projectItems["Ingresos por producto"]}
-            />
-          </div>
-          <div className="col">
-            <GenericInputTable
-              title={"Productos del ciclo del proyecto"}
-              fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
-              financialInfoType={"productsOfCycleProject"}
-              canEdit={checkIfIsEditable("technical")}
-              conceptOptions={projectItems["Productos del ciclo del proyecto"]}
-            />
-          </div>
-          <div className="col">
-            <GenericInputTable
-              title={"Indicadores financieros (Proyecto)"}
-              fID={"GLOBAL_INDICADORES_FINANCIEROS"}
-              financialInfoType={"financialIndicators"}
-              canEdit={checkIfIsEditable("technical")}
-              conceptOptions={projectItems["Indicadores financieros (Proyecto)"]}
-            />
-          </div>
-          <div className="d-flex justify-content-center mb-2">
-            <Button
-              disabled={projectData.isTechnicalFreeze}
-              onClick={() => handleSetValidatorDataComplete("technicalInfo")}
-            >
-              Oficializar información técnica
-            </Button>
-          </div>
-        </>
-      )}
-      {activeSection === "financial" && (
-        <>
-          <div className="col">
-            <TokenSettingsCard
-              canEdit={checkIfIsEditable("financial")}
-              /* (validatorSubRole === undefined
+                />
+              </div>
+              <div className="col">
+                <GenericInputTable
+                  title={"Ingresos por producto"}
+                  fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
+                  financialInfoType={"revenuesByProduct"}
+                  canEdit={checkIfIsEditable("technical")}
+                  conceptOptions={projectItems["Ingresos por producto"]}
+                />
+              </div>
+              <div className="col">
+                <GenericInputTable
+                  title={"Productos del ciclo del proyecto"}
+                  fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
+                  financialInfoType={"productsOfCycleProject"}
+                  canEdit={checkIfIsEditable("technical")}
+                  conceptOptions={
+                    projectItems["Productos del ciclo del proyecto"]
+                  }
+                />
+              </div>
+              <div className="col">
+                <GenericInputTable
+                  title={"Indicadores financieros (Proyecto)"}
+                  fID={"GLOBAL_INDICADORES_FINANCIEROS"}
+                  financialInfoType={"financialIndicators"}
+                  canEdit={checkIfIsEditable("technical")}
+                  conceptOptions={
+                    projectItems["Indicadores financieros (Proyecto)"]
+                  }
+                />
+              </div>
+              <div className="d-flex justify-content-center mb-2">
+                <Button
+                  disabled={projectData.isTechnicalFreeze}
+                  onClick={() =>
+                    handleSetValidatorDataComplete("technicalInfo")
+                  }
+                >
+                  Oficializar información técnica
+                </Button>
+              </div>
+            </>
+          )}
+          {activeSection === "financial" && (
+            <>
+              <div className="col">
+                <TokenSettingsCard
+                  canEdit={checkIfIsEditable("financial")}
+                  /* (validatorSubRole === undefined
                   ? false
                   : activeSection !== validatorSubRole) ||
                 projectData.isFinancialFreeze */
-            />
-          </div>
-          <div className="col">
-            <CashFlowSettings canEdit={checkIfIsEditable("financial")} />
-          </div>
-          <div className="col">
-            <GenericInputTable
-              title={"Indicadores financieros (Token)"}
-              fID={"GLOBAL_INDICADORES_FINANCIEROS_TOKEN"}
-              financialInfoType={"financialIndicatorsToken"}
-              canEdit={checkIfIsEditable("financial")}
-              conceptOptions={projectItems["Indicadores financieros (Token)"]}
-            />
-          </div>
-          <div className="d-flex justify-content-center mb-2">
-            <Button
-              disabled={projectData.isFinancialFreeze}
-              onClick={() => handleSetValidatorDataComplete("financialInfo")}
-            >
-              Oficializar información financiera
-            </Button>
-          </div>
-        </>
+                />
+              </div>
+              <div className="col">
+                <CashFlowSettings canEdit={checkIfIsEditable("financial")} />
+              </div>
+              <div className="col">
+                <GenericInputTable
+                  title={"Indicadores financieros (Token)"}
+                  fID={"GLOBAL_INDICADORES_FINANCIEROS_TOKEN"}
+                  financialInfoType={"financialIndicatorsToken"}
+                  canEdit={checkIfIsEditable("financial")}
+                  conceptOptions={
+                    projectItems["Indicadores financieros (Token)"]
+                  }
+                />
+              </div>
+              <div className="d-flex justify-content-center mb-2">
+                <Button
+                  disabled={projectData.isFinancialFreeze}
+                  onClick={() =>
+                    handleSetValidatorDataComplete("financialInfo")
+                  }
+                >
+                  Oficializar información financiera
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }

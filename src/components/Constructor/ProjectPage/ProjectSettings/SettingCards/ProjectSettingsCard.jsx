@@ -5,9 +5,7 @@ import Card from "../../../../common/Card";
 import FormGroup from "../../../../common/FormGroup";
 
 import { useProjectData } from "../../../../../context/ProjectDataContext";
-import {
-  updateProduct,
-} from "../../../../../graphql/mutations";
+import { updateProduct } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
 import { Button } from "react-bootstrap";
 
@@ -16,14 +14,16 @@ import { fetchProjectDataByProjectID } from "../../api";
 export default function ProjectSettingsCard(props) {
   const { className } = props;
 
-  const { projectData } = useProjectData();
+  const { projectData, handleUpdateContextProjectInfo } = useProjectData();
   const [projectIsActive, setProjectIsActive] = useState(false);
   const [projectStatus, setProjectStatus] = useState("");
+  const [projectShowOn, setProjectShowOn] = useState("");
 
   useEffect(() => {
     if (projectData) {
       setProjectIsActive(projectData.projectInfo.isActive);
       setProjectStatus(projectData.projectInfo.status);
+      setProjectShowOn(projectData.projectInfo.showOn);
     }
   }, [projectData]);
 
@@ -54,6 +54,10 @@ export default function ProjectSettingsCard(props) {
     const { name, type, value, checked } = event.target;
     setProjectStatus(value);
   };
+  const handleChangeProjectShowOn = (event) => {
+    const { name, type, value, checked } = event.target;
+    setProjectShowOn(value);
+  };
 
   const handleSaveProjectStatus = async () => {
     let updatedProduct = {
@@ -65,6 +69,20 @@ export default function ProjectSettingsCard(props) {
     );
     notify({
       msg: "El estado del proyecto ha sido actualizado",
+      type: "success",
+    });
+  };
+  const handleSaveProjectShowOn = async () => {
+    let updatedProduct = {
+      id: projectData.projectInfo.id,
+      showOn: projectShowOn,
+    };
+    await API.graphql(
+      graphqlOperation(updateProduct, { input: updatedProduct })
+    );
+    handleUpdateContextProjectInfo({ showOn: projectShowOn });
+    notify({
+      msg: `El ahora se muestra en el marketplace de ${projectShowOn}`,
       type: "success",
     });
   };
@@ -94,6 +112,22 @@ export default function ProjectSettingsCard(props) {
           }
           onChangeInputValue={(e) => handleChangeProjectStatus(e)}
           onClickSaveBtn={() => handleSaveProjectStatus()}
+        />
+        <FormGroup
+          type="flex"
+          label="El proyecto debe mostrarse en: "
+          inputType="select"
+          inputSize="md"
+          optionList={[
+            { value: "Suan", label: "Suan" },
+            { value: "Terrasacha", label: "Terrasacha" },
+          ]}
+          inputValue={projectShowOn}
+          saveBtnDisabled={
+            projectData.projectInfo?.showOn === projectShowOn ? true : false
+          }
+          onChangeInputValue={(e) => handleChangeProjectShowOn(e)}
+          onClickSaveBtn={() => handleSaveProjectShowOn()}
         />
         <FormGroup
           label="Proyecto visible en Marketplace"

@@ -28,11 +28,50 @@ const listProducts = /* GraphQL */ `
             isOnMainCard
             isResult
             productID
+            verifications {
+              items {
+                userVerifierID
+                userVerifiedID
+                verificationComments {
+                  items {
+                    comment
+                    createdAt
+                    id
+                    isCommentByVerifier
+                  }
+                }
+                userVerified {
+                  name
+                }
+                userVerifier {
+                  name
+                }
+                id
+              }
+            }
+            documents {
+              items {
+                id
+                url
+                isApproved
+                docHash
+                data
+                isUploadedToBlockChain
+                productFeatureID
+                signed
+                signedHash
+                status
+                timeStamp
+                userID
+              }
+            }
             feature {
               name
               isVerifable
             }
             featureID
+            createdAt
+            updatedAt
           }
           nextToken
         }

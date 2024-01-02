@@ -394,17 +394,29 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
     })[0]?.id || "";
 
-  // Owners Data
-  const pfOwnersDataID =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "B_owners";
-    })[0]?.id || "";
+    // Owners Data
+    const pfOwnersDataID =
+      data.productFeatures.items.filter((item) => {
+        return item.featureID === "B_owners";
+      })[0]?.id || "";
+  
+    const ownersData = JSON.parse(
+      data.productFeatures.items.filter((item) => {
+        return item.featureID === "B_owners";
+      })[0]?.value || "[]"
+    );
 
-  const ownersData = JSON.parse(
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "B_owners";
-    })[0]?.value || "[]"
-  );
+    // Cadsatral Data
+    const pfCadastralDataID =
+      data.productFeatures.items.filter((item) => {
+        return item.featureID === "A_predio_ficha_catastral";
+      })[0]?.id || "";
+  
+    const cadastralData = JSON.parse(
+      data.productFeatures.items.filter((item) => {
+        return item.featureID === "A_predio_ficha_catastral";
+      })[0]?.value || "[]"
+    );
 
   const pfTotalTokenAmountID =
     data.productFeatures.items.filter((item) => {
@@ -650,6 +662,7 @@ export const mapProjectData = async (data) => {
       title: data.name,
       description: data.description,
       category: data.categoryID,
+      showOn: data.showOn,
       area: area,
       token: {
         pfIDs: {
@@ -697,6 +710,10 @@ export const mapProjectData = async (data) => {
     projectOwners: {
       pfID: pfOwnersDataID,
       owners: ownersData,
+    },
+    projectCadastralRecords: {
+      pfID: pfCadastralDataID,
+      cadastralRecords: cadastralData,
     },
     projectUses: await mapProjectUses(projectUses),
     projectRestrictions: {

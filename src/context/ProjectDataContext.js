@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import { fetchProjectDataByProjectID } from "components/Constructor/ProjectPage/api";
+import React, { useContext, useEffect, useState } from "react";
 
 const ProjectDataContext = React.createContext();
 
@@ -7,10 +8,29 @@ export function useProjectData() {
 }
 
 export function ProjectDataProvider({ children }) {
-  const [projectData, setProjectData] = useState({});
+  const [projectData, setProjectData] = useState(null);
+  const [projectID, setProjectID] = useState(null);
 
-  const handleProjectData = async (data) => {
+  useEffect(() => {
+    if (!projectID) {
+      console.error('Page parameter is missing.');
+      return;
+    }
+    const fetchDataToContext = async () => {
+      const data = await fetchProjectDataByProjectID(projectID);
+      console.log(data)
+      handleProjectData(data);
+    };
+
+    fetchDataToContext();
+  }, [projectID]);
+
+  const handleProjectData = (data) => {
     setProjectData(data);
+  };
+
+  const setNewProjectID = (data) => {
+    setProjectID(data);
   };
 
   const handleUpdateContextProjectData = async (data) => {
@@ -24,6 +44,20 @@ export function ProjectDataProvider({ children }) {
     setProjectData((prevData) => ({
       ...prevData,
       projectInfo: { ...prevData.projectInfo, ...data },
+    }));
+  };
+
+  const handleUpdateContextProjectOwners = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectOwners: data,
+    }));
+  };
+
+  const handleUpdateContextProjectCadastralRecordsData = async (data) => {
+    setProjectData((prevData) => ({
+      ...prevData,
+      projectCadastralRecords: data,
     }));
   };
 
@@ -111,7 +145,7 @@ export function ProjectDataProvider({ children }) {
   };
 
   const handleUpdateContextProjectFile = async (docID, data) => {
-    if (projectData.projectFiles.find((item) => item.id === docID)) {
+    if (docID && projectData.projectFiles.find((item) => item.id === docID)) {
       setProjectData((prevData) => ({
         ...prevData,
         projectFiles: prevData.projectFiles.map((file) => {
@@ -132,6 +166,7 @@ export function ProjectDataProvider({ children }) {
       }));
     }
   };
+  
 
   const handleSetContextProjectFile = async (updatedProjectFiles) => {
     setProjectData((prevData) => ({
@@ -185,6 +220,9 @@ export function ProjectDataProvider({ children }) {
   const contextProps = {
     projectData,
     handleProjectData,
+    setNewProjectID,
+    handleUpdateContextProjectOwners,
+    handleUpdateContextProjectCadastralRecordsData,
     handleUpdateContextProjectData,
     handleUpdateContextDocumentStatus,
     handleUpdateContextProjectFile,
