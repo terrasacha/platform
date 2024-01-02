@@ -190,15 +190,19 @@ export default class LandingPage extends Component {
 
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
-                  <Modal.Title className="text-center">Como postular mi proyecto</Modal.Title>
+                <div className="row">
+                  <div className="">
+                  <Modal.Title className="text-center fw-bolder w-full">¿CÓMO POSTULAR MI PROYECTO?</Modal.Title>
+                  </div>
+                  </div>
                 </Modal.Header>
                 <Modal.Body>
                   <ol>
-                    <li>Da Click en Registrarme y completa tus datos</li>
+                    <li>Da Click en Registrarme y completa tus datos, escoge en rol <strong>Propietario</strong></li>
                     <li>Ve a Perfil y luego a postular proyecto</li>
                     <li>Completa la información de tu proyecto</li>
                     <li>Tu proyecto será revisado y complementado por nuetros valdidadores</li>
-                    <li>Revisa la información adicional y aceptala, para que quede publicado</li>
+                    <li>Revisa la información adicional y aceptala, para que quede publicado en el Marketplace</li>
                   </ol>                
                 </Modal.Body>
                 <Modal.Footer>
