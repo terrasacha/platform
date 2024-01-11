@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 
 // Bootstrap
 import { Carousel } from 'react-bootstrap'
@@ -16,7 +16,8 @@ import marketImage from '../_images/market.jpg';
 import drones from '../_images/drone-con-camara.png';
 import blockchain from '../_images/cadena-de-bloques.png';
 import plataforma from '../_images/diseno-de-respuesta.png';
-
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 
 export default class LandingPage extends Component {
@@ -27,11 +28,20 @@ export default class LandingPage extends Component {
       productsLanding: [],
       productsImagesIsOnCarousel: []
     }
-    this.logOut = this.logOut.bind(this)
+    this.logOut = this.logOut.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleShow = this.handleShow.bind(this);
   }
 
   componentDidMount = async () => {
     await this.loadProducts()
+  }
+  handleClose() {
+    this.setState({ show: false });
+  }
+
+  handleShow() {
+    this.setState({ show: true });
   }
 
   async loadProducts() {
@@ -115,7 +125,7 @@ export default class LandingPage extends Component {
         nextToken 
       }
     }`;
-
+    
     const listProductsResult = await API.graphql(graphqlOperation(query));
     /* let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel */
     let tempListProductsResult = listProductsResult.data.listProducts.items.map((product) => {
@@ -143,6 +153,7 @@ export default class LandingPage extends Component {
   }
 
   render() {
+
     const urlS3Image = WebAppConfig.url_s3_public_images
     return (
       <div style={{minHeight: '100vh'}}>
@@ -172,7 +183,34 @@ export default class LandingPage extends Component {
           <div className='row'>
             <div className='col p-2 mx-3'>
               <a className='m-2 fondo-azul btn' href='https://marketplace.suan.global/'>Ver proyectos</a>
-              <a className='m-2 fondo-azul btn'href='https://platform.suan.global/login'>Tengo un proyecto</a>
+              <Button className="m-2 fondo-azul btn" onClick={this.handleShow}>
+              Tengo un proyecto
+              </Button>
+              
+
+              <Modal show={this.state.show} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                <div className="row">
+                  <div className="">
+                  <Modal.Title className="text-center fw-bolder w-full">¿CÓMO POSTULAR MI PROYECTO?</Modal.Title>
+                  </div>
+                  </div>
+                </Modal.Header>
+                <Modal.Body>
+                  <ol>
+                    <li>Da Click en Registrarme y completa tus datos, escoge en rol <strong>Propietario</strong></li>
+                    <li>Ve a Perfil y luego a postular proyecto</li>
+                    <li>Completa la información de tu proyecto</li>
+                    <li>Tu proyecto será revisado y complementado por nuetros valdidadores</li>
+                    <li>Revisa la información adicional y aceptala, para que quede publicado en el Marketplace</li>
+                  </ol>                
+                </Modal.Body>
+                <Modal.Footer>
+                  <a className='m-2 fondo-azul btn m-auto d-block'href='https://platform.suan.global/login' >Registrarme</a>
+                </Modal.Footer>
+              </Modal>
+            
+            
             </div>
             <div className='col'>
             </div>
@@ -271,7 +309,9 @@ export default class LandingPage extends Component {
               </div>
               <div className='col'>
                   <a href="https://marketplace.suan.global/" target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
-                  <a href="https://platform.suan.global/login" target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Tengo un proyecto</button></a>
+                  <button className="m-2 btn-cta" onClick={this.handleShow}>
+                  Tengo un proyecto
+                  </button>                  
               </div>
 
             </div>

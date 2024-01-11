@@ -13,6 +13,15 @@ a{
         text-decoration: none !important;
 
 }
+.modal-header, .modal-footer{
+        border-bottom: none !important;
+        border-top: none !important;
+}
+::marker {
+        font-weight: 700;
+        color: #80a71f;
+        font-size: 19px;
+      }
 .btn-cta {
         width: 200px;
         font-weight: 600;
