@@ -34,6 +34,7 @@ type Wallet @model {
   status: String!
   password: String!
   seed: String!
+  address: String!
   isSelected: Boolean
   isAdmin: Boolean
   userID: ID! @index(name: "byUser")
