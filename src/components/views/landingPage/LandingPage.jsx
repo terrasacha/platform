@@ -17,7 +17,8 @@ import drones from '../_images/drone-con-camara.png';
 import blockchain from '../_images/cadena-de-bloques.png';
 import plataforma from '../_images/diseno-de-respuesta.png';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Modal from 'react-bootstrap/Modal'
+import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar'
 
 
 export default class LandingPage extends Component {
@@ -157,7 +158,7 @@ export default class LandingPage extends Component {
     const urlS3Image = WebAppConfig.url_s3_public_images
     return (
       <div style={{minHeight: '100vh'}}>
-        <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
+        <TailwindHeaderNavbar logOut={this.logOut}></TailwindHeaderNavbar>
 {/*         <Carousel>
         {this.state.productsImagesIsOnCarousel.map((image, idx) => (
             <Carousel.Item key={idx}>

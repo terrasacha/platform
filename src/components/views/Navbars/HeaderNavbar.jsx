@@ -37,7 +37,7 @@ export default class HeaderNavbar extends Component {
                 <img src={LOGO} 
                             width="auto"
                             height="40"
-                            className="d-inline-block align-top"
+                            className="d-inline-block align-top hola"
                             alt="ATP"
                             />
             </Navbar.Brand>
