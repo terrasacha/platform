@@ -42,7 +42,11 @@ export default function DynamicForm(props) {
 
     if (data) {
       const formDataFields = mapXLSXFormFieldsToFormData(data.survey);
-      setFormData(formDataFields);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        formDataFields
+      }));
+      console.log(formDataFields)
       console.log(data);
     }
   }, [data]);

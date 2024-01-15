@@ -25,7 +25,7 @@ export default function NewProject() {
   const [formDataErrors, setFormDataErrors] = useState({});
 
   useEffect(() => {
-    if (user) {
+    if (user && user.email !== "") {
       setFormData((prevFormData) => ({
         ...prevFormData,
         A_postulante_email: user.email,

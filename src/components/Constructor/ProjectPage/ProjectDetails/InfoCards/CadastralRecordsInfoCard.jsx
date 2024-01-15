@@ -25,6 +25,7 @@ import { fetchProjectDataByProjectID } from "../../api";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { XIcon } from "components/common/icons/XIcon";
 import { CheckIcon } from "components/common/icons/CheckIcon";
+import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 
 export default function CadastralRecordsInfoCard(props) {
   const { className, autorizedUser, setProgressChange, tooltip } = props;
@@ -61,8 +62,18 @@ export default function CadastralRecordsInfoCard(props) {
   }, [projectData]);
 
   useEffect(() => {
+    async function updatePredialData() {
+      const cadastralNumbersArray = multipleData.map(
+        (item) => item.cadastralNumber
+      );
+      const predialData = await getPredialDataByCadastralNumber(
+        cadastralNumbersArray
+      ); // Llamada a la función getData
+      setPredialFetchedData(predialData);
+    }
+
     if (multipleData.length > 0 && !executedOnce) {
-      getPredialDataByCadastralNumber(); // Llamada a la función getData
+      updatePredialData();
       setExecutedOnce(true);
     }
     if (multipleData.length > 0 && executedOnce) {
@@ -72,13 +83,13 @@ export default function CadastralRecordsInfoCard(props) {
       if (obj) {
         let cadastralNumberLength = obj.cadastralNumber.length;
         if (cadastralNumberLength === 20 || cadastralNumberLength === 30) {
-          getPredialDataByCadastralNumber();
+          updatePredialData();
         }
       }
     }
   }, [multipleData]);
 
-  const getPredialDataByCadastralNumber = async () => {
+  const getPredialDataByCadastralNumber2 = async () => {
     // URL de la consulta
     const url =
       "https://services2.arcgis.com/RVvWzU3lgJISqdke/arcgis/rest/services/CATASTRO_PUBLICO_Noviembre_2023_gdb/FeatureServer/17/query";

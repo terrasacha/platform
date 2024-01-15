@@ -6,6 +6,8 @@ import { useProjectData } from "context/ProjectDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { notify } from "utilities/notify";
+import * as turf from "@turf/turf";
+import { getPolygonByCadastralNumber } from "services/getPolygonByCadastralNumber";
 // Borrar despues de pasar a componentes
 
 export default function GeodataInfoCard(props) {
@@ -13,6 +15,7 @@ export default function GeodataInfoCard(props) {
   const { projectData } = useProjectData();
 
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
+  const [polygonsFetchedData, setPolygonsFetchedData] = useState([]);
 
   const [formData, setFormData] = useState({
     coords: {
@@ -29,6 +32,22 @@ export default function GeodataInfoCard(props) {
     layers: [],
     loaded: false,
   });
+
+  useEffect(() => {
+    async function updatePredialData() {
+      const cadastralNumbersArray =
+        projectData.projectCadastralRecords.cadastralRecords.map(
+          (item) => item.cadastralNumber
+        );
+      const predialData = await getPolygonByCadastralNumber(
+        cadastralNumbersArray
+      ); // Llamada a la función getData
+      console.log(predialData);
+      setPolygonsFetchedData(predialData);
+    }
+
+    updatePredialData();
+  }, [projectData]);
 
   useEffect(() => {
     if (projectData && projectData.projectGeoData && projectData.projectInfo) {
@@ -119,15 +138,15 @@ export default function GeodataInfoCard(props) {
       );
       setUbicacionPfId(response.data.createProductFeature.id);
     }
-    setProgressChange(true)
+    setProgressChange(true);
     notify({ msg: "Ubicación del predio actualizada", type: "success" });
   };
 
   return (
     <Card>
-      <Card.Header title="Ubicación Geográfica" sep={true} tooltip={tooltip}/>
+      <Card.Header title="Ubicación Geográfica" sep={true} tooltip={tooltip} />
       <div style={{ height: "570px", width: "100%" }}>
-        {geoData.loaded && (
+        {(polygonsFetchedData.length > 0) && (
           <GoogleMapReact
             // key={new Date().getTime()}
             bootstrapURLKeys={{
@@ -138,6 +157,34 @@ export default function GeodataInfoCard(props) {
             onClick={onMapClick}
             onGoogleApiLoaded={({ map, maps }) => {
               map.setZoom(geoData.zoom);
+              console.log(polygonsFetchedData,"polygonsFetchedData")
+              polygonsFetchedData.forEach((data) => {
+                new maps.Polygon({
+                  paths: data.poligono,
+                  strokeColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6), // Color de la línea del polígono
+                  strokeOpacity: 0.8,
+                  strokeWeight: 2,
+                  fillColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6), // Color del relleno del polígono
+                  fillOpacity: 0.35,
+                  map: map,
+                }).addListener("click", function (event) {
+                  // infowindow.open({
+                  //   anchor: this,
+                  //   map,
+                  // });
+                  console.log("Hizo click en " + data.predio);
+                });
+              });
+              // var polygon = new maps.Polygon({
+              //   paths: convertToGoogleMapsPaths(coords),
+              //   strokeColor: "#FF0000", // Color de la línea del polígono
+              //   strokeOpacity: 0.8,
+              //   strokeWeight: 2,
+              //   fillColor: "#FF0000", // Color del relleno del polígono
+              //   fillOpacity: 0.35,
+              // });
+
+              //polygon.setMap(map);
               geoData.layers.forEach((data) => {
                 new maps.KmlLayer(data.fileURLS3, {
                   suppressInfoWindows: true,
