@@ -15,7 +15,7 @@ export default function GeodataInfoCard(props) {
   const { projectData } = useProjectData();
 
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
-  const [polygonsFetchedData, setPolygonsFetchedData] = useState([]);
+  const [polygonsFetchedData, setPolygonsFetchedData] = useState(null);
 
   const [formData, setFormData] = useState({
     coords: {
@@ -42,7 +42,7 @@ export default function GeodataInfoCard(props) {
       const predialData = await getPolygonByCadastralNumber(
         cadastralNumbersArray
       ); // Llamada a la función getData
-      console.log(predialData);
+      console.log("predialData", predialData);
       setPolygonsFetchedData(predialData);
     }
 
@@ -84,36 +84,6 @@ export default function GeodataInfoCard(props) {
     }
   }, [projectData]);
 
-  function onMapClick({ x, y, lat, lng, event }) {
-    if (autorizedUser) {
-      setFormData((prevState) => ({
-        ...prevState,
-        coords: {
-          lat: lat,
-          lng: lng,
-        },
-      }));
-    }
-  }
-
-  const Marker = ({ show, place }) => {
-    const markerStyle = {
-      border: "1px solid white",
-      borderRadius: "50%",
-      height: 10,
-      width: 10,
-      backgroundColor: show ? "red" : "blue",
-      cursor: "pointer",
-      zIndex: 10,
-    };
-
-    return (
-      <>
-        <div style={markerStyle} />
-      </>
-    );
-  };
-
   const handleSaveBtn = async () => {
     if (ubicacionPfId) {
       const updatedProductFeature = {
@@ -142,11 +112,13 @@ export default function GeodataInfoCard(props) {
     notify({ msg: "Ubicación del predio actualizada", type: "success" });
   };
 
+  let markers = [];
+
   return (
     <Card>
       <Card.Header title="Ubicación Geográfica" sep={true} tooltip={tooltip} />
       <div style={{ height: "570px", width: "100%" }}>
-        {(polygonsFetchedData.length > 0) && (
+        {polygonsFetchedData && (
           <GoogleMapReact
             // key={new Date().getTime()}
             bootstrapURLKeys={{
@@ -154,27 +126,73 @@ export default function GeodataInfoCard(props) {
             }}
             defaultCenter={geoData.coords}
             defaultZoom={6}
-            onClick={onMapClick}
             onGoogleApiLoaded={({ map, maps }) => {
               map.setZoom(geoData.zoom);
-              console.log(polygonsFetchedData,"polygonsFetchedData")
-              polygonsFetchedData.forEach((data) => {
-                new maps.Polygon({
-                  paths: data.poligono,
-                  strokeColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6), // Color de la línea del polígono
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6), // Color del relleno del polígono
-                  fillOpacity: 0.35,
-                  map: map,
-                }).addListener("click", function (event) {
-                  // infowindow.open({
-                  //   anchor: this,
-                  //   map,
-                  // });
-                  console.log("Hizo click en " + data.predio);
-                });
+              map.addListener("click", (event) => {
+                addMarker(event.latLng);
               });
+              function setMapOnAll(map) {
+                for (let i = 0; i < markers.length; i++) {
+                  markers[i].setMap(map);
+                }
+              }
+              function addMarker(position) {
+                deleteMarkers();
+
+                const marker = new maps.Marker({
+                  position,
+                  map,
+                });
+
+                setFormData((prevState) => ({
+                  ...prevState,
+                  coords: {
+                    lat: position.lat(),
+                    lng: position.lng(),
+                  },
+                }));
+
+                markers.push(marker);
+              }
+              function deleteMarkers() {
+                setMapOnAll(null);
+                markers = [];
+              }
+              if(formData.coords.lat !== 0) {
+                addMarker(new maps.LatLng({ lat: formData.coords.lat, lng: formData.coords.lng }));
+              }
+              
+              console.log(polygonsFetchedData, "polygonsFetchedData");
+
+              if (polygonsFetchedData.length > 0) {
+                map.setCenter(polygonsFetchedData[0].poligono[0][0]);
+
+                polygonsFetchedData.forEach((data) => {
+                  new maps.Polygon({
+                    paths: data.poligono,
+                    strokeColor:
+                      "#" +
+                      (0x1000000 + Math.random() * 0xffffff)
+                        .toString(16)
+                        .substr(1, 6), // Color de la línea del polígono
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor:
+                      "#" +
+                      (0x1000000 + Math.random() * 0xffffff)
+                        .toString(16)
+                        .substr(1, 6), // Color del relleno del polígono
+                    fillOpacity: 0.35,
+                    map: map,
+                  }).addListener("click", function (event) {
+                    // infowindow.open({
+                    //   anchor: this,
+                    //   map,
+                    // });
+                    console.log("Hizo click en " + data.predio);
+                  });
+                });
+              }
               // var polygon = new maps.Polygon({
               //   paths: convertToGoogleMapsPaths(coords),
               //   strokeColor: "#FF0000", // Color de la línea del polígono
@@ -185,23 +203,24 @@ export default function GeodataInfoCard(props) {
               // });
 
               //polygon.setMap(map);
-              geoData.layers.forEach((data) => {
-                new maps.KmlLayer(data.fileURLS3, {
-                  suppressInfoWindows: true,
-                  preserveViewport: true,
-                  map: map,
-                }).addListener("click", function (event) {
-                  // infowindow.open({
-                  //   anchor: this,
-                  //   map,
-                  // });
-                  console.log("Hizo click");
-                });
-              });
+
+              // geoData.layers.forEach((data) => {
+              //   new maps.KmlLayer(data.fileURLS3, {
+              //     suppressInfoWindows: true,
+              //     preserveViewport: true,
+              //     map: map,
+              //   }).addListener("click", function (event) {
+              //     // infowindow.open({
+              //     //   anchor: this,
+              //     //   map,
+              //     // });
+              //     console.log("Hizo click");
+              //   });
+              // });
             }}
             yesIWantToUseGoogleMapApiInternals
           >
-            <Marker lat={formData.coords?.lat} lng={formData.coords?.lng} />
+            {/* <Marker lat={formData.coords?.lat} lng={formData.coords?.lng} /> */}
           </GoogleMapReact>
         )}
       </div>
