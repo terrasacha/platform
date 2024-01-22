@@ -30,9 +30,9 @@ type User @model {
 
 type Wallet @model {
   id: ID!
-  name: String!
-  status: String!
-  password: String!
+  name: String
+  status: String
+  password: String
   seed: String!
   address: String!
   isSelected: Boolean
