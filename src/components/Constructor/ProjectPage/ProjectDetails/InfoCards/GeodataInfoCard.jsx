@@ -6,7 +6,6 @@ import { useProjectData } from "context/ProjectDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { notify } from "utilities/notify";
-import * as turf from "@turf/turf";
 import { getPolygonByCadastralNumber } from "services/getPolygonByCadastralNumber";
 // Borrar despues de pasar a componentes
 
@@ -112,119 +111,168 @@ export default function GeodataInfoCard(props) {
     notify({ msg: "Ubicación del predio actualizada", type: "success" });
   };
 
-  let markers = [];
+  //let markers = [];
 
   return (
     <Card>
       <Card.Header title="Ubicación Geográfica" sep={true} tooltip={tooltip} />
       <div style={{ height: "570px", width: "100%" }}>
         {polygonsFetchedData && (
-          <GoogleMapReact
-            // key={new Date().getTime()}
-            bootstrapURLKeys={{
-              key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
-            }}
-            defaultCenter={geoData.coords}
-            defaultZoom={6}
-            onGoogleApiLoaded={({ map, maps }) => {
-              map.setZoom(geoData.zoom);
-              map.addListener("click", (event) => {
-                addMarker(event.latLng);
-              });
-              function setMapOnAll(map) {
-                for (let i = 0; i < markers.length; i++) {
-                  markers[i].setMap(map);
-                }
-              }
-              function addMarker(position) {
-                deleteMarkers();
+          <>
+            <GoogleMapReact
+              // key={new Date().getTime()}
+              bootstrapURLKeys={{
+                key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
+              }}
+              defaultCenter={geoData.coords}
+              defaultZoom={6}
+              onGoogleApiLoaded={({ map, maps }) => {
+                map.setZoom(geoData.zoom);
+                // map.addListener("click", (event) => {
+                //   addMarker(event.latLng);
+                // });
 
-                const marker = new maps.Marker({
-                  position,
-                  map,
-                });
+                // function setMapOnAll(map) {
+                //   for (let i = 0; i < markers.length; i++) {
+                //     markers[i].setMap(map);
+                //   }
+                // }
+                // function addMarker(position) {
+                //   deleteMarkers();
 
-                setFormData((prevState) => ({
-                  ...prevState,
-                  coords: {
-                    lat: position.lat(),
-                    lng: position.lng(),
-                  },
-                }));
+                //   const marker = new maps.Marker({
+                //     position,
+                //     map,
+                //   });
 
-                markers.push(marker);
-              }
-              function deleteMarkers() {
-                setMapOnAll(null);
-                markers = [];
-              }
-              if(formData.coords.lat !== 0) {
-                addMarker(new maps.LatLng({ lat: formData.coords.lat, lng: formData.coords.lng }));
-              }
-              
-              console.log(polygonsFetchedData, "polygonsFetchedData");
+                //   setFormData((prevState) => ({
+                //     ...prevState,
+                //     coords: {
+                //       lat: position.lat(),
+                //       lng: position.lng(),
+                //     },
+                //   }));
 
-              if (polygonsFetchedData.length > 0) {
-                map.setCenter(polygonsFetchedData[0].poligono[0][0]);
+                //   markers.push(marker);
+                // }
+                // function deleteMarkers() {
+                //   setMapOnAll(null);
+                //   markers = [];
+                // }
+                // if (formData.coords.lat !== 0) {
+                //   addMarker(
+                //     new maps.LatLng({
+                //       lat: formData.coords.lat,
+                //       lng: formData.coords.lng,
+                //     })
+                //   );
+                // }
 
-                polygonsFetchedData.forEach((data) => {
-                  new maps.Polygon({
-                    paths: data.poligono,
-                    strokeColor:
-                      "#" +
-                      (0x1000000 + Math.random() * 0xffffff)
-                        .toString(16)
-                        .substr(1, 6), // Color de la línea del polígono
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor:
-                      "#" +
-                      (0x1000000 + Math.random() * 0xffffff)
-                        .toString(16)
-                        .substr(1, 6), // Color del relleno del polígono
-                    fillOpacity: 0.35,
-                    map: map,
-                  }).addListener("click", function (event) {
-                    // infowindow.open({
-                    //   anchor: this,
-                    //   map,
-                    // });
-                    console.log("Hizo click en " + data.predio);
+                console.log(polygonsFetchedData, "polygonsFetchedData");
+
+                if (polygonsFetchedData.features.length > 0) {
+                  // Load GeoJSON.
+                  map.data.addGeoJson(polygonsFetchedData);
+
+                  // Create empty bounds object
+                  let bounds = new maps.LatLngBounds();
+
+                  map.data.addListener("click", (event) => {
+                    const codigo = event.feature.getProperty("CODIGO");
+                    console.log("Este es el codigo: ", codigo);
+                    const contentString = `
+                      <div class='infoWindowContainer'>
+                        <p>Identificador catastral: ${codigo}</p>
+                      </div>
+                    `;
+
+                    let infoWindow = new maps.InfoWindow({
+                      content: contentString,
+                      ariaLabel: codigo,
+                    });
+                    //setInfoWindow(infoWindow);
+                    infoWindow.setPosition(event.latLng);
+                    infoWindow.open(map, event.latLng);
                   });
-                });
-              }
-              // var polygon = new maps.Polygon({
-              //   paths: convertToGoogleMapsPaths(coords),
-              //   strokeColor: "#FF0000", // Color de la línea del polígono
-              //   strokeOpacity: 0.8,
-              //   strokeWeight: 2,
-              //   fillColor: "#FF0000", // Color del relleno del polígono
-              //   fillOpacity: 0.35,
-              // });
 
-              //polygon.setMap(map);
+                  // Calcular centroide
+                  map.data.forEach(function (feature) {
+                    var geo = feature.getGeometry();
 
-              // geoData.layers.forEach((data) => {
-              //   new maps.KmlLayer(data.fileURLS3, {
-              //     suppressInfoWindows: true,
-              //     preserveViewport: true,
-              //     map: map,
-              //   }).addListener("click", function (event) {
-              //     // infowindow.open({
-              //     //   anchor: this,
-              //     //   map,
-              //     // });
-              //     console.log("Hizo click");
-              //   });
-              // });
-            }}
-            yesIWantToUseGoogleMapApiInternals
-          >
-            {/* <Marker lat={formData.coords?.lat} lng={formData.coords?.lng} /> */}
-          </GoogleMapReact>
+                    geo.forEachLatLng(function (LatLng) {
+                      bounds.extend(LatLng);
+                    });
+                  });
+
+                  // Setear centroide
+                  map.fitBounds(bounds);
+
+                  // polygonsFetchedData.forEach((data) => {
+                  //   new maps.Polygon({
+                  //     paths: data.poligono,
+                  //     strokeColor:
+                  //       "#" +
+                  //       (0x1000000 + Math.random() * 0xffffff)
+                  //         .toString(16)
+                  //         .substr(1, 6), // Color de la línea del polígono
+                  //     strokeOpacity: 0.8,
+                  //     strokeWeight: 2,
+                  //     fillColor:
+                  //       "#" +
+                  //       (0x1000000 + Math.random() * 0xffffff)
+                  //         .toString(16)
+                  //         .substr(1, 6), // Color del relleno del polígono
+                  //     fillOpacity: 0.35,
+                  //     map: map,
+                  //   }).addListener("click", function (event) {
+                  //     // infowindow.open({
+                  //     //   anchor: this,
+                  //     //   map,
+                  //     // });
+                  //     console.log("Hizo click en " + data.predio);
+                  //   });
+
+                  //   data.poligono.forEach((point) => {
+                  //     bounds.extend(new maps.LatLng(point[0], point[1]));
+                  //   });
+                  // });
+                  // map.setCenter(bounds.getCenter());
+                  // console.log("center",bounds.getCenter().lat())
+                  // console.log("center",bounds.getCenter().lng())
+                }
+                // var polygon = new maps.Polygon({
+                //   paths: convertToGoogleMapsPaths(coords),
+                //   strokeColor: "#FF0000", // Color de la línea del polígono
+                //   strokeOpacity: 0.8,
+                //   strokeWeight: 2,
+                //   fillColor: "#FF0000", // Color del relleno del polígono
+                //   fillOpacity: 0.35,
+                // });
+
+                //polygon.setMap(map);
+
+                // geoData.layers.forEach((data) => {
+                //   new maps.KmlLayer(data.fileURLS3, {
+                //     suppressInfoWindows: true,
+                //     preserveViewport: true,
+                //     map: map,
+                //   }).addListener("click", function (event) {
+                //     // infowindow.open({
+                //     //   anchor: this,
+                //     //   map,
+                //     // });
+                //     console.log("Hizo click");
+                //   });
+                // });
+              }}
+              yesIWantToUseGoogleMapApiInternals
+            >
+              {/* <Marker lat={formData.coords?.lat} lng={formData.coords?.lng} /> */}
+            </GoogleMapReact>
+          </>
         )}
       </div>
-      <div className="p-3">
+      {/* <div className="p-3">
         <div>
           <Form.Label className="mb-0">Latitud</Form.Label>
           <Form.Control
@@ -250,7 +298,7 @@ export default function GeodataInfoCard(props) {
             Actualizar Ubicación
           </Button>
         </div>
-      )}
+      )} */}
     </Card>
   );
 }

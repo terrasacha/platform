@@ -1,10 +1,22 @@
-const convertToGoogleMapsPaths = (coordinates) => {
-  return coordinates.map((ring) => {
-    return ring.map((coord) => {
-      return { lat: coord[1], lng: coord[0] };
-    });
-  });
-};
+// const convertToGoogleMapsPaths = (coordinates, geometryType) => {
+//   if (geometryType === "MultiPolygon") {
+//     // Manejar MultiPolygon
+//     return coordinates.map((polygon) => {
+//       return polygon.map((ring) => {
+//         return ring.map((coord) => {
+//           return { lat: coord[1], lng: coord[0] };
+//         });
+//       });
+//     });
+//   } else {
+//     // Manejar otros tipos de geometría (por ejemplo, Polygon)
+//     return coordinates.map((ring) => {
+//       return ring.map((coord) => {
+//         return { lat: coord[1], lng: coord[0] };
+//       });
+//     });
+//   }
+// };
 
 export const getPolygonByCadastralNumber = async (cadastralNumbers) => {
   // URL de la consulta
@@ -67,16 +79,7 @@ export const getPolygonByCadastralNumber = async (cadastralNumbers) => {
   try {
     const response = await fetch(fullUrl);
     const data = await response.json();
-    const mappedData = data.features.map((feature) => {
-      const numeroDelPredio = feature.properties.CODIGO;
-      const polygon = convertToGoogleMapsPaths(feature.geometry.coordinates);
-
-      return {
-        predio: numeroDelPredio,
-        poligono: polygon,
-      };
-    });
-    return mappedData;
+    return data;
   } catch (error) {
     console.error("Error al realizar la solicitud:", error);
   }
