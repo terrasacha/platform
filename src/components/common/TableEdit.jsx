@@ -1,6 +1,6 @@
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import Table from "../../ui/Table";
+import Button from "../../ui/Button";
+import Form from "../../ui/Form";
 import { useEffect, useState } from "react";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";

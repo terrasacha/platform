@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 // Bootstrap
-import {
-  Alert,
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Modal,
-  Row,
-} from "react-bootstrap";
+import Alert from '../../ui/Alert';
+import Button from '../../ui/Button';
+import Card from '../../ui/Card';
+import Col from '../../ui/Col';
+import Container from '../../ui/Container';
+import Form from '../../ui/Form';
+import Modal from '../../ui/Modal';
+import Row from '../../ui/Row';
+
 // GraphQL
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import {

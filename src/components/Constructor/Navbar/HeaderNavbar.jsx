@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 // Bootstrap
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Button from 'react-bootstrap/Button';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import Container from '../../ui/Container';
+import Nav from '../../ui/Nav';
+import Navbar from '../../ui/Navbar';
+import Button from '../../ui/Button';
+import Offcanvas from '../../ui/Offcanvas';
 import s from './HeaderNavbar.module.css'
 
 // Import images

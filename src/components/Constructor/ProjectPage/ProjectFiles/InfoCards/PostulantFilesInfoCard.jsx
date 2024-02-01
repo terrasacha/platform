@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import Card from "../../../../common/Card";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
+import Table from "../../ui/Table";
+import Button from "../../ui/Button";
+import Spinner from "../../ui/Spinner";
 import { DownloadIcon } from "../../../../common/icons/DownloadIcon";
 import { MessagesIcon } from "../../../../common/icons/MessagesIcon";
 import { CheckIcon } from "../../../../common/icons/CheckIcon";

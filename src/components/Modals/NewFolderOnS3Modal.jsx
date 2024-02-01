@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import Button from "../../ui/Button";
+import Modal from "../../ui/Modal";
 import { useProjectData } from "context/ProjectDataContext";
 import { Storage } from "aws-amplify";
 import { AddFolderIcon } from "components/common/icons/AddFolderIcon";

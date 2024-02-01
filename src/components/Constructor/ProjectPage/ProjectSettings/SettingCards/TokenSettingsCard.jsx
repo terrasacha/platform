@@ -9,9 +9,9 @@ import {
   updateProductFeature,
 } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
-import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
+import Button from "../../ui/Button";
+import Table from "../../ui/Table";
+import Form from "../../ui/Form";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { EditIcon } from "components/common/icons/EditIcon";

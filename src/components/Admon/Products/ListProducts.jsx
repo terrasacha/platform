@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 // Bootstrap
-import {
-  Image,
-  Modal,
-  Table,
-  Form,
-  Col,
-  ListGroup,
-} from "react-bootstrap";
+import Image from '../../ui/Image';
+import Modal from '../../ui/Modal';
+import Table from '../../ui/Table';
+import Form from '../../ui/Form';
+import ListGroup from '../../ui/ListGroup';
+
 import Button from "components/ui/Button";
 import { deleteAllInfoProduct } from "./functions";
 // GraphQL

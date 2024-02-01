@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Form from "react-bootstrap/Form";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Button from "react-bootstrap/Button";
+import Form from "../../ui/Form";
+import FloatingLabel from "../../ui/FloatingLabel";
+import Button from "../../ui/Button";
 import { SaveDiskIcon } from "./icons/SaveDiskIcon";
 import GoogleMapReact from "google-map-react";
 import { MapPinIcon } from "./icons/MapPinIcon";

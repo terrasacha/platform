@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 //Bootstrap
-import { Button, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table}  from 'react-bootstrap';
+import Button from '../../ui/Button';
+import Col from '../../ui/Col';
+import Container from '../../ui/Container';
+import Dropdown from '../../ui/Dropdown';
+import DropdownButton from '../../ui/DropdownButton';
+import Form from '../../ui/Form';
+import Modal from '../../ui/Modal';
+import Row from '../../ui/Row';
+import Table from '../../ui/Table';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';

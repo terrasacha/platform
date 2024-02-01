@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 // Bootstrap
-import {
-  Accordion,
-  Button,
-  Card,
-  Container,
-  Form,
-  Modal,
-  Row,
-} from "react-bootstrap";
-import InputGroup from "react-bootstrap/InputGroup";
+import Accordion from '../ui/Accordion';
+import Button from '../ui/Button';
+import Card from '../ui/Card';
+import Form from '../ui/Form';
+import Modal from '../ui/Modal';
+import Row from '../ui/Row';
+
+import InputGroup from "../../ui/InputGroup";
 // Auth css custom
 // Routing
 // import { useHistory } from 'react-router-dom'

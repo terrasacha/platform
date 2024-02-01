@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 //Bootstrap
-import {  Button,Form, Col, Table, Spinner} from 'react-bootstrap'
+import Button from '../../ui/Button';
+import Form from '../../ui/Form';
+import Col from '../../ui/Col';
+import Table from '../../ui/Table';
+import Spinner from '../../ui/Spinner';
 
 export default class CRUDProductImages extends Component {
     constructor(props) {

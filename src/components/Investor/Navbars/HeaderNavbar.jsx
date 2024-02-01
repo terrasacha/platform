@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // Bootstrap
 import { Container, Nav, Navbar } from "react-bootstrap";
-import Offcanvas from "react-bootstrap/Offcanvas";
+import Offcanvas from "../../ui/Offcanvas";
 import s from "./HeaderNavbar.module.css";
 // Import images
 import LOGO from "../../common/_images/suan_logo.png";

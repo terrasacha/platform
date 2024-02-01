@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
+import Button from "../../ui/Button";
+import Modal from "../../ui/Modal";
+import Form from "../../ui/Form";
 import { notify } from "utilities/notify";
 import { useProjectData } from "context/ProjectDataContext";
 import { API, Storage, graphqlOperation } from "aws-amplify";

@@ -1,9 +1,9 @@
 import React from "react";
 // Bootstrap
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Offcanvas from "react-bootstrap/Offcanvas";
+import Container from "../../ui/Container";
+import Nav from "../../ui/Nav";
+import Navbar from "../../ui/Navbar";
+import Offcanvas from "../../ui/Offcanvas";
 
 // Import images
 import LOGO from "components/common/_images/suan_logo.png";

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import Card from "components/common/Card";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
+import Breadcrumb from "../../ui/Breadcrumb";
+import DropdownButton from "../../ui/DropdownButton";
+import Dropdown from "../../ui/Dropdown";
 import { Button, Form, Table } from "react-bootstrap";
 import { FolderIcon } from "components/common/icons/FolderIcon";
 import { AddFolderIcon } from "components/common/icons/AddFolderIcon";

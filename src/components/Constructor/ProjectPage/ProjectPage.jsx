@@ -9,9 +9,9 @@ import ProjectSettings from "./ProjectSettings/ProjectSettings";
 
 // Components
 import MiniInfoCard from "../../common/MiniInfoCard";
-import Nav from "react-bootstrap/Nav";
-import Badge from "react-bootstrap/Badge";
-import Stack from "react-bootstrap/Stack";
+import Nav from "../../ui/Nav";
+import Badge from "../../ui/Badge";
+import Stack from "../../ui/Stack";
 
 // Contexts
 import { useProjectData } from "context/ProjectDataContext";

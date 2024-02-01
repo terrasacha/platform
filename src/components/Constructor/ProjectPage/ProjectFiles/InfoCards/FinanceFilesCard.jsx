@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { API, graphqlOperation } from "aws-amplify";
-import Button from "react-bootstrap/Button";
+import Button from "../../ui/Button";
 import { updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { validateProjectFeatures } from "./validateProjectFeatures";

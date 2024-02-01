@@ -1,8 +1,8 @@
 import { API, graphqlOperation } from 'aws-amplify';
 import React, { Component } from 'react';
 import  Button  from '../../ui/Button';
+import { updateOrder } from '../../../graphql/mutations';
 
-import { updateOrder } from '../../../../graphql/mutations';
 import './successOrder.css';
 
 class SuccessOrder extends Component {
