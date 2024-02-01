@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import s from './CompanyInformation.module.css'
 import { InfoCircle } from 'react-bootstrap-icons'
-import { Modal } from 'react-bootstrap'
+//Bootstrap
+import  Modal  from '../../../ui/Modal';
 // GraphQL
 import { listFeatures } from '../../../../graphql/queries'
 import { API, Auth, graphqlOperation } from 'aws-amplify'

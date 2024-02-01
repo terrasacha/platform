@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 //Bootstrap
-import { Button, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table } from 'react-bootstrap';
+import { Button, Col, Container, Dropdown, DropdownButton, Form, Modal, Row, Table}  from 'react-bootstrap';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';

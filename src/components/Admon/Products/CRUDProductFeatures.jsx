@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 //bootstrap
-import { Alert, Button, Col, Form, Table } from 'react-bootstrap'
+import  Alert  from '../../ui/Alert';
+import  Col  from '../../ui/Col';
+import  Form  from '../../ui/Form';
+import  Table  from '../../ui/Table';
+import Button from 'components/ui/Button'
+
 //GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createProductFeature, updateProductFeature, createVerification } from '../../../graphql/mutations'

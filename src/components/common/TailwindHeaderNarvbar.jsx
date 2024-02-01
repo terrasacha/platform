@@ -33,27 +33,27 @@ export default function TailwindHeaderNavbar({ navItems }) {
   let userlog = findLastAuthUserKey();
 
   return (
-    <nav class="tw-bg-white tw-fixed tw-w-full tw-z-20 tw-top-0 tw-start-0">
-      <div class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-mx-auto tw-px-10">
+    <nav class="bg-white fixed w-full z-20 top-0 start-0">
+      <div class="flex flex-wrap items-center justify-between mx-auto px-10">
         <a
           href="https://flowbite.com/"
-          class="tw-flex tw-items-center tw-space-x-3 rtl:tw-space-x-reverse"
+          class="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img src={LOGO} className="tw-w-6" alt="ATP" />
-          <h1 className="tw-text-black">
+          <img src={LOGO} className="w-6" alt="ATP" />
+          <h1 className="text-black">
             <strong>suan</strong>
           </h1>
         </a>
         <button
           data-collapse-toggle="navbar-sticky"
           type="button"
-          class="tw-inline-flex tw-items-center tw-p-2 tw-w-10 tw-h-10 tw-justify-center tw-text-sm tw-text-gray-500 tw-rounded-lg md:tw-hidden"
+          class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden"
           aria-controls="navbar-sticky"
           aria-expanded="false"
         >
-          <span class="tw-sr-only">Open main menu</span>
+          <span class="sr-only">Open main menu</span>
           <svg
-            class="tw-w-5 tw-h-5"
+            class="w-5 h-5"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -69,14 +69,14 @@ export default function TailwindHeaderNavbar({ navItems }) {
           </svg>
         </button>
         <div
-          class="tw-justify-between tw-hidden tw-w-full md:tw-flex md:tw-w-auto md:tw-order-1 tw-animate-fade-down tw-animate-ease-linear tw-animate-duration-150"
+          class="justify-between hidden w-full md:flex md:w-auto md:order-1 animate-fade-down animate-ease-linear animate-duration-150"
           id="navbar-sticky"
         >
-          <ul class="tw-flex tw-flex-col md:tw-p-0 md:tw-space-x-4 md:tw-flex-row md:tw-border-0 tw-text-sm">
+          <ul class="flex flex-col md:p-0 md:space-x-4 md:flex-row md:border-0 text-sm">
             <li>
               <a
                 href="#"
-                class="tw-block tw-py-2 tw-text-black tw-rounded md:tw-bg-transparent"
+                class="block py-2 text-black rounded md:bg-transparent"
                 aria-current="page"
               >
                 Inicio
@@ -85,7 +85,7 @@ export default function TailwindHeaderNavbar({ navItems }) {
             <li>
               <a
                 href="#"
-                class="tw-block tw-py-2 tw-text-black tw-rounded hover:tw-bg-gray-100 md:hover:tw-bg-transparent"
+                class="block py-2 text-black rounded hover:bg-gray-100 md:hover:bg-transparent"
               >
                 Proyectos
               </a>
@@ -93,7 +93,7 @@ export default function TailwindHeaderNavbar({ navItems }) {
             <li>
               <a
                 href="#"
-                class="tw-block tw-py-2 tw-text-black tw-rounded hover:tw-bg-gray-100 md:hover:tw-bg-transparent"
+                class="block py-2 text-black rounded hover:bg-gray-100 md:hover:bg-transparent"
               >
                 Servicios
               </a>
@@ -101,7 +101,7 @@ export default function TailwindHeaderNavbar({ navItems }) {
             <li>
               <a
                 href="#"
-                class="tw-block tw-py-2 tw-text-black tw-rounded hover:tw-bg-gray-100 md:hover:tw-bg-transparent"
+                class="block py-2 text-black rounded hover:bg-gray-100 md:hover:bg-transparent"
               >
                 Contacto
               </a>

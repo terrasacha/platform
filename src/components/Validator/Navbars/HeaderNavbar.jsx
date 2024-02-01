@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Button, Container, Nav, Navbar } from 'react-bootstrap'
+import  Button  from './components/ui/Button';
+import  Container  from './components/ui/Container';
+import  Nav  from './components/ui/Nav';
+import  Navbar  from './components/ui/Navbar';
 // Import React Bootstrap Icons
 import { ListTask } from 'react-bootstrap-icons'
 

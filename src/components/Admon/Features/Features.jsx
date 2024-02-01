@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 // import '@aws-amplify/ui-react/styles.css'
+
 // Bootstrap
-import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
-// Auth css custom
-import Bootstrap from "../../common/themes"
+import  Button  from '../../ui/Button'
+import  Col  from '../../ui/Col'
+import  Container  from '../../ui/Container'
+import  Form  from '../../ui/Form'
+import  Row  from '../../ui/Row'
+import  Table  from '../../ui/Table'
 //Feature Types component
 import FeaturesType from './FeaturesType'
 // GraphQL

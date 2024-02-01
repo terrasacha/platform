@@ -5,10 +5,13 @@ import { Auth } from 'aws-amplify'
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, updateUser } from '../../../graphql/mutations'
 import { getUser } from '../../../graphql/queries'
-// Auth css custom
-import Bootstrap from "../../common/themes"
 // Bootstrap
-import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap'
+import  Button  from './components/ui/Button';
+import  Col  from './components/ui/Col';
+import  Container  from './components/ui/Container';
+import  Form  from './components/ui/Form';
+import  Row  from './components/ui/Row';
+import  Table  from './components/ui/Table';
 // Util
 import { v4 as uuidv4 } from 'uuid'
 

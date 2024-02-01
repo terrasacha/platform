@@ -35,14 +35,7 @@ export default class HeaderNavbar extends Component {
         return (
         <Navbar key='sm' bg="light" expand='lg' fixed="top">
             <Container fluid>
-                <Navbar.Brand href="/" style={{marginLeft: '2%'}}>
-                <img src={LOGO} 
-                height="40"
-                width="auto"
-                className="d-inline-block align-top"
-                alt="ATP"
-                />
-                </Navbar.Brand>
+               
                 <Navbar.Toggle  />
                 <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-$'sm'`}

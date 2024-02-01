@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 // Bootstrap
-import { Button, Container, Nav, Navbar } from 'react-bootstrap'
+import  Button  from '../../ui/Button';
+import  Container  from '../../ui/Container';
+import  Nav  from '../../ui/Nav';
+import  Navbar  from '../../ui/Navbar';
 // Import React Bootstrap Icons
 /* import { Filter, InfoCircle } from 'react-bootstrap-icons' */
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
@@ -40,12 +43,7 @@ export default class HeaderNavbar extends Component {
                 return (
                     <Navbar style={{backgroundColor: '#fff'}} fixed="top">
                         <Container>
-                            <Navbar.Brand href="/"><img src={LOGO} 
-                                        width="auto"
-                                        height="40"
-                                        className="d-inline-block align-top"
-                                        alt="ATP"
-                            /></Navbar.Brand>
+                          
                             <Navbar.Toggle aria-controls="navbarScroll" />
                             <Navbar.Collapse id="navbarScroll">
                             <Nav

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap';
+import  Modal  from '../../../ui/Modal';
 import s from './GuardarParcialmente.module.css'
 import LOGO from '../../../common/_images/suan_logo.png'
 import 'react-toastify/dist/ReactToastify.css';

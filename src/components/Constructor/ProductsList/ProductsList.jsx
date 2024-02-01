@@ -1,9 +1,7 @@
 import React from "react";
-//Bootstrap
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
-import Stack from "react-bootstrap/Stack";
+// Tailwind CSS
+import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar';
+
 // GraphQL
 import {
   getImagesCategories,
@@ -15,43 +13,42 @@ export default function ProductsList() {
   const { userProjects } = useUserProjects();
   return (
     <>
-    <h2 className="mt-5">Tus Proyectos</h2>
-    <div className="row row-cols-1 row-cols-lg-3 g-2 m-4">
-      {userProjects.map((product) => {
-        return (
-          <div className="p-3">
-            <Card key={product.id} className="p-0">
+      <TailwindHeaderNavbar />
+
+      <h2 className="mt-5 text-3xl font-semibold">Tus Proyectos</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+        {userProjects.map((product) => (
+          <div className="p-4" key={product.id}>
+            <div className="bg-white p-4 rounded-lg shadow-md">
               <img
-                variant="top"
+                className="w-full h-40 object-cover mb-4 rounded"
                 src={getImagesCategories(product?.product.categoryID)}
-                style={{ height: "150px" }}
-                alt="Hola"
+                alt="Imagen del proyecto"
               />
-              <Card.Body>
-                <div className="d-flex">
-                  <Stack direction="horizontal" gap={2}>
-                    <Badge bg="primary">
-                      {getYearFromAWSDatetime(product?.product.createdAt)}
-                    </Badge>
-                    <Badge bg="primary">{product?.product.categoryID}</Badge>
-                  </Stack>
-                </div>
-                <p className="fs-5 my-2">{product?.product.name}</p>
-                <hr className="mb-2" />
-                <p className="fs-6 my-2 text-h">{product?.product.description}</p>
-              </Card.Body>
-              <Card.Footer>
-                <div className="d-flex justify-content-center align-items-center">
-                  <a href={"project/" + product?.product.id}>
-                    <Button>Ver más</Button>
-                  </a>
-                </div>
-              </Card.Footer>
-            </Card>
+              <div className="flex items-center justify-between mb-2">
+                <span className="bg-primary text-white py-1 px-2 rounded">
+                  {getYearFromAWSDatetime(product?.product.createdAt)}
+                </span>
+                <span className="bg-primary text-white py-1 px-2 rounded">
+                  {product?.product.categoryID}
+                </span>
+              </div>
+              <p className="text-xl font-semibold mb-2">
+                {product?.product.name}
+              </p>
+              <hr className="mb-2" />
+              <p className="text-base mb-2">{product?.product.description}</p>
+              <div className="flex justify-center">
+                <a href={"project/" + product?.product.id}>
+                  <button className="bg-primary text-white py-2 px-4 rounded">
+                    Ver más
+                  </button>
+                </a>
+              </div>
+            </div>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
     </>
   );
 }

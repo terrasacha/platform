@@ -1,34 +1,20 @@
-import React, { Component } from "react";
-//Bootstrap
-import {
-  Button,
-  Col,
-  Container,
-  Dropdown,
-  DropdownButton,
-  Form,
-  Modal,
-  Row,
-  Table,
-} from "react-bootstrap";
-// GraphQL
-import { API, graphqlOperation } from "aws-amplify";
-import { v4 as uuidv4 } from "uuid";
+import React, { Component } from 'react';
+import { API, graphqlOperation } from 'aws-amplify';
+import { v4 as uuidv4 } from 'uuid';
 import {
   createUserProduct,
   updateUser,
   createVerification,
   deleteUserProduct,
-} from "../../../graphql/mutations";
+} from '../../../graphql/mutations';
 import {
   onCreateUserProduct,
   onCreateVerification,
   onDeleteUserProduct,
-} from "../../../graphql/subscriptions";
-import { listUsers } from "../../../graphql/queries";
-import { graphql } from "graphql";
-import { XIcon } from "components/common/icons/XIcon";
-import { notify } from "utilities/notify";
+} from '../../../graphql/subscriptions';
+import { listUsers } from '../../../graphql/queries';
+import { XIcon } from 'components/common/icons/XIcon';
+import { notify } from 'utilities/notify';
 
 export const listproductsAssignPF = /* GraphQL */ `
   query Listproducts(
@@ -174,7 +160,8 @@ query ListUsers(
     nextToken
   }
 }
-`
+`;
+
 export default class AssignPF extends Component {
   constructor(props) {
     super(props);
@@ -213,7 +200,7 @@ export default class AssignPF extends Component {
   async loadUsers() {
     let filter = {
       role: {
-        eq: "validator",
+        eq: 'validator',
       },
     };
     const listUsersResults = await API.graphql({
@@ -260,7 +247,7 @@ export default class AssignPF extends Component {
         (up) => up.user.id === this.state.userSelected.id
       );
     console.log(
-      "isSelectedValidatorAlreadyAssignedInProject",
+      'isSelectedValidatorAlreadyAssignedInProject',
       isSelectedValidatorAlreadyAssignedInProject
     );
     if (!isSelectedValidatorAlreadyAssignedInProject) {
@@ -271,9 +258,12 @@ export default class AssignPF extends Component {
       await API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       );
-      notify({msg: "Validador asignado", type: "success"})
+      notify({ msg: 'Validador asignado', type: 'success' });
     } else {
-      notify({msg: "El validador ya se encuentra asignado al proyecto", type: "error"})
+      notify({
+        msg: 'El validador ya se encuentra asignado al proyecto',
+        type: 'error',
+      });
     }
     this.cleanState();
   }
@@ -299,20 +289,14 @@ export default class AssignPF extends Component {
       if (usersCopy.length > 0) {
         return (
           <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+            <div className="flex items-center justify-between mb-5">
               <h2 className="mr-5">Users</h2>
             </div>
-            <Table bordered hover style={{ cursor: "pointer" }}>
+            <table className="w-full border-collapse border border-gray-500">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Subrole</th>
+                  <th className="border border-gray-500">Name</th>
+                  <th className="border border-gray-500">Subrole</th>
                 </tr>
               </thead>
               <tbody>
@@ -321,16 +305,15 @@ export default class AssignPF extends Component {
                     <tr
                       key={user.id}
                       onClick={(e) => this.handleSelectUser(user)}
+                      className="cursor-pointer"
                     >
-                      <td>{user.name}</td>
-                      <td>
-                      {user.subrole}
-                      </td>
+                      <td className="border border-gray-500">{user.name}</td>
+                      <td className="border border-gray-500">{user.subrole}</td>
                     </tr>
                   );
                 })}
               </tbody>
-            </Table>
+            </table>
           </>
         );
       }
@@ -341,37 +324,36 @@ export default class AssignPF extends Component {
         return (
           <>
             <h2>Products</h2>
-            <Table bordered hover style={{ cursor: "pointer" }}>
+            <table className="w-full border-collapse border border-gray-500">
               <thead>
                 <tr>
-                  <th>Proyecto</th>
-                  <th>Categoría</th>
-                  <th>Verificadores</th>
+                  <th className="border border-gray-500">Proyecto</th>
+                  <th className="border border-gray-500">Categoría</th>
+                  <th className="border border-gray-500">Verificadores</th>
                 </tr>
               </thead>
               <tbody>
                 {products?.map((product) => {
                   let verificadores = product.userProducts.items.filter(
-                    (up) => up.user.role === "validator"
+                    (up) => up.user.role === 'validator'
                   );
                   return (
                     <tr
                       key={product.id}
                       onClick={(e) => this.handleSelectProduct(product)}
+                      className="cursor-pointer"
                     >
-                      <td>{product.name}</td>
-                      <td>{product.categoryID}</td>
-                      <td>
-                        <ul style={{ listStyle: "none", padding: "0" }}>
+                      <td className="border border-gray-500">{product.name}</td>
+                      <td className="border border-gray-500">{product.categoryID}</td>
+                      <td className="border border-gray-500">
+                        <ul className="list-none p-0">
                           {verificadores.length > 0
                             ? verificadores.map((v) => (
                                 <li key={v.id}>
-                                  <div>
+                                  <div className="flex items-center">
                                     {v.user.name}
-                                    <Button
-                                      className="m-2"
-                                      variant="danger"
-                                      size="sm"
+                                    <button
+                                      className="ml-2 text-red-500"
                                       onClick={() =>
                                         this.handleRemoveValidatorFromProject(
                                           v.id
@@ -379,18 +361,18 @@ export default class AssignPF extends Component {
                                       }
                                     >
                                       <XIcon />
-                                    </Button>
+                                    </button>
                                   </div>
                                 </li>
                               ))
-                            : "Sin asignar"}
+                            : 'Sin asignar'}
                         </ul>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
-            </Table>
+            </table>
           </>
         );
       }
@@ -400,81 +382,92 @@ export default class AssignPF extends Component {
         return (
           <>
             <h2>Products</h2>
-            <Table bordered hover style={{ cursor: "pointer" }}>
+            <table className="w-full border-collapse border border-gray-500">
               <thead>
                 <tr>
-                  <th>Proyecto</th>
-                  <th>Categoría</th>
-                  <th>Verificadores</th>
+                  <th className="border border-gray-500">Proyecto</th>
+                  <th className="border border-gray-500">Categoría</th>
+                  <th className="border border-gray-500">Verificadores</th>
                 </tr>
               </thead>
               <tbody>
                 {products?.map((product) => {
                   let verificadores = product.userProducts.items.filter(
-                    (up) => up.user.role === "validator"
+                    (up) => up.user.role === 'validator'
                   );
                   return (
                     <tr
                       key={product.id}
                       onClick={(e) => this.handleSelectProduct(product)}
+                      className="cursor-pointer"
                     >
-                      <td>{product.name}</td>
-                      <td>{product.categoryID}</td>
-                      <td>
-                        <ul style={{ listStyle: "none", padding: "0" }}>
+                      <td className="border border-gray-500">{product.name}</td>
+                      <td className="border border-gray-500">{product.categoryID}</td>
+                      <td className="border border-gray-500">
+                        <ul className="list-none p-0">
                           {verificadores.length > 0
-                            ? verificadores.map((v) => <li key={v.id}>{v.user.name}</li>)
-                            : "Sin asignar"}
+                            ? verificadores.map((v) => (
+                                <li key={v.id}>{v.user.name}</li>
+                              ))
+                            : 'Sin asignar'}
                         </ul>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
-            </Table>
+            </table>
           </>
         );
       }
     };
     return (
       <>
-        <Container>
-          <Container>
+        <div className="container mx-auto">
+          <div className="container">
             <h2>Assign Product</h2>
-            <Form>
-              <Row className="mb-2">
-                <Form.Group as={Col}>
-                  <Form.Label>User</Form.Label>
-                  <Form.Control
+            <form>
+              <div className="mb-2 grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="user" className="block text-sm font-medium text-gray-700">
+                    User
+                  </label>
+                  <input
                     type="text"
+                    id="user"
                     placeholder="Seleccionar un usuario"
                     value={
                       this.state.userSelected !== null
                         ? this.state.userSelected.name
-                        : ""
+                        : ''
                     }
-                    onChange={() => ""}
+                    onChange={() => ''}
+                    className="mt-1 p-2 border border-gray-300 rounded-md"
                   />
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label>Proyecto</Form.Label>
-                  <Form.Control
+                </div>
+                <div>
+                  <label htmlFor="project" className="block text-sm font-medium text-gray-700">
+                    Proyecto
+                  </label>
+                  <input
                     type="text"
+                    id="project"
                     placeholder="Seleccionar un proyecto"
                     value={
                       this.state.productselected !== null
                         ? `${this.state.productselected.name} `
-                        : ""
+                        : ''
                     }
-                    onChange={() => ""}
+                    onChange={() => ''}
+                    className="mt-1 p-2 border border-gray-300 rounded-md"
                   />
-                </Form.Group>
-              </Row>
+                </div>
+              </div>
 
-              <Row className="mb-1">
-                <Button
-                  variant="primary"
-                  size="sm"
+              <div className="mb-1">
+                <button
+                  type="button"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
                   disabled={
                     userSelected === null || productselected === null
                       ? true
@@ -483,20 +476,16 @@ export default class AssignPF extends Component {
                   onClick={() => this.handleAssignProduct()}
                 >
                   ASIGNAR VERIFICADOR
-                </Button>
-              </Row>
-            </Form>
-          </Container>
-          <Container style={{ display: "flex", height: "580px" }}>
-            <Container style={{ overflow: "auto", width: "40%" }}>
-              {renderUsers()}
-            </Container>
-            <Container style={{ overflow: "auto" }}>
-              {renderProducts()}
-            </Container>
-          </Container>
-          <Container>{renderUserProducts()}</Container>
-        </Container>
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="container flex h-96">
+            <div className="container overflow-auto w-2/5">{renderUsers()}</div>
+            <div className="container overflow-auto">{renderProducts()}</div>
+          </div>
+          <div className="container">{renderUserProducts()}</div>
+        </div>
       </>
     );
   }

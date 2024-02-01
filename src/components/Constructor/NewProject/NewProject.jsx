@@ -1,6 +1,4 @@
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { useEffect, useState } from "react";
-import useXLSXForm from "hooks/useXLSXForm";
 import { API, Storage, graphqlOperation } from "aws-amplify";
 import {
   createDocument,
@@ -13,6 +11,8 @@ import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import DynamicForm from "components/DynamicForm/DynamicForm";
 import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
+import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar';
+
 
 export default function NewProject() {
   const formURL =
@@ -402,7 +402,6 @@ export default function NewProject() {
 
   const handleSubmit = async () => {
     const productID = uuidv4();
-    // Subir datos a la base de datos con API de graphql
     const newProduct = {
       id: productID,
       name: formData["A_asset_names"],
@@ -429,9 +428,9 @@ export default function NewProject() {
   };
 
   return (
-    <div className="container-sm">
+    <div className="container mx-5">
       <div className="mb-5">
-        <NewHeaderNavbar></NewHeaderNavbar>
+      <TailwindHeaderNavbar />
       </div>
       <div className="my-2">-</div>
       <section className="mb-5">

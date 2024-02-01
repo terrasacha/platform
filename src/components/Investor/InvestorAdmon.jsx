@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 // Bootstrap
 import { Auth } from 'aws-amplify'
-import { Accordion, Button, Card, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap'
+import  Accordion  from '../ui/Accordion';
+import  Button  from '../ui/Button';
+import  Card  from '../ui/Card';
+import  Col  from '../ui/Col';
+import  Container  from '../ui/Container';
+import  Form  from '../ui/Form';
+import  Modal  from '../ui/Modal';
+import  Row  from '../ui/Row';
+
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
 import { createUser, createWallet, updateUser } from '../../graphql/mutations'

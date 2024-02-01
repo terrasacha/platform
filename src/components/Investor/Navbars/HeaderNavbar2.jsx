@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 // Bootstrap
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import Container from '../../ui/Container';
+import Nav from '../../ui/Nav';
+import Navbar from '../../ui/Navbar';
+import Offcanvas from '../../ui/Offcanvas';
 import s from './HeaderNavbar2.module.css'
 
 // Import images
@@ -34,14 +34,7 @@ export default class HeaderNavbar2 extends Component {
         return (
         <Navbar key='sm' bg="light" expand='lg' fixed="top">
             <Container fluid>
-                <Navbar.Brand href="/" style={{marginLeft: '2%'}}>
-                <img src={LOGO} 
-                height="40"
-                width="auto"
-                className="d-inline-block align-top"
-                alt="ATP"
-                />
-                </Navbar.Brand>
+                
                 <Navbar.Toggle  />
                 <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-$'sm'`}

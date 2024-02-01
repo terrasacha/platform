@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 // Auth css custom
 // Bootstrap
-import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
+import  Button  from '../../ui/Button';
+import  Col  from '../../ui/Col';
+import  Container  from '../../ui/Container';
+import  Form  from '../../ui/Form';
+import  Row  from '../../ui/Row';
+import  Table  from '../../ui/Table';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';

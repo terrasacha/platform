@@ -1,6 +1,12 @@
 import { API, Auth, graphqlOperation } from 'aws-amplify'
 import React, { Component } from 'react'
-import { Button, Carousel, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap'
+
+import  Button  from '../../ui/Button'
+import  Carousel  from '../../ui/Carousel'
+import  Container  from '../../ui/Container'
+import  Modal  from '../../ui/Modal'
+import  Table  from '../../ui/Table'
+
 import { getUser } from '../../../graphql/queries'
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 import './ProductsBuyed.css'

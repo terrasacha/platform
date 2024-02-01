@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Col, Container, Form, Row, Table, Modal } from 'react-bootstrap';
+import  Button  from '../../ui/Button';
+import  Col  from '../../ui/Col';
+import  Container  from '../../ui/Container';
+import  Form  from '../../ui/Form';
+import  Row  from '../../ui/Row';
+import  Table  from '../../ui/Table';
+import  Modal  from '../../ui/Modal';
 
 import { API, graphqlOperation, Auth } from 'aws-amplify'
 import { onCreateUser, onUpdateUser, onDeleteUser } from '../../../graphql/subscriptions';

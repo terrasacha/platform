@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 // Bootstrap
 import {
-  Button,
   Image,
   Modal,
   Table,
@@ -9,6 +8,7 @@ import {
   Col,
   ListGroup,
 } from "react-bootstrap";
+import Button from "components/ui/Button";
 import { deleteAllInfoProduct } from "./functions";
 // GraphQL
 import { API, graphqlOperation, Storage } from "aws-amplify";

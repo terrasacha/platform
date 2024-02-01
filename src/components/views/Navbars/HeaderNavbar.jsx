@@ -33,14 +33,7 @@ export default class HeaderNavbar extends Component {
     return (
       <Navbar key='sm' bg="light" expand='sm' >
           <Container fluid>
-            <Navbar.Brand href="/" style={{marginLeft: '2%'}}>
-                <img src={LOGO} 
-                            width="auto"
-                            height="40"
-                            className="d-inline-block align-top hola"
-                            alt="ATP"
-                            />
-            </Navbar.Brand>
+           
                             <h1><strong>suan</strong></h1>
           <Navbar.Toggle  />
           <Navbar.Offcanvas
