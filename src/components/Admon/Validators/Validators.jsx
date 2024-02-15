@@ -196,168 +196,150 @@ class Validators extends Component {
         }
     }
     render() {
-        let { validators, newUser } = this.state
+        let { validators, newUser } = this.state;
+    
         const renderValidators = () => {
-            if (validators.length > 0) {
-                return (
-                    <Container>
-                        <h4>List Validators
-                        </h4>
-                        <Table striped bordered hover>
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Subrole</th>
-                                <th>Created at</th>
-                                <th>Confirmation</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {validators.map(validator => (
-                                <tr key={validator.id}>
-                                    <td>
-                                        {validator.name}
-                                    </td>
-                                    <td>
-                                        {validator.email}
-                                    </td>
-                                    <td>
-                                        {validator.subrole}
-                                    </td>
-                                    <td>
-                                        {validator.createdAt.split('T')[0].split('-')[2] + '-' + validator.createdAt.split('T')[0].split('-')[1] + '-' + validator.createdAt.split('T')[0].split('-')[0]}
-                                    </td>
-                                    <td>
-                                        {validator.isProfileUpdated? 'Confirmed' : 'Pendiente'}
-                                    </td>
-                                    <td>
-                                        <Button
-                                            variant='danger'
-                                            size='sm'
-                                            disabled={!validator.isProfileUpdated}
-                                            onClick={() => this.showModalDelete({id: validator.id, username: validator.name})}
-                                        >Delete</Button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </Container>
-                )
-            }
-        
-        }
-        return (
-            <Container style={{display: 'flex', flexDirection: 'column'}}>
-                <Container>
-                    <h4>Create new validator</h4>
-                    <Form>
-                        <Row className='mb-2'>
-                            <Form.Group as={Col}>
-                                <Form.Label>username</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Username'
-                                    name='newUser.username'
-                                    value={newUser.username}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-                            <Form.Group as={Col}>
-                                <Form.Label>email</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Email'
-                                    name='newUser.email'
-                                    value={newUser.email}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-                            <Form.Group as={Col}>
-                                <Form.Label>Validator type</Form.Label>
-                                <Form.Select
-                                    name='newUser.subRole'
-                                    value={newUser.subRole}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)}
-                                >
-                                    <option value="financial">Financiero</option>
-                                    <option value="technical">Técnico</option>
-                                </Form.Select>
-                            </Form.Group>
-
-                        </Row>
-
-                        <Row className='mb-1'>
-                            <Button
-                            variant='primary'
+          if (validators.length > 0) {
+            return (
+              <Container>
+                <h4>List Validators</h4>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Subrole</th>
+                      <th>Created at</th>
+                      <th>Confirmation</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {validators.map((validator) => (
+                      <tr key={validator.id}>
+                        <td>{validator.name}</td>
+                        <td>{validator.email}</td>
+                        <td>{validator.subrole}</td>
+                        <td>
+                          {validator.createdAt.split('T')[0].split('-')[2] +
+                            '-' +
+                            validator.createdAt.split('T')[0].split('-')[1] +
+                            '-' +
+                            validator.createdAt.split('T')[0].split('-')[0]}
+                        </td>
+                        <td>{validator.isProfileUpdated ? 'Confirmed' : 'Pendiente'}</td>
+                        <td>
+                          <Button
+                            variant='danger'
                             size='sm'
-                            onClick={() => this.showModalCreate()}
-                            >Crear</Button>
-                        </Row>
-                    </Form>
-                </Container>
-                {renderValidators()}
-                <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirmar eliminación</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {`¿Estás seguro que quieres borrar el usuario ${this.state.userToDelete.username}?`}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => this.setState({ showModal: false })}>
-                            Cancel
-                        </Button>
-                        <Button variant="danger" onClick={() => this.confirmDeleteUser()}>
+                            disabled={!validator.isProfileUpdated}
+                            onClick={() => this.showModalDelete({ id: validator.id, username: validator.name })}
+                          >
                             Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-                <Modal show={this.state.showModalCreate} onHide={() => this.setState({ showModalCreate: false })}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirmar datos de nuevo usuario</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                    <Table striped bordered hover>
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Sub role</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        {this.state.newUser.username}
-                                    </td>
-                                    <td>
-                                        {this.state.newUser.email}
-                                    </td>
-                                    <td>
-                                        {this.state.newUser.role}
-                                    </td>
-                                    <td>
-                                        {this.state.newUser.subRole}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => this.setState({ showModalCreate: false })}>
-                            Cancel
-                        </Button>
-                        <Button variant="success" onClick={() => this.confirmCreateUser()}>
-                            Confirmar
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Container>
+            );
+          }
+        };
+    
+        return (
+          <Container style={{ display: 'flex', flexDirection: 'column' }}>
+            <Container>
+              <h4>Create new validator</h4>
+              <form>
+                <Row className='mb-2'>
+                  <Col>
+                    <label>username</label>
+                    <input
+                      type='text'
+                      placeholder='Username'
+                      name='newUser.username'
+                      value={newUser.username}
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    />
+                  </Col>
+                  <Col>
+                    <label>email</label>
+                    <input
+                      type='text'
+                      placeholder='Email'
+                      name='newUser.email'
+                      value={newUser.email}
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    />
+                  </Col>
+                  <Col>
+                    <label>Validator type</label>
+                    <select name='newUser.subRole' value={newUser.subRole} onChange={(e) => this.handleOnChangeInputForm(e)}>
+                      <option value='financial'>Financiero</option>
+                      <option value='technical'>Técnico</option>
+                    </select>
+                  </Col>
+                </Row>
+    
+                <Row className='mb-1'>
+                  <Button variant='primary' size='sm' onClick={() => this.showModalCreate()}>
+                    Crear
+                  </Button>
+                </Row>
+              </form>
             </Container>
-        
-        )
+            {renderValidators()}
+            <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirmar eliminación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>{`¿Estás seguro que quieres borrar el usuario ${this.state.userToDelete.username}?`}</Modal.Body>
+              <Modal.Footer>
+                <Button variant='secondary' onClick={() => this.setState({ showModal: false })}>
+                  Cancel
+                </Button>
+                <Button variant='danger' onClick={() => this.confirmDeleteUser()}>
+                  Delete
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showModalCreate} onHide={() => this.setState({ showModalCreate: false })}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirmar datos de nuevo usuario</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Sub role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{this.state.newUser.username}</td>
+                      <td>{this.state.newUser.email}</td>
+                      <td>{this.state.newUser.role}</td>
+                      <td>{this.state.newUser.subRole}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant='secondary' onClick={() => this.setState({ showModalCreate: false })}>
+                  Cancel
+                </Button>
+                <Button variant='success' onClick={() => this.confirmCreateUser()}>
+                  Confirmar
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </Container>
+        );
+      }
     }
-}
-
+    
 export default Validators

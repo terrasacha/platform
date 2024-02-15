@@ -10,7 +10,7 @@ import GeodataInfoCard from "./InfoCards/GeodataInfoCard";
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import UseRestrictionsInfoCard from "./InfoCards/UseRestrictionsInfoCard";
 import { useAuth } from "context/AuthContext";
-import { Alert, ProgressBar } from "react-bootstrap";
+import Alert from "../../../ui/Alert";
 import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
 import { XIcon } from "components/common/icons/XIcon";
@@ -61,20 +61,20 @@ export default function ProjectDetails({ visible }) {
   return (
     <>
       {visible && (
-        <div className="row row-cols-1 row-cols-xl-2 g-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {autorizedUser && !(user?.role === "validator" || user?.role === "admon") && (
-            <div className="col-12 col-xl-12">
+            <div className="col-span-2 md:col-span-1">
               <Alert variant="success" className="mb-0">
-                <Alert.Heading>Hola, {user?.name}</Alert.Heading>
+                <h2>Hola, {user?.name}</h2>
                 <p>
-                  Podras realizar ajustes a la información del proyecto durante
-                  los primeros 20 dias despues de su postulación. Posterior a
+                  Podrás realizar ajustes a la información del proyecto durante
+                  los primeros 20 días después de su postulación. Posterior a
                   esto se congelan los cambios a menos que exista solicitud
                   formal y se abra manualmente en casos excepcionales.
                 </p>
                 <hr />
                 <p className="mb-0">
-                  {20 - parseInt(projectData?.projectInfo.projectAge)} Dias
+                  {20 - parseInt(projectData?.projectInfo.projectAge)} Días
                   restantes
                 </p>
               </Alert>
@@ -82,9 +82,9 @@ export default function ProjectDetails({ visible }) {
           )}
 
           {(autorizedUser || isPostulant) && progressObj && (
-            <div className="col-12 col-xl-12">
+            <div className="col-span-2 md:col-span-1">
               <Alert variant="warning" className="mb-0">
-                <Alert.Heading>
+                <h2>
                   Estado de requerimientos para la publicación del proyecto en{" "}
                   <a
                     href="https://marketplace.suan.global/"
@@ -93,19 +93,19 @@ export default function ProjectDetails({ visible }) {
                   >
                     Marketplace
                   </a>
-                </Alert.Heading>
+                </h2>
                 <p>
                   Para garantizar la transparencia, confiabilidad y calidad de
                   los proyectos presentados, es necesario cumplir con las
                   siguientes condiciones antes de que un proyecto pueda ser
                   visualizado en el Marketplace para su comercialización:
                 </p>
-                <div className="row row-cols-2">
+                <div className="grid grid-cols-2">
                   {isPostulant && (
                     <div>
                       <p className="mb-0">Requerimientos del postulante</p>
                       <ul>
-                        <li className="fw-bold">
+                        <li className="font-bold">
                           (
                           {progressObj.sectionsStatus.projectInfo ? (
                             <CheckIcon className="text-success" />
@@ -114,7 +114,7 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Completar información del proyecto
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold">
                           (
                           {progressObj.sectionsStatus.ownersInfo ? (
                             <CheckIcon className="text-success" />
@@ -124,7 +124,7 @@ export default function ProjectDetails({ visible }) {
                           ) Completar información de titulares y certificados de
                           tradición
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold">
                           (
                           {progressObj.sectionsStatus.geodataInfo ? (
                             <CheckIcon className="text-success" />
@@ -133,7 +133,7 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Completar ubicación geográfica
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold">
                           (
                           {progressObj.sectionsStatus.ownerAcceptsConditions ? (
                             <CheckIcon className="text-success" />
@@ -152,7 +152,7 @@ export default function ProjectDetails({ visible }) {
                         de validadores SUAN.
                       </p>
                       <ul>
-                        <li className="fw-bold">
+                        <li className="font-bold">
                           <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.validationsComplete ? (
@@ -163,7 +163,7 @@ export default function ProjectDetails({ visible }) {
                             ) Validación de documentos
                           </p>
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold">
                           <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.technicalInfo ? (
@@ -174,7 +174,7 @@ export default function ProjectDetails({ visible }) {
                             ) Oficialización de información Técnica
                           </p>
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold">
                           <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.financialInfo ? (
@@ -195,20 +195,10 @@ export default function ProjectDetails({ visible }) {
                     ? "Este proyecto cumple la totalidad de los requerimientos"
                     : "Este proyecto aún no cumple la totalidad de requerimientos para su publicación"}
                 </p>
-                {/* <hr />
-            <div>
-              <div>
-                <ProgressBar
-                  striped
-                  variant="danger"
-                  now={progressObj.progressValue}
-                />
-              </div>
-            </div> */}
               </Alert>
             </div>
           )}
-          <div className="col">
+          <div className="col-span-1">
             <ProjectInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -222,7 +212,7 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div>
-          <div className="col">
+          <div className="col-span-1">
             <GeodataInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -236,13 +226,13 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div>
-          <div className="col-12 col-xl-12">
+          <div className="col-span-2">
             <CadastralRecordsInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
             />
           </div>
-          {/* <div className="col">
+          {/* <div className="col-span-1">
             <OwnerInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -256,15 +246,15 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div> */}
-          <div className="col">
+          <div className="col-span-1">
             <PostulantInfoCard autorizedUser={autorizedUser} />
           </div>
           <div
             className={
               projectData.projectUses?.replaceUse.types.length > 0 ||
               projectData.projectUses?.actualUse.types.length > 0
-                ? "col-12 col-lg-12"
-                : "col-12"
+                ? "col-span-2 lg:col-span-1"
+                : "col-span-1"
             }
           >
             <ActualUseAndPotentialInfoCard autorizedUser={autorizedUser} />
@@ -273,19 +263,19 @@ export default function ProjectDetails({ visible }) {
             className={
               projectData.projectUses?.replaceUse.types.length > 0 ||
               projectData.projectUses?.actualUse.types.length > 0
-                ? "col-12 col-lg-12"
-                : "col-12"
+                ? "col-span-2 lg:col-span-1"
+                : "col-span-1"
             }
           >
             <UseRestrictionsInfoCard autorizedUser={autorizedUser} />
           </div>
-          <div className="col-12 col-lg-12">
+          <div className="col-span-2 lg:col-span-1">
             <EcosystemInfoCard autorizedUser={autorizedUser} />
           </div>
-          <div className="col">
+          <div className="col-span-1">
             <PropertyInfoCard autorizedUser={autorizedUser} />
           </div>
-          <div className="col">
+          <div className="col-span-1">
             <RelationsInfoCard autorizedUser={autorizedUser} />
           </div>
         </div>

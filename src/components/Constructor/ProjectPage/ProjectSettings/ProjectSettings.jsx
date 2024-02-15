@@ -8,7 +8,7 @@ import GenericInputTable from "./SettingCards/GenericInputTable";
 import FinancialIndicators from "./SettingCards/FinancialIndicators";
 import DescriptionValidator from "./SettingCards/DescriptionValidator";
 import { useProjectData } from "context/ProjectDataContext";
-import { Button } from "react-bootstrap";
+import  Button from "../../../ui/Button";
 import { notify } from "utilities/notify";
 import { fetchProjectDataByProjectID } from "../api";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";

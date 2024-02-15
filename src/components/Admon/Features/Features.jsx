@@ -284,159 +284,191 @@ import 'react-toastify/dist/ReactToastify.css';
     
 
     render() {
-        let {features, newFeature, CRUDButtonName,} = this.state
-        const renderFeaturesType = () =>{
-            return <FeaturesType featureTypes={this.state.featureTypes}/>
-        }
+        let { features, newFeature, CRUDButtonName } = this.state;
+    
+        const renderFeaturesType = () => {
+          return <FeaturesType featureTypes={this.state.featureTypes} />;
+        };
+    
         const renderFeatures = () => {
-            if (features.length > 0) {
-                return (
-                    <Container style={{maxHeight: '30rem', overflowY: 'scroll'}}>
-                        <h2>Features</h2>
-                            <Table striped bordered hover >
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Default value</th>
-                                    <th>Type</th>
-                                    <th>Unit of Measure</th>
-                                    <th>Is template</th>
-                                    <th>Is verifable</th>
-                                    <th>Editar</th>
-                                    {/* <th>Is available</th> */}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {features.map(features => (
-                                    <tr key={features.id}>
-                                        <td>
-                                            {features.id}
-                                        </td>
-                                        <td>
-                                            {features.name}
-                                        </td>
-                                        <td>
-                                            {features.description}
-                                        </td>
-                                        <td>
-                                            {features.defaultValue}
-                                        </td>
-                                        <td>
-                                            {features.featureTypeID}
-                                        </td>
-                                        <td>
-                                            {features.unitOfMeasureID}
-                                        </td>
-                                        <td>
-                                            {features.isTemplate? 'Si' : 'No'}
-                                        </td>
-                                        <td>
-                                            {features.isVerifable? 'Si' : 'No'}
-                                        </td>
-                                        <td>
-                                            <Button 
-                                                variant='primary'
-                                                size='sm' 
-                                                onClick={(e) => this.handleLoadEditFeature(features, e)}
-                                            >Editar</Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </Table>
-                    </Container>
-                )
-            }
-        
-        }
-
-        return (
-            <Container> 
-                <ToastContainer />
-                <Container>
-                    <h2>{CRUDButtonName} FeatureID: {newFeature.id}</h2>
-                    <Form>
-                        <Row className='mb-2'>
-                            <Form.Group as={Col} controlId='formGridNewFeatureName'>
-                                <Form.Label>Name*</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Name...'
-                                    name='feature.name'
-                                    value={newFeature.name}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Description...'
-                                    name='feature.description'
-                                    value={newFeature.description}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                <Form.Label>Default value</Form.Label>
-                                <Form.Control
-                                    type='number'
-                                    placeholder=''
-                                    name='feature.defaultValue'
-                                    value={newFeature.defaultValue}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                <Form.Label>Is template</Form.Label>
-                                <Form.Select 
-                                    name='feature.isTemplate'
-                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option value="no">No</option>
-                                <option value="yes">Yes</option>
-                                </Form.Select>
-                                <Form.Label>Is verifable</Form.Label>
-                                <Form.Select 
-                                    name='feature.isVerifable'
-                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option value="no">No</option>
-                                <option value="yes">Yes</option>
-                                </Form.Select>
-                                <Form.Label>Type*</Form.Label>
-                                <Form.Select 
-                                    name='feature.featureType'
-                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                        <option value=''>-</option>
-                                        {this.state.featureTypes.map((featureType, idx) => (<option value={featureType.name} key={idx}>{featureType.name}</option>))}
-                                </Form.Select>
-                                <Form.Label>Unit Of Measure*</Form.Label>
-                                <Form.Select 
-                                    name='feature.unitOfMeasure'
-                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                        <option value=''>-</option>
-                                        {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (<option value={UnitOfMeasure.id} key={idx}>{UnitOfMeasure.engineeringUnit}</option>))}
-                                </Form.Select>
-        {/*                         <Form.Label>Is available</Form.Label>
-                                <Form.Select 
-                                    name='feature.isAvailable'
-                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                                </Form.Select> */}
-                            </Form.Group>
-                        </Row>
-
-                        <Row className='mb-1'>
-                            <Button
+          if (features.length > 0) {
+            return (
+              <Container style={{ maxHeight: '30rem', overflowY: 'scroll' }}>
+                <h2>Features</h2>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Default value</th>
+                      <th>Type</th>
+                      <th>Unit of Measure</th>
+                      <th>Is template</th>
+                      <th>Is verifiable</th>
+                      <th>Editar</th>
+                      {/* <th>Is available</th> */}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {features.map((feature) => (
+                      <tr key={feature.id}>
+                        <td>{feature.id}</td>
+                        <td>{feature.name}</td>
+                        <td>{feature.description}</td>
+                        <td>{feature.defaultValue}</td>
+                        <td>{feature.featureTypeID}</td>
+                        <td>{feature.unitOfMeasureID}</td>
+                        <td>{feature.isTemplate ? 'Si' : 'No'}</td>
+                        <td>{feature.isVerifable ? 'Si' : 'No'}</td>
+                        <td>
+                          <Button
                             variant='primary'
                             size='sm'
-                            onClick={this.handleCRUDFeature}
-                            disabled={this.state.isCRUDButtonDisable}
-                            >{CRUDButtonName}</Button>
-                        </Row>
-                    </Form>
-                <br></br>
-                {renderFeatures()}
+                            onClick={(e) => this.handleLoadEditFeature(feature, e)}
+                          >
+                            Editar
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Container>
+            );
+          }
+        };
+    
+        return (
+          <Container>
+            <ToastContainer />
+            <Container>
+              <h2>
+                {CRUDButtonName} FeatureID: {newFeature.id}
+              </h2>
+              <Form>
+                <Row className='mb-2'>
+                  <Col controlId='formGridNewFeatureName'>
+                    <label htmlFor='featureName' className='form-label'>
+                      Name*
+                    </label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      id='featureName'
+                      placeholder='Name...'
+                      name='feature.name'
+                      value={newFeature.name}
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    />
+                    <label htmlFor='featureDescription' className='form-label'>
+                      Description
+                    </label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      id='featureDescription'
+                      placeholder='Description...'
+                      name='feature.description'
+                      value={newFeature.description}
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    />
+                    <label htmlFor='featureDefaultValue' className='form-label'>
+                      Default value
+                    </label>
+                    <input
+                      type='number'
+                      className='form-control'
+                      id='featureDefaultValue'
+                      placeholder=''
+                      name='feature.defaultValue'
+                      value={newFeature.defaultValue}
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    />
+                    <label htmlFor='featureIsTemplate' className='form-label'>
+                      Is template
+                    </label>
+                    <select
+                      className='form-select'
+                      name='feature.isTemplate'
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    >
+                      <option value='no'>No</option>
+                      <option value='yes'>Yes</option>
+                    </select>
+                    <label htmlFor='featureIsVerifiable' className='form-label'>
+                      Is verifiable
+                    </label>
+                    <select
+                      className='form-select'
+                      name='feature.isVerifable'
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    >
+                      <option value='no'>No</option>
+                      <option value='yes'>Yes</option>
+                    </select>
+                    <label htmlFor='featureFeatureType' className='form-label'>
+                      Type*
+                    </label>
+                    <select
+                      className='form-select'
+                      name='feature.featureType'
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    >
+                      <option value=''>-</option>
+                      {this.state.featureTypes.map((featureType, idx) => (
+                        <option value={featureType.name} key={idx}>
+                          {featureType.name}
+                        </option>
+                      ))}
+                    </select>
+                    <label htmlFor='featureUnitOfMeasure' className='form-label'>
+                      Unit Of Measure*
+                    </label>
+                    <select
+                      className='form-select'
+                      name='feature.unitOfMeasure'
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    >
+                      <option value=''>-</option>
+                      {this.state.UnitOfMeasures.map((UnitOfMeasure, idx) => (
+                        <option value={UnitOfMeasure.id} key={idx}>
+                          {UnitOfMeasure.engineeringUnit}
+                        </option>
+                      ))}
+                    </select>
+                    {/* <label htmlFor='featureIsAvailable' className='form-label'>
+                      Is available
+                    </label>
+                    <select
+                      className='form-select'
+                      name='feature.isAvailable'
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    >
+                      <option value='yes'>Yes</option>
+                      <option value='no'>No</option>
+                    </select> */}
+                  </Col>
+                </Row>
+    
+                <Row className='mb-1'>
+                  <Button
+                    variant='primary'
+                    size='sm'
+                    onClick={this.handleCRUDFeature}
+                    disabled={this.state.isCRUDButtonDisable}
+                  >
+                    {CRUDButtonName}
+                  </Button>
+                </Row>
+              </Form>
+              <br></br>
+              {renderFeatures()}
             </Container>
             {renderFeaturesType()}
-
-        </Container>
-        )
+          </Container>
+        );
+      }
     }
-}
 
-export default Features
-
+    export default Features;

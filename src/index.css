@@ -9,6 +9,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.bg-primary{
+        background-color: #359193 !important;
+}
 a{
         text-decoration: none !important;
 }
@@ -63,6 +66,14 @@ h4{
         margin-left:2rem;
         border: none;
         box-shadow: 2px 2px #8080806e;
+}
+.category_label{
+        width: auto !important;
+        margin: 5px;
+      }
+.text-base{
+        height: 200px;
+        overflow-y:scroll ;
 }
 .role_btn {
         font-size: 0.6rem;

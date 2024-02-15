@@ -1,6 +1,7 @@
 import useXLSXForm from "hooks/useXLSXForm";
 import { useEffect, useState } from "react";
-import { Button, Spinner } from "react-bootstrap";
+import Button from "../ui/Button";
+import Spinner from "../ui/Spinner";
 import { findObjectByName, getFieldRelevantCondition } from "./utils";
 import { notify } from "utilities/notify";
 import { ToastContainer } from "react-toastify";

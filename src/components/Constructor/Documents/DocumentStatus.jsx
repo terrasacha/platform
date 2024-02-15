@@ -1,21 +1,20 @@
 import React, { Component } from "react";
 
 //Bootstrap
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Dropdown,
-  DropdownButton,
-  Form,
-  Modal,
-  Row,
-  Table,
-  Stack,
-  Nav,
-  Badge
-} from "react-bootstrap";
+import Button from '../../ui/Button';
+import Card from '../../ui/Card';
+import Col from '../../ui/Col';
+import Container from '../../ui/Container';
+import Dropdown from '../../ui/Dropdown';
+import DropdownButton from '../../ui/DropdownButton';
+import Form from '../../ui/Form';
+import Modal from '../../ui/Modal';
+import Row from '../../ui/Row';
+import Table from '../../ui/Table';
+import Stack from '../../ui/Stack';
+import Nav from '../../ui/Nav';
+import Badge from '../../ui/Badge';
+
 import {
   ArrowRight,
   CheckCircle,

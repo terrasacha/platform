@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Button from "../../ui/Button";
-import Modal from "../../ui/Modal";
-import Form from "../../ui/Form";
+import Button from "../ui/Button";
+import Modal from "../ui/Modal";
+import Form from "../ui/Form";
 import { notify } from "utilities/notify";
 import { useProjectData } from "context/ProjectDataContext";
 import { API, Storage, graphqlOperation } from "aws-amplify";
@@ -12,7 +12,7 @@ import {
   updateProductFeature,
 } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
-import { Spinner } from "react-bootstrap";
+import Spinner from "../ui/Spinner";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 
 export default function NewValidatorFileModal(props) {

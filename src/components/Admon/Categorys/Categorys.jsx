@@ -129,82 +129,85 @@ class Categorys extends Component {
     
     // RENDER
     render() {
-        // State Varibles
-        let {categorys, newCategory, CRUDButtonName} = this.state
-
+        // State Variables
+        let { categorys, newCategory, CRUDButtonName } = this.state;
+    
         const renderCategorys = () => {
-            if (categorys.length > 0) {
-                return (
-                    <Container> 
-                        <Table striped bordered hover>
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {categorys.map(category => (
-                                <tr key={category.id}>
-                                    <td>
-                                        {category.id}
-                                    </td>
-                                    <td>
-                                        {category.name}
-                                    </td>
-                                    <td>
-                                        <Button 
-                                            variant='primary'
-                                            size='sm' 
-                                            onClick={(e) => this.handleLoadEditCategory(category, e)}
-                                        >Editar</Button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </Container>
-                )
-            }
-        
-        }
-
-
-        return (
-            
-            <Container style={{display: 'flex', flexDirection: 'column'}}> 
-                <Container>
-                    <h2>{CRUDButtonName} Categoría: {newCategory.name}</h2>
-                    <Form>
-                        <Row className='mb-2'>
-                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Ex. NUEVA CATERORIA'
-                                    name='category.name'
-                                    value={newCategory.name}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-                        </Row>
-
-                        <Row className='mb-1'>
-                            <Button
+          if (categorys.length > 0) {
+            return (
+              <Container>
+                <table className="table table-striped table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categorys.map((category) => (
+                      <tr key={category.id}>
+                        <td>{category.id}</td>
+                        <td>{category.name}</td>
+                        <td>
+                          <Button
                             variant='primary'
                             size='sm'
-                            onClick={this.handleCRUDCategory}
-                            disabled={this.state.isCRUDButtonDisable}
-                            >{CRUDButtonName}</Button>
-                        </Row>
-                    </Form>
-                </Container>
-                <br></br>
-                {renderCategorys()}
+                            onClick={(e) => this.handleLoadEditCategory(category, e)}
+                          >
+                            Editar
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Container>
+            );
+          }
+        };
+    
+        return (
+          <Container style={{ display: 'flex', flexDirection: 'column' }}>
+            <Container>
+              <h2>
+                {CRUDButtonName} Categoría: {newCategory.name}
+              </h2>
+              <Form>
+                <Row className='mb-2'>
+                  <Col controlId='formGridNewCategoryName'>
+                    <label htmlFor='categoryName' className='form-label'>
+                      Nombre
+                    </label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      id='categoryName'
+                      placeholder='Ex. NUEVA CATEGORÍA'
+                      name='category.name'
+                      value={newCategory.name}
+                      onChange={(e) => this.handleOnChangeInputForm(e)}
+                    />
+                  </Col>
+                </Row>
+    
+                <Row className='mb-1'>
+                  <Button
+                    variant='primary'
+                    size='sm'
+                    onClick={this.handleCRUDCategory}
+                    disabled={this.state.isCRUDButtonDisable}
+                  >
+                    {CRUDButtonName}
+                  </Button>
+                </Row>
+              </Form>
             </Container>
-        
-        )
+            <br></br>
+            {renderCategorys()}
+          </Container>
+        );
+      }
     }
-}
 
 export default Categorys

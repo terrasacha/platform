@@ -75,36 +75,30 @@ export default function TailwindHeaderNavbar({ navItems }) {
           <ul class="flex flex-col md:p-0 md:space-x-4 md:flex-row md:border-0 text-sm">
             <li>
               <a
-                href="#"
+                href="#tecnologia"
                 class="block py-2 text-black rounded md:bg-transparent"
                 aria-current="page"
               >
-                Inicio
+                Tecnología
               </a>
             </li>
             <li>
               <a
-                href="#"
-                class="block py-2 text-black rounded hover:bg-gray-100 md:hover:bg-transparent"
+                href="#porque"
+                class="block py-2 text-black rounded md:bg-transparent"
+                aria-current="page"
               >
+                ¿Por qué Suan?
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://marketplace.suan.global/" target="_blank" class="block py-2 text-black rounded hover:bg-gray-100 md:hover:bg-transparent">
                 Proyectos
               </a>
             </li>
             <li>
-              <a
-                href="#"
-                class="block py-2 text-black rounded hover:bg-gray-100 md:hover:bg-transparent"
-              >
-                Servicios
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                class="block py-2 text-black rounded hover:bg-gray-100 md:hover:bg-transparent"
-              >
-                Contacto
-              </a>
+              <a href="/login" class="HeaderNavbar_signing__I+fQ7">Ingresar</a>
             </li>
           </ul>
         </div>

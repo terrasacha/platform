@@ -146,102 +146,110 @@ class UOM extends Component {
         })
     }
     
-    // RENDER
-    render() {
-        // State Varibles
-        let {unitOfMeasures, newUnitOfMeasure, CRUDButtonName} = this.state
+  // RENDER
+  render() {
+    // State Variables
+    let { unitOfMeasures, newUnitOfMeasure, CRUDButtonName } = this.state;
 
-        const renderunitOfMeasures = () => {
-            if (unitOfMeasures.length > 0) {
-                return (
-                    <Container>
-                        <Table striped bordered hover>
-                            <thead>
-                            <tr>
-                                <th>Engineering unit</th>
-                                <th>description</th>
-                                <th>Is float</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {unitOfMeasures.map(unitOfMeasure => (
-                                <tr key={unitOfMeasure.id}>
-                                    <td>
-                                        {unitOfMeasure.engineeringUnit}
-                                    </td>
-                                    <td>
-                                        {unitOfMeasure.description}
-                                    </td>
-                                    <td>
-                                        {unitOfMeasure.isFloat? 'Yes':'No'}
-                                    </td>
-                                    <td>
-                                        <Button 
-                                            variant='primary'
-                                            size='sm' 
-                                            
-                                            onClick={(e) => this.handleLoadEditUnitOfMeasure(unitOfMeasure, e)}
-                                        >Editar</Button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </Container>
-                )
-            }
-        
-        }
-
-
+    const renderUnitOfMeasures = () => {
+      if (unitOfMeasures.length > 0) {
         return (
-            
-            <Container>
-                <Container>
-                    <h2>Create Unit of Measure</h2>
-                    <Form>
-                        <Row className='mb-2'>
-                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                                <Form.Label>Engineering Unit</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder=''
-                                    name='newUnitOfMeasure.engineeringUnit'
-                                    value={newUnitOfMeasure.engineeringUnit}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder=''
-                                    name='newUnitOfMeasure.description'
-                                    value={newUnitOfMeasure.description}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                <Form.Label>Is Float?</Form.Label>
-                                <br></br>
-                                            <Button 
-                                                variant='primary'
-                                                size='sm' 
-                                                onClick={(e) => this.handleOnChangeInputForm(e, 'isFloat')}
-                                            >{newUnitOfMeasure.isFloat? 'YES' : 'NO'}</Button>
-                            </Form.Group>
-                        </Row>
+          <Container>
+            <table className="table table-striped table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Engineering unit</th>
+                  <th>Description</th>
+                  <th>Is float</th>
+                  <th>Editar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {unitOfMeasures.map((unitOfMeasure) => (
+                  <tr key={unitOfMeasure.id}>
+                    <td>{unitOfMeasure.engineeringUnit}</td>
+                    <td>{unitOfMeasure.description}</td>
+                    <td>{unitOfMeasure.isFloat ? 'Yes' : 'No'}</td>
+                    <td>
+                      <Button
+                        variant='primary'
+                        size='sm'
+                        onClick={(e) => this.handleLoadEditUnitOfMeasure(unitOfMeasure, e)}
+                      >
+                        Editar
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Container>
+        );
+      }
+    };
 
-                        <Row className='mb-1'>
-                            <Button
-                            variant='primary'
-                            size='sm'
-                            onClick={this.handleCRUDUnitOfMeasure}
-                            disabled={this.state.isCRUDButtonDisable}
-                            >{CRUDButtonName}</Button>
-                        </Row>
-                    </Form>
-                    <br></br>
-                </Container>
-                {renderunitOfMeasures()}
-            </Container>
-        
-        )
-    }
+    return (
+      <Container>
+        <Container>
+          <h2>Create Unit of Measure</h2>
+          <Form>
+            <Row className='mb-2'>
+              <Col controlId='formGridNewCategoryName'>
+                <label htmlFor='engineeringUnit' className='form-label'>
+                  Engineering Unit
+                </label>
+                <input
+                  type='text'
+                  className='form-control'
+                  id='engineeringUnit'
+                  placeholder=''
+                  name='newUnitOfMeasure.engineeringUnit'
+                  value={newUnitOfMeasure.engineeringUnit}
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
+                />
+                <label htmlFor='description' className='form-label'>
+                  Description
+                </label>
+                <input
+                  type='text'
+                  className='form-control'
+                  id='description'
+                  placeholder=''
+                  name='newUnitOfMeasure.description'
+                  value={newUnitOfMeasure.description}
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
+                />
+                <label htmlFor='isFloat' className='form-label'>
+                  Is Float?
+                </label>
+                <br />
+                <Button
+                  variant='primary'
+                  size='sm'
+                  onClick={(e) => this.handleOnChangeInputForm(e, 'isFloat')}
+                >
+                  {newUnitOfMeasure.isFloat ? 'YES' : 'NO'}
+                </Button>
+              </Col>
+            </Row>
+
+            <Row className='mb-1'>
+              <Button
+                variant='primary'
+                size='sm'
+                onClick={this.handleCRUDUnitOfMeasure}
+                disabled={this.state.isCRUDButtonDisable}
+              >
+                {CRUDButtonName}
+              </Button>
+            </Row>
+          </Form>
+          <br />
+        </Container>
+        {renderUnitOfMeasures()}
+      </Container>
+    );
+  }
 }
 
-export default UOM
+export default UOM;

@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 
 //Bootstrap
-import {
-  Button,
-  Card,
-  Container,
-  Stack,
-  Badge,
-} from "react-bootstrap";
+import Button from '../../ui/Button';
+import Card from '../../ui/Card';
+import Container from '../../ui/Container';
+import Stack from '../../ui/Stack';
+import Badge from '../../ui/Badge';
+
 import HeaderNavbar from "../../Investor/Navbars/HeaderNavbar";
 // GraphQL
 import { API, Auth, graphqlOperation, Storage } from "aws-amplify";

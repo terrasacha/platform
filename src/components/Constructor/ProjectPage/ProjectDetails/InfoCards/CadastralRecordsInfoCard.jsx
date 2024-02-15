@@ -3,7 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "../../../../common/Card";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { TrashIcon } from "components/common/icons/TrashIcon";
-import { Button, Form, InputGroup, Table } from "react-bootstrap";
+import  Button  from "../../../../ui/Button";
+import  Form  from "../../../../ui/Form";
+import  Table  from "../../../../ui/Table";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
@@ -641,153 +643,135 @@ export default function CadastralRecordsInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Información predial" sep={true} tooltip={tooltip} />
-      <Card.Body>
-        <div className="row">
-          <Table responsive>
-            <thead className="text-center">
-              <tr>
-                <th style={{ width: "240px" }}>Identificador catastral</th>
-                <th style={{ width: "180px" }}>Matrícula inmobiliaria</th>
-                <th style={{ width: "180px" }}>Certificado de tradición</th>
-                <th style={{ width: "180px" }}>Nombre de predio</th>
-                <th style={{ width: "180px" }}>Área</th>
-                <th style={{ width: "120px" }}></th>
-              </tr>
-            </thead>
-            <tbody className="align-middle">
-              {multipleData.map((data, index) => {
-                return (
-                  <tr key={index} className="text-center">
-                    {data.editing ? (
-                      <>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <Form.Control
-                              size="sm"
-                              type="text"
-                              value={data.cadastralNumber}
-                              className="text-center"
-                              name={`cadastraldata_cadastralNumber_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
-                            />
-                            {data.cadastralNumber in predialFetchedData ? (
-                              <CheckIcon className="ms-2 text-success" />
-                            ) : (
-                              <XIcon className="ms-2 text-danger" />
-                            )}
-                          </div>
-                        </td>
-                        <td>
-                          <Form.Control
-                            size="sm"
-                            type="text"
-                            value={data.matricula}
-                            className="text-center"
-                            name={`cadastraldata_matricula_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            style={{ display: "none" }}
-                            onChange={(e) => handleFileChange(e, index)}
-                          />
-                          <Button onClick={handleUploadButton} size="sm">
-                            {data.certificate || data.documentID !== undefined
-                              ? "Actualizar"
-                              : "Cargar"}
-                          </Button>
-                        </td>
-                        <td>
-                          {renderPredioNameByCadastralNumber(
-                            data.cadastralNumber
-                          )}
-                        </td>
-                        <td>
-                          {renderAreaByCadastralNumber(data.cadastralNumber)}
-                        </td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="success"
-                            className="m-1"
-                            onClick={() => handleSaveHistoricalData(index)}
-                          >
-                            <SaveDiskIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
-                            onClick={() => handleDeleteHistoricalData(index)}
-                          >
-                            <TrashIcon />
-                          </Button>
-                        </td>
-                      </>
+    <div className={`bg-white rounded-md shadow-md p-4 ${className}`}>
+  <h2 className="text-2xl font-bold mb-4">Información predial</h2>
+  <div className="grid grid-cols-6 gap-4">
+    <table className="w-full">
+      <thead className="text-center">
+        <tr>
+          <th className="w-1/6">Identificador catastral</th>
+          <th className="w-1/6">Matrícula inmobiliaria</th>
+          <th className="w-1/6">Certificado de tradición</th>
+          <th className="w-1/6">Nombre de predio</th>
+          <th className="w-1/6">Área</th>
+          <th className="w-1/6"></th>
+        </tr>
+      </thead>
+      <tbody className="align-middle">
+        {multipleData.map((data, index) => (
+          <tr key={index} className="text-center">
+            {data.editing ? (
+              <>
+                <td>
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={data.cadastralNumber}
+                      className="text-center form-control"
+                      name={`cadastraldata_cadastralNumber_${index}`}
+                      onChange={(e) => handleChangeInputValue(e)}
+                    />
+                    {data.cadastralNumber in predialFetchedData ? (
+                      <span className="ms-2 text-success">✔</span>
                     ) : (
-                      <>
-                        <td className="text-break">
-                          {data.cadastralNumber?.toUpperCase()}
-                        </td>
-                        <td className="text-break">{data.matricula}</td>
-                        <td>{renderFileLinkByDocumentID(data.documentID)}</td>
-                        <td className="text-break">
-                          {renderPredioNameByCadastralNumber(
-                            data.cadastralNumber
-                          )}
-                        </td>
-                        <td>
-                          {renderAreaByCadastralNumber(data.cadastralNumber)}
-                        </td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="warning"
-                            className="m-1"
-                            disabled={!autorizedUser}
-                            onClick={() => handleEditHistoricalData(index)}
-                          >
-                            <EditIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
-                            disabled={!autorizedUser}
-                            onClick={() => handleDeleteHistoricalData(index)}
-                          >
-                            <TrashIcon />
-                          </Button>
-                        </td>
-                      </>
+                      <span className="ms-2 text-danger">✘</span>
                     )}
-                  </tr>
-                );
-              })}
-              <tr>
-                <td colSpan={6}>
-                  <div className="d-flex">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-100"
-                      disabled={!autorizedUser}
-                      onClick={() => handleAddNewPeriodToHistoricalData()}
-                    >
-                      <PlusIcon></PlusIcon>
-                    </Button>
                   </div>
                 </td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-      </Card.Body>
-    </Card>
+                <td>
+                  <input
+                    type="text"
+                    value={data.matricula}
+                    className="text-center form-control"
+                    name={`cadastraldata_matricula_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFileChange(e, index)}
+                  />
+                  <button
+                    onClick={handleUploadButton}
+                    className="btn btn-sm"
+                  >
+                    {data.certificate || data.documentID !== undefined
+                      ? "Actualizar"
+                      : "Cargar"}
+                  </button>
+                </td>
+                <td>
+                  {renderPredioNameByCadastralNumber(data.cadastralNumber)}
+                </td>
+                <td>
+                  {renderAreaByCadastralNumber(data.cadastralNumber)}
+                </td>
+                <td className="text-end">
+                  <button
+                    className="btn btn-sm btn-success m-1"
+                    onClick={() => handleSaveHistoricalData(index)}
+                  >
+                    <SaveDiskIcon />
+                  </button>
+                  <button
+                    className="btn btn-sm btn-danger m-1"
+                    onClick={() => handleDeleteHistoricalData(index)}
+                  >
+                    <TrashIcon />
+                  </button>
+                </td>
+              </>
+            ) : (
+              <>
+                <td className="text-break">
+                  {data.cadastralNumber?.toUpperCase()}
+                </td>
+                <td className="text-break">{data.matricula}</td>
+                <td>{renderFileLinkByDocumentID(data.documentID)}</td>
+                <td className="text-break">
+                  {renderPredioNameByCadastralNumber(data.cadastralNumber)}
+                </td>
+                <td>{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
+                <td className="text-end">
+                  <button
+                    className="btn btn-sm btn-warning m-1"
+                    disabled={!autorizedUser}
+                    onClick={() => handleEditHistoricalData(index)}
+                  >
+                    <EditIcon />
+                  </button>
+                  <button
+                    className="btn btn-sm btn-danger m-1"
+                    disabled={!autorizedUser}
+                    onClick={() => handleDeleteHistoricalData(index)}
+                  >
+                    <TrashIcon />
+                  </button>
+                </td>
+              </>
+            )}
+          </tr>
+        ))}
+        <tr>
+          <td colSpan={6}>
+            <div className="flex">
+              <button
+                className="btn btn-sm btn-secondary w-full"
+                disabled={!autorizedUser}
+                onClick={() => handleAddNewPeriodToHistoricalData()}
+              >
+                <PlusIcon></PlusIcon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
   );
 }

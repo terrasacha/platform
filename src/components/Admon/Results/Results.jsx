@@ -338,282 +338,282 @@ class Results extends Component {
             confirmSave: false,
         })
     }
-    render() {
-        const SelectProductForm = () => {
-            
-                return(
-                    <Form.Group as={Col}>
-                    <Form.Label>Select a product</Form.Label>
-                    <Form.Select 
-                        name='result.selectedProduct'
-                        defaultValue={'-'}
-                        onChange={(e) => this.handleOnChangeInputForm(e)}>
-                            <option>-</option>
-                            {this.state.products.map((products, idx) => (<option value={products.id} key={idx}>{products.name}</option>))}
-                    </Form.Select>
-                </Form.Group>
-                )
-        }
-        const SelectFormulaForm = () => {
-                return(
-                    <Form.Group as={Col}>
-                        <Form.Label>Select a formula</Form.Label>
-                        <Form.Select 
-                            name='result.selectedFormula'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option>-</option>
-                                {this.state.formulas.map((formula, idx) => (<option value={formula.id} key={idx}>{formula.varID}: {formula.equation}</option>))}
-                        </Form.Select>
-                    </Form.Group>
-                )
-        }
-        const CheckVariablesPF = () => {
-            if(this.state.selectedFormulaID !== '' && this.state.selectedProductID !== ''){
-                return(
-                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}} >
-                        <h6>Check if ProductFeatures of {this.state.selectedProductName} match with the variables on the equation</h6>
-                        <Button
-                            variant='primary'
-                            size='sm' 
-                            onClick={(e) => this.checkIfVariablesMatchWithPF()}
-                        >Check</Button> 
-                    </div>
-                )
-            }
-        }
-        const Calculate = () => {
-            if(this.state.canCalculate){
-                return(
-                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}}>
-                        <h6>The variables exists as Features of this Product. You can calculate </h6>
-                        <Button
-                            variant='primary'
-                            size='sm' 
-                            onClick={(e) => this.resolveFormula()}
-                        >Calculate</Button> 
-                    </div>
-                )
-            }
-            if(this.state.canCalculate === false){
-                return(
-                    <>
-                        <h6>The variables doesn't exists as Features of this Product. Try  another product/formula</h6>
-                    </>
-                ) 
-            }
-        }
-        const Result = () => {
-            if(this.state.result !== ''){
-                return(
-                    <>
-                        <h5>The Result is: {this.state.result}</h5>
-                        <Button
-                            variant='primary'
-                            size='sm' 
-                            onClick={(e) => this.confirmSave()}
-                        >Check Data</Button> 
-                    </>
-                )
-            }
-        }
-        const SaveResult = () => {
-            if(this.state.confirmSave !== false){
-                let productFeatures = this.state.productFeatures.filter(pf => pf.productID === this.state.selectedProductID)
-                return(
-                    <>
-                    <Row className='mb-2'>
-                        
-                        <Form.Group as={Col}>
-                            <Form.Label>Variable ID</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.varID'
-                                value={this.state.varID}
-                                onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Result</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.varID'
-                                disabled
-                                value={this.state.result}
-                                />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Formula</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.equation'
-                                disabled
-                                value={this.state.equationSelected}
-                                />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Product Features</Form.Label>
-                            <Form.Select 
-                            name='result.selectedProductFeature'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option>-</option>
-                                {productFeatures.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.id}</option>))}
-                        </Form.Select>
-                        </Form.Group>
-                    </Row>
-                    <Button
-                        variant='primary'
-                        size='sm' 
-                        disabled={this.state.varID === ''}
-                        onClick={(e) => this.saveResult()}
-                        >Save</Button>
-                    </>
-                )
-            }
-        }
-        const renderResults = () => {
-            if (this.state.results.length > 0) {
-                    return (
-                        <>
-                            <h1>Results list</h1>
-                            <Table striped bordered hover>
-                                <thead>
-                                <tr>
-                                    <th>Var ID</th>
-                                    <th>Value</th>
-                                    <th>Formula</th>
-                                    <th>Created At</th>
+     // RENDER
+  render() {
+    const SelectProductForm = () => {
+      return (
+        <div>
+          <label>Select a product</label>
+          <select
+            name='result.selectedProduct'
+            defaultValue={'-'}
+            onChange={(e) => this.handleOnChangeInputForm(e)}
+          >
+            <option value='-'>-</option>
+            {this.state.products.map((product, idx) => (
+              <option value={product.id} key={idx}>
+                {product.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    };
 
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {this.state.results.map(results =>{ 
-                                    return(
-                                        <tr key={results.id}>
-                                            <td>
-                                                {results.varID} 
-                                            </td>
-                                            <td>
-                                                {results.value} 
-                                            </td>
-                                            <td>
-                                                {results.formula.equation}
-                                            </td>
-                                            <td>
-                                                {results.createdAt.substring(0,10)}
-                                            </td>
-                                        </tr>
-                                    )})}
-                                </tbody>
-                            </Table>
-                        </>
-                )
-            }
-        }
-        const renderProductFeaturesResults = () => {
-            let copyProductFeatureResults = this.state.productFeatureResults
-            let copyFilterByProduct = this.state.filterByProduct
-            let copyFilterByProductFeature = this.state.filterByProductFeature
-            if(copyFilterByProduct !== ''){
-                copyProductFeatureResults = copyProductFeatureResults.filter(pfr => pfr.productFeature.productID === copyFilterByProduct.id)
-                if(copyFilterByProductFeature !== ''){
-                    copyProductFeatureResults = copyProductFeatureResults.filter(pfr => pfr.productFeatureID === copyFilterByProductFeature)
-                }
-            }
-                    return (
-                        <>
-                            <h1>PF who has a result assign</h1>
-                            <Row className='mb-4'>
-                                <Form.Group as={Col}>
-                                <Form.Label>Filter by Product</Form.Label>
-                                <Form.Select 
-                                name='filterProducts'
-                                onChange={(e) => this.handleChangeFilter(e)}>
-                                    <option value=''>-</option>
-                                    {this.state.products.map((product, idx) => (<option value={product.id} key={idx}>{product.name}</option>))}
-                                </Form.Select>
-                                </Form.Group>
-                            </Row>
-                            {this.state.filterByProduct !== ''?
-                                <Row className='mb-4'>
-                                    <Form.Group as={Col}>
-                                    <Form.Label>Filter by Feature</Form.Label>
-                                    <Form.Select 
-                                    name='filterProductFeature'
-                                    onChange={(e) => this.handleChangeFilter(e)}>
-                                        <option value=''>-</option>
-                                        {this.state.filterByProduct.productFeatures.items.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.name}</option>))}
-                                    </Form.Select>
-                                    </Form.Group>
-                                </Row> : ''
-                            }
-                            <Table striped bordered hover>
-                                <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Feature</th>
-                                    <th>Result Assigned</th>
-                                    <th>Formula</th>
-                                    <th>Active</th>
+    const SelectFormulaForm = () => {
+      return (
+        <div>
+          <label>Select a formula</label>
+          <select name='result.selectedFormula' onChange={(e) => this.handleOnChangeInputForm(e)}>
+            <option value='-'>-</option>
+            {this.state.formulas.map((formula, idx) => (
+              <option value={formula.id} key={idx}>
+                {formula.varID}: {formula.equation}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    };
 
-
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    {copyProductFeatureResults?.map(PFR =>{ 
-                                        return(
-                                            <tr key={PFR.id}>
-                                                <td>
-                                                    {PFR.productFeature.product.name} 
-                                                </td>
-                                                <td>
-                                                    {PFR.productFeature.feature.name} 
-                                                </td>
-                                                <td>
-                                                    {PFR.result.value} 
-                                                </td>
-                                                <td>
-                                                    {PFR.result.formula.equation} 
-                                                </td>
-                                                <td>
-                                                <Button
-                                                    variant={PFR.isActive?'secondary' : 'success'}
-                                                    size='sm' 
-                                                    onClick={(e) => this.handleActiveResult(PFR.productFeatureID, PFR.id)}>
-                                                {PFR.isActive? 'Assigned': 'Assign'}
-                                                </Button> 
-                                                </td>
-                                            </tr>
-                                        )})}
-                                </tbody>
-                            </Table>
-                        </>
-                )
-            }
+    const CheckVariablesPF = () => {
+      if (this.state.selectedFormulaID !== '' && this.state.selectedProductID !== '') {
         return (
-        <Container>
-            <Container style={{display: 'flex', height: '580px'}}>
-                <Container>
-                    <h2>Calculate Result</h2>            
-                    <Form>
-                            {SelectProductForm()}   
-                            {SelectFormulaForm()}
-                    </Form>
-                            {CheckVariablesPF()}
-                            {Calculate()}
-                            {Result()}
-                            {SaveResult()}
-                </Container>
-                <Container style={{overflow: 'auto'}}>
-                    {renderProductFeaturesResults()}
-                </Container>
-            </Container>
-            <Container>
-                {renderResults()}
-            </Container>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px' }}>
+            <h6>Check if ProductFeatures of {this.state.selectedProductName} match with the variables on the equation</h6>
+            <Button variant='primary' size='sm' onClick={(e) => this.checkIfVariablesMatchWithPF()}>
+              Check
+            </Button>
+          </div>
+        );
+      }
+    };
+
+    const Calculate = () => {
+      if (this.state.canCalculate) {
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px' }}>
+            <h6>The variables exist as Features of this Product. You can calculate </h6>
+            <Button variant='primary' size='sm' onClick={(e) => this.resolveFormula()}>
+              Calculate
+            </Button>
+          </div>
+        );
+      }
+
+      if (this.state.canCalculate === false) {
+        return <h6>The variables don't exist as Features of this Product. Try another product/formula</h6>;
+      }
+    };
+
+    const Result = () => {
+      if (this.state.result !== '') {
+        return (
+          <>
+            <h5>The Result is: {this.state.result}</h5>
+            <Button variant='primary' size='sm' onClick={(e) => this.confirmSave()}>
+              Check Data
+            </Button>
+          </>
+        );
+      }
+    };
+
+    const SaveResult = () => {
+      if (this.state.confirmSave !== false) {
+        let productFeatures = this.state.productFeatures.filter(
+          (pf) => pf.productID === this.state.selectedProductID
+        );
+
+        return (
+          <>
+            <Row className='mb-2'>
+              <Col>
+                <label>Variable ID</label>
+                <input
+                  type='text'
+                  placeholder=''
+                  name='result.varID'
+                  value={this.state.varID}
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
+                />
+              </Col>
+              <Col>
+                <label>Result</label>
+                <input type='text' placeholder='' name='result.varID' disabled value={this.state.result} />
+              </Col>
+              <Col>
+                <label>Formula</label>
+                <input
+                  type='text'
+                  placeholder=''
+                  name='result.equation'
+                  disabled
+                  value={this.state.equationSelected}
+                />
+              </Col>
+              <Col>
+                <label>Product Features</label>
+                <select
+                  name='result.selectedProductFeature'
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
+                >
+                  <option value='-'>-</option>
+                  {productFeatures.map((pf, idx) => (
+                    <option value={pf.id} key={idx}>
+                      {pf.feature.id}
+                    </option>
+                  ))}
+                </select>
+              </Col>
+            </Row>
+            <Button
+              variant='primary'
+              size='sm'
+              disabled={this.state.varID === ''}
+              onClick={(e) => this.saveResult()}
+            >
+              Save
+            </Button>
+          </>
+        );
+      }
+    };
+
+    const renderResults = () => {
+      if (this.state.results.length > 0) {
+        return (
+          <>
+            <h1>Results list</h1>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Var ID</th>
+                  <th>Value</th>
+                  <th>Formula</th>
+                  <th>Created At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.results.map((result) => (
+                  <tr key={result.id}>
+                    <td>{result.varID}</td>
+                    <td>{result.value}</td>
+                    <td>{result.formula.equation}</td>
+                    <td>{result.createdAt.substring(0, 10)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </>
+        );
+      }
+    };
+
+    const renderProductFeaturesResults = () => {
+      let copyProductFeatureResults = this.state.productFeatureResults;
+      let copyFilterByProduct = this.state.filterByProduct;
+      let copyFilterByProductFeature = this.state.filterByProductFeature;
+
+      if (copyFilterByProduct !== '') {
+        copyProductFeatureResults = copyProductFeatureResults.filter(
+          (pfr) => pfr.productFeature.productID === copyFilterByProduct.id
+        );
+
+        if (copyFilterByProductFeature !== '') {
+          copyProductFeatureResults = copyProductFeatureResults.filter(
+            (pfr) => pfr.productFeatureID === copyFilterByProductFeature
+          );
+        }
+      }
+
+      return (
+        <>
+          <h1>PF who has a result assigned</h1>
+          <Row className='mb-4'>
+            <Col>
+              <label>Filter by Product</label>
+              <select name='filterProducts' onChange={(e) => this.handleChangeFilter(e)}>
+                <option value='-'>-</option>
+                {this.state.products.map((product, idx) => (
+                  <option value={product.id} key={idx}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+            </Col>
+          </Row>
+          {this.state.filterByProduct !== '' ? (
+            <Row className='mb-4'>
+              <Col>
+                <label>Filter by Feature</label>
+                <select name='filterProductFeature' onChange={(e) => this.handleChangeFilter(e)}>
+                  <option value='-'>-</option>
+                  {this.state.filterByProduct.productFeatures.items.map((pf, idx) => (
+                    <option value={pf.id} key={idx}>
+                      {pf.feature.name}
+                    </option>
+                  ))}
+                </select>
+              </Col>
+            </Row>
+          ) : (
+            ''
+          )}
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Feature</th>
+                <th>Result Assigned</th>
+                <th>Formula</th>
+                <th>Active</th>
+              </tr>
+            </thead>
+            <tbody>
+              {copyProductFeatureResults?.map((PFR) => (
+                <tr key={PFR.id}>
+                  <td>{PFR.productFeature.product.name}</td>
+                  <td>{PFR.productFeature.feature.name}</td>
+                  <td>{PFR.result.value}</td>
+                  <td>{PFR.result.formula.equation}</td>
+                  <td>
+                    <Button
+                      variant={PFR.isActive ? 'secondary' : 'success'}
+                      size='sm'
+                      onClick={(e) => this.handleActiveResult(PFR.productFeatureID, PFR.id)}
+                    >
+                      {PFR.isActive ? 'Assigned' : 'Assign'}
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </>
+      );
+    };
+
+    return (
+      <Container>
+        <Container style={{ display: 'flex', height: '580px' }}>
+          <Container>
+            <h2>Calculate Result</h2>
+            <div>
+              {SelectProductForm()}
+              {SelectFormulaForm()}
+            </div>
+            {CheckVariablesPF()}
+            {Calculate()}
+            {Result()}
+            {SaveResult()}
+          </Container>
+          <Container style={{ overflow: 'auto' }}>{renderProductFeaturesResults()}</Container>
         </Container>
-    )
+        <Container>{renderResults()}</Container>
+      </Container>
+    );
   }
 }
-export default Results
+
+export default Results;

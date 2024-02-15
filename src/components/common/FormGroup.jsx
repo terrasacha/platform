@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Form from "../../ui/Form";
-import FloatingLabel from "../../ui/FloatingLabel";
-import Button from "../../ui/Button";
+import Form from "../ui/Form";
+import FloatingLabel from "../ui/FloatingLabel";
+import Button from "../ui/Button";
 import { SaveDiskIcon } from "./icons/SaveDiskIcon";
 import GoogleMapReact from "google-map-react";
 import { MapPinIcon } from "./icons/MapPinIcon";
@@ -42,9 +42,9 @@ export default class FormGroup extends Component {
         inputType === "password"
       ) {
         return (
-          <Form.Control
+          <input
             disabled={disabled}
-            size={inputSize}
+            className={`form-control ${inputSize}`}
             type={inputType}
             name={inputName}
             placeholder={inputPlaceholder}
@@ -55,11 +55,10 @@ export default class FormGroup extends Component {
       }
       if (inputType === "textarea") {
         return (
-          <Form.Control
+          <textarea
             disabled={disabled}
+            className={`form-control ${inputSize}`}
             name={inputName}
-            size={inputSize}
-            as={inputType}
             rows={4}
             placeholder={inputPlaceholder}
             value={inputValue}
@@ -69,35 +68,37 @@ export default class FormGroup extends Component {
       }
       if (inputType === "select") {
         return (
-          <Form.Select
+          <select
             disabled={disabled}
-            size={inputSize}
+            className={`form-select ${inputSize}`}
             name={inputName}
             value={inputValue}
             onChange={onChangeInputValue}
           >
             <option disabled value=""></option>
-            {optionList.map(({ label, value }, index) => {
-              return (
-                <option key={index}
-                  value={value}
-                >
-                  {label}
-                </option>
-              );
-            })}
-          </Form.Select>
+            {optionList.map(({ label, value }, index) => (
+              <option key={index} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
         );
       }
       if (inputType === "switch") {
         return (
-          <Form.Check
-            disabled={disabled}
-            checked={checked}
-            type={inputType}
-            label={label}
-            onChange={onChangeInputValue}
-          />
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id={inputName}
+              checked={checked}
+              onChange={onChangeInputValue}
+              disabled={disabled}
+            />
+            <label className="form-check-label" htmlFor={inputName}>
+              {label}
+            </label>
+          </div>
         );
       }
       if (inputType === "geopoint") {
@@ -137,20 +138,20 @@ export default class FormGroup extends Component {
             {markers.length > 0 && (
               <>
                 <div>
-                  <Form.Label className="mb-0">Latitud</Form.Label>
-                  <Form.Control
+                  <label className="mb-0">Latitud</label>
+                  <input
                     disabled={true}
-                    size="sm"
+                    className="form-control form-control-sm"
                     type="number"
                     placeholder="Latitud"
                     value={markers[0].lat}
                   />
                 </div>
                 <div>
-                  <Form.Label className="mb-0">Longitud</Form.Label>
-                  <Form.Control
+                  <label className="mb-0">Longitud</label>
+                  <input
                     disabled={true}
-                    size="sm"
+                    className="form-control form-control-sm"
                     type="number"
                     placeholder="Longitud"
                     value={markers[0].lng}
@@ -166,15 +167,17 @@ export default class FormGroup extends Component {
           <>
             {optionList.map(({ label, value }) => (
               <div key={`opt-${label}`}>
-                <Form.Check
-                  disabled={disabled}
-                  value={value}
-                  name={inputName}
-                  checked={optionCheckedList.includes(value)}
-                  onChange={onChangeInputValue}
-                  type={inputType}
-                  label={label}
-                />
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type={inputType}
+                    name={inputName}
+                    checked={optionCheckedList.includes(value)}
+                    onChange={onChangeInputValue}
+                    value={value}
+                  />
+                  <label className="form-check-label">{label}</label>
+                </div>
               </div>
             ))}
           </>
@@ -182,63 +185,60 @@ export default class FormGroup extends Component {
       }
       if (inputType === "file") {
         return (
-          <Form.Control
+          <input
             type={inputType}
-            size={inputSize}
+            className={`form-control ${inputSize}`}
             name={inputName}
             onChange={onChangeInputValue}
           />
         );
       }
     }
-
+  
     if (type === "block") {
       return (
-        <Form.Group className={className + " mb-3"}>
+        <div className={`${className} mb-3`}>
           {inputType !== "switch" && (
-            <Form.Label className="mb-0">
+            <label className="mb-0">
               {label}
               {required && <span className="fs-6 text-danger">*</span>}
-            </Form.Label>
+            </label>
           )}
           <p className="fw-light fst-italic mb-0">{hint}</p>
           {handleInputRenderByInputType(inputType)}
           <p className="fw-light fst-italic mb-0 text-danger">{inputError}</p>
-        </Form.Group>
+        </div>
       );
     }
     if (type === "floating") {
       return (
-        <FloatingLabel label={label} className={className + " mb-3"}>
+        <div className={`${className} mb-3 floating-label`}>
+          <label>{label}</label>
           {handleInputRenderByInputType(inputType)}
-        </FloatingLabel>
+        </div>
       );
     }
     if (type === "flex") {
       return (
-        <Form.Group className={className + " mb-3"}>
+        <div className={`${className} mb-3`}>
           <div className="row align-items-center">
             {inputType !== "switch" && (
-              <Form.Label column sm="5">
-                {label}
-              </Form.Label>
+              <label className="col-5">{label}</label>
             )}
             <div className="col">{handleInputRenderByInputType(inputType)}</div>
-            {
-              saveBtnVisible && (
-                <div className="col-auto">
-                  <Button
-                    disabled={saveBtnDisabled}
-                    variant="success"
-                    onClick={onClickSaveBtn}
-                  >
-                    <SaveDiskIcon />
-                  </Button>
-                </div>
-              )
-            }
+            {saveBtnVisible && (
+              <div className="col-auto">
+                <button
+                  disabled={saveBtnDisabled}
+                  className="btn btn-success"
+                  onClick={onClickSaveBtn}
+                >
+                  Save
+                </button>
+              </div>
+            )}
           </div>
-        </Form.Group>
+        </div>
       );
     }
   }

@@ -12,6 +12,8 @@ import MiniInfoCard from "../../common/MiniInfoCard";
 import Nav from "../../ui/Nav";
 import Badge from "../../ui/Badge";
 import Stack from "../../ui/Stack";
+import TailwindHeaderNavbar from "../../common/TailwindHeaderNarvbar"
+
 
 // Contexts
 import { useProjectData } from "context/ProjectDataContext";
@@ -23,8 +25,6 @@ import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
-// Mostrar si tiene asignado validador
-// Tiempo restante para verificar
 
 export default function ProjectPage() {
   const { id } = useParams();
@@ -66,7 +66,7 @@ export default function ProjectPage() {
       setAutorizedUser(authorizedUsers.includes(user.id));
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));
-      setIsAdmon(user?.role === "admon")
+      setIsAdmon(user?.role === "admon");
     }
   }, [projectData, user]);
 
@@ -92,7 +92,7 @@ export default function ProjectPage() {
       {projectData ? (
         <div className="container-sm">
           <div className="mb-5">
-            <NewHeaderNavbar></NewHeaderNavbar>
+          <TailwindHeaderNavbar />
           </div>
           <div className="my-2">-</div>
           <div>

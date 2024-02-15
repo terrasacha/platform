@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { API, graphqlOperation } from "aws-amplify";
-import Button from "../../ui/Button";
+import Button from "../../../../ui/Button";
 import { updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { validateProjectFeatures } from "./validateProjectFeatures";
@@ -19,7 +19,8 @@ import { PlusIcon } from "components/common/icons/PlusIcon";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
-import { Form, Table } from "react-bootstrap";
+import  Form from "../../../../ui/Form";
+import Table from "../../../../ui/Table";
 import { notify } from "utilities/notify";
 
 export default function FinanceCard({ visible }) {

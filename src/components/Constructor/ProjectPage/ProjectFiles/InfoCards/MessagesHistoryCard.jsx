@@ -1,7 +1,7 @@
 import React from "react";
 
-import Form from "../../ui/Form";
-import Button from "../../ui/Button";
+import Form from "../../../../ui/Form";
+import Button from "../../../../ui/Button";
 
 import Card from "../../../../common/Card";
 import MessageSection from "../../../../common/chat/MessageSection";

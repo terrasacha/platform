@@ -232,242 +232,230 @@ componentWillUnmount() {
   }
 
   render() {
-    let { usersCopy, products, userSelected, productSelected, roleSelected, userProducts } = this.state
+    let { usersCopy, products, userSelected, productSelected, roleSelected, userProducts } = this.state;
 
     const renderUsers = () => {
-      if(usersCopy.length > 0){
-        return(
+      if (usersCopy.length > 0) {
+        return (
           <>
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-            <h2 className='mr-5'>Users</h2> 
-            {dropDown()}
-          </div>
-          <Table  bordered hover style={{cursor: 'pointer'}}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h2 className='mr-5'>Users</h2>
+              {dropDown()}
+            </div>
+            <Table bordered hover style={{ cursor: 'pointer' }}>
               <thead>
-              <tr>
+                <tr>
                   <th>Name</th>
                   <th>isProfileUpdated</th>
                   <th>Role</th>
-              </tr>
+                </tr>
               </thead>
               <tbody>
-                  {usersCopy?.map(user =>{ 
-                      return(
-                          <tr key={user.id} onClick={(e) => this.handleSelectUser(user)}>
-                              <td>
-                                  {user.name} 
-                              </td>
-                              <td>
-                                  {user.isProfileUpdated? 'Yes': 'No'} 
-                              </td>
-                              <td>
-                                  {user.role?
-                                   user.role: 
-                                    <Button
-                                      size='sm' 
-                                      onClick={(e) => this.assignRole(user)}>
-                                      Assign role on DB
-                                    </Button> 
-                                  }
-                              </td>
-                          </tr>
-                      )})}
+                {usersCopy?.map((user) => {
+                  return (
+                    <tr key={user.id} onClick={(e) => this.handleSelectUser(user)}>
+                      <td>{user.name}</td>
+                      <td>{user.isProfileUpdated ? 'Yes' : 'No'}</td>
+                      <td>
+                        {user.role ? (
+                          user.role
+                        ) : (
+                          <Button size='sm' onClick={(e) => this.assignRole(user)}>
+                            Assign role on DB
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
-          </Table>
+            </Table>
           </>
-        )
+        );
       }
-    }
+    };
+
     const renderProducts = () => {
-      if(products.length > 0){
-        return(
+      if (products.length > 0) {
+        return (
           <>
-          <h2>Products</h2> 
-          <Table  bordered hover style={{cursor: 'pointer'}}>
+            <h2>Products</h2>
+            <Table bordered hover style={{ cursor: 'pointer' }}>
               <thead>
-              <tr>
+                <tr>
                   <th>Name</th>
                   <th>Description</th>
                   <th>Category</th>
-              </tr>
+                </tr>
               </thead>
               <tbody>
-                  {products?.map(product =>{ 
-                      return(
-                          <tr key={product.id} onClick={(e) => this.handleSelectProduct(product)}>
-                              <td>
-                                  {product.name} 
-                              </td>
-                              <td>
-                                  {product.description?.slice(0,100)} 
-                              </td>
-                              <td>
-                                  {product.categoryID} 
-                              </td>
-                          </tr>
-                      )})}
+                {products?.map((product) => {
+                  return (
+                    <tr key={product.id} onClick={(e) => this.handleSelectProduct(product)}>
+                      <td>{product.name}</td>
+                      <td>{product.description?.slice(0, 100)}</td>
+                      <td>{product.categoryID}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
-          </Table>
+            </Table>
           </>
-        )
+        );
       }
-    }
+    };
+
     const renderUserProducts = () => {
-      if(userProducts.length > 0){
-        return(
+      if (userProducts.length > 0) {
+        return (
           <>
             <h2>User Products</h2>
-            <Table  bordered hover>
+            <Table bordered hover>
               <thead>
-              <tr>
+                <tr>
                   <th>User</th>
                   <th>Product</th>
                   <th>Description</th>
                   <th>Category</th>
-              </tr>
+                </tr>
               </thead>
               <tbody>
-                  {userProducts?.map(up =>{ 
-                      return(
-                          <tr key={up.id}>
-                              <td>
-                                  {up.user.name} 
-                              </td>
-                              <td>
-                                  {up.product.name} 
-                              </td>
-                              <td>
-                                  {up.product.description.slice(0,100)} 
-                              </td>
-                              <td>
-                                  {up.product.category.name} 
-                              </td>
-                          </tr>
-                      )})}
+                {userProducts?.map((up) => {
+                  return (
+                    <tr key={up.id}>
+                      <td>{up.user.name}</td>
+                      <td>{up.product.name}</td>
+                      <td>{up.product.description.slice(0, 100)}</td>
+                      <td>{up.product.category.name}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </Table>
           </>
-          
-        )
+        );
       }
-    }
+    };
+
     const renderModalRole = () => {
-      if(this.state.showModalRole){
+      if (this.state.showModalRole) {
         return (
           <Modal
-              show={this.state.showModalRole}
-              onHide={(e) => this.handleHideModalProductFeatures(e)}
-              size="lg"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-              >
-              <Modal.Header closeButton>
-                  <Modal.Title id="contained-modal-title-vcenter">
-                      Assign Role
-                  </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form>
-                    <Row className='mb-2'>
-                        <Form.Group as={Col}>
-                            <Form.Label>User</Form.Label>
-                            <Form.Control
-                                type='text'
-                                disabled
-                                value={this.state.userSelected !== null? this.state.userSelected.name : ''}
-                                onChange={() => ''}
-                                />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Product</Form.Label>
-                            <Form.Select
-                                value={roleSelected}
-                                name='select_role'
-                                onChange={(e) => this.handleInputChange(e)} 
-                                >
-                                <option value=''>-</option>
-                              {['admon','investor','constructor'].map(op => <option value={op} key={op}>{op}</option>)}
-                            </Form.Select>
-                        </Form.Group>
-                    </Row>
+            show={this.state.showModalRole}
+            onHide={(e) => this.handleHideModalProductFeatures(e)}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title id="contained-modal-title-vcenter">Assign Role</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Row className='mb-2'>
+                  <Form.Group as={Col}>
+                    <Form.Label>User</Form.Label>
+                    <Form.Control type='text' disabled value={this.state.userSelected !== null ? this.state.userSelected.name : ''} onChange={() => ''} />
+                  </Form.Group>
+                  <Form.Group as={Col}>
+                    <Form.Label>Product</Form.Label>
+                    <Form.Select value={roleSelected} name='select_role' onChange={(e) => this.handleInputChange(e)}>
+                      <option value=''>-</option>
+                      {['admon', 'investor', 'constructor'].map((op) => (
+                        <option value={op} key={op}>
+                          {op}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Row>
 
-                    <Row className='mb-1'>
-                        <Button
-                        variant='primary'
-                        size='sm'
-                        disabled={userSelected === null || roleSelected === ''? true : false}
-                        onClick={() => this.handleAssignRole()}
-                        >Assign Role</Button>
-                    </Row>
-                </Form>
-              </Modal.Body>
+                <Row className='mb-1'>
+                  <Button
+                    variant='primary'
+                    size='sm'
+                    disabled={userSelected === null || roleSelected === '' ? true : false}
+                    onClick={() => this.handleAssignRole()}
+                  >
+                    Assign Role
+                  </Button>
+                </Row>
+              </Form>
+            </Modal.Body>
           </Modal>
-      )
+        );
       }
-    }
+    };
+
     const dropDown = () => {
-      return(
-      <DropdownButton  title='Filter By role' size="sm">
-          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('show_all')}>Show all</Dropdown.Item>
-          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('admon')}>Admins</Dropdown.Item>
-          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('constructor')}>Constructors</Dropdown.Item>
-          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('investor')}>Investors</Dropdown.Item>
-          <Dropdown.Item as="button" onClick={() =>this.handleSelectUsersToShow('validator')}>Validators</Dropdown.Item>
+      return (
+        <DropdownButton title='Filter By role' size="sm">
+          <Dropdown.Item as="button" onClick={() => this.handleSelectUsersToShow('show_all')}>
+            Show all
+          </Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => this.handleSelectUsersToShow('admon')}>
+            Admins
+          </Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => this.handleSelectUsersToShow('constructor')}>
+            Constructors
+          </Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => this.handleSelectUsersToShow('investor')}>
+            Investors
+          </Dropdown.Item>
+          <Dropdown.Item as="button" onClick={() => this.handleSelectUsersToShow('validator')}>
+            Validators
+          </Dropdown.Item>
         </DropdownButton>
-      )
-  }
+      );
+    };
+
     return (
       <>
-      <Container>
+        <Container>
           <Container>
-              <h2>Assign Product</h2>
-              <Form>
-                  <Row className='mb-2'>
-                      <Form.Group as={Col}>
-                          <Form.Label>User</Form.Label>
-                          <Form.Control
-                              type='text'
-                              placeholder='Select one User'
-                              value={this.state.userSelected !== null? this.state.userSelected.name : ''}
-                              onChange={() => ''}
-                               />
-                      </Form.Group>
-                      <Form.Group as={Col}>
-                          <Form.Label>Product</Form.Label>
-                          <Form.Control
-                              type='text'
-                              placeholder='Select one Product'
-                              value={this.state.productSelected !== null? this.state.productSelected.name : ''}
-                              onChange={() => ''} 
-                              />
-                      </Form.Group>
-                  </Row>
+            <h2>Assign Product</h2>
+            <Form>
+              <Row className='mb-2'>
+                <Form.Group as={Col}>
+                  <Form.Label>User</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Select one User'
+                    value={this.state.userSelected !== null ? this.state.userSelected.name : ''}
+                    onChange={() => ''}
+                  />
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Label>Product</Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder='Select one Product'
+                    value={this.state.productSelected !== null ? this.state.productSelected.name : ''}
+                    onChange={() => ''}
+                  />
+                </Form.Group>
+              </Row>
 
-                  <Row className='mb-1'>
-                      <Button
-                      variant='primary'
-                      size='sm'
-                      disabled={userSelected === null || productSelected === null? true : false}
-                      onClick={() => this.handleAssignProduct()}
-                      >AssignProduct</Button>
-                  </Row>
-              </Form>
+              <Row className='mb-1'>
+                <Button
+                  variant='primary'
+                  size='sm'
+                  disabled={userSelected === null || productSelected === null ? true : false}
+                  onClick={() => this.handleAssignProduct()}
+                >
+                  AssignProduct
+                </Button>
+              </Row>
+            </Form>
           </Container>
-          <Container style={{display: 'flex', height: '580px'}}>
-                <Container style={{overflow: 'auto'}}>           
-                    {renderUsers()}       
-                </Container>
-                <Container style={{overflow: 'auto'}}>           
-                    {renderProducts()}
-                </Container>
+          <Container style={{ display: 'flex', height: '580px' }}>
+            <Container style={{ overflow: 'auto' }}>{renderUsers()}</Container>
+            <Container style={{ overflow: 'auto' }}>{renderProducts()}</Container>
           </Container>
-          <Container>
-            
-            {renderUserProducts()}
-          </Container>
-      </Container>
-      {renderModalRole()}
+          <Container>{renderUserProducts()}</Container>
+        </Container>
+        {renderModalRole()}
       </>
-    )
+    );
   }
 }

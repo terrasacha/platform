@@ -3,7 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "../../../../common/Card";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { TrashIcon } from "components/common/icons/TrashIcon";
-import { Button, Form, Table } from "react-bootstrap";
+import  Button  from "../../../../ui/Button";
+import  Form  from "../../../../ui/Form";
+import  Table  from "../../../../ui/Table";
+
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";

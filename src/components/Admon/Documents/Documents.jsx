@@ -180,160 +180,173 @@ class Documents extends Component {
             loadingDocument: false,
         })
     }
+    render() {
+        let { userProductsDoc, productToShow, productFeatureToAddDoc, showProductsWithoutDoc, showAllDocuments } = this.state;
+        console.log(userProductsDoc, 'userProductsDoc');
     
-  render() {
-    let {userProductsDoc, productToShow, productFeatureToAddDoc, showProductsWithoutDoc, showAllDocuments} = this.state
-    console.log(userProductsDoc,'userProductsDoc')
-    const listDocumentationStatus = () => {
-        if(showAllDocuments && userProductsDoc){
-            return(
-                <Container className='mt-4 '>
-                    <h3>Your documentation</h3>
-                    <Row className="justify-content-md-center">
-                        <Col xs lg="9">
-                            <Table hover className='mt-4'> 
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Feature</th>
-                                        <th>Document Status</th>    
-                                        <th>Doc Hash</th>       
-                                        <th>Sign</th>       
-                                        <th>Sign Hash</th>    
-                                        <th>Upload Document</th>  
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {userProductsDoc.map(userProduct =>(
-                                        userProduct.product.productFeatures.items.map(pf => {
-                                            return(
-                                                <tr key={pf.id}>
-                                                    <td>{pf.product.name}</td>
-                                                    <td>{pf.feature.name}</td>
-                                                    <td>{pf.documents.items.length > 0? 
-                                                    pf.documents.items[0].status === 'pending'? <HourglassSplit size={25} color='grey'/> : 
-                                                    pf.documents.items[0].status === 'accepted'? <CheckCircle size={25} color='#449E48'/> : <XCircle size={25} color='#CC0000'/>
-                                                     : 'Document not assigned' }</td>
-                                                    <td>
-                                                        {pf.documents.items.length > 0? 'Alredy upload' :
-                                                        <Button variant="primary" size='sm' onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>  }
-                                                    </td>
-                                                    <td>{pf.document.items[0].docHash? document.docHash : ''}</td>
-                                                    <td>{pf.document.items[0].signed?document.signed : ''}</td>
-                                                    <td>{pf.document.items[0].signedHash? document.signedHash : ''}</td>
-                                                </tr>
-                                            )
-                                        }
-                                        )
-                                    ))}
-
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Row>
-                </Container>
-            )
-        }
-    }
-    const uploadDocumentation = () => {
-        if(showProductsWithoutDoc){
-            let userProductsDocCopy = userProductsDoc
-            let aux = {id: 'x'}
-            if(this.state.productToShow) aux =  this.state.productToShow.id
-        return (
-            <Container className='mt-3'>
-              <Row>
+        const listDocumentationStatus = () => {
+          if (showAllDocuments && userProductsDoc) {
+            return (
+              <Container className='mt-4 '>
+                <h3>Your documentation</h3>
+                <Row className="justify-content-md-center">
+                  <Col xs lg="9">
+                    <Table hover className='mt-4'>
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Feature</th>
+                          <th>Document Status</th>
+                          <th>Doc Hash</th>
+                          <th>Sign</th>
+                          <th>Sign Hash</th>
+                          <th>Upload Document</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {userProductsDoc.map((userProduct) =>
+                          userProduct.product.productFeatures.items.map((pf) => {
+                            return (
+                              <tr key={pf.id}>
+                                <td>{pf.product.name}</td>
+                                <td>{pf.feature.name}</td>
+                                <td>
+                                  {pf.documents.items.length > 0 ? (
+                                    pf.documents.items[0].status === 'pending' ? (
+                                      <HourglassSplit size={25} color='grey' />
+                                    ) : pf.documents.items[0].status === 'accepted' ? (
+                                      <CheckCircle size={25} color='#449E48' />
+                                    ) : (
+                                      <XCircle size={25} color='#CC0000' />
+                                    )
+                                  ) : (
+                                    'Document not assigned'
+                                  )}
+                                </td>
+                                <td>{pf.documents.items.length > 0 ? 'Already uploaded' : <Button variant="primary" size='sm' onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</Button>}</td>
+                                <td>{pf.documents.items.length > 0 ? pf.documents.items[0].docHash : ''}</td>
+                                <td>{pf.documents.items.length > 0 ? pf.documents.items[0].signed : ''}</td>
+                                <td>{pf.documents.items.length > 0 ? pf.documents.items[0].signedHash : ''}</td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </Table>
+                  </Col>
+                </Row>
+              </Container>
+            );
+          }
+        };
+    
+        const uploadDocumentation = () => {
+          if (showProductsWithoutDoc) {
+            let userProductsDocCopy = userProductsDoc;
+            let aux = { id: 'x' };
+            if (this.state.productToShow) aux = this.state.productToShow.id;
+            return (
+              <Container className='mt-3'>
+                <Row>
                   <Col xs={2}>
-                          <h3>Products</h3>
-                      <Container className='mt-5'>
-                          {userProductsDocCopy?.map(userProduct => <Card key={userProduct.id} body className={userProduct.id === aux? 'cardContainerSelected' : 'cardContainer'} style={{cursor: 'pointer'}} onClick={() => this.handleLoadUserProduct(userProduct)}>{userProduct.product.name}<ArrowRight /></Card>)}
-                      </Container>
+                    <h3>Products</h3>
+                    <Container className='mt-5'>
+                      {userProductsDocCopy?.map((userProduct) => (
+                        <Card
+                          key={userProduct.id}
+                          body
+                          className={userProduct.id === aux ? 'cardContainerSelected' : 'cardContainer'}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => this.handleLoadUserProduct(userProduct)}
+                        >
+                          {userProduct.product.name}
+                          <ArrowRight />
+                        </Card>
+                      ))}
+                    </Container>
                   </Col>
                   <Col xs={10}>
-                            <h3>Products Documentation</h3>
-                            {!productToShow? '' : 
-                                <Card>
-                                    <Card.Header as="h5">{productToShow.product.name}</Card.Header>
-                                    <Card.Body>
-                                        {productToShow.product.productFeatures.items.map(pf =>{
-                                        if(pf.documents.items.length > 0){
-                                            return null
-                                        }
-                                        return(
-                                            <Card key={pf.id} className='mb-2'>
-                                                <Card.Header>{pf.feature.featureTypeID.replace('_', ' ')}</Card.Header>
-                                                <Card.Body>
-                                                    <Card.Title>{pf.feature.name}</Card.Title>
-                                                    <Card.Text>
-                                                        {pf.feature.description}
-                                                    </Card.Text>
-                                                    <Button variant="primary" onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>
-                                                </Card.Body>
-                                            </Card> 
-                                        )
-                                        })} 
-                                    </Card.Body>
-                                </Card>
+                    <h3>Products Documentation</h3>
+                    {!productToShow ? '' : (
+                      <Card>
+                        <Card.Header as="h5">{productToShow.product.name}</Card.Header>
+                        <Card.Body>
+                          {productToShow.product.productFeatures.items.map((pf) => {
+                            if (pf.documents.items.length > 0) {
+                              return null;
                             }
+                            return (
+                              <Card key={pf.id} className='mb-2'>
+                                <Card.Header>{pf.feature.featureTypeID.replace('_', ' ')}</Card.Header>
+                                <Card.Body>
+                                  <Card.Title>{pf.feature.name}</Card.Title>
+                                  <Card.Text>{pf.feature.description}</Card.Text>
+                                  <Button variant="primary" onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>
+                                    Upload Document
+                                  </Button>
+                                </Card.Body>
+                              </Card>
+                            );
+                          })}
+                        </Card.Body>
+                      </Card>
+                    )}
                   </Col>
-              </Row>
-            </Container>
-          )
-        }
-    }
-    const modalDocument = () => {
-
-        if (productFeatureToAddDoc !== null) {
-        return (
-            <Modal
-                show={this.state.showModalDocument}
-                onHide={(e) => this.handleHideModalDocument()}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                >
+                </Row>
+              </Container>
+            );
+          }
+        };
+    
+        const modalDocument = () => {
+          if (productFeatureToAddDoc !== null) {
+            return (
+              <Modal show={this.state.showModalDocument} onHide={(e) => this.handleHideModalDocument()} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                        {productFeatureToAddDoc?.feature.name}
-                    </Modal.Title>
+                  <Modal.Title id="contained-modal-title-vcenter">{productFeatureToAddDoc?.feature.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Row className='mb-3'>
-                        <Form.Group>
-                        <Form.Group >
-                            <Form.Label>Choose file</Form.Label>
-                            <Form.Control
-                            type='file'
-                            name='selected_file'
-                            onChange={(e) => this.handleInputCreateDocument(e)}
-                            />
-                        </Form.Group>
-                        </Form.Group>
-                    </Row>
+                  <Row className='mb-3'>
+                    <Form.Group>
+                      <Form.Group>
+                        <Form.Label>Choose file</Form.Label>
+                        <Form.Control type='file' name='selected_file' onChange={(e) => this.handleInputCreateDocument(e)} />
+                      </Form.Group>
+                    </Form.Group>
+                  </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button disabled={this.state.loadingDocument?true:false} onClick={(e) => this.handleCreateDocument()}>{this.state.loadingDocument?'Uploading':'Upload Document'}</Button>
+                  <Button disabled={this.state.loadingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>
+                    {this.state.loadingDocument ? 'Uploading' : 'Upload Document'}
+                  </Button>
                 </Modal.Footer>
-            </Modal>
-        )
-        }
-    }
-    const dropDown = () => {
-        return(
-        <DropdownButton className='mt-3' title='Documentation'>
-            <Dropdown.Item as="button" onClick={() =>this.setState({showProductsWithoutDoc: false, showAllDocuments: true, productToShow: null})}>See your documentation status</Dropdown.Item>
-            <Dropdown.Item as="button" onClick={() =>this.setState({showProductsWithoutDoc: true, showAllDocuments: false})}>Upload documentation</Dropdown.Item>
-          </DropdownButton>
-        )
-    }
-    return (
-        <>
+              </Modal>
+            );
+          }
+        };
+    
+        const dropDown = () => {
+          return (
+            <DropdownButton className='mt-3' title='Documentation'>
+              <Dropdown.Item as="button" onClick={() => this.setState({ showProductsWithoutDoc: false, showAllDocuments: true, productToShow: null })}>
+                See your documentation status
+              </Dropdown.Item>
+              <Dropdown.Item as="button" onClick={() => this.setState({ showProductsWithoutDoc: true, showAllDocuments: false })}>
+                Upload documentation
+              </Dropdown.Item>
+            </DropdownButton>
+          );
+        };
+    
+        return (
+          <>
             {dropDown()}
             {listDocumentationStatus()}
             {uploadDocumentation()}
             {modalDocument()}
-        </>
-    )
-  }
-}
-export default Documents
+          </>
+        );
+      }
+    }
+    
+    export default Documents;

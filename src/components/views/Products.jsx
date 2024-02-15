@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // Bootstrap
-import {Container} from 'react-bootstrap'
+import Container from '../ui/Container';
 
 
 import './Views.css'

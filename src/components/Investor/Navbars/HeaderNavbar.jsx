@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 // Bootstrap
-import { Container, Nav, Navbar } from "react-bootstrap";
+import Navbar from "../../ui/Navbar";
+import Container from "../../ui/Container";
+import Nav from "../../ui/Nav";
 import Offcanvas from "../../ui/Offcanvas";
 import s from "./HeaderNavbar.module.css";
 // Import images

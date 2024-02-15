@@ -1,12 +1,12 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import Card from "../../../../common/Card";
-import { Button, Form } from "react-bootstrap";
+import Button from "../../../../ui/Button";
+import Form from "../../../../ui/Form";
 import { useProjectData } from "context/ProjectDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { notify } from "utilities/notify";
-// Borrar despues de pasar a componentes
 
 export default function GeodataInfoCard(props) {
   const { autorizedUser, setProgressChange, tooltip } = props;
@@ -119,72 +119,71 @@ export default function GeodataInfoCard(props) {
       );
       setUbicacionPfId(response.data.createProductFeature.id);
     }
-    setProgressChange(true)
+    setProgressChange(true);
     notify({ msg: "Ubicación del predio actualizada", type: "success" });
   };
 
   return (
-    <Card>
-      <Card.Header title="Ubicación Geográfica" sep={true} tooltip={tooltip}/>
-      <div style={{ height: "570px", width: "100%" }}>
-        {geoData.loaded && (
-          <GoogleMapReact
-            // key={new Date().getTime()}
-            bootstrapURLKeys={{
-              key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
-            }}
-            defaultCenter={geoData.coords}
-            defaultZoom={6}
-            onClick={onMapClick}
-            onGoogleApiLoaded={({ map, maps }) => {
-              map.setZoom(geoData.zoom);
-              geoData.layers.forEach((data) => {
-                new maps.KmlLayer(data.fileURLS3, {
-                  suppressInfoWindows: true,
-                  preserveViewport: true,
-                  map: map,
-                }).addListener("click", function (event) {
-                  // infowindow.open({
-                  //   anchor: this,
-                  //   map,
-                  // });
-                  console.log("Hizo click");
-                });
-              });
-            }}
-            yesIWantToUseGoogleMapApiInternals
-          >
-            <Marker lat={formData.coords?.lat} lng={formData.coords?.lng} />
-          </GoogleMapReact>
-        )}
+    <div className="container mt-5">
+      <div className="card">
+        <div className="card-body">
+          <h5 className="card-title">Ubicación Geográfica</h5>
+          <div style={{ height: "570px", width: "100%" }}>
+            {geoData.loaded && (
+              <GoogleMapReact
+                bootstrapURLKeys={{
+                  key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
+                }}
+                defaultCenter={geoData.coords}
+                defaultZoom={6}
+                onClick={onMapClick}
+                onGoogleApiLoaded={({ map, maps }) => {
+                  map.setZoom(geoData.zoom);
+                  geoData.layers.forEach((data) => {
+                    new maps.KmlLayer(data.fileURLS3, {
+                      suppressInfoWindows: true,
+                      preserveViewport: true,
+                      map: map,
+                    }).addListener("click", function (event) {
+                      console.log("Hizo click");
+                    });
+                  });
+                }}
+                yesIWantToUseGoogleMapApiInternals
+              >
+                <Marker lat={formData.coords?.lat} lng={formData.coords?.lng} />
+              </GoogleMapReact>
+            )}
+          </div>
+          <div className="p-3">
+            <div>
+              <label className="mb-0">Latitud</label>
+              <input
+                disabled={true}
+                className="form-control form-control-sm"
+                type="number"
+                value={formData.coords?.lat}
+              />
+            </div>
+            <div>
+              <label className="mb-0">Longitud</label>
+              <input
+                disabled={true}
+                className="form-control form-control-sm"
+                type="number"
+                value={formData.coords?.lng}
+              />
+            </div>
+          </div>
+          {autorizedUser && (
+            <div className="d-flex justify-content-center mb-3">
+              <Button onClick={() => handleSaveBtn()} variant="success">
+                Actualizar Ubicación
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="p-3">
-        <div>
-          <Form.Label className="mb-0">Latitud</Form.Label>
-          <Form.Control
-            disabled={true}
-            size="sm"
-            type="number"
-            value={formData.coords?.lat}
-          />
-        </div>
-        <div>
-          <Form.Label className="mb-0">Longitud</Form.Label>
-          <Form.Control
-            disabled={true}
-            size="sm"
-            type="number"
-            value={formData.coords?.lng}
-          />
-        </div>
-      </div>
-      {autorizedUser && (
-        <div className="d-flex justify-content-center mb-3">
-          <Button onClick={() => handleSaveBtn()} variant="success">
-            Actualizar Ubicación
-          </Button>
-        </div>
-      )}
-    </Card>
+    </div>
   );
 }

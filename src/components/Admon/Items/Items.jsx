@@ -196,14 +196,14 @@ class Items extends Component {
 
   // RENDER
   render() {
-    // State Varibles
+    // State Variables
     let { categorys, newCategory, CRUDButtonName } = this.state;
 
     const renderCategorys = () => {
       if (categorys.length > 0) {
         return (
           <Container>
-            <Table striped bordered hover>
+            <table className="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -220,9 +220,7 @@ class Items extends Component {
                       <Button
                         variant="primary"
                         size="sm"
-                        onClick={(e) =>
-                          this.handleLoadEditCategory(category, e)
-                        }
+                        onClick={(e) => this.handleLoadEditCategory(category, e)}
                       >
                         Editar
                       </Button>
@@ -230,41 +228,47 @@ class Items extends Component {
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </table>
           </Container>
         );
       }
     };
 
     return (
-      <Container style={{ display: "flex", flexDirection: "column" }}>
+      <Container style={{ display: 'flex', flexDirection: 'column' }}>
         <Container>
           <h2>
             {CRUDButtonName} Items de proyecto: {newCategory.name}
           </h2>
           <Form>
             <Row className="mb-2">
-              <Form.Group as={Col} controlId="formGridNewCategoryName">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
+              <Col controlId="formGridNewCategoryName">
+                <label htmlFor="categoryName" className="form-label">
+                  Nombre
+                </label>
+                <input
                   type="text"
+                  className="form-control"
+                  id="categoryName"
                   placeholder="Ex. NUEVO CONCEPTO"
-                  name="category.name"
+                  name="name"
                   value={newCategory.name}
                   onChange={(e) => this.handleOnChangeInputForm(e)}
                 />
-                <Form.Label>Categoria</Form.Label>
-                <Form.Select
-                  name="category.type"
+                <label htmlFor="categoryType" className="form-label">
+                  Categoría
+                </label>
+                <select
+                  className="form-select"
+                  id="categoryType"
+                  name="type"
                   onChange={(e) => this.handleOnChangeInputForm(e)}
                   value={newCategory.type}
                 >
                   <option disabled value="">
                     Selecciona una opción
                   </option>
-                  <option value="Ingresos por producto">
-                    Ingresos por producto
-                  </option>
+                  <option value="Ingresos por producto">Ingresos por producto</option>
                   <option value="Productos del ciclo del proyecto">
                     Productos del ciclo del proyecto
                   </option>
@@ -274,8 +278,8 @@ class Items extends Component {
                   <option value="Indicadores financieros (Token)">
                     Indicadores financieros (Token)
                   </option>
-                </Form.Select>
-              </Form.Group>
+                </select>
+              </Col>
             </Row>
 
             <Row className="mb-1">
@@ -296,5 +300,4 @@ class Items extends Component {
     );
   }
 }
-
 export default Items;

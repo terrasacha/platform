@@ -6,7 +6,7 @@ import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
-import { Button } from "react-bootstrap";
+import Button  from "../../../../ui/Button";
 import { notify } from "../../../../../utilities/notify";
 
 export default function PropertyInfoCard(props) {

@@ -1,87 +1,95 @@
-import React, { Component } from 'react'
-// Bootstrap
+import React, { Component } from 'react';
 import Container from '../../ui/Container';
 import Nav from '../../ui/Nav';
 import Navbar from '../../ui/Navbar';
-import Button from '../../ui/Button';
 import Offcanvas from '../../ui/Offcanvas';
-import s from './HeaderNavbar.module.css'
+import s from './HeaderNavbar.module.css'; // Asegúrate de ajustar la importación del estilo según tu estructura de archivos
 
 // Import images
-import LOGO from '../../common/_images/suan_logo.png'
+import LOGO from '../../common/_images/suan_logo.png';
 
 export default class HeaderNavbar extends Component {
 
     constructor(props) {
-        super(props)
-        this.state = {
-            
-        }
-        this.handleChangeNavBar = this.handleChangeNavBar.bind(this)
-        this.handleSignOut = this.handleSignOut.bind(this)
+        super(props);
+        this.state = {};
+        this.handleChangeNavBar = this.handleChangeNavBar.bind(this);
+        this.handleSignOut = this.handleSignOut.bind(this);
     }
-    
+
     async handleChangeNavBar(pRequest) {
-        console.log('handleChangeNavBar: ', pRequest)
-        this.props.changeHeaderNavBarRequest(pRequest)
+        console.log('handleChangeNavBar: ', pRequest);
+        this.props.changeHeaderNavBarRequest(pRequest);
     }
 
     async handleSignOut() {
-        this.props.handleSignOut()
+        this.props.handleSignOut();
     }
 
     render() {
-        
         return (
-        <Navbar key='sm' bg="light" expand='lg' fixed="top">
-            <Container fluid>
-               
-                <Navbar.Toggle  />
-                <Navbar.Offcanvas
-                    id={`offcanvasNavbar-expand-$'sm'`}
-                    aria-labelledby={`offcanvasNavbarLabel-expand-$'sm'`}
-                    placement="end"
+            <nav className="bg-light fixed top-0 w-full">
+                <Container fluid>
+                    <button className="lg:hidden flex items-center p-2 focus:outline-none">
+                        <img
+                            src={LOGO}
+                            width="40"
+                            height="40"
+                            className="d-inline-block align-top"
+                            alt="ATP"
+                        />
+                    </button>
+                    <Navbar.Toggle />
+                    <Navbar.Offcanvas
+                        id={`offcanvasNavbar-expand-sm`}
+                        aria-labelledby={`offcanvasNavbarLabel-expand-sm`}
+                        placement="end"
                     >
-                    <Offcanvas.Header closeButton>
-                        <Offcanvas.Title id={`offcanvasNavbarLabel-expand-$'sm'`}>
-                            <a href='/'><img src={LOGO} 
-                                width="40"
-                                height="40"
-                                className="d-inline-block align-top"
-                                alt="ATP"
-                            /></a>
-                        </Offcanvas.Title>
-                    </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        <Nav
-                        className="me-auto my-2 my-lg-0"
-                        style={{ maxHeight: '100px' }}
-                        navbarScroll
-                        >
-                        </Nav>
-                        <Nav>
-                            <Nav className={s.navGroup}>
-                                {/* <Nav.Link href="#profile" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_profile')}>Profile</Nav.Link> */}
-                                <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_products')}>Mis Proyectos</Nav.Link>
-                                {/* <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documentos</Nav.Link> */}
-                                {/* <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link> */}
-                                <Nav.Link onClick={() => window.location.href="/new_project"}>Nuevo Proyecto</Nav.Link>
-                                <Nav.Link onClick={() => window.location.href="/creating_wallet"}>¿Cómo crear tu billetera?</Nav.Link>
-                                {localStorage.getItem('role')?
-                                <div>
-                                <button className={s.signing} onClick={() => this.handleSignOut()}>Desconectar</button>
-                            </div>
-                            :
-                                <button className={s.signing} onClick={() => window.location.href="/login"}>Conectar</button>
-                                }
+                        <Offcanvas.Header closeButton>
+                            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-sm`}>
+                                <a href='/'><img src={LOGO}
+                                    width="40"
+                                    height="40"
+                                    className="d-inline-block align-top"
+                                    alt="ATP"
+                                /></a>
+                            </Offcanvas.Title>
+                        </Offcanvas.Header>
+                        <Offcanvas.Body>
+                            <Nav
+                                className="me-auto my-2 my-lg-0"
+                                style={{ maxHeight: '100px' }}
+                                navbarScroll
+                            >
                             </Nav>
-
-                        </Nav>
-                    </Offcanvas.Body>
-                </Navbar.Offcanvas>
-            </Container>
-        </Navbar>
-               
-        )
+                            <Nav>
+                                <Nav className={s.navGroup}>
+                                    <a href="#investor_products" onClick={(e) => this.handleChangeNavBar('investor_products')} className="text-gray-800 hover:text-gray-600 mr-4">
+                                        Mis Proyectos
+                                    </a>
+                                    <button onClick={() => window.location.href="/new_project"} className="text-gray-800 hover:text-gray-600 mr-4">
+                                        Nuevo Proyecto
+                                    </button>
+                                    <button onClick={() => window.location.href="/creating_wallet"} className="text-gray-800 hover:text-gray-600 mr-4">
+                                        ¿Cómo crear tu billetera?
+                                    </button>
+                                    {localStorage.getItem('role') ?
+                                        <div>
+                                            <button onClick={() => this.handleSignOut()} className={`signing ${s.signing}`}>
+                                                Desconectar
+                                            </button>
+                                        </div>
+                                        :
+                                        <button onClick={() => window.location.href="/login"} className={`signing ${s.signing}`}>
+                                            Conectar
+                                        </button>
+                                    }
+                                </Nav>
+                            </Nav>
+                        </Offcanvas.Body>
+                    </Navbar.Offcanvas>
+                </Container>
+            </nav>
+        );
     }
 }

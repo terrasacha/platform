@@ -15,7 +15,8 @@ import {
 import { useAuth } from "context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
 import useCategories from "hooks/useCategories";
-import { Button, Form } from "react-bootstrap";
+import  Button  from "../../../../ui/Button";
+import  Form  from "../../../../ui/Form";
 import Swal from "sweetalert2";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { fetchProjectDataByProjectID } from "../../api";
@@ -552,17 +553,10 @@ export default function ProjectInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header
-        title="Información del proyecto"
-        sep={true}
-        tooltip={tooltip}
-      />
-      <Card.Body>
+     <div className={className}>
+      <div>
         <div className="row">
-          <div
-            className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}
-          >
+          <div className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}>
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
@@ -578,9 +572,7 @@ export default function ProjectInfoCard(props) {
               onClickSaveBtn={() => handleSaveBtn("projectInfoTitle")}
             />
           </div>
-          <div
-            className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}
-          >
+          <div className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}>
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
@@ -614,9 +606,7 @@ export default function ProjectInfoCard(props) {
               onClickSaveBtn={() => handleSaveBtn("projectInfoDescription")}
             />
           </div>
-          <div
-            className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}
-          >
+          <div className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}>
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
@@ -641,13 +631,7 @@ export default function ProjectInfoCard(props) {
             />
           </div>
           <div className="col-12">
-            <div
-              className={
-                autorizedUser
-                  ? "row row-cols-1"
-                  : "row row-cols-1 row-cols-md-2"
-              }
-            >
+            <div className={autorizedUser ? "row row-cols-1" : "row row-cols-1 row-cols-md-2"}>
               <FormGroup
                 disabled={!autorizedUser}
                 type={autorizedUser && "flex"}
@@ -717,11 +701,11 @@ export default function ProjectInfoCard(props) {
                 }
               />
               <div>
-                <Form.Group className="mb-3">
+                <div className="mb-3">
                   <div className="row align-items-center">
-                    <Form.Label column sm="5">
+                    <label className="col-sm-5">
                       Cargue planos del predio (pueden ser a mano alzada)
-                    </Form.Label>
+                    </label>
                     <div className="col">
                       {planosPredio.length > 0 ? (
                         <>
@@ -768,12 +752,12 @@ export default function ProjectInfoCard(props) {
                       </Button>
                     </div>
                   </div>
-                </Form.Group>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 }

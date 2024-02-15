@@ -7,7 +7,7 @@ import Form from '../ui/Form';
 import Modal from '../ui/Modal';
 import Row from '../ui/Row';
 
-import InputGroup from "../../ui/InputGroup";
+import InputGroup from "../ui/InputGroup";
 // Auth css custom
 // Routing
 // import { useHistory } from 'react-router-dom'
