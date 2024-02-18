@@ -35,6 +35,7 @@ type Wallet @model {
   password: String
   seed: String!
   address: String!
+  stake_address: String!
   isSelected: Boolean
   isAdmin: Boolean
   userID: ID! @index(name: "byUser")
@@ -113,8 +114,6 @@ type Product @model {
     @hasMany(indexName: "byProduct", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
-  xlsFormProducts: [XLSFormProduct]
-    @hasMany(indexName: "byProduct", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
@@ -164,13 +163,7 @@ type Feature @model {
     @hasMany(indexName: "byFeature", fields: ["id"])
   featureFormulas: [FeatureFormula]
     @hasMany(indexName: "byFeature", fields: ["id"])
-  xlsFormTypeID: ID @index(name: "byXLSFormType")
-  xlsFormType: XLSFormType @belongsTo(fields: ["xlsFormTypeID"])
-  xlsFormGroupID: ID @index(name: "byXLSFormGroup")
-  xlsFormGroup: XLSFormGroup @belongsTo(fields: ["xlsFormGroupID"])
-  xlsFormChoices: [XLSFormChoice]
-    @hasMany(indexName: "byFeature", fields: ["id"])
-}
+  }
 # Formulas
 type UnitOfMeasure @model {
   id: ID!
@@ -290,44 +283,4 @@ type Company @model {
   user: User @belongsTo(fields: ["userID"])
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
-}
-
-# XLSForm Models
-
-type XLSForm @model {
-  id: ID!
-  name: String!
-  version: String
-  xlsFormGroups: [XLSFormGroup] @hasMany(indexName: "byXLSForm", fields: ["id"])
-}
-
-type XLSFormProduct @model {
-  id: ID!
-  productID: ID! @index(name: "byProduct")
-  product: Product @belongsTo(fields: ["productID"])
-  xlsFormID: ID! @index(name: "byXLSForm")
-  xlsForm: Product @belongsTo(fields: ["xlsFormID"])
-}
-
-type XLSFormType @model {
-  id: ID!
-  name: String!
-  features: [Feature] @hasMany(indexName: "byXLSFormType", fields: ["id"])
-}
-
-type XLSFormGroup @model {
-  id: ID!
-  name: String!
-  features: [Feature] @hasMany(indexName: "byXLSFormGroup", fields: ["id"])
-  xlsFormID: ID @index(name: "byXLSForm")
-  xlsForm: XLSForm @belongsTo(fields: ["xlsFormID"])
-}
-
-type XLSFormChoice @model {
-  id: ID!
-  listName: String!
-  name: String!
-  label: String!
-  featureID: ID! @index(name: "byFeature")
-  feature: Feature @belongsTo(fields: ["featureID"])
 }
