@@ -33,12 +33,13 @@ type Wallet @model {
   name: String
   status: String
   password: String
-  seed: String!
+  seed: String
   address: String!
   stake_address: String!
   isSelected: Boolean
   isAdmin: Boolean
-  userID: ID! @index(name: "byUser")
+  claimed_token: Boolean
+  userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
 }
 

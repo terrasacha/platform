@@ -83,6 +83,7 @@ export const getWallet = /* GraphQL */ `
       stake_address
       isSelected
       isAdmin
+      claimed_token
       userID
       user {
         id
@@ -122,6 +123,7 @@ export const listWallets = /* GraphQL */ `
         stake_address
         isSelected
         isAdmin
+        claimed_token
         userID
         createdAt
         updatedAt

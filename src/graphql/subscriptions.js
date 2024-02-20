@@ -142,6 +142,7 @@ export const onCreateWallet = /* GraphQL */ `
       stake_address
       isSelected
       isAdmin
+      claimed_token
       userID
       user {
         id
@@ -176,6 +177,7 @@ export const onUpdateWallet = /* GraphQL */ `
       stake_address
       isSelected
       isAdmin
+      claimed_token
       userID
       user {
         id
@@ -210,6 +212,7 @@ export const onDeleteWallet = /* GraphQL */ `
       stake_address
       isSelected
       isAdmin
+      claimed_token
       userID
       user {
         id
