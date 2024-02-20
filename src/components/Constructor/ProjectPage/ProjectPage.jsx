@@ -12,7 +12,7 @@ import MiniInfoCard from "../../common/MiniInfoCard";
 import Nav from "../../ui/Nav";
 import Badge from "../../ui/Badge";
 import Stack from "../../ui/Stack";
-import TailwindHeaderNavbar from "../../common/TailwindHeaderNarvbar"
+// import TailwindHeaderNavbar from "../../common/TailwindHeaderNarvbar"
 
 
 // Contexts
@@ -92,7 +92,7 @@ export default function ProjectPage() {
       {projectData ? (
         <div className="container-sm">
           <div className="mb-5">
-          <TailwindHeaderNavbar />
+          {/* <TailwindHeaderNavbar /> */}
           </div>
           <div className="my-2">-</div>
           <div>

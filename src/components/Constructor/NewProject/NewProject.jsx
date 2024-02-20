@@ -11,7 +11,7 @@ import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import DynamicForm from "components/DynamicForm/DynamicForm";
 import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
-import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar';
+// import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar';
 
 
 export default function NewProject() {
@@ -430,7 +430,7 @@ export default function NewProject() {
   return (
     <div className="container mx-5">
       <div className="mb-5">
-      <TailwindHeaderNavbar />
+      {/* <TailwindHeaderNavbar /> */}
       </div>
       <div className="my-2">-</div>
       <section className="mb-5">

@@ -3,7 +3,7 @@ import LOGO from "components/common/_images/suan_logo.png";
 import { Auth } from "aws-amplify";
 import s from './HeaderNavbar.module.css';
 
-export default function HeaderNavbar({ changeHeaderNavBarRequest, handleSignOut }) {
+export default function HeaderNavbar({ changeHeaderNavBarRequest }) {
   const role = localStorage.getItem("role");
 
   const handleChangeNavBar = async (pRequest) => {
@@ -11,8 +11,14 @@ export default function HeaderNavbar({ changeHeaderNavBarRequest, handleSignOut 
     changeHeaderNavBarRequest(pRequest);
   };
 
-  const handleSignOutClick = async () => {
-    handleSignOut();
+  const handleSignOut = async () => {
+    try {
+      await Auth.signOut();
+      localStorage.removeItem("role");
+      window.location.href = window.location.pathname;
+    } catch (error) {
+      console.log("error signing out: ", error);
+    }
   };
 
   return (
@@ -57,7 +63,7 @@ export default function HeaderNavbar({ changeHeaderNavBarRequest, handleSignOut 
           {role && (
             <>
               <a
-                href="#investor_products"
+                href="/constructor"
                 className="text-gray-800 hover:text-gray-600"
                 onClick={() => handleChangeNavBar('investor_products')}
               >
@@ -81,7 +87,7 @@ export default function HeaderNavbar({ changeHeaderNavBarRequest, handleSignOut 
         {role ? (
           <div>
             <button
-              onClick={() => handleSignOutClick()}
+              onClick={() => handleSignOut()}
               className={`signing ${s.signing} hover:text-gray-600`}
             >
               Desconectar

@@ -1,6 +1,6 @@
 import React from "react";
 // Tailwind CSS
-import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar';
+// import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar';
 
 // GraphQL
 import {
@@ -13,7 +13,7 @@ export default function ProductsList() {
   const { userProjects } = useUserProjects();
   return (
     <>
-      <TailwindHeaderNavbar />
+      {/* <TailwindHeaderNavbar /> */}
 
       <h2 className="mt-5 text-3xl font-semibold">Tus Proyectos</h2>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4 card_project">
