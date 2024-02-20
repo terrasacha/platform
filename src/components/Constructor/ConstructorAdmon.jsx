@@ -71,7 +71,7 @@ class ConstructorAdmon extends Component {
   }
   loadUserInfo(userResult) {
     this.setState({ user: userResult.data.getUser });
-    if (userResult.data.getUser.wallets.items.length > 0) {
+    if (userResult.data.getUser.wallets?.items?.length > 0) {
       this.setState({
         walletAddress: userResult.data.getUser.wallets.items[0].id,
       });

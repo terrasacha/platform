@@ -100,9 +100,6 @@ const listProducts = /* GraphQL */ `
             productID
           }
         }
-        xlsFormProducts {
-          nextToken
-        }
         companies {
           nextToken
         }
