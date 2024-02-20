@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+
 import Container from '../../ui/Container';
 import Nav from '../../ui/Nav';
 import Navbar from '../../ui/Navbar';
@@ -8,25 +9,18 @@ import s from './HeaderNavbar.module.css'; // Asegúrate de ajustar la importaci
 // Import images
 import LOGO from '../../common/_images/suan_logo.png';
 
-export default class HeaderNavbar extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {};
-        this.handleChangeNavBar = this.handleChangeNavBar.bind(this);
-        this.handleSignOut = this.handleSignOut.bind(this);
-    }
-
-    async handleChangeNavBar(pRequest) {
-        console.log('handleChangeNavBar: ', pRequest);
-        this.props.changeHeaderNavBarRequest(pRequest);
-    }
-
-    async handleSignOut() {
-        this.props.handleSignOut();
-    }
-
-    render() {
+export default function HeaderNavbar({ changeHeaderNavBarRequest, handleSignOut }) {
+    const [role, setRole] = useState(localStorage.getItem("role"));
+  
+    const handleChangeNavBar = async (pRequest) => {
+      console.log('handleChangeNavBar: ', pRequest);
+      changeHeaderNavBarRequest(pRequest);
+    };
+  
+    const handleSignOutClick = async () => {
+      handleSignOut();
+    };
+  
         return (
             <nav className="bg-light fixed top-0 w-full">
                 <Container fluid>
@@ -90,6 +84,5 @@ export default class HeaderNavbar extends Component {
                     </Navbar.Offcanvas>
                 </Container>
             </nav>
-        );
-    }
+  );
 }

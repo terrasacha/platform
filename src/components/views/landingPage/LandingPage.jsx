@@ -150,7 +150,12 @@ export default class LandingPage extends Component {
     const urlS3Image = WebAppConfig.url_s3_public_images
     return (
       <div style={{minHeight: '100vh'}}>
-        <TailwindHeaderNavbar logOut={this.logOut}></TailwindHeaderNavbar>
+        <TailwindHeaderNavbar 
+                            changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                            handleSignOut={this.handleSignOut}
+                            actualUser={this.state.actualUser}
+                            isActualUserLogged={this.state.isActualUserLogged}
+                        ></TailwindHeaderNavbar>
 {/*         <Carousel>
         {this.state.productsImagesIsOnCarousel.map((image, idx) => (
             <Carousel.Item key={idx}>
