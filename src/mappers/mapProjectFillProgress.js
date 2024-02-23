@@ -36,10 +36,10 @@ const getProjectInfoStatus = (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "A_ficha_catastral";
     })[0]?.value || null;
-  const planoPredio =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "C_plano_predio";
-    })[0]?.value || null;
+  // const planoPredio =
+  //   data.productFeatures.items.filter((item) => {
+  //     return item.featureID === "C_plano_predio";
+  //   })[0]?.value || null;
 
   if (!data.name) tempStatus = false;
   if (!data.description) tempStatus = false;
@@ -49,7 +49,7 @@ const getProjectInfoStatus = (data) => {
   if (!municipio) tempStatus = false;
   if (!matricula) tempStatus = false;
   if (!fichaCatrastal) tempStatus = false;
-  if (!planoPredio) tempStatus = false;
+  // if (!planoPredio) tempStatus = false;
 
   return tempStatus;
 };
@@ -263,7 +263,7 @@ export const mapProjectFillProgress = async (data, userRole) => {
   // Requerimientos postulante
   sectionsStatus.projectInfo = getProjectInfoStatus(data);
   sectionsStatus.geodataInfo = getGeodataInfoStatus(data);
-  sectionsStatus.ownersInfo = getOwnersInfoStatus(data);
+  // sectionsStatus.ownersInfo = getOwnersInfoStatus(data);
   sectionsStatus.ownerAcceptsConditions = getOwnerAcceptsConditionsInfoStatus(data)
 
   // Requerimientos equipo SUAN

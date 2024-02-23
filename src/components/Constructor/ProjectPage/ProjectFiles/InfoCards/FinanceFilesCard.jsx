@@ -100,7 +100,7 @@ export default function FinanceCard({ visible }) {
         )}
         <div className="container">
           <div className="row">
-            <DistributionToken infoTable={dataToken} />
+            <DistributionToken infoTable={dataToken} totalOwner={totalOwner} />
             <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
             <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
             <RevenuesProducts infoTable={dataRevenues.revenuesByProduct} />
@@ -409,6 +409,9 @@ function DistributionToken({ infoTable, totalOwner }) {
   if (!infoTable || infoTable.length === 0) {
     return <p>No hay datos disponibles.</p>;
   }
+
+  console.log('totalowner', totalOwnerValue)
+  console.log("infoTable", infoTable);
 
   return (
     <div className="col">
