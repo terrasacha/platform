@@ -25,14 +25,14 @@ export default function HeaderNavbar({ changeHeaderNavBarRequest }) {
     <nav className="bg-light fixed top-0 w-full">
       <div className="flex items-center justify-between mx-auto p-2 lg:p-4">
         <button
-          className="lg:hidden flex items-center p-2 focus:outline-none"
+          className=" flex items-center p-2 focus:outline-none"
           onClick={() => handleChangeNavBar(true)}
         >
           <img
             src={LOGO}
             width="40"
             height="40"
-            className="d-inline-block align-top"
+            className="d-inline-block align-top logo"
             alt="ATP"
           />
         </button>
@@ -60,7 +60,7 @@ export default function HeaderNavbar({ changeHeaderNavBarRequest }) {
               </a>
             </>
           )}
-          {role && (
+          {role === 'constructor' && (
             <>
               <a
                 href="/constructor"

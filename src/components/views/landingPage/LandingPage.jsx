@@ -10,7 +10,7 @@ import marketImage from '../_images/market.jpg';
 import drones from '../_images/drone-con-camara.png';
 import blockchain from '../_images/cadena-de-bloques.png';
 import plataforma from '../_images/diseno-de-respuesta.png';
-import TailwindHeaderNavbar from 'components/common/TailwindHeaderNarvbar'
+import { Button, Modal } from 'flowbite-react';
 
 
 export default class LandingPage extends Component {
@@ -19,7 +19,8 @@ export default class LandingPage extends Component {
     super(props)
     this.state = {
       productsLanding: [],
-      productsImagesIsOnCarousel: []
+      productsImagesIsOnCarousel: [],
+      showModal:false
     }
     this.logOut = this.logOut.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -30,11 +31,11 @@ export default class LandingPage extends Component {
     await this.loadProducts()
   }
   handleClose() {
-    this.setState({ show: false });
+    this.setState({ showModal: false });
   }
 
   handleShow() {
-    this.setState({ show: true });
+    this.setState({ showModal: true });
   }
 
   async loadProducts() {
@@ -187,28 +188,30 @@ export default class LandingPage extends Component {
               Tengo un proyecto
               </button>
               
-{/* 
-              <Modal show={this.state.show} onHide={this.handleClose}>
-                <Modal.Header closebutton>
-                <div className="row">
-                  <div className="">
-                  <Modal.Title className="text-center fw-bolder w-full">¿CÓMO POSTULAR MI PROYECTO?</Modal.Title>
-                  </div>
-                  </div>
-                </Modal.Header>
-                <Modal.Body>
-                  <ol>
-                    <li>Da Click en Registrarme y completa tus datos, escoge en rol <strong>Propietario</strong></li>
-                    <li>Ve a Perfil y luego a postular proyecto</li>
-                    <li>Completa la información de tu proyecto</li>
-                    <li>Tu proyecto será revisado y complementado por nuetros valdidadores</li>
-                    <li>Revisa la información adicional y aceptala, para que quede publicado en el Marketplace</li>
-                  </ol>                
-                </Modal.Body>
-                <Modal.Footer>
-                  <a className='m-2 fondo-azul btn m-auto d-block'href='https://platform.suan.global/login' >Registrarme</a>
-                </Modal.Footer>
-              </Modal> */}
+
+              
+       <Modal show={this.state.showModal} onClose={this.handleClose}>
+        <Modal.Header>
+          <div className="row">
+            <div className="col">
+              <h5 className="text-center fw-bolder w-full">¿CÓMO POSTULAR MI PROYECTO?</h5>
+            </div>
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <ol>
+            <li>Da Click en Registrarme y completa tus datos, escoge en rol <strong>Propietario</strong></li>
+            <li>Ve a Perfil y luego a postular proyecto</li>
+            <li>Completa la información de tu proyecto</li>
+            <li>Tu proyecto será revisado y complementado por nuestros validadores</li>
+            <li>Revisa la información adicional y acéptala, para que quede publicado en el Marketplace</li>
+          </ol>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.handleClose}>Cerrar</Button>
+          <a className='m-2 fondo-azul btn m-auto d-block' href='https://platform.suan.global/login'>Registrarme</a>
+        </Modal.Footer>
+      </Modal> 
             
             
             </div>
