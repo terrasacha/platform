@@ -2159,11 +2159,12 @@ export const createOrder = /* GraphQL */ `
   ) {
     createOrder(input: $input, condition: $condition) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      txHash
       userProductID
       userProduct {
         id
@@ -2191,11 +2192,12 @@ export const updateOrder = /* GraphQL */ `
   ) {
     updateOrder(input: $input, condition: $condition) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      txHash
       userProductID
       userProduct {
         id
@@ -2223,11 +2225,12 @@ export const deleteOrder = /* GraphQL */ `
   ) {
     deleteOrder(input: $input, condition: $condition) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      txHash
       userProductID
       userProduct {
         id
@@ -2288,11 +2291,12 @@ export const createTransactions = /* GraphQL */ `
       orderID
       order {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt
@@ -2344,11 +2348,12 @@ export const updateTransactions = /* GraphQL */ `
       orderID
       order {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt
@@ -2400,11 +2405,12 @@ export const deleteTransactions = /* GraphQL */ `
       orderID
       order {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt

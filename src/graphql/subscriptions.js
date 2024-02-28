@@ -2048,11 +2048,12 @@ export const onCreateOrder = /* GraphQL */ `
   subscription OnCreateOrder($filter: ModelSubscriptionOrderFilterInput) {
     onCreateOrder(filter: $filter) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      txHash
       userProductID
       userProduct {
         id
@@ -2077,11 +2078,12 @@ export const onUpdateOrder = /* GraphQL */ `
   subscription OnUpdateOrder($filter: ModelSubscriptionOrderFilterInput) {
     onUpdateOrder(filter: $filter) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      txHash
       userProductID
       userProduct {
         id
@@ -2106,11 +2108,12 @@ export const onDeleteOrder = /* GraphQL */ `
   subscription OnDeleteOrder($filter: ModelSubscriptionOrderFilterInput) {
     onDeleteOrder(filter: $filter) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      txHash
       userProductID
       userProduct {
         id
@@ -2170,11 +2173,12 @@ export const onCreateTransactions = /* GraphQL */ `
       orderID
       order {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt
@@ -2225,11 +2229,12 @@ export const onUpdateTransactions = /* GraphQL */ `
       orderID
       order {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt
@@ -2280,11 +2285,12 @@ export const onDeleteTransactions = /* GraphQL */ `
       orderID
       order {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt

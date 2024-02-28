@@ -245,11 +245,16 @@ type UserProduct @model {
 type Order @model {
   id: ID! # local order ID
   walletAddress: String
+  statusCode: String
   walletStakeAddress: String
   tokenName: String
   tokenAmount: Float
   txHash: String
+  userProductID: ID @index(name: "byUserProduct")
+  userProduct: UserProduct @belongsTo(fields: ["userProductID"])
+  transactions: [Transactions] @hasMany(indexName: "byOrder", fields: ["id"])
 }
+
 type Transactions @model {
   id: ID!
   addressOrigin: String

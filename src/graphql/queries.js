@@ -1104,11 +1104,12 @@ export const getOrder = /* GraphQL */ `
   query GetOrder($id: ID!) {
     getOrder(id: $id) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      txHash
       userProductID
       userProduct {
         id
@@ -1138,11 +1139,12 @@ export const listOrders = /* GraphQL */ `
     listOrders(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt
@@ -1190,11 +1192,12 @@ export const getTransactions = /* GraphQL */ `
       orderID
       order {
         id
-        currencyCode
-        fiatTotalAmount
+        walletAddress
         statusCode
-        externalOrderId
-        confirmation
+        walletStakeAddress
+        tokenName
+        tokenAmount
+        txHash
         userProductID
         createdAt
         updatedAt
