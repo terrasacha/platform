@@ -116,7 +116,7 @@ export default function NewProject() {
     ];
 
     // Validadores por defecto
-    let tempUserProduct
+    let tempUserProduct;
     // Moxie
     tempUserProduct = {
       productID: productID,
@@ -244,7 +244,7 @@ export default function NewProject() {
 
       if (feature === "C_ubicacion") {
         value =
-          formData[feature].length > 0
+          Array.isArray(formData[feature]) && formData[feature].length > 0
             ? `${formData[feature][0]?.lat}, ${formData[feature][0]?.lng} 0 0`
             : "";
       } else {
@@ -354,7 +354,7 @@ export default function NewProject() {
         return encodeURIComponent(filenameWithoutAccents);
       };
 
-      if (file !== "") {
+      if (file !== undefined && file !== "") {
         const urlPath = `${productID}/${formatFileName(file.name)}`;
         try {
           const uploadImageResult = await Storage.put(urlPath, file, {

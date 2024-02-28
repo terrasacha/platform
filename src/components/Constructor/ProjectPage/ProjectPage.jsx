@@ -192,8 +192,7 @@ export default function ProjectPage() {
                     Detalles
                     {(autorizedUser || isPostulant || isAdmon) &&
                       (!progressObj?.sectionsStatus.projectInfo ||
-                        !progressObj?.sectionsStatus.geodataInfo ||
-                        !progressObj?.sectionsStatus.ownersInfo) && (
+                        !progressObj?.sectionsStatus.geodataInfo) && (
                         <HourGlassIcon className="text-danger ms-2" />
                       )}
                   </Nav.Link>

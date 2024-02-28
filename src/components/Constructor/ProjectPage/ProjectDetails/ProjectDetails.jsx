@@ -114,7 +114,7 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Completar información del proyecto
                         </li>
-                        <li className="fw-bold">
+                        {/* <li className="fw-bold">
                           (
                           {progressObj.sectionsStatus.ownersInfo ? (
                             <CheckIcon className="text-success" />
@@ -123,7 +123,7 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Completar información de titulares y certificados de
                           tradición
-                        </li>
+                        </li> */}
                         <li className="fw-bold">
                           (
                           {progressObj.sectionsStatus.geodataInfo ? (
