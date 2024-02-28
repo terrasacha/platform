@@ -244,16 +244,12 @@ type UserProduct @model {
 
 type Order @model {
   id: ID! # local order ID
-  currencyCode: String
-  fiatTotalAmount: Float
-  statusCode: String
-  externalOrderId: String
-  confirmation: String
-  userProductID: ID! @index(name: "byUserProduct")
-  userProduct: UserProduct @belongsTo(fields: ["userProductID"])
-  transactions: [Transactions] @hasMany(indexName: "byOrder", fields: ["id"])
+  walletAddress: String
+  walletStakeAddress: String
+  tokenName: String
+  tokenAmount: Float
+  txHash: String
 }
-
 type Transactions @model {
   id: ID!
   addressOrigin: String
