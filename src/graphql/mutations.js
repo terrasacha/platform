@@ -2042,10 +2042,6 @@ export const createUserProduct = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orders {
-        nextToken
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -2090,10 +2086,6 @@ export const updateUserProduct = /* GraphQL */ `
         categoryID
         createdAt
         updatedAt
-        __typename
-      }
-      orders {
-        nextToken
         __typename
       }
       createdAt
@@ -2142,10 +2134,6 @@ export const deleteUserProduct = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orders {
-        nextToken
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -2164,21 +2152,8 @@ export const createOrder = /* GraphQL */ `
       walletStakeAddress
       tokenName
       tokenAmount
-      txHash
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        productID
-        createdAt
-        updatedAt
-        __typename
-      }
-      transactions {
-        nextToken
-        __typename
-      }
+      utxos
+      value
       createdAt
       updatedAt
       __typename
@@ -2197,21 +2172,8 @@ export const updateOrder = /* GraphQL */ `
       walletStakeAddress
       tokenName
       tokenAmount
-      txHash
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        productID
-        createdAt
-        updatedAt
-        __typename
-      }
-      transactions {
-        nextToken
-        __typename
-      }
+      utxos
+      value
       createdAt
       updatedAt
       __typename
@@ -2230,21 +2192,8 @@ export const deleteOrder = /* GraphQL */ `
       walletStakeAddress
       tokenName
       tokenAmount
-      txHash
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        productID
-        createdAt
-        updatedAt
-        __typename
-      }
-      transactions {
-        nextToken
-        __typename
-      }
+      utxos
+      value
       createdAt
       updatedAt
       __typename
@@ -2284,20 +2233,6 @@ export const createTransactions = /* GraphQL */ `
         timeOnVerification
         projectReadiness
         categoryID
-        createdAt
-        updatedAt
-        __typename
-      }
-      orderID
-      order {
-        id
-        walletAddress
-        statusCode
-        walletStakeAddress
-        tokenName
-        tokenAmount
-        txHash
-        userProductID
         createdAt
         updatedAt
         __typename
@@ -2345,20 +2280,6 @@ export const updateTransactions = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orderID
-      order {
-        id
-        walletAddress
-        statusCode
-        walletStakeAddress
-        tokenName
-        tokenAmount
-        txHash
-        userProductID
-        createdAt
-        updatedAt
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -2398,20 +2319,6 @@ export const deleteTransactions = /* GraphQL */ `
         timeOnVerification
         projectReadiness
         categoryID
-        createdAt
-        updatedAt
-        __typename
-      }
-      orderID
-      order {
-        id
-        walletAddress
-        statusCode
-        walletStakeAddress
-        tokenName
-        tokenAmount
-        txHash
-        userProductID
         createdAt
         updatedAt
         __typename

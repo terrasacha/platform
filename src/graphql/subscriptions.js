@@ -1936,10 +1936,6 @@ export const onCreateUserProduct = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orders {
-        nextToken
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -1983,10 +1979,6 @@ export const onUpdateUserProduct = /* GraphQL */ `
         categoryID
         createdAt
         updatedAt
-        __typename
-      }
-      orders {
-        nextToken
         __typename
       }
       createdAt
@@ -2034,10 +2026,6 @@ export const onDeleteUserProduct = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orders {
-        nextToken
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -2053,21 +2041,8 @@ export const onCreateOrder = /* GraphQL */ `
       walletStakeAddress
       tokenName
       tokenAmount
-      txHash
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        productID
-        createdAt
-        updatedAt
-        __typename
-      }
-      transactions {
-        nextToken
-        __typename
-      }
+      utxos
+      value
       createdAt
       updatedAt
       __typename
@@ -2083,21 +2058,8 @@ export const onUpdateOrder = /* GraphQL */ `
       walletStakeAddress
       tokenName
       tokenAmount
-      txHash
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        productID
-        createdAt
-        updatedAt
-        __typename
-      }
-      transactions {
-        nextToken
-        __typename
-      }
+      utxos
+      value
       createdAt
       updatedAt
       __typename
@@ -2113,21 +2075,8 @@ export const onDeleteOrder = /* GraphQL */ `
       walletStakeAddress
       tokenName
       tokenAmount
-      txHash
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        productID
-        createdAt
-        updatedAt
-        __typename
-      }
-      transactions {
-        nextToken
-        __typename
-      }
+      utxos
+      value
       createdAt
       updatedAt
       __typename
@@ -2166,20 +2115,6 @@ export const onCreateTransactions = /* GraphQL */ `
         timeOnVerification
         projectReadiness
         categoryID
-        createdAt
-        updatedAt
-        __typename
-      }
-      orderID
-      order {
-        id
-        walletAddress
-        statusCode
-        walletStakeAddress
-        tokenName
-        tokenAmount
-        txHash
-        userProductID
         createdAt
         updatedAt
         __typename
@@ -2226,20 +2161,6 @@ export const onUpdateTransactions = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orderID
-      order {
-        id
-        walletAddress
-        statusCode
-        walletStakeAddress
-        tokenName
-        tokenAmount
-        txHash
-        userProductID
-        createdAt
-        updatedAt
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -2278,20 +2199,6 @@ export const onDeleteTransactions = /* GraphQL */ `
         timeOnVerification
         projectReadiness
         categoryID
-        createdAt
-        updatedAt
-        __typename
-      }
-      orderID
-      order {
-        id
-        walletAddress
-        statusCode
-        walletStakeAddress
-        tokenName
-        tokenAmount
-        txHash
-        userProductID
         createdAt
         updatedAt
         __typename

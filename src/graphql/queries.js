@@ -1069,10 +1069,6 @@ export const getUserProduct = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orders {
-        nextToken
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -1109,21 +1105,8 @@ export const getOrder = /* GraphQL */ `
       walletStakeAddress
       tokenName
       tokenAmount
-      txHash
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        productID
-        createdAt
-        updatedAt
-        __typename
-      }
-      transactions {
-        nextToken
-        __typename
-      }
+      utxos
+      value
       createdAt
       updatedAt
       __typename
@@ -1144,8 +1127,8 @@ export const listOrders = /* GraphQL */ `
         walletStakeAddress
         tokenName
         tokenAmount
-        txHash
-        userProductID
+        utxos
+        value
         createdAt
         updatedAt
         __typename
@@ -1189,20 +1172,6 @@ export const getTransactions = /* GraphQL */ `
         updatedAt
         __typename
       }
-      orderID
-      order {
-        id
-        walletAddress
-        statusCode
-        walletStakeAddress
-        tokenName
-        tokenAmount
-        txHash
-        userProductID
-        createdAt
-        updatedAt
-        __typename
-      }
       createdAt
       updatedAt
       __typename
@@ -1233,7 +1202,6 @@ export const listTransactions = /* GraphQL */ `
         policyID
         stakeAddress
         productID
-        orderID
         createdAt
         updatedAt
         __typename

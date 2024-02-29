@@ -239,7 +239,6 @@ type UserProduct @model {
   user: User @belongsTo(fields: ["userID"])
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
-  orders: [Order] @hasMany(indexName: "byUserProduct", fields: ["id"])
 }
 
 type Order @model {
@@ -249,10 +248,8 @@ type Order @model {
   walletStakeAddress: String
   tokenName: String
   tokenAmount: Float
-  txHash: String
-  userProductID: ID @index(name: "byUserProduct")
-  userProduct: UserProduct @belongsTo(fields: ["userProductID"])
-  transactions: [Transactions] @hasMany(indexName: "byOrder", fields: ["id"])
+  utxos: AWSJSON
+  value: Float
 }
 
 type Transactions @model {
@@ -273,8 +270,6 @@ type Transactions @model {
   stakeAddress: String
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
-  orderID: ID @index(name: "byOrder")
-  order: Order @belongsTo(fields: ["orderID"])
 }
 
 type Company @model {
