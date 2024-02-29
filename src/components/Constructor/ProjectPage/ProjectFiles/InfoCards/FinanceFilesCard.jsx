@@ -425,21 +425,13 @@ function DistributionToken({ infoTable, totalOwner }) {
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr className="distribution">
-                <th scope="col" className="px-3 py-2">
-                  Inversionista
-                </th>
-                <th scope="col" className="px-3 py-2">
-                  Propietario
-                </th>
-                <th scope="col" className="px-3 py-2">
-                  Suan
-                </th>
-                <th scope="col" className="px-3 py-2">
-                  Comunidad
-                </th>
-                <th scope="col" className="px-3 py-2">
-                  Buffer
-                </th>
+                {
+                  infoTable.map((item, index) => (
+                    <th scope="col" className="px-3 py-2">
+                      {item.CONCEPTO}
+                    </th>
+                  ))
+                }
                 {/* {Object.keys(infoTable).map((key) => (
 									<th scope="col" className="px-3 py-2" key={key}>
 										{key}
@@ -449,9 +441,9 @@ function DistributionToken({ infoTable, totalOwner }) {
             </thead>
             <tbody>
               <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 distribution">
-                {Object.values(infoTable).map((value, index) => (
+                {infoTable.map((item, index) => (
                   <td className="px-3 py-2" key={index}>
-                    {((value / totalOwnerValue) * 100).toFixed(1)}%
+                    {((item.CANTIDAD / totalOwnerValue) * 100).toFixed(1)}%
                   </td>
                 ))}
               </tr>
@@ -579,19 +571,12 @@ function RevenuesProducts({ infoTable, typeInfo }) {
 const PieChartComponent = ({ infoTable, totalOwner }) => {
   const [chartData, setChartData] = useState([]);
   const totalOwnerValue = totalOwner ? totalOwner.value : 0;
-  const traducciones = {
-    buffer: "Buffer",
-    comunity: "Comunidad",
-    investor: "Inversionista",
-    owner: "Propietario",
-    suan: "Suan",
-  };
 
   useEffect(() => {
     if (infoTable) {
-      const newChartData = Object.keys(infoTable).map((key) => ({
-        name: traducciones[key] || key,
-        value: +((Number(infoTable[key]) / totalOwnerValue) * 100).toFixed(1),
+      const newChartData = infoTable.map((item) => ({
+        name: item.CONCEPTO,
+        value: +((Number(item.CANTIDAD) / totalOwnerValue) * 100).toFixed(1),
       }));
       setChartData(newChartData);
     }

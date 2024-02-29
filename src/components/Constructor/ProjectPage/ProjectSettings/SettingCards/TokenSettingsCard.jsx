@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { API, graphqlOperation } from "aws-amplify";
+import { API, Auth, graphqlOperation } from "aws-amplify";
 
 import Card from "../../../../common/Card";
 import FormGroup from "../../../../common/FormGroup";
@@ -17,11 +17,15 @@ import { PlusIcon } from "components/common/icons/PlusIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { formatCurrency } from "utilities/formatCurrency";
+import TableEdit from "components/common/TableEdit";
+import TokenDistributionInputTable from "./TokenDistributionInputTable";
+import useProjectItems from "hooks/useProjectItems";
 
 export default function TokenSettingsCard(props) {
   const { className, canEdit } = props;
   console.log(canEdit);
   const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
+  const { projectItems } = useProjectItems();
 
   const [tokenName, setTokenName] = useState("");
   const [tokenCurrency, setTokenCurrency] = useState("");
@@ -29,12 +33,29 @@ export default function TokenSettingsCard(props) {
   const [totalTokenAmount, setTotalTokenAmount] = useState(0);
   const [totalTokenAmountPfID, setTotalTokenAmountPfID] = useState(null);
 
+  const [validatorSubRole, setValidatorSubRole] = useState("");
+
   const [isDisabledTokenName, setIsDisabledTokenName] = useState(false);
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
   const [tokenHistoricalDataPfID, setTokenHistoricalDataPfID] = useState(null);
 
+  const [tokenDistribution, setTokenDistribution] = useState([{}]);
+
   const [tokenDistributionForm, setTokenDistributionForm] = useState({});
   const [tokenDistributionPfID, setTokenDistributionPfID] = useState(null);
+
+  useEffect(() => {
+    Auth.currentAuthenticatedUser()
+      .then((data) => {
+        if (data.attributes["custom:subrole"]) {
+          console.log(data.attributes["custom:subrole"]);
+          setValidatorSubRole(data.attributes["custom:subrole"]);
+        } else {
+          setValidatorSubRole(undefined);
+        }
+      })
+      .catch((error) => setValidatorSubRole(undefined));
+  }, []);
 
   useEffect(() => {
     if (projectData) {
@@ -233,7 +254,8 @@ export default function TokenSettingsCard(props) {
     }
 
     if (toSave === "tokenDistributionForm") {
-      const isDecimal = (value) => !isNaN(value) && value.toString().includes('.');
+      const isDecimal = (value) =>
+        !isNaN(value) && value.toString().includes(".");
 
       const totalTokenDistribution =
         parseInt(tokenDistributionForm.owner) +
@@ -301,6 +323,18 @@ export default function TokenSettingsCard(props) {
       const [_, tokenHistoryFeature, tokenHistoryIndex] = name.split("_");
 
       setTokenHistoricalData((prevState) =>
+        prevState.map((item, index) =>
+          index === parseInt(tokenHistoryIndex)
+            ? { ...item, [tokenHistoryFeature]: value }
+            : item
+        )
+      );
+    }
+
+    if (name.includes("tokenDistribution_")) {
+      const [_, tokenHistoryFeature, tokenHistoryIndex] = name.split("_");
+
+      setTokenDistribution((prevState) =>
         prevState.map((item, index) =>
           index === parseInt(tokenHistoryIndex)
             ? { ...item, [tokenHistoryFeature]: value }
@@ -497,6 +531,35 @@ export default function TokenSettingsCard(props) {
     }
   };
 
+  const checkIfIsEditable = (type) => {
+    switch (type) {
+      case "technical":
+        if (projectData.isTechnicalFreeze) {
+          return true;
+        } else {
+          if (
+            validatorSubRole === "fullaccessvalidator" ||
+            validatorSubRole === "technical"
+          )
+            return false;
+        }
+        break;
+      case "financial":
+        if (projectData.isFinancialFreeze) {
+          return true;
+        } else {
+          if (
+            validatorSubRole === "fullaccessvalidator" ||
+            validatorSubRole === "financial"
+          )
+            return false;
+        }
+        break;
+      default:
+        return true;
+    }
+  };
+
   return (
     <>
       <Card className={className}>
@@ -666,7 +729,7 @@ export default function TokenSettingsCard(props) {
               </tbody>
             </Table>
           </div>
-          <div className="border p-3">
+          {/* <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
             <p>
               Al tratarse de unidades de tokens, los valores de la distribución
@@ -674,6 +737,8 @@ export default function TokenSettingsCard(props) {
               valores debe ser exactamente igual a la cantidad total de tokens
               del proyecto.
             </p>
+
+                      
             <FormGroup
               disabled={canEdit}
               type="flex"
@@ -729,7 +794,7 @@ export default function TokenSettingsCard(props) {
               saveBtnVisible={false}
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
-            {/* <div className="border p-3 mx-auto my-3" style={{width: "300px"}}>
+            <div className="border p-3 mx-auto my-3" style={{width: "300px"}}>
                 <div className="d-flex justify-content-center mb-3">Resumen</div>
                 <div>
                   <ul>
@@ -740,7 +805,7 @@ export default function TokenSettingsCard(props) {
                     <li>Buffer: {(totalTokenAmount * tokenDistributionForm.buffer) / 100  || 0} Tokens</li>
                   </ul>
                 </div>
-            </div> */}
+            </div>
             <div className="d-flex justify-content-center">
               <Button
                 disabled={canEdit}
@@ -750,7 +815,7 @@ export default function TokenSettingsCard(props) {
                 Guardar
               </Button>
             </div>
-          </div>
+          </div> */}
         </Card.Body>
       </Card>
     </>

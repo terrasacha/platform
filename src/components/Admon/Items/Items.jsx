@@ -269,6 +269,9 @@ class Items extends Component {
                   <option value="Indicadores financieros (Token)">
                     Indicadores financieros (Token)
                   </option>
+                  <option value="Distribución volumen de tokens">
+                    Distribución volumen de tokens
+                  </option>
                 </Form.Select>
               </Form.Group>
             </Row>

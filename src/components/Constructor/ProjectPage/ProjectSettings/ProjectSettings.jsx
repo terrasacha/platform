@@ -13,6 +13,7 @@ import { notify } from "utilities/notify";
 import { fetchProjectDataByProjectID } from "../api";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import useProjectItems from "hooks/useProjectItems";
+import TokenDistributionInputTable from "./SettingCards/TokenDistributionInputTable";
 
 export default function ProjectSettings({ visible }) {
   const [activeSection, setActiveSection] = useState("technical");
@@ -218,6 +219,18 @@ export default function ProjectSettings({ visible }) {
                   ? false
                   : activeSection !== validatorSubRole) ||
                 projectData.isFinancialFreeze */
+                />
+              </div>
+
+              <div>
+                <TokenDistributionInputTable
+                  title={"Distribución volumen de tokens"}
+                  fID={"GLOBAL_TOKEN_AMOUNT_DISTRIBUTION"}
+                  financialInfoType={"tokenAmountDistribution"}
+                  canEdit={checkIfIsEditable("financial")}
+                  conceptOptions={
+                    projectItems["Distribución volumen de tokens"]
+                  }
                 />
               </div>
               <div className="col">

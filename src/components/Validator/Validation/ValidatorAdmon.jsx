@@ -224,7 +224,7 @@ class ValidatorAdmon extends Component {
             {products.length > 0 &&
               products.map((product, index) => {
                 return (
-                  <div className="p-3">
+                  <div key={index} className="p-3">
                     <Card key={product.id} className="p-0">
                       <img
                         variant="top"
