@@ -176,92 +176,72 @@ export default function ProjectPage() {
                   </section>
                 )}
               </div>
-              <Nav
-                variant="tabs"
-                className="mt-3"
-                defaultActiveKey={"#" + activeSection}
-              >
-                <Nav.Item>
-                  <Nav.Link
-                    href="#details"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveSection("details");
-                    }}
-                  >
+              <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+                <li className="me-2">
+                  <a href="#details" className="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500" onClick={(e) => {
+                    e.preventDefault();
+                    setActiveSection("details"); }}>
                     Detalles
                     {(autorizedUser || isPostulant || isAdmon) &&
                       (!progressObj?.sectionsStatus.projectInfo ||
                         !progressObj?.sectionsStatus.geodataInfo ||
                         !progressObj?.sectionsStatus.ownersInfo) && (
-                        <HourGlassIcon className="text-danger ms-2" />
+                          <HourGlassIcon className="text-danger ms-2" />
                       )}
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link
-                    href="#files"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveSection("files");
-                    }}
-                  >
+                  </a>
+                </li>
+                <li className="me-2">
+                  <a href="#files" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300" onClick={(e) => {
+                    e.preventDefault();
+                    setActiveSection("files");
+                  }}>
                     Validación
                     {(autorizedUser || isPostulant || isAdmon) &&
                       !progressObj?.sectionsStatus.validationsComplete && (
                         <HourGlassIcon className="text-danger ms-2" />
                       )}
-                  </Nav.Link>
-                </Nav.Item>
+                  </a>
+                </li>
                 {(isVerifier || isAdmon) && (
                   <>
-                    <Nav.Item>
-                      <Nav.Link
-                        href="#file_manager"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setActiveSection("file_manager");
-                        }}
-                      >
+                    <li className="me-2">
+                      <a href="#file_manager" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300" onClick={(e) => {
+                        e.preventDefault();
+                        setActiveSection("file_manager");
+                      }}>
                         Sistema de datos
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                      <Nav.Link
-                        href="#settings"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setActiveSection("settings");
-                        }}
-                      >
+                      </a>
+                    </li>
+                    <li className="me-2">
+                      <a href="#settings" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300" onClick={(e) => {
+                        e.preventDefault();
+                        setActiveSection("settings");
+                      }}>
                         Configuración
                         {(autorizedUser || isAdmon) &&
                           (!progressObj?.sectionsStatus.technicalInfo ||
                             !progressObj?.sectionsStatus.financialInfo) && (
-                            <HourGlassIcon className="text-danger ms-2" />
+                              <HourGlassIcon className="text-danger ms-2" />
                           )}
-                      </Nav.Link>
-                    </Nav.Item>
+                      </a>
+                    </li>
                   </>
                 )}
                 {user?.id && (isPostulant || isVerifier || isAdmon) && (
                   <>
-                    <Nav.Item>
-                      <Nav.Link
-                        href="#finance"
-                        onClick={() => setActiveSection("finance")}
-                      >
+                    <li className="me-2">
+                      <a href="#finance" className="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300" onClick={() => setActiveSection("finance")}>
                         Finanzas
                         {(autorizedUser || isPostulant || isAdmon) &&
-                          !progressObj?.sectionsStatus
-                            .ownerAcceptsConditions && (
+                          !progressObj?.sectionsStatus.ownerAcceptsConditions && (
                             <HourGlassIcon className="text-danger ms-2" />
                           )}
-                      </Nav.Link>
-                    </Nav.Item>
+                      </a>
+                    </li>
                   </>
                 )}
-              </Nav>
+              </ul>
+
             </div>
             <ProjectDetails visible={activeSection === "details"} />
             <ProjectFileManager visible={activeSection === "file_manager"} />

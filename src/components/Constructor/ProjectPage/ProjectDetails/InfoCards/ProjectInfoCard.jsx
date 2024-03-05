@@ -553,7 +553,7 @@ export default function ProjectInfoCard(props) {
   };
 
   return (
-     <div className={className}>
+    <div className={`${className} card p-10`}>
       <div>
         <div className="row">
           <div className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}>

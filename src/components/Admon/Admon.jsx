@@ -16,11 +16,12 @@ import Configure from './Configure/Configure';
 import Documents from './Documents/Documents';
 import Features from './Features/Features';
 import Formulas from './Formulas/Formulas';
-import HeaderNavbar from './Navbars/HeaderNavbar';
+import TailwindHeaderNavbar from '../common/TailwindHeaderNarvbar';
 import Validators from './Validators/Validators';
 import Products from './Products/Products';
 import Results from './Results/Results';
 import UOM from './UOM/UOM';
+import HeaderNavbar from '../common/TailwindHeaderNarvbar';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
@@ -451,7 +452,8 @@ export default class Admon extends Component {
                             handleSignOut={this.handleSignOut}
                             actualUser={this.state.actualUser}
                             isActualUserLogged={this.state.isActualUserLogged}
-                        ></HeaderNavbar>
+        ></HeaderNavbar>
+                    <TailwindHeaderNavbar></TailwindHeaderNavbar>
                     </Col>
                 </Row>
 

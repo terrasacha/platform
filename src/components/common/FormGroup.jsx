@@ -230,7 +230,7 @@ export default class FormGroup extends Component {
               <div className="col-auto">
                 <button
                   disabled={saveBtnDisabled}
-                  className="btn btn-success"
+                  className="btn btn-yellow"
                   onClick={onClickSaveBtn}
                 >
                   Save

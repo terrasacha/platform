@@ -66,7 +66,7 @@ export default class Configure extends Component {
                         <button
                             disabled={this.state.updatingLogo ? true : false}
                             onClick={() => this.handleUploadLogo()}
-                            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                            className="btn-yellow text-white py-2 px-4 rounded hover:bg-blue-600"
                         >
                             {this.state.updatingLogo ? 'Uploading' : 'Upload'}
                         </button>

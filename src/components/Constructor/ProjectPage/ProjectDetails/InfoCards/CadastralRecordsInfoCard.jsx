@@ -645,7 +645,7 @@ export default function CadastralRecordsInfoCard(props) {
   return (
     <div className={`bg-white rounded-md shadow-md p-4 ${className}`}>
   <h2 className="text-2xl font-bold mb-4">Información predial</h2>
-  <div className="grid grid-cols-6 gap-4">
+  <div className="">
     <table className="w-full">
       <thead className="text-center">
         <tr>
@@ -711,7 +711,7 @@ export default function CadastralRecordsInfoCard(props) {
                 </td>
                 <td className="text-end">
                   <button
-                    className="btn btn-sm btn-success m-1"
+                    className="btn btn-sm btn-yellow m-1"
                     onClick={() => handleSaveHistoricalData(index)}
                   >
                     <SaveDiskIcon />

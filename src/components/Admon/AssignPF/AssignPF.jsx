@@ -467,7 +467,7 @@ export default class AssignPF extends Component {
               <div className="mb-1">
                 <button
                   type="button"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                  className="btn-yellow text-white px-4 py-2 rounded-md"
                   disabled={
                     userSelected === null || productselected === null
                       ? true

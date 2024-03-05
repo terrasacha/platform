@@ -124,7 +124,7 @@ export default function GeodataInfoCard(props) {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container">
       <div className="card">
         <div className="card-body">
           <h5 className="card-title">Ubicación Geográfica</h5>

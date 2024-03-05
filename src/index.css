@@ -10,7 +10,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 .bg-primary{
-        background-color: #359193 !important;
+        background-color: #333333 !important;
 }
 a{
         text-decoration: none !important;
@@ -48,12 +48,40 @@ h4{
 .input_login{
         border-radius: 10px;
 }
+input{
+        border-radius: 2px !important;
+        border: 1px solid #333 !important;
+}
+.form-check-input:checked {
+        background-color: #fbbf24 !important;
+        border-color: #fbbf24 !important;
+    }
 .bg-primary, .btn-primary{
-        background-color: #1C3541 !important;           
+        background-color: #333333 !important;           
+}
+header {
+        background: #333;
+        color: #fff;
+    }
+.btn:disabled{
+        background: #959595 !important;
+        color: #252525 !important;
+        border: none !important;
+        cursor: not-allowed !important;
+}
+.category_label {
+        background: #fbbf24;
+        padding-top: 9px !important;
+    }
+.btn-yellow{
+        background: #fbbf24 !important;
+        border: 1px solid #000 !important;
+        color: #000 !important;
+        font-weight: 700;
 }
 .btn-login{
         border-radius: 10px;
-        background-color: #1C3541 !important;
+        background-color: #333333 !important;
         color: #fff !important;
 }
 .role{

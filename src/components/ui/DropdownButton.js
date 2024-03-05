@@ -9,7 +9,7 @@ const DropdownButton = ({ title, items }) => {
 
   return (
     <div className="relative inline-block text-left">
-      <button onClick={handleToggle} className="bg-blue-500 text-white p-2 rounded">
+      <button onClick={handleToggle} className="btn-yellow text-white p-2 rounded">
         {title}
       </button>
       {isOpen && (
