@@ -28,7 +28,7 @@ import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 
 export default function ProjectPage() {
   const { id } = useParams();
-  const { projectData, setNewProjectID } = useProjectData();
+  const { projectData, handleProjectData } = useProjectData();
   const { user } = useAuth();
 
   const [progressObj, setProgressObj] = useState(null);
@@ -52,8 +52,13 @@ export default function ProjectPage() {
   };
 
   useEffect(() => {
-    setNewProjectID(id);
-  }, [id, setNewProjectID]);
+    const fetchProjectData = async () => {
+      await handleProjectData({ pID: id });
+    };
+    if (id) {
+      fetchProjectData();
+    }
+  }, [id]);
 
   useEffect(() => {
     if (projectData && user) {
@@ -66,7 +71,7 @@ export default function ProjectPage() {
       setAutorizedUser(authorizedUsers.includes(user.id));
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));
-      setIsAdmon(user?.role === "admon")
+      setIsAdmon(user?.role === "admon");
     }
   }, [projectData, user]);
 
@@ -143,7 +148,7 @@ export default function ProjectPage() {
                       <MiniInfoCard
                         label="Cantidad de tokens"
                         value={formatNumberWithThousandsSeparator(
-                          projectData.projectInfo.token.actualPeriodTokenAmount
+                          projectData.projectInfo.token.totalTokenAmount
                         )}
                         className="me-2 bg-dark text-white"
                       />
@@ -267,10 +272,7 @@ export default function ProjectPage() {
             <ProjectFiles visible={activeSection === "files"} />
             <FinanceCard visible={activeSection === "finance"} />
             <ProjectSettings
-              visible={
-                activeSection === "settings" &&
-                (isVerifier || isAdmon)
-              }
+              visible={activeSection === "settings" && (isVerifier || isAdmon)}
             />
           </div>
           <ToastContainer></ToastContainer>

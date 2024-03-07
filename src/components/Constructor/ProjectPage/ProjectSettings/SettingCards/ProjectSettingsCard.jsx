@@ -14,7 +14,7 @@ import { fetchProjectDataByProjectID } from "../../api";
 export default function ProjectSettingsCard(props) {
   const { className } = props;
 
-  const { projectData, handleUpdateContextProjectInfo } = useProjectData();
+  const { projectData, fetchProjectData } = useProjectData();
   const [projectIsActive, setProjectIsActive] = useState(false);
   const [projectStatus, setProjectStatus] = useState("");
   const [projectShowOn, setProjectShowOn] = useState("");
@@ -36,6 +36,8 @@ export default function ProjectSettingsCard(props) {
     await API.graphql(
       graphqlOperation(updateProduct, { input: updatedProduct })
     );
+    
+    await fetchProjectData();
 
     if (!projectIsActive === true) {
       notify({
@@ -67,6 +69,9 @@ export default function ProjectSettingsCard(props) {
     await API.graphql(
       graphqlOperation(updateProduct, { input: updatedProduct })
     );
+    
+    await fetchProjectData();
+    
     notify({
       msg: "El estado del proyecto ha sido actualizado",
       type: "success",
@@ -80,7 +85,7 @@ export default function ProjectSettingsCard(props) {
     await API.graphql(
       graphqlOperation(updateProduct, { input: updatedProduct })
     );
-    handleUpdateContextProjectInfo({ showOn: projectShowOn });
+    await fetchProjectData();
     notify({
       msg: `El ahora se muestra en el marketplace de ${projectShowOn}`,
       type: "success",

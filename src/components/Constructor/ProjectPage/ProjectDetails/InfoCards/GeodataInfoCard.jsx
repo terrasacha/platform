@@ -7,6 +7,8 @@ import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { notify } from "utilities/notify";
 import { getPolygonByCadastralNumber } from "services/getPolygonByCadastralNumber";
+import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
+import { getPredialData2ByCadastralNumber } from "services/getPredialData2ByCadastralNumber";
 // Borrar despues de pasar a componentes
 
 export default function GeodataInfoCard(props) {
@@ -38,11 +40,32 @@ export default function GeodataInfoCard(props) {
         projectData.projectCadastralRecords.cadastralRecords.map(
           (item) => item.cadastralNumber
         );
-      const predialData = await getPolygonByCadastralNumber(
+      let polygonGeoJson = await getPolygonByCadastralNumber(
         cadastralNumbersArray
       ); // Llamada a la función getData
+      const predialData = await getPredialDataByCadastralNumber(
+        cadastralNumbersArray
+      ); // Llamada a la función getData
+      const predialData2 = await getPredialData2ByCadastralNumber(
+        cadastralNumbersArray
+      ); // Llamada a la función getData
+
+      if (polygonGeoJson) {
+        polygonGeoJson.features = polygonGeoJson.features.map((feature, index) => {
+          return {
+            ...feature,
+            properties: {
+              ...feature.properties,
+              ...predialData[feature.properties.CODIGO],
+              ...predialData2[feature.properties.CODIGO]
+            }
+          }
+        });
+      }
+      console.log("polygonGeoJson", polygonGeoJson);
       console.log("predialData", predialData);
-      setPolygonsFetchedData(predialData);
+      console.log("predialData2", predialData2);
+      setPolygonsFetchedData(polygonGeoJson);
     }
 
     updatePredialData();
@@ -83,34 +106,6 @@ export default function GeodataInfoCard(props) {
     }
   }, [projectData]);
 
-  const handleSaveBtn = async () => {
-    if (ubicacionPfId) {
-      const updatedProductFeature = {
-        id: ubicacionPfId,
-        value: `${formData.coords.lat}, ${formData.coords.lng} 0 0`,
-      };
-      console.log("newProductFeature:", updatedProductFeature);
-      await API.graphql(
-        graphqlOperation(updateProductFeature, {
-          input: updatedProductFeature,
-        })
-      );
-    } else {
-      const newProductFeature = {
-        featureID: "C_ubicacion",
-        productID: projectData.projectInfo.id,
-        value: `${formData.coords.lat}, ${formData.coords.lng} 0 0`,
-      };
-      console.log("newProductFeature:", newProductFeature);
-      const response = await API.graphql(
-        graphqlOperation(createProductFeature, { input: newProductFeature })
-      );
-      setUbicacionPfId(response.data.createProductFeature.id);
-    }
-    setProgressChange(true);
-    notify({ msg: "Ubicación del predio actualizada", type: "success" });
-  };
-
   //let markers = [];
 
   return (
@@ -128,47 +123,6 @@ export default function GeodataInfoCard(props) {
               defaultZoom={6}
               onGoogleApiLoaded={({ map, maps }) => {
                 map.setZoom(geoData.zoom);
-                // map.addListener("click", (event) => {
-                //   addMarker(event.latLng);
-                // });
-
-                // function setMapOnAll(map) {
-                //   for (let i = 0; i < markers.length; i++) {
-                //     markers[i].setMap(map);
-                //   }
-                // }
-                // function addMarker(position) {
-                //   deleteMarkers();
-
-                //   const marker = new maps.Marker({
-                //     position,
-                //     map,
-                //   });
-
-                //   setFormData((prevState) => ({
-                //     ...prevState,
-                //     coords: {
-                //       lat: position.lat(),
-                //       lng: position.lng(),
-                //     },
-                //   }));
-
-                //   markers.push(marker);
-                // }
-                // function deleteMarkers() {
-                //   setMapOnAll(null);
-                //   markers = [];
-                // }
-                // if (formData.coords.lat !== 0) {
-                //   addMarker(
-                //     new maps.LatLng({
-                //       lat: formData.coords.lat,
-                //       lng: formData.coords.lng,
-                //     })
-                //   );
-                // }
-
-                console.log(polygonsFetchedData, "polygonsFetchedData");
 
                 if (polygonsFetchedData.features.length > 0) {
                   // Load GeoJSON.
@@ -178,11 +132,23 @@ export default function GeodataInfoCard(props) {
                   let bounds = new maps.LatLngBounds();
 
                   map.data.addListener("click", (event) => {
+                    const titulo = event.feature.getProperty("DIRECCION");
                     const codigo = event.feature.getProperty("CODIGO");
-                    console.log("Este es el codigo: ", codigo);
+                    const departamento = event.feature.getProperty("NOMBRE_DEPARTAMENTO");
+                    const municipio = event.feature.getProperty("NOMBRE_MUNICIPIO");
+                    const destinoEconomico = event.feature.getProperty("NOMBRE_DESTINOECONOMICO");
+                    const descripcionDestinoEconomico = event.feature.getProperty("DESCRIPCION_DESTINOECONOMICO");
+                    const areaTerreno = event.feature.getProperty("AREA_TERRENO");
+                    const areaConstruida = event.feature.getProperty("AREA_CONSTRUIDA");
                     const contentString = `
                       <div class='infoWindowContainer'>
-                        <p>Identificador catastral: ${codigo}</p>
+                        <p>${titulo}</p>
+                        <p class='mb-0'>Identificador catastral: ${codigo}</p>
+                        <p class='mb-0'>Departamento: ${departamento}</p>
+                        <p class='mb-0'>Municipio: ${municipio}</p>
+                        <p class='mb-0'>Destino económico: ${destinoEconomico} (${descripcionDestinoEconomico})</p>
+                        <p class='mb-0'>Área de terreno: ${parseFloat(areaTerreno).toLocaleString('es-ES')} m2</p>
+                        <p class='mb-0'>Área construida: ${parseFloat(areaConstruida).toLocaleString('es-ES')} m2</p>
                       </div>
                     `;
 
@@ -206,64 +172,7 @@ export default function GeodataInfoCard(props) {
 
                   // Setear centroide
                   map.fitBounds(bounds);
-
-                  // polygonsFetchedData.forEach((data) => {
-                  //   new maps.Polygon({
-                  //     paths: data.poligono,
-                  //     strokeColor:
-                  //       "#" +
-                  //       (0x1000000 + Math.random() * 0xffffff)
-                  //         .toString(16)
-                  //         .substr(1, 6), // Color de la línea del polígono
-                  //     strokeOpacity: 0.8,
-                  //     strokeWeight: 2,
-                  //     fillColor:
-                  //       "#" +
-                  //       (0x1000000 + Math.random() * 0xffffff)
-                  //         .toString(16)
-                  //         .substr(1, 6), // Color del relleno del polígono
-                  //     fillOpacity: 0.35,
-                  //     map: map,
-                  //   }).addListener("click", function (event) {
-                  //     // infowindow.open({
-                  //     //   anchor: this,
-                  //     //   map,
-                  //     // });
-                  //     console.log("Hizo click en " + data.predio);
-                  //   });
-
-                  //   data.poligono.forEach((point) => {
-                  //     bounds.extend(new maps.LatLng(point[0], point[1]));
-                  //   });
-                  // });
-                  // map.setCenter(bounds.getCenter());
-                  // console.log("center",bounds.getCenter().lat())
-                  // console.log("center",bounds.getCenter().lng())
                 }
-                // var polygon = new maps.Polygon({
-                //   paths: convertToGoogleMapsPaths(coords),
-                //   strokeColor: "#FF0000", // Color de la línea del polígono
-                //   strokeOpacity: 0.8,
-                //   strokeWeight: 2,
-                //   fillColor: "#FF0000", // Color del relleno del polígono
-                //   fillOpacity: 0.35,
-                // });
-
-                //polygon.setMap(map);
-
-                // geoData.layers.forEach((data) => {
-                //   new maps.KmlLayer(data.fileURLS3, {
-                //     suppressInfoWindows: true,
-                //     preserveViewport: true,
-                //     map: map,
-                //   }).addListener("click", function (event) {
-                //     // infowindow.open({
-                //     //   anchor: this,
-                //     //   map,
-                //     // });
-                //     console.log("Hizo click");
-                //   });
-                // });
               }}
               yesIWantToUseGoogleMapApiInternals
             >
@@ -272,33 +181,6 @@ export default function GeodataInfoCard(props) {
           </>
         )}
       </div>
-      {/* <div className="p-3">
-        <div>
-          <Form.Label className="mb-0">Latitud</Form.Label>
-          <Form.Control
-            disabled={true}
-            size="sm"
-            type="number"
-            value={formData.coords?.lat}
-          />
-        </div>
-        <div>
-          <Form.Label className="mb-0">Longitud</Form.Label>
-          <Form.Control
-            disabled={true}
-            size="sm"
-            type="number"
-            value={formData.coords?.lng}
-          />
-        </div>
-      </div>
-      {autorizedUser && (
-        <div className="d-flex justify-content-center mb-3">
-          <Button onClick={() => handleSaveBtn()} variant="success">
-            Actualizar Ubicación
-          </Button>
-        </div>
-      )} */}
     </Card>
   );
 }

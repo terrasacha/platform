@@ -34,9 +34,6 @@ export default function FinanceCard({ visible }) {
   const dataRevenues = projectData.projectFinancialInfo.revenuesByProduct;
   const dataIndicador = projectData.projectFinancialInfo.financialIndicators;
   const isValid = validateProjectFeatures(projectData.projectFeatures);
-  const totalOwner = projectData.projectFeatures.find(
-    (item) => item.featureID === "GLOBAL_TOKEN_TOTAL_AMOUNT"
-  );
   const [globalOwnerAcceptsPfID, setGlobalOwnerAcceptsPfID] = useState(null);
   const [isAccepted, setIsAccepted] = useState(false);
 
@@ -100,7 +97,7 @@ export default function FinanceCard({ visible }) {
         )}
         <div className="container">
           <div className="row">
-            <DistributionToken infoTable={dataToken} totalOwner={totalOwner} />
+            <DistributionToken infoTable={dataToken} />
             <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
             <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
             <RevenuesProducts infoTable={dataRevenues.revenuesByProduct} />
@@ -129,7 +126,7 @@ export default function FinanceCard({ visible }) {
                   }
                 />
               )}
-            <DistributionToken infoTable={dataToken} totalOwner={totalOwner} />
+            <DistributionToken infoTable={dataToken} />
             <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
             <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
             <RevenuesProducts infoTable={dataRevenues.revenuesByProduct} />
@@ -404,13 +401,16 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
   );
 }
 
-function DistributionToken({ infoTable, totalOwner }) {
-  const totalOwnerValue = totalOwner ? totalOwner.value : 0;
+function DistributionToken({ infoTable }) {
+  const totalOwnerValue = infoTable.reduce(
+    (sum, item) => sum + parseInt(item.CANTIDAD),
+    0
+  );
   if (!infoTable || infoTable.length === 0) {
     return <p>No hay datos disponibles.</p>;
   }
 
-  console.log('totalowner', totalOwnerValue)
+  console.log("totalowner", totalOwnerValue);
   console.log("infoTable", infoTable);
 
   return (
@@ -425,13 +425,11 @@ function DistributionToken({ infoTable, totalOwner }) {
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr className="distribution">
-                {
-                  infoTable.map((item, index) => (
-                    <th scope="col" className="px-3 py-2">
-                      {item.CONCEPTO}
-                    </th>
-                  ))
-                }
+                {infoTable.map((item, index) => (
+                  <th scope="col" className="px-3 py-2" key={index}>
+                    {item.CONCEPTO}
+                  </th>
+                ))}
                 {/* {Object.keys(infoTable).map((key) => (
 									<th scope="col" className="px-3 py-2" key={key}>
 										{key}
@@ -449,7 +447,7 @@ function DistributionToken({ infoTable, totalOwner }) {
               </tr>
             </tbody>
           </table>
-          <PieChartComponent infoTable={infoTable} totalOwner={totalOwner} />
+          <PieChartComponent infoTable={infoTable} />
         </div>
       </div>
     </div>
@@ -568,9 +566,12 @@ function RevenuesProducts({ infoTable, typeInfo }) {
     </div>
   );
 }
-const PieChartComponent = ({ infoTable, totalOwner }) => {
+const PieChartComponent = ({ infoTable }) => {
   const [chartData, setChartData] = useState([]);
-  const totalOwnerValue = totalOwner ? totalOwner.value : 0;
+  const totalOwnerValue = infoTable.reduce(
+    (sum, item) => sum + item.CANTIDAD,
+    0
+  );
 
   useEffect(() => {
     if (infoTable) {

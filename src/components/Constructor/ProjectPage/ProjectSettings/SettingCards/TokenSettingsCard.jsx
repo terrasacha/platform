@@ -16,21 +16,15 @@ import { TrashIcon } from "components/common/icons/TrashIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
-import { formatCurrency } from "utilities/formatCurrency";
-import TableEdit from "components/common/TableEdit";
-import TokenDistributionInputTable from "./TokenDistributionInputTable";
-import useProjectItems from "hooks/useProjectItems";
 
 export default function TokenSettingsCard(props) {
   const { className, canEdit } = props;
   console.log(canEdit);
-  const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
-  const { projectItems } = useProjectItems();
+  const { projectData, fetchProjectData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
   const [tokenCurrency, setTokenCurrency] = useState("");
   const [tokenCurrencyPfID, setTokenCurrencyPfID] = useState(null);
-  const [totalTokenAmount, setTotalTokenAmount] = useState(0);
   const [totalTokenAmountPfID, setTotalTokenAmountPfID] = useState(null);
 
   const [validatorSubRole, setValidatorSubRole] = useState("");
@@ -39,10 +33,16 @@ export default function TokenSettingsCard(props) {
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
   const [tokenHistoricalDataPfID, setTokenHistoricalDataPfID] = useState(null);
 
-  const [tokenDistribution, setTokenDistribution] = useState([{}]);
+  const totalTokensPF = JSON.parse(
+    projectData.projectFeatures.find(
+      (item) => item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA"
+    )?.value || "[]"
+  );
 
-  const [tokenDistributionForm, setTokenDistributionForm] = useState({});
-  const [tokenDistributionPfID, setTokenDistributionPfID] = useState(null);
+  const totalTokens = totalTokensPF.reduce(
+    (sum, item) => sum + parseInt(item.amount),
+    0
+  );
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
@@ -63,7 +63,6 @@ export default function TokenSettingsCard(props) {
         setIsDisabledTokenName(true);
       }
       setTokenName(projectData.projectInfo.token.name);
-      setTotalTokenAmount(projectData.projectInfo.token.totalTokenAmount);
       setTotalTokenAmountPfID(
         projectData.projectInfo.token.pfIDs.pfTotalTokenAmountID
       );
@@ -86,18 +85,6 @@ export default function TokenSettingsCard(props) {
       setTokenHistoricalDataPfID(
         projectData.projectInfo?.token.pfIDs.pfTokenHistoricalDataID
       );
-
-      setTokenDistributionForm((prevState) => ({
-        ...prevState,
-        investor: projectData.projectInfo?.token.amountDistribution.investor,
-        owner: projectData.projectInfo?.token.amountDistribution.owner,
-        suan: projectData.projectInfo?.token.amountDistribution.suan,
-        comunity: projectData.projectInfo?.token.amountDistribution.comunity,
-        buffer: projectData.projectInfo?.token.amountDistribution.buffer,
-      }));
-      setTokenDistributionPfID(
-        projectData.projectInfo?.token.pfIDs.pfTokenAmountDistributionID
-      );
     }
   }, []);
 
@@ -113,10 +100,6 @@ export default function TokenSettingsCard(props) {
   }
 
   const handleSetTotalTokenAmountFeature = async (value) => {
-    await handleUpdateContextProjectTokenData({
-      totalTokenAmount: value,
-    });
-
     if (totalTokenAmountPfID) {
       let tempProductFeature = {
         id: totalTokenAmountPfID,
@@ -142,45 +125,9 @@ export default function TokenSettingsCard(props) {
     }
   };
 
-  const handleSetTokenDistributionFeature = async (value) => {
-    await handleUpdateContextProjectTokenData({
-      amountDistribution: value,
-    });
-
-    if (tokenDistributionPfID) {
-      let tempProductFeature = {
-        id: projectData.projectInfo.token.pfIDs.pfTokenAmountDistributionID,
-        value: JSON.stringify(tokenDistributionForm),
-      };
-      await API.graphql(
-        graphqlOperation(updateProductFeature, {
-          input: tempProductFeature,
-        })
-      );
-    } else {
-      let tempProductFeature = {
-        value: JSON.stringify(tokenDistributionForm),
-        isToBlockChain: false,
-        isOnMainCard: false,
-        productID: projectData.projectInfo.id,
-        featureID: "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION",
-      };
-
-      const response = await API.graphql(
-        graphqlOperation(createProductFeature, {
-          input: tempProductFeature,
-        })
-      );
-
-      setTokenDistributionPfID(response.data.createProductFeature.id);
-    }
-  };
-
   const handleSaveBtn = async (toSave) => {
     let error = false;
     if (toSave === "tokenName") {
-      await handleUpdateContextProjectTokenData({ name: tokenName });
-
       if (projectData.projectInfo.token.pfIDs.pfTokenNameID) {
         let tempProductFeature = {
           id: projectData.projectInfo.token.pfIDs.pfTokenNameID,
@@ -206,6 +153,7 @@ export default function TokenSettingsCard(props) {
 
         if (!response.data.createProductFeature) error = true;
       }
+      await fetchProjectData();
 
       if (!error) {
         notify({
@@ -216,8 +164,6 @@ export default function TokenSettingsCard(props) {
     }
 
     if (toSave === "tokenCurrency") {
-      await handleUpdateContextProjectTokenData({ currency: tokenCurrency });
-
       if (tokenCurrencyPfID) {
         let tempProductFeature = {
           id: tokenCurrencyPfID,
@@ -244,6 +190,7 @@ export default function TokenSettingsCard(props) {
 
         if (!response.data.createProductFeature) error = true;
       }
+      await fetchProjectData();
 
       if (!error) {
         notify({
@@ -251,49 +198,6 @@ export default function TokenSettingsCard(props) {
           type: "success",
         });
       }
-    }
-
-    if (toSave === "tokenDistributionForm") {
-      const isDecimal = (value) =>
-        !isNaN(value) && value.toString().includes(".");
-
-      const totalTokenDistribution =
-        parseInt(tokenDistributionForm.owner) +
-        parseInt(tokenDistributionForm.investor) +
-        parseInt(tokenDistributionForm.suan) +
-        parseInt(tokenDistributionForm.comunity) +
-        parseInt(tokenDistributionForm.buffer);
-
-      if (!totalTokenDistribution) {
-        notify({
-          msg: "Todos los campos deben ser correctamente llenados",
-          type: "error",
-        });
-        return;
-      }
-      if (
-        isDecimal(tokenDistributionForm.owner) ||
-        isDecimal(tokenDistributionForm.investor) ||
-        isDecimal(tokenDistributionForm.suan) ||
-        isDecimal(tokenDistributionForm.comunity) ||
-        isDecimal(tokenDistributionForm.buffer)
-      ) {
-        notify({
-          msg: "Solo puedes ingresar valores enteros",
-          type: "error",
-        });
-        return;
-      }
-
-      await handleSetTotalTokenAmountFeature(totalTokenDistribution);
-      await handleSetTokenDistributionFeature(tokenDistributionForm);
-
-      notify({
-        msg: "La distribución de tokens ha sido modificada exitosamente",
-        type: "success",
-      });
-
-      console.log(totalTokenDistribution, "totalTokenDistribution");
     }
 
     if (error) {
@@ -314,10 +218,6 @@ export default function TokenSettingsCard(props) {
       setTokenCurrency(value);
       return;
     }
-    if (name === "totalTokenAmount") {
-      setTotalTokenAmount(value);
-      return;
-    }
 
     if (name.includes("token_")) {
       const [_, tokenHistoryFeature, tokenHistoryIndex] = name.split("_");
@@ -330,46 +230,6 @@ export default function TokenSettingsCard(props) {
         )
       );
     }
-
-    if (name.includes("tokenDistribution_")) {
-      const [_, tokenHistoryFeature, tokenHistoryIndex] = name.split("_");
-
-      setTokenDistribution((prevState) =>
-        prevState.map((item, index) =>
-          index === parseInt(tokenHistoryIndex)
-            ? { ...item, [tokenHistoryFeature]: value }
-            : item
-        )
-      );
-    }
-  };
-
-  const handleChangeInputValueForm = async (e) => {
-    const { name, type, value, checked } = e.target;
-
-    setTokenDistributionForm((prevFormData) => {
-      const updatedFormData = { ...prevFormData };
-
-      if (type === "checkbox") {
-        if (!Array.isArray(updatedFormData[name])) {
-          updatedFormData[name] = [];
-        }
-
-        if (checked && !updatedFormData[name].includes(value)) {
-          updatedFormData[name].push(value);
-        } else if (!checked) {
-          updatedFormData[name] = updatedFormData[name].filter(
-            (val) => val !== value
-          );
-        }
-      } else if (type === "radio" && checked) {
-        updatedFormData[name] = value;
-      } else {
-        updatedFormData[name] = value;
-      }
-
-      return updatedFormData;
-    });
   };
 
   const handleEditHistoricalData = async (indexToStartEditing) => {
@@ -413,6 +273,14 @@ export default function TokenSettingsCard(props) {
       tokenHistoricalData[indexToSave].amount &&
       tokenHistoricalData[indexToSave].price
     ) {
+      if (tokenHistoricalData[indexToSave].period <= 0) {
+        notify({
+          msg: "Ingresa un periodo mayor a 0",
+          type: "error",
+        });
+        return;
+      }
+
       setTokenHistoricalData((prevState) =>
         prevState
           .map((item, index) =>
@@ -447,6 +315,13 @@ export default function TokenSettingsCard(props) {
 
         if (!response.data.createProductFeature) error = true;
       }
+
+      const totalTokenDistribution = tokenHistoricalData.reduce(
+        (sum, item) => sum + parseInt(item.amount),
+        0
+      );
+      await handleSetTotalTokenAmountFeature(totalTokenDistribution);
+      await fetchProjectData();
     } else {
       notify({
         msg: "Completa todos los campos antes de guardar",
@@ -498,6 +373,13 @@ export default function TokenSettingsCard(props) {
       if (!response.data.createProductFeature) error = true;
     }
 
+    const totalTokenDistribution = tempTokenHistoricalData.reduce(
+      (sum, item) => sum + parseInt(item.amount),
+      0
+    );
+    await handleSetTotalTokenAmountFeature(totalTokenDistribution);
+    await fetchProjectData();
+
     if (!error) {
       notify({
         msg: "Valores borrados exitosamente",
@@ -528,35 +410,6 @@ export default function TokenSettingsCard(props) {
         msg: "Guarda primero los datos antes de agregar una nueva fila",
         type: "error",
       });
-    }
-  };
-
-  const checkIfIsEditable = (type) => {
-    switch (type) {
-      case "technical":
-        if (projectData.isTechnicalFreeze) {
-          return true;
-        } else {
-          if (
-            validatorSubRole === "fullaccessvalidator" ||
-            validatorSubRole === "technical"
-          )
-            return false;
-        }
-        break;
-      case "financial":
-        if (projectData.isFinancialFreeze) {
-          return true;
-        } else {
-          if (
-            validatorSubRole === "fullaccessvalidator" ||
-            validatorSubRole === "financial"
-          )
-            return false;
-        }
-        break;
-      default:
-        return true;
     }
   };
 
@@ -729,6 +582,10 @@ export default function TokenSettingsCard(props) {
               </tbody>
             </Table>
           </div>
+          <p className="mb-0">
+            Volumen total de Tokens:{" "}
+            {parseFloat(totalTokens).toLocaleString("es-ES")}
+          </p>
           {/* <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
             <p>

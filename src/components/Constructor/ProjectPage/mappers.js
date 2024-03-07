@@ -363,10 +363,18 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_CURRENCY";
     })[0]?.value || "";
-  const totalTokenAmount =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "GLOBAL_TOKEN_TOTAL_AMOUNT";
-    })[0]?.value || 0;
+
+  const totalTokensPF = JSON.parse(
+    data.productFeatures.items.find(
+      (item) => item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA"
+    )?.value || "[]"
+  );
+
+  const totalTokens = totalTokensPF.reduce(
+    (sum, item) => sum + parseInt(item.amount),
+    0
+  );
+
   const pfTokenNameID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
@@ -394,29 +402,29 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_AMOUNT_OF_TOKENS";
     })[0]?.id || "";
 
-    // Owners Data
-    const pfOwnersDataID =
-      data.productFeatures.items.filter((item) => {
-        return item.featureID === "B_owners";
-      })[0]?.id || "";
-  
-    const ownersData = JSON.parse(
-      data.productFeatures.items.filter((item) => {
-        return item.featureID === "B_owners";
-      })[0]?.value || "[]"
-    );
+  // Owners Data
+  const pfOwnersDataID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "B_owners";
+    })[0]?.id || "";
 
-    // Cadsatral Data
-    const pfCadastralDataID =
-      data.productFeatures.items.filter((item) => {
-        return item.featureID === "A_predio_ficha_catastral";
-      })[0]?.id || "";
-  
-    const cadastralData = JSON.parse(
-      data.productFeatures.items.filter((item) => {
-        return item.featureID === "A_predio_ficha_catastral";
-      })[0]?.value || "[]"
-    );
+  const ownersData = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "B_owners";
+    })[0]?.value || "[]"
+  );
+
+  // Cadsatral Data
+  const pfCadastralDataID =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "A_predio_ficha_catastral";
+    })[0]?.id || "";
+
+  const cadastralData = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "A_predio_ficha_catastral";
+    })[0]?.value || "[]"
+  );
 
   const pfTotalTokenAmountID =
     data.productFeatures.items.filter((item) => {
@@ -431,7 +439,7 @@ export const mapProjectData = async (data) => {
   const tokenAmountDistribution = JSON.parse(
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION";
-    })[0]?.value || "{}"
+    })[0]?.value || "[]"
   );
 
   const pfTokenHistoricalDataID =
@@ -637,7 +645,7 @@ export const mapProjectData = async (data) => {
   if (
     tokenHistoricalData.length > 0 &&
     tokenCurrency !== "" &&
-    totalTokenAmount !== 0 &&
+    totalTokens !== 0 &&
     Object.keys(tokenAmountDistribution).length > 0 &&
     Object.keys(cashFlowResume).length > 0 &&
     financialIndicatorsToken.length > 0
@@ -680,7 +688,7 @@ export const mapProjectData = async (data) => {
         transactionsNumber: data.transactions.items.length,
         name: tokenName,
         currency: tokenCurrency,
-        totalTokenAmount: totalTokenAmount,
+        totalTokenAmount: totalTokens,
         actualPeriodTokenPrice: actualPeriod?.price || "",
         priceCurrency: "USD",
         actualPeriodTokenAmount: actualPeriod?.amount || "",

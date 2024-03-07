@@ -11,216 +11,144 @@ export function ProjectDataProvider({ children }) {
   const [projectData, setProjectData] = useState(null);
   const [projectID, setProjectID] = useState(null);
 
-  useEffect(() => {
-    if (!projectID) {
-      console.error('Page parameter is missing.');
+  const handleProjectData = async ({ pID }) => {
+    if (!pID) {
+      console.error("Page parameter is missing.");
       return;
     }
-    const fetchDataToContext = async () => {
-      const data = await fetchProjectDataByProjectID(projectID);
-      console.log(data)
-      handleProjectData(data);
-    };
-
-    fetchDataToContext();
-  }, [projectID]);
-
-  const handleProjectData = (data) => {
-    setProjectData(data);
+    console.log("pID", pID);
+    setProjectID(pID);
+    await fetchProjectData(pID);
   };
 
-  const setNewProjectID = (data) => {
-    setProjectID(data);
+  const fetchProjectData = async (pID = null) => {
+    const project_id = projectID || pID;
+    if (project_id) {
+      const data = await fetchProjectDataByProjectID(project_id);
+      console.log("Mapped Project Data: ", data);
+      setProjectData(data);
+
+      return data;
+    }
+    setProjectData(null);
+    return null;
   };
 
   const handleUpdateContextProjectData = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      ...data,
-    }));
+    console.log('Entro en: 1')
+    fetchProjectData();
+    return;
   };
 
   const handleUpdateContextProjectInfo = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectInfo: { ...prevData.projectInfo, ...data },
-    }));
+    console.log('Entro en: 2')
+    fetchProjectData();
+    return;
   };
 
   const handleUpdateContextProjectOwners = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectOwners: data,
-    }));
+    console.log('Entro en: 3')
+    fetchProjectData();
+    return;
   };
 
   const handleUpdateContextProjectCadastralRecordsData = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectCadastralRecords: data,
-    }));
+    
+    console.log('Entro en: 4')
+    fetchProjectData();
+    return;
+
   };
 
   const handleUpdateContextProjectRestrictions = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectRestrictions: { ...prevData.projectRestrictions, ...data },
-    }));
+    
+    console.log('Entro en: 5')
+    fetchProjectData();
+    return;
+
   };
 
   const handleUpdateContextProjectRelations = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectRelations: { ...prevData.projectRelations, ...data },
-    }));
+    
+    console.log('Entro en: 6')
+    fetchProjectData();
+    return;
+
   };
 
   const handleUpdateContextProjectEcosystem = async (data, obj = null) => {
-    if (obj === "waterSprings") {
-      setProjectData((prevData) => ({
-        ...prevData,
-        projectEcosystem: {
-          ...prevData.projectEcosystem,
-          waterSprings: { ...prevData.projectEcosystem.waterSprings, ...data },
-        },
-      }));
-    }
-    if (obj === "concessions") {
-      setProjectData((prevData) => ({
-        ...prevData,
-        projectEcosystem: {
-          ...prevData.projectEcosystem,
-          concessions: { ...prevData.projectEcosystem.concessions, ...data },
-        },
-      }));
-    }
-    if (obj === "diversity") {
-      setProjectData((prevData) => ({
-        ...prevData,
-        projectEcosystem: {
-          ...prevData.projectEcosystem,
-          diversity: { ...prevData.projectEcosystem.diversity, ...data },
-        },
-      }));
-    }
-    if (obj === null) {
-      setProjectData((prevData) => ({
-        ...prevData,
-        projectEcosystem: { ...prevData.projectEcosystem, ...data },
-      }));
-    }
+    
+    console.log('Entro en: 7')
+    fetchProjectData();
+    return;
+
   };
 
   const handleUpdateContextProjectInfoLocation = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectInfo: {
-        ...prevData.projectInfo,
-        location: { ...prevData.projectInfo.location, ...data },
-      },
-    }));
+    
+    console.log('Entro en: 8')
+    fetchProjectData();
+    return;
+
   };
 
   const handleUpdateContextVerifiers = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectVerifiers: [...data],
-    }));
+    
+    console.log('Entro en: 9')
+    fetchProjectData();
+    return;
+
   };
 
   const handleUpdateContextDocumentStatus = async (fileIndex, data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectFiles: prevData.projectFiles.map((file, index) => {
-        if (index === fileIndex) {
-          return {
-            ...file,
-            ...data,
-          };
-        } else {
-          return file;
-        }
-      }),
-    }));
+    
+    console.log('Entro en: 10')
+    fetchProjectData();
+    return;
+
   };
 
   const handleUpdateContextProjectFile = async (docID, data) => {
-    if (docID && projectData.projectFiles.find((item) => item.id === docID)) {
-      setProjectData((prevData) => ({
-        ...prevData,
-        projectFiles: prevData.projectFiles.map((file) => {
-          if (file.id === docID) {
-            return {
-              ...file,
-              ...data,
-            };
-          } else {
-            return file;
-          }
-        }),
-      }));
-    } else {
-      setProjectData((prevData) => ({
-        ...prevData,
-        projectFiles: [...prevData.projectFiles, data],
-      }));
-    }
+    console.log('Entro en: 11')
+    fetchProjectData();
+    return;
+
   };
-  
 
   const handleSetContextProjectFile = async (updatedProjectFiles) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectFiles: updatedProjectFiles,
-    }));
+    console.log('Entro en: 12')
+    fetchProjectData();
+    return;
   };
 
   const handleUpdateContextProjectTokenData = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectInfo: {
-        ...prevData.projectInfo,
-        token: { ...prevData.projectInfo.token, ...data },
-      },
-    }));
+    console.log('Entro en: 13')
+    fetchProjectData();
+    return;
   };
 
   const handleUpdateContextFileVerification = async (fileIndex, data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectFiles: prevData.projectFiles.map((file, index) => {
-        if (index === fileIndex) {
-          return {
-            ...file,
-            verification: { ...data },
-          };
-        } else {
-          return file;
-        }
-      }),
-    }));
+    console.log('Entro en: 14')
+    fetchProjectData();
+    return;
   };
 
   const handleUpdateContextProjectFileValidators = async (data) => {
-    setProjectData((prevData) => ({
-      ...prevData,
-      projectFilesValidators: {
-        ...prevData.projectFilesValidators,
-        ...data,
-      },
-    }));
+    console.log('Entro en: 15')
+    fetchProjectData();
+    return;
   };
 
   const refresh = async () => {
-    setProjectData((prevData) => ({
-      ...prevData,
-    }));
+    console.log('Entro en: 16')
+    fetchProjectData();
+    return;
   };
 
   const contextProps = {
     projectData,
     handleProjectData,
-    setNewProjectID,
+    fetchProjectData,
     handleUpdateContextProjectOwners,
     handleUpdateContextProjectCadastralRecordsData,
     handleUpdateContextProjectData,

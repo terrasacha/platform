@@ -1,3 +1,7 @@
+import { getCityName } from "./getCityName";
+import { getDepartmentName } from "./getDepartmentName";
+import { getEconomicDestiny } from "./getEconomicDestiny";
+
 export const getPredialDataByCadastralNumber = async (cadastralNumbers) => {
   // URL de la consulta
   const url =
@@ -25,10 +29,22 @@ export const getPredialDataByCadastralNumber = async (cadastralNumbers) => {
       const numeroDelPredio = feature.attributes.NUMERO_DEL_PREDIO;
       const areaTerreno = feature.attributes.AREA_TERRENO;
       const direccionPredio = feature.attributes.DIRECCION;
+      const destinoEconomico = getEconomicDestiny(
+        feature.attributes.DESTINO_ECONOMICO
+      );
+      const nombreDepartamento = getDepartmentName(
+        feature.attributes.DEPARTAMENTO
+      );
+
+      const nombreMunicipio = getCityName(feature.attributes.MUNICIPIO);
 
       result[numeroDelPredio] = {
+        ...feature.attributes,
         area: areaTerreno,
         predio: direccionPredio,
+        NOMBRE_DEPARTAMENTO: nombreDepartamento,
+        NOMBRE_MUNICIPIO: nombreMunicipio,
+        ...destinoEconomico
       };
       return result;
     }, {});

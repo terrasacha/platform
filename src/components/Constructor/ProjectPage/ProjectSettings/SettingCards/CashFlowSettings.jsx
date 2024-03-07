@@ -13,15 +13,23 @@ import { notify } from "../../../../../utilities/notify";
 export default function CashFlowSettings(props) {
   const { className, canEdit } = props;
 
-  const { projectData, handleUpdateContextProjectTokenData } = useProjectData();
-  const [cashFlowResume, setCashFlowResume] = useState([])
+  const { projectData, fetchProjectData } = useProjectData();
+  const [cashFlowResume, setCashFlowResume] = useState([]);
   const [excelData, setExcelData] = useState("");
-  const [pfID, setPfID] = useState(null)
+  const [pfID, setPfID] = useState(null);
   useEffect(() => {
     if (projectData) {
-      if(projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID || null){
-        setPfID(projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID || [])
-        setCashFlowResume(projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.flujos_de_caja || [])
+      if (
+        projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID ||
+        null
+      ) {
+        setPfID(
+          projectData.projectFinancialInfo.cashFlowResume.cashFlowResumeID || []
+        );
+        setCashFlowResume(
+          projectData.projectFinancialInfo.cashFlowResume.cashFlowResume
+            .flujos_de_caja || []
+        );
       }
     }
   }, [projectData]);
@@ -29,11 +37,11 @@ export default function CashFlowSettings(props) {
   const parseExcelData = (excelData) => {
     const lines = excelData.split("\t");
     const data = [];
-  
+
     let currentYear = null;
     let resultado_anual = null;
     let resultado_acumulado = null;
-  
+
     lines.forEach((line) => {
       const trimmedLine = line.trim();
       if (trimmedLine.startsWith("AÑO ")) {
@@ -55,69 +63,74 @@ export default function CashFlowSettings(props) {
         }
       }
     });
-  
-    if (currentYear !== null && resultado_anual !== null && resultado_acumulado !== null) {
+
+    if (
+      currentYear !== null &&
+      resultado_anual !== null &&
+      resultado_acumulado !== null
+    ) {
       data.push({
         año: currentYear,
         resultado_anual: resultado_anual,
         resultado_acumulado: resultado_acumulado,
       });
     }
-  
+
     return data;
   };
-  
+
   const handlePasteFromExcel = () => {
-    const parsedData = parseExcelData(excelData)
+    const parsedData = parseExcelData(excelData);
     if (isValidParsedData(parsedData)) {
-      setCashFlowResume(parsedData)
-      handleSaveBtn(parsedData)
+      setCashFlowResume(parsedData);
+      handleSaveBtn(parsedData);
     } else {
     }
   };
   const isValidParsedData = (data) => {
     return (
       Array.isArray(data) &&
-      data.every((item) =>
-        typeof item === "object" &&
-        item.hasOwnProperty("año") &&
-        item.hasOwnProperty("resultado_anual") &&
-        item.hasOwnProperty("resultado_acumulado") &&
-        typeof item.año === "string"
+      data.every(
+        (item) =>
+          typeof item === "object" &&
+          item.hasOwnProperty("año") &&
+          item.hasOwnProperty("resultado_anual") &&
+          item.hasOwnProperty("resultado_acumulado") &&
+          typeof item.año === "string"
       )
     );
   };
   const handleSaveBtn = async (data) => {
     let error = false;
     if (pfID) {
-        let tempProductFeature = {
-          id: pfID,
-          value: JSON.stringify({flujos_de_caja: data ? data : cashFlowResume}),
-        };
-        const response = await API.graphql(
-          graphqlOperation(updateProductFeature, { input: tempProductFeature })
-        );
-          console.log(tempProductFeature, 'tempProductFeature')
-        if (!response.data.updateProductFeature) error = true;
-      } else {
-        let tempProductFeature = {
-          value: JSON.stringify({flujos_de_caja: cashFlowResume}),
-          isToBlockChain: false,
-          isOnMainCard: false,
-          productID: projectData.projectInfo.id,
-          featureID: "GLOBAL_RESUMEN_FLUJO_DE_CAJA",
-        };
-        console.log(tempProductFeature, 'no existe')
-          console.log(tempProductFeature, 'tempProductFeature')
+      let tempProductFeature = {
+        id: pfID,
+        value: JSON.stringify({ flujos_de_caja: data ? data : cashFlowResume }),
+      };
+      const response = await API.graphql(
+        graphqlOperation(updateProductFeature, { input: tempProductFeature })
+      );
+      console.log(tempProductFeature, "tempProductFeature");
+      if (!response.data.updateProductFeature) error = true;
+    } else {
+      let tempProductFeature = {
+        value: JSON.stringify({ flujos_de_caja: cashFlowResume }),
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_RESUMEN_FLUJO_DE_CAJA",
+      };
+      console.log(tempProductFeature, "no existe");
+      console.log(tempProductFeature, "tempProductFeature");
 
-        API.graphql(
-          graphqlOperation(createProductFeature, { input: tempProductFeature })
-        )
-        .then(response => setPfID(response.data.createProductFeature.id))
-        .catch(err => error = true)
+      API.graphql(
+        graphqlOperation(createProductFeature, { input: tempProductFeature })
+      )
+        .then((response) => setPfID(response.data.createProductFeature.id))
+        .catch((err) => (error = true));
+    }
 
-
-      }
+    await fetchProjectData();
 
     if (error) {
       notify({
@@ -131,24 +144,22 @@ export default function CashFlowSettings(props) {
         type: "success",
       });
     }
-    setExcelData("")
+    setExcelData("");
   };
 
   const handleChangeInputValue = async (e) => {
     const { name, value } = e.target;
-    if(name === "Excel"){ 
-      setExcelData(value)
+    if (name === "Excel") {
+      setExcelData(value);
       return;
     }
 
     if (name.includes("input-")) {
-        const [_, column, indexRow] = name.split("-");
-        console.log(column, indexRow)
+      const [_, column, indexRow] = name.split("-");
+      console.log(column, indexRow);
       setCashFlowResume((prevState) =>
         prevState.map((item, index) =>
-          index === parseInt(indexRow)
-            ? { ...item, [column]: value }
-            : item
+          index === parseInt(indexRow) ? { ...item, [column]: value } : item
         )
       );
     }
@@ -174,21 +185,32 @@ export default function CashFlowSettings(props) {
 
   const handleSaveHistoricalData = async (indexToSave) => {
     let error = false;
-    let isAlreadyExistingPeriod = false
+    let isAlreadyExistingPeriod = false;
     const newPeriod = cashFlowResume[indexToSave].año;
     // const count = projectData.projectInfo.token.historicalData.reduce((acc, hd) => (hd.period === tokenHistoricalData[indexToSave].period ? acc + 1 : acc), 0);
-    if(projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.length > 0){
-        isAlreadyExistingPeriod = projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.flujos_de_caja.some((hd, index) => hd.año === newPeriod && index !== indexToSave)
+    if (
+      projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.length > 0
+    ) {
+      isAlreadyExistingPeriod =
+        projectData.projectFinancialInfo.cashFlowResume.cashFlowResume.flujos_de_caja.some(
+          (hd, index) => hd.año === newPeriod && index !== indexToSave
+        );
     }
-    
-    if(isAlreadyExistingPeriod) {
+
+    if (isAlreadyExistingPeriod) {
       notify({
         msg: "El periodo que intentas guardar ya esta definido",
         type: "error",
       });
       return;
     }
-    let cashFlowResumeToUpload = cashFlowResume.map(cfr =>{return{año: cfr.año, resultado_acumulado: cfr.resultado_acumulado,resultado_anual: cfr.resultado_anual}})
+    let cashFlowResumeToUpload = cashFlowResume.map((cfr) => {
+      return {
+        año: cfr.año,
+        resultado_acumulado: cfr.resultado_acumulado,
+        resultado_anual: cfr.resultado_anual,
+      };
+    });
     if (
       cashFlowResume[indexToSave].año &&
       cashFlowResume[indexToSave].resultado_anual &&
@@ -204,10 +226,10 @@ export default function CashFlowSettings(props) {
       if (pfID) {
         let tempProductFeature = {
           id: pfID,
-          value: JSON.stringify({flujos_de_caja: cashFlowResumeToUpload}),
+          value: JSON.stringify({ flujos_de_caja: cashFlowResumeToUpload }),
         };
-        console.log(tempProductFeature, 'ya existe')
-        console.log(tempProductFeature, 'tempProductFeature')
+        console.log(tempProductFeature, "ya existe");
+        console.log(tempProductFeature, "tempProductFeature");
         const response = await API.graphql(
           graphqlOperation(updateProductFeature, { input: tempProductFeature })
         );
@@ -215,22 +237,22 @@ export default function CashFlowSettings(props) {
         if (!response.data.updateProductFeature) error = true;
       } else {
         let tempProductFeature = {
-          value: JSON.stringify({flujos_de_caja: cashFlowResumeToUpload}),
+          value: JSON.stringify({ flujos_de_caja: cashFlowResumeToUpload }),
           isToBlockChain: false,
           isOnMainCard: false,
           productID: projectData.projectInfo.id,
           featureID: "GLOBAL_RESUMEN_FLUJO_DE_CAJA",
         };
-        console.log(tempProductFeature, 'no existe')
+        console.log(tempProductFeature, "no existe");
 
         API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
         )
-        .then(response => setPfID(response.data.createProductFeature.id))
-        .catch(err => error = true)
-
-
+          .then((response) => setPfID(response.data.createProductFeature.id))
+          .catch((err) => (error = true));
       }
+
+      await fetchProjectData();
     } else {
       notify({
         msg: "Completa todos los campos antes de guardar",
@@ -257,18 +279,19 @@ export default function CashFlowSettings(props) {
 
     if (pfID) {
       let tempProductFeature = {
-        id:pfID,
-        value: JSON.stringify({flujos_de_caja: tempCashFlowResume}),
+        id: pfID,
+        value: JSON.stringify({ flujos_de_caja: tempCashFlowResume }),
       };
-      console.log(tempProductFeature,'delete tempProductFeature')
+      console.log(tempProductFeature, "delete tempProductFeature");
       const response = await API.graphql(
         graphqlOperation(updateProductFeature, { input: tempProductFeature })
       );
 
       if (!response.data.updateProductFeature) error = true;
-    }{
 
+      await fetchProjectData();
     }
+
     if (!error) {
       notify({
         msg: "Valores borrados exitosamente",
@@ -278,11 +301,11 @@ export default function CashFlowSettings(props) {
   };
 
   const handleAddCashFlow = async () => {
-    let isEditingSomeHistoryData = false
-    if(cashFlowResume.length > 0){
-        isEditingSomeHistoryData = cashFlowResume.some(
-            (tokenHD) => tokenHD.editing === true
-          );
+    let isEditingSomeHistoryData = false;
+    if (cashFlowResume.length > 0) {
+      isEditingSomeHistoryData = cashFlowResume.some(
+        (tokenHD) => tokenHD.editing === true
+      );
     }
     if (!isEditingSomeHistoryData) {
       setCashFlowResume((prevState) => {
@@ -309,22 +332,31 @@ export default function CashFlowSettings(props) {
       <Card className={className}>
         <Card.Header title="Flujo de caja del proyecto" sep={true} />
         <Card.Body>
-            <FormGroup
-                  type="flex"
-                  placeholder="Paste Excel data here..."
-                  inputType="text"
-                  inputSize="md"
-                  label="Excel data"
-                  inputName="Excel"
-                  inputValue={excelData}
-                  disabled={canEdit}
-                  saveBtnDisabled={canEdit}
-                  onChangeInputValue={(e) => handleChangeInputValue(e)}
-                  onClickSaveBtn={() => handlePasteFromExcel()}
-              />
+          <FormGroup
+            type="flex"
+            placeholder="Paste Excel data here..."
+            inputType="text"
+            inputSize="md"
+            label="Excel data"
+            inputName="Excel"
+            inputValue={excelData}
+            disabled={canEdit}
+            saveBtnDisabled={canEdit}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handlePasteFromExcel()}
+          />
           <p className="mb-3">Flujo de caja del proyecto</p>
           <div>
-            <TableEdit  canEdit={canEdit} columns={['año', 'resultado_anual', 'resultado_acumulado']} infoTable={cashFlowResume} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
+            <TableEdit
+              canEdit={canEdit}
+              columns={["año", "resultado_anual", "resultado_acumulado"]}
+              infoTable={cashFlowResume}
+              handleEditValue={handleEditValue}
+              handleChangeInputValue={handleChangeInputValue}
+              handleAddCashFlow={handleAddCashFlow}
+              handleSaveHistoricalData={handleSaveHistoricalData}
+              handleDeleteHistoricalData={handleDeleteHistoricalData}
+            />
           </div>
         </Card.Body>
       </Card>

@@ -3,7 +3,9 @@ import { getProduct } from "../../../utilities/customQueries";
 import { mapProjectData } from "./mappers";
 
 export const fetchProjectDataByProjectID = async (projectId) => {
+  console.log("projectId", projectId);
   if (projectId) {
+    console.log("projectId", projectId);
     try {
       const response = await API.graphql(
         graphqlOperation(getProduct, { id: projectId })
@@ -15,7 +17,7 @@ export const fetchProjectDataByProjectID = async (projectId) => {
       console.error("Error fetching project data:", error);
       return null;
     }
-  } else {
-    return null;
   }
+
+  return null;
 };
