@@ -23,6 +23,7 @@ import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
+import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -265,6 +266,17 @@ export default function ProjectPage() {
                     </Nav.Item>
                   </>
                 )}
+                <Nav.Item>
+                  <Nav.Link
+                    href="#analysis"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("analysis");
+                    }}
+                  >
+                    Análisis
+                  </Nav.Link>
+                </Nav.Item>
               </Nav>
             </div>
             <ProjectDetails visible={activeSection === "details"} />
@@ -274,6 +286,7 @@ export default function ProjectPage() {
             <ProjectSettings
               visible={activeSection === "settings" && (isVerifier || isAdmon)}
             />
+            <ProjectAnalysis visible={activeSection === "analysis"}></ProjectAnalysis>
           </div>
           <ToastContainer></ToastContainer>
         </div>
