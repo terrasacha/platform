@@ -2513,7 +2513,6 @@ export const createScript = /* GraphQL */ `
       pbk
       token_name
       cbor
-      plutus_str
       productID
       product {
         id
@@ -2554,7 +2553,6 @@ export const updateScript = /* GraphQL */ `
       pbk
       token_name
       cbor
-      plutus_str
       productID
       product {
         id
@@ -2595,7 +2593,6 @@ export const deleteScript = /* GraphQL */ `
       pbk
       token_name
       cbor
-      plutus_str
       productID
       product {
         id

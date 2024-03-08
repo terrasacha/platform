@@ -1298,7 +1298,6 @@ export const getScript = /* GraphQL */ `
       pbk
       token_name
       cbor
-      plutus_str
       productID
       product {
         id
@@ -1341,7 +1340,6 @@ export const listScripts = /* GraphQL */ `
         pbk
         token_name
         cbor
-        plutus_str
         productID
         testnetAddr
         MainnetAddr

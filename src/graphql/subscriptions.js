@@ -2381,7 +2381,6 @@ export const onCreateScript = /* GraphQL */ `
       pbk
       token_name
       cbor
-      plutus_str
       productID
       product {
         id
@@ -2419,7 +2418,6 @@ export const onUpdateScript = /* GraphQL */ `
       pbk
       token_name
       cbor
-      plutus_str
       productID
       product {
         id
@@ -2457,7 +2455,6 @@ export const onDeleteScript = /* GraphQL */ `
       pbk
       token_name
       cbor
-      plutus_str
       productID
       product {
         id

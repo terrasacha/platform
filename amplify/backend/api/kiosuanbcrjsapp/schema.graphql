@@ -292,8 +292,7 @@ type Script @model {
   pbk: [String] # List[pkh]
   token_name: String
   cbor: String!
-  plutus_str: String!
-  productID: ID! @index(name: "byProduct")
+  productID: ID @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
   testnetAddr: String!
   MainnetAddr: String!
