@@ -429,6 +429,7 @@ export const getProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenGenesis
       categoryID
       category {
         id
@@ -458,6 +459,10 @@ export const getProduct = /* GraphQL */ `
         nextToken
         __typename
       }
+      scripts {
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -481,6 +486,7 @@ export const listProducts = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -515,6 +521,7 @@ export const getImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -901,6 +908,7 @@ export const getProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1064,6 +1072,7 @@ export const getUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1167,6 +1176,7 @@ export const getTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1244,6 +1254,7 @@ export const getCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1268,6 +1279,76 @@ export const listCompanies = /* GraphQL */ `
         description
         userID
         productID
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getScript = /* GraphQL */ `
+  query GetScript($id: ID!) {
+    getScript(id: $id) {
+      id
+      name
+      script_type
+      script_category
+      pbk
+      token_name
+      project_id
+      cbor
+      plutus_str
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenGenesis
+        categoryID
+        createdAt
+        updatedAt
+        __typename
+      }
+      testnetAddr
+      MainnetAddr
+      Active
+      base_code
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listScripts = /* GraphQL */ `
+  query ListScripts(
+    $filter: ModelScriptFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listScripts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        script_type
+        script_category
+        pbk
+        token_name
+        project_id
+        cbor
+        plutus_str
+        productID
+        testnetAddr
+        MainnetAddr
+        Active
+        base_code
         createdAt
         updatedAt
         __typename

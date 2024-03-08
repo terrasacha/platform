@@ -108,6 +108,7 @@ type Product @model {
   status: String
   timeOnVerification: AWSTimestamp
   projectReadiness: Boolean
+  tokenGenesis: Boolean
   categoryID: ID! @index(name: "byCategory")
   category: Category @belongsTo(fields: ["categoryID"])
   images: [Image] @hasMany(indexName: "byProduct", fields: ["id"])
@@ -116,6 +117,7 @@ type Product @model {
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
+  scripts: [Script] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model {
@@ -164,7 +166,7 @@ type Feature @model {
     @hasMany(indexName: "byFeature", fields: ["id"])
   featureFormulas: [FeatureFormula]
     @hasMany(indexName: "byFeature", fields: ["id"])
-  }
+}
 # Formulas
 type UnitOfMeasure @model {
   id: ID!
@@ -280,4 +282,22 @@ type Company @model {
   user: User @belongsTo(fields: ["userID"])
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
+}
+
+type Script @model {
+  id: ID!
+  name: String!
+  script_type: String! # mintSuanCO2/mintProject/spend/any
+  script_category: String! # NativeScript/PlutusV1/PlutusV2/PlutusV3
+  pbk: [String] # List[pkh]
+  token_name: String
+  project_id: ID
+  cbor: String!
+  plutus_str: String!
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  testnetAddr: String!
+  MainnetAddr: String!
+  Active: Boolean!
+  base_code: AWSURL
 }

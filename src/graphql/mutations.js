@@ -808,6 +808,7 @@ export const createProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenGenesis
       categoryID
       category {
         id
@@ -834,6 +835,10 @@ export const createProduct = /* GraphQL */ `
         __typename
       }
       companies {
+        nextToken
+        __typename
+      }
+      scripts {
         nextToken
         __typename
       }
@@ -858,6 +863,7 @@ export const updateProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenGenesis
       categoryID
       category {
         id
@@ -884,6 +890,10 @@ export const updateProduct = /* GraphQL */ `
         __typename
       }
       companies {
+        nextToken
+        __typename
+      }
+      scripts {
         nextToken
         __typename
       }
@@ -908,6 +918,7 @@ export const deleteProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenGenesis
       categoryID
       category {
         id
@@ -934,6 +945,10 @@ export const deleteProduct = /* GraphQL */ `
         __typename
       }
       companies {
+        nextToken
+        __typename
+      }
+      scripts {
         nextToken
         __typename
       }
@@ -970,6 +985,7 @@ export const createImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1008,6 +1024,7 @@ export const updateImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1046,6 +1063,7 @@ export const deleteImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1704,6 +1722,7 @@ export const createProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1772,6 +1791,7 @@ export const updateProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -1840,6 +1860,7 @@ export const deleteProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2037,6 +2058,7 @@ export const createUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2083,6 +2105,7 @@ export const updateUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2129,6 +2152,7 @@ export const deleteUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2232,6 +2256,7 @@ export const createTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2275,6 +2300,7 @@ export const updateTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2318,6 +2344,7 @@ export const deleteTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2365,6 +2392,7 @@ export const createCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2412,6 +2440,7 @@ export const updateCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
@@ -2459,11 +2488,138 @@ export const deleteCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenGenesis
         categoryID
         createdAt
         updatedAt
         __typename
       }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createScript = /* GraphQL */ `
+  mutation CreateScript(
+    $input: CreateScriptInput!
+    $condition: ModelScriptConditionInput
+  ) {
+    createScript(input: $input, condition: $condition) {
+      id
+      name
+      script_type
+      script_category
+      pbk
+      token_name
+      project_id
+      cbor
+      plutus_str
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenGenesis
+        categoryID
+        createdAt
+        updatedAt
+        __typename
+      }
+      testnetAddr
+      MainnetAddr
+      Active
+      base_code
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateScript = /* GraphQL */ `
+  mutation UpdateScript(
+    $input: UpdateScriptInput!
+    $condition: ModelScriptConditionInput
+  ) {
+    updateScript(input: $input, condition: $condition) {
+      id
+      name
+      script_type
+      script_category
+      pbk
+      token_name
+      project_id
+      cbor
+      plutus_str
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenGenesis
+        categoryID
+        createdAt
+        updatedAt
+        __typename
+      }
+      testnetAddr
+      MainnetAddr
+      Active
+      base_code
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteScript = /* GraphQL */ `
+  mutation DeleteScript(
+    $input: DeleteScriptInput!
+    $condition: ModelScriptConditionInput
+  ) {
+    deleteScript(input: $input, condition: $condition) {
+      id
+      name
+      script_type
+      script_category
+      pbk
+      token_name
+      project_id
+      cbor
+      plutus_str
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenGenesis
+        categoryID
+        createdAt
+        updatedAt
+        __typename
+      }
+      testnetAddr
+      MainnetAddr
+      Active
+      base_code
       createdAt
       updatedAt
       __typename
