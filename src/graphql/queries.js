@@ -1297,7 +1297,6 @@ export const getScript = /* GraphQL */ `
       script_category
       pbk
       token_name
-      project_id
       cbor
       plutus_str
       productID
@@ -1341,7 +1340,6 @@ export const listScripts = /* GraphQL */ `
         script_category
         pbk
         token_name
-        project_id
         cbor
         plutus_str
         productID

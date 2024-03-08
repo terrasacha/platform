@@ -291,7 +291,6 @@ type Script @model {
   script_category: String! # NativeScript/PlutusV1/PlutusV2/PlutusV3
   pbk: [String] # List[pkh]
   token_name: String
-  project_id: ID
   cbor: String!
   plutus_str: String!
   productID: ID! @index(name: "byProduct")
