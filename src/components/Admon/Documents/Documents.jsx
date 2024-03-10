@@ -223,7 +223,7 @@ class Documents extends Component {
                                     'Document not assigned'
                                   )}
                                 </td>
-                                <td>{pf.documents.items.length > 0 ? 'Already uploaded' : <Button variant="primary" size='sm' onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</Button>}</td>
+                                <td>{pf.documents.items.length > 0 ? 'Already uploaded' : <button variant="primary" size='sm' onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</button>}</td>
                                 <td>{pf.documents.items.length > 0 ? pf.documents.items[0].docHash : ''}</td>
                                 <td>{pf.documents.items.length > 0 ? pf.documents.items[0].signed : ''}</td>
                                 <td>{pf.documents.items.length > 0 ? pf.documents.items[0].signedHash : ''}</td>
@@ -246,54 +246,62 @@ class Documents extends Component {
             let aux = { id: 'x' };
             if (this.state.productToShow) aux = this.state.productToShow.id;
             return (
-              <Container className='mt-3'>
-                <Row>
-                  <Col xs={2}>
-                    <h3>Products</h3>
-                    <Container className='mt-5'>
+              <div className="mt-3">
+                <div className="flex">
+                  <div className="w-1/6">
+                    <h3 className="text-xl font-semibold">Products</h3>
+                    <div className="mt-5">
                       {userProductsDocCopy?.map((userProduct) => (
-                        <Card
+                        <div
                           key={userProduct.id}
-                          body
-                          className={userProduct.id === aux ? 'cardContainerSelected' : 'cardContainer'}
-                          style={{ cursor: 'pointer' }}
+                          className={`p-4 border ${
+                            userProduct.id === aux ? 'bg-blue-500 text-white' : 'bg-gray-100'
+                          } cursor-pointer`}
                           onClick={() => this.handleLoadUserProduct(userProduct)}
                         >
-                          {userProduct.product.name}
-                          <ArrowRight />
-                        </Card>
+                          <span className="mr-2">{userProduct.product.name}</span>
+                          <ArrowRight className="inline" />
+                        </div>
                       ))}
-                    </Container>
-                  </Col>
-                  <Col xs={10}>
-                    <h3>Products Documentation</h3>
+                    </div>
+                  </div>
+                  <div className="w-5/6">
+                    <h3 className="text-xl font-semibold">Products Documentation</h3>
                     {!productToShow ? '' : (
-                      <Card>
-                        <Card.Header as="h5">{productToShow.product.name}</Card.Header>
-                        <Card.Body>
-                          {productToShow.product.productFeatures.items.map((pf) => {
-                            if (pf.documents.items.length > 0) {
-                              return null;
-                            }
-                            return (
-                              <Card key={pf.id} className='mb-2'>
-                                <Card.Header>{pf.feature.featureTypeID.replace('_', ' ')}</Card.Header>
-                                <Card.Body>
-                                  <Card.Title>{pf.feature.name}</Card.Title>
-                                  <Card.Text>{pf.feature.description}</Card.Text>
-                                  <Button variant="primary" onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>
-                                    Upload Document
-                                  </Button>
-                                </Card.Body>
-                              </Card>
-                            );
-                          })}
-                        </Card.Body>
-                      </Card>
+                      <div className="mt-3">
+                        <div className="border p-4">
+                          <h5 className="text-xl font-semibold">{productToShow.product.name}</h5>
+                          <div className="mt-3">
+                            {productToShow.product.productFeatures.items.map((pf) => {
+                              if (pf.documents.items.length > 0) {
+                                return null;
+                              }
+                              return (
+                                <div key={pf.id} className="mb-4 border p-4">
+                                  <h6 className="text-lg font-semibold mb-2">{pf.feature.featureTypeID.replace('_', ' ')}</h6>
+                                  <div>
+                                    <h4 className="text-xl font-semibold">{pf.feature.name}</h4>
+                                    <p className="mb-2">{pf.feature.description}</p>
+                                    <button
+                                      className="bg-blue-500 text-white px-4 py-2 rounded"
+                                      onClick={() =>
+                                        this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })
+                                      }
+                                    >
+                                      Upload Document
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
                     )}
-                  </Col>
-                </Row>
-              </Container>
+                  </div>
+                </div>
+              </div>
+
             );
           }
         };
@@ -316,9 +324,9 @@ class Documents extends Component {
                   </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                  <Button disabled={this.state.loadingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>
+                  <button disabled={this.state.loadingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>
                     {this.state.loadingDocument ? 'Uploading' : 'Upload Document'}
-                  </Button>
+                  </button>
                 </Modal.Footer>
               </Modal>
             );

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 // Auth
 import { Auth } from 'aws-amplify';
 // Bootstrap
-import  Alert  from '../ui/Alert';
 import  Col  from '../ui/Col';
 import  Container  from '../ui/Container';
 import  Row  from '../ui/Row';
@@ -21,7 +20,6 @@ import Validators from './Validators/Validators';
 import Products from './Products/Products';
 import Results from './Results/Results';
 import UOM from './UOM/UOM';
-import HeaderNavbar from '../common/TailwindHeaderNarvbar';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
@@ -447,13 +445,12 @@ export default class Admon extends Component {
 
                 <Row>
                     <Col>
-                        <HeaderNavbar 
+                       {/* <HeaderNavbar 
                             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                             handleSignOut={this.handleSignOut}
                             actualUser={this.state.actualUser}
                             isActualUserLogged={this.state.isActualUserLogged}
-        ></HeaderNavbar>
-                    <TailwindHeaderNavbar></TailwindHeaderNavbar>
+        ></HeaderNavbar>*/}
                     </Col>
                 </Row>
 
@@ -515,9 +512,10 @@ export default class Admon extends Component {
                         handleCUUser={this.handleCUUser}
                         />}
                     {isShowNotAuthorize && 
-                        <Alert key="key_warning" variant="warning">
-                        Perfil no autorizado
-                        </Alert>}
+                       <div key="key_warning" className="bg-yellow-500 text-black p-4 mb-4 rounded">
+                       Perfil no autorizado
+                     </div>
+                     }
                     {isShowAProducts && <UserProducts />}
                     {isShowAPF && <AssignPF />}
                     {isShowValidators && <Validators />}

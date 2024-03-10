@@ -170,7 +170,6 @@ export default function ProjectDetails({ visible }) {
                       </p>
                       <ul>
                         <li className="font-bold flex items-center">
-                          <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.validationsComplete ? (
                               <CheckIcon className="text-success" />
@@ -178,10 +177,8 @@ export default function ProjectDetails({ visible }) {
                               <HourGlassIcon className="text-danger" />
                             )}
                             ) Validación de documentos
-                          </p>
                         </li>
                         <li className="font-bold flex items-center">
-                          <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.technicalInfo ? (
                               <CheckIcon className="text-success" />
@@ -189,10 +186,8 @@ export default function ProjectDetails({ visible }) {
                               <HourGlassIcon className="text-danger" />
                             )}
                             ) Oficialización de información Técnica
-                          </p>
                         </li>
                         <li className="font-bold flex items-center">
-                          <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.financialInfo ? (
                               <CheckIcon className="text-success" />
@@ -200,18 +195,15 @@ export default function ProjectDetails({ visible }) {
                               <HourGlassIcon className="text-danger" />
                             )}
                             ) Oficialización de información Financiera
-                          </p>
                         </li>
                       </ul>
                     </div>
                   )}
                 </div>
                 <hr className="my-2" />
-                <p className="mb-0">
                   {progressObj.progressValue === 100
                     ? "Este proyecto cumple la totalidad de los requerimientos"
                     : "Este proyecto aún no cumple la totalidad de requerimientos para su publicación"}
-                </p>
               </div>
             </div>
           )}

@@ -334,7 +334,7 @@ export default class ListProducts extends Component {
                 <tr key={product.id}>
                   <td>
                     {product.unverified ? (
-                      <Button
+                      <button
                         variant={"danger"}
                         size="sm"
                         onClick={(e) =>
@@ -345,7 +345,7 @@ export default class ListProducts extends Component {
                         }
                       >
                         Delete
-                      </Button>
+                      </button>
                     ) : (
                       ""
                     )}
@@ -361,11 +361,11 @@ export default class ListProducts extends Component {
                   </td>
                   <td>{product.category ? product.category.name : ""}</td>
                   <td>
-                    {/* <Button 
+                    {/* <button 
                                             variant={product.status !== 'disabled'? 'danger': 'success'}
                                             size='md' 
                                             onClick={(e) => this.handleUpdateProductIsActive(product)}
-                                        >{product.status !== 'disabled'? 'Disable': 'Activate'}</Button> */}
+                                        >{product.status !== 'disabled'? 'Disable': 'Activate'}</button> */}
                     <Form.Group>
                       <Form.Select
                         type="text"
@@ -392,7 +392,7 @@ export default class ListProducts extends Component {
                     </Form.Group>
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant="outline-primary"
                       size="sm"
                       onClick={(e) =>
@@ -404,11 +404,11 @@ export default class ListProducts extends Component {
                       }
                     >
                       Description
-                    </Button>
+                    </button>
                     {/* {product.description} */}
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant="outline-primary"
                       size="sm"
                       onClick={(e) =>
@@ -420,10 +420,10 @@ export default class ListProducts extends Component {
                       }
                     >
                       Images
-                    </Button>
+                    </button>
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant="outline-primary"
                       size="sm"
                       onClick={(e) =>
@@ -435,10 +435,10 @@ export default class ListProducts extends Component {
                       }
                     >
                       Product Features
-                    </Button>
+                    </button>
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant="outline-primary"
                       size="sm"
                       onClick={(e) =>
@@ -450,10 +450,10 @@ export default class ListProducts extends Component {
                       }
                     >
                       Verifications
-                    </Button>
+                    </button>
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant={
                         this.handleGetTechnicalStatus(product) ===
                         "Habilitar cambios"
@@ -466,10 +466,10 @@ export default class ListProducts extends Component {
                       }
                     >
                       {this.handleGetTechnicalStatus(product)}
-                    </Button>
+                    </button>
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant={
                         this.handleGetFinancialStatus(product) ===
                         "Habilitar cambios"
@@ -482,19 +482,19 @@ export default class ListProducts extends Component {
                       }
                     >
                       {this.handleGetFinancialStatus(product)}
-                    </Button>
+                    </button>
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant={product.isActive ? "danger" : "success"}
                       size="sm"
                       onClick={(e) => this.handleUpdateProductIsActive(product)}
                     >
                       {product.isActive ? "Disable" : "Activate"}
-                    </Button>
+                    </button>
                   </td>
                   <td>
-                    <Button
+                    <button
                       variant="primary"
                       size="sm"
                       disabled={product.status === "on_block_chain"}
@@ -503,18 +503,18 @@ export default class ListProducts extends Component {
                       {product.status === "on_block_chain"
                         ? "Can not Edit"
                         : "Edit"}
-                    </Button>
+                    </button>
                   </td>
                   <td>
                     {product.toCertified ? (
                       product.status !== "certified" ? (
-                        <Button
+                        <button
                           variant="outline-success"
                           size="sm"
                           onClick={() => this.certifyProduct(product)}
                         >
                           Certificar
-                        </Button>
+                        </button>
                       ) : (
                         "Certificado"
                       )
@@ -577,9 +577,9 @@ export default class ListProducts extends Component {
               </Table>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={(e) => this.handleHideModalProductImages()}>
+              <button onClick={(e) => this.handleHideModalProductImages()}>
                 Close
-              </Button>
+              </button>
             </Modal.Footer>
           </Modal>
         );
@@ -649,7 +649,7 @@ export default class ListProducts extends Component {
                         <td>{pfeature.isToBlockChain ? "YES" : "NO"}</td>
                         <td>{pfeature.isVerifable ? "YES" : "NO"}</td>
                         <td>
-                          <Button
+                          <button
                             variant="danger"
                             size="sm"
                             onClick={(e) =>
@@ -660,7 +660,7 @@ export default class ListProducts extends Component {
                             }
                           >
                             Delete
-                          </Button>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -668,9 +668,9 @@ export default class ListProducts extends Component {
                 </Table>
               </Modal.Body>
               <Modal.Footer>
-                <Button onClick={(e) => this.handleHideModalProductFeatures(e)}>
+                <button onClick={(e) => this.handleHideModalProductFeatures(e)}>
                   Close
-                </Button>
+                </button>
               </Modal.Footer>
             </Modal>
           );
@@ -696,11 +696,11 @@ export default class ListProducts extends Component {
               <p>{selectedProductToShow.description}</p>
             </Modal.Body>
             <Modal.Footer>
-              <Button
+              <button
                 onClick={(e) => this.handleHideModalProductDescription(e)}
               >
                 Close
-              </Button>
+              </button>
             </Modal.Footer>
           </Modal>
         );
@@ -720,20 +720,20 @@ export default class ListProducts extends Component {
               {`¿Estás seguro que quieres borrar el proyectoa?`}
             </Modal.Body>
             <Modal.Footer>
-              <Button
+              <button
                 variant="secondary"
                 onClick={() => this.setState({ showModalDeleteProduct: false })}
               >
                 Cancel
-              </Button>
-              <Button
+              </button>
+              <button
                 variant="danger"
                 onClick={() =>
                   deleteAllInfoProduct(this.state.selectedProductToShow)
                 }
               >
                 Delete
-              </Button>
+              </button>
             </Modal.Footer>
           </Modal>
         );
@@ -795,13 +795,13 @@ export default class ListProducts extends Component {
                         <td>{pfeature.feature.name}</td>
                         <td>{pfeature.feature.isVerifable ? "YES" : "NO"}</td>
                         <td>
-                          <Button
+                          <button
                             variant="outline-primary"
                             size="sm"
                             onClick={() => this.handleDownload(pfeature)}
                           >
                             Download Document
-                          </Button>
+                          </button>
                         </td>
                         <td>
                           <Form.Group>
@@ -830,11 +830,11 @@ export default class ListProducts extends Component {
                 </Table>
               </Modal.Body>
               <Modal.Footer>
-                <Button
+                <button
                   onClick={(e) => this.handleHideModalProductVerification(e)}
                 >
                   Close
-                </Button>
+                </button>
               </Modal.Footer>
             </Modal>
           );
@@ -899,15 +899,15 @@ export default class ListProducts extends Component {
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-              <Button
+              <button
                 size="sm"
                 onClick={() =>
                   this.handleHideModalDeleteProductFeatureConfirmation()
                 }
               >
                 Cancelar
-              </Button>
-              <Button
+              </button>
+              <button
                 variant="danger"
                 size="sm"
                 disabled={
@@ -916,7 +916,7 @@ export default class ListProducts extends Component {
                 onClick={(e) => this.handleDeleteProductFeature(e)}
               >
                 Eliminar
-              </Button>
+              </button>
             </Modal.Footer>
           </Modal>
         );

@@ -129,11 +129,13 @@ export default function EcosystemInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Aspectos generales del ecosistema" sep={true} />
-      <Card.Body>
-        <div className="row row-cols-1 row-cols-md-2">
-          <div className="col">
+    <div className={className}>
+      <div className="border-b border-gray-300">
+        <h2 className="text-xl font-semibold mb-4">Aspectos generales del ecosistema</h2>
+      </div>
+      <div className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               label="¿Existen Nacimientos de agua?"
@@ -148,7 +150,7 @@ export default function EcosystemInfoCard(props) {
             />
           </div>
           {formData.F_nacimiento_agua === "yes" && (
-            <div className="col">
+            <div className="mb-4">
               <FormGroup
                 disabled={!autorizedUser}
                 inputType="text"
@@ -159,7 +161,7 @@ export default function EcosystemInfoCard(props) {
               />
             </div>
           )}
-          <div className="col">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               label="¿Existen concesiones de agua?"
@@ -174,7 +176,7 @@ export default function EcosystemInfoCard(props) {
             />
           </div>
           {formData.F_agua_concede === "yes" && (
-            <div className="col">
+            <div className="mb-4">
               <FormGroup
                 disabled={!autorizedUser}
                 inputType="text"
@@ -185,7 +187,7 @@ export default function EcosystemInfoCard(props) {
               />
             </div>
           )}
-          <div className="col">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               inputType="textarea"
@@ -195,7 +197,7 @@ export default function EcosystemInfoCard(props) {
               onChangeInputValue={(e) => handleChangeInputValue(e)}
             />
           </div>
-          <div className="col">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               inputType="textarea"
@@ -205,7 +207,7 @@ export default function EcosystemInfoCard(props) {
               onChangeInputValue={(e) => handleChangeInputValue(e)}
             />
           </div>
-          <div className="col">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               inputType="textarea"
@@ -215,17 +217,17 @@ export default function EcosystemInfoCard(props) {
               onChangeInputValue={(e) => handleChangeInputValue(e)}
             />
           </div>
-          <div className="col">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               inputType="textarea"
-              label="¿Cuenta con caracterización de especies de mamiferos?"
+              label="¿Cuenta con caracterización de especies de mamíferos?"
               inputValue={formData.F_especies_mamiferos}
               inputName="F_especies_mamiferos"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
             />
           </div>
-          <div className="col">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               inputType="textarea"
@@ -235,7 +237,7 @@ export default function EcosystemInfoCard(props) {
               onChangeInputValue={(e) => handleChangeInputValue(e)}
             />
           </div>
-          <div className="col">
+          <div className="mb-4">
             <FormGroup
               disabled={!autorizedUser}
               inputType="textarea"
@@ -247,13 +249,14 @@ export default function EcosystemInfoCard(props) {
           </div>
         </div>
         {autorizedUser && (
-          <div className="d-flex justify-content-center">
-            <Button onClick={() => handleSaveBtn()} variant="success">
+          <div className="flex justify-center">
+            <button onClick={() => handleSaveBtn()} variant="success">
               Guardar
-            </Button>
+            </button>
           </div>
         )}
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
+
   );
 }

@@ -877,14 +877,14 @@ class Products extends Component {
               </Alert>
             </Modal.Body>
             <Modal.Footer>
-              <Button
+              <button
                 variant="danger"
                 size="md"
                 onClick={(e) => this.handleDeleteProduct(e)}
               >
                 YES
-              </Button>
-              <Button
+              </button>
+              <button
                 variant="secondary"
                 size="md"
                 onClick={(e) =>
@@ -892,7 +892,7 @@ class Products extends Component {
                 }
               >
                 NO
-              </Button>
+              </button>
             </Modal.Footer>
           </Modal>
         );
@@ -911,178 +911,148 @@ class Products extends Component {
 
     // RENDER
     return (
-      <Container>
-        {renderAreYouSureDeleteProduct()}
-        <Form>
-          <Card>
-            <Card.Body>
-              <Card.Title>PROJECT PROPERTIES on {CRUDButtonName}</Card.Title>
-              <Row className="mb-2">
-                <Form.Group as={Col} controlId="formGridCategorySelectList">
-                  <Form.Label>Category</Form.Label>
-                  <Select
-                    options={this.state.categorySelectList}
-                    onChange={this.handleOnSelectCategory}
-                  />
-                  <Alert key="idx_key_1" variant="success">
-                    {selectedCategory === null
-                      ? "Not selected"
-                      : selectedCategory.name}
-                  </Alert>
-                </Form.Group>
+      <div>
+  {renderAreYouSureDeleteProduct()}
+      <form>
+        <div className="bg-white border p-4 rounded-md mb-4">
+          <h2 className="text-xl font-semibold mb-4">PROJECT PROPERTIES on {CRUDButtonName}</h2>
+          <div className="mb-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="formGridCategorySelectList" className="block font-semibold mb-1">Category</label>
+              <Select
+                options={this.state.categorySelectList}
+                onChange={this.handleOnSelectCategory}
+              />
+              <p className="text-green-500 mt-1">
+                {selectedCategory === null ? "Not selected" : selectedCategory.name}
+              </p>
+            </div>
+            <div>
+              <label htmlFor="formGridCRUD_ProductName" className="block font-semibold mb-1">Name</label>
+              <input
+                type="text"
+                placeholder="Ex. Proyecto B"
+                name="CRUD_ProductName"
+                value={CRUD_Product.name}
+                onChange={(e) => this.handleOnChangeInputForm(e)}
+                className="w-full border p-2"
+              />
+            </div>
+          </div>
 
-                <Form.Group as={Col} controlId="formGridCRUD_ProductName">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Ex. Proyecto B"
-                    name="CRUD_ProductName"
-                    value={CRUD_Product.name}
-                    onChange={(e) => this.handleOnChangeInputForm(e)}
-                  />
-                </Form.Group>
-              </Row>
+          <div className="mb-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="formGridCRUD_ProductDescription" className="block font-semibold mb-1">Description</label>
+              <input
+                type="text"
+                placeholder="Ex. Amazing Project B"
+                name="CRUD_ProductDescription"
+                value={CRUD_Product.description}
+                onChange={(e) => this.handleOnChangeInputForm(e)}
+                className="w-full border p-2"
+              />
+            </div>
+            <div>
+              <label htmlFor="formGridCRUD_ProductStatus" className="block font-semibold mb-1">Status</label>
+              <select
+                name="CRUD_ProductStatus"
+                value={CRUD_Product.status}
+                onChange={(e) => this.handleOnChangeInputForm(e)}
+                className="w-full border p-2"
+              >
+                {["draft", "verified", "in_blockchain", "in_equilibrium"].map((op) => (
+                  <option value={op} key={op}>{op}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="formGridCRUD_ProductName" className="block font-semibold mb-1">Is Active</label>
+              <br />
+              <button
+                className={`bg-${CRUD_Product.isActive ? 'green' : 'red'}-500 text-white px-4 py-2 rounded`}
+                onClick={(e) => this.handleOnChangeInputForm(e, "productIsActive")}
+              >
+                {CRUD_Product.isActive ? "YES" : "NO"}
+              </button>
+            </div>
+            <div>
+              <label htmlFor="formGridCRUD_ProductOrder" className="block font-semibold mb-1">Order</label>
+              <input
+                type="number"
+                placeholder="Ex. 1"
+                name="CRUD_ProductOrder"
+                value={CRUD_Product.order}
+                onChange={(e) => this.handleOnChangeInputForm(e)}
+                className="w-full border p-2"
+              />
+            </div>
+          </div>
+        </div>
 
-              <Row className="mb-3">
-                <Form.Group
-                  as={Col}
-                  controlId="formGridCRUD_ProductDescription"
-                >
-                  <Form.Label>Description</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Ex. Amazing Project B"
-                    name="CRUD_ProductDescription"
-                    value={CRUD_Product.description}
-                    onChange={(e) => this.handleOnChangeInputForm(e)}
-                  />
-                </Form.Group>
-                <Form.Group as={Col} controlId="formGridCRUD_ProductStatus">
-                  <Form.Label>Status</Form.Label>
-                  <Form.Select
-                    type="text"
-                    name="CRUD_ProductStatus"
-                    value={CRUD_Product.status}
-                    onChange={(e) => this.handleOnChangeInputForm(e)}
-                  >
-                    {[
-                      "draft",
-                      "verified",
-                      "in_blockchain",
-                      "in_equilibrium",
-                    ].map((op) => (
-                      <option value={op} key={op}>
-                        {op}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
+        <div className="bg-white border p-4 rounded-md mb-4">
+          <h2 className="text-xl font-semibold mb-4">PROJECT Features</h2>
+          <div className="mb-1 grid grid-cols-1">
+            <CRUDProductFeatures
+              CRUD_Product={this.state.CRUD_Product}
+              listPF={this.state.listPF}
+              featuresSelectList={this.state.featuresSelectList}
+              selectedFeature={this.state.selectedFeature}
+              valueProductFeature={this.state.valueProductFeature}
+              handleAddNewFeatureToActualProduct={this.handleAddNewFeatureToActualProduct}
+              handleOnSelectFeature={this.handleOnSelectFeature}
+              handleOnChangeInputFormProductFeatures={this.handleOnChangeInputFormProductFeatures}
+            />
+          </div>
+        </div>
 
-                <Form.Group as={Col} controlId="formGridCRUD_ProductName">
-                  <Form.Label>Is Active</Form.Label>
-                  <br></br>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={(e) =>
-                      this.handleOnChangeInputForm(e, "productIsActive")
-                    }
-                  >
-                    {CRUD_Product.isActive ? "YES" : "NO"}
-                  </Button>
-                </Form.Group>
-
-                <Form.Group as={Col} controlId="formGridCRUD_ProductOrder">
-                  <Form.Label>Order</Form.Label>
-                  <Form.Control
-                    type="number"
-                    placeholder="Ex. 1"
-                    name="CRUD_ProductOrder"
-                    value={CRUD_Product.order}
-                    onChange={(e) => this.handleOnChangeInputForm(e)}
-                  />
-                </Form.Group>
-              </Row>
-            </Card.Body>
-          </Card>
-
-          <Card style={{ paddingTop: 20 }}>
-            <Card.Body>
-              <Card.Title>PROJECT Features</Card.Title>
-              <Row className="mb-1">
-                <CRUDProductFeatures
-                  CRUD_Product={this.state.CRUD_Product}
-                  listPF={this.state.listPF}
-                  featuresSelectList={this.state.featuresSelectList}
-                  selectedFeature={this.state.selectedFeature}
-                  valueProductFeature={this.state.valueProductFeature}
-                  handleAddNewFeatureToActualProduct={
-                    this.handleAddNewFeatureToActualProduct
-                  }
-                  handleOnSelectFeature={this.handleOnSelectFeature}
-                  handleOnChangeInputFormProductFeatures={
-                    this.handleOnChangeInputFormProductFeatures
-                  }
-                />
-
-                {/* <Image src={productImageURLToDisplay} rounded style={{width: 200, height: 'auto'}} /> */}
-              </Row>
-            </Card.Body>
-          </Card>
-          <Card style={{ paddingTop: 20 }}>
-            <Card.Body>
-              <Card.Title>PROJECT Images</Card.Title>
-              <Row className="mb-1">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={(e) => this.handleAddNewImageToActualProduct(e)}
-                >
-                  ADD IMAGE TO ACTUAL PROJECT
-                </Button>
-                <CRUDProductImages
-                  CRUD_Product={CRUD_Product}
-                  isImageUploadingFile={this.state.isImageUploadingFile}
-                  urlS3Image={urlS3Image}
-                  handleChangeProductImageProperty={
-                    this.handleChangeProductImageProperty
-                  }
-                />
-              </Row>
-            </Card.Body>
-          </Card>
-
-          <Row className="mb-1">
-            <Button
-              variant="primary"
-              onClick={this.handleCRUDProduct}
-              disabled={this.state.isCRUDButtonDisable}
+        <div className="bg-white border p-4 rounded-md mb-4">
+          <h2 className="text-xl font-semibold mb-4">PROJECT Images</h2>
+          <div className="mb-1 grid grid-cols-1">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+              onClick={(e) => this.handleAddNewImageToActualProduct(e)}
             >
-              {CRUDButtonName}
-            </Button>
-          </Row>
-        </Form>
-        {renderColoredBreakLine("red")}
-        <br></br>
-        <ListProducts
-          products={this.state.products}
-          listPF={this.state.listPF}
-          urlS3Image={urlS3Image}
-          handleShowAreYouSureDeleteProduct={
-            this.handleShowAreYouSureDeleteProduct
-          }
-          handleLoadEditProduct={this.handleLoadEditProduct}
-          handleDeleteFeatureProduct={this.handleDeleteFeatureProduct}
-          handleDeleteImageProduct={this.handleDeleteImageProduct}
-          handleUpdateDocumentStatus={this.handleUpdateDocumentStatus}
-          handleUpdateProductIsActive={this.handleUpdateProductIsActive}
-          handleUpdateProductStatus={this.handleUpdateProductStatus}
-          handleUpdateProductTechnical={this.handleUpdateProductTechnical}
-          handleUpdateProductFinancial={this.handleUpdateProductFinancial}
-          handleGetFinancialStatus={this.handleGetFinancialStatus}
-          handleGetTechnicalStatus={this.handleGetTechnicalStatus}
-        />
-      </Container>
+              ADD IMAGE TO ACTUAL PROJECT
+            </button>
+            <CRUDProductImages
+              CRUD_Product={CRUD_Product}
+              isImageUploadingFile={this.state.isImageUploadingFile}
+              urlS3Image={urlS3Image}
+              handleChangeProductImageProperty={this.handleChangeProductImageProperty}
+            />
+          </div>
+        </div>
+
+        <div className="mb-1">
+          <button
+            className={`bg-blue-500 text-white px-4 py-2 rounded ${this.state.isCRUDButtonDisable ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={this.handleCRUDProduct}
+            disabled={this.state.isCRUDButtonDisable}
+          >
+            {CRUDButtonName}
+          </button>
+        </div>
+      </form>
+
+      {renderColoredBreakLine("red")}
+      <br />
+      <ListProducts
+        products={this.state.products}
+        listPF={this.state.listPF}
+        urlS3Image={urlS3Image}
+        handleShowAreYouSureDeleteProduct={this.handleShowAreYouSureDeleteProduct}
+        handleLoadEditProduct={this.handleLoadEditProduct}
+        handleDeleteFeatureProduct={this.handleDeleteFeatureProduct}
+        handleDeleteImageProduct={this.handleDeleteImageProduct}
+        handleUpdateDocumentStatus={this.handleUpdateDocumentStatus}
+        handleUpdateProductIsActive={this.handleUpdateProductIsActive}
+        handleUpdateProductStatus={this.handleUpdateProductStatus}
+        handleUpdateProductTechnical={this.handleUpdateProductTechnical}
+        handleUpdateProductFinancial={this.handleUpdateProductFinancial}
+        handleGetFinancialStatus={this.handleGetFinancialStatus}
+        handleGetTechnicalStatus={this.handleGetTechnicalStatus}
+      />
+    </div>
     );
   }
 }

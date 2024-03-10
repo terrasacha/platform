@@ -124,48 +124,50 @@ export default function UseRestrictionsInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Limitaciones de uso de suelo" sep={true} />
-      <Card.Body>
-        <div className="row row-cols-1">
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              type={autorizedUser && "flex"}
-              inputType="textarea"
-              label="Restricción de uso por encontrarse inmerso en áreas de protección declaradas como parques, zonas de reserva, otros"
-              inputName="projectRestrictionsDesc"
-              inputValue={formData.projectRestrictionsDesc}
-              saveBtnDisabled={
-                projectData.projectRestrictions?.desc ===
-                formData.projectRestrictionsDesc
-                  ? true
-                  : false
-              }
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-              onClickSaveBtn={() => handleSaveBtn("projectRestrictionsDesc")}
-            />
-          </div>
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              type={autorizedUser && "flex"}
-              inputType="textarea"
-              label="Otros limitantes"
-              inputName="projectRestrictionsOther"
-              inputValue={formData.projectRestrictionsOther}
-              saveBtnDisabled={
-                projectData.projectRestrictions?.other ===
-                formData.projectRestrictionsOther
-                  ? true
-                  : false
-              }
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-              onClickSaveBtn={() => handleSaveBtn("projectRestrictionsOther")}
-            />
-          </div>
-        </div>
-      </Card.Body>
-    </Card>
+    <div className={className}>
+  <div className="border-b border-gray-300">
+    <h2 className="text-xl font-semibold mb-4">Limitaciones de uso de suelo</h2>
+  </div>
+  <div className="p-6">
+    <div className="grid grid-cols-1">
+      <div className="col">
+        <FormGroup
+          disabled={!autorizedUser}
+          type={autorizedUser && "flex"}
+          inputType="textarea"
+          label="Restricción de uso por encontrarse inmerso en áreas de protección declaradas como parques, zonas de reserva, otros"
+          inputName="projectRestrictionsDesc"
+          inputValue={formData.projectRestrictionsDesc}
+          saveBtnDisabled={
+            projectData.projectRestrictions?.desc ===
+            formData.projectRestrictionsDesc
+              ? true
+              : false
+          }
+          onChangeInputValue={(e) => handleChangeInputValue(e)}
+          onClickSaveBtn={() => handleSaveBtn("projectRestrictionsDesc")}
+        />
+      </div>
+      <div className="col">
+        <FormGroup
+          disabled={!autorizedUser}
+          type={autorizedUser && "flex"}
+          inputType="textarea"
+          label="Otros limitantes"
+          inputName="projectRestrictionsOther"
+          inputValue={formData.projectRestrictionsOther}
+          saveBtnDisabled={
+            projectData.projectRestrictions?.other ===
+            formData.projectRestrictionsOther
+              ? true
+              : false
+          }
+          onChangeInputValue={(e) => handleChangeInputValue(e)}
+          onClickSaveBtn={() => handleSaveBtn("projectRestrictionsOther")}
+        />
+      </div>
+    </div>
+  </div>
+</div>
   );
 }

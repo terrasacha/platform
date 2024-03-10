@@ -260,9 +260,9 @@ componentWillUnmount() {
                         {user.role ? (
                           user.role
                         ) : (
-                          <Button size='sm' onClick={(e) => this.assignRole(user)}>
+                          <button size='sm' onClick={(e) => this.assignRole(user)}>
                             Assign role on DB
-                          </Button>
+                          </button>
                         )}
                       </td>
                     </tr>
@@ -371,14 +371,14 @@ componentWillUnmount() {
                 </Row>
 
                 <Row className='mb-1'>
-                  <Button
+                  <button
                     variant='primary'
                     size='sm'
                     disabled={userSelected === null || roleSelected === '' ? true : false}
                     onClick={() => this.handleAssignRole()}
                   >
                     Assign Role
-                  </Button>
+                  </button>
                 </Row>
               </Form>
             </Modal.Body>
@@ -437,14 +437,14 @@ componentWillUnmount() {
               </Row>
 
               <Row className='mb-1'>
-                <Button
+                <button
                   variant='primary'
                   size='sm'
                   disabled={userSelected === null || productSelected === null ? true : false}
                   onClick={() => this.handleAssignProduct()}
                 >
                   AssignProduct
-                </Button>
+                </button>
               </Row>
             </Form>
           </Container>

@@ -136,12 +136,12 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
                                         {featuresType.description}
                                     </td>
                                     <td>
-                                        <Button 
+                                        <button 
                                             variant='primary'
                                             size='sm' 
                                              
                                             onClick={(e) => this.handleLoadEditFeatureType(featuresType, e)}
-                                        >Editar</Button>
+                                        >Editar</button>
                                     </td>
                                 </tr>
                             ))}
@@ -179,12 +179,12 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
                         </Row>
 
                         <Row className='mb-1'>
-                            <Button
+                            <button
                             variant='primary'
                             size='sm'
                             onClick={this.handleCRUDFeatureType}
                             disabled={this.state.isCRUDButtonDisable}
-                            >{CRUDButtonName}</Button>
+                            >{CRUDButtonName}</button>
                         </Row>
                     </Form>
                 </Container>

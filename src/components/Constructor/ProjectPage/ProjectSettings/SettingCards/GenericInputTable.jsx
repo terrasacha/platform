@@ -192,15 +192,28 @@ export default function GenericInputTable(props) {
 
   return (
     <>
-      <Card className={className}>
-        <Card.Header title={title} sep={true} />
-        <Card.Body>
-          <p className="mb-3">{title}</p>
-          <div>
-            <TableEdit canEdit={canEdit} conceptOptions={conceptOptions} columns={['CONCEPTO', 'CANTIDAD', 'UNIDAD']} infoTable={revenuesByProduct} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
-          </div>
-        </Card.Body>
-      </Card>
+    <div className={className}>
+  <div className="border-b mb-4">
+    <h5 className="text-xl font-semibold">{title}</h5>
+  </div>
+  <div className="text-center">
+    <p className="mb-3">{title}</p>
+    <div>
+      <TableEdit
+        canEdit={canEdit}
+        conceptOptions={conceptOptions}
+        columns={['CONCEPTO', 'CANTIDAD', 'UNIDAD']}
+        infoTable={revenuesByProduct}
+        handleEditValue={handleEditValue}
+        handleChangeInputValue={handleChangeInputValue}
+        handleAddCashFlow={handleAddCashFlow}
+        handleSaveHistoricalData={handleSaveHistoricalData}
+        handleDeleteHistoricalData={handleDeleteHistoricalData}
+      />
+    </div>
+  </div>
+</div>
+
     </>
   )
 }

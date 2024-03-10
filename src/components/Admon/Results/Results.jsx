@@ -381,9 +381,9 @@ class Results extends Component {
         return (
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px' }}>
             <h6>Check if ProductFeatures of {this.state.selectedProductName} match with the variables on the equation</h6>
-            <Button variant='primary' size='sm' onClick={(e) => this.checkIfVariablesMatchWithPF()}>
+            <button variant='primary' size='sm' onClick={(e) => this.checkIfVariablesMatchWithPF()}>
               Check
-            </Button>
+            </button>
           </div>
         );
       }
@@ -394,9 +394,9 @@ class Results extends Component {
         return (
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '15px' }}>
             <h6>The variables exist as Features of this Product. You can calculate </h6>
-            <Button variant='primary' size='sm' onClick={(e) => this.resolveFormula()}>
+            <button variant='primary' size='sm' onClick={(e) => this.resolveFormula()}>
               Calculate
-            </Button>
+            </button>
           </div>
         );
       }
@@ -411,9 +411,9 @@ class Results extends Component {
         return (
           <>
             <h5>The Result is: {this.state.result}</h5>
-            <Button variant='primary' size='sm' onClick={(e) => this.confirmSave()}>
+            <button variant='primary' size='sm' onClick={(e) => this.confirmSave()}>
               Check Data
-            </Button>
+            </button>
           </>
         );
       }
@@ -467,14 +467,14 @@ class Results extends Component {
                 </select>
               </Col>
             </Row>
-            <Button
+            <button
               variant='primary'
               size='sm'
               disabled={this.state.varID === ''}
               onClick={(e) => this.saveResult()}
             >
               Save
-            </Button>
+            </button>
           </>
         );
       }
@@ -578,13 +578,13 @@ class Results extends Component {
                   <td>{PFR.result.value}</td>
                   <td>{PFR.result.formula.equation}</td>
                   <td>
-                    <Button
+                    <button
                       variant={PFR.isActive ? 'secondary' : 'success'}
                       size='sm'
                       onClick={(e) => this.handleActiveResult(PFR.productFeatureID, PFR.id)}
                     >
                       {PFR.isActive ? 'Assigned' : 'Assign'}
-                    </Button>
+                    </button>
                   </td>
                 </tr>
               ))}

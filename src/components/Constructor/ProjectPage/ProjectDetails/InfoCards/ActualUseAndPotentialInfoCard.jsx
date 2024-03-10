@@ -185,11 +185,12 @@ export default function ActualUseAndPotentialInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Uso actual y potencial" sep={true} />
-      <Card.Body>
-        <div className="row row-cols-1 row-cols-md-2">
-          <div className="col">
+    <div className={className}>
+    <div className="space-y-4">
+      <div className="border-b border-gray-200 pb-4">
+        <h2 className="text-2xl font-bold">Uso actual y potencial</h2>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
             <FormGroup
               disabled={!autorizedUser}
               label="Uso actual del suelo del predio"
@@ -216,12 +217,11 @@ export default function ActualUseAndPotentialInfoCard(props) {
               inputName="D_actual_use"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
             />
+
             {formData?.D_actual_use?.includes("potreros") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Potreros
-                </header>
-                <section className="p-2">
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold">Potreros</h3>
+                <div className="p-2">
                   <FormGroup
                     disabled={!autorizedUser}
                     inputType="text"
@@ -230,13 +230,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     inputName="D_area_potrero"
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
-                </section>
-              </Card>
+                </div>
+              </div>
             )}
-            {formData?.D_actual_use?.includes("plantaciones_forestales1") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Plantaciones Forestales 1
+          {formData?.D_actual_use?.includes("plantaciones_forestales1") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-center mt-2">
+                  <h3 className="text-lg font-semibold">Plantaciones Forestales 1</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -256,12 +256,12 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_actual_use?.includes("plantaciones_forestales2") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Plantaciones Forestales 2
+              </div>
+              )}
+              {formData?.D_actual_use?.includes("plantaciones_forestales2") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-center mt-2">
+                  <h3 className="text-lg font-semibold">Plantaciones Forestales 2</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -281,12 +281,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_actual_use?.includes("plantaciones_forestales3") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Plantaciones Forestales 3
+              </div>
+              
+              )}
+              {formData?.D_actual_use?.includes("plantaciones_forestales3") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-center mt-2">
+                  <h3 className="text-lg font-semibold">Plantaciones Forestales 3</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -306,12 +307,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_actual_use?.includes("frutales1") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Frutales 1
+              </div>
+              
+              )}
+              {formData?.D_actual_use?.includes("frutales1") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-center mt-2">
+                  <h3 className="text-lg font-semibold">Frutales 1</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -331,12 +333,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_actual_use?.includes("frutales2") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Frutales 2
+              </div>
+              
+              )}
+              {formData?.D_actual_use?.includes("frutales2") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-center mt-2">
+                  <h3 className="text-lg font-semibold">Frutales 2</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -356,12 +359,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_actual_use?.includes("otros") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Otros
+              </div>
+              
+              )}
+              {formData?.D_actual_use?.includes("otros") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-center mt-2">
+                  <h3 className="text-lg font-semibold">Otros</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -381,41 +385,42 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-          </div>
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              label="Usos actuales remplazables"
-              inputType="checkbox"
-              optionList={[
-                { label: "Potreros", value: "potreros" },
-                {
-                  label: "Plantaciones Forestales 1",
-                  value: "plantaciones_forestales1",
-                },
-                {
-                  label: "Plantaciones Forestales 2",
-                  value: "plantaciones_forestales2",
-                },
-                {
-                  label: "Plantaciones Forestales 3",
-                  value: "plantaciones_forestales3",
-                },
-                { label: "Frutales 1", value: "frutales1" },
-                { label: "Frutales 2", value: "frutales2" },
-                { label: "Otros", value: "otros" },
-              ]}
-              optionCheckedList={formData.D_replace_use}
-              inputName="D_replace_use"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
+              </div>
+              
+              )}
+            </div>
+            <div className="col">
+              <FormGroup
+                disabled={!autorizedUser}
+                label="Usos actuales remplazables"
+                inputType="checkbox"
+                optionList={[
+                  { label: "Potreros", value: "potreros" },
+                  {
+                    label: "Plantaciones Forestales 1",
+                    value: "plantaciones_forestales1",
+                  },
+                  {
+                    label: "Plantaciones Forestales 2",
+                    value: "plantaciones_forestales2",
+                  },
+                  {
+                    label: "Plantaciones Forestales 3",
+                    value: "plantaciones_forestales3",
+                  },
+                  { label: "Frutales 1", value: "frutales1" },
+                  { label: "Frutales 2", value: "frutales2" },
+                  { label: "Otros", value: "otros" },
+                ]}
+                optionCheckedList={formData.D_replace_use}
+                inputName="D_replace_use"
+                onChangeInputValue={(e) => handleChangeInputValue(e)}
+              />
 
-            {formData?.D_replace_use?.includes("potreros") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Potreros
+              {formData?.D_replace_use?.includes("potreros") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-content-center mt-2">
+                  <h3 className="text-lg font-semibold">Potreros</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -435,12 +440,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_replace_use?.includes("plantaciones_forestales1") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Plantaciones Forestales 1
+              </div>
+              
+              )}
+              {formData?.D_replace_use?.includes("plantaciones_forestales1") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-content-center mt-2">
+                  <h3 className="text-lg font-semibold">Plantaciones Forestales 1</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -460,12 +466,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_replace_use?.includes("plantaciones_forestales2") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Plantaciones Forestales 2
+              </div>
+              
+              )}
+              {formData?.D_replace_use?.includes("plantaciones_forestales2") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-content-center mt-2">
+                  <h3 className="text-lg font-semibold">Plantaciones Forestales 2</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -485,12 +492,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_replace_use?.includes("plantaciones_forestales3") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Plantaciones Forestales 3
+              </div>
+              
+              )}
+              {formData?.D_replace_use?.includes("plantaciones_forestales3") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-content-center mt-2">
+                  <h3 className="text-lg font-semibold">Plantaciones Forestales 3</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -510,12 +518,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_replace_use?.includes("frutales1") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Frutales 1
+              </div>
+              
+              )}
+              {formData?.D_replace_use?.includes("frutales1") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-content-center mt-2">
+                  <h3 className="text-lg font-semibold">Frutales 1</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -535,12 +544,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_replace_use?.includes("frutales2") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Frutales 2
+              </div>
+              
+              )}
+              {formData?.D_replace_use?.includes("frutales2") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-content-center mt-2">
+                  <h3 className="text-lg font-semibold">Frutales 2</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -560,12 +570,13 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
-            {formData?.D_replace_use?.includes("otros") && (
-              <Card className="shadow-sm mb-3">
-                <header className="d-flex justify-content-center mt-2">
-                  Otros
+              </div>
+              
+              )}
+              {formData?.D_replace_use?.includes("otros") && (
+                <div className="shadow-sm mb-3">
+                <header className="flex justify-content-center mt-2">
+                  <h3 className="text-lg font-semibold">Otros</h3>
                 </header>
                 <section className="p-2">
                   <FormGroup
@@ -585,18 +596,20 @@ export default function ActualUseAndPotentialInfoCard(props) {
                     onChangeInputValue={(e) => handleChangeInputValue(e)}
                   />
                 </section>
-              </Card>
-            )}
+              </div>
+              
+              )}
+            </div>
           </div>
-        </div>
-        {autorizedUser && (
-          <div className="d-flex justify-content-center">
-            <Button onClick={() => handleSaveBtn()} variant="success">
-              Guardar
-            </Button>
+          {autorizedUser && (
+            <div className="d-flex justify-content-center">
+              <button onClick={() => handleSaveBtn()} variant="success">
+                Guardar
+              </button>
+            </div>
+          )}
           </div>
-        )}
-      </Card.Body>
-    </Card>
+          </div>
+          </div>
   );
 }

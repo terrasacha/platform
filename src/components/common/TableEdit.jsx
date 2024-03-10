@@ -94,16 +94,16 @@ export default function TableEdit({
                 ))}
                 <td className="text-end">
                   {row.editing ? (
-                    <Button
+                    <button
                       size="sm"
                       variant="success"
                       className="m-1"
                       onClick={() => handleSaveHistoricalData(index)}
                     >
                       <SaveDiskIcon />
-                    </Button>
+                    </button>
                   ) : (
-                    <Button
+                    <button
                       size="sm"
                       variant="warning"
                       className="m-1"
@@ -111,9 +111,9 @@ export default function TableEdit({
                       onClick={() => handleEditValue(index)}
                     >
                       <EditIcon />
-                    </Button>
+                    </button>
                   )}
-                  <Button
+                  <button
                     size="sm"
                     variant="danger"
                     className="m-1"
@@ -121,7 +121,7 @@ export default function TableEdit({
                     onClick={() => handleDeleteHistoricalData(index)}
                   >
                     <TrashIcon />
-                  </Button>
+                  </button>
                 </td>
               </tr>
             );
@@ -129,7 +129,7 @@ export default function TableEdit({
         <tr>
           <td colSpan={5}>
             <div className="d-flex">
-              <Button
+              <button
                 size="sm"
                 variant="secondary"
                 className="w-100"
@@ -137,7 +137,7 @@ export default function TableEdit({
                 onClick={() => handleAddCashFlow()}
               >
                 <PlusIcon></PlusIcon>
-              </Button>
+              </button>
             </div>
           </td>
         </tr>

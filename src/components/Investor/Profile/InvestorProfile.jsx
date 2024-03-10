@@ -148,12 +148,12 @@ class InvestorProfile extends Component {
                             
                         </Row>
                         
-                        <Button
+                        <button
                             variant='primary'
                             size='lg'
                              
                             onClick={this.handleCUUser}
-                            >Actualizar</Button>
+                            >Actualizar</button>
                         </Form>
                     </Container>
                 )
@@ -180,12 +180,12 @@ class InvestorProfile extends Component {
                                     {user.addresss}
                                 </td>
                                 <td>
-                                    <Button 
+                                    <button 
                                         variant='primary'
                                         size='sm' 
                                          
                                         onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}
-                                    >Actualizar</Button>
+                                    >Actualizar</button>
                                 </td>
                             </tr>
                         </tbody>

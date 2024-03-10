@@ -217,13 +217,13 @@ class Items extends Component {
                     <td>{category.name}</td>
                     <td>{category.type}</td>
                     <td>
-                      <Button
+                      <button
                         variant="primary"
                         size="sm"
                         onClick={(e) => this.handleLoadEditCategory(category, e)}
                       >
                         Editar
-                      </Button>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -283,14 +283,14 @@ class Items extends Component {
             </Row>
 
             <Row className="mb-1">
-              <Button
+              <button
                 variant="primary"
                 size="sm"
                 onClick={this.handleCRUDCategory}
                 disabled={this.state.isCRUDButtonDisable}
               >
                 {CRUDButtonName}
-              </Button>
+              </button>
             </Row>
           </Form>
         </Container>

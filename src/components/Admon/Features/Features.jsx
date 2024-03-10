@@ -322,13 +322,13 @@ import 'react-toastify/dist/ReactToastify.css';
                         <td>{feature.isTemplate ? 'Si' : 'No'}</td>
                         <td>{feature.isVerifable ? 'Si' : 'No'}</td>
                         <td>
-                          <Button
+                          <button
                             variant='primary'
                             size='sm'
                             onClick={(e) => this.handleLoadEditFeature(feature, e)}
                           >
                             Editar
-                          </Button>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -452,14 +452,14 @@ import 'react-toastify/dist/ReactToastify.css';
                 </Row>
     
                 <Row className='mb-1'>
-                  <Button
+                  <button
                     variant='primary'
                     size='sm'
                     onClick={this.handleCRUDFeature}
                     disabled={this.state.isCRUDButtonDisable}
                   >
                     {CRUDButtonName}
-                  </Button>
+                  </button>
                 </Row>
               </Form>
               <br></br>

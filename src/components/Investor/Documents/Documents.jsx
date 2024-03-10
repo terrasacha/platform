@@ -263,17 +263,20 @@ class Documents extends Component {
                             {listPFWithoutDoc.length === 0? '' : 
                                 listPFWithoutDoc.map(pf =>{
                                     return(
-                                        <Card key={pf.id} className='mb-2'>
-                                            <Card.Header>{pf.product.name}</Card.Header>
-                                            <Card.Body>
-                                                <Card.Title>{pf.feature.name}</Card.Title>
-                                                <Card.Text>
-                                                    {pf.feature.description}
-                                                </Card.Text>
-                                                <Button variant="primary" onClick={() => this.setState({showModalDocument: true, productFeatureToAddDoc: pf})}>Upload Document</Button>
-                                            </Card.Body>
-                                        </Card> 
-                                    )
+                                        <div key={pf.id} className="mb-2">
+                                        <div className="border-b mb-2 font-bold">{pf.product.name}</div>
+                                        <div className="mb-4">
+                                          <div className="font-bold">{pf.feature.name}</div>
+                                          <p>{pf.feature.description}</p>
+                                          <button
+                                            className="bg-blue-500 text-white py-2 px-4 rounded"
+                                            onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}
+                                          >
+                                            Upload Document
+                                          </button>
+                                        </div>
+                                      </div>
+                                                                          )
                                 })
                             }
                   </Col>
@@ -313,7 +316,7 @@ class Documents extends Component {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button disabled={this.state.creatingDocument?true:false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument?'Uploading':'Upload Document'}</Button>
+                    <button disabled={this.state.creatingDocument?true:false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument?'Uploading':'Upload Document'}</button>
                 </Modal.Footer>
             </Modal>
         )

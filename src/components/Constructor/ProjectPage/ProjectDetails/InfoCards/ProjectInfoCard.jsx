@@ -711,14 +711,14 @@ export default function ProjectInfoCard(props) {
                         <>
                           {planosPredio.map((file) => (
                             <div key={file.id} className="mb-2">
-                              <Button
+                              <button
                                 onClick={() => handleDeleteFile(file)}
                                 size="sm"
                                 className="me-2"
                                 variant="danger"
                               >
                                 <XIcon />
-                              </Button>
+                              </button>
                               <a
                                 href={file.url}
                                 target="_blank"
@@ -743,13 +743,13 @@ export default function ProjectInfoCard(props) {
                         onChange={(e) => handleChangeInputValue(e)}
                         hidden
                       />
-                      <Button
+                      <button
                         disabled={!autorizedUser}
                         onClick={handleUploadButton}
                         size="md"
                       >
                         Cargar nuevo archivo
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 </div>

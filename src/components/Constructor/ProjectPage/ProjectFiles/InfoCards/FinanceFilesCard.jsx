@@ -89,14 +89,14 @@ export default function FinanceCard({ visible }) {
               por SUAN.{" "}
             </span>
             <br></br>
-            <Button
+            <button
               className="m-auto d-block w-25 mt-3"
               onClick={() => {
                 handleBotoncheckpostulant();
               }}
             >
               Aceptar información financiera
-            </Button>
+            </button>
           </div>
         )}
         <div className="container">
@@ -331,22 +331,22 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
                       />
                     </td>
                     <td className="text-end">
-                      <Button
+                      <button
                         size="sm"
                         variant="success"
                         className="m-1"
                         onClick={() => handleSaveData(index)}
                       >
                         <SaveDiskIcon />
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         size="sm"
                         variant="danger"
                         className="m-1"
                         onClick={() => handleDeleteData(index)}
                       >
                         <TrashIcon />
-                      </Button>
+                      </button>
                     </td>
                   </>
                 ) : (
@@ -354,22 +354,22 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
                     <td>{data.address}</td>
                     <td>{data.amount}</td>
                     <td className="text-end">
-                      <Button
+                      <button
                         size="sm"
                         variant="warning"
                         className="m-1"
                         onClick={() => handleEditData(index)}
                       >
                         <EditIcon />
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         size="sm"
                         variant="danger"
                         className="m-1"
                         onClick={() => handleDeleteData(index)}
                       >
                         <TrashIcon />
-                      </Button>
+                      </button>
                     </td>
                   </>
                 )}
@@ -379,14 +379,14 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
           <tr>
             <td colSpan={5}>
               <div className="d-flex">
-                <Button
+                <button
                   size="sm"
                   variant="secondary"
                   className="w-100"
                   onClick={() => handleAddNewData()}
                 >
                   <PlusIcon></PlusIcon>
-                </Button>
+                </button>
               </div>
             </td>
           </tr>
@@ -397,9 +397,9 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
         {tokensAvaiableAmount >= 0 ? tokensAvaiableAmount : 0}
       </p>
       <div className="d-flex justify-content-center">
-        <Button variant="success" onClick={() => handleSendData()}>
+        <button variant="success" onClick={() => handleSendData()}>
           Enviar tokens
-        </Button>
+        </button>
       </div>
     </div>
   );

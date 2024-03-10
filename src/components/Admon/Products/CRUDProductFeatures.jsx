@@ -182,7 +182,7 @@ export default class CRUDProductFeatures extends Component {
     const renderCRUDProductFeatures = () => {
         return (
             <>
-            <Table striped bordered hover>
+            <table striped bordered hover>
                 <thead>
                 <tr>
                     <th>Feature</th>
@@ -201,9 +201,9 @@ export default class CRUDProductFeatures extends Component {
                                         options={featuresSelectList}
                                         onChange={this.handleOnSelectFeature} />
                                         {this.state.CRUDButtonName === 'UPDATE'?
-                                            <Alert key="idx_key_1" variant='success' size='sm'>
-                                                {this.state.newProductFeature.feature.name? this.state.newProductFeature.feature.name : '' }
-                                            </Alert> : ''}
+                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
+                                        {this.state.newProductFeature.feature.name? this.state.newProductFeature.feature.name : '' }
+                                    </div> : ''}
                                         
                             </Form.Group>
                         </td>
@@ -234,9 +234,9 @@ export default class CRUDProductFeatures extends Component {
                                         <option value='no'>No</option>
                                         <option value='yes'>Yes</option>
                                     </Form.Select>
-                                    <Alert key="idx_key_1" variant='success'>
+                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
                                             {this.state.newProductFeature.isOnMainCard? 'Yes' : 'No'}
-                                        </Alert>
+                                    </div>
                                 </Form.Group>
                         </td>
                         <td>
@@ -246,9 +246,10 @@ export default class CRUDProductFeatures extends Component {
                                         <option value='no'>No</option>
                                         <option value='yes'>Yes</option>
                                     </Form.Select>
-                                    <Alert key="idx_key_1" variant='success'>
-                                            {this.state.newProductFeature.isToBlockChain? 'Yes' : 'No'}
-                                        </Alert>
+                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
+                                        {this.state.newProductFeature.isToBlockChain ? 'Yes' : 'No'}
+                                    </div>
+
                                 </Form.Group>
                         </td>
                         <td>
@@ -258,18 +259,19 @@ export default class CRUDProductFeatures extends Component {
                                         <option value='no' >No</option>
                                         <option value='yes'>Yes</option>
                                     </Form.Select>
-                                    <Alert key="idx_key_1" variant='success'>
-                                            {this.state.newProductFeature.isVerifable? 'Yes' : 'No'}
-                                        </Alert>
+                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
+                                        {this.state.newProductFeature.isVerifable ? 'Yes' : 'No'}
+                                    </div>
+
                                 </Form.Group>
                         </td>
                     </tr>
                 </tbody>
-            </Table>
-            <Button
+            </table>
+            <button
             variant='primary'
             onClick={this.handleCRUDProductFeature}
-            >{this.state.CRUDButtonName}</Button>
+            >{this.state.CRUDButtonName}</button>
             </>
             
         )
@@ -278,7 +280,7 @@ export default class CRUDProductFeatures extends Component {
             let productFeatures = listPF.filter(pf => pf.productID === this.props.CRUD_Product.id);
                 if (productFeatures.length > 0) {
                     return (
-                        <Table striped bordered hover>
+                        <table striped bordered hover>
                             <thead>
                             <tr>
                                 <th>Feature</th>
@@ -312,16 +314,16 @@ export default class CRUDProductFeatures extends Component {
                                         {productFeatures.isVerifable? 'Yes' : 'No'}
                                     </td>
                                     <td>
-                                        <Button
+                                        <button
                                             variant='primary'
                                             size='sm' 
                                             onClick={(e) => this.handleLoadEditProductFeature(productFeatures, e)}
-                                        >Editar</Button>
+                                        >Editar</button>
                                     </td>
                                 </tr>
                             ))}
                             </tbody>
-                        </Table>
+                        </table>
             )
         }
     

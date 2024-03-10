@@ -306,28 +306,39 @@ export default function CashFlowSettings(props) {
 
   return (
     <>
-      <Card className={className}>
-        <Card.Header title="Flujo de caja del proyecto" sep={true} />
-        <Card.Body>
-            <FormGroup
-                  type="flex"
-                  placeholder="Paste Excel data here..."
-                  inputType="text"
-                  inputSize="md"
-                  label="Excel data"
-                  inputName="Excel"
-                  inputValue={excelData}
-                  disabled={canEdit}
-                  saveBtnDisabled={canEdit}
-                  onChangeInputValue={(e) => handleChangeInputValue(e)}
-                  onClickSaveBtn={() => handlePasteFromExcel()}
-              />
-          <p className="mb-3">Flujo de caja del proyecto</p>
-          <div>
-            <TableEdit  canEdit={canEdit} columns={['año', 'resultado_anual', 'resultado_acumulado']} infoTable={cashFlowResume} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
-          </div>
-        </Card.Body>
-      </Card>
+      <div className={className}>
+  <div className="border-b mb-4">
+    <h5 className="text-xl font-semibold">Flujo de caja del proyecto</h5>
+  </div>
+  <div className="text-center">
+    <FormGroup
+      type="flex"
+      placeholder="Paste Excel data here..."
+      inputType="text"
+      inputSize="md"
+      label="Excel data"
+      inputName="Excel"
+      inputValue={excelData}
+      disabled={canEdit}
+      saveBtnDisabled={canEdit}
+      onChangeInputValue={(e) => handleChangeInputValue(e)}
+      onClickSaveBtn={() => handlePasteFromExcel()}
+    />
+    <p className="mb-3">Flujo de caja del proyecto</p>
+    <div>
+      <TableEdit
+        canEdit={canEdit}
+        columns={['año', 'resultado_anual', 'resultado_acumulado']}
+        infoTable={cashFlowResume}
+        handleEditValue={handleEditValue}
+        handleChangeInputValue={handleChangeInputValue}
+        handleAddCashFlow={handleAddCashFlow}
+        handleSaveHistoricalData={handleSaveHistoricalData}
+        handleDeleteHistoricalData={handleDeleteHistoricalData}
+      />
+    </div>
+  </div>
+</div>
     </>
   );
 }

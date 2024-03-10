@@ -208,7 +208,7 @@ export default class LandingPage extends Component {
           </ol>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.handleClose}>Cerrar</Button>
+          <button onClick={this.handleClose}>Cerrar</button>
           <a className='m-2 fondo-azul btn m-auto d-block' href='https://platform.suan.global/login'>Registrarme</a>
         </Modal.Footer>
       </Modal> 

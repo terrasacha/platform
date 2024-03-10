@@ -301,150 +301,138 @@ export default function FileManager(props) {
   console.log(currentPath, "currentPath");
   //console.log(Object.keys(s3Objects[Object.keys(selectedFolder)[0]].data), "Este es")
   return (
-    <Card className={className}>
-      <Card.Body>
-        <div className="d-flex justify-content-between">
-          <Breadcrumb className="border pt-3 px-3 ">
-            {currentPath.map((path, index) => (
-              <Breadcrumb.Item
-                href="#"
-                key={path}
-                onClick={() => backToAnyFolder(path)}
-                active={path === currentPath[currentPath.length - 1]}
-              >
-                {index === 0 ? "Inicio" : path}
-              </Breadcrumb.Item>
-            ))}
-          </Breadcrumb>
-          <div className="d-flex gap-2">
-            <NewFolderOnS3Modal uploadRoute={currentPath.join("/")} />
-            <UploadFileModal uploadRoute={currentPath.join("/")} />
-          </div>
+    <div className={className}>
+    <div className="p-6 border-b border-gray-300">
+      <h2 className="text-xl font-semibold mb-4">Gestión de Archivos</h2>
+      <div className="flex justify-between">
+        <Breadcrumb className="border pt-3 px-3">
+          {currentPath.map((path, index) => (
+            <Breadcrumb.Item
+              href="#"
+              key={path}
+              onClick={() => backToAnyFolder(path)}
+              active={path === currentPath[currentPath.length - 1]}
+            >
+              {index === 0 ? "Inicio" : path}
+            </Breadcrumb.Item>
+          ))}
+        </Breadcrumb>
+        <div className="flex gap-2">
+          <NewFolderOnS3Modal uploadRoute={currentPath.join("/")} />
+          <UploadFileModal uploadRoute={currentPath.join("/")} />
         </div>
-        <Table responsive>
-          <thead>
+      </div>
+    </div>
+    <div className="p-6">
+      <table className="w-full">
+        <thead>
+          <tr>
+            <th className="w-3/12">Nombre</th>
+            <th className="text-center">Tamaño</th>
+            <th className="text-center">Ultima modificación</th>
+            <th className="text-center">Subido por</th>
+            <th className="text-center">Visible</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody className="align-middle">
+          {currentPath.length > 1 && (
             <tr>
-              <th style={{ width: "600px" }}>Nombre</th>
-              <th className="text-center">Tamaño</th>
-              <th className="text-center" style={{ width: "100px" }}>
-                Ultima modificación
-              </th>
-              <th className="text-center" style={{ width: "100px" }}>
-                Subido por
-              </th>
-              <th className="text-center">Visible</th>
-              <th></th>
+              <td
+                onClick={() =>
+                  backToAnyFolder(currentPath[currentPath.length - 2])
+                }
+                className="cursor-pointer"
+              >
+                <div className="flex items-center">
+                  <FolderIcon />
+                  <span className="text-base ms-2">...</span>
+                </div>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
             </tr>
-          </thead>
-          <tbody className="align-middle">
-            {/* {Object.keys(selectedFolder).length === 0 && (
-              <tr>
-                <td colSpan="5" className="text-center">
-                  No hay archivos en esta carpeta
-                </td>
-              </tr>
-            )} */}
-            {currentPath.length > 1 && (
-              <tr>
-                <td
-                  onClick={() =>
-                    backToAnyFolder(currentPath[currentPath.length - 2])
-                  }
-                >
-                  <div>
-                    <FolderIcon />
-                    <span className="fs-6 ms-2">...</span>
-                  </div>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            )}
-            {Object.keys(selectedFolder)
-              .filter((sf) => sf !== "backup")
-              .map((folder, index) => {
-                return (
-                  <tr key={index}>
-                    <td
-                      onClick={() => handleClickSelect(folder)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <div>
-                        {selectedFolder[folder].type === "folder" ? (
-                          <FolderIcon />
-                        ) : (
-                          <></>
-                        )}
-
-                        <span className="fs-6 ms-2">{folder}</span>
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      {selectedFolder[folder].size
-                        ? bytesToSize(selectedFolder[folder].size)
-                        : ""}
-                    </td>
-                    <td className="text-center">
-                      {selectedFolder[folder].lastModified
-                        ? convertAWSDatetimeToDate(
-                            selectedFolder[folder].lastModified
-                          )
-                        : ""}
-                    </td>
-                    <td className="text-center">{getUploadedByName(selectedFolder[folder].key)}</td>
-                    <td className="text-center">
-                      {selectedFolder[folder].type === "file" && (
-                        <div className="d-flex justify-content-center">
-                          {getVisibleStatus(selectedFolder[folder].key)}
-                        </div>
+          )}
+          {Object.keys(selectedFolder)
+            .filter((sf) => sf !== "backup")
+            .map((folder, index) => {
+              return (
+                <tr key={index}>
+                  <td
+                    onClick={() => handleClickSelect(folder)}
+                    className="cursor-pointer"
+                  >
+                    <div className="flex items-center">
+                      {selectedFolder[folder].type === "folder" ? (
+                        <FolderIcon />
+                      ) : (
+                        <></>
                       )}
-                    </td>
-                    <td className="text-end">
-                      <DropdownButton
-                        align="end"
-                        title="Acciones"
-                        drop="end"
-                        size="sm"
-                      >
-                        {/* <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
-                      <Dropdown.Item eventKey="2">Cambiar nombre</Dropdown.Item> */}
-                        {selectedFolder[folder].type === "file" && (
-                          <>
-                          <Dropdown.Item
-                            eventKey="3"
-                            onClick={() =>
-                              handleDownload(selectedFolder[folder].key)
-                            }
-                          >
-                            Descargar
-                          </Dropdown.Item>
-                          <Dropdown.Divider />
-                          </>
-                        )}
+                      <span className="text-base ms-2">{folder}</span>
+                    </div>
+                  </td>
+                  <td className="text-center">
+                    {selectedFolder[folder].size
+                      ? bytesToSize(selectedFolder[folder].size)
+                      : ""}
+                  </td>
+                  <td className="text-center">
+                    {selectedFolder[folder].lastModified
+                      ? convertAWSDatetimeToDate(
+                          selectedFolder[folder].lastModified
+                        )
+                      : ""}
+                  </td>
+                  <td className="text-center">{getUploadedByName(selectedFolder[folder].key)}</td>
+                  <td className="text-center">
+                    {selectedFolder[folder].type === "file" && (
+                      <div className="flex justify-center">
+                        {getVisibleStatus(selectedFolder[folder].key)}
+                      </div>
+                    )}
+                  </td>
+                  <td className="text-end">
+                    <DropdownButton
+                      align="end"
+                      title="Acciones"
+                      drop="end"
+                      size="sm"
+                    >
+                      {selectedFolder[folder].type === "file" && (
+                        <>
                         <Dropdown.Item
-                          eventKey="4"
-                          onClick={() => {
-                            if (selectedFolder[folder].type === "file") {
-                              handleDeleteFile(selectedFolder[folder].key);
-                            }
-                            if (selectedFolder[folder].type === "folder") {
-                              handleDeleteFolder(folder);
-                            }
-                          }}
+                          onClick={() =>
+                            handleDownload(selectedFolder[folder].key)
+                          }
                         >
-                          Eliminar
+                          Descargar
                         </Dropdown.Item>
-                      </DropdownButton>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </Table>
-      </Card.Body>
-    </Card>
-  );
+                        <Dropdown.Divider />
+                        </>
+                      )}
+                      <Dropdown.Item
+                        onClick={() => {
+                          if (selectedFolder[folder].type === "file") {
+                            handleDeleteFile(selectedFolder[folder].key);
+                          }
+                          if (selectedFolder[folder].type === "folder") {
+                            handleDeleteFolder(folder);
+                          }
+                        }}
+                      >
+                        Eliminar
+                      </Dropdown.Item>
+                    </DropdownButton>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+    );
 }

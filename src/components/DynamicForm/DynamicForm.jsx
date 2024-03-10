@@ -293,8 +293,8 @@ export default function DynamicForm(props) {
   //         {Array.from({ length: repeatCount }).map((_, index) => (
   //           <div key={index} className="border p-3 my-2">{getFormFields(items, options, index)}</div>
   //         ))}
-  //         <Button onClick={addNewRecord}>Nuevo registro</Button>
-  //         <Button onClick={deletRecord} variant="danger">Eliminar registro</Button>
+  //         <button onClick={addNewRecord}>Nuevo registro</button>
+  //         <button onClick={deletRecord} variant="danger">Eliminar registro</button>
   //       </div>
   //     </div>
   //   );
@@ -308,13 +308,13 @@ export default function DynamicForm(props) {
             {getFormFields(data.survey, data.options)}
           </div>
           <div className="d-flex justify-content-center my-5">
-            <Button type="submit">
+            <button type="submit">
               {isLoading ? (
                 <Spinner size="sm" className="p-2"></Spinner>
               ) : (
                 submitBtnLabel
               )}
-            </Button>
+            </button>
           </div>
         </form>
       )}

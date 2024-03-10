@@ -229,14 +229,14 @@ class Validators extends Component {
                         </td>
                         <td>{validator.isProfileUpdated ? 'Confirmed' : 'Pendiente'}</td>
                         <td>
-                          <Button
+                          <button
                             variant='danger'
                             size='sm'
                             disabled={!validator.isProfileUpdated}
                             onClick={() => this.showModalDelete({ id: validator.id, username: validator.name })}
                           >
                             Delete
-                          </Button>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -283,9 +283,9 @@ class Validators extends Component {
                 </Row>
     
                 <Row className='mb-1'>
-                  <Button variant='primary' size='sm' onClick={() => this.showModalCreate()}>
+                  <button variant='primary' size='sm' onClick={() => this.showModalCreate()}>
                     Crear
-                  </Button>
+                  </button>
                 </Row>
               </form>
             </Container>
@@ -296,12 +296,12 @@ class Validators extends Component {
               </Modal.Header>
               <Modal.Body>{`¿Estás seguro que quieres borrar el usuario ${this.state.userToDelete.username}?`}</Modal.Body>
               <Modal.Footer>
-                <Button variant='secondary' onClick={() => this.setState({ showModal: false })}>
+                <button variant='secondary' onClick={() => this.setState({ showModal: false })}>
                   Cancel
-                </Button>
-                <Button variant='danger' onClick={() => this.confirmDeleteUser()}>
+                </button>
+                <button variant='danger' onClick={() => this.confirmDeleteUser()}>
                   Delete
-                </Button>
+                </button>
               </Modal.Footer>
             </Modal>
             <Modal show={this.state.showModalCreate} onHide={() => this.setState({ showModalCreate: false })}>
@@ -329,12 +329,12 @@ class Validators extends Component {
                 </Table>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant='secondary' onClick={() => this.setState({ showModalCreate: false })}>
+                <button variant='secondary' onClick={() => this.setState({ showModalCreate: false })}>
                   Cancel
-                </Button>
-                <Button variant='success' onClick={() => this.confirmCreateUser()}>
+                </button>
+                <button variant='success' onClick={() => this.confirmCreateUser()}>
                   Confirmar
-                </Button>
+                </button>
               </Modal.Footer>
             </Modal>
           </Container>

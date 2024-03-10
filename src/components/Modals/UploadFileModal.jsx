@@ -185,9 +185,9 @@ export default function UploadFileModal(props) {
 
   return (
     <div>
-      <Button variant="primary " size="md" onClick={openModal}>
+      <button variant="primary " size="md" onClick={openModal}>
         Subir archivo
-      </Button>
+      </button>
 
       <Modal show={showModal} onHide={closeModal} size="lg" centered>
         <Modal.Header closeButton>
@@ -220,16 +220,16 @@ export default function UploadFileModal(props) {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
+          <button variant="secondary" onClick={closeModal}>
             Cerrar
-          </Button>
-          <Button variant="primary" onClick={() => handleSaveChanges()}>
+          </button>
+          <button variant="primary" onClick={() => handleSaveChanges()}>
             {isLoadingDoc ? (
               <Spinner size="sm" className="p-2"></Spinner>
             ) : (
               "Cargar"
             )}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

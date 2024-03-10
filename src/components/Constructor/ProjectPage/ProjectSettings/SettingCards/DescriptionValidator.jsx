@@ -58,26 +58,32 @@ export default function DescriptionValidator(props) {
   }
 
   return (
-    <Card className={className}>
-      <Card.Header title="Descripción detallada del proyecto" sep={true} />
-      <Card.Body>
-        <Form.Control
-            as="textarea"
-            style={{ minHeight:'10rem', maxHeight: "20rem", resize: "none" }}
-            value={projectDescription}
-            disabled={canEdit}
-            onChange={handleOnChange}
-            />
-        <div className="d-flex justify-content-end mt-3">
-            <Button
-            variant="success"
-            disabled={projectDescription.length === 0 || projectDescription === projectData.projectVerifierInfo.verifierDescription || canEdit}
-            onClick={() => saveVerifierDescription()}
-            >
-            <SaveDiskIcon />
-            </Button>
-        </div>
-      </Card.Body>
-    </Card>
+    <div className={`bg-white border border-gray-300 p-4 rounded-md ${className}`}>
+      <h2 className="text-lg font-semibold mb-4">Descripción detallada del proyecto</h2>
+      <div className="mb-4">
+        <textarea
+          className="w-full h-40 resize-none border border-gray-300 p-2"
+          value={projectDescription}
+          disabled={canEdit}
+          onChange={handleOnChange}
+        ></textarea>
+      </div>
+      <div className="flex justify-end">
+        <button
+          className={`bg-green-500 text-white py-2 px-4 rounded ${
+            projectDescription.length === 0 ||
+            projectDescription === projectData.projectVerifierInfo.verifierDescription ||
+            canEdit
+              ? 'opacity-50 cursor-not-allowed'
+              : ''
+          }`}
+          onClick={() => saveVerifierDescription()}
+          disabled={projectDescription.length === 0 || projectDescription === projectData.projectVerifierInfo.verifierDescription || canEdit}
+        >
+          <SaveDiskIcon className="mr-2" />
+          Guardar
+        </button>
+      </div>
+    </div>
   );
 }

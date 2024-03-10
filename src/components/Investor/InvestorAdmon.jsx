@@ -309,11 +309,11 @@ class InvestorAdmon extends Component {
 
                         </Row>
                         
-                        <Button
+                        <button
                             variant='primary'
                             size='lg'
                             onClick={() => this.handleCUUser()}
-                            >Actualizar</Button>
+                            >Actualizar</button>
                         </Form>
                     </Container>
                 )
@@ -348,44 +348,94 @@ class InvestorAdmon extends Component {
                         centered
                         >
                         <Modal.Body>
-                            <Card border="light">
-                                <Card.Img variant="top" src={wallet} />
-                                <Card.Body>
-                                    <Card.Title as="h2">Paso para crear billetera en Cardano</Card.Title>
-                                    <Accordion flush alwaysOpen>
-                                    <Accordion.Item eventKey="0">
-                                        <Accordion.Header>Paso 1: Obtener billetera</Accordion.Header>
-                                        <Accordion.Body>
-                                        Su billetera en Cardano es la herramienta principal utilizada para interactuar con la Blockchain. 
-                                        En ella, lo más importante son las llaves privadas, que en el caso de la mayoría de billeteras están representadas 
-                                        por una combinación de palabras ó frase de recuperación las cuales deben ser guardadas fuera de línea en un sitio seguro. 
-                                        Ver más acerca de la seguridad en Cardano y cómo guardar de forma segura unas llaves privadas. 
-                                        Las billeteras más populares en Cardano son:
-                                        https://eternl.io/, https://gerowallet.io, https://namiwallet.io, https://yoroi-wallet.com.
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                    <Accordion.Item eventKey="1">
-                                        <Accordion.Header>Paso 2: Pendiente</Accordion.Header>
-                                        <Accordion.Body>
-                                        La billetera recién creada es el sitio donde se van a guardar sus tokens de inversión.
-                                         Cualquier movimiento, o transacción en la blockchain tiene un costo asociado que en el caso de Cardano se paga en la 
-                                         moneda nativa llamada ADA. Si ya invirtió, como inversionista simplemente recibirá una cantidad de tokens proporcional a su 
-                                         inversión con un número mínimo de ADAs como valor necesario mínimo para mover los tokens durante la transacción inicial. 
-                                         Si posteriormente desea mover los tokens ya sea cambiarlos de billetera o venderlos necesitará tener un saldo adicional en
-                                        ADAs para pagar los fees de transacción. Existen múltiples opciones para adquirir ADAs a partir de dinero fiduciario en casas 
-                                        de cambio conocidas en línea. Si presenta alguna inquietud en este proceso, por favor contacte a soporte. 
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                    <Accordion.Item eventKey="2">
-                                        <Accordion.Header>Paso 3: Pendiente</Accordion.Header>
-                                        <Accordion.Body>
-                                        Conectar la billetera a la plataforma Suan: Una vez creada su billetera puede conectarla de forma segura al sitio web de Suan. 
-                                        En este caso, un botón de conectar se encuentra disponible en la parte superior derecha. 
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                </Accordion>
-                                </Card.Body>
-                            </Card>
+                        <div className="border border-gray-300">
+                        <img
+                            src={wallet}
+                            className="w-full h-auto"
+                            alt="Wallet"
+                        />
+                        <div className="p-6">
+                            <h2 className="text-2xl font-semibold mb-4">Paso para crear billetera en Cardano</h2>
+
+                            <div id="accordion-collapse" data-accordion="collapse">
+                            <h2 id="accordion-collapse-heading-1">
+                                <button
+                                type="button"
+                                className="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                                data-accordion-target="#accordion-collapse-body-1"
+                                aria-expanded="true"
+                                aria-controls="accordion-collapse-body-1"
+                                >
+                                <span>Paso 1: Obtener billetera</span>
+                                <svg
+                                    data-accordion-icon
+                                    className="w-3 h-3 rotate-180 shrink-0"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 10 6"
+                                >
+                                    <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M9 5 5 1 1 5"
+                                    />
+                                </svg>
+                                </button>
+                            </h2>
+                            <div
+                                id="accordion-collapse-body-1"
+                                className="hidden"
+                                aria-labelledby="accordion-collapse-heading-1"
+                            >
+                                <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                <p className="mb-2 text-gray-500 dark:text-gray-400">
+                                    Su billetera en Cardano es la herramienta principal utilizada para
+                                    interactuar con la Blockchain. En ella, lo más importante son las
+                                    llaves privadas, que en el caso de la mayoría de billeteras están
+                                    representadas por una combinación de palabras ó frase de recuperación
+                                    las cuales deben ser guardadas fuera de línea en un sitio seguro. Ver
+                                    más acerca de la seguridad en Cardano y cómo guardar de forma segura
+                                    unas llaves privadas. Las billeteras más populares en Cardano son:
+                                    <a
+                                    href="https://eternl.io/"
+                                    className="text-blue-600 dark:text-blue-500 hover:underline"
+                                    >
+                                    https://eternl.io/
+                                    </a>
+                                    ,
+                                    <a
+                                    href="https://gerowallet.io"
+                                    className="text-blue-600 dark:text-blue-500 hover:underline"
+                                    >
+                                    https://gerowallet.io
+                                    </a>
+                                    ,
+                                    <a
+                                    href="https://namiwallet.io"
+                                    className="text-blue-600 dark:text-blue-500 hover:underline"
+                                    >
+                                    https://namiwallet.io
+                                    </a>
+                                    ,
+                                    <a
+                                    href="https://yoroi-wallet.com"
+                                    className="text-blue-600 dark:text-blue-500 hover:underline"
+                                    >
+                                    https://yoroi-wallet.com
+                                    </a>
+                                    .
+                                </p>
+                                </div>
+                            </div>
+
+                            {/* Repite la misma estructura para los siguientes pasos del acordeón */}
+                            </div>
+                        </div>
+                        </div>
+
                         </Modal.Body>
                     </Modal>
                 )
@@ -439,7 +489,7 @@ class InvestorAdmon extends Component {
                             <HeaderNavbar2 
                                 changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                                 handleSignOut={this.handleSignOut}
-                            ></HeaderNavbar2>
+                            ></HeaderNavbar2>   
                         </Col>
                     </Row>
     

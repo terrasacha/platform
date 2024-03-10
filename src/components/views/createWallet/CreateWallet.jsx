@@ -14,7 +14,7 @@ export default function LogIn() {
 
   return (
     <>
-    <HeaderNavbar></HeaderNavbar>
+   {/*} <HeaderNavbar></HeaderNavbar>*/}
     <div className={s.container}>
         <div className={s.steps}>
             <ul>

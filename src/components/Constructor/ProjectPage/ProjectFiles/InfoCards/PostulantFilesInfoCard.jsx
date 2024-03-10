@@ -238,7 +238,7 @@ export default function PostulantFilesInfoCard(props) {
       if (isValidating) {
         return (
           <>
-            <Button
+            <button
               className="m-1 scale-up-ver-top"
               size="sm"
               variant="primary"
@@ -247,8 +247,8 @@ export default function PostulantFilesInfoCard(props) {
               }
             >
               <CheckIcon />
-            </Button>
-            <Button
+            </button>
+            <button
               className="m-1 scale-up-ver-top"
               size="sm"
               variant="danger"
@@ -257,19 +257,19 @@ export default function PostulantFilesInfoCard(props) {
               }
             >
               <XIcon />
-            </Button>
+            </button>
           </>
         );
       } else {
         return (
-          <Button
+          <button
             className="m-1"
             size="sm"
             variant="outline-primary"
             onClick={() => setIsValidating(true)}
           >
             Verificar
-          </Button>
+          </button>
         );
       }
     } else {
@@ -278,76 +278,70 @@ export default function PostulantFilesInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Documentos del postulante" sep="true"/>
-      <Card.Body>
-        <Table className="text-center" responsive>
-          <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Ultima actualización</th>
-              <th>Estado Validación</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody className="align-middle">
-            {projectFiles?.map((file, fileIndex) => {
-              return (
-                <tr key={file.id}>
-                  <td>{file.title}</td>
-                  <td>{file.updatedAt}</td>
-                  <td>{getValidationRender(file, fileIndex)}</td>
-                  <td className="text-end">
-                    {isPostulant && file.status === "denied" && (
-                      <>
-                        <input
-                          type="file"
-                          style={{ display: "none" }}
-                          ref={fileInputRef}
-                          onChange={(e) =>
-                            handleUpdateDocumentFile(e, fileIndex, file)
-                          }
-                        />
-                        <Button
-                          className="m-1"
-                          size="sm"
-                          variant="outline-primary"
-                          onClick={() => handleUploadDocumentButtonClick()}
-                        >
-                          {isLoadingDoc ? (
-                            <Spinner size="sm" className="p-2"></Spinner>
-                          ) : (
-                            "Actualizar documentación"
-                          )}
-                        </Button>
-                      </>
+    <div className={className}>
+  <div className="border-b mb-4">
+    <h5 className="text-xl font-semibold">Documentos del postulante</h5>
+  </div>
+  <div className="text-center">
+    <table className="w-full">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Ultima actualización</th>
+          <th>Estado Validación</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody className="align-middle">
+        {projectFiles?.map((file, fileIndex) => (
+          <tr key={file.id}>
+            <td>{file.title}</td>
+            <td>{file.updatedAt}</td>
+            <td>{getValidationRender(file, fileIndex)}</td>
+            <td className="text-end">
+              {isPostulant && file.status === "denied" && (
+                <>
+                  <input
+                    type="file"
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                    onChange={(e) =>
+                      handleUpdateDocumentFile(e, fileIndex, file)
+                    }
+                  />
+                  <button
+                    className="m-1 bg-blue-500 text-white py-1 px-2 rounded-md"
+                    onClick={() => handleUploadDocumentButtonClick()}
+                  >
+                    {isLoadingDoc ? (
+                      <div className="p-2">
+                        <div className="spinner"></div>
+                      </div>
+                    ) : (
+                      "Actualizar documentación"
                     )}
-                    <a href={file.url} target="_blank" rel="noreferrer">
-                      <Button
-                        className="m-1"
-                        size="sm"
-                        variant="outline-primary"
-                      >
-                        <DownloadIcon />
-                      </Button>
-                    </a>
-                    {file.verification && (
-                      <Button
-                        className="m-1"
-                        size="sm"
-                        variant="outline-primary"
-                        onClick={() => handleMessageButtonClick(fileIndex)}
-                      >
-                        <MessagesIcon />
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </Card.Body>
-    </Card>
+                  </button>
+                </>
+              )}
+              <a href={file.url} target="_blank" rel="noreferrer">
+                <button className="m-1 bg-blue-500 text-white py-1 px-2 rounded-md">
+                  <DownloadIcon />
+                </button>
+              </a>
+              {file.verification && (
+                <button
+                  className="m-1 bg-blue-500 text-white py-1 px-2 rounded-md"
+                  onClick={() => handleMessageButtonClick(fileIndex)}
+                >
+                  <MessagesIcon />
+                </button>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
   );
 }

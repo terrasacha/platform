@@ -498,61 +498,61 @@ export default function TokenSettingsCard(props) {
   };
 
   return (
-    <>
-      <Card className={className}>
-        <Card.Header title="Configuración del Token" sep={true} />
-        <Card.Body>
-          <FormGroup
-            disabled={isDisabledTokenName}
-            type="flex"
-            inputType="text"
-            inputSize="md"
-            label="Nombre del token"
-            inputName="tokenName"
-            inputValue={tokenName}
-            saveBtnDisabled={
-              projectData.projectInfo?.token.name === tokenName ? true : false
-            }
-            onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() => handleSaveBtn("tokenName")}
-          />
-          <FormGroup
-            disabled={canEdit}
-            type="flex"
-            label="Divisa de comercialización"
-            inputType="select"
-            inputSize="md"
-            inputName="tokenCurrency"
-            optionList={[
-              { value: "COP", label: "COP" },
-              { value: "USD", label: "USD" },
-            ]}
-            inputValue={tokenCurrency}
-            saveBtnDisabled={
-              projectData.projectInfo?.token.currency === tokenCurrency
-                ? true
-                : false
-            }
-            onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() => handleSaveBtn("tokenCurrency")}
-          />
-          <p className="mb-3">Historico del token</p>
-          <div>
-            <Table responsive>
-              <thead className="text-center">
-                <tr>
-                  <th style={{ width: "80px" }}>Periodo</th>
-                  <th style={{ width: "100px" }}>Fecha</th>
-                  <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
-                  <th style={{ width: "100px" }}>Precio</th>
-                  <th style={{ width: "120px" }}></th>
-                </tr>
-              </thead>
-              <tbody className="align-middle">
-                {tokenHistoricalData.map((data, index) => {
-                  return (
-                    <tr key={index} className="text-center">
-                      {data.editing ? (
+    <><div className={className}>
+    <div className="border-b mb-4">
+      <h5 className="text-xl font-semibold">Configuración del Token</h5>
+    </div>
+    <div>
+      <FormGroup
+        disabled={isDisabledTokenName}
+        type="flex"
+        inputType="text"
+        inputSize="md"
+        label="Nombre del token"
+        inputName="tokenName"
+        inputValue={tokenName}
+        saveBtnDisabled={
+          projectData.projectInfo?.token.name === tokenName ? true : false
+        }
+        onChangeInputValue={(e) => handleChangeInputValue(e)}
+        onClickSaveBtn={() => handleSaveBtn("tokenName")}
+      />
+      <FormGroup
+        disabled={canEdit}
+        type="flex"
+        label="Divisa de comercialización"
+        inputType="select"
+        inputSize="md"
+        inputName="tokenCurrency"
+        optionList={[
+          { value: "COP", label: "COP" },
+          { value: "USD", label: "USD" },
+        ]}
+        inputValue={tokenCurrency}
+        saveBtnDisabled={
+          projectData.projectInfo?.token.currency === tokenCurrency
+            ? true
+            : false
+        }
+        onChangeInputValue={(e) => handleChangeInputValue(e)}
+        onClickSaveBtn={() => handleSaveBtn("tokenCurrency")}
+      />
+      <p className="mb-3">Historico del token</p>
+      <div>
+        <table className="w-full">
+          <thead className="text-center">
+            <tr>
+              <th style={{ width: "80px" }}>Periodo</th>
+              <th style={{ width: "100px" }}>Fecha</th>
+              <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
+              <th style={{ width: "100px" }}>Precio</th>
+              <th style={{ width: "120px" }}></th>
+            </tr>
+          </thead>
+          <tbody className="align-middle">
+            {tokenHistoricalData.map((data, index) => (
+              <tr key={index} className="text-center">
+                {data.editing ? (
                         <>
                           <td>
                             <Form.Control
@@ -595,22 +595,22 @@ export default function TokenSettingsCard(props) {
                             />
                           </td>
                           <td className="text-end">
-                            <Button
+                            <button
                               size="sm"
                               variant="success"
                               className="m-1"
                               onClick={() => handleSaveHistoricalData(index)}
                             >
                               <SaveDiskIcon />
-                            </Button>
-                            <Button
+                            </button>
+                            <button
                               size="sm"
                               variant="danger"
                               className="m-1"
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
                               <TrashIcon />
-                            </Button>
+                            </button>
                           </td>
                         </>
                       ) : (
@@ -620,7 +620,7 @@ export default function TokenSettingsCard(props) {
                           <td>{data.amount}</td>
                           <td>{data.price}</td>
                           <td className="text-end">
-                            <Button
+                            <button
                               size="sm"
                               variant="warning"
                               className="m-1"
@@ -630,8 +630,8 @@ export default function TokenSettingsCard(props) {
                               onClick={() => handleEditHistoricalData(index)}
                             >
                               <EditIcon />
-                            </Button>
-                            <Button
+                            </button>
+                            <button
                               size="sm"
                               variant="danger"
                               className="m-1"
@@ -641,17 +641,16 @@ export default function TokenSettingsCard(props) {
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
                               <TrashIcon />
-                            </Button>
+                            </button>
                           </td>
-                        </>
-                      )}
-                    </tr>
-                  );
-                })}
-                <tr>
+                          </>
+                        )}
+                      </tr>
+                    ))}
+                  <tr>
                   <td colSpan={6}>
                     <div className="d-flex">
-                      <Button
+                      <button
                         size="sm"
                         variant="secondary"
                         className="w-100"
@@ -659,12 +658,12 @@ export default function TokenSettingsCard(props) {
                         onClick={() => handleAddNewPeriodToHistoricalData()}
                       >
                         <PlusIcon></PlusIcon>
-                      </Button>
+                      </button>
                     </div>
                   </td>
                 </tr>
               </tbody>
-            </Table>
+            </table>
           </div>
           <div className="border p-3">
             <p className="mb-3 text-center">Distribución volumen de tokens</p>
@@ -742,17 +741,17 @@ export default function TokenSettingsCard(props) {
                 </div>
             </div> */}
             <div className="d-flex justify-content-center">
-              <Button
+              <button
                 disabled={canEdit}
                 onClick={() => handleSaveBtn("tokenDistributionForm")}
                 variant="success"
               >
-                Guardar
-              </Button>
+              Guardar
+                </button>
+              </div>
             </div>
           </div>
-        </Card.Body>
-      </Card>
+        </div>
     </>
   );
 }

@@ -198,14 +198,14 @@ export default function ProjectSettings({ visible }) {
                 />
               </div>
               <div className="d-flex justify-content-center mb-2">
-                <Button
+                <button
                   disabled={projectData.isTechnicalFreeze}
                   onClick={() =>
                     handleSetValidatorDataComplete("technicalInfo")
                   }
                 >
                   Oficializar información técnica
-                </Button>
+                </button>
               </div>
             </>
           )}
@@ -235,14 +235,14 @@ export default function ProjectSettings({ visible }) {
                 />
               </div>
               <div className="d-flex justify-content-center mb-2">
-                <Button
+                <button
                   disabled={projectData.isFinancialFreeze}
                   onClick={() =>
                     handleSetValidatorDataComplete("financialInfo")
                   }
                 >
                   Oficializar información financiera
-                </Button>
+                </button>
               </div>
             </>
           )}

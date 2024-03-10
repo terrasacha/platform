@@ -177,9 +177,9 @@ export default function GeodataInfoCard(props) {
           </div>
           {autorizedUser && (
             <div className="d-flex justify-content-center mb-3">
-              <Button onClick={() => handleSaveBtn()} variant="success">
+              <button onClick={() => handleSaveBtn()} variant="success">
                 Actualizar Ubicación
-              </Button>
+              </button>
             </div>
           )}
         </div>

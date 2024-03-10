@@ -40,7 +40,7 @@ class SuccessOrder extends Component {
                     </h3>
                     </div>
                     <div className={'containerButton'} style={{marginTop: '160px'}}>
-                    <div className={'button'}><Button variant="contained" color="buttonGracias" size="small" href="/investor_admon">Subir documentación</Button></div>
+                    <div className={'button'}><button variant="contained" color="buttonGracias" size="small" href="/investor_admon">Subir documentación</button></div>
                 </div>
                 </div>
 

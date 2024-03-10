@@ -150,13 +150,13 @@ class Categorys extends Component {
                         <td>{category.id}</td>
                         <td>{category.name}</td>
                         <td>
-                          <Button
+                          <button
                             variant='primary'
                             size='sm'
                             onClick={(e) => this.handleLoadEditCategory(category, e)}
                           >
                             Editar
-                          </Button>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -192,14 +192,14 @@ class Categorys extends Component {
                 </Row>
     
                 <Row className='mb-1'>
-                  <Button
+                  <button
                     variant='primary'
                     size='sm'
                     onClick={this.handleCRUDCategory}
                     disabled={this.state.isCRUDButtonDisable}
                   >
                     {CRUDButtonName}
-                  </Button>
+                  </button>
                 </Row>
               </Form>
             </Container>

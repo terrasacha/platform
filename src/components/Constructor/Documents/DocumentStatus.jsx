@@ -633,21 +633,19 @@ class DocumentStatus extends Component {
       }
       if (this.state.isShowProductDocuments) {
         return (
-          <Container className="mt-4">
-            <Row className="justify-content-md-center">
-              <Col xs={2} className="text-center">
-                <h3>Proyectos</h3>
-                <Container className="mt-5">
+          <div className="mt-4">
+            <div className="flex justify-center">
+              <div className="w-1/6">
+                <h3 className="text-center">Proyectos</h3>
+                <div className="mt-5">
                   {products?.map((product, i) => (
-                    <Card
+                    <div
                       key={product}
-                      body
-                      className={
+                      className={`${
                         product === this.state.selectedProductValidation
-                          ? "cardContainerSelected"
-                          : "cardContainer"
-                      }
-                      style={{ cursor: "pointer" }}
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-200"
+                      } cardContainer cursor-pointer`}
                       onClick={() => this.handleSelectProduct(product)}
                     >
                       {product}
@@ -655,35 +653,29 @@ class DocumentStatus extends Component {
                       <div>
                         <Badge>{status[i]}</Badge>
                       </div>
-                    </Card>
+                    </div>
                   ))}
-                </Container>
-              </Col>
-              <Col xs={10}>
+                </div>
+              </div>
+              <div className="w-5/6">
                 <div>
                   <h3>Documentación</h3>
-                  <DropdownButton
-                    size="sm"
-                    variant="outline-primary"
-                    title="By status"
-                  >
-                    <Dropdown.Item
-                      as="button"
+                  <div className="mt-4 flex space-x-2">
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md"
                       onClick={() => this.handleSelectStatus("pendingDoc")}
                     >
                       Documentación pendiente
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      as="button"
-                      onClick={() =>
-                        this.handleSelectStatus("approveRejectDoc")
-                      }
+                    </button>
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                      onClick={() => this.handleSelectStatus("approveRejectDoc")}
                     >
                       Documentación aceptada/rechazada
-                    </Dropdown.Item>
-                  </DropdownButton>
+                    </button>
+                  </div>
                 </div>
-                <Table striped hover className="mt-4">
+                <table className="mt-4 w-full table-auto">
                   <thead>
                     <tr>
                       <th>Proyecto</th>
@@ -691,7 +683,7 @@ class DocumentStatus extends Component {
                       <th>Feature</th>
                       <th>Estado</th>
                       <th>Documento</th>
-                      <th>Commentarios</th>
+                      <th>Comentarios</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -701,9 +693,7 @@ class DocumentStatus extends Component {
                         <td>{document.productFeature.product.category.name}</td>
                         <td>
                           {
-                            document.productFeature.feature.description.split(
-                              "."
-                            )[0]
+                            document.productFeature.feature.description.split(".")[0]
                           }
                         </td>
                         <td>
@@ -717,23 +707,15 @@ class DocumentStatus extends Component {
                         </td>
                         <td>
                           {document.status === "pending" || document.status === "accepted" ? (
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              /* onClick={() =>
-                                this.setState({
-                                  showModalDocument: true,
-                                  selectedDocument: document,
-                                })
-                              } */
+                            <button
+                              className="bg-blue-500 text-white px-2 py-1 rounded-md"
                               onClick={() => this.handleDownload(document)}
                             >
                               Ver documentación
-                            </Button>
+                            </button>
                           ) : (
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
+                            <button
+                              className="bg-blue-500 text-white px-2 py-1 rounded-md"
                               onClick={() =>
                                 this.setState({
                                   showModalUploadDocument: true,
@@ -743,33 +725,32 @@ class DocumentStatus extends Component {
                               }
                             >
                               Actualizar documentación
-                            </Button>
+                            </button>
                           )}
                         </td>
                         <td>
-                          <Button
-                            variant="outline-primary"
-                            size="sm"
+                          <button
+                            className="bg-blue-500 text-white px-2 py-1 rounded-md"
                             onClick={() =>
                               this.setState({
                                 showModalComments: true,
                                 selectedDocument: document,
                                 selectedDocumentID: document.id,
-                                selectedProductVerificationID:
-                                  this.getVerificationId(document),
+                                selectedProductVerificationID: this.getVerificationId(document),
                               })
                             }
                           >
-                            See comments
-                          </Button>
+                            Ver comentarios
+                          </button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
-                </Table>
-              </Col>
-            </Row>
-          </Container>
+                </table>
+              </div>
+            </div>
+          </div>
+
         );
       }
     };
@@ -830,7 +811,7 @@ class DocumentStatus extends Component {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button disabled={this.state.creatingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument ? 'Uploading' : 'Upload Document'}</Button>
+                        <button disabled={this.state.creatingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument ? 'Uploading' : 'Upload Document'}</button>
                     </Modal.Footer>
                 </Modal>
             )
@@ -882,12 +863,12 @@ class DocumentStatus extends Component {
                   onChange={(e) => this.handleInputCreateVerificationComment(e)}
                 />
                 <div className="vr" />
-                <Button
+                <button
                   variant="secondary"
                   onClick={(e) => this.handleCreateVerificaionComment(e)}
                 >
                   Enviar comentario
-                </Button>
+                </button>
               </Stack>
             </Modal.Body>
           </Modal>

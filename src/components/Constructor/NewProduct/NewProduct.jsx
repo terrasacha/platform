@@ -1067,14 +1067,14 @@ class NewProduct extends Component {
                         </fieldset>
                     </form>
                     <div className={s.selectTypeProyect}>
-                        <Button
+                        <button
                             className={s.buttonSelectProyectCategory}
                             id="PROYECTO_PLANTACIONES"
                             label="Proyecto Plantaciones"
                             activeButton={this.state.activeButton}
                             handleButtonClick={this.handleButtonClick}
                         />
-                        <Button
+                        <button
                             className={s.buttonSelectProyectCategory}
                             id="REDD+"
                             label="Proyecto REDD"

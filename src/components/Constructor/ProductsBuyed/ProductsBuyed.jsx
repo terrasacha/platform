@@ -206,7 +206,7 @@ export default class ProductsBuyed extends Component {
                             </Carousel>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button onClick={(e) => this.handleHideModalProductImages()}>Close</Button>
+                            <button onClick={(e) => this.handleHideModalProductImages()}>Close</button>
                         </Modal.Footer>
                     </Modal>
                 )
@@ -264,7 +264,7 @@ export default class ProductsBuyed extends Component {
                             </Table>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button onClick={(e) => this.handleOrderTokens(e)}>Close</Button>
+                            <button onClick={(e) => this.handleOrderTokens(e)}>Close</button>
                         </Modal.Footer>
                     </Modal>
                 )

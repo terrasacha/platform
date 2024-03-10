@@ -136,148 +136,149 @@ export default function PropertyInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Aspectos generales del predio" sep={true} />
-      <Card.Body>
-        <div className="row row-cols-1 row-cols-md-2">
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              label="¿Usted habita el predio?"
-              inputType="radio"
-              optionList={[
-                { label: "Si", value: "yes" },
-                { label: "No", value: "no" },
-              ]}
-              optionCheckedList={formData.G_habita_predio}
-              inputName="G_habita_predio"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              label="¿Existen caminos vecinales o servidumbres de paso a otras fincas?"
-              inputType="radio"
-              optionList={[
-                { label: "Si", value: "yes" },
-                { label: "No", value: "no" },
-              ]}
-              optionCheckedList={formData.G_caminos_existence}
-              inputName="G_caminos_existence"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          {formData.G_habita_predio === "yes" && (
-            <div className="col">
-              <FormGroup
-                disabled={!autorizedUser}
-                label="¿Usted habita el predio de manera temporal o permanente?"
-                inputType="radio"
-                optionList={[
-                  { label: "Temporal", value: "temporal" },
-                  { label: "Permanente", value: "permanente" },
-                ]}
-                optionCheckedList={formData.G_Temporal_permanente}
-                inputName="G_Temporal_permanente"
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-              />
-            </div>
-          )}
-          {formData.G_Temporal_permanente === "permanente" && (
-            <div className="col">
-              <FormGroup
-                disabled={!autorizedUser}
-                label="¿Desde hace cuántos años ha estado habitando el predio?"
-                inputType="text"
-                inputValue={formData.G_habita_years}
-                inputName="G_habita_years"
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-              />
-            </div>
-          )}
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="text"
-              label="¿Cuántas viviendas hay en el predio(s)?"
-              inputValue={formData.G_viviendas_number}
-              inputName="G_viviendas_number"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="text"
-              label="¿Cuántas familas?"
-              inputValue={formData.G_familias}
-              inputName="G_familias"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          {parseInt(projectData.projectGeneralAspects?.membersPerFamily) >
-            0 && (
-            <div className="col">
-              <FormGroup
-                disabled={!autorizedUser}
-                inputType="text"
-                label="¿En promedio, cuántos miembros en cada familia?"
-                inputValue={formData.G_familias_miembros}
-                inputName="G_familias_miembros"
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-              />
-            </div>
-          )}
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="text"
-              label="¿Cuál es el estado de las vías de ingreso a su propiedad?"
-              inputValue={formData.G_vias_state}
-              inputName="G_vias_state"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="text"
-              label="¿Cuál es la distancia en kilómetros entre el predio y la cabecera municipal?"
-              inputValue={formData.G_distancia_predio_municipal}
-              inputName="G_distancia_predio_municipal"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="col">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="text"
-              label="¿Qué medio de transporte utiliza?"
-              inputValue={formData.G_transport_mean}
-              inputName="G_transport_mean"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="col-12 col-lg-12">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="textarea"
-              label="¿En su predio existen riesgos de erosión o derrumbes?"
-              inputValue={formData.G_risks_erosion_derrumbe}
-              inputName="G_risks_erosion_derrumbe"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
+    <div className={className}>
+    <div className="border-b border-gray-300">
+      <h2 className="text-xl font-semibold mb-4">Aspectos generales del predio</h2>
+    </div>
+    <div className="p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="col">
+          <FormGroup
+            disabled={!autorizedUser}
+            label="¿Usted habita el predio?"
+            inputType="radio"
+            optionList={[
+              { label: "Si", value: "yes" },
+              { label: "No", value: "no" },
+            ]}
+            optionCheckedList={formData.G_habita_predio}
+            inputName="G_habita_predio"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
         </div>
-        {autorizedUser && (
-          <div className="d-flex justify-content-center">
-            <Button onClick={() => handleSaveBtn()} variant="success">
-              Guardar
-            </Button>
+        <div className="col">
+          <FormGroup
+            disabled={!autorizedUser}
+            label="¿Existen caminos vecinales o servidumbres de paso a otras fincas?"
+            inputType="radio"
+            optionList={[
+              { label: "Si", value: "yes" },
+              { label: "No", value: "no" },
+            ]}
+            optionCheckedList={formData.G_caminos_existence}
+            inputName="G_caminos_existence"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
+        </div>
+        {formData.G_habita_predio === "yes" && (
+          <div className="col">
+            <FormGroup
+              disabled={!autorizedUser}
+              label="¿Usted habita el predio de manera temporal o permanente?"
+              inputType="radio"
+              optionList={[
+                { label: "Temporal", value: "temporal" },
+                { label: "Permanente", value: "permanente" },
+              ]}
+              optionCheckedList={formData.G_Temporal_permanente}
+              inputName="G_Temporal_permanente"
+              onChangeInputValue={(e) => handleChangeInputValue(e)}
+            />
           </div>
         )}
-      </Card.Body>
-    </Card>
-  );
+        {formData.G_Temporal_permanente === "permanente" && (
+          <div className="col">
+            <FormGroup
+              disabled={!autorizedUser}
+              label="¿Desde hace cuántos años ha estado habitando el predio?"
+              inputType="text"
+              inputValue={formData.G_habita_years}
+              inputName="G_habita_years"
+              onChangeInputValue={(e) => handleChangeInputValue(e)}
+            />
+          </div>
+        )}
+        <div className="col">
+          <FormGroup
+            disabled={!autorizedUser}
+            inputType="text"
+            label="¿Cuántas viviendas hay en el predio(s)?"
+            inputValue={formData.G_viviendas_number}
+            inputName="G_viviendas_number"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
+        </div>
+        <div className="col">
+          <FormGroup
+            disabled={!autorizedUser}
+            inputType="text"
+            label="¿Cuántas familias?"
+            inputValue={formData.G_familias}
+            inputName="G_familias"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
+        </div>
+        {parseInt(projectData.projectGeneralAspects?.membersPerFamily) > 0 && (
+          <div className="col">
+            <FormGroup
+              disabled={!autorizedUser}
+              inputType="text"
+              label="¿En promedio, cuántos miembros en cada familia?"
+              inputValue={formData.G_familias_miembros}
+              inputName="G_familias_miembros"
+              onChangeInputValue={(e) => handleChangeInputValue(e)}
+            />
+          </div>
+        )}
+        <div className="col">
+          <FormGroup
+            disabled={!autorizedUser}
+            inputType="text"
+            label="¿Cuál es el estado de las vías de ingreso a su propiedad?"
+            inputValue={formData.G_vias_state}
+            inputName="G_vias_state"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
+        </div>
+        <div className="col">
+          <FormGroup
+            disabled={!autorizedUser}
+            inputType="text"
+            label="¿Cuál es la distancia en kilómetros entre el predio y la cabecera municipal?"
+            inputValue={formData.G_distancia_predio_municipal}
+            inputName="G_distancia_predio_municipal"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
+        </div>
+        <div className="col">
+          <FormGroup
+            disabled={!autorizedUser}
+            inputType="text"
+            label="¿Qué medio de transporte utiliza?"
+            inputValue={formData.G_transport_mean}
+            inputName="G_transport_mean"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
+        </div>
+        <div className="col-12 col-lg-12">
+          <FormGroup
+            disabled={!autorizedUser}
+            inputType="textarea"
+            label="¿En su predio existen riesgos de erosión o derrumbes?"
+            inputValue={formData.G_risks_erosion_derrumbe}
+            inputName="G_risks_erosion_derrumbe"
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+          />
+        </div>
+      </div>
+      {autorizedUser && (
+        <div className="d-flex justify-content-center">
+          <button onClick={() => handleSaveBtn()} variant="success">
+            Guardar
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+    );
 }

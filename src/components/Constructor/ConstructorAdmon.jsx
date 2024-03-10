@@ -315,13 +315,13 @@ class ConstructorAdmon extends Component {
                 aria-describedby="basic-addon2"
                 onChange={(e) => this.editUserWallet(e)}
               />
-              <Button
+              <button
                 variant="outline-success"
                 id="button-addon2"
                 onClick={(e) => this.updateUserWallet(user.wallets.items[0].id)}
               >
                 {this.state.editWallet ? "Done" : "Edit"}
-              </Button>
+              </button>
             </InputGroup>
           );
         }
@@ -394,62 +394,100 @@ class ConstructorAdmon extends Component {
             centered
           >
             <Modal.Body>
-              <Card border="light">
-                <Card.Img variant="top" src={wallet} />
-                <Card.Body>
-                  <Card.Title as="h2">
-                    Paso para crear billetera en Cardano
-                  </Card.Title>
-                  <Accordion flush alwaysOpen>
-                    <Accordion.Item eventKey="0">
-                      <Accordion.Header>
-                        Paso 1: Obtener billetera
-                      </Accordion.Header>
-                      <Accordion.Body>
-                        Su billetera en Cardano es la herramienta principal
-                        utilizada para interactuar con la Blockchain. En ella,
-                        lo más importante son las llaves privadas, que en el
-                        caso de la mayoría de billeteras están representadas por
-                        una combinación de palabras ó frase de recuperación las
-                        cuales deben ser guardadas fuera de línea en un sitio
-                        seguro. Ver más acerca de la seguridad en Cardano y cómo
-                        guardar de forma segura unas llaves privadas. Las
-                        billeteras más populares en Cardano son:
-                        https://eternl.io/, https://gerowallet.io, https://namiwallet.io, https://yoroi-wallet.com.
-                      </Accordion.Body>
-                    </Accordion.Item>
-                    <Accordion.Item eventKey="1">
-                      <Accordion.Header>Paso 2: Pendiente</Accordion.Header>
-                      <Accordion.Body>
-                        La billetera recién creada es el sitio donde se van a
-                        guardar sus tokens de inversión. Cualquier movimiento, o
-                        transacción en la blockchain tiene un costo asociado que
-                        en el caso de Cardano se paga en la moneda nativa
-                        llamada ADA. Si ya invirtió, como inversionista
-                        simplemente recibirá una cantidad de tokens proporcional
-                        a su inversión con un número mínimo de ADAs como valor
-                        necesario mínimo para mover los tokens durante la
-                        transacción inicial. Si posteriormente desea mover los
-                        tokens ya sea cambiarlos de billetera o venderlos
-                        necesitará tener un saldo adicional en ADAs para pagar
-                        los fees de transacción. Existen múltiples opciones para
-                        adquirir ADAs a partir de dinero fiduciario en casas de
-                        cambio conocidas en línea. Si presenta alguna inquietud
-                        en este proceso, por favor contacte a soporte.
-                      </Accordion.Body>
-                    </Accordion.Item>
-                    <Accordion.Item eventKey="2">
-                      <Accordion.Header>Paso 3: Pendiente</Accordion.Header>
-                      <Accordion.Body>
-                        Conectar la billetera a la plataforma Suan: Una vez
-                        creada su billetera puede conectarla de forma segura al
-                        sitio web de Suan. En este caso, un botón de conectar se
-                        encuentra disponible en la parte superior derecha.
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
-                </Card.Body>
-              </Card>
+            <div className="border border-light p-4 rounded-md">
+              <img src={wallet} alt="Wallet" className="w-full mb-4" />
+              <div className="mb-4">
+                <h2 className="text-2xl font-semibold">Paso para crear billetera en Cardano</h2>
+              </div>
+              <div id="accordion-collapse" data-accordion="collapse">
+                <h2 id="accordion-collapse-heading-1">
+                  <button
+                    type="button"
+                    className="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                    data-accordion-target="#accordion-collapse-body-1"
+                    aria-expanded="true"
+                    aria-controls="accordion-collapse-body-1"
+                  >
+                    <span>Paso 1: Obtener billetera</span>
+                    <svg
+                      data-accordion-icon
+                      className="w-3 h-3 rotate-180 shrink-0"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
+                    </svg>
+                  </button>
+                </h2>
+                <div id="accordion-collapse-body-1" className="hidden" aria-labelledby="accordion-collapse-heading-1">
+                  <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                    <p className="mb-2 text-gray-500 dark:text-gray-400">Su billetera en Cardano es la herramienta principal utilizada para interactuar con la Blockchain...</p>
+                    <p className="text-gray-500 dark:text-gray-400">Las billeteras más populares en Cardano son:
+                      <a href="https://eternl.io/" className="text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">eternl.io</a>,
+                      <a href="https://gerowallet.io" className="text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">gerowallet.io</a>,
+                      <a href="https://namiwallet.io" className="text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">namiwallet.io</a>,
+                      <a href="https://yoroi-wallet.com" className="text-blue-600 dark:text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">yoroi-wallet.com</a>.
+                    </p>
+                  </div>
+                </div>
+                <h2 id="accordion-collapse-heading-2">
+                  <button
+                    type="button"
+                    className="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                    data-accordion-target="#accordion-collapse-body-2"
+                    aria-expanded="false"
+                    aria-controls="accordion-collapse-body-2"
+                  >
+                    <span>Paso 2: Pendiente</span>
+                    <svg
+                      data-accordion-icon
+                      className="w-3 h-3 rotate-180 shrink-0"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
+                    </svg>
+                  </button>
+                </h2>
+                <div id="accordion-collapse-body-2" className="hidden" aria-labelledby="accordion-collapse-heading-2">
+                  <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+                    <p className="mb-2 text-gray-500 dark:text-gray-400">La billetera recién creada es el sitio donde se van a guardar sus tokens de inversión...</p>
+                    <p className="text-gray-500 dark:text-gray-400">Si presenta alguna inquietud en este proceso, por favor contacte a soporte.</p>
+                  </div>
+                </div>
+                <h2 id="accordion-collapse-heading-3">
+                  <button
+                    type="button"
+                    className="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                    data-accordion-target="#accordion-collapse-body-3"
+                    aria-expanded="false"
+                    aria-controls="accordion-collapse-body-3"
+                  >
+                    <span>Paso 3: Pendiente</span>
+                    <svg
+                      data-accordion-icon
+                      className="w-3 h-3 rotate-180 shrink-0"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
+                    </svg>
+                  </button>
+                </h2>
+                <div id="accordion-collapse-body-3" className="hidden" aria-labelledby="accordion-collapse-heading-3">
+                  <div className="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
+                    <p className="text-gray-500 dark:text-gray-400">Conectar la billetera a la plataforma Suan: Una vez creada su billetera puede conectarla de forma segura al sitio web de Suan. En este caso, un botón de conectar se encuentra disponible en la parte superior derecha.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             </Modal.Body>
           </Modal>
         );

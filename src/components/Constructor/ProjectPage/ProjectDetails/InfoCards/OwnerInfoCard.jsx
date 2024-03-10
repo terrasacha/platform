@@ -539,178 +539,131 @@ export default function OwnerInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header
-        title="Información de titulares"
-        sep={true}
-        tooltip={tooltip}
-      />
-      <Card.Body>
-        {/* <div className="row">
-          <div className="col-12 col-md-6">
-            <FormGroup
-              disabled
-              label="Nombre del titular"
-              inputValue={projectData.projectOwner?.name}
-            />
-          </div>
-          <div className="col-12">
-            <div className="row">
-              <div className="col-6">
-                <FormGroup
-                  disabled
-                  label="Tipo de documento"
-                  inputType="radio"
-                  optionList={[
-                    { label: "CC", value: "CC" },
-                    { label: "NIT", value: "NIT" },
-                  ]}
-                  optionCheckedList={projectData.projectOwner?.docType}
-                />
-              </div>
-              <div className="col-6">
-                <FormGroup
-                  disabled
-                  label="Número de identificación"
-                  inputValue={projectData.projectOwner?.docNumber}
-                />
-              </div>
-            </div>
-          </div>
-        </div> */}
-        <div className="row">
-          <Table responsive>
-            <thead className="text-center">
-              <tr>
-                <th style={{ width: "300px" }}>Nombre</th>
-                <th style={{ width: "120px" }}>Tipo Documento</th>
-                <th style={{ width: "120px" }}>Numero Documento</th>
-                <th style={{ width: "120px" }}>Certificado de tradición</th>
-                <th style={{ width: "120px" }}></th>
-              </tr>
-            </thead>
-            <tbody className="align-middle">
-              {tokenHistoricalData.map((data, index) => {
-                return (
-                  <tr key={index} className="text-center">
-                    {data.editing ? (
-                      <>
-                        <td>
-                          <Form.Control
-                            size="sm"
-                            type="text"
-                            value={data.name}
-                            className="text-center"
-                            name={`owner_name_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          />
-                        </td>
-                        <td>
-                          <Form.Select
-                            size="sm"
-                            type="text"
-                            value={data.docType}
-                            className="text-center"
-                            name={`owner_docType_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          >
-                            <option disabled value=""></option>
-                            <option value="cc">CC</option>
-                            <option value="nit">NIT</option>
-                          </Form.Select>
-                        </td>
-                        <td>
-                          <Form.Control
-                            size="sm"
-                            type="text"
-                            value={data.docNumber}
-                            className="text-center"
-                            name={`owner_docNumber_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            style={{ display: "none" }}
-                            onChange={(e) => handleFileChange(e, index)}
-                          />
-                          <Button onClick={handleUploadButton} size="sm">
-                            {data.certificate || data.documentID !== undefined
-                              ? "Actualizar"
-                              : "Cargar"}
-                          </Button>
-                        </td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="success"
-                            className="m-1"
-                            onClick={() => handleSaveHistoricalData(index)}
-                          >
-                            <SaveDiskIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
-                            onClick={() => handleDeleteHistoricalData(index)}
-                          >
-                            <TrashIcon />
-                          </Button>
-                        </td>
-                      </>
-                    ) : (
-                      <>
-                        <td>{data.name?.toUpperCase()}</td>
-                        <td>{data.docType?.toUpperCase()}</td>
-                        <td>{data.docNumber}</td>
-                        <td>{renderFileLinkByDocumentID(data.documentID)}</td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="warning"
-                            className="m-1"
-                            disabled={!autorizedUser}
-                            onClick={() => handleEditHistoricalData(index)}
-                          >
-                            <EditIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
-                            disabled={!autorizedUser}
-                            onClick={() => handleDeleteHistoricalData(index)}
-                          >
-                            <TrashIcon />
-                          </Button>
-                        </td>
-                      </>
-                    )}
-                  </tr>
-                );
-              })}
-              <tr>
-                <td colSpan={5}>
-                  <div className="d-flex">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-100"
-                      disabled={!autorizedUser}
-                      onClick={() => handleAddNewPeriodToHistoricalData()}
+    <div className={className}>
+  <div className="border-b border-gray-300">
+    <h2 className="text-xl font-semibold mb-4">Información de titulares</h2>
+  </div>
+  <div className="p-6">
+    <div className="row">
+      <table className="table text-center">
+        <thead>
+          <tr>
+            <th style={{ width: "300px" }}>Nombre</th>
+            <th style={{ width: "120px" }}>Tipo Documento</th>
+            <th style={{ width: "120px" }}>Numero Documento</th>
+            <th style={{ width: "120px" }}>Certificado de tradición</th>
+            <th style={{ width: "120px" }}></th>
+          </tr>
+        </thead>
+        <tbody className="align-middle">
+          {tokenHistoricalData.map((data, index) => (
+            <tr key={index} className="text-center">
+              {data.editing ? (
+                <>
+                  <td>
+                    <input
+                      type="text"
+                      value={data.name}
+                      className="form-control form-control-sm text-center"
+                      name={`owner_name_${index}`}
+                      onChange={(e) => handleChangeInputValue(e)}
+                    />
+                  </td>
+                  <td>
+                    <select
+                      value={data.docType}
+                      className="form-select form-select-sm text-center"
+                      name={`owner_docType_${index}`}
+                      onChange={(e) => handleChangeInputValue(e)}
                     >
-                      <PlusIcon></PlusIcon>
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-      </Card.Body>
-    </Card>
+                      <option disabled value=""></option>
+                      <option value="cc">CC</option>
+                      <option value="nit">NIT</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={data.docNumber}
+                      className="form-control form-control-sm text-center"
+                      name={`owner_docNumber_${index}`}
+                      onChange={(e) => handleChangeInputValue(e)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={(e) => handleFileChange(e, index)}
+                    />
+                    <button
+                      onClick={handleUploadButton}
+                      className="btn btn-sm btn-primary"
+                    >
+                      {data.certificate || data.documentID !== undefined
+                        ? "Actualizar"
+                        : "Cargar"}
+                    </button>
+                  </td>
+                  <td className="text-end">
+                    <button
+                      onClick={() => handleSaveHistoricalData(index)}
+                      className="btn btn-sm btn-success m-1"
+                    >
+                      <SaveDiskIcon />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteHistoricalData(index)}
+                      className="btn btn-sm btn-danger m-1"
+                    >
+                      <TrashIcon />
+                    </button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>{data.name?.toUpperCase()}</td>
+                  <td>{data.docType?.toUpperCase()}</td>
+                  <td>{data.docNumber}</td>
+                  <td>{renderFileLinkByDocumentID(data.documentID)}</td>
+                  <td className="text-end">
+                    <button
+                      onClick={() => handleEditHistoricalData(index)}
+                      className="btn btn-sm btn-warning m-1"
+                      disabled={!autorizedUser}
+                    >
+                      <EditIcon />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteHistoricalData(index)}
+                      className="btn btn-sm btn-danger m-1"
+                      disabled={!autorizedUser}
+                    >
+                      <TrashIcon />
+                    </button>
+                  </td>
+                </>
+              )}
+            </tr>
+          ))}
+          <tr>
+            <td colSpan={5}>
+              <div className="d-flex">
+                <button
+                  onClick={() => handleAddNewPeriodToHistoricalData()}
+                  className="btn btn-sm btn-secondary w-100"
+                  disabled={!autorizedUser}
+                >
+                  <PlusIcon />
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
   );
 }

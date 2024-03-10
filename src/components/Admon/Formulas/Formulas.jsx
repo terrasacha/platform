@@ -203,13 +203,13 @@ class Formulas extends Component {
                         : ''}
                     </td>
                     <td>
-                      <Button
+                      <button
                         variant='primary'
                         size='sm'
                         onClick={(e) => this.handleLoadEditFormula(formula, e)}
                       >
                         Editar
-                      </Button>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -276,14 +276,14 @@ class Formulas extends Component {
             </Row>
 
             <Row className='mb-1'>
-              <Button
+              <button
                 variant='primary'
                 size='sm'
                 onClick={this.handleCRUDFormula}
                 disabled={this.state.isCRUDButtonDisable}
               >
                 {CRUDButtonName}
-              </Button>
+              </button>
             </Row>
           </Form>
         </Container>

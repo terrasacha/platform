@@ -224,34 +224,36 @@ class ValidatorAdmon extends Component {
               products.map((product, index) => {
                 return (
                   <div className="p-3">
-                    <Card key={product.id} className="p-0">
-                      <img
-                        variant="top"
-                        src={getImagesCategories(product.categoryID)}
-                        style={{ height: "150px" }}
-                        alt="Hola"
-                        />
-                      <Card.Body>
-                        <div className="d-flex">
-                          <Stack direction="horizontal" gap={2}>
-                            <Badge bg="primary">
-                              {getYearFromAWSDatetime(product.createdAt)}
-                            </Badge>
-                            <Badge bg="primary">{product.categoryID}</Badge>
-                          </Stack>
-                        </div>
-                        <p className="fs-5 my-2">{product.name}</p>
-                        <hr className="mb-2" />
-                        <p className="fs-6 my-2 text-h">{product.description}</p>
-                      </Card.Body>
-                      <Card.Footer>
-                        <div className="d-flex justify-content-center align-items-center">
-                          <a href={"project/" + product.id}>
-                            <Button>Ver más</Button>
-                          </a>
-                        </div>
-                      </Card.Footer>
-                    </Card>
+                  <div key={product.id} className="p-0">
+                    <img
+                      className="w-full h-48 object-cover"
+                      src={getImagesCategories(product.categoryID)}
+                      alt="Hola"
+                    />
+                    <div className="p-4">
+                      <div className="flex">
+                        <span className="bg-primary text-white px-2 py-1 mr-2">
+                          {getYearFromAWSDatetime(product.createdAt)}
+                        </span>
+                        <span className="bg-primary text-white px-2 py-1">
+                          {product.categoryID}
+                        </span>
+                      </div>
+                      <p className="text-lg my-2">{product.name}</p>
+                      <hr className="my-2" />
+                      <p className="text-base my-2">{product.description}</p>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex justify-center items-center">
+                        <a href={"project/" + product.id}>
+                          <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                            Ver más
+                          </button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
                   </div>
                 );
               })}
@@ -267,7 +269,7 @@ class ValidatorAdmon extends Component {
         <HeaderNavbar
           logOut={this.logOut}
           changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-        ></HeaderNavbar>
+    ></HeaderNavbar>
         <ToastContainer />
         {renderValidatingProjects()}
       </Container>

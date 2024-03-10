@@ -171,13 +171,13 @@ class UOM extends Component {
                     <td>{unitOfMeasure.description}</td>
                     <td>{unitOfMeasure.isFloat ? 'Yes' : 'No'}</td>
                     <td>
-                      <Button
+                      <button
                         variant='primary'
                         size='sm'
                         onClick={(e) => this.handleLoadEditUnitOfMeasure(unitOfMeasure, e)}
                       >
                         Editar
-                      </Button>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -223,25 +223,25 @@ class UOM extends Component {
                   Is Float?
                 </label>
                 <br />
-                <Button
+                <button
                   variant='primary'
                   size='sm'
                   onClick={(e) => this.handleOnChangeInputForm(e, 'isFloat')}
                 >
                   {newUnitOfMeasure.isFloat ? 'YES' : 'NO'}
-                </Button>
+                </button>
               </Col>
             </Row>
 
             <Row className='mb-1'>
-              <Button
+              <button
                 variant='primary'
                 size='sm'
                 onClick={this.handleCRUDUnitOfMeasure}
                 disabled={this.state.isCRUDButtonDisable}
               >
                 {CRUDButtonName}
-              </Button>
+              </button>
             </Row>
           </Form>
           <br />

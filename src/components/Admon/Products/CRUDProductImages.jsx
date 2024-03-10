@@ -69,12 +69,12 @@ export default class CRUDProductImages extends Component {
                         </td>
                         <td>
                             <Form.Group as={Col} controlId='formGridCRUD_ProductIsOnCarousel'>
-                                <Button 
+                                <button 
                                     variant='primary'
                                     size='lg' 
                                      
                                     onClick={(e) => this.handleChangeProductImageProperty(e, image, 'isOnCarousel')}
-                                >{image.isOnCarousel? 'YES' : 'NO'}</Button>
+                                >{image.isOnCarousel? 'YES' : 'NO'}</button>
                             </Form.Group>
                         </td>
                         <td>

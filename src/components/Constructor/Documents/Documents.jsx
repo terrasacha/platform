@@ -252,32 +252,30 @@ class Documents extends Component {
         const uploadDocumentation = () => {
             if (showProductsWithoutDoc) {
                 return (
-                    <Container className='mt-3'>
-                        <Row>
-                            <Col xs>
-                                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }} className='mb-5'>
-                                    <h5>Product documentation</h5>
-                                    {dropDown()}
-                                </div>
-                                {listPFWithoutDoc.length === 0 ? '' :
-                                    listPFWithoutDoc.map(pf => {
-                                        return (
-                                            <Card key={pf.id} className='mb-2'>
-                                                <Card.Header>{pf.product.name}</Card.Header>
-                                                <Card.Body>
-                                                    <Card.Title>{pf.feature.name}</Card.Title>
-                                                    <Card.Text>
-                                                        {pf.feature.description}
-                                                    </Card.Text>
-                                                    <Button variant="primary" onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</Button>
-                                                </Card.Body>
-                                            </Card>
-                                        )
-                                    })
-                                }
-                            </Col>
-                        </Row>
-                    </Container>
+                    <div className="mt-3">
+                        <div className="flex items-end justify-between mb-5">
+                        <h5 className="text-xl font-semibold">Product documentation</h5>
+                        {dropDown()}
+                        </div>
+                        {listPFWithoutDoc.length === 0 ? '' :
+                        listPFWithoutDoc.map(pf => (
+                            <div key={pf.id} className="mb-2">
+                            <div className="bg-white border border-gray-200 p-4 rounded-md">
+                                <h6 className="text-lg font-semibold mb-2">{pf.product.name}</h6>
+                                <p className="mb-2">{pf.feature.name}</p>
+                                <p className="text-gray-600">{pf.feature.description}</p>
+                                <button
+                                className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                                onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}
+                                >
+                                Upload Document
+                                </button>
+                            </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                  
                 )
             }
         }
@@ -312,7 +310,7 @@ class Documents extends Component {
                             </Row>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button disabled={this.state.creatingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument ? 'Uploading' : 'Upload Document'}</Button>
+                            <button disabled={this.state.creatingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument ? 'Uploading' : 'Upload Document'}</button>
                         </Modal.Footer>
                     </Modal>
                 )

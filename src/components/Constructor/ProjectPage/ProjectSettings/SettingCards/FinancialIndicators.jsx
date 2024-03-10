@@ -192,15 +192,27 @@ export default function FinancialIndicators(props) {
 
   return (
     <>
-      <Card className={className}>
-        <Card.Header title={title} sep={true} />
-        <Card.Body>
+      <div className={className}>
+        <div className="border-b border-gray-300">
+          <h2 className="text-2xl font-semibold mb-4">{title}</h2>
+        </div>
+        <div className="p-6">
           <p className="mb-3">{title}</p>
           <div>
-            <TableEdit canEdit={canEdit} columns={['CONCEPTO', 'VALOR']} infoTable={revenuesByProduct} handleEditValue={handleEditValue} handleChangeInputValue={handleChangeInputValue} handleAddCashFlow={handleAddCashFlow} handleSaveHistoricalData={handleSaveHistoricalData} handleDeleteHistoricalData={handleDeleteHistoricalData}/>
+            <TableEdit
+              canEdit={canEdit}
+              columns={['CONCEPTO', 'VALOR']}
+              infoTable={revenuesByProduct}
+              handleEditValue={handleEditValue}
+              handleChangeInputValue={handleChangeInputValue}
+              handleAddCashFlow={handleAddCashFlow}
+              handleSaveHistoricalData={handleSaveHistoricalData}
+              handleDeleteHistoricalData={handleDeleteHistoricalData}
+            />
           </div>
-        </Card.Body>
-      </Card>
+        </div>
+      </div>
+
     </>
   )
 }

@@ -87,54 +87,77 @@ export default function ProjectSettingsCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Configuración del Proyecto" sep={true} />
-      <Card.Body>
-        <FormGroup
-          type="flex"
-          label="Estado del proyecto"
-          inputType="select"
-          inputSize="md"
-          optionList={[
-            { value: "Prefactibilidad", label: "Prefactibilidad" },
-            { value: "Factibilidad", label: "Factibilidad" },
-            {
-              value: "Documento de diseño del proyecto",
-              label: "Documento de diseño del proyecto",
-            },
-            { value: "Validación externa", label: "Validación externa" },
-            { value: "Registro del proyecto", label: "Registro del proyecto" },
-          ]}
-          inputValue={projectStatus}
-          saveBtnDisabled={
-            projectData.projectInfo?.status === projectStatus ? true : false
-          }
-          onChangeInputValue={(e) => handleChangeProjectStatus(e)}
-          onClickSaveBtn={() => handleSaveProjectStatus()}
-        />
-        <FormGroup
-          type="flex"
-          label="El proyecto debe mostrarse en: "
-          inputType="select"
-          inputSize="md"
-          optionList={[
-            { value: "Suan", label: "Suan" },
-            { value: "Terrasacha", label: "Terrasacha" },
-          ]}
-          inputValue={projectShowOn}
-          saveBtnDisabled={
-            projectData.projectInfo?.showOn === projectShowOn ? true : false
-          }
-          onChangeInputValue={(e) => handleChangeProjectShowOn(e)}
-          onClickSaveBtn={() => handleSaveProjectShowOn()}
-        />
-        <FormGroup
-          label="Proyecto visible en Marketplace"
-          inputType="switch"
-          checked={projectIsActive}
-          onChangeInputValue={() => handleChangeProjectIsActiveStatus()}
-        />
-      </Card.Body>
-    </Card>
+    <div className={className}>
+    <div className="border-b border-gray-300">
+      <h2 className="text-2xl font-semibold mb-4">Configuración del Proyecto</h2>
+    </div>
+    <div className="p-6">
+      <div className="mb-4">
+        <label htmlFor="projectStatus" className="block text-sm font-medium text-gray-700">
+          Estado del proyecto
+        </label>
+        <select
+          id="projectStatus"
+          name="projectStatus"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          value={projectStatus}
+          onChange={(e) => handleChangeProjectStatus(e)}
+        >
+          <option value="Prefactibilidad">Prefactibilidad</option>
+          <option value="Factibilidad">Factibilidad</option>
+          <option value="Documento de diseño del proyecto">Documento de diseño del proyecto</option>
+          <option value="Validación externa">Validación externa</option>
+          <option value="Registro del proyecto">Registro del proyecto</option>
+        </select>
+        <button
+          className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+          disabled={projectData.projectInfo?.status === projectStatus}
+          onClick={() => handleSaveProjectStatus()}
+        >
+          Guardar
+        </button>
+      </div>
+  
+      <div className="mb-4">
+        <label htmlFor="projectShowOn" className="block text-sm font-medium text-gray-700">
+          El proyecto debe mostrarse en:
+        </label>
+        <select
+          id="projectShowOn"
+          name="projectShowOn"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          value={projectShowOn}
+          onChange={(e) => handleChangeProjectShowOn(e)}
+        >
+          <option value="Suan">Suan</option>
+          <option value="Terrasacha">Terrasacha</option>
+        </select>
+        <button
+          className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+          disabled={projectData.projectInfo?.showOn === projectShowOn}
+          onClick={() => handleSaveProjectShowOn()}
+        >
+          Guardar
+        </button>
+      </div>
+  
+      <div className="mb-4">
+        <label htmlFor="projectIsActive" className="flex items-center justify-between">
+          <span className="block text-sm font-medium text-gray-700">
+            Proyecto visible en Marketplace
+          </span>
+          <input
+            id="projectIsActive"
+            name="projectIsActive"
+            type="checkbox"
+            className="ml-2 form-checkbox h-5 w-5 text-blue-600"
+            checked={projectIsActive}
+            onChange={() => handleChangeProjectIsActiveStatus()}
+          />
+        </label>
+      </div>
+    </div>
+  </div>
+  
   );
 }

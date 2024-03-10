@@ -38,7 +38,6 @@ export default function HeaderNavbar({ changeHeaderNavBarRequest }) {
           />
         </button>
         <div className="lg:hidden">
-          {/* Botón para mostrar/ocultar menú en pantallas pequeñas */}
           <button
             onClick={() => setDropdownOpen(!isDropdownOpen)}
             className="text-gray-800 hover:text-gray-600"
@@ -100,91 +99,90 @@ export default function HeaderNavbar({ changeHeaderNavBarRequest }) {
               </button>
             </>
           )}
-        </div>
-        {role === "validator" && (
-          <div>
-            <a
-              href="#profile"
-              onClick={(e) =>
-                this.props.changeHeaderNavBarRequest("product_documents")
-              }
-            >
-              Proyectos Asignados
-            </a>
-          </div>
-        )}
-        {role === "admon" && (
-          <div className="hidden md:flex space-x-4 relative">
-            <button className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none">
-              <span>Proyectos</span>
-            </button>
-            <button className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none">
-              <span>Documentos</span>
-            </button>
-            <button className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none">
-              <span>Fórmulas</span>
-            </button>
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!isDropdownOpen)}
-                className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none"
+          {role === "validator" && (
+            <div>
+              <a
+                href="#profile"
+                onClick={(e) =>
+                  changeHeaderNavBarRequest ("product_documents")
+                }
               >
-                <span>Project Features</span>
+                Proyectos Asignados
+              </a>
+            </div>
+          )}
+          {role === "admon" && (
+            <div className="hidden md:flex space-x-4 relative">
+              <button className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none">
+                <span>Proyectos</span>
               </button>
+              <button className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none">
+                <span>Documentos</span>
+              </button>
+              <button className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none">
+                <span>Fórmulas</span>
+              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setDropdownOpen(!isDropdownOpen)}
+                  className="block py-2 px-4 text-gray-700 hover:bg-gray-200 focus:outline-none"
+                >
+                  <span>Project Features</span>
+                </button>
 
-              {/* Dropdown container */}
-              <div
-                className={`absolute top-full left-0 mt-2 space-y-2 bg-white border border-gray-200 rounded-md shadow-md ${
-                  isDropdownOpen ? "block" : "hidden"
-                }`}
-              >
-                <a
-                  href="/items"
-                  onClick={(e) =>
-                    this.changeHeaderNavBarRequest("items", e)
-                  }
-                  className="block py-2 px-4 text-gray-700 hover:bg-gray-200"
+                <div
+                  className={`absolute top-full left-0 mt-2 space-y-2 bg-white border border-gray-200 rounded-md shadow-md ${
+                    isDropdownOpen ? "block" : "hidden"
+                  }`}
                 >
-                  <span>Items de Proyectos</span>
-                </a>
-                <a
-                  href="/features"
-                  onClick={(e) =>
-                    this.changeHeaderNavBarRequest("features", e)
-                  }
-                  className="block py-2 px-4 text-gray-700 hover:bg-gray-200"
-                >
-                  <span>Features</span>
-                </a>
-                <a
-                  href="/uom"
-                  onClick={(e) => this.changeHeaderNavBarRequest("uom", e)}
-                  className="block py-2 px-4 text-gray-700 hover:bg-gray-200"
-                >
-                  <span>UOM</span>
-                </a>
+                  <a
+                    href="/items"
+                    onClick={(e) =>
+                      this.changeHeaderNavBarRequest("items", e)
+                    }
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-200"
+                  >
+                    <span>Items de Proyectos</span>
+                  </a>
+                  <a
+                    href="/features"
+                    onClick={(e) =>
+                      this.changeHeaderNavBarRequest("features", e)
+                    }
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-200"
+                  >
+                    <span>Features</span>
+                  </a>
+                  <a
+                    href="/uom"
+                    onClick={(e) => this.changeHeaderNavBarRequest("uom", e)}
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-200"
+                  >
+                    <span>UOM</span>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {role ? (
-          <div>
+          {role ? (
+            <div>
+              <button
+                onClick={() => handleSignOut()}
+                className={`signing ${s.signing} hover:text-gray-600`}
+              >
+                Desconectar
+              </button>
+            </div>
+          ) : (
             <button
-              onClick={() => handleSignOut()}
+              onClick={() => (window.location.href = "/login")}
               className={`signing ${s.signing} hover:text-gray-600`}
             >
-              Desconectar
+              Conectar
             </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => (window.location.href = "/login")}
-            className={`signing ${s.signing} hover:text-gray-600`}
-          >
-            Conectar
-          </button>
-        )}
+          )}
+        </div>
       </div>
     </nav>
   );

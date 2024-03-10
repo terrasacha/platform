@@ -21,46 +21,45 @@ export default function MessagesHistoryCard(props) {
   } = props;
 
   return (
-    <Card className={className}>
-      <Card.Header title="Comentarios" sep={true} />
-      <Card.Body>
-        {messages.map((message) => {
-          return (
-            <MessageSection
-              key={message.id}
-              icon={
-                message.isCommentByVerifier ? (
-                  <UserSearchIcon />
-                ) : (
-                  <UserSquareIcon />
-                )
-              }
-              sender={message.userName}
-              message={message.comment}
-              createdAt={message.createdAt}
-              elapsedTime={message.elapsedTime}
-            />
-          );
-        })}
-        {(isPostulant || isFileVerifier) && !isDocApproved && (
-          <div className="d-flex">
-            <Form.Control
-              size="sm"
-              type="text"
-              placeholder="Escribe tu comentario aquí"
-              onChange={(e) => setNewMessage(e.target.value)}
-              value={newMessage}
-            />
-            <Button
-              variant="dark"
-              className="ms-2"
-              onClick={handleSendMessageButtonClick}
-            >
-              Enviar
-            </Button>
-          </div>
-        )}
-      </Card.Body>
-    </Card>
+    <div className={className}>
+  <div className="border-b mb-4">
+    <h5 className="text-xl font-semibold">Comentarios</h5>
+  </div>
+  <div className="space-y-4">
+    {messages.map((message) => (
+      <MessageSection
+        key={message.id}
+        icon={
+          message.isCommentByVerifier ? (
+            <UserSearchIcon />
+          ) : (
+            <UserSquareIcon />
+          )
+        }
+        sender={message.userName}
+        message={message.comment}
+        createdAt={message.createdAt}
+        elapsedTime={message.elapsedTime}
+      />
+    ))}
+    {(isPostulant || isFileVerifier) && !isDocApproved && (
+      <div className="flex">
+        <input
+          className="w-full p-2 border border-gray-300 rounded"
+          type="text"
+          placeholder="Escribe tu comentario aquí"
+          onChange={(e) => setNewMessage(e.target.value)}
+          value={newMessage}
+        />
+        <button
+          className="p-2 bg-dark text-white ms-2"
+          onClick={handleSendMessageButtonClick}
+        >
+          Enviar
+        </button>
+      </div>
+    )}
+  </div>
+</div>
   );
 }
