@@ -1,9 +1,7 @@
 import React from "react";
-// Bootstrap
-import Container from "../ui/Container";
-import Nav from "../ui/Nav";
-import Navbar from "../ui/Navbar";
-import Offcanvas from "../ui/Offcanvas";
+// Tailwind
+import { Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from 'flowbite-react';
+
 
 // Import images
 import LOGO from "components/common/_images/suan_logo.png";
@@ -38,5 +36,76 @@ export default function NewHeaderNavbar() {
   
   
   return (
-    <></> );
+    <Navbar fluid>
+        <NavbarBrand href="/" style={{ marginLeft: "2%" }}>
+          <img
+            src={LOGO}
+            height="40"
+            width="auto"
+            className="d-inline-block align-top"
+            alt="ATP"
+          />
+        </NavbarBrand>
+        <NavbarToggle />
+            <NavbarCollapse className={s.navGroup}>
+                {role === "constructor" && (
+                  <>
+                  <NavbarLink
+                    onClick={() =>
+                      (window.location.href = "/constructor")
+                    }
+                  >
+                    Mis Proyectos
+                  </NavbarLink>
+                    <NavbarLink
+                      onClick={() =>
+                        (window.location.href = "/new_project")
+                      }
+                    >
+                      Postular proyecto
+                    </NavbarLink>
+                    {/* <NavbarLink
+                      onClick={() =>
+                        (window.location.href = "/creating_wallet")
+                      }
+                    >
+                      ¿Cómo crear tu billetera?
+                    </NavbarLink> */}
+                  </>
+                )}
+                {role === "validator" && (
+                  <>
+                    <NavbarLink
+                      onClick={() =>
+                        (window.location.href = "/validator_admon")
+                      }
+                    >
+                      Proyectos asignados
+                    </NavbarLink>
+                  </>
+                )}
+                {localStorage.getItem("role") ? (
+                  <div>
+                    <button className={s.signing} onClick={() => handleSignOut()}>
+                      Desconectar
+                    </button>
+                  <button className='role'>
+                    {userlog}<br></br>              
+                    <p className='role_btn'>
+                      {role === 'validator' ? 'Validador' : (role === 'constructor' ? 'Propietario' : role)}
+                    </p>
+                </button>
+                  </div>
+
+                ) : (
+                  <button
+                    className={s.signing}
+                    onClick={() => (window.location.href = "/login")}
+                  >
+                    Conectar
+                  </button>
+                )}
+              </NavbarCollapse>
+    </Navbar>
+  );
 }
