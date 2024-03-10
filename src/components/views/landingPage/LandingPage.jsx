@@ -11,6 +11,7 @@ import drones from '../_images/drone-con-camara.png';
 import blockchain from '../_images/cadena-de-bloques.png';
 import plataforma from '../_images/diseno-de-respuesta.png';
 import { Button, Modal } from 'flowbite-react';
+import HeaderNavbar from '../Navbars/HeaderNavbar'
 
 
 export default class LandingPage extends Component {
@@ -151,12 +152,8 @@ export default class LandingPage extends Component {
     const urlS3Image = WebAppConfig.url_s3_public_images
     return (
       <div style={{minHeight: '100vh'}}>
-        {/* <TailwindHeaderNavbar 
-                            changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-                            handleSignOut={this.handleSignOut}
-                            actualUser={this.state.actualUser}
-                            isActualUserLogged={this.state.isActualUserLogged}
-                        ></TailwindHeaderNavbar> */}
+          <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
+
 {/*         <Carousel>
         {this.state.productsImagesIsOnCarousel.map((image, idx) => (
             <Carousel.Item key={idx}>

@@ -26,17 +26,11 @@ import ProjectPage from "./components/Constructor/ProjectPage/ProjectPage";
 import ListS3 from "components/ListS3";
 import NewProject from "components/Constructor/NewProject/NewProject";
 import Dashboard from "components/Dashboard/Dashboard";
-import TailwindHeaderNavbar from "components/common/TailwindHeaderNarvbar";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <TailwindHeaderNavbar
-          changeHeaderNavBarRequest={() =>
-            console.log("changeHeaderNavBarRequest")
-          }
-        />
         <Routes>
           <Route path="/" element={<LandingPage />} exact />
           <Route
