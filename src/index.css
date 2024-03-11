@@ -59,9 +59,9 @@ input{
 .bg-primary, .btn-primary{
         background-color: #333333 !important;           
 }
-header {
-        background: #333;
-        color: #fff;
+header, .card-header {
+        background: #333 !important;
+        color: #fff !important;
     }
 .btn:disabled{
         background: #959595 !important;

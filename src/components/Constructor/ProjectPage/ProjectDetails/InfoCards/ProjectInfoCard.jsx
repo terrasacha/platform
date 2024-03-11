@@ -553,42 +553,36 @@ export default function ProjectInfoCard(props) {
   };
 
   return (
-    <div className={`${className} card p-10`}>
-      <div>
-        <div className="row">
-          <div className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}>
+      <div className={`card p-4 ${className}`}>
+        <div className="card-header border-b mb-4 pb-2">
+          <h5 className="text-xl font-bold">Información del proyecto</h5>
+        </div>
+        <div className="card-body grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
               label="Nombre del proyecto"
               inputName="projectInfoTitle"
               inputValue={formData.projectInfoTitle}
-              saveBtnDisabled={
-                projectData.projectInfo?.title === formData.projectInfoTitle
-                  ? true
-                  : false
-              }
+              saveBtnDisabled={projectData.projectInfo?.title === formData.projectInfoTitle}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
               onClickSaveBtn={() => handleSaveBtn("projectInfoTitle")}
             />
           </div>
-          <div className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}>
+          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
               label="Área total (hectáreas)"
               inputName="projectInfoArea"
               inputValue={formData.projectInfoArea}
-              saveBtnDisabled={
-                projectData.projectInfo?.area === formData.projectInfoArea
-                  ? true
-                  : false
-              }
+              saveBtnDisabled={projectData.projectInfo?.area === formData.projectInfoArea}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
               onClickSaveBtn={() => handleSaveBtn("projectInfoArea")}
             />
           </div>
-          <div className="col-12">
+          <div className="col-span-12">
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
@@ -596,58 +590,39 @@ export default function ProjectInfoCard(props) {
               label="Descripción"
               inputName="projectInfoDescription"
               inputValue={formData.projectInfoDescription}
-              saveBtnDisabled={
-                projectData.projectInfo?.description ===
-                formData.projectInfoDescription
-                  ? true
-                  : false
-              }
+              saveBtnDisabled={projectData.projectInfo?.description === formData.projectInfoDescription}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
               onClickSaveBtn={() => handleSaveBtn("projectInfoDescription")}
             />
           </div>
-          <div className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}>
+          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
               label="Categoria del proyecto"
               inputType="radio"
-              optionList={categoryList.map((category) => {
-                return {
-                  label: category,
-                  value: category,
-                };
-              })}
+              optionList={categoryList.map((category) => ({
+                label: category,
+                value: category,
+              }))}
               optionCheckedList={formData.projectInfoCategory}
               inputName="projectInfoCategory"
-              saveBtnDisabled={
-                projectData.projectInfo?.category ===
-                formData.projectInfoCategory
-                  ? true
-                  : false
-              }
+              saveBtnDisabled={projectData.projectInfo?.category === formData.projectInfoCategory}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
               onClickSaveBtn={() => handleSaveBtn("projectInfoCategory")}
             />
           </div>
-          <div className="col-12">
-            <div className={autorizedUser ? "row row-cols-1" : "row row-cols-1 row-cols-md-2"}>
+          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
+            <div className={autorizedUser ? "grid grid-cols-1" : "grid grid-cols-1 md:grid-cols-2"}>
               <FormGroup
                 disabled={!autorizedUser}
                 type={autorizedUser && "flex"}
                 label="Vereda al que pertenece el Predio"
                 inputName="projectInfoLocationVereda"
                 inputValue={formData.projectInfoLocationVereda}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.vereda ===
-                  formData.projectInfoLocationVereda
-                    ? true
-                    : false
-                }
+                saveBtnDisabled={projectData.projectInfo?.location.vereda === formData.projectInfoLocationVereda}
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationVereda")
-                }
+                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationVereda")}
               />
               <FormGroup
                 disabled={!autorizedUser}
@@ -655,16 +630,9 @@ export default function ProjectInfoCard(props) {
                 label="Municipio al que pertenece el predio"
                 inputName="projectInfoLocationMunicipio"
                 inputValue={formData.projectInfoLocationMunicipio}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.municipio ===
-                  formData.projectInfoLocationMunicipio
-                    ? true
-                    : false
-                }
+                saveBtnDisabled={projectData.projectInfo?.location.municipio === formData.projectInfoLocationMunicipio}
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationMunicipio")
-                }
+                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationMunicipio")}
               />
               <FormGroup
                 disabled={!autorizedUser}
@@ -672,16 +640,9 @@ export default function ProjectInfoCard(props) {
                 label="Número de matrícula inmobiliaria del predio"
                 inputName="projectInfoLocationMatricula"
                 inputValue={formData.projectInfoLocationMatricula}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.matricula ===
-                  formData.projectInfoLocationMatricula
-                    ? true
-                    : false
-                }
+                saveBtnDisabled={projectData.projectInfo?.location.matricula === formData.projectInfoLocationMatricula}
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationMatricula")
-                }
+                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationMatricula")}
               />
               <FormGroup
                 disabled={!autorizedUser}
@@ -689,19 +650,12 @@ export default function ProjectInfoCard(props) {
                 label="Número de ficha catastral que aparece en el impuesto predial del municipio del predio"
                 inputName="projectInfoLocationFichaCatrastral"
                 inputValue={formData.projectInfoLocationFichaCatrastral}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.fichaCatrastal ===
-                  formData.projectInfoLocationFichaCatrastral
-                    ? true
-                    : false
-                }
+                saveBtnDisabled={projectData.projectInfo?.location.fichaCatrastal === formData.projectInfoLocationFichaCatrastral}
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationFichaCatrastral")
-                }
+                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationFichaCatrastral")}
               />
               <div>
-                <div className="mb-3">
+                <div className="form-group mb-3">
                   <div className="row align-items-center">
                     <label className="col-sm-5">
                       Cargue planos del predio (pueden ser a mano alzada)
@@ -713,26 +667,18 @@ export default function ProjectInfoCard(props) {
                             <div key={file.id} className="mb-2">
                               <button
                                 onClick={() => handleDeleteFile(file)}
-                                size="sm"
-                                className="me-2"
-                                variant="danger"
+                                className="btn btn-sm me-2 btn-danger"
                               >
                                 <XIcon />
                               </button>
-                              <a
-                                href={file.url}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
+                              <a href={file.url} target="_blank" rel="noreferrer">
                                 {file.nombre}
                               </a>
                             </div>
                           ))}
                         </>
                       ) : (
-                        <p className="text-danger">
-                          No se han subido planos de predio
-                        </p>
+                        <p className="text-danger">No se han subido planos de predio</p>
                       )}
                       <input
                         type="file"
@@ -746,7 +692,7 @@ export default function ProjectInfoCard(props) {
                       <button
                         disabled={!autorizedUser}
                         onClick={handleUploadButton}
-                        size="md"
+                        className="btn btn-md"
                       >
                         Cargar nuevo archivo
                       </button>
@@ -758,6 +704,5 @@ export default function ProjectInfoCard(props) {
           </div>
         </div>
       </div>
-    </div>
   );
 }

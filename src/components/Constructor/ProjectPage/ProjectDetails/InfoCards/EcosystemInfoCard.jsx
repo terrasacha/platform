@@ -129,134 +129,137 @@ export default function EcosystemInfoCard(props) {
   };
 
   return (
-    <div className={className}>
-      <div className="border-b border-gray-300">
-        <h2 className="text-xl font-semibold mb-4">Aspectos generales del ecosistema</h2>
-      </div>
-      <div className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              label="¿Existen Nacimientos de agua?"
-              inputType="radio"
-              optionList={[
-                { label: "Si", value: "yes" },
-                { label: "No", value: "no" },
-              ]}
-              optionCheckedList={formData.F_nacimiento_agua}
-              inputName="F_nacimiento_agua"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
+
+        <div className={`${className} card`}>
+            <div className="card-header">
+                <h5 className="card-title">Aspectos generales del ecosistema</h5>
+            </div>
+            <div className="card-body">
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="col">
+                    <FormGroup
+                    disabled={!autorizedUser}
+                    label="¿Existen Nacimientos de agua?"
+                    inputType="radio"
+                    optionList={[
+                        { label: "Si", value: "yes" },
+                        { label: "No", value: "no" },
+                    ]}
+                    optionCheckedList={formData.F_nacimiento_agua}
+                    inputName="F_nacimiento_agua"
+                    onChangeInputValue={(e) => handleChangeInputValue(e)}
+                    />
+                </div>
           {formData.F_nacimiento_agua === "yes" && (
-            <div className="mb-4">
-              <FormGroup
-                disabled={!autorizedUser}
-                inputType="text"
-                label="¿Cuántos nacimientos de agua existen?"
-                inputValue={formData.F_nacimiento_agua_quantity}
-                inputName="F_nacimiento_agua_quantity"
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-              />
+                <div className="col">
+                  <FormGroup
+                    disabled={!autorizedUser}
+                    inputType="text"
+                    label="¿Cuántos nacimientos de agua existen?"
+                    inputValue={formData.F_nacimiento_agua_quantity}
+                    inputName="F_nacimiento_agua_quantity"
+                    onChangeInputValue={(e) => handleChangeInputValue(e)}
+                  />
+                </div>
+              )}
+              <div className="col">
+                <FormGroup
+                  disabled={!autorizedUser}
+                  label="¿Existen concesiones de agua?"
+                  inputType="radio"
+                  optionList={[
+                    { label: "Si", value: "yes" },
+                    { label: "No", value: "no" },
+                  ]}
+                  optionCheckedList={formData.F_agua_concede}
+                  inputName="F_agua_concede"
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                />
+              </div>
+              {formData.F_agua_concede === "yes" && (
+                <div className="col">
+                  <FormGroup
+                    disabled={!autorizedUser}
+                    inputType="text"
+                    label="Quien concede el agua"
+                    inputValue={formData.F_agua_concede_entity}
+                    inputName="F_agua_concede_entity"
+                    onChangeInputValue={(e) => handleChangeInputValue(e)}
+                  />
+                </div>
+              )}
+              <div className="col">
+                <FormGroup
+                  disabled={!autorizedUser}
+                  inputType="textarea"
+                  label="¿Qué amenazas de deforestación existen al interior del predio(s) y/o a los alrededores?"
+                  inputValue={formData.F_amenazas_defo_desc}
+                  inputName="F_amenazas_defo_desc"
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                />
+              </div>
+              <div className="col">
+                <FormGroup
+                  disabled={!autorizedUser}
+                  inputType="textarea"
+                  label="¿Existe algún proyecto de conservación en su predio?"
+                  inputValue={formData.F_conservacion_desc}
+                  inputName="F_conservacion_desc"
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                />
+              </div>
+              <div className="col">
+                <FormGroup
+                  disabled={!autorizedUser}
+                  inputType="textarea"
+                  label="¿Cuenta con especies de fauna de importancia?"
+                  inputValue={formData.F_especies_fauna}
+                  inputName="F_especies_fauna"
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                />
+              </div>
+              <div className="col">
+                <FormGroup
+                  disabled={!autorizedUser}
+                  inputType="textarea"
+                  label="¿Cuenta con caracterización de especies de mamiferos?"
+                  inputValue={formData.F_especies_mamiferos}
+                  inputName="F_especies_mamiferos"
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                />
+              </div>
+              <div className="col">
+                <FormGroup
+                  disabled={!autorizedUser}
+                  inputType="textarea"
+                  label="¿Cuenta con caracterización de especies de aves?"
+                  inputValue={formData.F_especies_aves}
+                  inputName="F_especies_aves"
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                />
+              </div>
+              <div className="col">
+                <FormGroup
+                  disabled={!autorizedUser}
+                  inputType="textarea"
+                  label="¿Cuenta con caracterización de especies de flora?"
+                  inputValue={formData.F_especies_flora}
+                  inputName="F_especies_flora"
+                  onChangeInputValue={(e) => handleChangeInputValue(e)}
+                />
+              </div>
             </div>
-          )}
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              label="¿Existen concesiones de agua?"
-              inputType="radio"
-              optionList={[
-                { label: "Si", value: "yes" },
-                { label: "No", value: "no" },
-              ]}
-              optionCheckedList={formData.F_agua_concede}
-              inputName="F_agua_concede"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          {formData.F_agua_concede === "yes" && (
-            <div className="mb-4">
-              <FormGroup
-                disabled={!autorizedUser}
-                inputType="text"
-                label="Quien concede el agua"
-                inputValue={formData.F_agua_concede_entity}
-                inputName="F_agua_concede_entity"
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-              />
-            </div>
-          )}
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="textarea"
-              label="¿Qué amenazas de deforestación existen al interior del predio(s) y/o a los alrededores?"
-              inputValue={formData.F_amenazas_defo_desc}
-              inputName="F_amenazas_defo_desc"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="textarea"
-              label="¿Existe algún proyecto de conservación en su predio?"
-              inputValue={formData.F_conservacion_desc}
-              inputName="F_conservacion_desc"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="textarea"
-              label="¿Cuenta con especies de fauna de importancia?"
-              inputValue={formData.F_especies_fauna}
-              inputName="F_especies_fauna"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="textarea"
-              label="¿Cuenta con caracterización de especies de mamíferos?"
-              inputValue={formData.F_especies_mamiferos}
-              inputName="F_especies_mamiferos"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="textarea"
-              label="¿Cuenta con caracterización de especies de aves?"
-              inputValue={formData.F_especies_aves}
-              inputName="F_especies_aves"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
-          </div>
-          <div className="mb-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              inputType="textarea"
-              label="¿Cuenta con caracterización de especies de flora?"
-              inputValue={formData.F_especies_flora}
-              inputName="F_especies_flora"
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-            />
+            {autorizedUser && (
+              <div className="d-flex justify-content-center">
+                <button onClick={() => handleSaveBtn()} variant="success">
+                  Guardar
+                </button>
+              </div>
+            )}
           </div>
         </div>
-        {autorizedUser && (
-          <div className="flex justify-center">
-            <button onClick={() => handleSaveBtn()} variant="success">
-              Guardar
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+      );
+    }
+    
 
-  );
-}
+    

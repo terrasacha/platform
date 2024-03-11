@@ -278,9 +278,9 @@ export default function PostulantFilesInfoCard(props) {
   };
 
   return (
-    <div className={className}>
-  <div className="border-b mb-4">
-    <h5 className="text-xl font-semibold">Documentos del postulante</h5>
+    <div className={`card ${className}`}>
+  <div className="border-b mb-4 card-header">
+    <h5 className="text-xl font-semibold card-title">Documentos del postulante</h5>
   </div>
   <div className="text-center">
     <table className="w-full">
@@ -310,7 +310,7 @@ export default function PostulantFilesInfoCard(props) {
                     }
                   />
                   <button
-                    className="m-1 bg-blue-500 text-white py-1 px-2 rounded-md"
+                    className="m-1 bg-yellow-500 text-white py-1 px-2 rounded-md"
                     onClick={() => handleUploadDocumentButtonClick()}
                   >
                     {isLoadingDoc ? (
@@ -324,13 +324,13 @@ export default function PostulantFilesInfoCard(props) {
                 </>
               )}
               <a href={file.url} target="_blank" rel="noreferrer">
-                <button className="m-1 bg-blue-500 text-white py-1 px-2 rounded-md">
+                <button className="m-1 bg-yellow-500 text-white py-1 px-2 rounded-md">
                   <DownloadIcon />
                 </button>
               </a>
               {file.verification && (
                 <button
-                  className="m-1 bg-blue-500 text-white py-1 px-2 rounded-md"
+                  className="m-1 bg-yellow-500 text-white py-1 px-2 rounded-md"
                   onClick={() => handleMessageButtonClick(fileIndex)}
                 >
                   <MessagesIcon />

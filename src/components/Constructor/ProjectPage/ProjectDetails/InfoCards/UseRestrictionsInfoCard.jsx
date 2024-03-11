@@ -124,11 +124,11 @@ export default function UseRestrictionsInfoCard(props) {
   };
 
   return (
-    <div className={className}>
-  <div className="border-b border-gray-300">
-    <h2 className="text-xl font-semibold mb-4">Limitaciones de uso de suelo</h2>
+<div className={`${className} card`}>
+  <div className="card-header">
+    <h5 className="card-title">Limitaciones de uso de suelo</h5>
   </div>
-  <div className="p-6">
+  <div className="card-body">
     <div className="grid grid-cols-1">
       <div className="col">
         <FormGroup
@@ -169,5 +169,6 @@ export default function UseRestrictionsInfoCard(props) {
     </div>
   </div>
 </div>
+
   );
 }

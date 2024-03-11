@@ -171,76 +171,75 @@ export default function RelationsInfoCard(props) {
   };
 
   return (
-    <div className={className}>
-    <div className="border-b border-gray-300">
-      <h2 className="text-xl font-semibold mb-4">
-        Relaciones con entidades y aliados estratégicos
-      </h2>
-    </div>
-    <div className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="col-12 col-lg-12">
-          <FormGroup
-            disabled={!autorizedUser}
-            type={autorizedUser && "flex"}
-            inputType="textarea"
-            label="¿Recibe asistencia técnica en el predio?"
-            inputName="projectRelationsTechnicalAssitance"
-            inputValue={formData.projectRelationsTechnicalAssitance}
-            saveBtnDisabled={
-              projectData.projectRelations?.technicalAssistance ===
-              formData.projectRelationsTechnicalAssitance
-                ? true
-                : false
-            }
-            onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() =>
-              handleSaveBtn("projectRelationsTechnicalAssitance")
-            }
-          />
-        </div>
-        <div className="col-12 col-lg-12">
-          <FormGroup
-            disabled={!autorizedUser}
-            type={autorizedUser && "flex"}
-            inputType="textarea"
-            label="¿Cuenta con aliados estratégicos?"
-            inputName="projectRelationsStrategicAllies"
-            inputValue={formData.projectRelationsStrategicAllies}
-            saveBtnDisabled={
-              projectData.projectRelations?.strategicAllies ===
-              formData.projectRelationsStrategicAllies
-                ? true
-                : false
-            }
-            onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() =>
-              handleSaveBtn("projectRelationsStrategicAllies")
-            }
-          />
-        </div>
-        <div className="col-12 col-lg-12">
-          <FormGroup
-            disabled={!autorizedUser}
-            type={autorizedUser && "flex"}
-            inputType="textarea"
-            label="¿Pertenece a algún grupo comunitario?"
-            inputName="projectRelationsCommunityGroups"
-            inputValue={formData.projectRelationsCommunityGroups}
-            saveBtnDisabled={
-              projectData.projectRelations?.communityGroups ===
-              formData.projectRelationsCommunityGroups
-                ? true
-                : false
-            }
-            onChangeInputValue={(e) => handleChangeInputValue(e)}
-            onClickSaveBtn={() =>
-              handleSaveBtn("projectRelationsCommunityGroups")
-            }
-          />
-        </div>
+    <div className={`${className} card`}>
+  <div className="card-header">
+    <h5 className="card-title">Relaciones con entidades y aliados estratégicos</h5>
+  </div>
+  <div className="card-body">
+    <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="col-12 col-lg-12">
+        <FormGroup
+          disabled={!autorizedUser}
+          type={autorizedUser && "flex"}
+          inputType="textarea"
+          label="¿Recibe asistencia técnica en el predio?"
+          inputName="projectRelationsTechnicalAssitance"
+          inputValue={formData.projectRelationsTechnicalAssitance}
+          saveBtnDisabled={
+            projectData.projectRelations?.technicalAssistance ===
+            formData.projectRelationsTechnicalAssitance
+              ? true
+              : false
+          }
+          onChangeInputValue={(e) => handleChangeInputValue(e)}
+          onClickSaveBtn={() =>
+            handleSaveBtn("projectRelationsTechnicalAssitance")
+          }
+        />
+      </div>
+      <div className="col-12 col-lg-12">
+        <FormGroup
+          disabled={!autorizedUser}
+          type={autorizedUser && "flex"}
+          inputType="textarea"
+          label="¿Cuenta con aliados estratégicos?"
+          inputName="projectRelationsStrategicAllies"
+          inputValue={formData.projectRelationsStrategicAllies}
+          saveBtnDisabled={
+            projectData.projectRelations?.strategicAllies ===
+            formData.projectRelationsStrategicAllies
+              ? true
+              : false
+          }
+          onChangeInputValue={(e) => handleChangeInputValue(e)}
+          onClickSaveBtn={() =>
+            handleSaveBtn("projectRelationsStrategicAllies")
+          }
+        />
+      </div>
+      <div className="col-12 col-lg-12">
+        <FormGroup
+          disabled={!autorizedUser}
+          type={autorizedUser && "flex"}
+          inputType="textarea"
+          label="¿Pertenece a algún grupo comunitario?"
+          inputName="projectRelationsCommunityGroups"
+          inputValue={formData.projectRelationsCommunityGroups}
+          saveBtnDisabled={
+            projectData.projectRelations?.communityGroups ===
+            formData.projectRelationsCommunityGroups
+              ? true
+              : false
+          }
+          onChangeInputValue={(e) => handleChangeInputValue(e)}
+          onClickSaveBtn={() =>
+            handleSaveBtn("projectRelationsCommunityGroups")
+          }
+        />
       </div>
     </div>
   </div>
+</div>
+
     );
 }
