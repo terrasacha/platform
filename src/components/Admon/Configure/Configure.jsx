@@ -49,29 +49,33 @@ export default class Configure extends Component {
     render() {
         const modalDocument = () => {
             return (
-                <div className="max-w-lg mx-auto p-4">
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl font-semibold mb-4">Change Logo</h2>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">
-                                Choose file
-                            </label>
+                <div className="card lg">
+                    <div className="card-header">
+                        <h5 className="card-title">
+                        Change Logo
+                        </h5>
+                    </div>
+                    <div className="card-body">
+                        <div className="mb-3">
+                        <div className="form-group">
+                            <label>Choose file</label>
                             <input
-                                type="file"
-                                name="selected_file"
-                                onChange={(e) => this.handleInputUploadLogo(e)}
-                                className="mt-1 p-2 border rounded-md w-full"
+                            type="file"
+                            name="selected_file"
+                            onChange={(e) => this.handleInputUploadLogo(e)}
+                            className="form-control"
                             />
                         </div>
+                        </div>
                         <button
-                            disabled={this.state.updatingLogo ? true : false}
-                            onClick={() => this.handleUploadLogo()}
-                            className="btn-yellow text-white py-2 px-4 rounded hover:bg-blue-600"
+                        disabled={this.state.updatingLogo ? true : false}
+                        onClick={() => this.handleUploadLogo()}
+                        className="btn"
                         >
-                            {this.state.updatingLogo ? 'Uploading' : 'Upload'}
+                        {this.state.updatingLogo ? 'Uploading' : 'Upload'}
                         </button>
                     </div>
-                </div>
+                    </div>
             );
         };
 

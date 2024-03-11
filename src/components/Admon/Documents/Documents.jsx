@@ -187,55 +187,77 @@ class Documents extends Component {
         const listDocumentationStatus = () => {
           if (showAllDocuments && userProductsDoc) {
             return (
-            <div className='mt-4 container'>
-            <h3 className="text-3xl font-semibold">Your documentation</h3>
-            <div className="flex justify-center">
-              <div className="w-9/12">
-                <table className='mt-4 table-auto w-full'>
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2">Product</th>
-                      <th className="px-4 py-2">Feature</th>
-                      <th className="px-4 py-2">Document Status</th>
-                      <th className="px-4 py-2">Doc Hash</th>
-                      <th className="px-4 py-2">Sign</th>
-                      <th className="px-4 py-2">Sign Hash</th>
-                      <th className="px-4 py-2">Upload Document</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {userProductsDoc.map((userProduct) =>
-                      userProduct.product.productFeatures.items.map((pf) => {
-                        return (
+              <div className="container mt-4">
+              <h3>Your documentation</h3>
+              <div className="flex justify-center">
+                <div className="w-9/12">
+                  <table className="table-hover mt-4 w-full">
+                    <thead>
+                      <tr>
+                        <th className="border p-2">Product</th>
+                        <th className="border p-2">Feature</th>
+                        <th className="border p-2">Document Status</th>
+                        <th className="border p-2">Doc Hash</th>
+                        <th className="border p-2">Sign</th>
+                        <th className="border p-2">Sign Hash</th>
+                        <th className="border p-2">Upload Document</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userProductsDoc.map((userProduct) =>
+                        userProduct.product.productFeatures.items.map((pf) => (
                           <tr key={pf.id}>
-                            <td className="px-4 py-2">{pf.product.name}</td>
-                            <td className="px-4 py-2">{pf.feature.name}</td>
-                            <td className="px-4 py-2">
+                            <td className="border p-2">{pf.product.name}</td>
+                            <td className="border p-2">{pf.feature.name}</td>
+                            <td className="border p-2">
                               {pf.documents.items.length > 0 ? (
                                 pf.documents.items[0].status === 'pending' ? (
-                                  <HourglassSplit size={25} color='grey' />
+                                  <HourglassSplit size={25} className="text-gray-500" />
                                 ) : pf.documents.items[0].status === 'accepted' ? (
-                                  <CheckCircle size={25} color='#449E48' />
+                                  <CheckCircle size={25} className="text-green-600" />
                                 ) : (
-                                  <XCircle size={25} color='#CC0000' />
+                                  <XCircle size={25} className="text-red-600" />
                                 )
                               ) : (
                                 'Document not assigned'
                               )}
                             </td>
-                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? 'Already uploaded' : <button className="btn-yellow text-white py-1 px-2 rounded" onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</button>}</td>
-                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].docHash : ''}</td>
-                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].signed : ''}</td>
-                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].signedHash : ''}</td>
+                            <td className="border p-2">
+                              {pf.documents.items.length > 0 ? (
+                                'Already uploaded'
+                              ) : (
+                                <button
+                                  className="btn-primary text-sm"
+                                  onClick={() =>
+                                    this.setState({
+                                      showModalDocument: true,
+                                      productFeatureToAddDoc: pf,
+                                    })
+                                  }
+                                >
+                                  Upload Document
+                                </button>
+                              )}
+                            </td>
+                            <td className="border p-2">
+                              {pf.document.items[0].docHash ? document.docHash : ''}
+                            </td>
+                            <td className="border p-2">
+                              {pf.document.items[0].signed ? document.signed : ''}
+                            </td>
+                            <td className="border p-2">
+                              {pf.document.items[0].signedHash
+                                ? document.signedHash
+                                : ''}
+                            </td>
                           </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          </div>
+            </div>            
             );
           }
         };
@@ -246,55 +268,52 @@ class Documents extends Component {
             let aux = { id: 'x' };
             if (this.state.productToShow) aux = this.state.productToShow.id;
             return (
-              <div className="mt-3">
+              <div className="container mt-3">
                 <div className="flex">
                   <div className="w-1/6">
-                    <h3 className="text-xl font-semibold">Products</h3>
-                    <div className="mt-5">
+                    <h3 className="mb-4">Products</h3>
+                    <div className="mt-5 space-y-4">
                       {userProductsDocCopy?.map((userProduct) => (
                         <div
                           key={userProduct.id}
-                          className={`p-4 border ${
-                            userProduct.id === aux ? 'btn-yellow text-white' : 'bg-gray-100'
-                          } cursor-pointer`}
+                          className={`p-4 border ${userProduct.id === aux ? 'bg-blue-500 text-white' : 'bg-gray-200'} cursor-pointer`}
                           onClick={() => this.handleLoadUserProduct(userProduct)}
                         >
-                          <span className="mr-2">{userProduct.product.name}</span>
-                          <ArrowRight className="inline" />
+                          {userProduct.product.name}<ArrowRight />
                         </div>
                       ))}
                     </div>
                   </div>
                   <div className="w-5/6">
-                    <h3 className="text-xl font-semibold">Products Documentation</h3>
+                    <h3 className="mb-4">Products Documentation</h3>
                     {!productToShow ? '' : (
-                      <div className="mt-3">
-                        <div className="border p-4">
-                          <h5 className="text-xl font-semibold">{productToShow.product.name}</h5>
-                          <div className="mt-3">
-                            {productToShow.product.productFeatures.items.map((pf) => {
-                              if (pf.documents.items.length > 0) {
-                                return null;
-                              }
-                              return (
-                                <div key={pf.id} className="mb-4 border p-4">
-                                  <h6 className="text-lg font-semibold mb-2">{pf.feature.featureTypeID.replace('_', ' ')}</h6>
-                                  <div>
-                                    <h4 className="text-xl font-semibold">{pf.feature.name}</h4>
-                                    <p className="mb-2">{pf.feature.description}</p>
-                                    <button
-                                      className="btn-yellow text-white px-4 py-2 rounded"
-                                      onClick={() =>
-                                        this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })
-                                      }
-                                    >
-                                      Upload Document
-                                    </button>
-                                  </div>
+                      <div className="card">
+                        <div className="card-header">
+                          {productToShow.product.name}
+                        </div>
+                        <div className="card-body">
+                          {productToShow.product.productFeatures.items.map((pf) => {
+                            if (pf.documents.items.length > 0) {
+                              return null;
+                            }
+                            return (
+                              <div key={pf.id} className="mb-2 card">
+                                <div className="card-header">
+                                  {pf.feature.featureTypeID.replace('_', ' ')}
                                 </div>
-                              );
-                            })}
-                          </div>
+                                <div className="card-body">
+                                  <h5 className="card-title">{pf.feature.name}</h5>
+                                  <p className="card-text">{pf.feature.description}</p>
+                                  <button
+                                    className="btn-primary"
+                                    onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}
+                                  >
+                                    Upload Document
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
