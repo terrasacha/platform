@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 // Auth
 import { Auth } from 'aws-amplify';
-// Bootstrap
-import  Col  from '../ui/Col';
-import  Container  from '../ui/Container';
-import  Row  from '../ui/Row';
+// tailwind
+import { Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from 'flowbite-react';
 
 // Components
 import UserProducts from './UserProducts/UserProducts';
@@ -15,11 +13,11 @@ import Configure from './Configure/Configure';
 import Documents from './Documents/Documents';
 import Features from './Features/Features';
 import Formulas from './Formulas/Formulas';
+import HeaderNavbar from './Navbars/HeaderNavbar';
 import Validators from './Validators/Validators';
 import Products from './Products/Products';
 import Results from './Results/Results';
 import UOM from './UOM/UOM';
-import HeaderNavbar from 'Navbars/HeaderNavbar';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateUser } from '../../graphql/mutations';
@@ -441,20 +439,15 @@ export default class Admon extends Component {
             isShowAPF
         } = this.state
         return (
-            <Container fluid style={{paddingTop: 70, minHeight: '100vh'}} >
-
-                <Row>
-                    <Col>
-                       <HeaderNavbar 
+           <div fluid>
+                        <HeaderNavbar 
                             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                             handleSignOut={this.handleSignOut}
                             actualUser={this.state.actualUser}
                             isActualUserLogged={this.state.isActualUserLogged}
-        ></HeaderNavbar>
-                    </Col>
-                </Row>
+                        ></HeaderNavbar>
 
-                <Row>
+                <div>
                     {isShowAdmonProfile && 
                         <AdmonProfile
                         user={this.state.user}
@@ -512,10 +505,10 @@ export default class Admon extends Component {
                         handleCUUser={this.handleCUUser}
                         />}
                     {isShowNotAuthorize && 
-                       <div key="key_warning" className="bg-yellow-500 text-black p-4 mb-4 rounded">
-                       Perfil no autorizado
-                     </div>
-                     }
+                        <div className="bg-red-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+                        <p className="font-bold">Perfil no autorizado</p>
+                      </div>
+                    }
                     {isShowAProducts && <UserProducts />}
                     {isShowAPF && <AssignPF />}
                     {isShowValidators && <Validators />}
@@ -525,10 +518,10 @@ export default class Admon extends Component {
                             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                             handleCUUser={this.handleCUUser}
                         />}
-                </Row>
+                </div>
 
                 <ToastContainer></ToastContainer>
-            </Container>
+            </div>
         )
     }
 }
