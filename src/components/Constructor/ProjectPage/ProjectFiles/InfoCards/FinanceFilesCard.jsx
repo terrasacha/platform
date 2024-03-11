@@ -296,7 +296,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
           aquí.
         </a>
       </p>
-      <Table responsive>
+      <table responsive>
         <thead className="text-center">
           <tr>
             <th style={{ width: "300px" }}>Dirección de billetera</th>
@@ -391,7 +391,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
             </td>
           </tr>
         </tbody>
-      </Table>
+      </table>
       <p className="text-center mt-2 mb-4">
         Tokens por distribuir:{" "}
         {tokensAvaiableAmount >= 0 ? tokensAvaiableAmount : 0}

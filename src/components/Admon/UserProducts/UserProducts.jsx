@@ -8,7 +8,6 @@ import DropdownButton from '../../ui/DropdownButton';
 import Form from '../../ui/Form';
 import Modal from '../../ui/Modal';
 import Row from '../../ui/Row';
-import Table from '../../ui/Table';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
@@ -242,7 +241,7 @@ componentWillUnmount() {
               <h2 className='mr-5'>Users</h2>
               {dropDown()}
             </div>
-            <Table bordered hover style={{ cursor: 'pointer' }}>
+            <table bordered hover style={{ cursor: 'pointer' }}>
               <thead>
                 <tr>
                   <th>Name</th>
@@ -269,7 +268,7 @@ componentWillUnmount() {
                   );
                 })}
               </tbody>
-            </Table>
+            </table>
           </>
         );
       }
@@ -280,7 +279,7 @@ componentWillUnmount() {
         return (
           <>
             <h2>Products</h2>
-            <Table bordered hover style={{ cursor: 'pointer' }}>
+            <table bordered hover style={{ cursor: 'pointer' }}>
               <thead>
                 <tr>
                   <th>Name</th>
@@ -299,7 +298,7 @@ componentWillUnmount() {
                   );
                 })}
               </tbody>
-            </Table>
+            </table>
           </>
         );
       }
@@ -310,7 +309,7 @@ componentWillUnmount() {
         return (
           <>
             <h2>User Products</h2>
-            <Table bordered hover>
+            <table bordered hover>
               <thead>
                 <tr>
                   <th>User</th>
@@ -331,7 +330,7 @@ componentWillUnmount() {
                   );
                 })}
               </tbody>
-            </Table>
+            </table>
           </>
         );
       }
@@ -351,8 +350,8 @@ componentWillUnmount() {
               <Modal.Title id="contained-modal-title-vcenter">Assign Role</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form>
-                <Row className='mb-2'>
+              <form>
+                <div className='mb-2'>
                   <Form.Group as={Col}>
                     <Form.Label>User</Form.Label>
                     <Form.Control type='text' disabled value={this.state.userSelected !== null ? this.state.userSelected.name : ''} onChange={() => ''} />
@@ -368,9 +367,9 @@ componentWillUnmount() {
                       ))}
                     </Form.Select>
                   </Form.Group>
-                </Row>
+                </div>
 
-                <Row className='mb-1'>
+                <div className='mb-1'>
                   <button
                     variant='primary'
                     size='sm'
@@ -379,8 +378,8 @@ componentWillUnmount() {
                   >
                     Assign Role
                   </button>
-                </Row>
-              </Form>
+                </div>
+              </form>
             </Modal.Body>
           </Modal>
         );
@@ -411,11 +410,11 @@ componentWillUnmount() {
 
     return (
       <>
-        <Container>
-          <Container>
+        <div className="container mx-auto">
+          <div className="container mx-auto">
             <h2>Assign Product</h2>
-            <Form>
-              <Row className='mb-2'>
+            <form>
+              <div className='mb-2'>
                 <Form.Group as={Col}>
                   <Form.Label>User</Form.Label>
                   <Form.Control
@@ -434,9 +433,9 @@ componentWillUnmount() {
                     onChange={() => ''}
                   />
                 </Form.Group>
-              </Row>
+              </div>
 
-              <Row className='mb-1'>
+              <div className='mb-1'>
                 <button
                   variant='primary'
                   size='sm'
@@ -445,15 +444,15 @@ componentWillUnmount() {
                 >
                   AssignProduct
                 </button>
-              </Row>
-            </Form>
-          </Container>
-          <Container style={{ display: 'flex', height: '580px' }}>
-            <Container style={{ overflow: 'auto' }}>{renderUsers()}</Container>
-            <Container style={{ overflow: 'auto' }}>{renderProducts()}</Container>
-          </Container>
-          <Container>{renderUserProducts()}</Container>
-        </Container>
+              </div>
+            </form>
+          </div>
+          <div className='container mx-auto' style={{ display: 'flex', height: '580px' }}>
+            <div className='container mx-auto' style={{ overflow: 'auto' }}>{renderUsers()}</div>
+            <div className='container mx-auto' style={{ overflow: 'auto' }}>{renderProducts()}</div>
+          </div>
+          <div className="container mx-auto">{renderUserProducts()}</div>
+        </div>
         {renderModalRole()}
       </>
     );

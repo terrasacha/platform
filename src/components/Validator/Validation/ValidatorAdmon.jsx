@@ -224,7 +224,7 @@ class ValidatorAdmon extends Component {
               products.map((product, index) => {
                 return (
                   <div className="p-3">
-                  <div key={product.id} className="p-0">
+                  <div key={product.id} className="p-0 card">
                     <img
                       className="w-full h-48 object-cover"
                       src={getImagesCategories(product.categoryID)}
@@ -246,7 +246,7 @@ class ValidatorAdmon extends Component {
                     <div className="p-4">
                       <div className="flex justify-center items-center">
                         <a href={"project/" + product.id}>
-                          <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                          <button className="bg-gray-800 text-white px-4 py-2 rounded-md">
                             Ver más
                           </button>
                         </a>
@@ -265,14 +265,14 @@ class ValidatorAdmon extends Component {
       }
     };
     return (
-      <Container style={{ paddingTop: 70, minHeight: "100vh" }}>
+      <div className="container mx-auto" style={{ paddingTop: 70, minHeight: "100vh" }}>
         <HeaderNavbar
           logOut={this.logOut}
           changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
     ></HeaderNavbar>
         <ToastContainer />
         {renderValidatingProjects()}
-      </Container>
+      </div>
     );
   }
 }

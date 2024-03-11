@@ -797,7 +797,7 @@ class DocumentStatus extends Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Row className='mb-3'>
+                        <div className='mb-3'>
                             <Form.Group>
                                 <Form.Group >
                                     <Form.Label>Choose file</Form.Label>
@@ -808,7 +808,7 @@ class DocumentStatus extends Component {
                                     />
                                 </Form.Group>
                             </Form.Group>
-                        </Row>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <button disabled={this.state.creatingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument ? 'Uploading' : 'Upload Document'}</button>
@@ -876,12 +876,12 @@ class DocumentStatus extends Component {
       }
     };
     return (
-      <Container style={{ paddingTop: 70, minHeight: "100vh" }}>
+      <div className="container mx-auto" style={{ paddingTop: 70, minHeight: "100vh" }}>
         {renderValidations()}
         {modalDocument()}
         {modalUploadDocument()}
         {modalComments()}
-      </Container>
+      </div>
     );
   }
 }

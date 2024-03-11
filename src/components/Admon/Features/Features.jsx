@@ -293,9 +293,9 @@ import 'react-toastify/dist/ReactToastify.css';
         const renderFeatures = () => {
           if (features.length > 0) {
             return (
-              <Container style={{ maxHeight: '30rem', overflowY: 'scroll' }}>
+              <div className='container mx-auto' style={{ maxHeight: '30rem', overflowY: 'scroll' }}>
                 <h2>Features</h2>
-                <Table striped bordered hover>
+                <table striped bordered hover>
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -333,25 +333,26 @@ import 'react-toastify/dist/ReactToastify.css';
                       </tr>
                     ))}
                   </tbody>
-                </Table>
-              </Container>
+                </table>
+              </div>
             );
           }
         };
     
         return (
-          <Container>
-            <ToastContainer />
-            <Container>
-              <h2>
+          <div className="container mx-auto">
+            <div className="container">
+              <ToastContainer />
+
+              <h2 className="text-2xl font-bold mb-4">
                 {CRUDButtonName} FeatureID: {newFeature.id}
               </h2>
-              <Form>
-                <Row className='mb-2'>
-                  <Col controlId='formGridNewFeatureName'>
-                    <label htmlFor='featureName' className='form-label'>
-                      Name*
-                    </label>
+
+              <form>
+                <div className="mb-4">
+                  <label htmlFor="featureName" className="block text-sm font-medium text-gray-700">
+                    Name*
+                  </label>
                     <input
                       type='text'
                       className='form-control'
@@ -448,10 +449,9 @@ import 'react-toastify/dist/ReactToastify.css';
                       <option value='yes'>Yes</option>
                       <option value='no'>No</option>
                     </select> */}
-                  </Col>
-                </Row>
+                  </div>
     
-                <Row className='mb-1'>
+                <div className='mb-1'>
                   <button
                     variant='primary'
                     size='sm'
@@ -460,13 +460,13 @@ import 'react-toastify/dist/ReactToastify.css';
                   >
                     {CRUDButtonName}
                   </button>
-                </Row>
-              </Form>
+                </div>
+              </form>
               <br></br>
               {renderFeatures()}
-            </Container>
+            </div>
             {renderFeaturesType()}
-          </Container>
+          </div>
         );
       }
     }

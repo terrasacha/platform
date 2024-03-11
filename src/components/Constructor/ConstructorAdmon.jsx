@@ -498,12 +498,12 @@ class ConstructorAdmon extends Component {
       <>
       <NewHeaderNavbar/>
       <div className="container-sm" style={{ paddingTop: 60, minHeight: "100vh" }}>
-        {/* <Row>
+        {/* <div>
           <HeaderNavbar
             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
             handleSignOut={this.handleSignOut}
           ></HeaderNavbar>
-        </Row> */}
+        </div> */}
 
         <div className="mt-4">
           {renderProductsList()}

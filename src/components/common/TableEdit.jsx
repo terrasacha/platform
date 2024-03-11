@@ -26,7 +26,7 @@ export default function TableEdit({
   console.log(conceptOptions, "conceptOptions");
 
   return (
-    <Table responsive>
+    <table responsive>
       <thead className="text-center">
         <tr>
           {columns.map((column) => {
@@ -142,6 +142,6 @@ export default function TableEdit({
           </td>
         </tr>
       </tbody>
-    </Table>
+    </table>
   );
 }

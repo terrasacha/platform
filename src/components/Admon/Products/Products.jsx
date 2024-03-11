@@ -870,11 +870,11 @@ class Products extends Component {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Alert key="idx_key_2" variant="warning">
+            <div key="key_warning" className="bg-red-500 text-black p-4 mb-4 rounded">
                 Are you sure to delete the Product ({productToDelete.name}) with{" "}
                 {productToDelete.images.items.length} images, and{" "}
                 {productToDelete.features.items.length} features?
-              </Alert>
+              </div>
             </Modal.Body>
             <Modal.Footer>
               <button
@@ -919,7 +919,7 @@ class Products extends Component {
           <div className="mb-2 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="formGridCategorySelectList" className="block font-semibold mb-1">Category</label>
-              <Select
+              <select
                 options={this.state.categorySelectList}
                 onChange={this.handleOnSelectCategory}
               />

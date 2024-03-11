@@ -121,10 +121,10 @@ class InvestorProfile extends Component {
         const renderCompleteProfile = () => {
             if (isRenderCompleteOrUpdateProfile) {
                 return (
-                    <Container>
-                        <Form>
+                    <div className="container mx-auto">
+                        <form>
                         
-                        <Row className='mb-3'>
+                        <div className='mb-3'>
                             
                             <Form.Group as={Col} controlId='formGridUserContactName'>
                                 <Form.Label>Nombre</Form.Label>
@@ -146,7 +146,7 @@ class InvestorProfile extends Component {
                                     onChange={(e) => this.handleOnChangeInputForm(e)} />
                             </Form.Group>
                             
-                        </Row>
+                        </div>
                         
                         <button
                             variant='primary'
@@ -154,12 +154,12 @@ class InvestorProfile extends Component {
                              
                             onClick={this.handleCUUser}
                             >Actualizar</button>
-                        </Form>
-                    </Container>
+                        </form>
+                    </div>
                 )
             } else {
                 return (
-                    <Table striped bordered hover>
+                    <table striped bordered hover>
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -189,7 +189,7 @@ class InvestorProfile extends Component {
                                 </td>
                             </tr>
                         </tbody>
-                    </Table>
+                    </table>
                 )
             }
             

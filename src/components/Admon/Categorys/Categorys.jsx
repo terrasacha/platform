@@ -135,24 +135,23 @@ class Categorys extends Component {
         const renderCategorys = () => {
           if (categorys.length > 0) {
             return (
-              <Container>
-                <table className="table table-striped table-bordered table-hover">
+              <div className="container mx-auto">
+                <table className="table-auto w-full border-collapse border border-gray-700">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Action</th>
+                      <th className="border border-gray-700 px-4 py-2">ID</th>
+                      <th className="border border-gray-700 px-4 py-2">Name</th>
+                      <th className="border border-gray-700 px-4 py-2">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {categorys.map((category) => (
-                      <tr key={category.id}>
-                        <td>{category.id}</td>
-                        <td>{category.name}</td>
-                        <td>
+                      <tr key={category.id} className="border border-gray-700">
+                        <td className="border border-gray-700 px-4 py-2">{category.id}</td>
+                        <td className="border border-gray-700 px-4 py-2">{category.name}</td>
+                        <td className="border border-gray-700 px-4 py-2">
                           <button
-                            variant='primary'
-                            size='sm'
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             onClick={(e) => this.handleLoadEditCategory(category, e)}
                           >
                             Editar
@@ -162,50 +161,52 @@ class Categorys extends Component {
                     ))}
                   </tbody>
                 </table>
-              </Container>
+              </div>
+
             );
           }
         };
     
         return (
-          <Container style={{ display: 'flex', flexDirection: 'column' }}>
-            <Container>
-              <h2>
+          <div className="container mx-auto">
+            <div className="container">
+              <h2 className="text-2xl font-bold mb-4">
                 {CRUDButtonName} Categoría: {newCategory.name}
               </h2>
-              <Form>
-                <Row className='mb-2'>
-                  <Col controlId='formGridNewCategoryName'>
-                    <label htmlFor='categoryName' className='form-label'>
-                      Nombre
-                    </label>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='categoryName'
-                      placeholder='Ex. NUEVA CATEGORÍA'
-                      name='category.name'
-                      value={newCategory.name}
-                      onChange={(e) => this.handleOnChangeInputForm(e)}
-                    />
-                  </Col>
-                </Row>
-    
-                <Row className='mb-1'>
+              <form>
+                <div className="mb-4">
+                  <label htmlFor="categoryName" className="block text-sm font-medium text-gray-700">
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    id="categoryName"
+                    className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    placeholder="Ex. NUEVA CATEGORÍA"
+                    name="category.name"
+                    value={newCategory.name}
+                    onChange={(e) => this.handleOnChangeInputForm(e)}
+                  />
+                </div>
+
+                <div className="mb-2">
                   <button
-                    variant='primary'
-                    size='sm'
+                    type="button"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
                     onClick={this.handleCRUDCategory}
                     disabled={this.state.isCRUDButtonDisable}
                   >
                     {CRUDButtonName}
                   </button>
-                </Row>
-              </Form>
-            </Container>
-            <br></br>
-            {renderCategorys()}
-          </Container>
+                </div>
+              </form>
+            </div>
+
+            <div className="mt-4">
+              {renderCategorys()}
+            </div>
+          </div>
+
         );
       }
     }

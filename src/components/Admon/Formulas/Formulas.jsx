@@ -182,8 +182,8 @@ class Formulas extends Component {
     const renderFormulas = () => {
       if (formulas.length > 0) {
         return (
-          <Container>
-            <Table striped bordered hover>
+          <div className='container mx-auto'>
+            <table striped bordered hover>
               <thead>
                 <tr>
                   <th>Variable ID</th>
@@ -214,21 +214,21 @@ class Formulas extends Component {
                   </tr>
                 ))}
               </tbody>
-            </Table>
-          </Container>
+            </table>
+          </div>
         );
       }
     };
 
     return (
-      <Container style={{ display: 'flex', flexDirection: 'column' }}>
-        <Container>
+      <div className='container mx-auto' style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='container mx-auto'>
           <h2>
             {CRUDButtonName} Formula: {newFormula.name}
           </h2>
-          <Form>
-            <Row className='mb-2'>
-              <Col controlId='formGridNewCategoryName'>
+          <form>
+            <div className='mb-2'>
+              <div controlId='formGridNewCategoryName'>
                 <label htmlFor='varID' className='form-label'>
                   Variable ID
                 </label>
@@ -241,8 +241,8 @@ class Formulas extends Component {
                   value={newFormula.varID}
                   onChange={(e) => this.handleOnChangeInputForm(e)}
                 />
-              </Col>
-              <Col controlId='formGridNewCategoryName'>
+              </div>
+              <div controlId='formGridNewCategoryName'>
                 <label htmlFor='equation' className='form-label'>
                   Equation
                 </label>
@@ -255,8 +255,8 @@ class Formulas extends Component {
                   value={newFormula.equation}
                   onChange={(e) => this.handleOnChangeInputForm(e)}
                 />
-              </Col>
-              <Col controlId='formGridNewCategoryName'>
+              </div>
+              <div controlId='formGridNewCategoryName'>
                 <label htmlFor='unitOfMeasure' className='form-label'>
                   Unit of Measure
                 </label>
@@ -272,10 +272,10 @@ class Formulas extends Component {
                     </option>
                   ))}
                 </select>
-              </Col>
-            </Row>
+              </div>
+            </div>
 
-            <Row className='mb-1'>
+            <div className='mb-1'>
               <button
                 variant='primary'
                 size='sm'
@@ -284,12 +284,12 @@ class Formulas extends Component {
               >
                 {CRUDButtonName}
               </button>
-            </Row>
-          </Form>
-        </Container>
+            </div>
+          </form>
+        </div>
         <br />
         {renderFormulas()}
-      </Container>
+      </div>
     );
   }
 }

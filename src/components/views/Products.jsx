@@ -234,7 +234,7 @@ export default class Products extends Component {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                        <Table striped hover size="sm" borderless>
+                        <table striped hover size="sm" borderless>
                                 <thead>
                                 <tr>
                                     <th>Type</th>
@@ -266,7 +266,7 @@ export default class Products extends Component {
                                     </tr>
                                 ))}
                                 </tbody>
-                            </Table>
+                            </table>
                         </Modal.Body>
                         <Modal.Footer>
                             <button onClick={(e) => this.handleOrderTokens(e)}>Close</button>
@@ -285,13 +285,13 @@ export default class Products extends Component {
         }
         // RENDER */
         return (
-            <Container className='feature_block'>
+            <div className='feature_block container mx-auto'>
                 <h1>En desarrollo</h1>
 {/*                 {renderProductsOnCards()}
                 {renderModalProductImages()}
                 {renderModalProductFeatures()}
                 {renderOrderTokens()} */}
-            </Container>
+            </div>
         )
     }
 }

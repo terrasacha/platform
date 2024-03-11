@@ -15,7 +15,7 @@ export default class CRUDProductImages extends Component {
 
     const renderCRUDProductImages = () => {
         return (
-            <Table striped bordered hover>
+            <table striped bordered hover>
                 <thead>
                 <tr>
                     <th>Upload</th>
@@ -82,7 +82,7 @@ export default class CRUDProductImages extends Component {
                     </tr>
                 ))}
                 </tbody>
-            </Table>
+            </table>
         )
         
     }

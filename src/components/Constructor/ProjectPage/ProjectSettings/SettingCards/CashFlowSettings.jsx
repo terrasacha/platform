@@ -326,7 +326,7 @@ export default function CashFlowSettings(props) {
     />
     <p className="mb-3">Flujo de caja del proyecto</p>
     <div>
-      <TableEdit
+      <tableEdit
         canEdit={canEdit}
         columns={['año', 'resultado_anual', 'resultado_acumulado']}
         infoTable={cashFlowResume}

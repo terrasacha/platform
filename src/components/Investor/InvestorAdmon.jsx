@@ -241,13 +241,13 @@ class InvestorAdmon extends Component {
             if (user.wallets !== undefined && user.wallets.items !== undefined) {
                 if (user.wallets.items.length > 0) {
                     return (
-                        <Row xs={1} md={2} lg={3}>
+                        <div xs={1} md={2} lg={3}>
                             {user.wallets.items.map(wallet => (
-                                <Col key={wallet.id}>
+                                <div key={wallet.id}>
                                     {wallet.name} / {wallet.id}
-                                </Col>
+                                </div>
                             ))}
-                        </Row>
+                        </div>
                     )
                     
                 }
@@ -272,10 +272,10 @@ class InvestorAdmon extends Component {
         const renderCompleteProfile = () => {
             if (isRenderCompleteOrUpdateProfile) {
                 return (
-                    <Container>
-                        <Form>
+                    <div className="container mx-auto">
+                        <form>
                         
-                        <Row className='mb-3'>
+                        <div className='mb-3'>
                             
                             <Form.Group as={Col} controlId='formGridUserContactName'>
                                 <Form.Label>Name</Form.Label>
@@ -307,15 +307,15 @@ class InvestorAdmon extends Component {
                                     onChange={(e) => this.handleOnChangeInputForm(e)} />
                             </Form.Group>
 
-                        </Row>
+                        </div>
                         
                         <button
                             variant='primary'
                             size='lg'
                             onClick={() => this.handleCUUser()}
                             >Actualizar</button>
-                        </Form>
-                    </Container>
+                        </form>
+                    </div>
                 )
             } else {
                 return (
@@ -443,61 +443,61 @@ class InvestorAdmon extends Component {
         }
         if(this.state.checkUserStatus === null){
             return(
-                <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>
-                    <Row>
-                        <Col>
+                <div class="container-fluid" style={{paddingTop: 50, minHeight: '100vh'}}>
+                    <div>
+                        <div>
                             <HeaderNavbar2 
                                 changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                                 handleSignOut={this.handleSignOut}
                             ></HeaderNavbar2>
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                     <div style={{marginTop: '1%'}}>Cargando...</div>
-                </Container>
+                </div>
             )
         }
         if(this.state.checkUserStatus){
             return (
-                <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>
+                <div className='container-fluid mx-auto' style={{paddingTop: 50, minHeight: '100vh'}}>
     
                     
-                    <Row>
-                        <Col>
+                    <div>
+                        <div>
                             <HeaderNavbar2 
                                 changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                                 handleSignOut={this.handleSignOut}
                             ></HeaderNavbar2>
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
     
-                    <Row>
+                    <div>
     {/*                     {renderCompleteProfile()}
                         {renderOrders()}
                         {renderProductsBuyed()}
                         {renderModalWallet()} */}
                         <InfoInvestor />
-                    </Row>
+                    </div>
     
-                </Container>
+                </div>
             )
         }else{
             console.log('null')
             return(
-                <Container fluid style={{paddingTop: 50, minHeight: '100vh'}}>                
-                    <Row>
-                        <Col>
+                <div className='container-fluid mx-auto' style={{paddingTop: 50, minHeight: '100vh'}}>                
+                    <div>
+                        <div>
                             <HeaderNavbar2 
                                 changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                                 handleSignOut={this.handleSignOut}
                             ></HeaderNavbar2>   
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
     
-                    <Row>
+                    <div>
                         <ValidationError />
-                    </Row>
+                    </div>
     
-                </Container>
+                </div>
             )
         }
         

@@ -94,8 +94,7 @@ export default function ProjectPage() {
           <div className="mb-5">
           <NewHeaderNavbar></NewHeaderNavbar>
           </div>
-          <div className="my-2">-</div>
-          <div>
+              <div>
             <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">
               <div className="row gy-2">
                 <header className="d-flex justify-content-between">

@@ -6,7 +6,6 @@ export default function Dashboard(props) {
       <div className="mb-5">
         <NewHeaderNavbar></NewHeaderNavbar>
       </div>
-      <div className="my-2">-</div>
       <div className="d-flex justify-center">
         <iframe
           title="lookerstudio dashboard"

@@ -229,7 +229,7 @@ export default class ProductsBuyed extends Component {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                        <Table striped hover size="sm" borderless>
+                        <table striped hover size="sm" borderless>
                                 <thead>
                                 <tr>
                                     <th>Type</th>
@@ -261,7 +261,7 @@ export default class ProductsBuyed extends Component {
                                     </tr>
                                 ))}
                                 </tbody>
-                            </Table>
+                            </table>
                         </Modal.Body>
                         <Modal.Footer>
                             <button onClick={(e) => this.handleOrderTokens(e)}>Close</button>
@@ -271,13 +271,13 @@ export default class ProductsBuyed extends Component {
             }
         }
     return (
-      <Container className='mt-5'>
-        <Container>
+      <div  className='mt-5 container mx-auto'>
+        <div className="container mx-auto">
             {renderProductsOnCards()}
             {renderModalProductImages()}
             {renderModalProductFeatures()}
-        </Container>
-      </Container>
+        </div>
+      </div>
     )
   }
 }

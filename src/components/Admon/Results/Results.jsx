@@ -5,7 +5,6 @@ import  Button  from '../../ui/Button';
 import  Col  from '../../ui/Col';
 import  Container  from '../../ui/Container';
 import  Form  from '../../ui/Form';
-import  Row  from '../../ui/Row';
 import  Table  from '../../ui/Table';
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
@@ -427,8 +426,8 @@ class Results extends Component {
 
         return (
           <>
-            <Row className='mb-2'>
-              <Col>
+            <div className='mb-2'>
+              <div>
                 <label>Variable ID</label>
                 <input
                   type='text'
@@ -437,12 +436,12 @@ class Results extends Component {
                   value={this.state.varID}
                   onChange={(e) => this.handleOnChangeInputForm(e)}
                 />
-              </Col>
-              <Col>
+              </div>
+              <div>
                 <label>Result</label>
                 <input type='text' placeholder='' name='result.varID' disabled value={this.state.result} />
-              </Col>
-              <Col>
+              </div>
+              <div>
                 <label>Formula</label>
                 <input
                   type='text'
@@ -451,8 +450,8 @@ class Results extends Component {
                   disabled
                   value={this.state.equationSelected}
                 />
-              </Col>
-              <Col>
+              </div>
+              <div>
                 <label>Product Features</label>
                 <select
                   name='result.selectedProductFeature'
@@ -465,8 +464,8 @@ class Results extends Component {
                     </option>
                   ))}
                 </select>
-              </Col>
-            </Row>
+              </div>
+            </div>
             <button
               variant='primary'
               size='sm'
@@ -485,7 +484,7 @@ class Results extends Component {
         return (
           <>
             <h1>Results list</h1>
-            <Table striped bordered hover>
+            <table striped bordered hover>
               <thead>
                 <tr>
                   <th>Var ID</th>
@@ -504,7 +503,7 @@ class Results extends Component {
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </table>
           </>
         );
       }
@@ -530,8 +529,8 @@ class Results extends Component {
       return (
         <>
           <h1>PF who has a result assigned</h1>
-          <Row className='mb-4'>
-            <Col>
+          <div className='mb-4'>
+            <div>
               <label>Filter by Product</label>
               <select name='filterProducts' onChange={(e) => this.handleChangeFilter(e)}>
                 <option value='-'>-</option>
@@ -541,11 +540,11 @@ class Results extends Component {
                   </option>
                 ))}
               </select>
-            </Col>
-          </Row>
+            </div>
+          </div>
           {this.state.filterByProduct !== '' ? (
-            <Row className='mb-4'>
-              <Col>
+            <div className='mb-4'>
+              <div>
                 <label>Filter by Feature</label>
                 <select name='filterProductFeature' onChange={(e) => this.handleChangeFilter(e)}>
                   <option value='-'>-</option>
@@ -555,12 +554,12 @@ class Results extends Component {
                     </option>
                   ))}
                 </select>
-              </Col>
-            </Row>
+              </div>
+            </div>
           ) : (
             ''
           )}
-          <Table striped bordered hover>
+          <table striped bordered hover>
             <thead>
               <tr>
                 <th>Product</th>
@@ -589,17 +588,17 @@ class Results extends Component {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         </>
       );
     };
 
     return (
-      <Container>
-        <Container style={{ display: 'flex', height: '580px' }}>
-          <Container>
+      <div className='container'>
+        <div style={{ display: 'flex', height: '580px' }}>
+          <div className='container'>
             <h2>Calculate Result</h2>
-            <div>
+            <div className='container'>
               {SelectProductForm()}
               {SelectFormulaForm()}
             </div>
@@ -607,11 +606,11 @@ class Results extends Component {
             {Calculate()}
             {Result()}
             {SaveResult()}
-          </Container>
-          <Container style={{ overflow: 'auto' }}>{renderProductFeaturesResults()}</Container>
-        </Container>
-        <Container>{renderResults()}</Container>
-      </Container>
+          </div>
+          <div style={{ overflow: 'auto' }}>{renderProductFeaturesResults()}</div>
+        </div>
+        <div className='container'>{renderResults()}</div>
+      </div>
     );
   }
 }

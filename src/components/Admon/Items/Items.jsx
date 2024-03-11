@@ -202,7 +202,7 @@ class Items extends Component {
     const renderCategorys = () => {
       if (categorys.length > 0) {
         return (
-          <Container>
+          <div className="container mx-auto">
             <table className="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
@@ -229,20 +229,20 @@ class Items extends Component {
                 ))}
               </tbody>
             </table>
-          </Container>
+          </div>
         );
       }
     };
 
     return (
-      <Container style={{ display: 'flex', flexDirection: 'column' }}>
-        <Container>
+      <div className="container mx-auto" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="container mx-auto">
           <h2>
             {CRUDButtonName} Items de proyecto: {newCategory.name}
           </h2>
-          <Form>
-            <Row className="mb-2">
-              <Col controlId="formGridNewCategoryName">
+          <form>
+            <div className="mb-2">
+              <div controlId="formGridNewCategoryName">
                 <label htmlFor="categoryName" className="form-label">
                   Nombre
                 </label>
@@ -279,10 +279,10 @@ class Items extends Component {
                     Indicadores financieros (Token)
                   </option>
                 </select>
-              </Col>
-            </Row>
+              </div>
+            </div>
 
-            <Row className="mb-1">
+            <div className="mb-1">
               <button
                 variant="primary"
                 size="sm"
@@ -291,12 +291,12 @@ class Items extends Component {
               >
                 {CRUDButtonName}
               </button>
-            </Row>
-          </Form>
-        </Container>
+            </div>
+          </form>
+        </div>
         <br></br>
         {renderCategorys()}
-      </Container>
+      </div>
     );
   }
 }

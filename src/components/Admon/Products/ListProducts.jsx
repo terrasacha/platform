@@ -311,7 +311,7 @@ export default class ListProducts extends Component {
     const renderProducts = () => {
       if (listCleanProducts.length > 0) {
         return (
-          <Table striped bordered hover>
+          <table striped bordered hover>
             <thead>
               <tr>
                 <th>Delete</th>
@@ -525,7 +525,7 @@ export default class ListProducts extends Component {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         );
       }
     };
@@ -545,7 +545,7 @@ export default class ListProducts extends Component {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Table striped hover size="sm" borderless>
+              <table striped hover size="sm" borderless>
                 <thead>
                   <tr>
                     <th>Image</th>
@@ -574,7 +574,7 @@ export default class ListProducts extends Component {
                     </tr>
                   ))}
                 </tbody>
-              </Table>
+              </table>
             </Modal.Body>
             <Modal.Footer>
               <button onClick={(e) => this.handleHideModalProductImages()}>
@@ -623,7 +623,7 @@ export default class ListProducts extends Component {
               </Modal.Header>
               <Modal.Body>
                 <ToastContainer />
-                <Table striped hover size="sm" borderless>
+                <table striped hover size="sm" borderless>
                   <thead>
                     <tr>
                       <th>Feature ID</th>
@@ -665,7 +665,7 @@ export default class ListProducts extends Component {
                       </tr>
                     ))}
                   </tbody>
-                </Table>
+                </table>
               </Modal.Body>
               <Modal.Footer>
                 <button onClick={(e) => this.handleHideModalProductFeatures(e)}>
@@ -780,7 +780,7 @@ export default class ListProducts extends Component {
               </Modal.Header>
               <Modal.Body>
                 <ToastContainer />
-                <Table striped hover size="sm" borderless>
+                <table striped hover size="sm" borderless>
                   <thead>
                     <tr>
                       <th>Feature ID</th>
@@ -827,7 +827,7 @@ export default class ListProducts extends Component {
                       </tr>
                     ))}
                   </tbody>
-                </Table>
+                </table>
               </Modal.Body>
               <Modal.Footer>
                 <button

@@ -187,55 +187,55 @@ class Documents extends Component {
         const listDocumentationStatus = () => {
           if (showAllDocuments && userProductsDoc) {
             return (
-              <Container className='mt-4 '>
-                <h3>Your documentation</h3>
-                <Row className="justify-content-md-center">
-                  <Col xs lg="9">
-                    <Table hover className='mt-4'>
-                      <thead>
-                        <tr>
-                          <th>Product</th>
-                          <th>Feature</th>
-                          <th>Document Status</th>
-                          <th>Doc Hash</th>
-                          <th>Sign</th>
-                          <th>Sign Hash</th>
-                          <th>Upload Document</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {userProductsDoc.map((userProduct) =>
-                          userProduct.product.productFeatures.items.map((pf) => {
-                            return (
-                              <tr key={pf.id}>
-                                <td>{pf.product.name}</td>
-                                <td>{pf.feature.name}</td>
-                                <td>
-                                  {pf.documents.items.length > 0 ? (
-                                    pf.documents.items[0].status === 'pending' ? (
-                                      <HourglassSplit size={25} color='grey' />
-                                    ) : pf.documents.items[0].status === 'accepted' ? (
-                                      <CheckCircle size={25} color='#449E48' />
-                                    ) : (
-                                      <XCircle size={25} color='#CC0000' />
-                                    )
-                                  ) : (
-                                    'Document not assigned'
-                                  )}
-                                </td>
-                                <td>{pf.documents.items.length > 0 ? 'Already uploaded' : <button variant="primary" size='sm' onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</button>}</td>
-                                <td>{pf.documents.items.length > 0 ? pf.documents.items[0].docHash : ''}</td>
-                                <td>{pf.documents.items.length > 0 ? pf.documents.items[0].signed : ''}</td>
-                                <td>{pf.documents.items.length > 0 ? pf.documents.items[0].signedHash : ''}</td>
-                              </tr>
-                            );
-                          })
-                        )}
-                      </tbody>
-                    </Table>
-                  </Col>
-                </Row>
-              </Container>
+            <div className='mt-4 container'>
+            <h3 className="text-3xl font-semibold">Your documentation</h3>
+            <div className="flex justify-center">
+              <div className="w-9/12">
+                <table className='mt-4 table-auto w-full'>
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2">Product</th>
+                      <th className="px-4 py-2">Feature</th>
+                      <th className="px-4 py-2">Document Status</th>
+                      <th className="px-4 py-2">Doc Hash</th>
+                      <th className="px-4 py-2">Sign</th>
+                      <th className="px-4 py-2">Sign Hash</th>
+                      <th className="px-4 py-2">Upload Document</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userProductsDoc.map((userProduct) =>
+                      userProduct.product.productFeatures.items.map((pf) => {
+                        return (
+                          <tr key={pf.id}>
+                            <td className="px-4 py-2">{pf.product.name}</td>
+                            <td className="px-4 py-2">{pf.feature.name}</td>
+                            <td className="px-4 py-2">
+                              {pf.documents.items.length > 0 ? (
+                                pf.documents.items[0].status === 'pending' ? (
+                                  <HourglassSplit size={25} color='grey' />
+                                ) : pf.documents.items[0].status === 'accepted' ? (
+                                  <CheckCircle size={25} color='#449E48' />
+                                ) : (
+                                  <XCircle size={25} color='#CC0000' />
+                                )
+                              ) : (
+                                'Document not assigned'
+                              )}
+                            </td>
+                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? 'Already uploaded' : <button className="bg-blue-500 text-white py-1 px-2 rounded" onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</button>}</td>
+                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].docHash : ''}</td>
+                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].signed : ''}</td>
+                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].signedHash : ''}</td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
             );
           }
         };
@@ -314,14 +314,14 @@ class Documents extends Component {
                   <Modal.Title id="contained-modal-title-vcenter">{productFeatureToAddDoc?.feature.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <Row className='mb-3'>
+                  <div className='mb-3'>
                     <Form.Group>
                       <Form.Group>
                         <Form.Label>Choose file</Form.Label>
                         <Form.Control type='file' name='selected_file' onChange={(e) => this.handleInputCreateDocument(e)} />
                       </Form.Group>
                     </Form.Group>
-                  </Row>
+                  </div>
                 </Modal.Body>
                 <Modal.Footer>
                   <button disabled={this.state.loadingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>

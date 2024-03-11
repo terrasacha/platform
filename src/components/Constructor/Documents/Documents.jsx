@@ -205,14 +205,14 @@ class Documents extends Component {
         const listDocumentationStatus = () => {
             if (showAllDocuments && userProductsDoc) {
                 return (
-                    <Container className='mt-4 '>
-                        <Row className="justify-content-md-center">
-                            <Col xs >
+                    <div className='mt-4 container mx-auto'>
+                        <div className="justify-content-md-center">
+                            <div xs >
                                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
                                     <h5 className='mr-5'>Your documentation</h5>
                                     {dropDown()}
                                 </div>
-                                <Table hover className='mt-4'>
+                                <table hover className='mt-4'>
                                     <thead>
                                         <tr>
                                             <th>Product</th>
@@ -242,10 +242,10 @@ class Documents extends Component {
                                             })
                                         }
                                     </tbody>
-                                </Table>
-                            </Col>
-                        </Row>
-                    </Container>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 )
             }
         }
@@ -296,7 +296,7 @@ class Documents extends Component {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <Row className='mb-3'>
+                            <div className='mb-3'>
                                 <Form.Group>
                                     <Form.Group >
                                         <Form.Label>Choose file</Form.Label>
@@ -307,7 +307,7 @@ class Documents extends Component {
                                         />
                                     </Form.Group>
                                 </Form.Group>
-                            </Row>
+                            </div>
                         </Modal.Body>
                         <Modal.Footer>
                             <button disabled={this.state.creatingDocument ? true : false} onClick={(e) => this.handleCreateDocument()}>{this.state.creatingDocument ? 'Uploading' : 'Upload Document'}</button>
@@ -325,13 +325,13 @@ class Documents extends Component {
             )
         }
         return (
-            <Container>
-                <Container>
+            <div className="container mx-auto">
+                <div className="container mx-auto">
                     {listDocumentationStatus()}
                     {uploadDocumentation()}
                     {modalDocument()}
-                </Container>
-            </Container>
+                </div>
+            </div>
         )
     }
 }

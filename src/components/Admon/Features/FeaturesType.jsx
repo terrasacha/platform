@@ -7,7 +7,6 @@ import  Col  from '../../ui/Col';
 import  Container  from '../../ui/Container';
 import  Form  from '../../ui/Form';
 import  Row  from '../../ui/Row';
-import  Table  from '../../ui/Table';
 // Auth css custom
 import Bootstrap from "../../common/themes"
 // GraphQL
@@ -117,9 +116,9 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
         const renderFeatureTypes = () => {
             if (featureTypes.length > 0) {
                 return (
-                    <Container style={{maxHeight: '30rem', overflowY: 'scroll'}}>
+                   <div className='container' style={{maxHeight: '30rem', overflowY: 'scroll'}}>
                     <h2>Features Types</h2>
-                        <Table striped bordered hover>
+                        <table striped bordered hover>
                             <thead>
                             <tr>
                                 <th>Name</th>
@@ -146,51 +145,65 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
                                 </tr>
                             ))}
                             </tbody>
-                        </Table>
-                    </Container>
+                        </table>
+                    </div>
                 )
             }
         
         }
 
         return (
-            <Container>
-                <Container>
+           <div className='container'>
+               <div className='container'>
                     <br></br>
                     <h2>{CRUDButtonName} Feature Type: {newFeatureType.name}</h2>
-                    <Form>
-                        <Row className='mb-2'>
-                            <Form.Group as={Col} controlId='formGridNewFeatureName'>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Name...'
-                                    name='featureType.name'
-                                    value={newFeatureType.name}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Description...'
-                                    name='featureType.description'
-                                    value={newFeatureType.description}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-                        </Row>
+                    <form>
+                        <div className='mb-2'>
+                            <div className='mb-2'>
+                            <label htmlFor='formGridNewFeatureName' className='block text-sm font-medium text-gray-700'>
+                                Name
+                            </label>
+                            <input
+                                type='text'
+                                id='formGridNewFeatureName'
+                                placeholder='Name...'
+                                name='featureType.name'
+                                value={newFeatureType.name}
+                                onChange={(e) => this.handleOnChangeInputForm(e)}
+                                className='mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 block w-full'
+                            />
+                            </div>
+                            <div className='mb-2'>
+                            <label htmlFor='formGridNewFeatureDescription' className='block text-sm font-medium text-gray-700'>
+                                Description
+                            </label>
+                            <input
+                                type='text'
+                                id='formGridNewFeatureDescription'
+                                placeholder='Description...'
+                                name='featureType.description'
+                                value={newFeatureType.description}
+                                onChange={(e) => this.handleOnChangeInputForm(e)}
+                                className='mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 block w-full'
+                            />
+                            </div>
+                        </div>
 
-                        <Row className='mb-1'>
+                        <div className='mb-1'>
                             <button
-                            variant='primary'
-                            size='sm'
+                            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
                             onClick={this.handleCRUDFeatureType}
                             disabled={this.state.isCRUDButtonDisable}
-                            >{CRUDButtonName}</button>
-                        </Row>
-                    </Form>
-                </Container>
+                            >
+                            {CRUDButtonName}
+                            </button>
+                        </div>
+                        </form>
+
+                </div>
             {renderFeatureTypes()}
 
-        </Container>
+        </div>
         )
     }
 }

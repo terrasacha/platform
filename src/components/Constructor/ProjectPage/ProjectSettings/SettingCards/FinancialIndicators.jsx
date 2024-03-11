@@ -199,7 +199,7 @@ export default function FinancialIndicators(props) {
         <div className="p-6">
           <p className="mb-3">{title}</p>
           <div>
-            <TableEdit
+            <tableEdit
               canEdit={canEdit}
               columns={['CONCEPTO', 'VALOR']}
               infoTable={revenuesByProduct}

@@ -201,9 +201,9 @@ class Validators extends Component {
         const renderValidators = () => {
           if (validators.length > 0) {
             return (
-              <Container>
+              <div className='container'>
                 <h4>List Validators</h4>
-                <Table striped bordered hover>
+                <table striped bordered hover>
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -241,19 +241,19 @@ class Validators extends Component {
                       </tr>
                     ))}
                   </tbody>
-                </Table>
-              </Container>
+                </table>
+              </div>
             );
           }
         };
     
         return (
-          <Container style={{ display: 'flex', flexDirection: 'column' }}>
-            <Container>
+          <div className='container mx-auto' style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="container mx-auto">
               <h4>Create new validator</h4>
               <form>
-                <Row className='mb-2'>
-                  <Col>
+                <div className='mb-2'>
+                  <div>
                     <label>username</label>
                     <input
                       type='text'
@@ -262,8 +262,8 @@ class Validators extends Component {
                       value={newUser.username}
                       onChange={(e) => this.handleOnChangeInputForm(e)}
                     />
-                  </Col>
-                  <Col>
+                  </div>
+                  <div>
                     <label>email</label>
                     <input
                       type='text'
@@ -272,23 +272,23 @@ class Validators extends Component {
                       value={newUser.email}
                       onChange={(e) => this.handleOnChangeInputForm(e)}
                     />
-                  </Col>
-                  <Col>
+                  </div>
+                  <div>
                     <label>Validator type</label>
                     <select name='newUser.subRole' value={newUser.subRole} onChange={(e) => this.handleOnChangeInputForm(e)}>
                       <option value='financial'>Financiero</option>
                       <option value='technical'>Técnico</option>
                     </select>
-                  </Col>
-                </Row>
+                  </div>
+                </div>
     
-                <Row className='mb-1'>
+                <div className='mb-1'>
                   <button variant='primary' size='sm' onClick={() => this.showModalCreate()}>
                     Crear
                   </button>
-                </Row>
+                </div>
               </form>
-            </Container>
+            </div>
             {renderValidators()}
             <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
               <Modal.Header closeButton>
@@ -309,7 +309,7 @@ class Validators extends Component {
                 <Modal.Title>Confirmar datos de nuevo usuario</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <Table striped bordered hover>
+                <table striped bordered hover>
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -326,7 +326,7 @@ class Validators extends Component {
                       <td>{this.state.newUser.subRole}</td>
                     </tr>
                   </tbody>
-                </Table>
+                </table>
               </Modal.Body>
               <Modal.Footer>
                 <button variant='secondary' onClick={() => this.setState({ showModalCreate: false })}>
@@ -337,7 +337,7 @@ class Validators extends Component {
                 </button>
               </Modal.Footer>
             </Modal>
-          </Container>
+          </div>
         );
       }
     }

@@ -154,7 +154,7 @@ class UOM extends Component {
     const renderUnitOfMeasures = () => {
       if (unitOfMeasures.length > 0) {
         return (
-          <Container>
+          <div className="container mx-auto">
             <table className="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
@@ -183,18 +183,18 @@ class UOM extends Component {
                 ))}
               </tbody>
             </table>
-          </Container>
+          </div>
         );
       }
     };
 
     return (
-      <Container>
-        <Container>
+      <div className="container mx-auto">
+        <div className="container mx-auto">
           <h2>Create Unit of Measure</h2>
-          <Form>
-            <Row className='mb-2'>
-              <Col controlId='formGridNewCategoryName'>
+          <form>
+            <div className='mb-2'>
+              <div controlId='formGridNewCategoryName'>
                 <label htmlFor='engineeringUnit' className='form-label'>
                   Engineering Unit
                 </label>
@@ -230,10 +230,10 @@ class UOM extends Component {
                 >
                   {newUnitOfMeasure.isFloat ? 'YES' : 'NO'}
                 </button>
-              </Col>
-            </Row>
+              </div>
+            </div>
 
-            <Row className='mb-1'>
+            <div className='mb-1'>
               <button
                 variant='primary'
                 size='sm'
@@ -242,12 +242,12 @@ class UOM extends Component {
               >
                 {CRUDButtonName}
               </button>
-            </Row>
-          </Form>
+            </div>
+          </form>
           <br />
-        </Container>
+        </div>
         {renderUnitOfMeasures()}
-      </Container>
+      </div>
     );
   }
 }

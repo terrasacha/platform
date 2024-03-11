@@ -199,7 +199,7 @@ export default function GenericInputTable(props) {
   <div className="text-center">
     <p className="mb-3">{title}</p>
     <div>
-      <TableEdit
+      <tableEdit
         canEdit={canEdit}
         conceptOptions={conceptOptions}
         columns={['CONCEPTO', 'CANTIDAD', 'UNIDAD']}
