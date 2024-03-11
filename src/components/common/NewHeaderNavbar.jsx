@@ -37,33 +37,33 @@ export default function NewHeaderNavbar() {
   
   return (
     <Navbar fluid>
-        <NavbarBrand href="/" style={{ marginLeft: "2%" }}>
+        <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
           <img
             src={LOGO}
             height="40"
             width="auto"
-            className="d-inline-block align-top"
+            className="d-inline-block align-top w-10"
             alt="ATP"
           />
-        </NavbarBrand>
-        <NavbarToggle />
-            <NavbarCollapse className={s.navGroup}>
+        </Navbar.Brand>
+        <Navbar.Toggle />
+            <Navbar.Collapse >
                 {role === "constructor" && (
                   <>
-                  <NavbarLink
+                  <Navbar.Link
                     onClick={() =>
                       (window.location.href = "/constructor")
                     }
                   >
                     Mis Proyectos
-                  </NavbarLink>
-                    <NavbarLink
+                  </Navbar.Link>
+                    <Navbar.Link
                       onClick={() =>
                         (window.location.href = "/new_project")
                       }
                     >
                       Postular proyecto
-                    </NavbarLink>
+                    </Navbar.Link>
                     {/* <NavbarLink
                       onClick={() =>
                         (window.location.href = "/creating_wallet")
@@ -75,13 +75,13 @@ export default function NewHeaderNavbar() {
                 )}
                 {role === "validator" && (
                   <>
-                    <NavbarLink
+                    <Navbar.Link
                       onClick={() =>
                         (window.location.href = "/validator_admon")
                       }
                     >
                       Proyectos asignados
-                    </NavbarLink>
+                    </Navbar.Link>
                   </>
                 )}
                 {localStorage.getItem("role") ? (
@@ -105,7 +105,7 @@ export default function NewHeaderNavbar() {
                     Conectar
                   </button>
                 )}
-              </NavbarCollapse>
+              </Navbar.Collapse>
     </Navbar>
   );
 }

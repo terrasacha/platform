@@ -45,7 +45,7 @@ export default class HeaderNavbar extends Component {
                 src={LOGO}
                 height="40"
                 width="auto"
-                className="d-inline-block align-top"
+                className="d-inline-block align-top w-10"
                 alt="ATP"
               />
             </NavbarBrand>

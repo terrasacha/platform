@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import Container from '../../ui/Container';
-import Nav from '../../ui/Nav';
-import Navbar from '../../ui/Navbar';
-import Offcanvas from '../../ui/Offcanvas';
+import { button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from 'flowbite-react';
+
 import s from './HeaderNavbar.module.css'; // Asegúrate de ajustar la importación del estilo según tu estructura de archivos
 
 // Import images
@@ -28,9 +26,8 @@ export default class HeaderNavbar extends Component {
 
     render() {
         return (
-            <nav className="bg-light fixed top-0 w-full">
-                <Container fluid>
-                    <button className="lg:hidden flex items-center p-2 focus:outline-none">
+            <Navbar fluid>
+                    <Navbar.Brand className="lg:hidden flex items-center p-2 focus:outline-none w-10">
                         <img
                             src={LOGO}
                             width="40"
@@ -38,41 +35,24 @@ export default class HeaderNavbar extends Component {
                             className="d-inline-block align-top"
                             alt="ATP"
                         />
-                    </button>
+                    </Navbar.Brand>
                     <Navbar.Toggle />
-                    <Navbar.Offcanvas
-                        id={`offcanvasNavbar-expand-sm`}
-                        aria-labelledby={`offcanvasNavbarLabel-expand-sm`}
-                        placement="end"
-                    >
-                        <Offcanvas.Header closeButton>
-                            <Offcanvas.Title id={`offcanvasNavbarLabel-expand-sm`}>
-                                <a href='/'><img src={LOGO}
-                                    width="40"
-                                    height="40"
-                                    className="d-inline-block align-top"
-                                    alt="ATP"
-                                /></a>
-                            </Offcanvas.Title>
-                        </Offcanvas.Header>
-                        <Offcanvas.Body>
-                            <Nav
+                    <Navbar.Collapse>
+                            <Navbar.link
                                 className="me-auto my-2 my-lg-0"
                                 style={{ maxHeight: '100px' }}
                                 navbarScroll
                             >
-                            </Nav>
-                            <Nav>
-                                <Nav className={s.navGroup}>
-                                    <a href="#investor_products" onClick={(e) => this.handleChangeNavBar('investor_products')} className="text-gray-800 hover:text-gray-600 mr-4">
+                            </Navbar.link>
+                                    <Navbar.link href="#investor_products" onClick={(e) => this.handleChangeNavBar('investor_products')} className="text-gray-800 hover:text-gray-600 mr-4">
                                         Mis Proyectos
-                                    </a>
-                                    <button onClick={() => window.location.href="/new_project"} className="text-gray-800 hover:text-gray-600 mr-4">
+                                    </Navbar.link>
+                                    <Navbar.link onClick={() => window.location.href="/new_project"} className="text-gray-800 hover:text-gray-600 mr-4">
                                         Nuevo Proyecto
-                                    </button>
-                                    <button onClick={() => window.location.href="/creating_wallet"} className="text-gray-800 hover:text-gray-600 mr-4">
+                                    </Navbar.link>
+                                    <Navbar.link onClick={() => window.location.href="/creating_wallet"} className="text-gray-800 hover:text-gray-600 mr-4">
                                         ¿Cómo crear tu billetera?
-                                    </button>
+                                    </Navbar.link>
                                     {localStorage.getItem('role') ?
                                         <div>
                                             <button onClick={() => this.handleSignOut()} className={`signing ${s.signing}`}>
@@ -84,12 +64,9 @@ export default class HeaderNavbar extends Component {
                                             Conectar
                                         </button>
                                     }
-                                </Nav>
-                            </Nav>
-                        </Offcanvas.Body>
-                    </Navbar.Offcanvas>
-                </Container>
-            </nav>
+                                
+                </Navbar.Collapse>
+            </Navbar>
         );
     }
 }

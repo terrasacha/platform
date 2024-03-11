@@ -4,6 +4,7 @@ import Nav from './components/ui/Nav';
 import Navbar from './components/ui/Navbar';
 import { ListTask } from 'react-bootstrap-icons';
 import LOGO from '../../common/_images/suan_logo.png';
+import { NavLink } from 'react-router-dom';
 
 export default class HeaderNavbar extends Component {
   constructor(props) {
@@ -25,10 +26,8 @@ export default class HeaderNavbar extends Component {
   render() {
     let role = localStorage.getItem('role');
     return (
-      <nav className="bg-white fixed top-0 w-full">
-        <Container>
-          <div className="flex items-center justify-between">
-            <a href="/">
+      <Navbar fluid>
+            <Navbar.Brand href="/">
               <img
                 src={LOGO}
                 width="80"
@@ -36,24 +35,24 @@ export default class HeaderNavbar extends Component {
                 className="d-inline-block align-top"
                 alt="BBT"
               />
-            </a>
-            <Nav>
-              <a
+            </Navbar.Brand>
+            <Navbar.Toggle />
+           <Navbar.Collapse>
+              <Navbar.Link
                 href="/"
                 onClick={(e) => this.handleChangeNavBar('investor_documents', e)}
                 className="text-gray-800 hover:text-gray-600 mr-4"
               >
                 Documents
-              </a>
-              <a
+              </Navbar.Link>
+              <Navbar.link
                 href="/"
                 onClick={(e) => this.handleChangeNavBar('products_buyed', e)}
                 className="text-gray-800 hover:text-gray-600"
               >
                 Products
-              </a>
-            </Nav>
-            <Nav>
+              </Navbar.link>
+            <Navbar.link>
               <span className="font-bold text-red-500">{role ? role : ''}</span>
               <button
                 onClick={(e) => this.handleSignOut()}
@@ -61,10 +60,9 @@ export default class HeaderNavbar extends Component {
               >
                 Sign Out
               </button>
-            </Nav>
-          </div>
-        </Container>
-      </nav>
+            </Navbar.link>
+          </Navbar.Collapse>
+        </Navbar>
     );
   }
 }
