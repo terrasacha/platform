@@ -92,7 +92,7 @@ export default function ProjectPage() {
       {projectData ? (
         <div className="container-sm">
           <div className="mb-5">
-          {/* <TailwindHeaderNavbar /> */}
+          <NewHeaderNavbar></NewHeaderNavbar>
           </div>
           <div className="my-2">-</div>
           <div>

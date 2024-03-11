@@ -37,8 +37,8 @@ export default class HeaderNavbar extends Component {
                             className="d-inline-block align-top w-10"
                             alt="ATP"
                             />
+                            <h1><strong className='text-black'>suan</strong></h1>
             </Navbar.Brand>
-                            <h1><strong>suan</strong></h1>
           <Navbar.Toggle  />
           <Navbar.Collapse>
               {role === 'admon'?<Navbar.Link onClick={() => window.location.href="/admon"}>Administrar</Navbar.Link>:''}

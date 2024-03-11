@@ -9,7 +9,7 @@ export default function PostulantInfoCard(props) {
 
   return (
     <div className={className}>
-  <div className="border-b border-gray-300">
+  <div className="border-b border-gray-300 App-header">
     <h2 className="text-xl font-semibold mb-4">Información del postulante</h2>
   </div>
   <div className="p-6">

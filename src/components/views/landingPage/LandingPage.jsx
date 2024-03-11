@@ -4,6 +4,7 @@ import { API, Auth, graphqlOperation } from 'aws-amplify'
 // Util
 import WebAppConfig from '../../common/_conf/WebAppConfig'
 // Components
+import HeaderNavbar from '../Navbars/HeaderNavbar'
 import s from './LandingPage.module.css'
 import ProductCard from '../../productCard/ProductCard'
 import marketImage from '../_images/market.jpg';
@@ -11,7 +12,6 @@ import drones from '../_images/drone-con-camara.png';
 import blockchain from '../_images/cadena-de-bloques.png';
 import plataforma from '../_images/diseno-de-respuesta.png';
 import { Button, Modal } from 'flowbite-react';
-import HeaderNavbar from '../Navbars/HeaderNavbar'
 
 
 export default class LandingPage extends Component {
