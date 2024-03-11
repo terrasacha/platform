@@ -1009,7 +1009,7 @@ class Products extends Component {
           <h2 className="text-xl font-semibold mb-4">PROJECT Images</h2>
           <div className="mb-1 grid grid-cols-1">
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+              className="btn-yellow text-white px-4 py-2 rounded mb-4"
               onClick={(e) => this.handleAddNewImageToActualProduct(e)}
             >
               ADD IMAGE TO ACTUAL PROJECT
@@ -1025,7 +1025,7 @@ class Products extends Component {
 
         <div className="mb-1">
           <button
-            className={`bg-blue-500 text-white px-4 py-2 rounded ${this.state.isCRUDButtonDisable ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`btn-yellow text-white px-4 py-2 rounded ${this.state.isCRUDButtonDisable ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={this.handleCRUDProduct}
             disabled={this.state.isCRUDButtonDisable}
           >

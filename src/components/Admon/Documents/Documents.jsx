@@ -223,7 +223,7 @@ class Documents extends Component {
                                 'Document not assigned'
                               )}
                             </td>
-                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? 'Already uploaded' : <button className="bg-blue-500 text-white py-1 px-2 rounded" onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</button>}</td>
+                            <td className="px-4 py-2">{pf.documents.items.length > 0 ? 'Already uploaded' : <button className="btn-yellow text-white py-1 px-2 rounded" onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}>Upload Document</button>}</td>
                             <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].docHash : ''}</td>
                             <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].signed : ''}</td>
                             <td className="px-4 py-2">{pf.documents.items.length > 0 ? pf.documents.items[0].signedHash : ''}</td>
@@ -255,7 +255,7 @@ class Documents extends Component {
                         <div
                           key={userProduct.id}
                           className={`p-4 border ${
-                            userProduct.id === aux ? 'bg-blue-500 text-white' : 'bg-gray-100'
+                            userProduct.id === aux ? 'btn-yellow text-white' : 'bg-gray-100'
                           } cursor-pointer`}
                           onClick={() => this.handleLoadUserProduct(userProduct)}
                         >
@@ -283,7 +283,7 @@ class Documents extends Component {
                                     <h4 className="text-xl font-semibold">{pf.feature.name}</h4>
                                     <p className="mb-2">{pf.feature.description}</p>
                                     <button
-                                      className="bg-blue-500 text-white px-4 py-2 rounded"
+                                      className="btn-yellow text-white px-4 py-2 rounded"
                                       onClick={() =>
                                         this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })
                                       }

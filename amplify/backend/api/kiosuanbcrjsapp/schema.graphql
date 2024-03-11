@@ -30,14 +30,16 @@ type User @model {
 
 type Wallet @model {
   id: ID!
-  name: String!
-  status: String!
-  password: String!
-  seed: String!
+  name: String
+  status: String
+  password: String
+  seed: String
   address: String!
+  stake_address: String!
   isSelected: Boolean
   isAdmin: Boolean
-  userID: ID! @index(name: "byUser")
+  claimed_token: Boolean
+  userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
 }
 
@@ -106,6 +108,7 @@ type Product @model {
   status: String
   timeOnVerification: AWSTimestamp
   projectReadiness: Boolean
+  tokenGenesis: Boolean
   categoryID: ID! @index(name: "byCategory")
   category: Category @belongsTo(fields: ["categoryID"])
   images: [Image] @hasMany(indexName: "byProduct", fields: ["id"])
@@ -113,9 +116,8 @@ type Product @model {
     @hasMany(indexName: "byProduct", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
-  xlsFormProducts: [XLSFormProduct]
-    @hasMany(indexName: "byProduct", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
+  scripts: [Script] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model {
@@ -163,12 +165,6 @@ type Feature @model {
   productFeatures: [ProductFeature]
     @hasMany(indexName: "byFeature", fields: ["id"])
   featureFormulas: [FeatureFormula]
-    @hasMany(indexName: "byFeature", fields: ["id"])
-  xlsFormTypeID: ID @index(name: "byXLSFormType")
-  xlsFormType: XLSFormType @belongsTo(fields: ["xlsFormTypeID"])
-  xlsFormGroupID: ID @index(name: "byXLSFormGroup")
-  xlsFormGroup: XLSFormGroup @belongsTo(fields: ["xlsFormGroupID"])
-  xlsFormChoices: [XLSFormChoice]
     @hasMany(indexName: "byFeature", fields: ["id"])
 }
 # Formulas
@@ -245,19 +241,17 @@ type UserProduct @model {
   user: User @belongsTo(fields: ["userID"])
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
-  orders: [Order] @hasMany(indexName: "byUserProduct", fields: ["id"])
 }
 
 type Order @model {
   id: ID! # local order ID
-  currencyCode: String
-  fiatTotalAmount: Float
+  walletAddress: String
   statusCode: String
-  externalOrderId: String
-  confirmation: String
-  userProductID: ID! @index(name: "byUserProduct")
-  userProduct: UserProduct @belongsTo(fields: ["userProductID"])
-  transactions: [Transactions] @hasMany(indexName: "byOrder", fields: ["id"])
+  walletStakeAddress: String
+  tokenName: String
+  tokenAmount: Float
+  utxos: AWSJSON
+  value: Float
 }
 
 type Transactions @model {
@@ -278,8 +272,6 @@ type Transactions @model {
   stakeAddress: String
   productID: ID! @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
-  orderID: ID @index(name: "byOrder")
-  order: Order @belongsTo(fields: ["orderID"])
 }
 
 type Company @model {
@@ -292,42 +284,18 @@ type Company @model {
   product: Product @belongsTo(fields: ["productID"])
 }
 
-# XLSForm Models
-
-type XLSForm @model {
+type Script @model {
   id: ID!
   name: String!
-  version: String
-  xlsFormGroups: [XLSFormGroup] @hasMany(indexName: "byXLSForm", fields: ["id"])
-}
-
-type XLSFormProduct @model {
-  id: ID!
-  productID: ID! @index(name: "byProduct")
+  script_type: String! # mintSuanCO2/mintProject/spend/any
+  script_category: String! # NativeScript/PlutusV1/PlutusV2/PlutusV3
+  pbk: [String] # List[pkh]
+  token_name: String
+  cbor: String!
+  productID: ID @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
-  xlsFormID: ID! @index(name: "byXLSForm")
-  xlsForm: Product @belongsTo(fields: ["xlsFormID"])
-}
-
-type XLSFormType @model {
-  id: ID!
-  name: String!
-  features: [Feature] @hasMany(indexName: "byXLSFormType", fields: ["id"])
-}
-
-type XLSFormGroup @model {
-  id: ID!
-  name: String!
-  features: [Feature] @hasMany(indexName: "byXLSFormGroup", fields: ["id"])
-  xlsFormID: ID @index(name: "byXLSForm")
-  xlsForm: XLSForm @belongsTo(fields: ["xlsFormID"])
-}
-
-type XLSFormChoice @model {
-  id: ID!
-  listName: String!
-  name: String!
-  label: String!
-  featureID: ID! @index(name: "byFeature")
-  feature: Feature @belongsTo(fields: ["featureID"])
+  testnetAddr: String!
+  MainnetAddr: String!
+  Active: Boolean!
+  base_code: AWSURL
 }

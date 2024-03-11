@@ -75,6 +75,7 @@ class AdmonProfile extends Component {
       if (isRenderCompleteOrUpdateProfile) {
         return (
           <div className="container mx-auto p-5">
+            <div className='card'>
             <form>
               <div className="mb-3">
                 <label htmlFor="formGridUserContactName" className="form-label">
@@ -114,6 +115,7 @@ class AdmonProfile extends Component {
                 Actualizar
               </button>
             </form>
+            </div>
           </div>
         );
       } else {

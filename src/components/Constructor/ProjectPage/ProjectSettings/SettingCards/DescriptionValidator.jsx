@@ -70,7 +70,7 @@ export default function DescriptionValidator(props) {
       </div>
       <div className="flex justify-end">
         <button
-          className={`bg-green-500 text-white py-2 px-4 rounded ${
+          className={`btn-yellow text-white py-2 px-4 rounded ${
             projectDescription.length === 0 ||
             projectDescription === projectData.projectVerifierInfo.verifierDescription ||
             canEdit

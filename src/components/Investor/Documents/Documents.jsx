@@ -269,7 +269,7 @@ class Documents extends Component {
                                           <div className="font-bold">{pf.feature.name}</div>
                                           <p>{pf.feature.description}</p>
                                           <button
-                                            className="bg-blue-500 text-white py-2 px-4 rounded"
+                                            className="btn-yellow text-white py-2 px-4 rounded"
                                             onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}
                                           >
                                             Upload Document

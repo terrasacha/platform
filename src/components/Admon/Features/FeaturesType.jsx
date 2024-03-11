@@ -191,7 +191,7 @@ import { createFeatureType, updateFeatureType } from '../../../graphql/mutations
 
                         <div className='mb-1'>
                             <button
-                            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                            className='btn-yellow hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
                             onClick={this.handleCRUDFeatureType}
                             disabled={this.state.isCRUDButtonDisable}
                             >

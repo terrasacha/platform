@@ -69,7 +69,7 @@ export default function ValidatorFilesInfoCard(props) {
               <td>{convertAWSDatetimeToDate(file.createdAt)}</td>
               <td className="text-end">
                 <a href={file.fileURLS3} target="_blank" rel="noreferrer">
-                  <button className="m-1 bg-blue-500 text-white py-1 px-2 rounded-md">
+                  <button className="m-1 btn-yellow text-white py-1 px-2 rounded-md">
                     <DownloadIcon />
                   </button>
                 </a>

@@ -643,7 +643,7 @@ class DocumentStatus extends Component {
                       key={product}
                       className={`${
                         product === this.state.selectedProductValidation
-                          ? "bg-blue-500 text-white"
+                          ? "btn-yellow text-white"
                           : "bg-gray-200"
                       } cardContainer cursor-pointer`}
                       onClick={() => this.handleSelectProduct(product)}
@@ -662,13 +662,13 @@ class DocumentStatus extends Component {
                   <h3>Documentación</h3>
                   <div className="mt-4 flex space-x-2">
                     <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                      className="btn-yellow text-white px-4 py-2 rounded-md"
                       onClick={() => this.handleSelectStatus("pendingDoc")}
                     >
                       Documentación pendiente
                     </button>
                     <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                      className="btn-yellow text-white px-4 py-2 rounded-md"
                       onClick={() => this.handleSelectStatus("approveRejectDoc")}
                     >
                       Documentación aceptada/rechazada
@@ -708,14 +708,14 @@ class DocumentStatus extends Component {
                         <td>
                           {document.status === "pending" || document.status === "accepted" ? (
                             <button
-                              className="bg-blue-500 text-white px-2 py-1 rounded-md"
+                              className="btn-yellow text-white px-2 py-1 rounded-md"
                               onClick={() => this.handleDownload(document)}
                             >
                               Ver documentación
                             </button>
                           ) : (
                             <button
-                              className="bg-blue-500 text-white px-2 py-1 rounded-md"
+                              className="btn-yellow text-white px-2 py-1 rounded-md"
                               onClick={() =>
                                 this.setState({
                                   showModalUploadDocument: true,
@@ -730,7 +730,7 @@ class DocumentStatus extends Component {
                         </td>
                         <td>
                           <button
-                            className="bg-blue-500 text-white px-2 py-1 rounded-md"
+                            className="btn-yellow text-white px-2 py-1 rounded-md"
                             onClick={() =>
                               this.setState({
                                 showModalComments: true,
