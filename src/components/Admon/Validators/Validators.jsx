@@ -248,46 +248,64 @@ class Validators extends Component {
         };
     
         return (
-          <div className='container mx-auto' style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="container mx-auto">
+          <div className='container mx-auto mt-6' style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="container mx-auto mt-6 pt-6">
               <h4>Create new validator</h4>
-              <form>
-                <div className='mb-2'>
-                  <div>
-                    <label>username</label>
-                    <input
-                      type='text'
-                      placeholder='Username'
-                      name='newUser.username'
-                      value={newUser.username}
-                      onChange={(e) => this.handleOnChangeInputForm(e)}
-                    />
-                  </div>
-                  <div>
-                    <label>email</label>
-                    <input
-                      type='text'
-                      placeholder='Email'
-                      name='newUser.email'
-                      value={newUser.email}
-                      onChange={(e) => this.handleOnChangeInputForm(e)}
-                    />
-                  </div>
-                  <div>
-                    <label>Validator type</label>
-                    <select name='newUser.subRole' value={newUser.subRole} onChange={(e) => this.handleOnChangeInputForm(e)}>
-                      <option value='financial'>Financiero</option>
-                      <option value='technical'>Técnico</option>
-                    </select>
-                  </div>
-                </div>
-    
-                <div className='mb-1'>
-                  <button variant='primary' size='sm' onClick={() => this.showModalCreate()}>
-                    Crear
-                  </button>
-                </div>
-              </form>
+              <form className="flex mb-4">
+            <div className="mb-2 w-1/3 pr-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Username</label>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  name="newUser.username"
+                  value={newUser.username}
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+              </div>
+            </div>
+
+            <div className="mb-2 w-1/3 pr-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  name="newUser.email"
+                  value={newUser.email}
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+              </div>
+            </div>
+
+            <div className="mb-2 w-1/3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Validator type</label>
+                <select
+                  name="newUser.subRole"
+                  value={newUser.subRole}
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
+                  className="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                >
+                  <option value="financial">Financiero</option>
+                  <option value="technical">Técnico</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mb-1 mx-3 mt-4 w-1/3">
+              <button
+                type="button"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                onClick={() => this.showModalCreate()}
+              >
+                Crear
+              </button>
+            </div>
+          </form>
+
             </div>
             {renderValidators()}
             <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
