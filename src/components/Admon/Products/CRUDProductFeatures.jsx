@@ -1,10 +1,5 @@
 import React, { Component } from 'react'
-//bootstrap
-import  Alert  from '../../ui/Alert';
-import  Col  from '../../ui/Col';
-import  Form  from '../../ui/Form';
-import  Table  from '../../ui/Table';
-import Button from 'components/ui/Button'
+
 
 //GraphQL
 import { API, graphqlOperation } from 'aws-amplify'
@@ -182,97 +177,136 @@ export default class CRUDProductFeatures extends Component {
     const renderCRUDProductFeatures = () => {
         return (
             <>
-            <table striped bordered hover>
+            <table className="table-auto w-full">
                 <thead>
-                <tr>
+                    <tr>
                     <th>Feature</th>
                     <th>Value</th>
                     <th>Order</th>
                     <th>Is on Main Card</th>
                     <th>Is to BlockChain</th>
                     <th>Is verifable</th>
-                </tr>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
-                                    <Select 
-                                        options={featuresSelectList}
-                                        onChange={this.handleOnSelectFeature} />
-                                        {this.state.CRUDButtonName === 'UPDATE'?
-                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
-                                        {this.state.newProductFeature.feature.name? this.state.newProductFeature.feature.name : '' }
-                                    </div> : ''}
-                                        
-                            </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductValue'>
-                                <Form.Control
-                                    type='text'
-                                    placeholder=''
-                                    name='valueProductFeature'
-                                    value={this.state.newProductFeature.value}
-                                    onChange={(e) => this.handleCreateProductFeature(e)} />
-                            </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductOrder'>
-                                <Form.Control
-                                    type='number'
-                                    placeholder=''
-                                    name='orderProductFeature'
-                                    value={this.state.newProductFeature.order}
-                                    onChange={(e) => this.handleCreateProductFeature(e)} />
-                            </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsActive'>
-                                    <Form.Select  name='isOnMainCardProductFeature' onChange={(e) => this.handleCreateProductFeature(e)} >
-                                        <option>-</option>
-                                        <option value='no'>No</option>
-                                        <option value='yes'>Yes</option>
-                                    </Form.Select>
-                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
-                                            {this.state.newProductFeature.isOnMainCard? 'Yes' : 'No'}
-                                    </div>
-                                </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsToBlockChain'>
-                                    <Form.Select  name='isToBlockChain' onChange={(e) => this.handleCreateProductFeature(e)} >
-                                        <option>-</option>
-                                        <option value='no'>No</option>
-                                        <option value='yes'>Yes</option>
-                                    </Form.Select>
-                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
-                                        {this.state.newProductFeature.isToBlockChain ? 'Yes' : 'No'}
-                                    </div>
-
-                                </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductFeatureIsVerifable'>
-                                    <Form.Select  name='isVerifable' onChange={(e) => this.handleCreateProductFeature(e)} >
-                                        <option>-</option>
-                                        <option value='no' >No</option>
-                                        <option value='yes'>Yes</option>
-                                    </Form.Select>
-                                    <div key="idx_key_1" className="bg-green-500 text-white p-4 mb-4 rounded">
-                                        {this.state.newProductFeature.isVerifable ? 'Yes' : 'No'}
-                                    </div>
-
-                                </Form.Group>
-                        </td>
+                    <td>
+                        <div className="mb-4">
+                        <select
+                            options={featuresSelectList}
+                            onChange={this.handleOnSelectFeature}
+                        />
+                        {this.state.CRUDButtonName === 'UPDATE' ? (
+                            <div className="bg-green-500 text-white p-4 mb-4 rounded">
+                            {this.state.newProductFeature.feature.name
+                                ? this.state.newProductFeature.feature.name
+                                : ''}
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        </div>
+                    </td>
+                    <td>
+                        <div className="mb-4">
+                        <input
+                            type="text"
+                            placeholder=""
+                            name="valueProductFeature"
+                            value={this.state.newProductFeature.value}
+                            onChange={(e) => this.handleCreateProductFeature(e)}
+                            className="p-2 border border-gray-300 rounded-md w-full"
+                        />
+                        </div>
+                    </td>
+                    <td>
+                        <div className="mb-4">
+                        <input
+                            type="number"
+                            placeholder=""
+                            name="orderProductFeature"
+                            value={this.state.newProductFeature.order}
+                            onChange={(e) => this.handleCreateProductFeature(e)}
+                            className="p-2 border border-gray-300 rounded-md w-full"
+                        />
+                        </div>
+                    </td>
+                    <td>
+                        <div className="mb-4">
+                        <select
+                            name="isOnMainCardProductFeature"
+                            onChange={(e) => this.handleCreateProductFeature(e)}
+                            className="p-2 border border-gray-300 rounded-md w-full"
+                        >
+                            <option>-</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                        {this.state.newProductFeature.isOnMainCard ? (
+                            <div className="bg-green-500 text-white p-4 mb-4 rounded">
+                            Yes
+                            </div>
+                        ) : (
+                            <div className="bg-green-500 text-white p-4 mb-4 rounded">
+                            No
+                            </div>
+                        )}
+                        </div>
+                    </td>
+                    <td>
+                        <div className="mb-4">
+                        <select
+                            name="isToBlockChain"
+                            onChange={(e) => this.handleCreateProductFeature(e)}
+                            className="p-2 border border-gray-300 rounded-md w-full"
+                        >
+                            <option>-</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                        {this.state.newProductFeature.isToBlockChain ? (
+                            <div className="bg-green-500 text-white p-4 mb-4 rounded">
+                            Yes
+                            </div>
+                        ) : (
+                            <div className="bg-green-500 text-white p-4 mb-4 rounded">
+                            No
+                            </div>
+                        )}
+                        </div>
+                    </td>
+                    <td>
+                        <div className="mb-4">
+                        <select
+                            name="isVerifable"
+                            onChange={(e) => this.handleCreateProductFeature(e)}
+                            className="p-2 border border-gray-300 rounded-md w-full"
+                        >
+                            <option>-</option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                        {this.state.newProductFeature.isVerifable ? (
+                            <div className="bg-green-500 text-white p-4 mb-4 rounded">
+                            Yes
+                            </div>
+                        ) : (
+                            <div className="bg-green-500 text-white p-4 mb-4 rounded">
+                            No
+                            </div>
+                        )}
+                        </div>
+                    </td>
                     </tr>
                 </tbody>
-            </table>
-            <button
-            variant='primary'
-            onClick={this.handleCRUDProductFeature}
-            >{this.state.CRUDButtonName}</button>
-            </>
+                </table>
+                <button
+                variant="primary"
+                onClick={this.handleCRUDProductFeature}
+                >
+                {this.state.CRUDButtonName}
+                </button>
+                </>
             
         )
     }
