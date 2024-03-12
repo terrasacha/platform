@@ -26,7 +26,7 @@ export default class HeaderNavbar extends Component {
 
     render() {
         return (
-            <Navbar fluid>
+            <Navbar>
                     <Navbar.Brand className="lg:hidden flex items-center p-2 focus:outline-none w-10">
                         <img
                             src={LOGO}

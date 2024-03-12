@@ -252,7 +252,7 @@ export default class ListProducts extends Component {
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
-      pauseOnHover: true,
+      pauseO: true,
       draggable: true,
       progress: undefined,
       theme: "light",
@@ -265,7 +265,7 @@ export default class ListProducts extends Component {
       autoClose: 5000,
       hideProgressBar: true,
       closeOnClick: true,
-      pauseOnHover: true,
+      pauseO: true,
       draggable: true,
       progress: undefined,
       theme: "light",
@@ -311,7 +311,7 @@ export default class ListProducts extends Component {
     const renderProducts = () => {
       if (listCleanProducts.length > 0) {
         return (
-          <table striped bordered hover>
+          <table>
             <thead>
               <tr>
                 <th>Delete</th>
@@ -336,7 +336,6 @@ export default class ListProducts extends Component {
                     {product.unverified ? (
                       <button
                         variant={"danger"}
-                        size="sm"
                         onClick={(e) =>
                           this.setState({
                             showModalDeleteProduct: true,
@@ -366,10 +365,9 @@ export default class ListProducts extends Component {
                                             size='md' 
                                             onClick={(e) => this.handleUpdateProductIsActive(product)}
                                         >{product.status !== 'disabled'? 'Disable': 'Activate'}</button> */}
-                    <Form.Group>
-                      <Form.Select
+                    <form>
+                      <select
                         type="text"
-                        size="sm"
                         value={product.status}
                         onChange={(e) =>
                           this.props.handleUpdateProductStatus(
@@ -388,8 +386,8 @@ export default class ListProducts extends Component {
                             {op}
                           </option>
                         ))}
-                      </Form.Select>
-                    </Form.Group>
+                      </select>
+                    </form>
                   </td>
                   <td>
                     <button
@@ -545,7 +543,7 @@ export default class ListProducts extends Component {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <table striped hover size="sm" borderless>
+              <table size="sm" borderless>
                 <thead>
                   <tr>
                     <th>Image</th>
@@ -623,7 +621,7 @@ export default class ListProducts extends Component {
               </Modal.Header>
               <Modal.Body>
                 <ToastContainer />
-                <table striped hover size="sm" borderless>
+                <table size="sm" borderless>
                   <thead>
                     <tr>
                       <th>Feature ID</th>
@@ -780,7 +778,7 @@ export default class ListProducts extends Component {
               </Modal.Header>
               <Modal.Body>
                 <ToastContainer />
-                <table striped hover size="sm" borderless>
+                <table size="sm" borderless>
                   <thead>
                     <tr>
                       <th>Feature ID</th>
@@ -804,8 +802,8 @@ export default class ListProducts extends Component {
                           </button>
                         </td>
                         <td>
-                          <Form.Group>
-                            <Form.Select
+                          <form>
+                            <select
                               type="text"
                               size="sm"
                               value={pfeature.documents.items[0].status}
@@ -821,8 +819,8 @@ export default class ListProducts extends Component {
                                   {op}
                                 </option>
                               ))}
-                            </Form.Select>
-                          </Form.Group>
+                            </select>
+                          </form>
                         </td>
                       </tr>
                     ))}
@@ -885,7 +883,7 @@ export default class ListProducts extends Component {
                     ")"}
                 </ListGroup.Item>
               </ListGroup>
-              <Form.Group className="my-3" controlId="formBasicCheckbox">
+              <form className="my-3" controlId="formBasicCheckbox">
                 <Form.Check
                   type="checkbox"
                   label="Estoy de acuerdo"
@@ -896,7 +894,7 @@ export default class ListProducts extends Component {
                     })
                   }
                 />
-              </Form.Group>
+              </form>
             </Modal.Body>
             <Modal.Footer>
               <button

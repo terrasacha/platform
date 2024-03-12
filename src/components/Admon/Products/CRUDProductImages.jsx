@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import Button from '../../ui/Button';
 import Form from '../../ui/Form';
 import Col from '../../ui/Col';
-import Table from '../../ui/Table';
 import Spinner from '../../ui/Spinner';
 
 export default class CRUDProductImages extends Component {
@@ -19,7 +18,7 @@ export default class CRUDProductImages extends Component {
 
     const renderCRUDProductImages = () => {
         return (
-            <table striped bordered hover>
+            <table>
                 <thead>
                 <tr>
                     <th>Upload</th>

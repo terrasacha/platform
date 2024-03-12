@@ -26,7 +26,7 @@ export default class HeaderNavbar extends Component {
   render() {
     let role = localStorage.getItem('role');
     return (
-      <Navbar fluid>
+      <Navbar>
             <Navbar.Brand href="/">
               <img
                 src={LOGO}

@@ -26,7 +26,7 @@ export default class HeaderNavbar2 extends Component {
   render() {
     let role = localStorage.getItem('role');
     return (
-      <Navbar fluid>
+      <Navbar>
           <NavbarBrand href="/" style={{ marginLeft: '2%' }}>
             <img
               src={LOGO}

@@ -29,7 +29,7 @@ export default class HeaderNavbar extends Component {
     let role = localStorage.getItem('role');
     let userlog = this.findLastAuthUserKey();
     return (
-      <Navbar fluid>
+      <Navbar>
             <Navbar.Brand href="/" style={{marginLeft: '2%'}}>
                 <img src={LOGO} 
                             width="auto"

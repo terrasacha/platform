@@ -439,7 +439,7 @@ export default class Admon extends Component {
             isShowAPF
         } = this.state
         return (
-           <div fluid>
+           <div>
                         <HeaderNavbar 
                             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
                             handleSignOut={this.handleSignOut}

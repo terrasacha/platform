@@ -36,7 +36,7 @@ export default function NewHeaderNavbar() {
   
   
   return (
-    <Navbar fluid>
+    <Navbar>
         <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
           <img
             src={LOGO}

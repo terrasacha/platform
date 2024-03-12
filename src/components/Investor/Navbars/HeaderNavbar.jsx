@@ -39,7 +39,7 @@ export default class HeaderNavbar extends Component {
     let userlog = this.findLastAuthUserKey();
     return (
       <>
-        <Navbar fluid>
+        <Navbar>
             <NavbarBrand href="/" style={{ marginLeft: "2%" }}>
               <img
                 src={LOGO}
