@@ -1354,6 +1354,38 @@ export const listScripts = /* GraphQL */ `
     }
   }
 `;
+export const getRate = /* GraphQL */ `
+  query GetRate($id: ID!) {
+    getRate(id: $id) {
+      id
+      currency
+      value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listRates = /* GraphQL */ `
+  query ListRates(
+    $filter: ModelRateFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listRates(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        currency
+        value
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const featureByParent = /* GraphQL */ `
   query FeatureByParent(
     $parentID: ID!

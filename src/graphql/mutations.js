@@ -2620,3 +2620,48 @@ export const deleteScript = /* GraphQL */ `
     }
   }
 `;
+export const createRate = /* GraphQL */ `
+  mutation CreateRate(
+    $input: CreateRateInput!
+    $condition: ModelRateConditionInput
+  ) {
+    createRate(input: $input, condition: $condition) {
+      id
+      currency
+      value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateRate = /* GraphQL */ `
+  mutation UpdateRate(
+    $input: UpdateRateInput!
+    $condition: ModelRateConditionInput
+  ) {
+    updateRate(input: $input, condition: $condition) {
+      id
+      currency
+      value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteRate = /* GraphQL */ `
+  mutation DeleteRate(
+    $input: DeleteRateInput!
+    $condition: ModelRateConditionInput
+  ) {
+    deleteRate(input: $input, condition: $condition) {
+      id
+      currency
+      value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

@@ -2482,3 +2482,39 @@ export const onDeleteScript = /* GraphQL */ `
     }
   }
 `;
+export const onCreateRate = /* GraphQL */ `
+  subscription OnCreateRate($filter: ModelSubscriptionRateFilterInput) {
+    onCreateRate(filter: $filter) {
+      id
+      currency
+      value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateRate = /* GraphQL */ `
+  subscription OnUpdateRate($filter: ModelSubscriptionRateFilterInput) {
+    onUpdateRate(filter: $filter) {
+      id
+      currency
+      value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteRate = /* GraphQL */ `
+  subscription OnDeleteRate($filter: ModelSubscriptionRateFilterInput) {
+    onDeleteRate(filter: $filter) {
+      id
+      currency
+      value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

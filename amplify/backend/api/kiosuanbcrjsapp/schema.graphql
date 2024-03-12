@@ -299,3 +299,9 @@ type Script @model {
   Active: Boolean!
   base_code: AWSURL
 }
+
+type Rate @model {
+  id: ID!
+  currency: String
+  value: Float
+}
