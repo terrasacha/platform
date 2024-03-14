@@ -6,6 +6,9 @@ import { API, graphqlOperation } from "aws-amplify";
 import { createUser } from "../../../graphql/mutations";
 import s from "./Login.module.css";
 import LOGO from "../../common/_images/suan_logo.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const initialFormState = {
   username: "",
   password: "",
@@ -160,6 +163,13 @@ export default function LogIn() {
       setError("code does not match");
     }
   }
+
+  const handleResendCode = async (e, username) => {
+    e.preventDefault();
+    const { CodeDeliveryDetails } = await Auth.resendSignUp(username);
+    console.log(CodeDeliveryDetails);
+    if (CodeDeliveryDetails) notify(`Código enviado a ${formState.email}`);
+  };
   async function signIn(e) {
     e.preventDefault();
     const { username, password } = formState;
@@ -245,8 +255,22 @@ export default function LogIn() {
     setLoading(false);
   }
 
+  const notify = (text) => {
+    toast.success(text, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   return (
     <div className={s.container}>
+      <ToastContainer />
       <div className={s.firstContainer}>
         <div className={s.info}>
           <h2>Aceleramos la transición hacia un mundo de carbono neutral</h2>
@@ -401,6 +425,18 @@ export default function LogIn() {
                   <legend>Codigo de verificación</legend>
                   <input name="authCode" onChange={onChange} />
                 </fieldset>
+                <span
+                  style={{
+                    cursor: "pointer",
+                    width: "100%",
+                    fontSize: ".9em",
+                    color: "rgba(77,188,94,1)",
+                    textAlign: "end",
+                  }}
+                  onClick={(e) => handleResendCode(e, formState.username)}
+                >
+                  Reenviar código
+                </span>
                 <button
                   type="submit"
                   onClick={(e) => confirmSignUp(e)}
