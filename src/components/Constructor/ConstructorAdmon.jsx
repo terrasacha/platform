@@ -69,11 +69,11 @@ class ConstructorAdmon extends Component {
   }
   loadUserInfo(userResult) {
     this.setState({ user: userResult.data.getUser });
-    if (userResult.data.getUser.wallets.items.length > 0) {
-      this.setState({
-        walletAddress: userResult.data.getUser.wallets.items[0].id,
-      });
-    }
+    // if (userResult.data.getUser.wallets.items.length > 0) {
+    //   this.setState({
+    //     walletAddress: userResult.data.getUser.wallets.items[0].id,
+    //   });
+    // }
   }
   async loadActualLoggedUser(actualUser) {
     let tempUser = this.state.user;
@@ -303,7 +303,7 @@ class ConstructorAdmon extends Component {
       uploadNewProduct,
       isShowProductsList,
     } = this.state;
-    const renderUserWallets = (user) => {
+const renderUserWallets = (user) => {
       if (user.wallets !== undefined && user.wallets.items !== undefined) {
         if (user.wallets.items.length > 0) {
           return (
