@@ -63,8 +63,8 @@ export default function CadastralRecordsInfoCard(props) {
 
   useEffect(() => {
     async function updatePredialData() {
-      const cadastralNumbersArray = multipleData.map(
-        (item) => item.cadastralNumber
+      const cadastralNumbersArray = multipleData.map((item) =>
+        item.cadastralNumber.trim()
       );
       const predialData = await getPredialDataByCadastralNumber(
         cadastralNumbersArray
@@ -176,7 +176,7 @@ export default function CadastralRecordsInfoCard(props) {
   function getImportantValues(cadastralDataFixed) {
     return cadastralDataFixed.map((cadastralData) => {
       return {
-        cadastralNumber: cadastralData.cadastralNumber,
+        cadastralNumber: cadastralData.cadastralNumber.trim(),
         matricula: cadastralData.matricula,
         documentID: cadastralData.documentID,
       };
@@ -589,11 +589,11 @@ export default function CadastralRecordsInfoCard(props) {
   };
 
   const renderAreaByCadastralNumber = (cadastralNumber) => {
-    if (cadastralNumber in predialFetchedData) {
+    const cadNum = cadastralNumber.trim();
+    if (cadNum in predialFetchedData) {
       return (
-        parseFloat(predialFetchedData[cadastralNumber].area).toLocaleString(
-          "es-ES"
-        ) + " m2"
+        parseFloat(predialFetchedData[cadNum].area).toLocaleString("es-ES") +
+        " m2"
       );
     } else {
       return "...";
@@ -601,8 +601,9 @@ export default function CadastralRecordsInfoCard(props) {
   };
 
   const renderPredioNameByCadastralNumber = (cadastralNumber) => {
-    if (cadastralNumber in predialFetchedData) {
-      return predialFetchedData[cadastralNumber].predio;
+    const cadNum = cadastralNumber.trim();
+    if (cadNum in predialFetchedData) {
+      return predialFetchedData[cadNum].predio;
     } else {
       return "...";
     }
@@ -638,9 +639,10 @@ export default function CadastralRecordsInfoCard(props) {
                               value={data.cadastralNumber}
                               className="text-center"
                               name={`cadastraldata_cadastralNumber_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
+                              onInput={(e) => handleChangeInputValue(e)}
                             />
-                            {data.cadastralNumber in predialFetchedData ? (
+                            {data.cadastralNumber.trim() in
+                            predialFetchedData ? (
                               <CheckIcon className="ms-2 text-success" />
                             ) : (
                               <XIcon className="ms-2 text-danger" />
