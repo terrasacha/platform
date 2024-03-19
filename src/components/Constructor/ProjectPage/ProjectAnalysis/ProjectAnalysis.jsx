@@ -1185,6 +1185,11 @@ const data = {
 };
 export default function ProjectAnalysis({ visible }) {
   const { projectData } = useProjectData();
+  const [comparativeAnalysis, setComparativeAnalysis] = useState(null);
+
+  useEffect(() => {
+    handleComparativeAreaAnalysis();
+  }, []);
 
   const getPolygonGeoJson = async () => {
     const cadastralNumbersArray =
@@ -1238,6 +1243,18 @@ export default function ProjectAnalysis({ visible }) {
     }
   };
 
+  const handleComparativeAreaAnalysis = async () => {
+    const comparativeFile = projectData.projectFeatures.find(
+      (item) => item.featureID === "comparative_area_analysis"
+    );
+    if (!comparativeFile) return;
+
+    const response = await fetch(
+      `https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/${projectData.projectInfo.id}/data/${comparativeFile.value}`
+    );
+    const data = await response.json();
+    return setComparativeAnalysis(data);
+  };
   return (
     <div className="row row-cols-1  g-4">
       <Card>
@@ -1256,10 +1273,24 @@ export default function ProjectAnalysis({ visible }) {
         <Card.Body>
           <div class="d-flex justify-content-center align-items-center mb-24">
             <div class="d-flex flex-column w-5/6 align-items-center gap-4">
-              <h4>Evolución de áreas</h4>
-              <BarGraphComponent infoBarGraph={data.graphJSON_barras} />
-              <h4 class="pt-4">Diagrama de Sankey - Cambios en Vegetación</h4>
-              <SankeyGraphComponent infoSankeyGraph={data.graphJSON_sankey} />
+              {comparativeAnalysis ? (
+                <>
+                  <h4>Evolución de áreas</h4>
+                  <BarGraphComponent
+                    infoBarGraph={comparativeAnalysis.graphJSON_barras}
+                  />
+                  <h4 class="pt-4">
+                    Diagrama de Sankey - Cambios en Vegetación
+                  </h4>
+                  <SankeyGraphComponent
+                    infoSankeyGraph={comparativeAnalysis.graphJSON_sankey}
+                  />
+                </>
+              ) : (
+                <p className="mb-0 me-4">
+                  La información no se encuentra disponible
+                </p>
+              )}
             </div>
           </div>
         </Card.Body>
