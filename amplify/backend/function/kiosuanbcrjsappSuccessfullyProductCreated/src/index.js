@@ -63,40 +63,50 @@ exports.handler = async(event) => {
         let statusCode = 200;
         let body;
         let response;
-        let constructorUserEmail = ''
         let infoProduct = ''
         try {
           response = await fetch(request);
           body = await response.json();
           infoProduct = {name: body.data.getProduct.name, status: body.data.getProduct.status}
-          body.data.getProduct.userProducts.items.map(up => {if(up.user.role === 'constructor') constructorUserEmail = {name: up.user.name, email: up.user.email}})
+          let constructorUser = body.data.getProduct.userProducts.items.find(up => up.user.role === 'constructor');
+          let constructorUserEmail = constructorUser ? { name: constructorUser.user.name, email: constructorUser.user.email } : null;
+
           if (body.errors) statusCode = 400;
+          if(!constructorUserEmail){
+            throw `No se encontró el mail del usuario constructor. Información del constructor: ${constructorUser}`
+          }else{
+            const fromMail = SES_EMAIL
+            const toMail = [constructorUserEmail.email]
+            const data3 =   `El proyecto llamado ${infoProduct.name} ha sido creado correctamente. Estado del proyecto: ${infoProduct.status}`
+            const templateData = {
+              data: data3,
+              user: constructorUserEmail.name
+            };
+            await sendConstructorEmail(fromMail, toMail, templateData)
+          }
         } catch (error) {
           statusCode = 400;
           console.log(error)
         }
-        if(constructorUserEmail !== ''){
-          const fromMail = SES_EMAIL
-          const toMail = [constructorUserEmail.email]
-          const data3 =   `El proyecto llamado ${infoProduct.name} ha sido creado correctamente. Estado del proyecto: ${infoProduct.status}`
-          const templateData = {
-            data: data3,
-            user: constructorUserEmail.name
-          };
-          try {
-            const data = await ses.send(new SendTemplatedEmailCommand({
-              Source: fromMail,
-              Destination: {
-                ToAddresses: toMail,
-              },
-              Template: "AWS-SES-HTML-Email-Default-Template",
-              TemplateData: JSON.stringify(templateData),
-            }));
-            return { status: 'done', msg: data }
-          } catch (error) {
-            return { status: 'error', msg: error }
-          }
-        }
+        
     }
   }
 };
+
+const sendConstructorEmail = async (fromMail, toMail, templateData) => {
+  try {
+    const data = await ses.send(new SendTemplatedEmailCommand({
+      Source: fromMail,
+      Destination: {
+        ToAddresses: toMail,
+      },
+      Template: "AWS-SES-HTML-Email-Default-Template",
+      TemplateData: JSON.stringify(templateData),
+    }));
+    console.log(`Email enviado a ${toMail}`)
+    return { status: 'done', msg: data }
+  } catch (error) {
+    console.log(`no se pudo enviar el email a ${toMail}`)
+    return { status: 'error', msg: error }
+  }
+}

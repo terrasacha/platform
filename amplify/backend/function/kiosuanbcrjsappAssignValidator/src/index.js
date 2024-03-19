@@ -51,45 +51,52 @@ exports.handler = async(event) => {
         let statusCode = 200;
         let body;
         let response;
-        let userVerifierEmail = ''
-        let userVerifierName = ''
         let productName = ''
         try {
           response = await fetch(request);
           body = await response.json();
           console.log(`body ${JSON.stringify(body)}`)
-          userVerifierEmail = body.data.getVerification.userVerifier.email
-          userVerifierName = body.data.getVerification.userVerifier.name
+          let userVerifierEmail = body.data.getVerification.userVerifier.email || null
+          let userVerifierName = body.data.getVerification.userVerifier.name || null
           productName = body.data.getVerification.productFeature.product.name
           if (body.errors) statusCode = 400;
+          if(!userVerifierEmail){
+            throw `No se pudo encontrar el mail del validador. Informacion: ${body.data.getVerification.userVerifier}`
+          }else{
+            const fromMail = SES_EMAIL
+            const toMail = [userVerifierEmail]
+            const data3 =   `Se te ha asignado el proyecto ${productName} para la revisión de documentación. Recuerda priorizar la asignación de valores a "Token Price", "Token Name" y "Amount of tokens" para que el proyecto pueda ser visualizado en el Marketplace`
+            const templateData = {  
+              data: data3,
+              user: userVerifierName
+            }
+            sendValidatorEmail(fromMail, toMail, templateData)
+          }
         } catch (error) {
           statusCode = 400;
           console.log(error)
         }
-        if(userVerifierEmail !== ''){
-          const fromMail = SES_EMAIL
-          const toMail = [userVerifierEmail]
-          const data3 =   `Se te ha asignado el proyecto ${productName} para la revisión de documentación. Recuerda priorizar la asignación de valores a "Token Price", "Token Name" y "Amount of tokens" para que el proyecto pueda ser visualizado en el Marketplace`
-          const templateData = {
-            data: data3,
-            user: userVerifierName
-          }
-          try {
-            console.log('entra a enviar el mail')
-            const data = await ses.send(new SendTemplatedEmailCommand({
-              Source: fromMail,
-              Destination: {
-                ToAddresses: toMail,
-              },
-              Template: "AWS-SES-HTML-Email-Default-Template",
-              TemplateData: JSON.stringify(templateData),
-            }));
-            console.log(JSON.stringify(data))
-            return { status: 'done', msg: data }
-          } catch (error) {
-            return { status: 'error', msg: error }
-          }
-        }
     }
   }
 };
+
+
+const sendValidatorEmail = async (fromMail, toMail, templateData) => {
+  try {
+    console.log('entra a enviar el mail')
+    const data = await ses.send(new SendTemplatedEmailCommand({
+      Source: fromMail,
+      Destination: {
+        ToAddresses: toMail,
+      },
+      Template: "AWS-SES-HTML-Email-Default-Template",
+      TemplateData: JSON.stringify(templateData),
+    }));
+    console.log(JSON.stringify(data))
+    console.log(`Email enviado a ${toMail}`)
+    return { status: 'done', msg: data }
+  } catch (error) {
+    console.log(`no se pudo enviar el email a ${toMail}`)
+    return { status: 'error', msg: error }
+  }
+}

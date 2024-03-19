@@ -57,49 +57,52 @@ exports.handler = async(event) => {
         let statusCode = 200;
         let body;
         let response;
-        let userVerifierEmail = ''
-        let userVerifierName = ''
-        let userVerifierRole = ''
-        let productName = ''
         try {
           response = await fetch(request);
           body = await response.json();
           console.log(`body ${JSON.stringify(body)}`)
-          userVerifierEmail = body.data.getUserProduct.user.email
-          userVerifierName = body.data.getUserProduct.user.name
-          userVerifierRole = body.data.getUserProduct.user.role
-          productName = body.data.getUserProduct.product.name
+          let userVerifierEmail = body.data.getUserProduct.user.email || null
+          let userVerifierName = body.data.getUserProduct.user.name || null
+          let userVerifierRole = body.data.getUserProduct.user.role
+          let productName = body.data.getUserProduct.product.name
           if (body.errors) statusCode = 400;
+          if(!userVerifierEmail){
+            throw {status: 'error', msg: `no se encontró email del usuario ${userVerifierName}`}
+          }else{
+            if(userVerifierEmail && userVerifierRole && userVerifierRole === 'validator'){
+              const fromMail = SES_EMAIL
+              const toMail = [userVerifierEmail]  
+              const data3 =   `Se te ha asignado el proyecto ${productName} para la revisión de documentación. Recuerda priorizar la asignación de valores a "Token Price", "Token Name" y "Amount of tokens" para que el proyecto pueda ser visualizado en el Marketplace`
+              const templateData = {
+                data: data3,
+                user: userVerifierName
+              }
+              await sendValidatorEmail(fromMail, toMail, templateData)
+            }else{
+              return {status: 'error', msg: 'el usuario creado no es validador'}
+            }
+          }
         } catch (error) {
           statusCode = 400;
           console.log(error)
         }
-        if(userVerifierEmail !== '' && userVerifierRole !== '' && userVerifierRole === 'validator'){
-          const fromMail = SES_EMAIL
-          const toMail = [userVerifierEmail]  
-          const data3 =   `Se te ha asignado el proyecto ${productName} para la revisión de documentación. Recuerda priorizar la asignación de valores a "Token Price", "Token Name" y "Amount of tokens" para que el proyecto pueda ser visualizado en el Marketplace`
-          const templateData = {
-            data: data3,
-            user: userVerifierName
-          }
-          try {
-            console.log('entra a enviar el mail')
-            const data = await ses.send(new SendTemplatedEmailCommand({
-              Source: fromMail,
-              Destination: {
-                ToAddresses: toMail,
-              },
-              Template: "AWS-SES-HTML-Email-Default-Template",
-              TemplateData: JSON.stringify(templateData),
-            }));
-            console.log(JSON.stringify(data))
-            return { status: 'done', msg: data }
-          } catch (error) {
-            return { status: 'error', msg: error }
-          }
-        }else{
-          return {status: 'error', msg: 'el usuario creado no es validador'}
-        }
     }
   }
 };
+
+const sendValidatorEmail = async(fromMail, toMail, templateData) => {
+  try {
+    const data = await ses.send(new SendTemplatedEmailCommand({
+      Source: fromMail,
+      Destination: {
+        ToAddresses: toMail,
+      },
+      Template: "AWS-SES-HTML-Email-Default-Template",
+      TemplateData: JSON.stringify(templateData),
+    }));
+    console.log(`email enviado a ${toMail}`)
+    return { status: 'done', msg: data }
+  } catch (error) {
+    return { status: 'error', msg: error }
+  }
+}
