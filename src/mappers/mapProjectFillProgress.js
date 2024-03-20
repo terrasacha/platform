@@ -248,7 +248,7 @@ export const mapProjectFillProgress = async (data, userRole) => {
   let sectionsStatus = {
     projectInfo: false,
     geodataInfo: false,
-    ownersInfo: false,
+    //ownersInfo: false,
     financialInfo: false,
     technicalInfo: false,
     validationsComplete: false,

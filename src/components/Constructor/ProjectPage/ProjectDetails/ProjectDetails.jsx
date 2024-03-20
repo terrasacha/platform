@@ -35,7 +35,9 @@ export default function ProjectDetails({ visible }) {
         projectData?.projectInfo.projectAge < 20
           ? [...verifiers, postulant]
           : [...verifiers];
-      setAutorizedUser(authorizedUsers.includes(user.id) || user.role === "admon");
+      setAutorizedUser(
+        authorizedUsers.includes(user.id) || user.role === "admon"
+      );
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));
     }
@@ -49,6 +51,7 @@ export default function ProjectDetails({ visible }) {
             projectData?.projectInfo.id,
             user.subrole
           );
+          console.log(obj, "progress");
           setProgressObj(obj);
         } catch (error) {
           console.error("Error al obtener datos:", error);
@@ -62,24 +65,26 @@ export default function ProjectDetails({ visible }) {
     <>
       {visible && (
         <div className="row row-cols-1 row-cols-xl-2 g-4">
-          {autorizedUser && !(user?.role === "validator" || user?.role === "admon") && (
-            <div className="col-12 col-xl-12">
-              <Alert variant="success" className="mb-0">
-                <Alert.Heading>Hola, {user?.name}</Alert.Heading>
-                <p>
-                  Podras realizar ajustes a la información del proyecto durante
-                  los primeros 20 dias despues de su postulación. Posterior a
-                  esto se congelan los cambios a menos que exista solicitud
-                  formal y se abra manualmente en casos excepcionales.
-                </p>
-                <hr />
-                <p className="mb-0">
-                  {20 - parseInt(projectData?.projectInfo.projectAge)} Dias
-                  restantes
-                </p>
-              </Alert>
-            </div>
-          )}
+          {autorizedUser &&
+            !(user?.role === "validator" || user?.role === "admon") && (
+              <div className="col-12 col-xl-12">
+                <Alert variant="success" className="mb-0">
+                  <Alert.Heading>Hola, {user?.name}</Alert.Heading>
+                  <p>
+                    Podras realizar ajustes a la información del proyecto
+                    durante los primeros 20 dias despues de su postulación.
+                    Posterior a esto se congelan los cambios a menos que exista
+                    solicitud formal y se abra manualmente en casos
+                    excepcionales.
+                  </p>
+                  <hr />
+                  <p className="mb-0">
+                    {20 - parseInt(projectData?.projectInfo.projectAge)} Dias
+                    restantes
+                  </p>
+                </Alert>
+              </div>
+            )}
 
           {(autorizedUser || isPostulant) && progressObj && (
             <div className="col-12 col-xl-12">
