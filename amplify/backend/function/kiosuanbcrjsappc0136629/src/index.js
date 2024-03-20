@@ -77,7 +77,7 @@ exports.handler = async(event) => {
                 data: data3,
                 user: userVerifierName
               }
-              // await sendValidatorEmail(fromMail, toMail, templateData)
+              await sendValidatorEmail(fromMail, toMail, templateData)
             }else{
               return {status: 'error', msg: 'el usuario creado no es validador'}
             }
