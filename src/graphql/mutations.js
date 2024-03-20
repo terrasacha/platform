@@ -808,6 +808,7 @@ export const createProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenClaimedByOwner
       tokenGenesis
       categoryID
       category {
@@ -863,6 +864,7 @@ export const updateProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenClaimedByOwner
       tokenGenesis
       categoryID
       category {
@@ -918,6 +920,7 @@ export const deleteProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenClaimedByOwner
       tokenGenesis
       categoryID
       category {
@@ -985,6 +988,7 @@ export const createImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1024,6 +1028,7 @@ export const updateImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1063,6 +1068,7 @@ export const deleteImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1722,6 +1728,7 @@ export const createProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1791,6 +1798,7 @@ export const updateProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1860,6 +1868,7 @@ export const deleteProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2058,6 +2067,7 @@ export const createUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2105,6 +2115,7 @@ export const updateUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2152,6 +2163,7 @@ export const deleteUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2256,6 +2268,7 @@ export const createTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2300,6 +2313,7 @@ export const updateTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2344,6 +2358,7 @@ export const deleteTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2392,6 +2407,7 @@ export const createCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2440,6 +2456,7 @@ export const updateCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2488,6 +2505,7 @@ export const deleteCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2524,6 +2542,7 @@ export const createScript = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2564,6 +2583,7 @@ export const updateScript = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -2604,6 +2624,7 @@ export const deleteScript = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt

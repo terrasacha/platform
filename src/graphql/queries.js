@@ -429,6 +429,7 @@ export const getProduct = /* GraphQL */ `
       status
       timeOnVerification
       projectReadiness
+      tokenClaimedByOwner
       tokenGenesis
       categoryID
       category {
@@ -486,6 +487,7 @@ export const listProducts = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -521,6 +523,7 @@ export const getImage = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -908,6 +911,7 @@ export const getProductFeature = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1072,6 +1076,7 @@ export const getUserProduct = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1176,6 +1181,7 @@ export const getTransactions = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1254,6 +1260,7 @@ export const getCompany = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt
@@ -1309,6 +1316,7 @@ export const getScript = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
         tokenGenesis
         categoryID
         createdAt

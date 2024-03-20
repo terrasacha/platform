@@ -108,6 +108,7 @@ type Product @model {
   status: String
   timeOnVerification: AWSTimestamp
   projectReadiness: Boolean
+  tokenClaimedByOwner: Boolean
   tokenGenesis: Boolean
   categoryID: ID! @index(name: "byCategory")
   category: Category @belongsTo(fields: ["categoryID"])
