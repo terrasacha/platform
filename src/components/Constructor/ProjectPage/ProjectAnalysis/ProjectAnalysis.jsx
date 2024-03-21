@@ -1256,45 +1256,53 @@ export default function ProjectAnalysis({ visible }) {
     return setComparativeAnalysis(data);
   };
   return (
-    <div className="row row-cols-1  g-4">
-      <Card>
-        <Card.Header title="Analisis" sep={true} />
-        <Card.Body>
-          <div className="d-flex align-items-center">
-            <p className="mb-0 me-4">Descargar datos de poligonos:</p>
-            <Button className="" onClick={handleDownloadGeoJsonButton}>
-              JSON File
-            </Button>
+    <>
+      {visible && (
+        <div className="row row-cols-1 g-4">
+          <div className="col-12">
+            <Card>
+              <Card.Header title="Analisis" sep={true} />
+              <Card.Body>
+                <div className="d-flex align-items-center">
+                  <p className="mb-0 me-4">Descargar datos de poligonos:</p>
+                  <Button className="" onClick={handleDownloadGeoJsonButton}>
+                    JSON File
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
           </div>
-        </Card.Body>
-      </Card>
-      <Card>
-        <Card.Header title="Análisis Comparativo de Áreas" sep={true} />
-        <Card.Body>
-          <div class="d-flex justify-content-center align-items-center mb-24">
-            <div class="d-flex flex-column w-5/6 align-items-center gap-4">
-              {comparativeAnalysis ? (
-                <>
-                  <h4>Evolución de áreas</h4>
-                  <BarGraphComponent
-                    infoBarGraph={comparativeAnalysis.graphJSON_barras}
-                  />
-                  <h4 class="pt-4">
-                    Diagrama de Sankey - Cambios en Vegetación
-                  </h4>
-                  <SankeyGraphComponent
-                    infoSankeyGraph={comparativeAnalysis.graphJSON_sankey}
-                  />
-                </>
-              ) : (
-                <p className="mb-0 me-4">
-                  La información no se encuentra disponible
-                </p>
-              )}
-            </div>
+          <div className="col-12">
+            <Card>
+              <Card.Header title="Análisis Comparativo de Áreas" sep={true} />
+              <Card.Body>
+                <div class="d-flex justify-content-center align-items-center mb-24">
+                  <div class="d-flex flex-column w-5/6 align-items-center gap-4">
+                    {comparativeAnalysis ? (
+                      <>
+                        <h4>Evolución de áreas</h4>
+                        <BarGraphComponent
+                          infoBarGraph={comparativeAnalysis.graphJSON_barras}
+                        />
+                        <h4 class="pt-4">
+                          Diagrama de Sankey - Cambios en Vegetación
+                        </h4>
+                        <SankeyGraphComponent
+                          infoSankeyGraph={comparativeAnalysis.graphJSON_sankey}
+                        />
+                      </>
+                    ) : (
+                      <p className="mb-0 me-4">
+                        La información no se encuentra disponible
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
           </div>
-        </Card.Body>
-      </Card>
-    </div>
+        </div>
+      )}
+    </>
   );
 }

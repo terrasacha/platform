@@ -147,6 +147,19 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Aceptar condiciones financieras
                         </li>
+                        <li className="fw-bold">
+                          <p className="mb-0">
+                            (
+                            {progressObj.sectionsStatus.validationsComplete &&
+                            progressObj.sectionsStatus.technicalInfo &&
+                            progressObj.sectionsStatus.financialInfo ? (
+                              <CheckIcon className="text-success" />
+                            ) : (
+                              <HourGlassIcon className="text-danger" />
+                            )}
+                            ) Revisión por parte de los validadores
+                          </p>
+                        </li>
                       </ul>
                     </div>
                   )}
@@ -188,6 +201,30 @@ export default function ProjectDetails({ visible }) {
                               <HourGlassIcon className="text-danger" />
                             )}
                             ) Oficialización de información Financiera
+                          </p>
+                        </li>
+                        <li className="fw-bold">
+                          (
+                          {progressObj.sectionsStatus.ownerAcceptsConditions ? (
+                            <CheckIcon className="text-success" />
+                          ) : (
+                            <HourGlassIcon className="text-danger" />
+                          )}
+                          ) Aceptar condiciones financieras
+                        </li>
+                        <li className="fw-bold">
+                          <p className="mb-0">
+                            (
+                            {progressObj.sectionsStatus.projectInfo &&
+                            progressObj.sectionsStatus.geodataInfo &&
+                            progressObj.sectionsStatus
+                              .ownerAcceptsConditions ? (
+                              <CheckIcon className="text-success" />
+                            ) : (
+                              <HourGlassIcon className="text-danger" />
+                            )}
+                            ) Propietario completa información del proyecto y
+                            acepta condiciones financieras
                           </p>
                         </li>
                       </ul>
