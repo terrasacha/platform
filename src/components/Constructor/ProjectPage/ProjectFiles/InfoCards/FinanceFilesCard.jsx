@@ -441,7 +441,7 @@ function DistributionToken({ infoTable }) {
               <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 distribution">
                 {infoTable.map((item, index) => (
                   <td className="px-3 py-2" key={index}>
-                    {((item.CANTIDAD / totalOwnerValue) * 100).toFixed(1)}%
+                    {((parseInt(item.CANTIDAD) / totalOwnerValue) * 100).toFixed(1)}%
                   </td>
                 ))}
               </tr>
@@ -569,7 +569,7 @@ function RevenuesProducts({ infoTable, typeInfo }) {
 const PieChartComponent = ({ infoTable }) => {
   const [chartData, setChartData] = useState([]);
   const totalOwnerValue = infoTable.reduce(
-    (sum, item) => sum + item.CANTIDAD,
+    (sum, item) => sum + parseInt(item.CANTIDAD),
     0
   );
 
@@ -577,7 +577,7 @@ const PieChartComponent = ({ infoTable }) => {
     if (infoTable) {
       const newChartData = infoTable.map((item) => ({
         name: item.CONCEPTO,
-        value: +((Number(item.CANTIDAD) / totalOwnerValue) * 100).toFixed(1),
+        value: +((parseInt(item.CANTIDAD) / totalOwnerValue) * 100).toFixed(1),
       }));
       setChartData(newChartData);
     }
