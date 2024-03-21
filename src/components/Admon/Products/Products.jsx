@@ -192,7 +192,7 @@ class Products extends Component {
       graphqlOperation(onUpdateProductFeature)
     ).subscribe({
       next: (updatedProductFeatureData) => {
-        console.log("entro el sub")
+        console.log("entro el sub");
         let tempProductFeatures = this.state.listPF.map((mapPF) => {
           if (
             updatedProductFeatureData.value.data.onUpdateProductFeature.id ===
@@ -205,7 +205,7 @@ class Products extends Component {
         });
         tempProductFeatures.sort((a, b) => (a.order > b.order ? 1 : -1));
         this.setState((state) => ({ listPF: tempProductFeatures }));
-        this.loadProducts()
+        this.loadProducts();
       },
     });
     // OnDelete ProductFeature
@@ -549,6 +549,11 @@ class Products extends Component {
     await API.graphql(
       graphqlOperation(updateProductFeature, { input: tempProductFeature })
     );
+    await API.graphql(
+      graphqlOperation(updateProduct, {
+        input: { id: product.id, isActive: false },
+      })
+    );
   };
   handleUpdateProductFinancial = async (product) => {
     const pf = product.productFeatures.items.filter((item) => {
@@ -563,6 +568,11 @@ class Products extends Component {
     };
     await API.graphql(
       graphqlOperation(updateProductFeature, { input: tempProductFeature })
+    );
+    await API.graphql(
+      graphqlOperation(updateProduct, {
+        input: { id: product.id, isActive: false },
+      })
     );
   };
 
