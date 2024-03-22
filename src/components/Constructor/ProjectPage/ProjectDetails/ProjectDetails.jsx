@@ -210,21 +210,18 @@ export default function ProjectDetails({ visible }) {
                           ) : (
                             <HourGlassIcon className="text-danger" />
                           )}
-                          ) Aceptar condiciones financieras
+                          ) Propietario acepta condiciones financieras
                         </li>
                         <li className="fw-bold">
                           <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.projectInfo &&
-                            progressObj.sectionsStatus.geodataInfo &&
-                            progressObj.sectionsStatus
-                              .ownerAcceptsConditions ? (
+                            progressObj.sectionsStatus.geodataInfo ? (
                               <CheckIcon className="text-success" />
                             ) : (
                               <HourGlassIcon className="text-danger" />
                             )}
-                            ) Propietario completa información del proyecto y
-                            acepta condiciones financieras
+                            ) Completar información del proyecto
                           </p>
                         </li>
                       </ul>
