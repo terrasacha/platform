@@ -139,6 +139,7 @@ exports.handler = async(event) => {
       let newImage = record.dynamodb.NewImage;
       let oldImage = record.dynamodb.OldImage;
       let productID = record.dynamodb.NewImage.id.S
+      console.log(productID, 'productID')
       console.log(`${oldImage.status.S} a ${newImage.status.S}`)
 
       if(oldImage.status.S !== newImage.status.S){
@@ -162,13 +163,13 @@ exports.handler = async(event) => {
             body: JSON.stringify({ query, variables })
           };
           const response = await fetch(GRAPHQL_ENDPOINT, options);
-      const data = await response.json();
+          const data = await response.json();
 
-      if (response.ok) {
-        console.log('Response:', data);
-      } else {
-        console.log('Error:', data);
-      }
+          if (response.ok) {
+            console.log('Response:', data);
+          } else {
+            console.log('Error:', data);
+          }
         }
         const variables = { id: productID };
         /** @type {import('node-fetch').RequestInit} */
@@ -190,6 +191,7 @@ exports.handler = async(event) => {
         try {
           response = await fetch(request);
           body = await response.json();
+          console.log('body', body.data)
           infoProduct = {name: body.data.getProduct.name, status: body.data.getProduct.status}
           body.data.getProduct.userProducts.items.map(up => {if(up.user.role === 'constructor') constructorUserEmail = {name: up.user.name, email: up.user.email}})
           if (body.errors) statusCode = 400;

@@ -27,7 +27,7 @@
                       "S": "EL PARQUE SOLAR DE 50 MW (AC) EN SUTIAKHALI, GOURIPUR, MYMENSINGH utilizará la energía solar renovable para la generación de electricidad a través de la construcción de una planta de energía solar fotovoltaica (PV). El proyecto propuesto está ubicado en un terreno de 170 acres aproximadamente a 7 km al sureste del centro de la ciudad de Mymensingh City, Bangladesh. La electricidad generada por el proyecto se suministrará a Bangladesh National Power Grid, que es propiedad y está operada por Power Grid Company of Bangladesh Ltd. (PGCB). El proyecto propuesto logrará la reducción de las emisiones de gases de efecto invernadero (GEI) mediante el desplazamiento de la electricidad suministrada por la Red Eléctrica Nacional de Bangladesh, que es una red dominada por combustibles fósiles. El proyecto propuesto es invertido y desarrollado por HDFC SinPower Limited. La generación eléctrica neta media anual estimada suministrada a la red es de 92.192 MWh y el tiempo de funcionamiento anual a plena carga asciende a 1.844 h anuales durante el periodo de funcionamiento."
                   },
                   "id": {
-                      "S": "bdd22644_8644_4de6_bfc4_ef757d1db812"
+                      "S": "f3f903e6-350f-4cc4-9cc5-8893a0cec6d4"
                   },
                   "isActive": {
                       "BOOL": true
@@ -42,7 +42,7 @@
                       "N": "10"
                   },
                   "status": {
-                      "S": "on_verification"
+                      "S": "Prefactibilidad"
                   },
                   "updatedAt": {
                       "S": "2023-06-05T20:19:02.356Z"
@@ -62,7 +62,7 @@
                       "S": "EL PARQUE SOLAR DE 50 MW (AC) EN SUTIAKHALI, GOURIPUR, MYMENSINGH utilizará la energía solar renovable para la generación de electricidad a través de la construcción de una planta de energía solar fotovoltaica (PV). El proyecto propuesto está ubicado en un terreno de 170 acres aproximadamente a 7 km al sureste del centro de la ciudad de Mymensingh City, Bangladesh. La electricidad generada por el proyecto se suministrará a Bangladesh National Power Grid, que es propiedad y está operada por Power Grid Company of Bangladesh Ltd. (PGCB). El proyecto propuesto logrará la reducción de las emisiones de gases de efecto invernadero (GEI) mediante el desplazamiento de la electricidad suministrada por la Red Eléctrica Nacional de Bangladesh, que es una red dominada por combustibles fósiles. El proyecto propuesto es invertido y desarrollado por HDFC SinPower Limited. La generación eléctrica neta media anual estimada suministrada a la red es de 92.192 MWh y el tiempo de funcionamiento anual a plena carga asciende a 1.844 h anuales durante el periodo de funcionamiento."
                   },
                   "id": {
-                      "S": "bdd22644_8644_4de6_bfc4_ef757d1db812"
+                      "S": "f3f903e6-350f-4cc4-9cc5-8893a0cec6d4"
                   },
                   "isActive": {
                       "BOOL": true
