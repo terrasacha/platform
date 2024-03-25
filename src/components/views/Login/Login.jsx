@@ -31,6 +31,7 @@ export default function LogIn() {
   const [explain, setExplain] = useState(
     "Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente"
   );
+  let role = localStorage.getItem("role");
 
   useEffect(() => {
     /* checkUser() */
@@ -632,7 +633,13 @@ export default function LogIn() {
           </div>
         )}
 
-        {formType === "signedIn" && (window.location.href = "/")}
+      {formType === "signedIn" && (
+        <div>
+          {role === "constructor" && (window.location.href = "../../constructor")}
+          {role === "validator" && (window.location.href = "../../validator_admon")}
+          {role === "admon" && (window.location.href = "../../admon")}
+        </div>
+      )}
       </div>
     </div>
   );
