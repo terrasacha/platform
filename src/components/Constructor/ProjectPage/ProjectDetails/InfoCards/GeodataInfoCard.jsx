@@ -124,10 +124,10 @@ export default function GeodataInfoCard(props) {
   };
 
   return (
-    <div className="container">
-      <div className="card">
-        <div className="card-body">
-          <h5 className="card-title">Ubicación Geográfica</h5>
+    <div classname="container container mx-auto sm:px-4">
+      <div classname="card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+        <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+          <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Ubicación Geográfica</h5>
           <div style={{ height: "570px", width: "100%" }}>
             {geoData.loaded && (
               <GoogleMapReact
@@ -176,7 +176,7 @@ export default function GeodataInfoCard(props) {
             </div>
           </div>
           {autorizedUser && (
-            <div className="d-flex justify-content-center mb-3">
+            <div classname="d-flex justify-content-center mb-3 flex">
               <button onClick={() => handleSaveBtn()} variant="success">
                 Actualizar Ubicación
               </button>

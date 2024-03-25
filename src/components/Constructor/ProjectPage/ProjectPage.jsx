@@ -90,14 +90,14 @@ export default function ProjectPage() {
   return (
     <div>
       {projectData ? (
-        <div className="container-sm">
+        <div classname="container-sm container mx-auto sm:px-4">
           <div className="mb-5">
           <NewHeaderNavbar></NewHeaderNavbar>
           </div>
               <div>
             <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">
-              <div className="row gy-2">
-                <header className="d-flex justify-content-between">
+              <div classname="rowflex flex-wrap ">
+                <header classname="d-flex justify-content-between flex justify-between">
                   <p className="fs-3 mb-0">{projectData.projectInfo.title}</p>
                   <Stack direction="horizontal" gap={2}>
                     <Badge bg="primary">
@@ -130,7 +130,7 @@ export default function ProjectPage() {
                 </section>
                 <section>
                   <p className="fs-6 mb-0 fw-bold">Tokenomics:</p>
-                  <div className="d-flex">
+                  <div classname="d-flex flex">
                     {projectData.projectInfo.token.name && (
                       <MiniInfoCard
                         label="Nombre del token"

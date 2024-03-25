@@ -62,7 +62,7 @@ export default function ProjectDetails({ visible }) {
       {visible && (
         <div className="">
           {autorizedUser && !(user?.role === "validator" || user?.role === "admon") && (
-            <div className="col-span-2 md:col-span-1">
+            <div classname="col-span-2 md:col relative flex-grow max-w-full flex-1 px-4">
               <div className="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md mb-0">
                 <h2>Hola, {user?.name}</h2>
                 <p>
@@ -80,7 +80,7 @@ export default function ProjectDetails({ visible }) {
           )}
 
           {(autorizedUser || isPostulant) && progressObj && (
-            <div className="col-span-2 md:col-span-1">
+            <div classname="col-span-2 md:col relative flex-grow max-w-full flex-1 px-4">
               <div className="bg-yellow-100 border-t-4 border-yellow-500 rounded-b text-yellow-900 px-4 py-3 shadow-md mb-20">
                 <h2 className="font-bold">
                   Estado de requerimientos para la publicación del proyecto en{" "}
@@ -208,7 +208,7 @@ export default function ProjectDetails({ visible }) {
             </div>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="col-span-1">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <ProjectInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -222,7 +222,7 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div>
-          <div className="col-span-1">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <GeodataInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -236,13 +236,13 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div>
-          <div className="col-span-2">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <CadastralRecordsInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
             />
           </div>
-          {/* <div className="col-span-1">
+          {/* <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <OwnerInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -256,7 +256,7 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div> */}
-          <div className="col-span-1">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <PostulantInfoCard autorizedUser={autorizedUser} />
           </div>
           <div
@@ -279,13 +279,13 @@ export default function ProjectDetails({ visible }) {
           >
             <UseRestrictionsInfoCard autorizedUser={autorizedUser} />
           </div>
-          <div className="col-span-2 lg:col-span-1">
+          <div classname="col-span-2 lg:col relative flex-grow max-w-full flex-1 px-4">
             <EcosystemInfoCard autorizedUser={autorizedUser} />
           </div>
-          <div className="col-span-1">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <PropertyInfoCard autorizedUser={autorizedUser} />
           </div>
-          <div className="col-span-1">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <RelationsInfoCard autorizedUser={autorizedUser} />
           </div>
         </div>

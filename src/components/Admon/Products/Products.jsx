@@ -915,10 +915,10 @@ class Products extends Component {
   {renderAreYouSureDeleteProduct()}
   <div>
   {renderAreYouSureDeleteProduct()}
-      <form className="container mx-auto mt-14">
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">PROJECT PROPERTIES on {CRUDButtonName}</h5>
+      <form classname="container mx-auto mt-14 container mx-auto sm:px-4">
+        <div classname="card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+          <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+            <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">PROJECT PROPERTIES on {CRUDButtonName}</h5>
             <div className="mb-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block mb-1">Category</label>
@@ -1006,9 +1006,9 @@ class Products extends Component {
   
 
     <div className="mt-8">
-      <div className="card mb-4">
-        <div className="card-body">
-          <h5 className="card-title">PROJECT Features</h5>
+      <div classname="card mb-4 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+        <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+          <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">PROJECT Features</h5>
           <div className="mb-1 grid grid-cols-1 md:grid-cols-2 gap-4">
             <CRUDProductFeatures
               CRUD_Product={this.state.CRUD_Product}
@@ -1024,12 +1024,12 @@ class Products extends Component {
         </div>
       </div>
 
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">PROJECT Images</h5>
+          <div classname="card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+            <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+              <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">PROJECT Images</h5>
               <div className="mb-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
-                  className="btn-primary"
+                  classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                   onClick={(e) => this.handleAddNewImageToActualProduct(e)}
                 >
                   ADD IMAGE TO ACTUAL PROJECT

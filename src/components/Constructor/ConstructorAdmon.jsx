@@ -497,7 +497,7 @@ const renderUserWallets = (user) => {
     return (
       <>
       <NewHeaderNavbar/>
-      <div className="container-sm" style={{ paddingTop: 60, minHeight: "100vh" }}>
+      <div classname="container-sm container mx-auto sm:px-4" style={{ paddingTop: 60, minHeight: "100vh" }}>
         {/* <div>
           <HeaderNavbar
             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}

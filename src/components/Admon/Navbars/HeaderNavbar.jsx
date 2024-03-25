@@ -32,7 +32,7 @@ export default class HeaderNavbar extends Component {
       if (isActualUserLogged) {
         return (
           <nav className="bg-white fixed top-0 w-full">
-            <div className="container mx-auto flex items-center justify-between">
+            <div classname="container mx-auto flex items-center justify-between container mx-auto sm:px-4">
               <a href="/" className="flex items-center">
                 <img
                   src={LOGO}

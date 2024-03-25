@@ -410,8 +410,8 @@ componentWillUnmount() {
 
     return (
       <>
-        <div className="container mx-auto">
-          <div className="container mx-auto">
+        <div classname="container mx-auto container mx-auto sm:px-4">
+          <div classname="container mx-auto container mx-auto sm:px-4">
             <h2>Assign Product</h2>
             <form>
               <div className='mb-2'>
@@ -451,7 +451,7 @@ componentWillUnmount() {
             <div className='container mx-auto' style={{ overflow: 'auto' }}>{renderUsers()}</div>
             <div className='container mx-auto' style={{ overflow: 'auto' }}>{renderProducts()}</div>
           </div>
-          <div className="container mx-auto">{renderUserProducts()}</div>
+          <div classname="container mx-auto container mx-auto sm:px-4">{renderUserProducts()}</div>
         </div>
         {renderModalRole()}
       </>

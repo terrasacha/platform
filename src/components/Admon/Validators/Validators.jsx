@@ -249,7 +249,7 @@ class Validators extends Component {
     
         return (
           <div className='container mx-auto mt-6' style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="container mx-auto mt-6 pt-6">
+            <div classname="container mx-auto mt-6 pt-6 container mx-auto sm:px-4">
               <h4>Create new validator</h4>
               <form className="flex mb-4">
             <div className="mb-2 w-1/3 pr-4">
@@ -298,7 +298,7 @@ class Validators extends Component {
             <div className="mb-1 mx-3 mt-4 w-1/3">
               <button
                 type="button"
-                className="btn-yellow hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                 onClick={() => this.showModalCreate()}
               >
                 Crear

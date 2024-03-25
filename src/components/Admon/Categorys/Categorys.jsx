@@ -135,7 +135,7 @@ class Categorys extends Component {
         const renderCategorys = () => {
           if (categorys.length > 0) {
             return (
-              <div className="container mx-auto">
+              <div classname="container mx-auto container mx-auto sm:px-4">
                 <table className="table-auto w-full border-collapse border border-gray-700">
                   <thead>
                     <tr>
@@ -151,7 +151,7 @@ class Categorys extends Component {
                         <td className="border border-gray-700 px-4 py-2">{category.name}</td>
                         <td className="border border-gray-700 px-4 py-2">
                           <button
-                            className="btn-yellow hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                             onClick={(e) => this.handleLoadEditCategory(category, e)}
                           >
                             Editar
@@ -168,8 +168,8 @@ class Categorys extends Component {
         };
     
         return (
-          <div className="container mx-auto">
-            <div className="container">
+          <div classname="container mx-auto container mx-auto sm:px-4">
+            <div classname="container container mx-auto sm:px-4">
               <h2 className="text-2xl font-bold mb-4">
                 {CRUDButtonName} Categoría: {newCategory.name}
               </h2>
@@ -192,7 +192,7 @@ class Categorys extends Component {
                 <div className="mb-2">
                   <button
                     type="button"
-                    className="btn-yellow hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                    classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                     onClick={this.handleCRUDCategory}
                     disabled={this.state.isCRUDButtonDisable}
                   >

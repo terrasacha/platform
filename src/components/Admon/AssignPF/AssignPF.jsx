@@ -423,8 +423,8 @@ export default class AssignPF extends Component {
     };
     return (
       <>
-        <div className="container mx-auto">
-          <div className="container">
+        <div classname="container mx-auto container mx-auto sm:px-4">
+          <div classname="container container mx-auto sm:px-4">
             <h2>Assign Product</h2>
             <form>
               <div className="mb-2 grid grid-cols-2 gap-4">
@@ -467,7 +467,7 @@ export default class AssignPF extends Component {
               <div className="mb-1">
                 <button
                   type="button"
-                  className="btn-yellow text-white px-4 py-2 rounded-md"
+                  classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                   disabled={
                     userSelected === null || productselected === null
                       ? true
@@ -480,11 +480,11 @@ export default class AssignPF extends Component {
               </div>
             </form>
           </div>
-          <div className="container flex h-96">
-            <div className="container overflow-auto w-2/5">{renderUsers()}</div>
-            <div className="container overflow-auto">{renderProducts()}</div>
+          <div classname="container flex h-96 container mx-auto sm:px-4">
+            <div classname="container overflow-auto w-2/5 container mx-auto sm:px-4">{renderUsers()}</div>
+            <div classname="container overflow-auto container mx-auto sm:px-4">{renderProducts()}</div>
           </div>
-          <div className="container">{renderUserProducts()}</div>
+          <div classname="container container mx-auto sm:px-4">{renderUserProducts()}</div>
         </div>
       </>
     );

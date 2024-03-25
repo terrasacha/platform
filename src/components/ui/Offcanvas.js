@@ -11,7 +11,7 @@ const Offcanvas = ({ isOpen, onClose, children }) => {
 
         <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex">
           <div className="relative w-screen max-w-md">
-            <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
+            <div classname="h-full flex flex-col relative flex-grow max-w-full flex-1 px-4">
               {children}
             </div>
           </div>

@@ -125,12 +125,12 @@ export default function UseRestrictionsInfoCard(props) {
 
   return (
 <div className={`${className} card`}>
-  <div className="card-header">
-    <h5 className="card-title">Limitaciones de uso de suelo</h5>
+  <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+    <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Limitaciones de uso de suelo</h5>
   </div>
-  <div className="card-body">
+  <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
     <div className="grid grid-cols-1">
-      <div className="col">
+      <div classname="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           type={autorizedUser && "flex"}
@@ -148,7 +148,7 @@ export default function UseRestrictionsInfoCard(props) {
           onClickSaveBtn={() => handleSaveBtn("projectRestrictionsDesc")}
         />
       </div>
-      <div className="col">
+      <div classname="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           type={autorizedUser && "flex"}

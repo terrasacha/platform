@@ -340,8 +340,8 @@ import 'react-toastify/dist/ReactToastify.css';
         };
     
         return (
-          <div className="container mx-auto">
-            <div className="container">
+          <div classname="container mx-auto container mx-auto sm:px-4">
+            <div classname="container container mx-auto sm:px-4">
               <ToastContainer />
 
               <h2 className="text-2xl font-bold mb-4">

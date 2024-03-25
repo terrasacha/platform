@@ -370,7 +370,7 @@ export default function LogIn() {
                   disabled={
                     loading || !formState.terms || !formState.privacy_policy
                   }
-                  className="btn-login"
+                  classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                 >
                   {loading ? "Loading" : "Registrarse"}
                 </button>
@@ -479,7 +479,7 @@ export default function LogIn() {
                   type="submit"
                   disabled={loading}
                   onClick={(e) => signIn(e)}
-                  className="btn-login"
+                  classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                 >
                   {loading ? "Loading" : "Ingresar"}
                 </button>

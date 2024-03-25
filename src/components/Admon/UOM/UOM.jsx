@@ -154,7 +154,7 @@ class UOM extends Component {
     const renderUnitOfMeasures = () => {
       if (unitOfMeasures.length > 0) {
         return (
-          <div className="container mx-auto">
+          <div classname="container mx-auto container mx-auto sm:px-4">
             <table className="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
@@ -189,8 +189,8 @@ class UOM extends Component {
     };
 
     return (
-      <div className="container mx-auto">
-        <div className="container mx-auto">
+      <div classname="container mx-auto container mx-auto sm:px-4">
+        <div classname="container mx-auto container mx-auto sm:px-4">
           <h2>Create Unit of Measure</h2>
           <form>
             <div className='mb-2'>

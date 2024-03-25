@@ -187,7 +187,7 @@ class Documents extends Component {
         const listDocumentationStatus = () => {
           if (showAllDocuments && userProductsDoc) {
             return (
-              <div className="container mt-4">
+              <div classname="container mt-4 container mx-auto sm:px-4">
               <h3>Your documentation</h3>
               <div className="flex justify-center">
                 <div className="w-9/12">
@@ -227,7 +227,7 @@ class Documents extends Component {
                                 'Already uploaded'
                               ) : (
                                 <button
-                                  className="btn-primary text-sm"
+                                  classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                                   onClick={() =>
                                     this.setState({
                                       showModalDocument: true,
@@ -268,7 +268,7 @@ class Documents extends Component {
             let aux = { id: 'x' };
             if (this.state.productToShow) aux = this.state.productToShow.id;
             return (
-              <div className="container mt-3">
+              <div classname="container mt-3 container mx-auto sm:px-4">
                 <div className="flex">
                   <div className="w-1/6">
                     <h3 className="mb-4">Products</h3>
@@ -287,25 +287,25 @@ class Documents extends Component {
                   <div className="w-5/6">
                     <h3 className="mb-4">Products Documentation</h3>
                     {!productToShow ? '' : (
-                      <div className="card">
-                        <div className="card-header">
+                      <div classname="card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                        <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
                           {productToShow.product.name}
                         </div>
-                        <div className="card-body">
+                        <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
                           {productToShow.product.productFeatures.items.map((pf) => {
                             if (pf.documents.items.length > 0) {
                               return null;
                             }
                             return (
-                              <div key={pf.id} className="mb-2 card">
-                                <div className="card-header">
+                              <div key={pf.id} classname="mb-2 card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                                <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
                                   {pf.feature.featureTypeID.replace('_', ' ')}
                                 </div>
-                                <div className="card-body">
-                                  <h5 className="card-title">{pf.feature.name}</h5>
-                                  <p className="card-text">{pf.feature.description}</p>
+                                <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                                  <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">{pf.feature.name}</h5>
+                                  <p classname="card-text relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">{pf.feature.description}</p>
                                   <button
-                                    className="btn-primary"
+                                    classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                                     onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}
                                   >
                                     Upload Document

@@ -197,7 +197,7 @@ export default class CRUDProductFeatures extends Component {
                             onChange={this.handleOnSelectFeature}
                         />
                         {this.state.CRUDButtonName === 'UPDATE' ? (
-                            <div className="btn-yellow text-white p-4 mb-4 rounded">
+                            <div classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
                             {this.state.newProductFeature.feature.name
                                 ? this.state.newProductFeature.feature.name
                                 : ''}
@@ -243,11 +243,11 @@ export default class CRUDProductFeatures extends Component {
                             <option value="yes">Yes</option>
                         </select>
                         {this.state.newProductFeature.isOnMainCard ? (
-                            <div className="btn-yellow text-white p-4 mb-4 rounded">
+                            <div classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
                             Yes
                             </div>
                         ) : (
-                            <div className="btn-yellow text-white p-4 mb-4 rounded">
+                            <div classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
                             No
                             </div>
                         )}
@@ -265,11 +265,11 @@ export default class CRUDProductFeatures extends Component {
                             <option value="yes">Yes</option>
                         </select>
                         {this.state.newProductFeature.isToBlockChain ? (
-                            <div className="btn-yellow text-white p-4 mb-4 rounded">
+                            <div classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
                             Yes
                             </div>
                         ) : (
-                            <div className="btn-yellow text-white p-4 mb-4 rounded">
+                            <div classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
                             No
                             </div>
                         )}
@@ -287,11 +287,11 @@ export default class CRUDProductFeatures extends Component {
                             <option value="yes">Yes</option>
                         </select>
                         {this.state.newProductFeature.isVerifable ? (
-                            <div className="btn-yellow text-white p-4 mb-4 rounded">
+                            <div classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
                             Yes
                             </div>
                         ) : (
-                            <div className="btn-yellow text-white p-4 mb-4 rounded">
+                            <div classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
                             No
                             </div>
                         )}

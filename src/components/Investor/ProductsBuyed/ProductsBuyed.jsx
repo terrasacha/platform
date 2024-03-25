@@ -273,7 +273,7 @@ export default class ProductsBuyed extends Component {
         }
     return (
       <div className='mt-5 container mx-auto'>
-        <div className="container mx-auto">
+        <div classname="container mx-auto container mx-auto sm:px-4">
             {renderProductsOnCards()}
             {renderModalProductImages()}
             {renderModalProductFeatures()}

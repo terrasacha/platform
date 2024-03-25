@@ -15,6 +15,9 @@ body {
 .bg-primary{
         background-color: #333333 !important;
 }
+.bg-dark{
+        background-color: #000;
+}
 a{
         text-decoration: none !important;
 }

@@ -49,13 +49,13 @@ export default class Configure extends Component {
     render() {
         const modalDocument = () => {
             return (
-                <div className="card lg">
-                    <div className="card-header">
-                        <h5 className="card-title">
+                <div classname="card lg relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                    <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                        <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
                         Change Logo
                         </h5>
                     </div>
-                    <div className="card-body">
+                    <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
                         <div className="mb-3">
                         <div className="form-group">
                             <label>Choose file</label>
@@ -70,7 +70,7 @@ export default class Configure extends Component {
                         <button
                         disabled={this.state.updatingLogo ? true : false}
                         onClick={() => this.handleUploadLogo()}
-                        className="btn"
+                        classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                         >
                         {this.state.updatingLogo ? 'Uploading' : 'Upload'}
                         </button>

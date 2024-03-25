@@ -10,8 +10,8 @@ export default function ProjectFileManager({ visible }) {
   return (
     <>
       {visible && (
-        <div className="row row-cols-1 row-cols-xl-2 g-4">
-          <div className="col-12 col-xl-12">
+        <div classname="row row-cols-1 rowflex flex-wrap ">
+          <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
             <FileManager rootFolder={projectData.projectInfo.id} />
           </div>
         </div>

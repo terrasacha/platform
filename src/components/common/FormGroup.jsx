@@ -221,16 +221,16 @@ export default class FormGroup extends Component {
     if (type === "flex") {
       return (
         <div className={`${className} mb-3`}>
-          <div className="row align-items-center">
+          <div classname="rowflex flex-wrap ">
             {inputType !== "switch" && (
-              <label className="col-5">{label}</label>
+              <label classname="col relative flex-grow max-w-full flex-1 px-4">{label}</label>
             )}
-            <div className="col">{handleInputRenderByInputType(inputType)}</div>
+            <div classname="col relative flex-grow max-w-full flex-1 px-4">{handleInputRenderByInputType(inputType)}</div>
             {saveBtnVisible && (
-              <div className="col-auto">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <button
                   disabled={saveBtnDisabled}
-                  className="btn btn-yellow"
+                  classname="btn btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                   onClick={onClickSaveBtn}
                 >
                   Save

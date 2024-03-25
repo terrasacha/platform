@@ -181,7 +181,7 @@ export default class LandingPage extends Component {
              <a href='https://marketplace.suan.global/'>
                <button className='m-2 fondo-azul btn' >Ver proyectos</button>
               </a>
-              <button className="m-2 fondo-azul btn" onClick={this.handleShow}>
+              <button classname="m-2 fondo-azul btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline" onClick={this.handleShow}>
               Tengo un proyecto
               </button>
               
@@ -189,8 +189,8 @@ export default class LandingPage extends Component {
               
        <Modal show={this.state.showModal} onClose={this.handleClose}>
         <Modal.Header>
-          <div className="row">
-            <div className="col">
+          <div classname="rowflex flex-wrap ">
+            <div classname="col relative flex-grow max-w-full flex-1 px-4">
               <h5 className="text-center fw-bolder w-full">¿CÓMO POSTULAR MI PROYECTO?</h5>
             </div>
           </div>
@@ -216,10 +216,10 @@ export default class LandingPage extends Component {
             </div>
           </div>
         </div>
-        <div className="container p-5 d-block m-auto">
+        <div classname="container p-5 d-block m-auto container mx-auto sm:px-4">
    
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 m-4 p-2">
-            <div className="col-span-1 sm:col-span-2 md:col-span-1 lg:col-span-1">
+            <div classname="col-span-1 sm:col-span-2 md:col-span-1 lg:col relative flex-grow max-w-full flex-1 px-4">
               <div className={s.titleContainerProducts}>
                 <h2 className="titulo-landing">REDUCIMOS EL CO2</h2>
                 <p className="p-5">
@@ -227,16 +227,16 @@ export default class LandingPage extends Component {
                 </p>
               </div>
             </div>
-            <div className="col-span-1 sm:col-span-2 md:col-span-1 lg:col-span-1">
+            <div classname="col-span-1 sm:col-span-2 md:col-span-1 lg:col relative flex-grow max-w-full flex-1 px-4">
               <img src={marketImage} alt="imagen plataforma" className="img-market w-full center" />
             </div>
           </div>
         </div>
 
 
-          <div className="container-fluid bg-porque p-5" id="porque">
-            <div className="container d-block m-auto">
-              <div className="row m-4 p-2">
+          <div classname="container-fluid bg-porque p-5 container mx-auto sm:px-4" id="porque">
+            <div classname="container d-block m-auto container mx-auto sm:px-4">
+              <div classname="rowflex flex-wrap ">
                 <h2 classname="text-center">¿POR QUÉ SUAN?</h2>
               </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -247,21 +247,21 @@ export default class LandingPage extends Component {
                     <p className='text-center'>Nuestra plataforma se apalanca en tecnología blockchain para lograr total transparencia en los proyectos</p>
                   </div>
                 </div>
-                <div classname="col">
+                <div classname="col relative flex-grow max-w-full flex-1 px-4">
                   <div>
                   <svg classname="m-auto d-block iconstech" xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M480-80 120-280v-400l360-200 360 200v400L480-80ZM364-590q23-24 53-37t63-13q33 0 63 13t53 37l120-67-236-131-236 131 120 67Zm76 396v-131q-54-14-87-57t-33-98q0-11 1-20.5t4-19.5l-125-70v263l240 133Zm40-206q33 0 56.5-23.5T560-480q0-33-23.5-56.5T480-560q-33 0-56.5 23.5T400-480q0 33 23.5 56.5T480-400Zm40 206 240-133v-263l-125 70q3 10 4 19.5t1 20.5q0 55-33 98t-87 57v131Z"></path></svg>
                     <h4 classname="text-center titulo-azul">Confianza</h4>
                     <p className='text-center'>Tus inversiones se verán reflejadas en tokens que con el tiempo aumentarán su valor</p>
                   </div>
                 </div>
-                <div classname="col">
+                <div classname="col relative flex-grow max-w-full flex-1 px-4">
                   <div>
                   <svg classname="m-auto d-block iconstech" xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M280-80v-160H0l154-240H80l280-400 120 172 120-172 280 400h-74l154 240H680v160H520v-160h-80v160H280Zm389-240h145L659-560h67L600-740l-71 101 111 159h-74l103 160Zm-523 0h428L419-560h67L360-740 234-560h67L146-320Zm0 0h155-67 252-67 155-428Zm523 0H566h74-111 197-67 155-145Zm-149 80h160-160Zm201 0Z"></path></svg>
                     <h4 classname='text-center titulo-azul'>Compromiso</h4>
                     <p className='text-center'>Estamos comprometidos 100% con el medio ambiente</p>
                   </div>
                 </div>
-                <div classname="col">
+                <div classname="col relative flex-grow max-w-full flex-1 px-4">
                   <div>
                   <svg classname="m-auto d-block iconstech" xmlns="http://www.w3.org/2000/svg" height="124" viewBox="0 -960 960 960" width="124" fill="#6B8E0F"><path d="M480-100q-79 0-148-30t-120.5-81.5Q160-263 130-332t-30-148q0-79 30-148t81.5-120.5Q263-800 332-830t148-30v-100l160 160-160 160v-100q-108 0-184 76t-76 184q0 66 30.5 122.5T332-266q16-28 47.5-47.5T452-338q-3-21-8-42t-12-39q-11 9-24 14t-28 5q-33 0-56.5-23.5T300-480v-40q0-17-5.5-32T280-580q50-1 89 9 34 9 62 29.5t29 61.5q0 9-1.5 16.5T453-448q-13-10-26-18t-27-14q17 13 39 40t41 64q20-49 50-96.5t70-87.5q-23 16-44 34t-41 38q-7-11-11-24.5t-4-27.5q0-42 29-71t71-29h40q23 0 38-6t25-14q11-9 17-20 4 67-7 120-9 45-34 82.5T600-440q-15 0-28.5-4T547-455q-7 19-16 50.5T517-337q38 7 67 26t44 45q51-35 81.5-91T740-480h120q0 79-30 148t-81.5 120.5Q697-160 628-130t-148 30Z"></path></svg>
                     <h4 classname="text-center titulo-azul">Experiencia</h4>
@@ -272,13 +272,13 @@ export default class LandingPage extends Component {
             </div>
         </div>
         <div className="bg-tecnologia p-5">
-          <div className="container mx-auto p-5">
+          <div classname="container mx-auto p-5 container mx-auto sm:px-4">
             <div className="mb-4">
               <h2 className="text-center titulo-landing">NUESTRA TECNOLOGÍA</h2>
             </div>
             <div className="gap-2">
               {/* Sección 1 - BLOCKCHAIN */}
-              <div className="mb-8 flex flex-col md:flex-row items-center">
+              <div classname="mb-8 flex flex-col relative flex-grow max-w-full flex-1 px-4">
                 <img src={blockchain} alt="blockchain" className="iconstech mb-4 md:mb-0  md:w-1/2" width="124" />
                 <div className="md:w-1/2">
                   <h4 className="text-center md:text-left">BLOCKCHAIN</h4>
@@ -288,7 +288,7 @@ export default class LandingPage extends Component {
               <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
 
               {/* Sección 2 - DRONES */}
-              <div className="mb-8 flex flex-col md:flex-row items-center">
+              <div classname="mb-8 flex flex-col relative flex-grow max-w-full flex-1 px-4">
                 <div className="md:w-1/2">
                   <h4 className="text-center md:text-right">DRONES</h4>
                   <p className="text-center md:text-right pl-5">Utilizamos drones para la revisión de los terrenos y emitir los resultados de la reducción de CO2</p>
@@ -298,7 +298,7 @@ export default class LandingPage extends Component {
               <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
 
               {/* Sección 3 - PLATAFORMA SUAN */}
-              <div className="mb-8 flex flex-col md:flex-row items-center">
+              <div classname="mb-8 flex flex-col relative flex-grow max-w-full flex-1 px-4">
                 <img src={plataforma} alt="plataforma" className="m-auto d-block iconstech mb-4 md:mb-0  " width="124" />
                 <div className="md:w-1/2">
                   <h4 className="text-center md:text-left">PLATAFORMA SUAN</h4>
@@ -310,15 +310,15 @@ export default class LandingPage extends Component {
         </div>
 
           <div className='container-fluid fondo-azul p-5'>
-            <div className="container m-auto d-block flex flex-col md:flex-row items-center justify-center md:justify-between">
+            <div classname="container m-auto d-block flex flex-col relative flex-grow max-w-full flex-1 px-4">
               <div className="mb-4 md:mb-0">
                 <h2 className="text-center md:text-left">SÉ PARTE DE NOSOTROS</h2>
               </div>
               <div className="flex items-center">
                 <a href="https://marketplace.suan.global/" target="_blank" rel="noreferrer">
-                  <button className="m-2 btn-cta">Ver proyectos</button>
+                  <button classname="m-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">Ver proyectos</button>
                 </a>
-                <button className="m-2 btn-cta" onClick={this.handleShow}>
+                <button classname="m-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline" onClick={this.handleShow}>
                   Tengo un proyecto
                 </button>
               </div>

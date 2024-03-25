@@ -9,7 +9,7 @@ class CardHeader extends Component {
     return (
       <>
         <header className="p-4">
-          <div className="d-flex justify-content-between align-items-center">
+          <div classname="d-flex justify-content-between align-items-center flex justify-between">
             <div>
               <p className="mb-0 fs-5 fw-bold">{title}</p>
               <p className="mb-0 fw-light">{subtitle}</p>

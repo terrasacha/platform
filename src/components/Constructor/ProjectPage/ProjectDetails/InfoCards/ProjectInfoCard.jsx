@@ -554,10 +554,10 @@ export default function ProjectInfoCard(props) {
 
   return (
       <div className={`card p-4 ${className}`}>
-        <div className="card-header border-b mb-4 pb-2">
+        <div classname="card-header border-b mb-4 pb-2 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
           <h5 className="text-xl font-bold">Información del proyecto</h5>
         </div>
-        <div className="card-body grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div classname="card-body grid grid-cols-1 md:grid-cols-2 gap-4 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
           <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
             <FormGroup
               disabled={!autorizedUser}
@@ -582,7 +582,7 @@ export default function ProjectInfoCard(props) {
               onClickSaveBtn={() => handleSaveBtn("projectInfoArea")}
             />
           </div>
-          <div className="col-span-12">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <FormGroup
               disabled={!autorizedUser}
               type={autorizedUser && "flex"}
@@ -656,18 +656,18 @@ export default function ProjectInfoCard(props) {
               />
               <div>
                 <div className="form-group mb-3">
-                  <div className="row align-items-center">
-                    <label className="col-sm-5">
+                  <div classname="rowflex flex-wrap ">
+                    <label classname="col relative flex-grow max-w-full flex-1 px-4">
                       Cargue planos del predio (pueden ser a mano alzada)
                     </label>
-                    <div className="col">
+                    <div classname="col relative flex-grow max-w-full flex-1 px-4">
                       {planosPredio.length > 0 ? (
                         <>
                           {planosPredio.map((file) => (
                             <div key={file.id} className="mb-2">
                               <button
                                 onClick={() => handleDeleteFile(file)}
-                                className="btn btn-sm me-2 btn-danger"
+                                classname="btn btn-sm me-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                               >
                                 <XIcon />
                               </button>
@@ -692,7 +692,7 @@ export default function ProjectInfoCard(props) {
                       <button
                         disabled={!autorizedUser}
                         onClick={handleUploadButton}
-                        className="btn btn-md"
+                        classname="btn btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       >
                         Cargar nuevo archivo
                       </button>

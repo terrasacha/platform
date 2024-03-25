@@ -662,13 +662,13 @@ class DocumentStatus extends Component {
                   <h3>Documentación</h3>
                   <div className="mt-4 flex space-x-2">
                     <button
-                      className="btn-yellow text-white px-4 py-2 rounded-md"
+                      classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={() => this.handleSelectStatus("pendingDoc")}
                     >
                       Documentación pendiente
                     </button>
                     <button
-                      className="btn-yellow text-white px-4 py-2 rounded-md"
+                      classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={() => this.handleSelectStatus("approveRejectDoc")}
                     >
                       Documentación aceptada/rechazada
@@ -708,14 +708,14 @@ class DocumentStatus extends Component {
                         <td>
                           {document.status === "pending" || document.status === "accepted" ? (
                             <button
-                              className="btn-yellow text-white px-2 py-1 rounded-md"
+                              classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                               onClick={() => this.handleDownload(document)}
                             >
                               Ver documentación
                             </button>
                           ) : (
                             <button
-                              className="btn-yellow text-white px-2 py-1 rounded-md"
+                              classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                               onClick={() =>
                                 this.setState({
                                   showModalUploadDocument: true,
@@ -730,7 +730,7 @@ class DocumentStatus extends Component {
                         </td>
                         <td>
                           <button
-                            className="btn-yellow text-white px-2 py-1 rounded-md"
+                            classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                             onClick={() =>
                               this.setState({
                                 showModalComments: true,
@@ -876,7 +876,7 @@ class DocumentStatus extends Component {
       }
     };
     return (
-      <div className="container mx-auto" style={{ paddingTop: 70, minHeight: "100vh" }}>
+      <div classname="container mx-auto container mx-auto sm:px-4" style={{ paddingTop: 70, minHeight: "100vh" }}>
         {renderValidations()}
         {modalDocument()}
         {modalUploadDocument()}

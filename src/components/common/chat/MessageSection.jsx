@@ -11,20 +11,20 @@ export default class MessageSection extends Component {
     const icon = this.props.icon || "";
     return (
       <section className={className}>
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="d-flex">
-            <div className="d-flex align-items-center border rounded p-3 me-3">
+        <div classname="d-flex justify-content-between align-items-center flex justify-between">
+          <div classname="d-flex flex">
+            <div classname="d-flex align-items-center border rounded p-3 me-3 flex">
               {icon}
             </div>
             <div className="d-block mw-100">
-              <div className="d-flex">
+              <div classname="d-flex flex">
                 <p className="fs-6 mb-0 fw-bold me-2">{sender}</p>
                 <p className="fs-6 mb-0 fw-light">| {elapsedTime}</p>
               </div>
               <p className="fs-6 mb-0 text-break">{message}</p>
             </div>
           </div>
-          <div className="d-flex ms-3" style={{ minWidth: "90px" }}>
+          <div classname="d-flex ms-3 flex" style={{ minWidth: "90px" }}>
             <p className="fs-6 mb-0">{createdAt}</p>
           </div>
         </div>

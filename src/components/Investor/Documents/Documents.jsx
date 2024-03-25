@@ -269,7 +269,7 @@ class Documents extends Component {
                                           <div className="font-bold">{pf.feature.name}</div>
                                           <p>{pf.feature.description}</p>
                                           <button
-                                            className="btn-yellow text-white py-2 px-4 rounded"
+                                            classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                                             onClick={() => this.setState({ showModalDocument: true, productFeatureToAddDoc: pf })}
                                           >
                                             Upload Document
@@ -331,8 +331,8 @@ class Documents extends Component {
         )
     }
     return (
-        <div className="container mx-auto">
-            <div className="container mx-auto">
+        <div classname="container mx-auto container mx-auto sm:px-4">
+            <div classname="container mx-auto container mx-auto sm:px-4">
                 {listDocumentationStatus()}
                 {uploadDocumentation()}
                 {modalDocument()}

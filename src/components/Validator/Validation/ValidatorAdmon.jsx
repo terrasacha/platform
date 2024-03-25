@@ -219,12 +219,12 @@ class ValidatorAdmon extends Component {
         return (
           <>
           <h2 className="mt-5">Tus Proyectos Asignados</h2>
-          <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
+          <div classname="row row-cols-1 rowflex flex-wrap ">
             {products.length > 0 &&
               products.map((product, index) => {
                 return (
                   <div className="p-3">
-                  <div key={product.id} className="p-0 card">
+                  <div key={product.id} classname="p-0 card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
                     <img
                       className="w-full h-48 object-cover"
                       src={getImagesCategories(product.categoryID)}
@@ -265,7 +265,7 @@ class ValidatorAdmon extends Component {
       }
     };
     return (
-      <div className="container mx-auto" style={{ paddingTop: 70, minHeight: "100vh" }}>
+      <div classname="container mx-auto container mx-auto sm:px-4" style={{ paddingTop: 70, minHeight: "100vh" }}>
         <HeaderNavbar
           logOut={this.logOut}
           changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}

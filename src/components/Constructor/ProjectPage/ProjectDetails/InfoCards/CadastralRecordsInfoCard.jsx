@@ -644,11 +644,11 @@ export default function CadastralRecordsInfoCard(props) {
 
   return (
     <div className={`card ${className}`}>
-  <div className="card-header" title="Información predial" data-toggle="tooltip" data-placement="top">
+  <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4" title="Información predial" data-toggle="tooltip" data-placement="top">
     Información predial
   </div>
-  <div className="card-body">
-    <div className="row">
+  <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+    <div classname="rowflex flex-wrap ">
       <table className="table table-responsive">
         <thead className="text-center">
           <tr>
@@ -666,7 +666,7 @@ export default function CadastralRecordsInfoCard(props) {
               {data.editing ? (
                 <>
                   <td>
-                    <div className="d-flex align-items-center">
+                    <div classname="d-flex align-items-center flex">
                       <input
                         type="text"
                         value={data.cadastralNumber}
@@ -698,7 +698,7 @@ export default function CadastralRecordsInfoCard(props) {
                       onChange={(e) => handleFileChange(e, index)}
                     />
                     <button
-                      className="btn btn-sm btn-primary"
+                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={handleUploadButton}
                     >
                       {data.certificate || data.documentID !== undefined
@@ -716,13 +716,13 @@ export default function CadastralRecordsInfoCard(props) {
                   </td>
                   <td className="text-end">
                     <button
-                      className="btn btn-sm btn-success m-1"
+                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={() => handleSaveHistoricalData(index)}
                     >
                       <SaveDiskIcon />
                     </button>
                     <button
-                      className="btn btn-sm btn-danger m-1"
+                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={() => handleDeleteHistoricalData(index)}
                     >
                       <TrashIcon />
@@ -746,14 +746,14 @@ export default function CadastralRecordsInfoCard(props) {
                   </td>
                   <td className="text-end">
                     <button
-                      className="btn btn-sm btn-warning m-1"
+                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       disabled={!autorizedUser}
                       onClick={() => handleEditHistoricalData(index)}
                     >
                       <EditIcon />
                     </button>
                     <button
-                      className="btn btn-sm btn-danger m-1"
+                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       disabled={!autorizedUser}
                       onClick={() => handleDeleteHistoricalData(index)}
                     >
@@ -766,9 +766,9 @@ export default function CadastralRecordsInfoCard(props) {
           ))}
           <tr>
             <td colSpan={6}>
-              <div className="d-flex">
+              <div classname="d-flex flex">
                 <button
-                  className="btn btn-sm btn-secondary w-100"
+                  classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                   disabled={!autorizedUser}
                   onClick={() => handleAddNewPeriodToHistoricalData()}
                 >

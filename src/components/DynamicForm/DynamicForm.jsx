@@ -187,7 +187,7 @@ export default function DynamicForm(props) {
   };
 
   const fieldComponents = {
-    note: ({ label }) => <div className="col-12 col-12-lg">{label}</div>,
+    note: ({ label }) => <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">{label}</div>,
     text: ({ name, label, appearance, hint, required, readonly }) => {
       const inputType = appearance === "multiline" ? "textarea" : "text";
       const disabled = readonly === "true";
@@ -260,9 +260,9 @@ export default function DynamicForm(props) {
       );
     },
     begin_group: ({ label, items }, options) => (
-      <div className="col-12 col-12-lg border p-3">
-        <div className="row">
-          <div className="col-12 col-12-lg">
+      <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
+        <div classname="rowflex flex-wrap ">
+          <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
             <h4>{label}</h4>
           </div>
           {getFormFields(items, options)}
@@ -285,9 +285,9 @@ export default function DynamicForm(props) {
   //   }
 
   //   return (
-  //     <div className="col-12 col-12-lg border p-3">
-  //       <div className="row">
-  //         <div className="col-12 col-12-lg">
+  //     <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
+  //       <div classname="rowflex flex-wrap ">
+  //         <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
   //           <h4>{label}</h4>
   //         </div>
   //         {Array.from({ length: repeatCount }).map((_, index) => (
@@ -304,10 +304,10 @@ export default function DynamicForm(props) {
     <>
       {data && (
         <form onSubmit={validateAndHandleSubmit}>
-          <div className="row row-cols-1 border p-2 g-2">
+          <div classname="row rowflex flex-wrap ">
             {getFormFields(data.survey, data.options)}
           </div>
-          <div className="d-flex justify-content-center my-5">
+          <div classname="d-flex justify-content-center my-5 flex">
             <button type="submit">
               {isLoading ? (
                 <Spinner size="sm" className="p-2"></Spinner>

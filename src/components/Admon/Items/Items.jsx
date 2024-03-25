@@ -202,7 +202,7 @@ class Items extends Component {
     const renderCategorys = () => {
       if (categorys.length > 0) {
         return (
-          <div className="container mx-auto">
+          <div classname="container mx-auto container mx-auto sm:px-4">
             <table className="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
@@ -235,8 +235,8 @@ class Items extends Component {
     };
 
     return (
-      <div className="container mx-auto" style={{ display: 'flex', flexDirection: 'column' }}>
-        <div className="container mx-auto">
+      <div classname="container mx-auto container mx-auto sm:px-4" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div classname="container mx-auto container mx-auto sm:px-4">
           <h2>
             {CRUDButtonName} Items de proyecto: {newCategory.name}
           </h2>

@@ -272,7 +272,7 @@ class InvestorAdmon extends Component {
         const renderCompleteProfile = () => {
             if (isRenderCompleteOrUpdateProfile) {
                 return (
-                    <div className="container mx-auto">
+                    <div classname="container mx-auto container mx-auto sm:px-4">
                         <form>
                         
                         <div className='mb-3'>

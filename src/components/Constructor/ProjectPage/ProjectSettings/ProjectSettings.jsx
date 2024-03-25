@@ -133,8 +133,8 @@ export default function ProjectSettings({ visible }) {
   return (
     <>
       {visible && (
-        <div className="row row-cols-1  g-4">
-          <div className="col">
+        <div classname="row rowflex flex-wrap ">
+          <div classname="col relative flex-grow max-w-full flex-1 px-4">
             <ProjectSettingsCard />
           </div>
           <div className={s.selectSettingTypeContainer}>
@@ -157,7 +157,7 @@ export default function ProjectSettings({ visible }) {
           </div>
           {activeSection === "technical" && (
             <>
-              <div className="col">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <DescriptionValidator
                   canEdit={checkIfIsEditable("technical")}
                   /* (validatorSubRole === undefined
@@ -166,7 +166,7 @@ export default function ProjectSettings({ visible }) {
                 !projectData.isTechnicalFreeze */
                 />
               </div>
-              <div className="col">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <GenericInputTable
                   title={"Ingresos por producto"}
                   fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
@@ -175,7 +175,7 @@ export default function ProjectSettings({ visible }) {
                   conceptOptions={projectItems["Ingresos por producto"]}
                 />
               </div>
-              <div className="col">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <GenericInputTable
                   title={"Productos del ciclo del proyecto"}
                   fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
@@ -186,7 +186,7 @@ export default function ProjectSettings({ visible }) {
                   }
                 />
               </div>
-              <div className="col">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <GenericInputTable
                   title={"Indicadores financieros (Proyecto)"}
                   fID={"GLOBAL_INDICADORES_FINANCIEROS"}
@@ -197,7 +197,7 @@ export default function ProjectSettings({ visible }) {
                   }
                 />
               </div>
-              <div className="d-flex justify-content-center mb-2">
+              <div classname="d-flex justify-content-center mb-2 flex">
                 <button
                   disabled={projectData.isTechnicalFreeze}
                   onClick={() =>
@@ -211,7 +211,7 @@ export default function ProjectSettings({ visible }) {
           )}
           {activeSection === "financial" && (
             <>
-              <div className="col">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <TokenSettingsCard
                   canEdit={checkIfIsEditable("financial")}
                   /* (validatorSubRole === undefined
@@ -220,10 +220,10 @@ export default function ProjectSettings({ visible }) {
                 projectData.isFinancialFreeze */
                 />
               </div>
-              <div className="col">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <CashFlowSettings canEdit={checkIfIsEditable("financial")} />
               </div>
-              <div className="col">
+              <div classname="col relative flex-grow max-w-full flex-1 px-4">
                 <GenericInputTable
                   title={"Indicadores financieros (Token)"}
                   fID={"GLOBAL_INDICADORES_FINANCIEROS_TOKEN"}
@@ -234,7 +234,7 @@ export default function ProjectSettings({ visible }) {
                   }
                 />
               </div>
-              <div className="d-flex justify-content-center mb-2">
+              <div classname="d-flex justify-content-center mb-2 flex">
                 <button
                   disabled={projectData.isFinancialFreeze}
                   onClick={() =>

@@ -9,7 +9,7 @@ const DropdownButton = ({ title, items }) => {
 
   return (
     <div className="relative inline-block text-left">
-      <button onClick={handleToggle} className="btn-yellow text-white p-2 rounded">
+      <button onClick={handleToggle} classname="btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline">
         {title}
       </button>
       {isOpen && (

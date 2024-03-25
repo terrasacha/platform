@@ -128,7 +128,7 @@ export default function TableEdit({
           })}
         <tr>
           <td colSpan={5}>
-            <div className="d-flex">
+            <div classname="d-flex flex">
               <button
                 size="sm"
                 variant="secondary"

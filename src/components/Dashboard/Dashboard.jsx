@@ -2,11 +2,11 @@ import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 export default function Dashboard(props) {
   return (
-    <div className="container-sm">
+    <div classname="container-sm container mx-auto sm:px-4">
       <div className="mb-5">
         <NewHeaderNavbar></NewHeaderNavbar>
       </div>
-      <div className="d-flex justify-center">
+      <div classname="d-flex justify-center flex">
         <iframe
           title="lookerstudio dashboard"
           width="1800"

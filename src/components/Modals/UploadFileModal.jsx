@@ -204,7 +204,7 @@ export default function UploadFileModal(props) {
           />
           {selectedFiles.length > 0 && (
             <div className="border">
-              <div className="row row-cols-1 p-3 g-2">
+              <div classname="row rowflex flex-wrap ">
                 {selectedFiles.map((file, index) => (
                   <div key={index}>
                     <Form.Group controlId={`file${index}`}>

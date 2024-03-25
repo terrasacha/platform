@@ -74,7 +74,7 @@ class AdmonProfile extends Component {
     const renderCompleteProfile = () => {
       if (isRenderCompleteOrUpdateProfile) {
         return (
-          <div className="container mx-auto p-5">
+          <div classname="container mx-auto p-5 container mx-auto sm:px-4">
             <div className='card'>
             <form>
               <div className="mb-3">
@@ -109,7 +109,7 @@ class AdmonProfile extends Component {
 
               <button
                 type="button"
-                className="btn btn-primary btn-lg"
+                classname="btn btn-primary btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                 onClick={this.handleCUUser}
               >
                 Actualizar
@@ -137,7 +137,7 @@ class AdmonProfile extends Component {
                 <td>
                   <button
                     type="button"
-                    className="btn btn-primary btn-sm"
+                    classname="btn btn-primary btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                     onClick={(e) => this.handleRenderCompleteOrUpdateProfile(e)}
                   >
                     Actualizar
