@@ -172,12 +172,12 @@ export default function RelationsInfoCard(props) {
 
   return (
     <div className={`${className} card`}>
-  <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-    <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Relaciones con entidades y aliados estratégicos</h5>
+  <div className="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+    <h5 className="card-title relative flex flex-col min-w-0 rounded break-words relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Relaciones con entidades y aliados estratégicos</h5>
   </div>
-  <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+  <div className="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
     <div className="grid grid-cols-1 md:grid-cols-2">
-      <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col-12 col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           type={autorizedUser && "flex"}
@@ -197,7 +197,7 @@ export default function RelationsInfoCard(props) {
           }
         />
       </div>
-      <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col-12 col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           type={autorizedUser && "flex"}
@@ -217,7 +217,7 @@ export default function RelationsInfoCard(props) {
           }
         />
       </div>
-      <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col-12 col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           type={autorizedUser && "flex"}

@@ -137,12 +137,12 @@ export default function PropertyInfoCard(props) {
 
   return (
     <div className={`${className} card`}>
-  <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-    <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Aspectos generales del predio</h5>
+  <div className="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+    <h5 className="card-title relative flex flex-col min-w-0 rounded break-words  relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Aspectos generales del predio</h5>
   </div>
-  <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+  <div className="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div classname="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           label="¿Usted habita el predio?"
@@ -156,7 +156,7 @@ export default function PropertyInfoCard(props) {
           onChangeInputValue={(e) => handleChangeInputValue(e)}
         />
       </div>
-      <div classname="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           label="¿Existen caminos vecinales o servidumbres de paso a otras fincas?"
@@ -171,7 +171,7 @@ export default function PropertyInfoCard(props) {
         />
       </div>
       {formData.G_habita_predio === "yes" && (
-        <div classname="col relative flex-grow max-w-full flex-1 px-4">
+        <div className="col relative flex-grow max-w-full flex-1 px-4">
           <FormGroup
             disabled={!autorizedUser}
             label="¿Usted habita el predio de manera temporal o permanente?"
@@ -187,7 +187,7 @@ export default function PropertyInfoCard(props) {
         </div>
       )}
       {formData.G_Temporal_permanente === "permanente" && (
-        <div classname="col relative flex-grow max-w-full flex-1 px-4">
+        <div className="col relative flex-grow max-w-full flex-1 px-4">
           <FormGroup
             disabled={!autorizedUser}
             label="¿Desde hace cuántos años ha estado habitando el predio?"
@@ -198,7 +198,7 @@ export default function PropertyInfoCard(props) {
           />
         </div>
       )}
-      <div classname="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           inputType="text"
@@ -208,7 +208,7 @@ export default function PropertyInfoCard(props) {
           onChangeInputValue={(e) => handleChangeInputValue(e)}
         />
       </div>
-      <div classname="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           inputType="text"
@@ -219,7 +219,7 @@ export default function PropertyInfoCard(props) {
         />
       </div>
       {parseInt(projectData.projectGeneralAspects?.membersPerFamily) > 0 && (
-        <div classname="col relative flex-grow max-w-full flex-1 px-4">
+        <div className="col relative flex-grow max-w-full flex-1 px-4">
           <FormGroup
             disabled={!autorizedUser}
             inputType="text"
@@ -230,7 +230,7 @@ export default function PropertyInfoCard(props) {
           />
         </div>
       )}
-      <div classname="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           inputType="text"
@@ -240,7 +240,7 @@ export default function PropertyInfoCard(props) {
           onChangeInputValue={(e) => handleChangeInputValue(e)}
         />
       </div>
-      <div classname="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           inputType="text"
@@ -250,7 +250,7 @@ export default function PropertyInfoCard(props) {
           onChangeInputValue={(e) => handleChangeInputValue(e)}
         />
       </div>
-      <div classname="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           inputType="text"
@@ -260,7 +260,7 @@ export default function PropertyInfoCard(props) {
           onChangeInputValue={(e) => handleChangeInputValue(e)}
         />
       </div>
-      <div classname="col-12 col relative flex-grow max-w-full flex-1 px-4">
+      <div className="col-12 col relative flex-grow max-w-full flex-1 px-4">
         <FormGroup
           disabled={!autorizedUser}
           inputType="textarea"

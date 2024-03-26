@@ -644,11 +644,11 @@ export default function CadastralRecordsInfoCard(props) {
 
   return (
     <div className={`card ${className}`}>
-  <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4" title="Información predial" data-toggle="tooltip" data-placement="top">
+  <div className="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4" title="Información predial" data-toggle="tooltip" data-placement="top">
     Información predial
   </div>
-  <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-    <div classname="rowflex flex-wrap ">
+  <div className="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+    <div className="rowflex flex-wrap ">
       <table className="table table-responsive">
         <thead className="text-center">
           <tr>
@@ -666,11 +666,11 @@ export default function CadastralRecordsInfoCard(props) {
               {data.editing ? (
                 <>
                   <td>
-                    <div classname="d-flex align-items-center flex">
+                    <div className="d-flex align-items-center flex">
                       <input
                         type="text"
                         value={data.cadastralNumber}
-                        className="form-control form-control-sm text-center"
+                        className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
                         name={`cadastraldata_cadastralNumber_${index}`}
                         onChange={(e) => handleChangeInputValue(e)}
                       />
@@ -685,7 +685,7 @@ export default function CadastralRecordsInfoCard(props) {
                     <input
                       type="text"
                       value={data.matricula}
-                      className="form-control form-control-sm text-center"
+                      className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
                       name={`cadastraldata_matricula_${index}`}
                       onChange={(e) => handleChangeInputValue(e)}
                     />
@@ -698,7 +698,7 @@ export default function CadastralRecordsInfoCard(props) {
                       onChange={(e) => handleFileChange(e, index)}
                     />
                     <button
-                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                      className="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={handleUploadButton}
                     >
                       {data.certificate || data.documentID !== undefined
@@ -716,13 +716,13 @@ export default function CadastralRecordsInfoCard(props) {
                   </td>
                   <td className="text-end">
                     <button
-                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                      className="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={() => handleSaveHistoricalData(index)}
                     >
                       <SaveDiskIcon />
                     </button>
                     <button
-                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                      className="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       onClick={() => handleDeleteHistoricalData(index)}
                     >
                       <TrashIcon />
@@ -746,14 +746,14 @@ export default function CadastralRecordsInfoCard(props) {
                   </td>
                   <td className="text-end">
                     <button
-                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                      className="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       disabled={!autorizedUser}
                       onClick={() => handleEditHistoricalData(index)}
                     >
                       <EditIcon />
                     </button>
                     <button
-                      classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                      className="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       disabled={!autorizedUser}
                       onClick={() => handleDeleteHistoricalData(index)}
                     >
@@ -766,9 +766,9 @@ export default function CadastralRecordsInfoCard(props) {
           ))}
           <tr>
             <td colSpan={6}>
-              <div classname="d-flex flex">
+              <div className="d-flex flex">
                 <button
-                  classname="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                  className="btn btn-sm btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                   disabled={!autorizedUser}
                   onClick={() => handleAddNewPeriodToHistoricalData()}
                 >

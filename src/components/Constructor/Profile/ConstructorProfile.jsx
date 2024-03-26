@@ -123,7 +123,7 @@ class InvestorProfile extends Component {
         const renderCompleteProfile = () => {
             if (isRenderCompleteOrUpdateProfile) {
                 return (
-                    <div classname="container mx-auto container mx-auto sm:px-4">
+                    <div className="container mx-auto container mx-auto sm:px-4">
                         <form>
                         
                         <div className='mb-3'>

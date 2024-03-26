@@ -428,7 +428,7 @@ export default function NewProject() {
   };
 
   return (
-    <div classname="container mx-5 container mx-auto sm:px-4">
+    <div className="container mx-5 container mx-auto sm:px-4">
       <div className="mb-5">
        <NewHeaderNavbar /> 
       </div>

@@ -553,121 +553,123 @@ export default function ProjectInfoCard(props) {
   };
 
   return (
-      <div className={`card p-4 ${className}`}>
-        <div classname="card-header border-b mb-4 pb-2 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-          <h5 className="text-xl font-bold">Información del proyecto</h5>
-        </div>
-        <div classname="card-body grid grid-cols-1 md:grid-cols-2 gap-4 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
-            <FormGroup
-              disabled={!autorizedUser}
-              type={autorizedUser && "flex"}
-              label="Nombre del proyecto"
-              inputName="projectInfoTitle"
-              inputValue={formData.projectInfoTitle}
-              saveBtnDisabled={projectData.projectInfo?.title === formData.projectInfoTitle}
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-              onClickSaveBtn={() => handleSaveBtn("projectInfoTitle")}
-            />
-          </div>
-          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
-            <FormGroup
-              disabled={!autorizedUser}
-              type={autorizedUser && "flex"}
-              label="Área total (hectáreas)"
-              inputName="projectInfoArea"
-              inputValue={formData.projectInfoArea}
-              saveBtnDisabled={projectData.projectInfo?.area === formData.projectInfoArea}
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-              onClickSaveBtn={() => handleSaveBtn("projectInfoArea")}
-            />
-          </div>
-          <div classname="col relative flex-grow max-w-full flex-1 px-4">
-            <FormGroup
-              disabled={!autorizedUser}
-              type={autorizedUser && "flex"}
-              inputType="textarea"
-              label="Descripción"
-              inputName="projectInfoDescription"
-              inputValue={formData.projectInfoDescription}
-              saveBtnDisabled={projectData.projectInfo?.description === formData.projectInfoDescription}
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-              onClickSaveBtn={() => handleSaveBtn("projectInfoDescription")}
-            />
-          </div>
-          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
-            <FormGroup
-              disabled={!autorizedUser}
-              type={autorizedUser && "flex"}
-              label="Categoria del proyecto"
-              inputType="radio"
-              optionList={categoryList.map((category) => ({
-                label: category,
-                value: category,
-              }))}
-              optionCheckedList={formData.projectInfoCategory}
-              inputName="projectInfoCategory"
-              saveBtnDisabled={projectData.projectInfo?.category === formData.projectInfoCategory}
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-              onClickSaveBtn={() => handleSaveBtn("projectInfoCategory")}
-            />
-          </div>
-          <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
-            <div className={autorizedUser ? "grid grid-cols-1" : "grid grid-cols-1 md:grid-cols-2"}>
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Vereda al que pertenece el Predio"
-                inputName="projectInfoLocationVereda"
-                inputValue={formData.projectInfoLocationVereda}
-                saveBtnDisabled={projectData.projectInfo?.location.vereda === formData.projectInfoLocationVereda}
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationVereda")}
-              />
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Municipio al que pertenece el predio"
-                inputName="projectInfoLocationMunicipio"
-                inputValue={formData.projectInfoLocationMunicipio}
-                saveBtnDisabled={projectData.projectInfo?.location.municipio === formData.projectInfoLocationMunicipio}
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationMunicipio")}
-              />
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Número de matrícula inmobiliaria del predio"
-                inputName="projectInfoLocationMatricula"
-                inputValue={formData.projectInfoLocationMatricula}
-                saveBtnDisabled={projectData.projectInfo?.location.matricula === formData.projectInfoLocationMatricula}
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationMatricula")}
-              />
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Número de ficha catastral que aparece en el impuesto predial del municipio del predio"
-                inputName="projectInfoLocationFichaCatrastral"
-                inputValue={formData.projectInfoLocationFichaCatrastral}
-                saveBtnDisabled={projectData.projectInfo?.location.fichaCatrastal === formData.projectInfoLocationFichaCatrastral}
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() => handleSaveBtn("projectInfoLocationFichaCatrastral")}
-              />
+    <div className={`card p-4 border border-radius ${className}`}>
+    <div className="card-header border-b mb-4 pb-2">
+        <h5 className="text-xl font-bold">Información del proyecto</h5>
+    </div>
+    <div className="card-body grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
+        <FormGroup
+            disabled={!autorizedUser}
+            type={autorizedUser && "flex"}
+            label="Nombre del proyecto"
+            inputName="projectInfoTitle"
+            inputValue={formData.projectInfoTitle}
+            saveBtnDisabled={projectData.projectInfo?.title === formData.projectInfoTitle}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("projectInfoTitle")}
+        />
+    </div>
+    <div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
+        <FormGroup
+            disabled={!autorizedUser}
+            type={autorizedUser && "flex"}
+            label="Área total (hectáreas)"
+            inputName="projectInfoArea"
+            inputValue={formData.projectInfoArea}
+            saveBtnDisabled={projectData.projectInfo?.area === formData.projectInfoArea}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("projectInfoArea")}
+        />
+    </div>
+    </div>
+    <div>
+<div className="col relative flex-grow max-w-full flex-1 px-4">
+    <FormGroup
+        disabled={!autorizedUser}
+        type={autorizedUser && "flex"}
+        inputType="textarea"
+        label="Descripción"
+        inputName="projectInfoDescription"
+        inputValue={formData.projectInfoDescription}
+        saveBtnDisabled={projectData.projectInfo?.description === formData.projectInfoDescription}
+        onChangeInputValue={(e) => handleChangeInputValue(e)}
+        onClickSaveBtn={() => handleSaveBtn("projectInfoDescription")}
+    />
+</div>
+<div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
+    <FormGroup
+        disabled={!autorizedUser}
+        type={autorizedUser && "flex"}
+        label="Categoria del proyecto"
+        inputType="radio"
+        optionList={categoryList.map((category) => ({
+            label: category,
+            value: category,
+        }))}
+        optionCheckedList={formData.projectInfoCategory}
+        inputName="projectInfoCategory"
+        saveBtnDisabled={projectData.projectInfo?.category === formData.projectInfoCategory}
+        onChangeInputValue={(e) => handleChangeInputValue(e)}
+        onClickSaveBtn={() => handleSaveBtn("projectInfoCategory")}
+    />
+</div>
+<div className={autorizedUser ? "col-span-12" : "col-span-12 md:col-span-6"}>
+    <div className={autorizedUser ? "grid grid-cols-1" : "grid grid-cols-1 md:grid-cols-2"}>
+        <FormGroup
+            disabled={!autorizedUser}
+            type={autorizedUser && "flex"}
+            label="Vereda al que pertenece el Predio"
+            inputName="projectInfoLocationVereda"
+            inputValue={formData.projectInfoLocationVereda}
+            saveBtnDisabled={projectData.projectInfo?.location.vereda === formData.projectInfoLocationVereda}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("projectInfoLocationVereda")}
+        />
+        <FormGroup
+            disabled={!autorizedUser}
+            type={autorizedUser && "flex"}
+            label="Municipio al que pertenece el predio"
+            inputName="projectInfoLocationMunicipio"
+            inputValue={formData.projectInfoLocationMunicipio}
+            saveBtnDisabled={projectData.projectInfo?.location.municipio === formData.projectInfoLocationMunicipio}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("projectInfoLocationMunicipio")}
+        />
+        <FormGroup
+            disabled={!autorizedUser}
+            type={autorizedUser && "flex"}
+            label="Número de matrícula inmobiliaria del predio"
+            inputName="projectInfoLocationMatricula"
+            inputValue={formData.projectInfoLocationMatricula}
+            saveBtnDisabled={projectData.projectInfo?.location.matricula === formData.projectInfoLocationMatricula}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("projectInfoLocationMatricula")}
+        />
+        <FormGroup
+            disabled={!autorizedUser}
+            type={autorizedUser && "flex"}
+            label="Número de ficha catastral que aparece en el impuesto predial del municipio del predio"
+            inputName="projectInfoLocationFichaCatrastral"
+            inputValue={formData.projectInfoLocationFichaCatrastral}
+            saveBtnDisabled={projectData.projectInfo?.location.fichaCatrastal === formData.projectInfoLocationFichaCatrastral}
+            onChangeInputValue={(e) => handleChangeInputValue(e)}
+            onClickSaveBtn={() => handleSaveBtn("projectInfoLocationFichaCatrastral")}
+        />
               <div>
                 <div className="form-group mb-3">
-                  <div classname="rowflex flex-wrap ">
-                    <label classname="col relative flex-grow max-w-full flex-1 px-4">
+                  <div className="rowflex flex-wrap ">
+                    <label className="col relative flex-grow max-w-full flex-1 px-4">
                       Cargue planos del predio (pueden ser a mano alzada)
                     </label>
-                    <div classname="col relative flex-grow max-w-full flex-1 px-4">
+                    <div className="col relative flex-grow max-w-full flex-1 px-4">
                       {planosPredio.length > 0 ? (
                         <>
                           {planosPredio.map((file) => (
                             <div key={file.id} className="mb-2">
                               <button
                                 onClick={() => handleDeleteFile(file)}
-                                classname="btn btn-sm me-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                                className="btn btn-sm me-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                               >
                                 <XIcon />
                               </button>
@@ -692,7 +694,7 @@ export default function ProjectInfoCard(props) {
                       <button
                         disabled={!autorizedUser}
                         onClick={handleUploadButton}
-                        classname="btn btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+                        className="btn btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
                       >
                         Cargar nuevo archivo
                       </button>

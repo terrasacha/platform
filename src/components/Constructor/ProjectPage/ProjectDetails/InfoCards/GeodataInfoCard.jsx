@@ -124,10 +124,10 @@ export default function GeodataInfoCard(props) {
   };
 
   return (
-    <div classname="container container mx-auto sm:px-4">
-      <div classname="card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-        <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-          <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Ubicación Geográfica</h5>
+    <div className="container container mx-auto sm:px-4">
+      <div className="card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+        <div className="card-body relative flex flex-col min-w-0 rounded break-words relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+          <h5 className="card-title relative flex flex-col min-w-0 rounded break-words relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Ubicación Geográfica</h5>
           <div style={{ height: "570px", width: "100%" }}>
             {geoData.loaded && (
               <GoogleMapReact
@@ -160,7 +160,7 @@ export default function GeodataInfoCard(props) {
               <label className="mb-0">Latitud</label>
               <input
                 disabled={true}
-                className="form-control form-control-sm"
+                className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
                 type="number"
                 value={formData.coords?.lat}
               />
@@ -169,14 +169,14 @@ export default function GeodataInfoCard(props) {
               <label className="mb-0">Longitud</label>
               <input
                 disabled={true}
-                className="form-control form-control-sm"
+                className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
                 type="number"
                 value={formData.coords?.lng}
               />
             </div>
           </div>
           {autorizedUser && (
-            <div classname="d-flex justify-content-center mb-3 flex">
+            <div className="d-flex justify-content-center mb-3 flex">
               <button onClick={() => handleSaveBtn()} variant="success">
                 Actualizar Ubicación
               </button>

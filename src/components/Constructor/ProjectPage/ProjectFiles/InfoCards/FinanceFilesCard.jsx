@@ -70,7 +70,7 @@ export default function FinanceCard({ visible }) {
     (isValid && validadorShow ? (
       <>
         {user?.id && projectData.projectPostulant?.id.includes(user.id) && (
-          <div classname="rowflex flex-wrap ">
+          <div className="rowflex flex-wrap ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24"
@@ -99,8 +99,8 @@ export default function FinanceCard({ visible }) {
             </button>
           </div>
         )}
-        <div classname="container container mx-auto sm:px-4">
-          <div classname="rowflex flex-wrap ">
+        <div className="container container mx-auto sm:px-4">
+          <div className="rowflex flex-wrap ">
             <DistributionToken infoTable={dataToken} />
             <CashProducts infoTable={dataCash.cashFlowResume.flujos_de_caja} />
             <IndicatorsProducts infoTable={dataIndicador.financialIndicators} />
@@ -110,16 +110,16 @@ export default function FinanceCard({ visible }) {
       </>
     ) : (
       <>
-        <div classname="container container mx-auto sm:px-4">
+        <div className="container container mx-auto sm:px-4">
           {isAccepted && (
-            <div classname="rowflex flex-wrap ">
-              <CheckIcon classname="col col relative flex-grow max-w-full flex-1 px-4" />
-              <p classname="col col relative flex-grow max-w-full flex-1 px-4">
+            <div className="rowflex flex-wrap ">
+              <CheckIcon className="col col relative flex-grow max-w-full flex-1 px-4" />
+              <p className="col col relative flex-grow max-w-full flex-1 px-4">
                 La información financiera ya fue leída y aceptada correctamente
               </p>
             </div>
           )}
-          <div classname="rowflex flex-wrap ">
+          <div className="rowflex flex-wrap ">
             {user?.id &&
               projectData.projectPostulant?.id.includes(user.id) &&
               isAccepted && (
@@ -378,7 +378,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
           })}
           <tr>
             <td colSpan={5}>
-              <div classname="d-flex flex">
+              <div className="d-flex flex">
                 <button
                   size="sm"
                   variant="secondary"
@@ -396,7 +396,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
         Tokens por distribuir:{" "}
         {tokensAvaiableAmount >= 0 ? tokensAvaiableAmount : 0}
       </p>
-      <div classname="d-flex justify-content-center flex">
+      <div className="d-flex justify-content-center flex">
         <button variant="success" onClick={() => handleSendData()}>
           Enviar tokens
         </button>
@@ -412,9 +412,9 @@ function DistributionToken({ infoTable, totalOwner }) {
   }
 
   return (
-    <div classname="col relative flex-grow max-w-full flex-1 px-4">
-      <div classname="rowflex flex-wrap ">
-        <div classname="col relative flex-grow max-w-full flex-1 px-4">
+    <div className="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="rowflex flex-wrap ">
+        <div className="col relative flex-grow max-w-full flex-1 px-4">
           <h5>Distribución de Tokens del proyecto</h5>
           <p className="text-tok-post">
             Los tokens asociados al propietario, se enviarán despues de aprobada
@@ -469,9 +469,9 @@ function CashProducts({ infoTable, typeInfo }) {
   const columns = ["Año", "Resultado Anual", "Resultado Acumulado", "Unidad"];
 
   return (
-    <div classname="col relative flex-grow max-w-full flex-1 px-4">
-      <div classname="rowflex flex-wrap ">
-        <div classname="col relative flex-grow max-w-full flex-1 px-4">
+    <div className="col relative flex-grow max-w-full flex-1 px-4">
+      <div className="rowflex flex-wrap ">
+        <div className="col relative flex-grow max-w-full flex-1 px-4">
           <h5>Productos del ciclo del proyecto</h5>
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -510,7 +510,7 @@ function IndicatorsProducts({ infoTable, typeInfo }) {
   const columns = ["Concepto", "Cantidad", "Unidad"];
 
   return (
-    <div classname="col relative flex-grow max-w-full flex-1 px-4">
+    <div className="col relative flex-grow max-w-full flex-1 px-4">
       <h5>Indicadores Financieros</h5>
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -546,7 +546,7 @@ function RevenuesProducts({ infoTable, typeInfo }) {
   const columns = ["Concepto", "Cantidad", "Unidad"];
 
   return (
-    <div classname=" col relative flex-grow max-w-full flex-1 px-4">
+    <div className=" col relative flex-grow max-w-full flex-1 px-4">
       <h5>Ingresos por productos</h5>
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

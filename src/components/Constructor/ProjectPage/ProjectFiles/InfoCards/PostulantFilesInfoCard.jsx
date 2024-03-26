@@ -279,8 +279,8 @@ export default function PostulantFilesInfoCard(props) {
 
   return (
     <div className={`card ${className}`}>
-  <div classname="border-b mb-4 card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-    <h5 classname="text-xl font-semibold card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Documentos del postulante</h5>
+  <div className="border-b mb-4 card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+    <h5 className="text-xl font-semibold card-title relative flex flex-col min-w-0 rounded break-words relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Documentos del postulante</h5>
   </div>
   <div className="text-center">
     <table className="w-full">

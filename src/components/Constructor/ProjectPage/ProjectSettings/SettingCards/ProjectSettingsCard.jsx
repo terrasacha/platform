@@ -110,7 +110,7 @@ export default function ProjectSettingsCard(props) {
           <option value="Registro del proyecto">Registro del proyecto</option>
         </select>
         <button
-          classname="mt-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+          className="mt-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
           disabled={projectData.projectInfo?.status === projectStatus}
           onClick={() => handleSaveProjectStatus()}
         >
@@ -133,7 +133,7 @@ export default function ProjectSettingsCard(props) {
           <option value="Terrasacha">Terrasacha</option>
         </select>
         <button
-          classname="mt-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
+          className="mt-2 btninline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline"
           disabled={projectData.projectInfo?.showOn === projectShowOn}
           onClick={() => handleSaveProjectShowOn()}
         >

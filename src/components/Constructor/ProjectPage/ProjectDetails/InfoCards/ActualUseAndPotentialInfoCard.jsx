@@ -186,12 +186,12 @@ export default function ActualUseAndPotentialInfoCard(props) {
 
   return (
     <div className={`${className} card`}>
-    <div classname="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-        <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Uso actual y potencial</h5>
+    <div className="card-header relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+        <h5 className="card-title relative flex flex-col min-w-0 rounded break-words relative flex flex-col relative flex-grow max-w-full flex-1 px-4">Uso actual y potencial</h5>
     </div>
-    <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+    <div className="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2">
-        <div classname="col relative flex-grow max-w-full flex-1 px-4">
+        <div className="col relative flex-grow max-w-full flex-1 px-4">
             <FormGroup
               disabled={!autorizedUser}
               label="Uso actual del suelo del predio"
@@ -219,8 +219,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               onChangeInputValue={(e) => handleChangeInputValue(e)}
             />
             {formData?.D_actual_use?.includes("potreros") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                     Potreros
                 </header>
                 <section className="p-2">
@@ -236,8 +236,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_actual_use?.includes("plantaciones_forestales1") && (
-              <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+              <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                     Plantaciones Forestales 1
                 </header>
                 <section className="p-2">
@@ -261,8 +261,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_actual_use?.includes("plantaciones_forestales2") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Plantaciones Forestales 2
                 </header>
                 <section className="p-2">
@@ -286,8 +286,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_actual_use?.includes("plantaciones_forestales3") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Plantaciones Forestales 3
                 </header>
                 <section className="p-2">
@@ -311,8 +311,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_actual_use?.includes("frutales1") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Frutales 1
                 </header>
                 <section className="p-2">
@@ -336,8 +336,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_actual_use?.includes("frutales2") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Frutales 2
                 </header>
                 <section className="p-2">
@@ -361,8 +361,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_actual_use?.includes("otros") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Otros
                 </header>
                 <section className="p-2">
@@ -386,7 +386,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
           </div>
-          <div classname="col relative flex-grow max-w-full flex-1 px-4">
+          <div className="col relative flex-grow max-w-full flex-1 px-4">
             <FormGroup
               disabled={!autorizedUser}
               label="Usos actuales remplazables"
@@ -415,8 +415,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
             />
 
             {formData?.D_replace_use?.includes("potreros") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Potreros
                 </header>
                 <section className="p-2">
@@ -440,8 +440,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_replace_use?.includes("plantaciones_forestales1") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Plantaciones Forestales 1
                 </header>
                 <section className="p-2">
@@ -465,8 +465,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_replace_use?.includes("plantaciones_forestales2") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Plantaciones Forestales 2
                 </header>
                 <section className="p-2">
@@ -490,8 +490,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_replace_use?.includes("plantaciones_forestales3") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Plantaciones Forestales 3
                 </header>
                 <section className="p-2">
@@ -515,8 +515,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_replace_use?.includes("frutales1") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Frutales 1
                 </header>
                 <section className="p-2">
@@ -540,8 +540,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_replace_use?.includes("frutales2") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Frutales 2
                 </header>
                 <section className="p-2">
@@ -565,8 +565,8 @@ export default function ActualUseAndPotentialInfoCard(props) {
               </div>
             )}
             {formData?.D_replace_use?.includes("otros") && (
-               <div classname="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
-                <header classname="d-flex justify-content-center mt-2 flex">
+               <div className="card shadow-sm mb-3 relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
+                <header className="d-flex justify-content-center mt-2 flex">
                   Otros
                 </header>
                 <section className="p-2">
@@ -592,7 +592,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
           </div>
         </div>
         {autorizedUser && (
-          <div classname="d-flex justify-content-center flex">
+          <div className="d-flex justify-content-center flex">
             <Button onClick={() => handleSaveBtn()} variant="success">
               Guardar
             </Button>

@@ -649,7 +649,7 @@ export default function TokenSettingsCard(props) {
                     ))}
                   <tr>
                   <td colSpan={6}>
-                    <div classname="d-flex flex">
+                    <div className="d-flex flex">
                       <button
                         size="sm"
                         variant="secondary"
@@ -729,7 +729,7 @@ export default function TokenSettingsCard(props) {
               onChangeInputValue={(e) => handleChangeInputValueForm(e)}
             />
             {/* <div className="border p-3 mx-auto my-3" style={{width: "300px"}}>
-                <div classname="d-flex justify-content-center mb-3 flex">Resumen</div>
+                <div className="d-flex justify-content-center mb-3 flex">Resumen</div>
                 <div>
                   <ul>
                     <li>Inversionista: {(totalTokenAmount * tokenDistributionForm.investor) / 100 || 0} Tokens</li>
@@ -740,7 +740,7 @@ export default function TokenSettingsCard(props) {
                   </ul>
                 </div>
             </div> */}
-            <div classname="d-flex justify-content-center flex">
+            <div className="d-flex justify-content-center flex">
               <button
                 disabled={canEdit}
                 onClick={() => handleSaveBtn("tokenDistributionForm")}
