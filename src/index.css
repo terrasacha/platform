@@ -47,7 +47,7 @@ h4{
         color: #fff;
         background: #6B8E0F;
     }
-.text-h{
+.text-h, .description{
         height: 200px;
         overflow-y: scroll;
 }
