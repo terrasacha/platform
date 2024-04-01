@@ -274,25 +274,37 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
 
   return (
     <div className="box-postulant p-3">
-      <p className="mb-3 text-center">Recibe tus Tokens</p>
+      <strong className="mb-3 text-bold text-danger">¡Importante!</strong>
       <p>
-        En la sección siguiente, podrás gestionar y distribuir los tokens
-        recibidos por tu proyecto postulado. Esta funcionalidad te permite
-        enviar los tokens a múltiples direcciones de stake, permitiéndote
-        distribuirlos entre los diferentes propietarios del proyecto según tu
-        preferencia.
+        Una vez que hayas aceptado las condiciones del proyecto, es crucial que
+        te dirijas al Marketplace y accedas con tu usuario y contraseña. Si aún
+        no tienes una billetera, podrás crearla fácilmente mediante este
+        proceso. Recuerda que esta billetera es esencial para recibir los tokens
+        del proyecto que has postulado. Por favor, sigue las instrucciones
+        detalladas en el Marketplace para garantizar una participación exitosa y
+        asegurarte de recibir tus tokens correctamente.
       </p>
-      <p>
-        No tienes una billetera? Crea una{" "}
+      <div className="d-flex justify-content-center">
+        <a
+          href="https://marketplace.suan.global/auth/login"
+          target="_blank"
+          rel="noreferrer"
+          className="btn btn-warning"
+        >
+          Ir al Marketplace
+        </a>
+      </div>
+      {/* <p>
+        Ir a{" "}
         <a
           href="https://marketplace.suan.global/generate-wallet"
           target="_blank"
           rel="noreferrer"
         >
-          aquí.
+          Marketplace.
         </a>
-      </p>
-      <Table responsive>
+      </p> */}
+      {/* <Table responsive>
         <thead className="text-center">
           <tr>
             <th style={{ width: "300px" }}>Dirección de billetera</th>
@@ -396,7 +408,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
         <Button variant="success" onClick={() => handleSendData()}>
           Enviar tokens
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -441,7 +453,11 @@ function DistributionToken({ infoTable }) {
               <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 distribution">
                 {infoTable.map((item, index) => (
                   <td className="px-3 py-2" key={index}>
-                    {((parseInt(item.CANTIDAD) / totalOwnerValue) * 100).toFixed(1)}%
+                    {(
+                      (parseInt(item.CANTIDAD) / totalOwnerValue) *
+                      100
+                    ).toFixed(1)}
+                    %
                   </td>
                 ))}
               </tr>

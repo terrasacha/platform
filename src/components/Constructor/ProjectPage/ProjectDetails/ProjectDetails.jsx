@@ -24,6 +24,7 @@ export default function ProjectDetails({ visible }) {
   const [isVerifier, setIsVerifier] = useState(false);
   const { user } = useAuth();
 
+  const [totalArea, setTotalArea] = useState(0);
   const [progressChange, setProgressChange] = useState(false);
   const [progressObj, setProgressObj] = useState(null);
 
@@ -251,6 +252,7 @@ export default function ProjectDetails({ visible }) {
             <ProjectInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
+              totalArea={totalArea}
               tooltip={
                 (autorizedUser || isPostulant) &&
                 (progressObj?.sectionsStatus.projectInfo ? (
@@ -279,6 +281,7 @@ export default function ProjectDetails({ visible }) {
             <CadastralRecordsInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
+              setTotalArea={setTotalArea}
             />
           </div>
           {/* <div className="col">

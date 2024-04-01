@@ -28,7 +28,8 @@ import { CheckIcon } from "components/common/icons/CheckIcon";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 
 export default function CadastralRecordsInfoCard(props) {
-  const { className, autorizedUser, setProgressChange, tooltip } = props;
+  const { className, autorizedUser, setProgressChange, tooltip, setTotalArea } =
+    props;
   const {
     projectData,
     handleUpdateContextProjectCadastralRecordsData,
@@ -66,10 +67,23 @@ export default function CadastralRecordsInfoCard(props) {
       const cadastralNumbersArray = multipleData.map((item) =>
         item.cadastralNumber.trim()
       );
+      // Información predial
       const predialData = await getPredialDataByCadastralNumber(
         cadastralNumbersArray
       ); // Llamada a la función getData
+      console.log("predialData", predialData);
       setPredialFetchedData(predialData);
+
+      // Área total del predio
+      let suma = 0;
+
+      for (const key in predialData) {
+        if (predialData.hasOwnProperty(key)) {
+          const elemento = predialData[key];
+          suma += elemento.AREA_TERRENO;
+        }
+      }
+      setTotalArea(suma);
     }
 
     if (multipleData.length > 0 && !executedOnce) {

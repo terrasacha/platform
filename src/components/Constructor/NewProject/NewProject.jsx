@@ -34,6 +34,8 @@ export default function NewProject() {
   }, [user]);
 
   const createProductFeatures = async (productID) => {
+    const promises = [];
+
     const productFeaturesToCreate = [
       "A_postulante_doctype",
       // "A_matricula",
@@ -122,24 +124,30 @@ export default function NewProject() {
       productID: productID,
       userID: "8d244cec-b39a-42f0-83e8-d8a289947ba2",
     };
-    await API.graphql(
-      graphqlOperation(createUserProduct, { input: tempUserProduct })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createUserProduct, { input: tempUserProduct })
+      )
     );
     // Sebastian Azcona
     tempUserProduct = {
       productID: productID,
       userID: "cf7e52c6-5f1a-482f-b7a5-0ec8a4bac38c",
     };
-    await API.graphql(
-      graphqlOperation(createUserProduct, { input: tempUserProduct })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createUserProduct, { input: tempUserProduct })
+      )
     );
     // Carlos Soto
     tempUserProduct = {
       productID: productID,
       userID: "7c77daea-73f5-4653-8bdd-2769ce60f037",
     };
-    await API.graphql(
-      graphqlOperation(createUserProduct, { input: tempUserProduct })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createUserProduct, { input: tempUserProduct })
+      )
     );
 
     // Creación de pf Token Name GLOBAL_TOKEN_NAME
@@ -149,10 +157,12 @@ export default function NewProject() {
       value: `SUAN-${productID.split("-")[4].toUpperCase()}`,
     };
     console.log("newProductFeature:", newProductFeatureTokenName);
-    await API.graphql(
-      graphqlOperation(createProductFeature, {
-        input: newProductFeatureTokenName,
-      })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: newProductFeatureTokenName,
+        })
+      )
     );
 
     // Creación de pf Token Name GLOBAL_PROJECT_VALIDATOR_FILES
@@ -165,10 +175,12 @@ export default function NewProject() {
       "newProductFeature:",
       newProductFeatureGlobalProjectValidatorFiles
     );
-    await API.graphql(
-      graphqlOperation(createProductFeature, {
-        input: newProductFeatureGlobalProjectValidatorFiles,
-      })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: newProductFeatureGlobalProjectValidatorFiles,
+        })
+      )
     );
 
     // Creación de GLOBAL_OWNER_ACCEPTS_CONDITIONS
@@ -181,10 +193,12 @@ export default function NewProject() {
       "newProductFeature:",
       newProductFeatureGlobalOwnerAcceptsConditions
     );
-    await API.graphql(
-      graphqlOperation(createProductFeature, {
-        input: newProductFeatureGlobalOwnerAcceptsConditions,
-      })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: newProductFeatureGlobalOwnerAcceptsConditions,
+        })
+      )
     );
 
     // Creación de GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS
@@ -197,10 +211,12 @@ export default function NewProject() {
       "newProductFeature:",
       newProductFeatureGlobalValidatorSetFinantialConditions
     );
-    await API.graphql(
-      graphqlOperation(createProductFeature, {
-        input: newProductFeatureGlobalValidatorSetFinantialConditions,
-      })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: newProductFeatureGlobalValidatorSetFinantialConditions,
+        })
+      )
     );
 
     // Creación de GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS
@@ -213,10 +229,12 @@ export default function NewProject() {
       "newProductFeature:",
       newProductFeatureGlobalValidatorSetThecnicalConditions
     );
-    await API.graphql(
-      graphqlOperation(createProductFeature, {
-        input: newProductFeatureGlobalValidatorSetThecnicalConditions,
-      })
+    promises.push(
+      API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: newProductFeatureGlobalValidatorSetThecnicalConditions,
+        })
+      )
     );
 
     // Creación de pf Owners
@@ -259,8 +277,12 @@ export default function NewProject() {
           value: value,
         };
         console.log("newProductFeature:", newProductFeature);
-        await API.graphql(
-          graphqlOperation(createProductFeature, { input: newProductFeature })
+        promises.push(
+          API.graphql(
+            graphqlOperation(createProductFeature, {
+              input: newProductFeature,
+            })
+          )
         );
       }
     }
@@ -285,8 +307,12 @@ export default function NewProject() {
         value: `[${values.join(", ")}]`,
       };
       console.log("newProductFeature:", newProductFeature);
-      await API.graphql(
-        graphqlOperation(createProductFeature, { input: newProductFeature })
+      promises.push(
+        API.graphql(
+          graphqlOperation(createProductFeature, {
+            input: newProductFeature,
+          })
+        )
       );
     }
 
@@ -308,8 +334,12 @@ export default function NewProject() {
         value: `[${values.join(", ")}]`,
       };
       console.log("newProductFeature:", newProductFeature);
-      await API.graphql(
-        graphqlOperation(createProductFeature, { input: newProductFeature })
+      promises.push(
+        API.graphql(
+          graphqlOperation(createProductFeature, {
+            input: newProductFeature,
+          })
+        )
       );
     }
 
@@ -331,10 +361,16 @@ export default function NewProject() {
         value: `[${values.join(", ")}]`,
       };
       console.log("newProductFeature:", newProductFeature);
-      await API.graphql(
-        graphqlOperation(createProductFeature, { input: newProductFeature })
+      promises.push(
+        API.graphql(
+          graphqlOperation(createProductFeature, {
+            input: newProductFeature,
+          })
+        )
       );
     }
+
+    await Promise.all(promises);
 
     // Creación de pf con archivos
     for (let i = 0; i < productFeaturesWithFilesToCreate.length; i++) {
@@ -396,8 +432,10 @@ export default function NewProject() {
     }
 
     // Creación de carpetas base
-    await makeFolderOnS3(`${productID}/Técnica/`);
-    await makeFolderOnS3(`${productID}/Financiera/`);
+    await Promise.all([
+      makeFolderOnS3(`${productID}/Técnica/`),
+      makeFolderOnS3(`${productID}/Financiera/`),
+    ]);
   };
 
   const handleSubmit = async () => {

@@ -42,8 +42,27 @@ export default function ProjectSettings({ visible }) {
     console.log(updatedProjectData, "updatedProjectData");
     if (item === "technicalInfo") {
       if (!updatedProjectData.isTechnicalComplete) {
+        let toFixMessage = "";
+
+        if (!updatedProjectData.technicalProgress.verifierDescription) {
+          toFixMessage = "No se ha agregado una descripción del proyecto";
+        }
+
+        if (!updatedProjectData.technicalProgress.revenuesByProduct) {
+          toFixMessage = "Aún no se han definido los ingresos por producto";
+        }
+
+        if (!updatedProjectData.technicalProgress.productsOfCycleProject) {
+          toFixMessage =
+            "Aún no se han definido los productos del ciclo del proyecto";
+        }
+
+        if (!updatedProjectData.technicalProgress.verifierDescription) {
+          toFixMessage =
+            "Aún no se han definido los indicadores financieros del proyecto";
+        }
         notify({
-          msg: "Información técnica incompleta. Primero registra toda la información técnica",
+          msg: `Información técnica incompleta. ${toFixMessage}`,
           type: "error",
         });
         return;
@@ -73,8 +92,34 @@ export default function ProjectSettings({ visible }) {
     }
     if (item === "financialInfo") {
       if (!updatedProjectData.isFinancialComplete) {
+        let toFixMessage = "";
+        if (!updatedProjectData.financialProgress.tokenHistoricalData) {
+          toFixMessage =
+            "No han sido definido los valores historicos del token";
+        }
+        if (!updatedProjectData.financialProgress.tokenCurrency) {
+          toFixMessage =
+            "No ha sido definida la divisa de comercialización del token";
+        }
+        if (!updatedProjectData.financialProgress.totalTokens) {
+          toFixMessage = "El volumen total de tokens debe ser diferente de 0";
+        }
+        if (!updatedProjectData.financialProgress.tokenAmountDistribution) {
+          toFixMessage = "Aún no se ha definido la distribución de tokens";
+        }
+        if (!updatedProjectData.financialProgress.cashFlowResume) {
+          toFixMessage = "Aún no se ha definido el flujo de caja del proyecto";
+        }
+        if (!updatedProjectData.financialProgress.financialIndicators) {
+          toFixMessage =
+            "Aún no se han definido los indicadores financieros del token";
+        }
+        if (!updatedProjectData.financialProgress.allTokensDistributed) {
+          toFixMessage =
+            "La cantidad de tokens distribuidos no coincide con el volumen total de tokens";
+        }
         notify({
-          msg: "Información financiera incompleta. Primero registra toda la información financiera",
+          msg: `Información financiera incompleta. ${toFixMessage}`,
           type: "error",
         });
         return;

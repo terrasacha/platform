@@ -375,6 +375,17 @@ export const mapProjectData = async (data) => {
     0
   );
 
+  const distributedTokensPF = JSON.parse(
+    data.productFeatures.items.find(
+      (item) => item.featureID === "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION"
+    )?.value || "[]"
+  );
+
+  const totalDistributedTokens = distributedTokensPF.reduce(
+    (sum, item) => sum + parseInt(item.CANTIDAD),
+    0
+  );
+
   const pfTokenNameID =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_TOKEN_NAME";
@@ -648,10 +659,28 @@ export const mapProjectData = async (data) => {
     totalTokens !== 0 &&
     Object.keys(tokenAmountDistribution).length > 0 &&
     Object.keys(cashFlowResume).length > 0 &&
-    financialIndicatorsToken.length > 0
+    financialIndicatorsToken.length > 0 &&
+    totalTokens - totalDistributedTokens === 0
   ) {
     isFinancialComplete = true;
   }
+
+  const technicalProgress = {
+    verifierDescription: verifierDescription !== "",
+    revenuesByProduct: revenuesByProduct.length > 0,
+    productsOfCycleProject: productsOfCycleProject.length > 0,
+    financialIndicators: financialIndicators.length > 0,
+  };
+
+  const financialProgress = {
+    tokenHistoricalData: tokenHistoricalData.length > 0,
+    tokenCurrency: tokenCurrency !== "",
+    totalTokens: totalTokens !== 0,
+    tokenAmountDistribution: Object.keys(tokenAmountDistribution).length > 0,
+    cashFlowResume: Object.keys(cashFlowResume).length > 0,
+    financialIndicators: financialIndicatorsToken.length > 0,
+    allTokensDistributed: totalTokens - totalDistributedTokens === 0,
+  };
 
   const isTechnicalFreeze =
     data.productFeatures.items.filter((item) => {
@@ -769,6 +798,8 @@ export const mapProjectData = async (data) => {
     },
     projectFeatures: await mapProductFeatures(data.productFeatures.items),
     isTechnicalComplete: isTechnicalComplete,
+    financialProgress: financialProgress,
+    technicalProgress: technicalProgress,
     isFinancialComplete: isFinancialComplete,
     isTechnicalFreeze: isTechnicalFreeze,
     isFinancialFreeze: isFinancialFreeze,

@@ -257,6 +257,7 @@ export default function DynamicForm(props) {
         <FormGroup
           inputType="geopoint"
           label={label}
+          required={required === "yes"}
           markers={formData[name] || []}
           onMapClick={onMapClick}
         />
@@ -311,7 +312,7 @@ export default function DynamicForm(props) {
             {getFormFields(data.survey, data.options)}
           </div>
           <div className="d-flex justify-content-center my-5">
-            <Button type="submit">
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <Spinner size="sm" className="p-2"></Spinner>
               ) : (

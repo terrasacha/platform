@@ -22,7 +22,8 @@ import { fetchProjectDataByProjectID } from "../../api";
 import { XIcon } from "components/common/icons/XIcon";
 
 export default function ProjectInfoCard(props) {
-  const { className, autorizedUser, setProgressChange, tooltip } = props;
+  const { className, autorizedUser, setProgressChange, tooltip, totalArea } =
+    props;
   const {
     projectData,
     handleUpdateContextProjectInfo,
@@ -80,7 +81,6 @@ export default function ProjectInfoCard(props) {
           return item.featureID === "A_ficha_catastral";
         })[0]?.id || null;
       setFichaPfID(pfIDFicha);
-      
 
       let pfIDPlanos = projectData.projectFeatures
         .filter((item) => {
@@ -125,7 +125,6 @@ export default function ProjectInfoCard(props) {
       setExecutedOnce(true);
     }
   }, [projectData, user]);
-
 
   const getPlanosPredios = async (data) => {
     let pfIDPlanos = data.projectFeatures
@@ -215,16 +214,17 @@ export default function ProjectInfoCard(props) {
     );
 
     const updatedProjectDataFiles = updatedProjectData.projectFiles;
-    await handleSetContextProjectFile(updatedProjectDataFiles)
-    console.log(updatedProjectDataFiles)
+    await handleSetContextProjectFile(updatedProjectDataFiles);
+    console.log(updatedProjectDataFiles);
     const planosPredios = await getPlanosPredios(updatedProjectData);
     setPlanosPredio(planosPredios);
   };
 
   const saveFileOnDB = async (filesToSave) => {
-
     for (var i = 0; i < filesToSave.length; i++) {
-      const urlPath = `${projectData.projectInfo.id}/archivos_postulante/planos_predio/${formatFileName(
+      const urlPath = `${
+        projectData.projectInfo.id
+      }/archivos_postulante/planos_predio/${formatFileName(
         filesToSave[i].name
       )}`;
       try {
@@ -275,7 +275,7 @@ export default function ProjectInfoCard(props) {
     );
 
     const updatedProjectDataFiles = updatedProjectData.projectFiles;
-    await handleSetContextProjectFile(updatedProjectDataFiles)
+    await handleSetContextProjectFile(updatedProjectDataFiles);
 
     const planosPredios = await getPlanosPredios(updatedProjectData);
     setPlanosPredio(planosPredios);
@@ -581,20 +581,16 @@ export default function ProjectInfoCard(props) {
           <div
             className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}
           >
-            <FormGroup
-              disabled={!autorizedUser}
-              type={autorizedUser && "flex"}
-              label="Área total (hectáreas)"
-              inputName="projectInfoArea"
-              inputValue={formData.projectInfoArea}
-              saveBtnDisabled={
-                projectData.projectInfo?.area === formData.projectInfoArea
-                  ? true
-                  : false
-              }
-              onChangeInputValue={(e) => handleChangeInputValue(e)}
-              onClickSaveBtn={() => handleSaveBtn("projectInfoArea")}
-            />
+            <Form.Group className={className + " mb-3"}>
+              <div className="row align-items-center">
+                <Form.Label column sm="5">
+                  Área total (hectáreas)
+                </Form.Label>
+                <div className="col">
+                  {parseFloat(totalArea/10000).toLocaleString("es-ES") + " ha"}
+                </div>
+              </div>
+            </Form.Group>
           </div>
           <div className="col-12">
             <FormGroup
