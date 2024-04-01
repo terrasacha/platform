@@ -241,7 +241,7 @@ class ValidatorAdmon extends Component {
                         </div>
                         <p className="text-lg my-2">{product.name}</p>
                         <hr className="my-2" />
-                        <p className="text-base my-2">{product.description}</p>
+                        <p className=" my-2">{product.description}</p>
                       </div>
                       <div className="p-4">
                         <div className="flex justify-center items-center">

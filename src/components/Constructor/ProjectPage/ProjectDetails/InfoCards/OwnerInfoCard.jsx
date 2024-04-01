@@ -564,7 +564,7 @@ export default function OwnerInfoCard(props) {
                       <input
                         type="text"
                         value={data.name}
-                        className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
+                        className="block appearance-none w-full py-1 px-2 mb-1  leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
                         name={`owner_name_${index}`}
                         onChange={(e) => handleChangeInputValue(e)}
                       />
@@ -585,7 +585,7 @@ export default function OwnerInfoCard(props) {
                       <input
                         type="text"
                         value={data.docNumber}
-                        className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
+                        className="block appearance-none w-full py-1 px-2 mb-1  leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
                         name={`owner_docNumber_${index}`}
                         onChange={(e) => handleChangeInputValue(e)}
                       />

@@ -670,7 +670,7 @@ export default function CadastralRecordsInfoCard(props) {
                       <input
                         type="text"
                         value={data.cadastralNumber}
-                        className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
+                        className="block appearance-none w-full py-1 px-2 mb-1  leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
                         name={`cadastraldata_cadastralNumber_${index}`}
                         onChange={(e) => handleChangeInputValue(e)}
                       />
@@ -685,7 +685,7 @@ export default function CadastralRecordsInfoCard(props) {
                     <input
                       type="text"
                       value={data.matricula}
-                      className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
+                      className="block appearance-none w-full py-1 px-2 mb-1  leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded text-center"
                       name={`cadastraldata_matricula_${index}`}
                       onChange={(e) => handleChangeInputValue(e)}
                     />

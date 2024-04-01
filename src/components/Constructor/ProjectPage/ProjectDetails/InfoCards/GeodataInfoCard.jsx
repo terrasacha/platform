@@ -160,7 +160,7 @@ export default function GeodataInfoCard(props) {
               <label className="mb-0">Latitud</label>
               <input
                 disabled={true}
-                className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
+                className="block appearance-none w-full py-1 px-2 mb-1  leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
                 type="number"
                 value={formData.coords?.lat}
               />
@@ -169,7 +169,7 @@ export default function GeodataInfoCard(props) {
               <label className="mb-0">Longitud</label>
               <input
                 disabled={true}
-                className="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
+                className="block appearance-none w-full py-1 px-2 mb-1  leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
                 type="number"
                 value={formData.coords?.lng}
               />

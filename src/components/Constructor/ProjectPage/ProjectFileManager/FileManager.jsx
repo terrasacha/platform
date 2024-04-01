@@ -346,7 +346,7 @@ export default function FileManager(props) {
               >
                 <div className="flex items-center">
                   <FolderIcon />
-                  <span className="text-base ms-2">...</span>
+                  <span className=" ms-2">...</span>
                 </div>
               </td>
               <td></td>
@@ -371,7 +371,7 @@ export default function FileManager(props) {
                       ) : (
                         <></>
                       )}
-                      <span className="text-base ms-2">{folder}</span>
+                      <span className=" ms-2">{folder}</span>
                     </div>
                   </td>
                   <td className="text-center">

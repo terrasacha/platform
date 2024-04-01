@@ -37,7 +37,7 @@ export default function ProductsList() {
                 {product?.product.name}
               </p>
               <hr className="mb-2" />
-              <p className="text-base mb-2">{product?.product.description}</p>
+              <p className=" mb-2">{product?.product.description}</p>
               <div className="flex justify-center">
                 <a href={"project/" + product?.product.id}>
                   <button className="bg-primary text-white py-2 px-4 rounded">

@@ -1,21 +1,25 @@
-import React, { Component } from 'react';
-//Tailwind
+import React from 'react';
+// Tailwind
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from 'flowbite-react';
-
-import { Auth } from 'aws-amplify';
-
 // Import images
-import LOGO from '../../common/_images/suan_logo.png';
-import s from './HeaderNavbar.module.css';
+import LOGO from "components/common/_images/suan_logo.png";
+import { Auth } from "aws-amplify";
+import s from "components/Constructor/Navbar/HeaderNavbar.module.css";
 
-export default class HeaderNavbar extends Component {
-  async logOut() {
-    await Auth.signOut();
-    window.location.href = '/';
-    localStorage.removeItem('role');
-  }
+export default function CombinedHeaderNavbar() {
+  let role = localStorage.getItem("role");
 
-  findLastAuthUserKey() {
+  const handleSignOut = async () => {
+    try {
+      await Auth.signOut();
+      localStorage.removeItem("role");
+      window.location.href = window.location.pathname;
+    } catch (error) {
+      console.log("error signing out: ", error);
+    }
+  };
+
+  const findLastAuthUserKey = () => {
     for (let key in localStorage) {
       if (key.includes("CognitoIdentityServiceProvider") && key.includes(".LastAuthUser")) {
         const userlog = localStorage[key];
@@ -23,52 +27,53 @@ export default class HeaderNavbar extends Component {
       }
     }
     return null;
-  }
-
-  render() {
-    let role = localStorage.getItem('role');
-    let userlog = this.findLastAuthUserKey();
-    return (
-      <Navbar>
-            <Navbar.Brand href="/" style={{marginLeft: '2%'}}>
-                <img src={LOGO} 
-                            width="auto"
-                            height="40"
-                            className="d-inline-block align-top w-10"
-                            alt="ATP"
-                            />
-                            <h1><strong className='text-black'>suan</strong></h1>
-            </Navbar.Brand>
-          <Navbar.Toggle  />
-          <Navbar.Collapse>
-              {role === 'admon'?<Navbar.Link onClick={() => window.location.href="/admon"}>Administrar</Navbar.Link>:''}
-              {role === 'investor'?<Navbar.Link onClick={() => window.location.href="/investor_admon"}>Perfil</Navbar.Link>:''}
-              {role === 'validator'?<Navbar.Link onClick={() => window.location.href="/validator_admon"}>Perfil</Navbar.Link>:''}
-              {role === 'constructor'?<Navbar.Link onClick={() => window.location.href="/constructor"}>Perfil</Navbar.Link>:''}
-
-            <Navbar.Link className={s.navGroup}>
-              {/* <Nav.Link href="#home" onClick={() => window.location.href="/"}>Inicio</Nav.Link> */}
-              {/* <Nav.Link href="#products" onClick={() => window.location.href="/products"}>Proyectos</Nav.Link> */}
-              {localStorage.getItem('role')?
+  };
+  
+  let userlog = findLastAuthUserKey();
+  
+  return (
+    <Navbar className="bg-white border-gray-200 dark:bg-gray-900">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <NavbarBrand href="/" style={{ marginLeft: "2%" }}>
+          <img
+            src={LOGO}
+            height="40"
+            width="auto"
+            className="d-inline-block align-top w-10"
+            alt="ATP"
+          />
+        </NavbarBrand>
+        <NavbarToggle />
+        <NavbarCollapse>
+          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+            {role === 'constructor' && (
+              <>
+                <NavbarLink onClick={() => (window.location.href = "/constructor")}>Mis Proyectos</NavbarLink>
+                <NavbarLink onClick={() => (window.location.href = "/new_project")}>Postular proyecto</NavbarLink>
+                {/* <NavbarLink onClick={() => (window.location.href = "/creating_wallet")}>¿Cómo crear tu billetera?</NavbarLink> */}
+              </>
+            )}
+            {role === 'validator' && (
+              <>
+                <NavbarLink onClick={() => (window.location.href = "/validator_admon")}>Proyectos asignados</NavbarLink>
+              </>
+            )}
+            {localStorage.getItem('role') ? (
               <div>
-                <button className={s.signing} onClick={() => this.logOut()}>Desconectar</button>
-                <button className='role'><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#fff"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg> 
-                {userlog}<br></br>              
-                 <p className='role_btn'>
-                  {role === 'validator' ? 'Validador' : (role === 'constructor' ? 'Propietario' : role)}
-                </p>
+                <button className={s.signing} onClick={() => handleSignOut()}>Desconectar</button>
+                <button className='role'>
+                  {userlog}<br />
+                  <p className='role_btn'>
+                    {role === 'validator' ? 'Validador' : (role === 'constructor' ? 'Propietario' : role)}
+                  </p>
                 </button>
-              </div>:
-              <div>
-                <a className='m-2 item-menu' href='#tecnologia' >Tecnología</a>
-                <a className='m-2 item-menu' href='#porque' >¿Por qué Suan?</a>
-                <a className='m-2 item-menu' href='https://marketplace.suan.global/' target='_blank' rel='noreferrer' >Proyectos</a>
-                <button className={s.signing} onClick={() => window.location.href="/login"}>Ingresar</button>
               </div>
-              }
-            </Navbar.Link>
-        </Navbar.Collapse>
-      </Navbar>
-    )
-  }
+            ) : (
+              <button className={s.signing} onClick={() => (window.location.href = "/login")}>Conectar</button>
+            )}
+          </ul>
+        </NavbarCollapse>
+      </div>
+    </Navbar>
+  );
 }

@@ -44,7 +44,7 @@ export default class FormGroup extends Component {
         return (
           <input
             disabled={disabled}
-            className={`form-control ${inputSize}`}
+            className={`block appearance-none w-full py-1 px-2 mb-1 leading-normal bg-white text-gray-800 border border-gray-200 rounded${inputSize}`}
             type={inputType}
             name={inputName}
             placeholder={inputPlaceholder}
@@ -57,7 +57,7 @@ export default class FormGroup extends Component {
         return (
           <textarea
             disabled={disabled}
-            className={`form-control ${inputSize}`}
+            className={`block appearance-none w-full py-1 px-2 mb-1 leading-normal bg-white text-gray-800 border border-gray-200 rounded${inputSize}`}
             name={inputName}
             rows={4}
             placeholder={inputPlaceholder}
@@ -141,7 +141,7 @@ export default class FormGroup extends Component {
                   <label className="mb-0">Latitud</label>
                   <input
                     disabled={true}
-                    className="form-control form-control-sm"
+                    className="block appearance-none w-full py-1 px-2 mb-1 leading-normal bg-white text-gray-800 border border-gray-200 roundedform-control-sm"
                     type="number"
                     placeholder="Latitud"
                     value={markers[0].lat}
@@ -151,7 +151,7 @@ export default class FormGroup extends Component {
                   <label className="mb-0">Longitud</label>
                   <input
                     disabled={true}
-                    className="form-control form-control-sm"
+                    className="block appearance-none w-full py-1 px-2 mb-1 leading-normal bg-white text-gray-800 border border-gray-200 roundedform-control-sm"
                     type="number"
                     placeholder="Longitud"
                     value={markers[0].lng}
@@ -187,7 +187,7 @@ export default class FormGroup extends Component {
         return (
           <input
             type={inputType}
-            className={`form-control ${inputSize}`}
+            className={`block appearance-none w-full py-1 px-2 mb-1 leading-normal bg-white text-gray-800 border border-gray-200 rounded${inputSize}`}
             name={inputName}
             onChange={onChangeInputValue}
           />
