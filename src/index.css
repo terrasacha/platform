@@ -24,6 +24,9 @@ a{
 h4{
         font-weight: 500;
 }
+.measure{
+        margin-top: 130px;
+}
 .item-menu{
         color: #000 !important;
         text-decoration: none !important;

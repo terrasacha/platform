@@ -915,7 +915,7 @@ class Products extends Component {
   {renderAreYouSureDeleteProduct()}
   <div>
   {renderAreYouSureDeleteProduct()}
-      <form classname="container mx-auto mt-14 container mx-auto sm:px-4">
+      <form classname=" mt-14 container mx-auto sm:px-4 measure">
         <div classname="card relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
           <div classname="card-body relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">
             <h5 classname="card-title relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300 relative flex flex-col relative flex-grow max-w-full flex-1 px-4">PROJECT PROPERTIES on {CRUDButtonName}</h5>

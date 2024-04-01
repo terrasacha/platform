@@ -189,8 +189,8 @@ class UOM extends Component {
     };
 
     return (
-      <div classname="container mx-auto container mx-auto sm:px-4">
-        <div classname="container mx-auto container mx-auto sm:px-4">
+      <div classname="container mx-auto sm:px-4 mt-4 pt-4 measure">
+        <div classname="container mx-auto container mx-auto sm:px-4 mt-4 pt-4">
           <h2>Create Unit of Measure</h2>
           <form>
             <div className='mb-2'>
