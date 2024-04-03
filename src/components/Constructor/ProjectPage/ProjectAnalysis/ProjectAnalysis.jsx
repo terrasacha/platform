@@ -57,16 +57,48 @@ export default function ProjectAnalysis({ visible }) {
     return null;
   };
 
+  // const handleDownloadGeoJsonButton = async () => {
+  //   const geoJsonPolygonsObject = await getPolygonGeoJson();
+  //   if (geoJsonPolygonsObject) {
+  //     const finalObject = {
+  //       projectID: projectData.projectInfo.id,
+  //       geoJson: geoJsonPolygonsObject,
+  //     };
+  //     generateJSONFile(finalObject, projectData.projectInfo.id);
+  //   }
+  // };
+
   const handleDownloadGeoJsonButton = async () => {
     const geoJsonPolygonsObject = await getPolygonGeoJson();
     if (geoJsonPolygonsObject) {
-      const finalObject = {
-        projectID: projectData.projectInfo.id,
-        geoJson: geoJsonPolygonsObject,
+
+      const modifiedObject = {
+        type: "string",
+        features: [geoJsonPolygonsObject],
       };
-      generateJSONFile(finalObject, projectData.projectInfo.id);
+  
+      const endpoint = 'https://oraculo.terrasacha.com/api/v1/consulta-proyecto';
+      
+      const idProyecto = projectData.projectInfo.id; 
+      //console.log(`${endpoint}?id_proyecto=${idProyecto}`);
+      const response = await fetch(`${endpoint}?id_proyecto=${idProyecto}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(modifiedObject)
+      });
+  
+      if (response.ok) {
+        console.log('JSON enviado exitosamente');
+      } else {
+        console.error('Error al enviar JSON:', response.statusText);
+       
+      }
     }
   };
+  
+
 
   const handleComparativeAreaAnalysis = async () => {
     const comparativeFile = projectData.projectFeatures.find(
@@ -100,15 +132,15 @@ export default function ProjectAnalysis({ visible }) {
             <Card>
               <Card.Header title="Análisis Comparativo de Áreas" sep={true} />
               <Card.Body>
-                <div class="d-flex justify-content-center align-items-center mb-24">
-                  <div class="d-flex flex-column w-5/6 align-items-center gap-4">
+                <div className="d-flex justify-content-center align-items-center mb-24">
+                  <div className="d-flex flex-column w-5/6 align-items-center gap-4">
                     {comparativeAnalysis ? (
                       <>
                         <h4>Evolución de áreas</h4>
                         <BarGraphComponent
                           infoBarGraph={comparativeAnalysis.graphJSON_barras}
                         />
-                        <h4 class="pt-4">
+                        <h4 className="pt-4">
                           Diagrama de Sankey - Cambios en Vegetación
                         </h4>
                         <SankeyGraphComponent
