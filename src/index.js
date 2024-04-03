@@ -13,6 +13,8 @@ Amplify.configure(awsconfig);
 Auth.configure(awsconfig);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const whitelist = ['http://localhost/3000'];
+
 root.render(
     <App />
 );
