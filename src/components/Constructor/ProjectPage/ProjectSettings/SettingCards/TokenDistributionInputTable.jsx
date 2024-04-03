@@ -25,10 +25,13 @@ export default function TokenDistributionInputTable(props) {
   const totalTokenLastUpdatePF =
     totalTokensPF.length > 0 && totalTokensPF[totalTokensPF.length - 1].periods;
 
-  const totalTokens = totalTokenLastUpdatePF.reduce(
-    (sum, item) => sum + parseInt(item.amount),
-    0
-  );
+  const totalTokens =
+    (totalTokenLastUpdatePF &&
+      totalTokenLastUpdatePF.reduce(
+        (sum, item) => sum + parseInt(item.amount),
+        0
+      )) ||
+    0;
 
   const distributedTokensPF = JSON.parse(
     projectData.projectFeatures.find(
