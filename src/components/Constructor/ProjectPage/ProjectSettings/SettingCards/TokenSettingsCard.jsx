@@ -39,12 +39,9 @@ export default function TokenSettingsCard(props) {
       (item) => item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA"
     )?.value || "[]"
   );
-  const totalTokensLastUpdate =
-    (totalTokensPF.length > 0 &&
-      totalTokensPF[totalTokensPF.length - 1].periods) ||
-    [];
-  const totalTokens = totalTokensLastUpdate.reduce(
-    (sum, item) => sum + parseInt(item.amount),
+
+  const totalTokens = totalTokensPF.reduce(
+    (sum, item) => sum + parseInt(item.amount) + parseInt(item.correction),
     0
   );
 
@@ -69,7 +66,7 @@ export default function TokenSettingsCard(props) {
       );
 
       const sortedHistoricalData = [
-        ...projectData.projectInfo.token.lastTokenHistoricalData,
+        ...projectData.projectInfo.token.historicalData,
       ].sort((a, b) => a.period - b.period);
       setTokenHistoricalData(sortedHistoricalData);
       setTokenHistoricalDataPfID(
@@ -392,10 +389,7 @@ export default function TokenSettingsCard(props) {
     if (tokenHistoricalDataPfID) {
       let tempProductFeature = {
         id: tokenHistoricalDataPfID,
-        value: JSON.stringify([
-          ...projectData.projectInfo.token.historicalData,
-          dataToSave,
-        ]),
+        value: JSON.stringify(dataToSave),
       };
       const response = await API.graphql(
         graphqlOperation(updateProductFeature, { input: tempProductFeature })
@@ -404,7 +398,7 @@ export default function TokenSettingsCard(props) {
       if (!response.data.updateProductFeature) error = true;
     } else {
       let tempProductFeature = {
-        value: JSON.stringify([dataToSave]),
+        value: JSON.stringify(dataToSave),
         isToBlockChain: false,
         isOnMainCard: false,
         productID: projectData.projectInfo.id,
@@ -461,12 +455,7 @@ export default function TokenSettingsCard(props) {
   };
   const prepareHistoricalData = (data) => {
     let date = Date.now();
-
-    let dataToSend = {
-      date,
-      userID,
-      periods: data,
-    };
+    let dataToSend = data;
     return dataToSend;
   };
   const handleAddNewPeriodToHistoricalData = async () => {
@@ -476,6 +465,7 @@ export default function TokenSettingsCard(props) {
           ...prevState,
           {
             period: parseInt(prevState[prevState.length - 1].period) + 1 || 1,
+            correction: 0,
             date: "",
             price: "",
             amount: "",
@@ -486,6 +476,7 @@ export default function TokenSettingsCard(props) {
     return setTokenHistoricalData([
       {
         period: 1,
+        correction: 0,
         date: "",
         price: "",
         amount: "",
@@ -573,7 +564,11 @@ export default function TokenSettingsCard(props) {
                 <tr>
                   <th style={{ width: "80px" }}>Periodo</th>
                   <th style={{ width: "100px" }}>Fecha</th>
-                  <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
+                  <th style={{ width: "100px" }}>Volumen inicial(tCO2eq)</th>
+                  <th style={{ width: "100px" }}>Corrección volumen</th>
+                  {!editTokenHistoricalData && (
+                    <th style={{ width: "100px" }}>Volumen actual</th>
+                  )}
                   <th style={{ width: "100px" }}>Precio</th>
                   {editTokenHistoricalData && (
                     <th style={{ width: "100px" }}></th>
@@ -620,6 +615,16 @@ export default function TokenSettingsCard(props) {
                             <Form.Control
                               size="sm"
                               type="number"
+                              value={data.correction}
+                              className="text-center"
+                              name={`token_correction_${index}`}
+                              onChange={(e) => handleChangeInputValue(e)}
+                            />
+                          </td>
+                          <td>
+                            <Form.Control
+                              size="sm"
+                              type="number"
                               value={data.price}
                               className="text-center"
                               name={`token_price_${index}`}
@@ -642,6 +647,16 @@ export default function TokenSettingsCard(props) {
                           <td>{data.period}</td>
                           <td>{data.date}</td>
                           <td>{data.amount}</td>
+                          <td>
+                            {data.correction === 0
+                              ? "Sin corrección"
+                              : data.correction > 0
+                              ? `+${data.correction}`
+                              : data.correction}
+                          </td>
+                          <td className="font-weight-bold">
+                            {parseInt(data.amount) + parseInt(data.correction)}
+                          </td>
                           <td>{data.price}</td>
                         </>
                       )}

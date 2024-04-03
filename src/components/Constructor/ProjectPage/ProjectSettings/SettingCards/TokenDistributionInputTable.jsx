@@ -22,16 +22,10 @@ export default function TokenDistributionInputTable(props) {
       (item) => item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA"
     )?.value || "[]"
   );
-  const totalTokenLastUpdatePF =
-    totalTokensPF.length > 0 && totalTokensPF[totalTokensPF.length - 1].periods;
-
-  const totalTokens =
-    (totalTokenLastUpdatePF &&
-      totalTokenLastUpdatePF.reduce(
-        (sum, item) => sum + parseInt(item.amount),
-        0
-      )) ||
-    0;
+  const totalTokens = totalTokensPF.reduce(
+    (sum, item) => sum + parseInt(item.amount) + parseInt(item.correction),
+    0
+  );
 
   const distributedTokensPF = JSON.parse(
     projectData.projectFeatures.find(
@@ -163,7 +157,7 @@ export default function TokenDistributionInputTable(props) {
 
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: tempProductFeature })
-        )
+        );
 
         if (!response.data.createProductFeature) error = true;
       }
