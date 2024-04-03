@@ -72,27 +72,35 @@ export default function ProjectAnalysis({ visible }) {
     const geoJsonPolygonsObject = await getPolygonGeoJson();
     if (geoJsonPolygonsObject) {
 
-      const modifiedObject = {
-        type: "string",
-        features: [geoJsonPolygonsObject],
-      };
+      console.log('geoJsonPolygonsObject', geoJsonPolygonsObject)
+
+      // const modifiedObject = {
+      //   type: "string",
+      //   features: [geoJsonPolygonsObject],
+      // };
+
+      const modifiedObject = geoJsonPolygonsObject
   
       const endpoint = 'https://oraculo.terrasacha.com/api/v1/consulta-proyecto';
       
       const idProyecto = projectData.projectInfo.id; 
       //console.log(`${endpoint}?id_proyecto=${idProyecto}`);
-      const response = await fetch(`${endpoint}?id_proyecto=${idProyecto}`, {
+      const url = `${endpoint}?id_proyecto=${idProyecto}`
+      console.log('url', url)
+      const request = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(modifiedObject)
       });
+
+      const response = await request.json();
   
-      if (response.ok) {
+      if (response) {
         console.log('JSON enviado exitosamente');
       } else {
-        console.error('Error al enviar JSON:', response.statusText);
+        console.error('Error al enviar JSON:');
        
       }
     }
