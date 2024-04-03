@@ -44,9 +44,9 @@ export default function DynamicForm(props) {
       const formDataFields = mapXLSXFormFieldsToFormData(data.survey);
       setFormData((prevFormData) => ({
         ...prevFormData,
-        formDataFields
+        ...formDataFields,
       }));
-      console.log(formDataFields)
+      console.log(formDataFields);
       console.log(data);
     }
   }, [data]);
@@ -112,6 +112,7 @@ export default function DynamicForm(props) {
 
   const validateFormData = () => {
     const errors = {};
+    console.log("validatingFormData", formData);
     for (const fieldName in formData) {
       // toDo evaluate constraints too
       const value = formData[fieldName];
@@ -120,6 +121,10 @@ export default function DynamicForm(props) {
         data.survey,
         fieldName
       );
+      if(fieldName === 'C_ubicacion') {
+        console.log('required', required)
+        console.log('required_message', required_message)
+      }
       const isRequired = required === "yes";
 
       if (isRequired && (value === undefined || value === "")) {
@@ -135,6 +140,7 @@ export default function DynamicForm(props) {
     setIsLoading(true);
 
     const errors = validateFormData();
+    console.log("errors", errors);
     setFormDataErrors(errors);
 
     const firstErrorField = document.querySelector(

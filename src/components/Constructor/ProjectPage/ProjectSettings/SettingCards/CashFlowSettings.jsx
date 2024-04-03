@@ -123,11 +123,11 @@ export default function CashFlowSettings(props) {
       console.log(tempProductFeature, "no existe");
       console.log(tempProductFeature, "tempProductFeature");
 
-      API.graphql(
+      const response = await API.graphql(
         graphqlOperation(createProductFeature, { input: tempProductFeature })
       )
-        .then((response) => setPfID(response.data.createProductFeature.id))
-        .catch((err) => (error = true));
+      
+      if (!response.data.createProductFeature) error = true;
     }
 
     await fetchProjectData();
