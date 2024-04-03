@@ -22,8 +22,10 @@ export default function TokenDistributionInputTable(props) {
       (item) => item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA"
     )?.value || "[]"
   );
+  const totalTokenLastUpdatePF =
+    totalTokensPF.length > 0 && totalTokensPF[totalTokensPF.length - 1].periods;
 
-  const totalTokens = totalTokensPF.reduce(
+  const totalTokens = totalTokenLastUpdatePF.reduce(
     (sum, item) => sum + parseInt(item.amount),
     0
   );
@@ -248,7 +250,7 @@ export default function TokenDistributionInputTable(props) {
           <div>
             <p>
               Tokens disponibles para distribución:{" "}
-              {parseFloat(tokensAvailableDistribution).toLocaleString('es-ES')}
+              {parseFloat(tokensAvailableDistribution).toLocaleString("es-ES")}
             </p>
             <TableEdit
               canEdit={canEdit}

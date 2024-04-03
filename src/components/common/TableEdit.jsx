@@ -23,7 +23,6 @@ export default function TableEdit({
       setData(infoTable);
     }
   }, [infoTable]);
-  console.log(conceptOptions, "conceptOptions");
 
   return (
     <Table responsive>
@@ -86,7 +85,7 @@ export default function TableEdit({
                         />
                       )
                     ) : column === "CANTIDAD" ? (
-                      parseFloat(row[column]).toLocaleString('es-ES')
+                      parseFloat(row[column]).toLocaleString("es-ES")
                     ) : (
                       row[column]
                     )}

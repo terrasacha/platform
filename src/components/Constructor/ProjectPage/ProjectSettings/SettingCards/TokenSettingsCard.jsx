@@ -15,11 +15,11 @@ import Form from "react-bootstrap/Form";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
+import { XIcon } from "components/common/icons/XIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 
 export default function TokenSettingsCard(props) {
   const { className, canEdit } = props;
-  console.log(canEdit);
   const { projectData, fetchProjectData } = useProjectData();
 
   const [tokenName, setTokenName] = useState("");
@@ -27,34 +27,31 @@ export default function TokenSettingsCard(props) {
   const [tokenCurrencyPfID, setTokenCurrencyPfID] = useState(null);
   const [totalTokenAmountPfID, setTotalTokenAmountPfID] = useState(null);
 
-  const [validatorSubRole, setValidatorSubRole] = useState("");
+  const [userID, setUserID] = useState("");
 
   const [isDisabledTokenName, setIsDisabledTokenName] = useState(false);
   const [tokenHistoricalData, setTokenHistoricalData] = useState([{}]);
-  const [tokenHistoricalDataPfID, setTokenHistoricalDataPfID] = useState(null);
+  const [editTokenHistoricalData, setEditTokenHistoricalData] = useState(false);
+  const [tokenHistoricalDataPfID, setTokenHistoricalDataPfID] = useState([]);
 
   const totalTokensPF = JSON.parse(
     projectData.projectFeatures.find(
       (item) => item.featureID === "GLOBAL_TOKEN_HISTORICAL_DATA"
     )?.value || "[]"
   );
-
-  const totalTokens = totalTokensPF.reduce(
+  const totalTokensLastUpdate =
+    (totalTokensPF.length > 0 &&
+      totalTokensPF[totalTokensPF.length - 1].periods) ||
+    [];
+  const totalTokens = totalTokensLastUpdate.reduce(
     (sum, item) => sum + parseInt(item.amount),
     0
   );
 
   useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then((data) => {
-        if (data.attributes["custom:subrole"]) {
-          console.log(data.attributes["custom:subrole"]);
-          setValidatorSubRole(data.attributes["custom:subrole"]);
-        } else {
-          setValidatorSubRole(undefined);
-        }
-      })
-      .catch((error) => setValidatorSubRole(undefined));
+    Auth.currentAuthenticatedUser().then((data) => {
+      if (data) return setUserID(data.attributes.sub);
+    });
   }, []);
 
   useEffect(() => {
@@ -72,15 +69,8 @@ export default function TokenSettingsCard(props) {
       );
 
       const sortedHistoricalData = [
-        ...projectData.projectInfo.token.historicalData,
-      ]
-        .sort((a, b) => a.period - b.period)
-        .map((tokenHD) => {
-          return {
-            ...tokenHD,
-            editing: false,
-          };
-        });
+        ...projectData.projectInfo.token.lastTokenHistoricalData,
+      ].sort((a, b) => a.period - b.period);
       setTokenHistoricalData(sortedHistoricalData);
       setTokenHistoricalDataPfID(
         projectData.projectInfo?.token.pfIDs.pfTokenHistoricalDataID
@@ -346,7 +336,7 @@ export default function TokenSettingsCard(props) {
     );
     setTokenHistoricalData(tempTokenHistoricalData);
 
-    if (tokenHistoricalDataPfID) {
+    /* if (tokenHistoricalDataPfID) {
       let tempProductFeature = {
         id: tokenHistoricalDataPfID,
         value: JSON.stringify(getImportantValues(tempTokenHistoricalData)),
@@ -385,32 +375,122 @@ export default function TokenSettingsCard(props) {
         msg: "Valores borrados exitosamente",
         type: "success",
       });
+    } */
+  };
+  const saveHistoricalData = async () => {
+    let error = false;
+    let checkTableData = checksumHistoricalData(tokenHistoricalData);
+
+    if (!checkTableData) {
+      notify({
+        msg: "error al validar los datos",
+        type: "error",
+      });
+      return;
     }
+    const dataToSave = prepareHistoricalData(tokenHistoricalData);
+    if (tokenHistoricalDataPfID) {
+      let tempProductFeature = {
+        id: tokenHistoricalDataPfID,
+        value: JSON.stringify([
+          ...projectData.projectInfo.token.historicalData,
+          dataToSave,
+        ]),
+      };
+      const response = await API.graphql(
+        graphqlOperation(updateProductFeature, { input: tempProductFeature })
+      );
+
+      if (!response.data.updateProductFeature) error = true;
+    } else {
+      let tempProductFeature = {
+        value: JSON.stringify([dataToSave]),
+        isToBlockChain: false,
+        isOnMainCard: false,
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_TOKEN_HISTORICAL_DATA",
+      };
+      const response = await API.graphql(
+        graphqlOperation(createProductFeature, { input: tempProductFeature })
+      );
+
+      setTokenHistoricalDataPfID(response.data.createProductFeature.id);
+
+      if (!response.data.createProductFeature) error = true;
+    }
+
+    const totalTokenDistribution = tokenHistoricalData.reduce(
+      (sum, item) => sum + parseInt(item.amount),
+      0
+    );
+    notify({
+      msg: "Información del histórico del token guardada correctamente.",
+      type: "success",
+    });
+    setEditTokenHistoricalData(false);
+    await handleSetTotalTokenAmountFeature(totalTokenDistribution);
+    await fetchProjectData();
   };
 
+  const checksumHistoricalData = (data) => {
+    let orderData = data.every((obj, index, array) => {
+      if (index === 0) return true;
+
+      const completeFields =
+        obj.hasOwnProperty("period") &&
+        obj.hasOwnProperty("date") &&
+        obj.hasOwnProperty("price") &&
+        obj.hasOwnProperty("amount");
+      if (!completeFields) return false;
+
+      const actualDate = new Date(obj.date);
+      const beforeDate = new Date(array[index - 1].date);
+
+      return (
+        obj.period > array[index - 1].period &&
+        actualDate > beforeDate &&
+        obj.price >= 1 &&
+        obj.amount >= 1
+      );
+    });
+
+    if (orderData) {
+      return true;
+    }
+    return false;
+  };
+  const prepareHistoricalData = (data) => {
+    let date = Date.now();
+
+    let dataToSend = {
+      date,
+      userID,
+      periods: data,
+    };
+    return dataToSend;
+  };
   const handleAddNewPeriodToHistoricalData = async () => {
-    const isEditingSomeHistoryData = tokenHistoricalData.some(
-      (tokenHD) => tokenHD.editing === true
-    );
-    if (!isEditingSomeHistoryData) {
-      setTokenHistoricalData((prevState) => {
+    if (tokenHistoricalData.length > 0) {
+      return setTokenHistoricalData((prevState) => {
         return [
           ...prevState,
           {
-            period: "",
+            period: parseInt(prevState[prevState.length - 1].period) + 1 || 1,
             date: "",
             price: "",
             amount: "",
-            editing: true,
           },
         ];
       });
-    } else {
-      notify({
-        msg: "Guarda primero los datos antes de agregar una nueva fila",
-        type: "error",
-      });
     }
+    return setTokenHistoricalData([
+      {
+        period: 1,
+        date: "",
+        price: "",
+        amount: "",
+      },
+    ]);
   };
 
   return (
@@ -452,7 +532,41 @@ export default function TokenSettingsCard(props) {
             onChangeInputValue={(e) => handleChangeInputValue(e)}
             onClickSaveBtn={() => handleSaveBtn("tokenCurrency")}
           />
-          <p className="mb-3">Historico del token</p>
+          <div className="mb-3 mt-3 pt-3 border-top d-flex justify-content-between">
+            <p>Historico del token</p>
+            <div>
+              {editTokenHistoricalData ? (
+                <Button
+                  size="md"
+                  variant="danger"
+                  className="m-1"
+                  disabled={canEdit || projectData.isFinancialFreeze}
+                  onClick={() => setEditTokenHistoricalData(false)}
+                >
+                  <XIcon />
+                </Button>
+              ) : (
+                <Button
+                  size="md"
+                  variant="warning"
+                  className="m-1"
+                  disabled={canEdit || projectData.isFinancialFreeze}
+                  onClick={() => setEditTokenHistoricalData(true)}
+                >
+                  <EditIcon />
+                </Button>
+              )}
+              <Button
+                size="md"
+                variant="success"
+                className="m-1"
+                disabled={!editTokenHistoricalData}
+                onClick={() => saveHistoricalData()}
+              >
+                <SaveDiskIcon />
+              </Button>
+            </div>
+          </div>
           <div>
             <Table responsive>
               <thead className="text-center">
@@ -461,14 +575,16 @@ export default function TokenSettingsCard(props) {
                   <th style={{ width: "100px" }}>Fecha</th>
                   <th style={{ width: "100px" }}>Volumen (tCO2eq)</th>
                   <th style={{ width: "100px" }}>Precio</th>
-                  <th style={{ width: "120px" }}></th>
+                  {editTokenHistoricalData && (
+                    <th style={{ width: "100px" }}></th>
+                  )}
                 </tr>
               </thead>
               <tbody className="align-middle">
                 {tokenHistoricalData.map((data, index) => {
                   return (
                     <tr key={index} className="text-center">
-                      {data.editing ? (
+                      {editTokenHistoricalData ? (
                         <>
                           <td>
                             <Form.Control
@@ -510,22 +626,14 @@ export default function TokenSettingsCard(props) {
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
-                          <td className="text-end">
-                            <Button
-                              size="sm"
-                              variant="success"
-                              className="m-1"
-                              onClick={() => handleSaveHistoricalData(index)}
-                            >
-                              <SaveDiskIcon />
-                            </Button>
+                          <td>
                             <Button
                               size="sm"
                               variant="danger"
                               className="m-1"
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
-                              <TrashIcon />
+                              <XIcon />
                             </Button>
                           </td>
                         </>
@@ -535,30 +643,6 @@ export default function TokenSettingsCard(props) {
                           <td>{data.date}</td>
                           <td>{data.amount}</td>
                           <td>{data.price}</td>
-                          <td className="text-end">
-                            <Button
-                              size="sm"
-                              variant="warning"
-                              className="m-1"
-                              disabled={
-                                canEdit || projectData.isFinancialFreeze
-                              }
-                              onClick={() => handleEditHistoricalData(index)}
-                            >
-                              <EditIcon />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="danger"
-                              className="m-1"
-                              disabled={
-                                canEdit || projectData.isFinancialFreeze
-                              }
-                              onClick={() => handleDeleteHistoricalData(index)}
-                            >
-                              <TrashIcon />
-                            </Button>
-                          </td>
                         </>
                       )}
                     </tr>
@@ -568,10 +652,10 @@ export default function TokenSettingsCard(props) {
                   <td colSpan={6}>
                     <div className="d-flex">
                       <Button
-                        size="sm"
+                        size="xs"
                         variant="secondary"
                         className="w-100"
-                        disabled={canEdit}
+                        disabled={canEdit || !editTokenHistoricalData}
                         onClick={() => handleAddNewPeriodToHistoricalData()}
                       >
                         <PlusIcon></PlusIcon>
