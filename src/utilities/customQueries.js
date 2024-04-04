@@ -2,6 +2,7 @@ export const getProduct = /* GraphQL */ `
   query GetProduct($id: ID!) {
     getProduct(id: $id) {
       id
+      tokenGenesis
       name
       description
       isActive

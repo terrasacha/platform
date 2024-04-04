@@ -219,29 +219,38 @@ const getValidationsCompleteInfoStatus = (data) => {
   const verifiablePF = data.productFeatures.items.filter(
     (pf) => pf.feature.isVerifable === true
   );
-  
-  const documents = verifiablePF.map((pf) =>
-    pf.documents.items
-      .filter((document) => document.status !== "validatorFile")
-      .map((document) => {
-        const ownerName =
-          ownersData.find((owner) => owner.documentID === document.id)?.name ||
-          null;
-        return {
-          id: document.id,
-          pfID: pf.id,
-          title: `${PFNameMapper[pf.feature.name]} ${
-            ownerName ? `(${ownerName})` : ""
-          }`,
-          isApproved: document.isApproved,
-        };
-      })
-  ).flat();
 
-  const approvedDocuments = documents.filter(projectFile => projectFile.isApproved === true)
-  if(documents.length !== approvedDocuments.length) tempStatus = false
-  
+  const documents = verifiablePF
+    .map((pf) =>
+      pf.documents.items
+        .filter((document) => document.status !== "validatorFile")
+        .map((document) => {
+          const ownerName =
+            ownersData.find((owner) => owner.documentID === document.id)
+              ?.name || null;
+          return {
+            id: document.id,
+            pfID: pf.id,
+            title: `${PFNameMapper[pf.feature.name]} ${
+              ownerName ? `(${ownerName})` : ""
+            }`,
+            isApproved: document.isApproved,
+          };
+        })
+    )
+    .flat();
+
+  const approvedDocuments = documents.filter(
+    (projectFile) => projectFile.isApproved === true
+  );
+  if (documents.length !== approvedDocuments.length) tempStatus = false;
+
   return tempStatus;
+};
+
+const getTokenGenesisStatus = (data) => {
+  const tokenGenesisStatus = data.tokenGenesis;
+  return tokenGenesisStatus;
 };
 
 export const mapProjectFillProgress = async (data, userRole) => {
@@ -252,24 +261,29 @@ export const mapProjectFillProgress = async (data, userRole) => {
     financialInfo: false,
     technicalInfo: false,
     validationsComplete: false,
-    ownerAcceptsConditions: false
+    ownerAcceptsConditions: false,
+    tokenGenesis: false,
     // actualUseInfo: false,
     // limitationsInfo: false,
     // ecosystemInfo: false,
     // generalInfo: false,
     // relationsInfo: false,
   };
-  
+
   // Requerimientos postulante
   sectionsStatus.projectInfo = getProjectInfoStatus(data);
   sectionsStatus.geodataInfo = getGeodataInfoStatus(data);
   // sectionsStatus.ownersInfo = getOwnersInfoStatus(data);
-  sectionsStatus.ownerAcceptsConditions = getOwnerAcceptsConditionsInfoStatus(data)
+  sectionsStatus.ownerAcceptsConditions =
+    getOwnerAcceptsConditionsInfoStatus(data);
 
   // Requerimientos equipo SUAN
   sectionsStatus.financialInfo = getFinancialInfoStatus(data);
   sectionsStatus.technicalInfo = getTechnicalInfoStatus(data);
   sectionsStatus.validationsComplete = getValidationsCompleteInfoStatus(data);
+
+  // Token Genesis
+  sectionsStatus.tokenGenesis = getTokenGenesisStatus(data);
 
   // sectionsStatus.actualUseInfo = getActualUseInfoStatus(data);
   // sectionsStatus.limitationsInfo = getLimitationsInfoStatus(data);

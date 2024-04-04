@@ -161,6 +161,15 @@ export default function ProjectDetails({ visible }) {
                             ) Revisión por parte de los validadores
                           </p>
                         </li>
+                        <li className="fw-bold">
+                          (
+                          {progressObj.sectionsStatus.tokenGenesis ? (
+                            <CheckIcon className="text-success" />
+                          ) : (
+                            <HourGlassIcon className="text-danger" />
+                          )}
+                          ) Distribución de tokens del proyecto
+                        </li>
                       </ul>
                     </div>
                   )}
@@ -224,6 +233,15 @@ export default function ProjectDetails({ visible }) {
                             )}
                             ) Completar información del proyecto
                           </p>
+                        </li>
+                        <li className="fw-bold">
+                          (
+                          {progressObj.sectionsStatus.tokenGenesis ? (
+                            <CheckIcon className="text-success" />
+                          ) : (
+                            <HourGlassIcon className="text-danger" />
+                          )}
+                          ) Distribución de tokens del proyecto
                         </li>
                       </ul>
                     </div>

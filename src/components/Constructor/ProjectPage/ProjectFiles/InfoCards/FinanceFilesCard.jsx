@@ -276,13 +276,13 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
     <div className="box-postulant p-3">
       <strong className="mb-3 text-bold text-danger">¡Importante!</strong>
       <p>
-        Una vez que hayas aceptado las condiciones del proyecto, es crucial que
-        te dirijas al Marketplace y accedas con tu usuario y contraseña. Si aún
-        no tienes una billetera, podrás crearla fácilmente mediante este
-        proceso. Recuerda que esta billetera es esencial para recibir los tokens
-        del proyecto que has postulado. Por favor, sigue las instrucciones
+        Una vez que haya aceptado las condiciones del proyecto, es crucial que
+        se dirija al Marketplace y acceda con su usuario y contraseña. Si aún no
+        dispone de una billetera, podrá crearla fácilmente mediante este
+        proceso. Recuerde que esta billetera es esencial para recibir los tokens
+        del proyecto al que ha postulado. Por favor, siga las instrucciones
         detalladas en el Marketplace para garantizar una participación exitosa y
-        asegurarte de recibir tus tokens correctamente.
+        asegurarse de recibir sus tokens correctamente.
       </p>
       <div className="d-flex justify-content-center">
         <a
