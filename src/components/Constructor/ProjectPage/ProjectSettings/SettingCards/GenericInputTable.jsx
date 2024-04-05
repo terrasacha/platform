@@ -67,11 +67,11 @@ export default function GenericInputTable(props) {
     let isAlreadyExistingPeriod = false;
     const newPeriod = revenuesByProduct[indexToSave].CONCEPTO;
     if (
-      projectData.projectFinancialInfo.revenuesByProduct.revenuesByProduct
+      projectData.projectFinancialInfo[financialInfoType][financialInfoType]
         .length > 0
     ) {
       isAlreadyExistingPeriod =
-        projectData.projectFinancialInfo.revenuesByProduct.revenuesByProduct.some(
+        projectData.projectFinancialInfo[financialInfoType][financialInfoType].some(
           (hd, index) => hd.CONCEPTO === newPeriod && index !== indexToSave
         );
     }

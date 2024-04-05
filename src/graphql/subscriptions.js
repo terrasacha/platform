@@ -15,26 +15,102 @@ export const onCreateUser = /* GraphQL */ `
       status
       email
       wallets {
+        items {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          isAdmin
+          claimed_token
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       verifierVerifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       verifiedVerifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       documents {
+        items {
+          id
+          data
+          timeStamp
+          docHash
+          url
+          signed
+          signedHash
+          isApproved
+          status
+          isUploadedToBlockChain
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -58,26 +134,102 @@ export const onUpdateUser = /* GraphQL */ `
       status
       email
       wallets {
+        items {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          isAdmin
+          claimed_token
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       verifierVerifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       verifiedVerifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       documents {
+        items {
+          id
+          data
+          timeStamp
+          docHash
+          url
+          signed
+          signedHash
+          isApproved
+          status
+          isUploadedToBlockChain
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -101,26 +253,102 @@ export const onDeleteUser = /* GraphQL */ `
       status
       email
       wallets {
+        items {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          isAdmin
+          claimed_token
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       verifierVerifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       verifiedVerifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       documents {
+        items {
+          id
+          data
+          timeStamp
+          docHash
+          url
+          signed
+          signedHash
+          isApproved
+          status
+          isUploadedToBlockChain
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -155,6 +383,30 @@ export const onCreateWallet = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -190,6 +442,30 @@ export const onUpdateWallet = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -225,6 +501,30 @@ export const onDeleteWallet = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -256,6 +556,30 @@ export const onCreateVerification = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -272,6 +596,30 @@ export const onCreateVerification = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -285,12 +633,71 @@ export const onCreateVerification = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       verificationComments {
+        items {
+          id
+          comment
+          isCommentByVerifier
+          verificationID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -321,6 +728,30 @@ export const onUpdateVerification = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -337,6 +768,30 @@ export const onUpdateVerification = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -350,12 +805,71 @@ export const onUpdateVerification = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       verificationComments {
+        items {
+          id
+          comment
+          isCommentByVerifier
+          verificationID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -386,6 +900,30 @@ export const onDeleteVerification = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -402,6 +940,30 @@ export const onDeleteVerification = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -415,12 +977,71 @@ export const onDeleteVerification = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       verificationComments {
+        items {
+          id
+          comment
+          isCommentByVerifier
+          verificationID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -445,8 +1066,55 @@ export const onCreateVerificationComment = /* GraphQL */ `
         updatedOn
         sign
         userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
         userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
         productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verificationComments {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -472,8 +1140,55 @@ export const onUpdateVerificationComment = /* GraphQL */ `
         updatedOn
         sign
         userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
         userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
         productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verificationComments {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -499,8 +1214,55 @@ export const onDeleteVerificationComment = /* GraphQL */ `
         updatedOn
         sign
         userVerifierID
+        userVerifier {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
         userVerifiedID
+        userVerified {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
         productFeatureID
+        productFeature {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verificationComments {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -533,7 +1295,57 @@ export const onCreateDocument = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -550,6 +1362,30 @@ export const onCreateDocument = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -582,7 +1418,57 @@ export const onUpdateDocument = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -599,6 +1485,30 @@ export const onUpdateDocument = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -631,7 +1541,57 @@ export const onDeleteDocument = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -648,6 +1608,30 @@ export const onDeleteDocument = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -665,6 +1649,23 @@ export const onCreateCategory = /* GraphQL */ `
       name
       isSelected
       products {
+        items {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -681,6 +1682,23 @@ export const onUpdateCategory = /* GraphQL */ `
       name
       isSelected
       products {
+        items {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -697,6 +1715,23 @@ export const onDeleteCategory = /* GraphQL */ `
       name
       isSelected
       products {
+        items {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -767,31 +1802,122 @@ export const onCreateProduct = /* GraphQL */ `
         id
         name
         isSelected
+        products {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       images {
+        items {
+          id
+          imageURL
+          format
+          title
+          imageURLToDisplay
+          isOnCarousel
+          carouselLabel
+          carouselDescription
+          isActive
+          order
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       productFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          tokenName
+          amountOfTokens
+          policyID
+          stakeAddress
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -820,31 +1946,122 @@ export const onUpdateProduct = /* GraphQL */ `
         id
         name
         isSelected
+        products {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       images {
+        items {
+          id
+          imageURL
+          format
+          title
+          imageURLToDisplay
+          isOnCarousel
+          carouselLabel
+          carouselDescription
+          isActive
+          order
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       productFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          tokenName
+          amountOfTokens
+          policyID
+          stakeAddress
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -873,31 +2090,122 @@ export const onDeleteProduct = /* GraphQL */ `
         id
         name
         isSelected
+        products {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       images {
+        items {
+          id
+          imageURL
+          format
+          title
+          imageURLToDisplay
+          isOnCarousel
+          carouselLabel
+          carouselDescription
+          isActive
+          order
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       productFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       userProducts {
+        items {
+          id
+          isFavorite
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       transactions {
+        items {
+          id
+          addressOrigin
+          addressDestination
+          txIn
+          txCborhex
+          txHash
+          metadataUrl
+          fees
+          network
+          txProcessed
+          type
+          tokenName
+          amountOfTokens
+          policyID
+          stakeAddress
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -934,6 +2242,38 @@ export const onCreateImage = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -971,6 +2311,38 @@ export const onUpdateImage = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1008,6 +2380,38 @@ export const onDeleteImage = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1027,6 +2431,27 @@ export const onCreateFeatureType = /* GraphQL */ `
       name
       description
       features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1045,6 +2470,27 @@ export const onUpdateFeatureType = /* GraphQL */ `
       name
       description
       features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1063,6 +2509,27 @@ export const onDeleteFeatureType = /* GraphQL */ `
       name
       description
       features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1090,6 +2557,27 @@ export const onCreateFeature = /* GraphQL */ `
       formRequiredMessage
       parentID
       children {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1098,6 +2586,10 @@ export const onCreateFeature = /* GraphQL */ `
         id
         name
         description
+        features {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1108,15 +2600,44 @@ export const onCreateFeature = /* GraphQL */ `
         engineeringUnit
         description
         isFloat
+        features {
+          nextToken
+          __typename
+        }
+        formulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       productFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1144,6 +2665,27 @@ export const onUpdateFeature = /* GraphQL */ `
       formRequiredMessage
       parentID
       children {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1152,6 +2694,10 @@ export const onUpdateFeature = /* GraphQL */ `
         id
         name
         description
+        features {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1162,15 +2708,44 @@ export const onUpdateFeature = /* GraphQL */ `
         engineeringUnit
         description
         isFloat
+        features {
+          nextToken
+          __typename
+        }
+        formulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       productFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1198,6 +2773,27 @@ export const onDeleteFeature = /* GraphQL */ `
       formRequiredMessage
       parentID
       children {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1206,6 +2802,10 @@ export const onDeleteFeature = /* GraphQL */ `
         id
         name
         description
+        features {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1216,15 +2816,44 @@ export const onDeleteFeature = /* GraphQL */ `
         engineeringUnit
         description
         isFloat
+        features {
+          nextToken
+          __typename
+        }
+        formulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       productFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          productID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1244,10 +2873,40 @@ export const onCreateUnitOfMeasure = /* GraphQL */ `
       description
       isFloat
       features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       formulas {
+        items {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1267,10 +2926,40 @@ export const onUpdateUnitOfMeasure = /* GraphQL */ `
       description
       isFloat
       features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       formulas {
+        items {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1290,10 +2979,40 @@ export const onDeleteUnitOfMeasure = /* GraphQL */ `
       description
       isFloat
       features {
+        items {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       formulas {
+        items {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1315,15 +3034,41 @@ export const onCreateFormula = /* GraphQL */ `
         engineeringUnit
         description
         isFloat
+        features {
+          nextToken
+          __typename
+        }
+        formulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       results {
+        items {
+          id
+          varID
+          value
+          dateTimeStamp
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1345,15 +3090,41 @@ export const onUpdateFormula = /* GraphQL */ `
         engineeringUnit
         description
         isFloat
+        features {
+          nextToken
+          __typename
+        }
+        formulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       results {
+        items {
+          id
+          varID
+          value
+          dateTimeStamp
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1375,15 +3146,41 @@ export const onDeleteFormula = /* GraphQL */ `
         engineeringUnit
         description
         isFloat
+        features {
+          nextToken
+          __typename
+        }
+        formulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       results {
+        items {
+          id
+          varID
+          value
+          dateTimeStamp
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       featureFormulas {
+        items {
+          id
+          featureID
+          formulaID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1415,8 +3212,37 @@ export const onCreateFeatureFormula = /* GraphQL */ `
         formConstraint
         formRequiredMessage
         parentID
+        children {
+          nextToken
+          __typename
+        }
         featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          __typename
+        }
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1427,6 +3253,23 @@ export const onCreateFeatureFormula = /* GraphQL */ `
         varID
         equation
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        results {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1459,8 +3302,37 @@ export const onUpdateFeatureFormula = /* GraphQL */ `
         formConstraint
         formRequiredMessage
         parentID
+        children {
+          nextToken
+          __typename
+        }
         featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          __typename
+        }
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1471,6 +3343,23 @@ export const onUpdateFeatureFormula = /* GraphQL */ `
         varID
         equation
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        results {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1503,8 +3392,37 @@ export const onDeleteFeatureFormula = /* GraphQL */ `
         formConstraint
         formRequiredMessage
         parentID
+        children {
+          nextToken
+          __typename
+        }
         featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          __typename
+        }
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1515,6 +3433,23 @@ export const onDeleteFeatureFormula = /* GraphQL */ `
         varID
         equation
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        results {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1538,11 +3473,37 @@ export const onCreateResult = /* GraphQL */ `
         varID
         equation
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        results {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1565,11 +3526,37 @@ export const onUpdateResult = /* GraphQL */ `
         varID
         equation
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        results {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1592,11 +3579,37 @@ export const onDeleteResult = /* GraphQL */ `
         varID
         equation
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        results {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1631,6 +3644,38 @@ export const onCreateProductFeature = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1651,21 +3696,88 @@ export const onCreateProductFeature = /* GraphQL */ `
         formConstraint
         formRequiredMessage
         parentID
+        children {
+          nextToken
+          __typename
+        }
         featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          __typename
+        }
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       verifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       documents {
+        items {
+          id
+          data
+          timeStamp
+          docHash
+          url
+          signed
+          signedHash
+          isApproved
+          status
+          isUploadedToBlockChain
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1700,6 +3812,38 @@ export const onUpdateProductFeature = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1720,21 +3864,88 @@ export const onUpdateProductFeature = /* GraphQL */ `
         formConstraint
         formRequiredMessage
         parentID
+        children {
+          nextToken
+          __typename
+        }
         featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          __typename
+        }
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       verifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       documents {
+        items {
+          id
+          data
+          timeStamp
+          docHash
+          url
+          signed
+          signedHash
+          isApproved
+          status
+          isUploadedToBlockChain
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1769,6 +3980,38 @@ export const onDeleteProductFeature = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1789,21 +4032,88 @@ export const onDeleteProductFeature = /* GraphQL */ `
         formConstraint
         formRequiredMessage
         parentID
+        children {
+          nextToken
+          __typename
+        }
         featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          __typename
+        }
         unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
       }
       verifications {
+        items {
+          id
+          createdOn
+          updatedOn
+          sign
+          userVerifierID
+          userVerifiedID
+          productFeatureID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       documents {
+        items {
+          id
+          data
+          timeStamp
+          docHash
+          url
+          signed
+          signedHash
+          isApproved
+          status
+          isUploadedToBlockChain
+          productFeatureID
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
       productFeatureResults {
+        items {
+          id
+          isActive
+          productFeatureID
+          resultID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -1829,7 +4139,57 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1841,6 +4201,19 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
         value
         dateTimeStamp
         formulaID
+        formula {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1867,7 +4240,57 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1879,6 +4302,19 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
         value
         dateTimeStamp
         formulaID
+        formula {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1905,7 +4341,57 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        verifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1917,6 +4403,19 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
         value
         dateTimeStamp
         formulaID
+        formula {
+          id
+          varID
+          equation
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatureResults {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1946,6 +4445,30 @@ export const onCreateUserProduct = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1964,6 +4487,38 @@ export const onCreateUserProduct = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1993,6 +4548,30 @@ export const onUpdateUserProduct = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2011,6 +4590,38 @@ export const onUpdateUserProduct = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2040,6 +4651,30 @@ export const onDeleteUserProduct = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2058,6 +4693,38 @@ export const onDeleteUserProduct = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2153,6 +4820,38 @@ export const onCreateTransactions = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2197,6 +4896,38 @@ export const onUpdateTransactions = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2241,6 +4972,38 @@ export const onDeleteTransactions = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2269,6 +5032,30 @@ export const onCreateCompany = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2287,6 +5074,38 @@ export const onCreateCompany = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2315,6 +5134,30 @@ export const onUpdateCompany = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2333,6 +5176,38 @@ export const onUpdateCompany = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2361,6 +5236,30 @@ export const onDeleteCompany = /* GraphQL */ `
         subrole
         status
         email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2379,6 +5278,38 @@ export const onDeleteCompany = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2393,6 +5324,29 @@ export const onCreateScript = /* GraphQL */ `
   subscription OnCreateScript($filter: ModelSubscriptionScriptFilterInput) {
     onCreateScript(filter: $filter) {
       id
+      scriptParentID
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -2413,6 +5367,38 @@ export const onCreateScript = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2431,6 +5417,29 @@ export const onUpdateScript = /* GraphQL */ `
   subscription OnUpdateScript($filter: ModelSubscriptionScriptFilterInput) {
     onUpdateScript(filter: $filter) {
       id
+      scriptParentID
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -2451,6 +5460,38 @@ export const onUpdateScript = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2469,6 +5510,29 @@ export const onDeleteScript = /* GraphQL */ `
   subscription OnDeleteScript($filter: ModelSubscriptionScriptFilterInput) {
     onDeleteScript(filter: $filter) {
       id
+      scriptParentID
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -2489,6 +5553,38 @@ export const onDeleteScript = /* GraphQL */ `
         tokenClaimedByOwner
         tokenGenesis
         categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
