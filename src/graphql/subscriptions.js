@@ -2393,6 +2393,11 @@ export const onCreateScript = /* GraphQL */ `
   subscription OnCreateScript($filter: ModelSubscriptionScriptFilterInput) {
     onCreateScript(filter: $filter) {
       id
+      scriptParentID
+      scripts {
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -2431,6 +2436,11 @@ export const onUpdateScript = /* GraphQL */ `
   subscription OnUpdateScript($filter: ModelSubscriptionScriptFilterInput) {
     onUpdateScript(filter: $filter) {
       id
+      scriptParentID
+      scripts {
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -2469,6 +2479,11 @@ export const onDeleteScript = /* GraphQL */ `
   subscription OnDeleteScript($filter: ModelSubscriptionScriptFilterInput) {
     onDeleteScript(filter: $filter) {
       id
+      scriptParentID
+      scripts {
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category

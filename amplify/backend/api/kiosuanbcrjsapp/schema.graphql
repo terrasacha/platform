@@ -287,6 +287,8 @@ type Company @model {
 
 type Script @model {
   id: ID!
+  scriptParentID: ID @index(name: "byScriptParent")
+  scripts: [Script] @hasMany(indexName: "byScriptParent", fields: ["id"])
   name: String!
   script_type: String! # mintSuanCO2/mintProject/spend/any
   script_category: String! # NativeScript/PlutusV1/PlutusV2/PlutusV3

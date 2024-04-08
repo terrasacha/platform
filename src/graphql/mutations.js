@@ -2525,6 +2525,11 @@ export const createScript = /* GraphQL */ `
   ) {
     createScript(input: $input, condition: $condition) {
       id
+      scriptParentID
+      scripts {
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -2566,6 +2571,11 @@ export const updateScript = /* GraphQL */ `
   ) {
     updateScript(input: $input, condition: $condition) {
       id
+      scriptParentID
+      scripts {
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -2607,6 +2617,11 @@ export const deleteScript = /* GraphQL */ `
   ) {
     deleteScript(input: $input, condition: $condition) {
       id
+      scriptParentID
+      scripts {
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category

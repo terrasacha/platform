@@ -1299,6 +1299,11 @@ export const getScript = /* GraphQL */ `
   query GetScript($id: ID!) {
     getScript(id: $id) {
       id
+      scriptParentID
+      scripts {
+        nextToken
+        __typename
+      }
       name
       script_type
       script_category
@@ -1342,6 +1347,7 @@ export const listScripts = /* GraphQL */ `
     listScripts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        scriptParentID
         name
         script_type
         script_category
