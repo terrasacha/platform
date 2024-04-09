@@ -31,16 +31,10 @@ class Categorys extends Component {
 
         // Subscriptions
         // OnCreate Category
-        let tempCategorys = this.state.categorys
         this.createCategoryListener = API.graphql(graphqlOperation(onCreateCategory))
         .subscribe({
-            next: createdCategoryData => {
-                let tempOnCreateCategory = createdCategoryData.value.data.onCreateCategory
-                tempCategorys.push(tempOnCreateCategory)
-                // Ordering categorys by name
-                tempCategorys.sort((a, b) => (a.name > b.name) ? 1 : -1)
-                // this.updateStateCategorys(tempCategorys)
-                this.setState((state) => ({categorys: tempCategorys}))
+            next: async (createdCategoryData) => {
+                await this.loadCategorys() 
             }
         })
 
@@ -75,7 +69,9 @@ class Categorys extends Component {
         let tempNewCategory = this.state.newCategory
         if (event.target.name === 'category.name') {
             tempNewCategory.name = event.target.value.toUpperCase()
-            tempNewCategory.id = tempNewCategory.name.replaceAll(' ','_')
+            if(this.state.CRUDButtonName !== 'UPDATE'){
+                tempNewCategory.id = tempNewCategory.name.replaceAll(' ','_')
+            }
         }
         this.setState({newCategory: tempNewCategory})
         this.validateCRUDCategory()
@@ -96,10 +92,11 @@ class Categorys extends Component {
         }
 
         if (this.state.CRUDButtonName === 'UPDATE') {
-            delete tempNewCategory.products
-            delete tempNewCategory.createdAt
-            delete tempNewCategory.updatedAt
-            await API.graphql(graphqlOperation(updateCategory, { input: this.state.newCategory }))
+            let tempNewCategory = {
+                id: this.state.newCategory.id,
+                name: this.state.newCategory.name
+            }
+            await API.graphql(graphqlOperation(updateCategory, { input: tempNewCategory }))
             await this.cleanCategoryOnCreate()
         }
     }
@@ -137,6 +134,7 @@ class Categorys extends Component {
                         <Table striped bordered hover>
                             <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Action</th>
                             </tr>
@@ -144,6 +142,9 @@ class Categorys extends Component {
                             <tbody>
                             {categorys.map(category => (
                                 <tr key={category.id}>
+                                    <td>
+                                        {category.id}
+                                    </td>
                                     <td>
                                         {category.name}
                                     </td>

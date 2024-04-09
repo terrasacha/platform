@@ -14,6 +14,7 @@ export const createUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      subrole
       status
       email
       wallets {
@@ -21,12 +22,20 @@ export const createUser = /* GraphQL */ `
           id
           name
           status
+          password
+          seed
+          address
+          stake_address
           isSelected
+          isAdmin
+          claimed_token
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       verifierVerifications {
         items {
@@ -39,8 +48,10 @@ export const createUser = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       verifiedVerifications {
         items {
@@ -53,8 +64,10 @@ export const createUser = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       userProducts {
         items {
@@ -64,8 +77,10 @@ export const createUser = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       documents {
         items {
@@ -83,8 +98,10 @@ export const createUser = /* GraphQL */ `
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       companies {
         items {
@@ -95,11 +112,14 @@ export const createUser = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -116,6 +136,7 @@ export const updateUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      subrole
       status
       email
       wallets {
@@ -123,12 +144,20 @@ export const updateUser = /* GraphQL */ `
           id
           name
           status
+          password
+          seed
+          address
+          stake_address
           isSelected
+          isAdmin
+          claimed_token
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       verifierVerifications {
         items {
@@ -141,8 +170,10 @@ export const updateUser = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       verifiedVerifications {
         items {
@@ -155,8 +186,10 @@ export const updateUser = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       userProducts {
         items {
@@ -166,8 +199,10 @@ export const updateUser = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       documents {
         items {
@@ -185,8 +220,10 @@ export const updateUser = /* GraphQL */ `
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       companies {
         items {
@@ -197,11 +234,14 @@ export const updateUser = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -218,6 +258,7 @@ export const deleteUser = /* GraphQL */ `
       addresss
       cellphone
       role
+      subrole
       status
       email
       wallets {
@@ -225,12 +266,20 @@ export const deleteUser = /* GraphQL */ `
           id
           name
           status
+          password
+          seed
+          address
+          stake_address
           isSelected
+          isAdmin
+          claimed_token
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       verifierVerifications {
         items {
@@ -243,8 +292,10 @@ export const deleteUser = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       verifiedVerifications {
         items {
@@ -257,8 +308,10 @@ export const deleteUser = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       userProducts {
         items {
@@ -268,8 +321,10 @@ export const deleteUser = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       documents {
         items {
@@ -287,8 +342,10 @@ export const deleteUser = /* GraphQL */ `
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       companies {
         items {
@@ -299,11 +356,14 @@ export const deleteUser = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -316,7 +376,13 @@ export const createWallet = /* GraphQL */ `
       id
       name
       status
+      password
+      seed
+      address
+      stake_address
       isSelected
+      isAdmin
+      claimed_token
       userID
       user {
         id
@@ -326,31 +392,40 @@ export const createWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -363,7 +438,13 @@ export const updateWallet = /* GraphQL */ `
       id
       name
       status
+      password
+      seed
+      address
+      stake_address
       isSelected
+      isAdmin
+      claimed_token
       userID
       user {
         id
@@ -373,31 +454,40 @@ export const updateWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -410,7 +500,13 @@ export const deleteWallet = /* GraphQL */ `
       id
       name
       status
+      password
+      seed
+      address
+      stake_address
       isSelected
+      isAdmin
+      claimed_token
       userID
       user {
         id
@@ -420,31 +516,40 @@ export const deleteWallet = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -467,28 +572,36 @@ export const createVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       userVerifiedID
       userVerified {
@@ -499,28 +612,36 @@ export const createVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatureID
       productFeature {
@@ -536,13 +657,17 @@ export const createVerification = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -562,22 +687,25 @@ export const createVerification = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       verificationComments {
         items {
@@ -587,11 +715,14 @@ export const createVerification = /* GraphQL */ `
           verificationID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -614,28 +745,36 @@ export const updateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       userVerifiedID
       userVerified {
@@ -646,28 +785,36 @@ export const updateVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatureID
       productFeature {
@@ -683,13 +830,17 @@ export const updateVerification = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -709,22 +860,25 @@ export const updateVerification = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       verificationComments {
         items {
@@ -734,11 +888,14 @@ export const updateVerification = /* GraphQL */ `
           verificationID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -761,28 +918,36 @@ export const deleteVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       userVerifiedID
       userVerified {
@@ -793,28 +958,36 @@ export const deleteVerification = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatureID
       productFeature {
@@ -830,13 +1003,17 @@ export const deleteVerification = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -856,22 +1033,25 @@ export const deleteVerification = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       verificationComments {
         items {
@@ -881,11 +1061,14 @@ export const deleteVerification = /* GraphQL */ `
           verificationID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -913,10 +1096,12 @@ export const createVerificationComment = /* GraphQL */ `
           addresss
           cellphone
           role
+          subrole
           status
           email
           createdAt
           updatedAt
+          __typename
         }
         userVerifiedID
         userVerified {
@@ -927,10 +1112,12 @@ export const createVerificationComment = /* GraphQL */ `
           addresss
           cellphone
           role
+          subrole
           status
           email
           createdAt
           updatedAt
+          __typename
         }
         productFeatureID
         productFeature {
@@ -944,15 +1131,19 @@ export const createVerificationComment = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         verificationComments {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -980,10 +1171,12 @@ export const updateVerificationComment = /* GraphQL */ `
           addresss
           cellphone
           role
+          subrole
           status
           email
           createdAt
           updatedAt
+          __typename
         }
         userVerifiedID
         userVerified {
@@ -994,10 +1187,12 @@ export const updateVerificationComment = /* GraphQL */ `
           addresss
           cellphone
           role
+          subrole
           status
           email
           createdAt
           updatedAt
+          __typename
         }
         productFeatureID
         productFeature {
@@ -1011,15 +1206,19 @@ export const updateVerificationComment = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         verificationComments {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1047,10 +1246,12 @@ export const deleteVerificationComment = /* GraphQL */ `
           addresss
           cellphone
           role
+          subrole
           status
           email
           createdAt
           updatedAt
+          __typename
         }
         userVerifiedID
         userVerified {
@@ -1061,10 +1262,12 @@ export const deleteVerificationComment = /* GraphQL */ `
           addresss
           cellphone
           role
+          subrole
           status
           email
           createdAt
           updatedAt
+          __typename
         }
         productFeatureID
         productFeature {
@@ -1078,15 +1281,19 @@ export const deleteVerificationComment = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         verificationComments {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1120,13 +1327,17 @@ export const createDocument = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -1146,22 +1357,25 @@ export const createDocument = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       userID
       user {
@@ -1172,31 +1386,40 @@ export const createDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1230,13 +1453,17 @@ export const updateDocument = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -1256,22 +1483,25 @@ export const updateDocument = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       userID
       user {
@@ -1282,31 +1512,40 @@ export const updateDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1340,13 +1579,17 @@ export const deleteDocument = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -1366,22 +1609,25 @@ export const deleteDocument = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       userID
       user {
@@ -1392,31 +1638,40 @@ export const deleteDocument = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1435,18 +1690,24 @@ export const createCategory = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1465,18 +1726,24 @@ export const updateCategory = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1495,18 +1762,69 @@ export const deleteCategory = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
+    }
+  }
+`;
+export const createProductItem = /* GraphQL */ `
+  mutation CreateProductItem(
+    $input: CreateProductItemInput!
+    $condition: ModelProductItemConditionInput
+  ) {
+    createProductItem(input: $input, condition: $condition) {
+      id
+      name
+      type
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateProductItem = /* GraphQL */ `
+  mutation UpdateProductItem(
+    $input: UpdateProductItemInput!
+    $condition: ModelProductItemConditionInput
+  ) {
+    updateProductItem(input: $input, condition: $condition) {
+      id
+      name
+      type
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteProductItem = /* GraphQL */ `
+  mutation DeleteProductItem(
+    $input: DeleteProductItemInput!
+    $condition: ModelProductItemConditionInput
+  ) {
+    deleteProductItem(input: $input, condition: $condition) {
+      id
+      name
+      type
+      createdAt
+      updatedAt
+      __typename
     }
   }
 `;
@@ -1520,10 +1838,13 @@ export const createProduct = /* GraphQL */ `
       name
       description
       isActive
+      showOn
       order
       status
       timeOnVerification
       projectReadiness
+      tokenClaimedByOwner
+      tokenGenesis
       categoryID
       category {
         id
@@ -1531,9 +1852,11 @@ export const createProduct = /* GraphQL */ `
         isSelected
         products {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       images {
         items {
@@ -1550,8 +1873,10 @@ export const createProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       productFeatures {
         items {
@@ -1565,8 +1890,10 @@ export const createProduct = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       userProducts {
         items {
@@ -1576,8 +1903,10 @@ export const createProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       transactions {
         items {
@@ -1594,22 +1923,15 @@ export const createProduct = /* GraphQL */ `
           type
           tokenName
           amountOfTokens
+          policyID
+          stakeAddress
           productID
-          orderID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
-      }
-      xlsFormProducts {
-        items {
-          id
-          productID
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       companies {
         items {
@@ -1620,11 +1942,36 @@ export const createProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
+      }
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1638,10 +1985,13 @@ export const updateProduct = /* GraphQL */ `
       name
       description
       isActive
+      showOn
       order
       status
       timeOnVerification
       projectReadiness
+      tokenClaimedByOwner
+      tokenGenesis
       categoryID
       category {
         id
@@ -1649,9 +1999,11 @@ export const updateProduct = /* GraphQL */ `
         isSelected
         products {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       images {
         items {
@@ -1668,8 +2020,10 @@ export const updateProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       productFeatures {
         items {
@@ -1683,8 +2037,10 @@ export const updateProduct = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       userProducts {
         items {
@@ -1694,8 +2050,10 @@ export const updateProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       transactions {
         items {
@@ -1712,22 +2070,15 @@ export const updateProduct = /* GraphQL */ `
           type
           tokenName
           amountOfTokens
+          policyID
+          stakeAddress
           productID
-          orderID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
-      }
-      xlsFormProducts {
-        items {
-          id
-          productID
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       companies {
         items {
@@ -1738,11 +2089,36 @@ export const updateProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
+      }
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1756,10 +2132,13 @@ export const deleteProduct = /* GraphQL */ `
       name
       description
       isActive
+      showOn
       order
       status
       timeOnVerification
       projectReadiness
+      tokenClaimedByOwner
+      tokenGenesis
       categoryID
       category {
         id
@@ -1767,9 +2146,11 @@ export const deleteProduct = /* GraphQL */ `
         isSelected
         products {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       images {
         items {
@@ -1786,8 +2167,10 @@ export const deleteProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       productFeatures {
         items {
@@ -1801,8 +2184,10 @@ export const deleteProduct = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       userProducts {
         items {
@@ -1812,8 +2197,10 @@ export const deleteProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       transactions {
         items {
@@ -1830,22 +2217,15 @@ export const deleteProduct = /* GraphQL */ `
           type
           tokenName
           amountOfTokens
+          policyID
+          stakeAddress
           productID
-          orderID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
-      }
-      xlsFormProducts {
-        items {
-          id
-          productID
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       companies {
         items {
@@ -1856,11 +2236,36 @@ export const deleteProduct = /* GraphQL */ `
           productID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
+      }
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1886,10 +2291,13 @@ export const createImage = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -1897,30 +2305,39 @@ export const createImage = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -1946,10 +2363,13 @@ export const updateImage = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -1957,30 +2377,39 @@ export const updateImage = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2006,10 +2435,13 @@ export const deleteImage = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -2017,30 +2449,39 @@ export const deleteImage = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2071,15 +2512,16 @@ export const createFeatureType = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2110,15 +2552,16 @@ export const updateFeatureType = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2149,15 +2592,16 @@ export const deleteFeatureType = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2199,12 +2643,12 @@ export const createFeature = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureTypeID
       featureType {
@@ -2213,9 +2657,11 @@ export const createFeature = /* GraphQL */ `
         description
         features {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       unitOfMeasureID
       unitOfMeasure {
@@ -2225,12 +2671,15 @@ export const createFeature = /* GraphQL */ `
         isFloat
         features {
           nextToken
+          __typename
         }
         formulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatures {
         items {
@@ -2244,8 +2693,10 @@ export const createFeature = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureFormulas {
         items {
@@ -2254,51 +2705,14 @@ export const createFeature = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
-      }
-      xlsFormTypeID
-      xlsFormType {
-        id
-        name
-        features {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      xlsFormGroupID
-      xlsFormGroup {
-        id
-        name
-        features {
-          nextToken
-        }
-        xlsFormID
-        xlsForm {
-          id
-          name
-          version
-          createdAt
-          updatedAt
-        }
-        createdAt
-        updatedAt
-      }
-      xlsFormChoices {
-        items {
-          id
-          listName
-          name
-          label
-          featureID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2340,12 +2754,12 @@ export const updateFeature = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureTypeID
       featureType {
@@ -2354,9 +2768,11 @@ export const updateFeature = /* GraphQL */ `
         description
         features {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       unitOfMeasureID
       unitOfMeasure {
@@ -2366,12 +2782,15 @@ export const updateFeature = /* GraphQL */ `
         isFloat
         features {
           nextToken
+          __typename
         }
         formulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatures {
         items {
@@ -2385,8 +2804,10 @@ export const updateFeature = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureFormulas {
         items {
@@ -2395,51 +2816,14 @@ export const updateFeature = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
-      }
-      xlsFormTypeID
-      xlsFormType {
-        id
-        name
-        features {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      xlsFormGroupID
-      xlsFormGroup {
-        id
-        name
-        features {
-          nextToken
-        }
-        xlsFormID
-        xlsForm {
-          id
-          name
-          version
-          createdAt
-          updatedAt
-        }
-        createdAt
-        updatedAt
-      }
-      xlsFormChoices {
-        items {
-          id
-          listName
-          name
-          label
-          featureID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2481,12 +2865,12 @@ export const deleteFeature = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureTypeID
       featureType {
@@ -2495,9 +2879,11 @@ export const deleteFeature = /* GraphQL */ `
         description
         features {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       unitOfMeasureID
       unitOfMeasure {
@@ -2507,12 +2893,15 @@ export const deleteFeature = /* GraphQL */ `
         isFloat
         features {
           nextToken
+          __typename
         }
         formulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatures {
         items {
@@ -2526,8 +2915,10 @@ export const deleteFeature = /* GraphQL */ `
           featureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureFormulas {
         items {
@@ -2536,51 +2927,14 @@ export const deleteFeature = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
-      }
-      xlsFormTypeID
-      xlsFormType {
-        id
-        name
-        features {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      xlsFormGroupID
-      xlsFormGroup {
-        id
-        name
-        features {
-          nextToken
-        }
-        xlsFormID
-        xlsForm {
-          id
-          name
-          version
-          createdAt
-          updatedAt
-        }
-        createdAt
-        updatedAt
-      }
-      xlsFormChoices {
-        items {
-          id
-          listName
-          name
-          label
-          featureID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2612,12 +2966,12 @@ export const createUnitOfMeasure = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       formulas {
         items {
@@ -2627,11 +2981,14 @@ export const createUnitOfMeasure = /* GraphQL */ `
           unitOfMeasureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2663,12 +3020,12 @@ export const updateUnitOfMeasure = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       formulas {
         items {
@@ -2678,11 +3035,14 @@ export const updateUnitOfMeasure = /* GraphQL */ `
           unitOfMeasureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2714,12 +3074,12 @@ export const deleteUnitOfMeasure = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       formulas {
         items {
@@ -2729,11 +3089,14 @@ export const deleteUnitOfMeasure = /* GraphQL */ `
           unitOfMeasureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2754,12 +3117,15 @@ export const createFormula = /* GraphQL */ `
         isFloat
         features {
           nextToken
+          __typename
         }
         formulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       results {
         items {
@@ -2770,8 +3136,10 @@ export const createFormula = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureFormulas {
         items {
@@ -2780,11 +3148,14 @@ export const createFormula = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2805,12 +3176,15 @@ export const updateFormula = /* GraphQL */ `
         isFloat
         features {
           nextToken
+          __typename
         }
         formulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       results {
         items {
@@ -2821,8 +3195,10 @@ export const updateFormula = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureFormulas {
         items {
@@ -2831,11 +3207,14 @@ export const updateFormula = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2856,12 +3235,15 @@ export const deleteFormula = /* GraphQL */ `
         isFloat
         features {
           nextToken
+          __typename
         }
         formulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       results {
         items {
@@ -2872,8 +3254,10 @@ export const deleteFormula = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       featureFormulas {
         items {
@@ -2882,11 +3266,14 @@ export const deleteFormula = /* GraphQL */ `
           formulaID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -2915,6 +3302,7 @@ export const createFeatureFormula = /* GraphQL */ `
         parentID
         children {
           nextToken
+          __typename
         }
         featureTypeID
         featureType {
@@ -2923,6 +3311,7 @@ export const createFeatureFormula = /* GraphQL */ `
           description
           createdAt
           updatedAt
+          __typename
         }
         unitOfMeasureID
         unitOfMeasure {
@@ -2932,33 +3321,19 @@ export const createFeatureFormula = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       formulaID
       formula {
@@ -2973,18 +3348,23 @@ export const createFeatureFormula = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         results {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3013,6 +3393,7 @@ export const updateFeatureFormula = /* GraphQL */ `
         parentID
         children {
           nextToken
+          __typename
         }
         featureTypeID
         featureType {
@@ -3021,6 +3402,7 @@ export const updateFeatureFormula = /* GraphQL */ `
           description
           createdAt
           updatedAt
+          __typename
         }
         unitOfMeasureID
         unitOfMeasure {
@@ -3030,33 +3412,19 @@ export const updateFeatureFormula = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       formulaID
       formula {
@@ -3071,18 +3439,23 @@ export const updateFeatureFormula = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         results {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3111,6 +3484,7 @@ export const deleteFeatureFormula = /* GraphQL */ `
         parentID
         children {
           nextToken
+          __typename
         }
         featureTypeID
         featureType {
@@ -3119,6 +3493,7 @@ export const deleteFeatureFormula = /* GraphQL */ `
           description
           createdAt
           updatedAt
+          __typename
         }
         unitOfMeasureID
         unitOfMeasure {
@@ -3128,33 +3503,19 @@ export const deleteFeatureFormula = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       formulaID
       formula {
@@ -3169,18 +3530,23 @@ export const deleteFeatureFormula = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         results {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3207,15 +3573,19 @@ export const createResult = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         results {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatureResults {
         items {
@@ -3225,11 +3595,14 @@ export const createResult = /* GraphQL */ `
           resultID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3256,15 +3629,19 @@ export const updateResult = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         results {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatureResults {
         items {
@@ -3274,11 +3651,14 @@ export const updateResult = /* GraphQL */ `
           resultID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3305,15 +3685,19 @@ export const deleteResult = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         results {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productFeatureResults {
         items {
@@ -3323,11 +3707,14 @@ export const deleteResult = /* GraphQL */ `
           resultID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3349,10 +3736,13 @@ export const createProductFeature = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -3360,27 +3750,35 @@ export const createProductFeature = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       featureID
       feature {
@@ -3400,6 +3798,7 @@ export const createProductFeature = /* GraphQL */ `
         parentID
         children {
           nextToken
+          __typename
         }
         featureTypeID
         featureType {
@@ -3408,6 +3807,7 @@ export const createProductFeature = /* GraphQL */ `
           description
           createdAt
           updatedAt
+          __typename
         }
         unitOfMeasureID
         unitOfMeasure {
@@ -3417,33 +3817,19 @@ export const createProductFeature = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       verifications {
         items {
@@ -3456,8 +3842,10 @@ export const createProductFeature = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       documents {
         items {
@@ -3475,8 +3863,10 @@ export const createProductFeature = /* GraphQL */ `
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       productFeatureResults {
         items {
@@ -3486,11 +3876,14 @@ export const createProductFeature = /* GraphQL */ `
           resultID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3512,10 +3905,13 @@ export const updateProductFeature = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -3523,27 +3919,35 @@ export const updateProductFeature = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       featureID
       feature {
@@ -3563,6 +3967,7 @@ export const updateProductFeature = /* GraphQL */ `
         parentID
         children {
           nextToken
+          __typename
         }
         featureTypeID
         featureType {
@@ -3571,6 +3976,7 @@ export const updateProductFeature = /* GraphQL */ `
           description
           createdAt
           updatedAt
+          __typename
         }
         unitOfMeasureID
         unitOfMeasure {
@@ -3580,33 +3986,19 @@ export const updateProductFeature = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       verifications {
         items {
@@ -3619,8 +4011,10 @@ export const updateProductFeature = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       documents {
         items {
@@ -3638,8 +4032,10 @@ export const updateProductFeature = /* GraphQL */ `
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       productFeatureResults {
         items {
@@ -3649,11 +4045,14 @@ export const updateProductFeature = /* GraphQL */ `
           resultID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3675,10 +4074,13 @@ export const deleteProductFeature = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -3686,27 +4088,35 @@ export const deleteProductFeature = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       featureID
       feature {
@@ -3726,6 +4136,7 @@ export const deleteProductFeature = /* GraphQL */ `
         parentID
         children {
           nextToken
+          __typename
         }
         featureTypeID
         featureType {
@@ -3734,6 +4145,7 @@ export const deleteProductFeature = /* GraphQL */ `
           description
           createdAt
           updatedAt
+          __typename
         }
         unitOfMeasureID
         unitOfMeasure {
@@ -3743,33 +4155,19 @@ export const deleteProductFeature = /* GraphQL */ `
           isFloat
           createdAt
           updatedAt
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         featureFormulas {
           nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       verifications {
         items {
@@ -3782,8 +4180,10 @@ export const deleteProductFeature = /* GraphQL */ `
           productFeatureID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       documents {
         items {
@@ -3801,8 +4201,10 @@ export const deleteProductFeature = /* GraphQL */ `
           userID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       productFeatureResults {
         items {
@@ -3812,11 +4214,14 @@ export const deleteProductFeature = /* GraphQL */ `
           resultID
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3842,13 +4247,17 @@ export const createProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -3868,22 +4277,25 @@ export const createProductFeatureResult = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       resultID
       result {
@@ -3899,15 +4311,19 @@ export const createProductFeatureResult = /* GraphQL */ `
           unitOfMeasureID
           createdAt
           updatedAt
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -3933,13 +4349,17 @@ export const updateProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -3959,22 +4379,25 @@ export const updateProductFeatureResult = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       resultID
       result {
@@ -3990,15 +4413,19 @@ export const updateProductFeatureResult = /* GraphQL */ `
           unitOfMeasureID
           createdAt
           updatedAt
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4024,13 +4451,17 @@ export const deleteProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
+          showOn
           order
           status
           timeOnVerification
           projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
           categoryID
           createdAt
           updatedAt
+          __typename
         }
         featureID
         feature {
@@ -4050,22 +4481,25 @@ export const deleteProductFeatureResult = /* GraphQL */ `
           parentID
           featureTypeID
           unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
           createdAt
           updatedAt
+          __typename
         }
         verifications {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       resultID
       result {
@@ -4081,15 +4515,19 @@ export const deleteProductFeatureResult = /* GraphQL */ `
           unitOfMeasureID
           createdAt
           updatedAt
+          __typename
         }
         productFeatureResults {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4110,28 +4548,36 @@ export const createUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productID
       product {
@@ -4139,10 +4585,13 @@ export const createUserProduct = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -4150,44 +4599,39 @@ export const createUserProduct = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
-      }
-      orders {
-        items {
-          id
-          currencyCode
-          fiatTotalAmount
-          statusCode
-          externalOrderId
-          confirmation
-          userProductID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4208,28 +4652,36 @@ export const updateUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productID
       product {
@@ -4237,10 +4689,13 @@ export const updateUserProduct = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -4248,44 +4703,39 @@ export const updateUserProduct = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
-      }
-      orders {
-        items {
-          id
-          currencyCode
-          fiatTotalAmount
-          statusCode
-          externalOrderId
-          confirmation
-          userProductID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4306,28 +4756,36 @@ export const deleteUserProduct = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productID
       product {
@@ -4335,10 +4793,13 @@ export const deleteUserProduct = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -4346,44 +4807,39 @@ export const deleteUserProduct = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
-      }
-      orders {
-        items {
-          id
-          currencyCode
-          fiatTotalAmount
-          statusCode
-          externalOrderId
-          confirmation
-          userProductID
-          createdAt
-          updatedAt
-        }
-        nextToken
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4394,73 +4850,16 @@ export const createOrder = /* GraphQL */ `
   ) {
     createOrder(input: $input, condition: $condition) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        user {
-          id
-          name
-          dateOfBirth
-          isProfileUpdated
-          addresss
-          cellphone
-          role
-          status
-          email
-          createdAt
-          updatedAt
-        }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          categoryID
-          createdAt
-          updatedAt
-        }
-        orders {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      transactions {
-        items {
-          id
-          addressOrigin
-          addressDestination
-          txIn
-          txCborhex
-          txHash
-          metadataUrl
-          fees
-          network
-          txProcessed
-          type
-          tokenName
-          amountOfTokens
-          productID
-          orderID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      utxos
+      value
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4471,73 +4870,16 @@ export const updateOrder = /* GraphQL */ `
   ) {
     updateOrder(input: $input, condition: $condition) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        user {
-          id
-          name
-          dateOfBirth
-          isProfileUpdated
-          addresss
-          cellphone
-          role
-          status
-          email
-          createdAt
-          updatedAt
-        }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          categoryID
-          createdAt
-          updatedAt
-        }
-        orders {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      transactions {
-        items {
-          id
-          addressOrigin
-          addressDestination
-          txIn
-          txCborhex
-          txHash
-          metadataUrl
-          fees
-          network
-          txProcessed
-          type
-          tokenName
-          amountOfTokens
-          productID
-          orderID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      utxos
+      value
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4548,73 +4890,16 @@ export const deleteOrder = /* GraphQL */ `
   ) {
     deleteOrder(input: $input, condition: $condition) {
       id
-      currencyCode
-      fiatTotalAmount
+      walletAddress
       statusCode
-      externalOrderId
-      confirmation
-      userProductID
-      userProduct {
-        id
-        isFavorite
-        userID
-        user {
-          id
-          name
-          dateOfBirth
-          isProfileUpdated
-          addresss
-          cellphone
-          role
-          status
-          email
-          createdAt
-          updatedAt
-        }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          categoryID
-          createdAt
-          updatedAt
-        }
-        orders {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      transactions {
-        items {
-          id
-          addressOrigin
-          addressDestination
-          txIn
-          txCborhex
-          txHash
-          metadataUrl
-          fees
-          network
-          txProcessed
-          type
-          tokenName
-          amountOfTokens
-          productID
-          orderID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      utxos
+      value
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4637,16 +4922,21 @@ export const createTransactions = /* GraphQL */ `
       type
       tokenName
       amountOfTokens
+      policyID
+      stakeAddress
       productID
       product {
         id
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -4654,53 +4944,39 @@ export const createTransactions = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
-        createdAt
-        updatedAt
-      }
-      orderID
-      order {
-        id
-        currencyCode
-        fiatTotalAmount
-        statusCode
-        externalOrderId
-        confirmation
-        userProductID
-        userProduct {
-          id
-          isFavorite
-          userID
-          productID
-          createdAt
-          updatedAt
-        }
-        transactions {
+        scripts {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4723,16 +4999,21 @@ export const updateTransactions = /* GraphQL */ `
       type
       tokenName
       amountOfTokens
+      policyID
+      stakeAddress
       productID
       product {
         id
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -4740,53 +5021,39 @@ export const updateTransactions = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
-        createdAt
-        updatedAt
-      }
-      orderID
-      order {
-        id
-        currencyCode
-        fiatTotalAmount
-        statusCode
-        externalOrderId
-        confirmation
-        userProductID
-        userProduct {
-          id
-          isFavorite
-          userID
-          productID
-          createdAt
-          updatedAt
-        }
-        transactions {
+        scripts {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4809,16 +5076,21 @@ export const deleteTransactions = /* GraphQL */ `
       type
       tokenName
       amountOfTokens
+      policyID
+      stakeAddress
       productID
       product {
         id
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -4826,53 +5098,39 @@ export const deleteTransactions = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
-        createdAt
-        updatedAt
-      }
-      orderID
-      order {
-        id
-        currencyCode
-        fiatTotalAmount
-        statusCode
-        externalOrderId
-        confirmation
-        userProductID
-        userProduct {
-          id
-          isFavorite
-          userID
-          productID
-          createdAt
-          updatedAt
-        }
-        transactions {
+        scripts {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4894,28 +5152,36 @@ export const createCompany = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productID
       product {
@@ -4923,10 +5189,13 @@ export const createCompany = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -4934,30 +5203,39 @@ export const createCompany = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -4979,28 +5257,36 @@ export const updateCompany = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productID
       product {
@@ -5008,10 +5294,13 @@ export const updateCompany = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -5019,30 +5308,39 @@ export const updateCompany = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
@@ -5064,28 +5362,36 @@ export const deleteCompany = /* GraphQL */ `
         addresss
         cellphone
         role
+        subrole
         status
         email
         wallets {
           nextToken
+          __typename
         }
         verifierVerifications {
           nextToken
+          __typename
         }
         verifiedVerifications {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         documents {
           nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       productID
       product {
@@ -5093,10 +5399,13 @@ export const deleteCompany = /* GraphQL */ `
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -5104,122 +5413,91 @@ export const deleteCompany = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
-export const createXLSForm = /* GraphQL */ `
-  mutation CreateXLSForm(
-    $input: CreateXLSFormInput!
-    $condition: ModelXLSFormConditionInput
+export const createScript = /* GraphQL */ `
+  mutation CreateScript(
+    $input: CreateScriptInput!
+    $condition: ModelScriptConditionInput
   ) {
-    createXLSForm(input: $input, condition: $condition) {
+    createScript(input: $input, condition: $condition) {
       id
-      name
-      version
-      xlsFormGroups {
+      scriptParentID
+      scripts {
         items {
           id
+          scriptParentID
           name
-          xlsFormID
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
           createdAt
           updatedAt
+          __typename
         }
         nextToken
+        __typename
       }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateXLSForm = /* GraphQL */ `
-  mutation UpdateXLSForm(
-    $input: UpdateXLSFormInput!
-    $condition: ModelXLSFormConditionInput
-  ) {
-    updateXLSForm(input: $input, condition: $condition) {
-      id
       name
-      version
-      xlsFormGroups {
-        items {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteXLSForm = /* GraphQL */ `
-  mutation DeleteXLSForm(
-    $input: DeleteXLSFormInput!
-    $condition: ModelXLSFormConditionInput
-  ) {
-    deleteXLSForm(input: $input, condition: $condition) {
-      id
-      name
-      version
-      xlsFormGroups {
-        items {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createXLSFormProduct = /* GraphQL */ `
-  mutation CreateXLSFormProduct(
-    $input: CreateXLSFormProductInput!
-    $condition: ModelXLSFormProductConditionInput
-  ) {
-    createXLSFormProduct(input: $input, condition: $condition) {
-      id
+      script_type
+      script_category
+      pbk
+      token_name
+      cbor
       productID
       product {
         id
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -5227,89 +5505,95 @@ export const createXLSFormProduct = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
-      xlsFormID
-      xlsForm {
-        id
-        name
-        description
-        isActive
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        categoryID
-        category {
-          id
-          name
-          isSelected
-          createdAt
-          updatedAt
-        }
-        images {
-          nextToken
-        }
-        productFeatures {
-          nextToken
-        }
-        userProducts {
-          nextToken
-        }
-        transactions {
-          nextToken
-        }
-        xlsFormProducts {
-          nextToken
-        }
-        companies {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
+      testnetAddr
+      MainnetAddr
+      Active
+      base_code
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
-export const updateXLSFormProduct = /* GraphQL */ `
-  mutation UpdateXLSFormProduct(
-    $input: UpdateXLSFormProductInput!
-    $condition: ModelXLSFormProductConditionInput
+export const updateScript = /* GraphQL */ `
+  mutation UpdateScript(
+    $input: UpdateScriptInput!
+    $condition: ModelScriptConditionInput
   ) {
-    updateXLSFormProduct(input: $input, condition: $condition) {
+    updateScript(input: $input, condition: $condition) {
       id
+      scriptParentID
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      name
+      script_type
+      script_category
+      pbk
+      token_name
+      cbor
       productID
       product {
         id
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -5317,89 +5601,95 @@ export const updateXLSFormProduct = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
-      xlsFormID
-      xlsForm {
-        id
-        name
-        description
-        isActive
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        categoryID
-        category {
-          id
-          name
-          isSelected
-          createdAt
-          updatedAt
-        }
-        images {
-          nextToken
-        }
-        productFeatures {
-          nextToken
-        }
-        userProducts {
-          nextToken
-        }
-        transactions {
-          nextToken
-        }
-        xlsFormProducts {
-          nextToken
-        }
-        companies {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
+      testnetAddr
+      MainnetAddr
+      Active
+      base_code
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
-export const deleteXLSFormProduct = /* GraphQL */ `
-  mutation DeleteXLSFormProduct(
-    $input: DeleteXLSFormProductInput!
-    $condition: ModelXLSFormProductConditionInput
+export const deleteScript = /* GraphQL */ `
+  mutation DeleteScript(
+    $input: DeleteScriptInput!
+    $condition: ModelScriptConditionInput
   ) {
-    deleteXLSFormProduct(input: $input, condition: $condition) {
+    deleteScript(input: $input, condition: $condition) {
       id
+      scriptParentID
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      name
+      script_type
+      script_category
+      pbk
+      token_name
+      cbor
       productID
       product {
         id
         name
         description
         isActive
+        showOn
         order
         status
         timeOnVerification
         projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
         categoryID
         category {
           id
@@ -5407,564 +5697,88 @@ export const deleteXLSFormProduct = /* GraphQL */ `
           isSelected
           createdAt
           updatedAt
+          __typename
         }
         images {
           nextToken
+          __typename
         }
         productFeatures {
           nextToken
+          __typename
         }
         userProducts {
           nextToken
+          __typename
         }
         transactions {
           nextToken
-        }
-        xlsFormProducts {
-          nextToken
+          __typename
         }
         companies {
           nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
         }
         createdAt
         updatedAt
+        __typename
       }
-      xlsFormID
-      xlsForm {
-        id
-        name
-        description
-        isActive
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        categoryID
-        category {
-          id
-          name
-          isSelected
-          createdAt
-          updatedAt
-        }
-        images {
-          nextToken
-        }
-        productFeatures {
-          nextToken
-        }
-        userProducts {
-          nextToken
-        }
-        transactions {
-          nextToken
-        }
-        xlsFormProducts {
-          nextToken
-        }
-        companies {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
+      testnetAddr
+      MainnetAddr
+      Active
+      base_code
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
-export const createXLSFormType = /* GraphQL */ `
-  mutation CreateXLSFormType(
-    $input: CreateXLSFormTypeInput!
-    $condition: ModelXLSFormTypeConditionInput
+export const createRate = /* GraphQL */ `
+  mutation CreateRate(
+    $input: CreateRateInput!
+    $condition: ModelRateConditionInput
   ) {
-    createXLSFormType(input: $input, condition: $condition) {
+    createRate(input: $input, condition: $condition) {
       id
-      name
-      features {
-        items {
-          id
-          name
-          description
-          isTemplate
-          isVerifable
-          defaultValue
-          formOrder
-          formHint
-          formRequired
-          formAppearance
-          formRelevant
-          formConstraint
-          formRequiredMessage
-          parentID
-          featureTypeID
-          unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
+      currency
+      value
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
-export const updateXLSFormType = /* GraphQL */ `
-  mutation UpdateXLSFormType(
-    $input: UpdateXLSFormTypeInput!
-    $condition: ModelXLSFormTypeConditionInput
+export const updateRate = /* GraphQL */ `
+  mutation UpdateRate(
+    $input: UpdateRateInput!
+    $condition: ModelRateConditionInput
   ) {
-    updateXLSFormType(input: $input, condition: $condition) {
+    updateRate(input: $input, condition: $condition) {
       id
-      name
-      features {
-        items {
-          id
-          name
-          description
-          isTemplate
-          isVerifable
-          defaultValue
-          formOrder
-          formHint
-          formRequired
-          formAppearance
-          formRelevant
-          formConstraint
-          formRequiredMessage
-          parentID
-          featureTypeID
-          unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
+      currency
+      value
       createdAt
       updatedAt
+      __typename
     }
   }
 `;
-export const deleteXLSFormType = /* GraphQL */ `
-  mutation DeleteXLSFormType(
-    $input: DeleteXLSFormTypeInput!
-    $condition: ModelXLSFormTypeConditionInput
+export const deleteRate = /* GraphQL */ `
+  mutation DeleteRate(
+    $input: DeleteRateInput!
+    $condition: ModelRateConditionInput
   ) {
-    deleteXLSFormType(input: $input, condition: $condition) {
+    deleteRate(input: $input, condition: $condition) {
       id
-      name
-      features {
-        items {
-          id
-          name
-          description
-          isTemplate
-          isVerifable
-          defaultValue
-          formOrder
-          formHint
-          formRequired
-          formAppearance
-          formRelevant
-          formConstraint
-          formRequiredMessage
-          parentID
-          featureTypeID
-          unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
+      currency
+      value
       createdAt
       updatedAt
-    }
-  }
-`;
-export const createXLSFormGroup = /* GraphQL */ `
-  mutation CreateXLSFormGroup(
-    $input: CreateXLSFormGroupInput!
-    $condition: ModelXLSFormGroupConditionInput
-  ) {
-    createXLSFormGroup(input: $input, condition: $condition) {
-      id
-      name
-      features {
-        items {
-          id
-          name
-          description
-          isTemplate
-          isVerifable
-          defaultValue
-          formOrder
-          formHint
-          formRequired
-          formAppearance
-          formRelevant
-          formConstraint
-          formRequiredMessage
-          parentID
-          featureTypeID
-          unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      xlsFormID
-      xlsForm {
-        id
-        name
-        version
-        xlsFormGroups {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateXLSFormGroup = /* GraphQL */ `
-  mutation UpdateXLSFormGroup(
-    $input: UpdateXLSFormGroupInput!
-    $condition: ModelXLSFormGroupConditionInput
-  ) {
-    updateXLSFormGroup(input: $input, condition: $condition) {
-      id
-      name
-      features {
-        items {
-          id
-          name
-          description
-          isTemplate
-          isVerifable
-          defaultValue
-          formOrder
-          formHint
-          formRequired
-          formAppearance
-          formRelevant
-          formConstraint
-          formRequiredMessage
-          parentID
-          featureTypeID
-          unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      xlsFormID
-      xlsForm {
-        id
-        name
-        version
-        xlsFormGroups {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteXLSFormGroup = /* GraphQL */ `
-  mutation DeleteXLSFormGroup(
-    $input: DeleteXLSFormGroupInput!
-    $condition: ModelXLSFormGroupConditionInput
-  ) {
-    deleteXLSFormGroup(input: $input, condition: $condition) {
-      id
-      name
-      features {
-        items {
-          id
-          name
-          description
-          isTemplate
-          isVerifable
-          defaultValue
-          formOrder
-          formHint
-          formRequired
-          formAppearance
-          formRelevant
-          formConstraint
-          formRequiredMessage
-          parentID
-          featureTypeID
-          unitOfMeasureID
-          xlsFormTypeID
-          xlsFormGroupID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      xlsFormID
-      xlsForm {
-        id
-        name
-        version
-        xlsFormGroups {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createXLSFormChoice = /* GraphQL */ `
-  mutation CreateXLSFormChoice(
-    $input: CreateXLSFormChoiceInput!
-    $condition: ModelXLSFormChoiceConditionInput
-  ) {
-    createXLSFormChoice(input: $input, condition: $condition) {
-      id
-      listName
-      name
-      label
-      featureID
-      feature {
-        id
-        name
-        description
-        isTemplate
-        isVerifable
-        defaultValue
-        formOrder
-        formHint
-        formRequired
-        formAppearance
-        formRelevant
-        formConstraint
-        formRequiredMessage
-        parentID
-        children {
-          nextToken
-        }
-        featureTypeID
-        featureType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        unitOfMeasureID
-        unitOfMeasure {
-          id
-          engineeringUnit
-          description
-          isFloat
-          createdAt
-          updatedAt
-        }
-        productFeatures {
-          nextToken
-        }
-        featureFormulas {
-          nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateXLSFormChoice = /* GraphQL */ `
-  mutation UpdateXLSFormChoice(
-    $input: UpdateXLSFormChoiceInput!
-    $condition: ModelXLSFormChoiceConditionInput
-  ) {
-    updateXLSFormChoice(input: $input, condition: $condition) {
-      id
-      listName
-      name
-      label
-      featureID
-      feature {
-        id
-        name
-        description
-        isTemplate
-        isVerifable
-        defaultValue
-        formOrder
-        formHint
-        formRequired
-        formAppearance
-        formRelevant
-        formConstraint
-        formRequiredMessage
-        parentID
-        children {
-          nextToken
-        }
-        featureTypeID
-        featureType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        unitOfMeasureID
-        unitOfMeasure {
-          id
-          engineeringUnit
-          description
-          isFloat
-          createdAt
-          updatedAt
-        }
-        productFeatures {
-          nextToken
-        }
-        featureFormulas {
-          nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteXLSFormChoice = /* GraphQL */ `
-  mutation DeleteXLSFormChoice(
-    $input: DeleteXLSFormChoiceInput!
-    $condition: ModelXLSFormChoiceConditionInput
-  ) {
-    deleteXLSFormChoice(input: $input, condition: $condition) {
-      id
-      listName
-      name
-      label
-      featureID
-      feature {
-        id
-        name
-        description
-        isTemplate
-        isVerifable
-        defaultValue
-        formOrder
-        formHint
-        formRequired
-        formAppearance
-        formRelevant
-        formConstraint
-        formRequiredMessage
-        parentID
-        children {
-          nextToken
-        }
-        featureTypeID
-        featureType {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-        }
-        unitOfMeasureID
-        unitOfMeasure {
-          id
-          engineeringUnit
-          description
-          isFloat
-          createdAt
-          updatedAt
-        }
-        productFeatures {
-          nextToken
-        }
-        featureFormulas {
-          nextToken
-        }
-        xlsFormTypeID
-        xlsFormType {
-          id
-          name
-          createdAt
-          updatedAt
-        }
-        xlsFormGroupID
-        xlsFormGroup {
-          id
-          name
-          xlsFormID
-          createdAt
-          updatedAt
-        }
-        xlsFormChoices {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
+      __typename
     }
   }
 `;

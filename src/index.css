@@ -5,13 +5,205 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-code {
+a{
+        text-decoration: none !important;
 }
-footer {
+.item-menu{
+        color: #000 !important;
+        text-decoration: none !important;
+
+}
+.modal-header, .modal-footer{
+        border-bottom: none !important;
+        border-top: none !important;
+}
+::marker {
+        font-weight: 700;
+        color: #80a71f;
+        font-size: 19px;
+      }
+.btn-cta {
+        width: 200px;
+        font-weight: 600;
+        border-radius: 13px;
+        border: none;
+        padding: 6px;
+        color: #fff;
+        background: #6B8E0F;
+    }
+.text-h{
+        height: 200px;
+        overflow-y: scroll;
+}
+.img-vacio{
+        width: 150px !important;
+}
+.color-grey{
+        color:#9e9ea1;
+}
+.input_login{
+        border-radius: 10px;
+}
+.btn-login{
+        border-radius: 10px;
+        background-color: #1C3541 !important;
+        color: #fff !important;
+}
+.role{
+        background-color: #1C3541;
+        color: #fff;
+        border-radius: 8px;
+        padding: 0px 13px !important;
+        text-align: center;
+        cursor: inherit !important;
+        margin-left:2rem;
+        border: none;
+        box-shadow: 2px 2px #8080806e;
+}
+.role_btn {
+        font-size: 0.6rem;
+        margin: 0px;
+        padding: 0px;
+        margin-top: -5px;
+    }
+    .iconstech{
+        margin: auto;
+        display: block;
+        max-width: 124px;
+    }
+.bg-porque{
+        background-color: #F4F8F9;
+}
+.titulo-landing{
+        color: #1C3541;
+        font-weight: 500;
+}
+.titulo-azul{
+        color:#1C3541;
+}
+.btn{
+        border-radius: 10px;
+        font-weight: 500;;
+}
+.btn:hover, .btn-landing:hover{
+        color:#6B8E0F !important; 
+        border:solid 2px #6B8E0F;
+}
+.fondo-azul{
+        background:#1C3541 !important;
+        color: #fff !important;
+}
+.img-market{
+        max-width: 300px;
+        display: block;
+        margin: auto;
+}
+.btn-landing{
+        background-color: #fff;
+        color: #1C3541;
+        border-radius: 10px;
+        border: solid #1C3541;
+        padding: 5px !important;
+}
+.accept{
+    background: #198754;
+    padding: 5px;
+    border-radius: 9px;
+    margin: 6px 1px;
+    color: #fff;
+    height: 36px;
+}
+.bg-tecnologia{
+        background-image: url('components/views/_images/bg-platform.jpg');
+        background-repeat: no-repeat;   
+        background-size: cover;
+    }
+.p-0.card img {
+        border-radius: 12px 12px 0px 0px;
+    }
+.card {
+border-radius: 20px 20px 20px 20px !important;
+}
+.box-postulant{
+        border: 1px solid #b9b6b69e;
+        border-radius: 20px;
+        margin: 5px;
+        box-shadow: 3px 5px #d3d1d11f;     
+        }
+.distribution th.px-3.py-2:nth-child(2) {
+        background: rgba(3,102,103,1);
+        border-radius: 9px 9px 0px 0px;
+        color: white;
+    }
+.distribution td{
+        text-align: center;
+}
+.text-tok-post{
+        font-size: 12px;
+        color:#cd0505;
+}
+    .distribution td.px-3.py-2:nth-child(2) {
+      background: #036667;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 0px 0px 9px 9px;
+    }
+
+.footer {
   background-color: #000;
   color: #f4f4f4;
   text-align: center;
   margin-top: auto;
   padding: 16px;
+}
+.confirmacion_finan {
+        border: 2px solid #b50000;
+        border-radius: 10px;
+        margin-top:10px;
+      }
+.confirmacion_finan svg{
+        color: #b50000;
+}
+.scale-up-ver-top {
+	-webkit-animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	        animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+ @-webkit-keyframes scale-up-ver-top {
+  0% {
+    -webkit-transform: scaleY(0.4);
+            transform: scaleY(0.4);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}
+@keyframes scale-up-ver-top {
+  0% {
+    -webkit-transform: scaleY(0.4);
+            transform: scaleY(0.4);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}
+
+@media only screen and (max-width: 720px) {
+
+        .box-postulant thead, .box-postulant tbody{
+                font-size: 0.7rem;;
+        }
+        .container{
+                height: 100%;
+        }
 }

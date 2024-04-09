@@ -175,3 +175,61 @@ global_project_total_cost/global_total_tokens = global_token_unit_value
 
 Fecha final para registrar la información del PRODUCT(proyecto)
 
+# Platillas de Emails
+
+
+### Creación de plantilla
+Para crear la estructura del mail se utiliza el framework <a href='https://mjml.io/'>MJML</a>.
+###
+En el cuerpo del html se pueden setear parametros que vamos a enviar junto con la función que dispara el email. Por ejemplo: para personalizar la plantilla con un saludo particular usaría "Hola {{user}}".
+###
+Una vez creado el template se copia el código html y se formatea a JSON en <a href='https://www.freeformatter.com/json-formatter.html'>FreeFormatter</a>.
+
+### Subir plantilla a SES Template
+
+Se debe crear un archivo el cual contenga la siguiente información (formato JSON)
+
+``````
+{
+    "Template":{
+        "TemplateName": "NOMBRE DEL TEMPLATE",
+        "SubjectPart": "ASUNTO DEL EMAIL",
+	    "HtmlPart": "HTML DE LA PLANTILLA FORMATEADA A JSON"
+    }
+}
+``````
+Desde este archivo (teniendo previamente instalado y configurado aws-cli)
+
+``````
+//Para crear un template hay que hacer 
+aws ses create-template --cli-input-json file://Untitled-1.json  
+
+//Para borrar un template hay que hacerj
+aws ses delete-template --template-name <nombre del template> --region <region>
+``````
+Con esto ya queda accesible el template para el envio de mails desde SES
+###
+Un ejemplo de uso utilizando Lambda
+``````
+exports.handler = async(event) => {
+          const fromMail = "example@example.com" <--- Remitente
+          const toMail = ["example1@example1.com", "example2@example2.com"] <--- Destinatarios
+          const data = data.user <-- Nombre del usuario
+          const templateData = {
+            user: data
+          };
+          try {
+            const data = await ses.send(new SendTemplatedEmailCommand({
+              Source: fromMail,
+              Destination: {
+                ToAddresses: toMail,
+              },
+              Template: "NOMBRE DEL TEMPLATE",
+              TemplateData: JSON.stringify(templateData),
+            }));
+            return { status: 'done', msg: data }
+          } catch (error) {
+            return { status: 'error', msg: error }
+          }
+        }
+``````

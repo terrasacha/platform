@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap';
 import s from './GuardarParcialmente.module.css'
-import LOGO from '../../../common/_images/SuanLogoName.svg'
+import LOGO from '../../../common/_images/suan_logo.png'
 import 'react-toastify/dist/ReactToastify.css';
 export default class GuardarParcialmente extends Component {
     constructor(props) {

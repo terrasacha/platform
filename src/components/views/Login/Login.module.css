@@ -18,8 +18,7 @@
     color: white;
 }
 .info h2{
-    font-family: 'Merriweather', serif;
-    font-size: 5em;
+    font-size: 3em;
 }
 .info p{
     font-size: 1.4em;
@@ -145,7 +144,6 @@
         color: white;
     }
     .info h2{
-        font-family: 'Merriweather', serif;
         font-size: 3em;
     }
     .info p{
@@ -178,8 +176,7 @@
             color: white;
         }
         .info h2{
-            font-family: 'Merriweather', serif;
-            font-size: 4em;
+            font-size: 3em;
         }
         .info p{
             font-size: 1em;

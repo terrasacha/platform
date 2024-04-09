@@ -6,7 +6,7 @@ import { Button, Container, Nav, Navbar } from 'react-bootstrap'
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
 
 // Import images
-import LOGO from '../../common/_images/SuanLogoName.svg'
+import LOGO from '../../common/_images/suan_logo.png'
 
 export default class HeaderNavbar extends Component {
 
@@ -41,8 +41,8 @@ export default class HeaderNavbar extends Component {
                     <Navbar style={{backgroundColor: '#fff'}} fixed="top">
                         <Container>
                             <Navbar.Brand href="/"><img src={LOGO} 
-                                        width="80"
-                                        height="auto"
+                                        width="auto"
+                                        height="40"
                                         className="d-inline-block align-top"
                                         alt="ATP"
                             /></Navbar.Brand>
@@ -71,23 +71,28 @@ export default class HeaderNavbar extends Component {
                                 <Nav.Link href="#categorys" onClick={(e) => this.changeHeaderNavBarRequest('categorys', e)}>
                                     Categorías
                                 </Nav.Link>
-
+                                <Nav.Link href="#items" onClick={(e) => this.changeHeaderNavBarRequest('items', e)}>
+                                    Items de proyectos
+                                </Nav.Link>
                                 <Nav.Link href="#features" onClick={(e) => this.changeHeaderNavBarRequest('features', e)}>
                                     Features
                                 </Nav.Link>
 
                                 <Nav.Link href="#uom" onClick={(e) => this.changeHeaderNavBarRequest('uom', e)}>
-                                    OUM
+                                    UOM
                                 </Nav.Link>                            
                             </Nav>
                             <Nav>
                                 <Nav.Link style={{fontWeight: '700', color: '#FE4849'}}>{role? role: ''}</Nav.Link>
                                 {/* <Nav.Link href="#assign_products" onClick={(e) => this.changeHeaderNavBarRequest('assign_products', e)}>
                                     Assign Products
-                                </Nav.Link>   */}        
+                                </Nav.Link>   */}
+                                <Nav.Link href="/new_project">
+                                    Crear proyecto
+                                </Nav.Link>
                                 <Nav.Link href="#assign_pf" onClick={(e) => this.changeHeaderNavBarRequest('assign_pf', e)}>
                                     Asignar Validadores
-                                </Nav.Link>          
+                                </Nav.Link>
                                 <Nav.Link href="#validators" onClick={(e) => this.changeHeaderNavBarRequest('validators', e)}>
                                     Validadores
                                 </Nav.Link>          
