@@ -174,7 +174,7 @@ query ListUsers(
     nextToken
   }
 }
-`
+`;
 export default class AssignPF extends Component {
   constructor(props) {
     super(props);
@@ -271,9 +271,12 @@ export default class AssignPF extends Component {
       await API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       );
-      notify({msg: "Validador asignado", type: "success"})
+      notify({ msg: "Validador asignado", type: "success" });
     } else {
-      notify({msg: "El validador ya se encuentra asignado al proyecto", type: "error"})
+      notify({
+        msg: "El validador ya se encuentra asignado al proyecto",
+        type: "error",
+      });
     }
     this.cleanState();
   }
@@ -323,9 +326,7 @@ export default class AssignPF extends Component {
                       onClick={(e) => this.handleSelectUser(user)}
                     >
                       <td>{user.name}</td>
-                      <td>
-                      {user.subrole}
-                      </td>
+                      <td>{user.subrole}</td>
                     </tr>
                   );
                 })}
@@ -423,7 +424,9 @@ export default class AssignPF extends Component {
                       <td>
                         <ul style={{ listStyle: "none", padding: "0" }}>
                           {verificadores.length > 0
-                            ? verificadores.map((v) => <li key={v.id}>{v.user.name}</li>)
+                            ? verificadores.map((v) => (
+                                <li key={v.id}>{v.user.name}</li>
+                              ))
                             : "Sin asignar"}
                         </ul>
                       </td>
