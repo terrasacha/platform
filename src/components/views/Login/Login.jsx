@@ -633,13 +633,7 @@ export default function LogIn() {
           </div>
         )}
 
-      {formType === "signedIn" && (
-        <div>
-          {role === "constructor" && (window.location.href = "../../constructor")}
-          {role === "validator" && (window.location.href = "../../validator_admon")}
-          {role === "admon" && (window.location.href = "../../admon")}
-        </div>
-      )}
+        {formType === "signedIn" && (window.location.href = "/")}
       </div>
     </div>
   );
