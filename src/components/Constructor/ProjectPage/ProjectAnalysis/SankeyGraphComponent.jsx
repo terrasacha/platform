@@ -3,7 +3,6 @@ import { Sankey, Tooltip, Rectangle } from "recharts";
 
 const SankeyGraphComponent = (props) => {
   const { infoSankeyGraph } = props;
-
   const prepareData = () => {
     const nodes = infoSankeyGraph.data[0].node.label.map((label, index) => ({
       name: label,
@@ -17,6 +16,7 @@ const SankeyGraphComponent = (props) => {
     }));
 
     const data = { nodes: nodes, links: links };
+    console.log(data, "sankey data");
     return data;
   };
 
