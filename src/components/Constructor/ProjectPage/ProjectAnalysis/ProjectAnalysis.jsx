@@ -4,10 +4,10 @@ import Card from "components/common/Card";
 import { getPolygonByCadastralNumber } from "services/getPolygonByCadastralNumber";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 import { getPredialData2ByCadastralNumber } from "services/getPredialData2ByCadastralNumber";
-import { generateJSONFile } from "utilities/generateJsonFile";
+//import { generateJSONFile } from "utilities/generateJsonFile";
 import { Button } from "react-bootstrap";
 import BarGraphComponent from "./BarGraphComponent";
-import SankeyGraphComponent from "./SankeyGraphComponent";
+//import SankeyGraphComponent from "./SankeyGraphComponent";
 export default function ProjectAnalysis({ visible }) {
   const { projectData } = useProjectData();
   const [comparativeAnalysis, setComparativeAnalysis] = useState(null);
@@ -71,42 +71,39 @@ export default function ProjectAnalysis({ visible }) {
   const handleDownloadGeoJsonButton = async () => {
     const geoJsonPolygonsObject = await getPolygonGeoJson();
     if (geoJsonPolygonsObject) {
-
-      console.log('geoJsonPolygonsObject', geoJsonPolygonsObject)
+      console.log("geoJsonPolygonsObject", geoJsonPolygonsObject);
 
       // const modifiedObject = {
       //   type: "string",
       //   features: [geoJsonPolygonsObject],
       // };
 
-      const modifiedObject = geoJsonPolygonsObject
-  
-      const endpoint = 'https://oraculo.terrasacha.com/api/v1/consulta-proyecto';
-      
-      const idProyecto = projectData.projectInfo.id; 
+      const modifiedObject = geoJsonPolygonsObject;
+
+      const endpoint =
+        "https://oraculo.terrasacha.com/api/v1/consulta-proyecto";
+
+      const idProyecto = projectData.projectInfo.id;
       //console.log(`${endpoint}?id_proyecto=${idProyecto}`);
-      const url = `${endpoint}?id_proyecto=${idProyecto}`
-      console.log('url', url)
+      const url = `${endpoint}?id_proyecto=${idProyecto}`;
+      console.log("url", url);
       const request = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(modifiedObject)
+        body: JSON.stringify(modifiedObject),
       });
 
       const response = await request.json();
-  
+
       if (response) {
-        console.log('JSON enviado exitosamente');
+        console.log("JSON enviado exitosamente");
       } else {
-        console.error('Error al enviar JSON:');
-       
+        console.error("Error al enviar JSON:");
       }
     }
   };
-  
-
 
   const handleComparativeAreaAnalysis = async () => {
     const comparativeFile = projectData.projectFeatures.find(
@@ -148,12 +145,12 @@ export default function ProjectAnalysis({ visible }) {
                         <BarGraphComponent
                           infoBarGraph={comparativeAnalysis.graphJSON_barras}
                         />
-                        <h4 className="pt-4">
+                        {/* <h4 className="pt-4">
                           Diagrama de Sankey - Cambios en Vegetación
                         </h4>
                         <SankeyGraphComponent
                           infoSankeyGraph={comparativeAnalysis.graphJSON_sankey}
-                        />
+                        /> */}
                       </>
                     ) : (
                       <p className="mb-0 me-4">
