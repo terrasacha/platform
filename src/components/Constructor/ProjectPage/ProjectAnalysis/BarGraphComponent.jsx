@@ -53,5 +53,5 @@ export default function BarGraphComponent(props) {
       },
     },
   };
-  return <Bar options={options} data={data} />;
+  return <Bar options={options} data={data} width={1200} height={500} />;
 }

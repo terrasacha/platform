@@ -145,7 +145,7 @@ export default function ProjectAnalysis({ visible }) {
                         <BarGraphComponent
                           infoBarGraph={comparativeAnalysis.graphJSON_barras}
                         />
-                        {/*  <h4 className="pt-4">
+                        {/* <h4 className="pt-4">
                           Diagrama de Sankey - Cambios en Vegetación
                         </h4>
                         <SankeyGraphComponent
