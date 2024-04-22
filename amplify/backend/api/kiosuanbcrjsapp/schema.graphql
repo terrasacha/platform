@@ -119,6 +119,7 @@ type Product @model {
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
   scripts: [Script] @hasMany(indexName: "byProduct", fields: ["id"])
+  tokens: [Token] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model {
@@ -307,4 +308,14 @@ type Rate @model {
   id: ID!
   currency: String
   value: Float
+}
+
+type Token @model {
+  id: ID!
+  productID: ID @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  policyID: String
+  tokenName: String
+  supply: Int
+  oraclePrice: Int
 }
