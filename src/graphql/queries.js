@@ -1030,6 +1030,21 @@ export const getProduct = /* GraphQL */ `
         nextToken
         __typename
       }
+      tokens {
+        items {
+          id
+          productID
+          policyID
+          tokenName
+          supply
+          oraclePrice
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -1085,6 +1100,10 @@ export const listProducts = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -1153,6 +1172,10 @@ export const getImage = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -1897,6 +1920,10 @@ export const getProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2321,6 +2348,10 @@ export const getUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2490,6 +2521,10 @@ export const getTransactions = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2642,6 +2677,10 @@ export const getCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2785,6 +2824,10 @@ export const getScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2873,6 +2916,114 @@ export const listRates = /* GraphQL */ `
         id
         currency
         value
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getToken = /* GraphQL */ `
+  query GetToken($id: ID!) {
+    getToken(id: $id) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      policyID
+      tokenName
+      supply
+      oraclePrice
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listTokens = /* GraphQL */ `
+  query ListTokens(
+    $filter: ModelTokenFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listTokens(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
+        policyID
+        tokenName
+        supply
+        oraclePrice
         createdAt
         updatedAt
         __typename

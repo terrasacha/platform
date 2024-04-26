@@ -1969,6 +1969,21 @@ export const createProduct = /* GraphQL */ `
         nextToken
         __typename
       }
+      tokens {
+        items {
+          id
+          productID
+          policyID
+          tokenName
+          supply
+          oraclePrice
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -2109,6 +2124,21 @@ export const updateProduct = /* GraphQL */ `
           MainnetAddr
           Active
           base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      tokens {
+        items {
+          id
+          productID
+          policyID
+          tokenName
+          supply
+          oraclePrice
           createdAt
           updatedAt
           __typename
@@ -2263,6 +2293,21 @@ export const deleteProduct = /* GraphQL */ `
         nextToken
         __typename
       }
+      tokens {
+        items {
+          id
+          productID
+          policyID
+          tokenName
+          supply
+          oraclePrice
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -2328,6 +2373,10 @@ export const createImage = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -2403,6 +2452,10 @@ export const updateImage = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2472,6 +2525,10 @@ export const deleteImage = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -3776,6 +3833,10 @@ export const createProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3945,6 +4006,10 @@ export const updateProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4111,6 +4176,10 @@ export const deleteProductFeature = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -4625,6 +4694,10 @@ export const createUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4729,6 +4802,10 @@ export const updateUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4830,6 +4907,10 @@ export const deleteUserProduct = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -4970,6 +5051,10 @@ export const createTransactions = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5047,6 +5132,10 @@ export const updateTransactions = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5121,6 +5210,10 @@ export const deleteTransactions = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -5229,6 +5322,10 @@ export const createCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5331,6 +5428,10 @@ export const updateCompany = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -5439,6 +5540,10 @@ export const deleteCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5528,6 +5633,10 @@ export const createScript = /* GraphQL */ `
           __typename
         }
         scripts {
+          nextToken
+          __typename
+        }
+        tokens {
           nextToken
           __typename
         }
@@ -5627,6 +5736,10 @@ export const updateScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5723,6 +5836,10 @@ export const deleteScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        tokens {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5776,6 +5893,219 @@ export const deleteRate = /* GraphQL */ `
       id
       currency
       value
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createToken = /* GraphQL */ `
+  mutation CreateToken(
+    $input: CreateTokenInput!
+    $condition: ModelTokenConditionInput
+  ) {
+    createToken(input: $input, condition: $condition) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      policyID
+      tokenName
+      supply
+      oraclePrice
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateToken = /* GraphQL */ `
+  mutation UpdateToken(
+    $input: UpdateTokenInput!
+    $condition: ModelTokenConditionInput
+  ) {
+    updateToken(input: $input, condition: $condition) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      policyID
+      tokenName
+      supply
+      oraclePrice
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteToken = /* GraphQL */ `
+  mutation DeleteToken(
+    $input: DeleteTokenInput!
+    $condition: ModelTokenConditionInput
+  ) {
+    deleteToken(input: $input, condition: $condition) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      policyID
+      tokenName
+      supply
+      oraclePrice
       createdAt
       updatedAt
       __typename
