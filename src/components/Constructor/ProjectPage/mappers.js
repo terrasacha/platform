@@ -465,9 +465,9 @@ export const mapProjectData = async (data) => {
   );
 
   console.log(tokenHistoricalData, 'tokenHistoricalData')
-  const lastTokenHistoricalData =tokenHistoricalData.length > 0 && tokenHistoricalData[tokenHistoricalData.length - 1].periods || []
+  // const lastTokenHistoricalData =tokenHistoricalData.length > 0 && tokenHistoricalData[tokenHistoricalData.length - 1].periods || []
 
-  const periods = lastTokenHistoricalData.map((tkhd) => {
+  const periods = tokenHistoricalData.map((tkhd) => {
     return {
       period: tkhd.period,
       date: new Date(tkhd.date),
@@ -657,7 +657,7 @@ export const mapProjectData = async (data) => {
 
   let isFinancialComplete = false;
   if (
-    lastTokenHistoricalData.length > 0 &&
+    tokenHistoricalData.length > 0 &&
     tokenCurrency !== "" &&
     totalTokens !== 0 &&
     Object.keys(tokenAmountDistribution).length > 0 &&
@@ -676,7 +676,7 @@ export const mapProjectData = async (data) => {
   };
 
   const financialProgress = {
-    lastTokenHistoricalData: lastTokenHistoricalData.length > 0,
+    tokenHistoricalData: tokenHistoricalData.length > 0,
     tokenCurrency: tokenCurrency !== "",
     totalTokens: totalTokens !== 0,
     tokenAmountDistribution: Object.keys(tokenAmountDistribution).length > 0,
@@ -716,7 +716,7 @@ export const mapProjectData = async (data) => {
           pfTokenCurrencyID: pfTokenCurrencyID,
         },
         historicalData: tokenHistoricalData,
-        lastTokenHistoricalData: lastTokenHistoricalData,
+        tokenHistoricalData: tokenHistoricalData,
         amountDistribution: tokenAmountDistribution,
         transactionsNumber: data.transactions.items.length,
         name: tokenName,

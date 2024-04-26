@@ -18,7 +18,8 @@ import TokenDistributionInputTable from "./SettingCards/TokenDistributionInputTa
 export default function ProjectSettings({ visible }) {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
-  const { projectData, handleUpdateContextProjectData } = useProjectData();
+  const { projectData, handleUpdateContextProjectData, fetchProjectData } =
+    useProjectData();
   const { projectItems } = useProjectItems();
 
   console.log(projectData, "projectData");
@@ -67,7 +68,7 @@ export default function ProjectSettings({ visible }) {
         });
         return;
       }
-      handleUpdateContextProjectData({ isTechnicalFreeze: true });
+      // handleUpdateContextProjectData({ isTechnicalFreeze: true });
 
       const technicalInfoPfID =
         projectData.projectFeatures.filter((item) => {
@@ -84,6 +85,8 @@ export default function ProjectSettings({ visible }) {
           input: updatedProductFeature,
         })
       );
+
+      await fetchProjectData();
 
       notify({
         msg: "Se ha oficializado la información técnica.",
@@ -141,6 +144,8 @@ export default function ProjectSettings({ visible }) {
           input: updatedProductFeature,
         })
       );
+
+      await fetchProjectData();
 
       notify({
         msg: "Se ha oficializado la información financiera.",
