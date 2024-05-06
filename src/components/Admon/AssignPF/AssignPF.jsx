@@ -452,7 +452,7 @@ export default class AssignPF extends Component {
 
     return (
       <div className="container mx-auto">
-        <div className="container">
+        <div className="container bg-white p-4 rounded-lg shadow-sm mb-4">
           <h2 className="text-2xl font-semibold">Assign Product</h2>
           <form>
             <div className="grid grid-cols-2 gap-4 mt-4">
@@ -504,11 +504,17 @@ export default class AssignPF extends Component {
         </div>
 
         <div className="flex flex-col md:flex-row mt-4 h-96 overflow-auto">
-          <div className="md:w-2/5 overflow-auto">{renderUsers()}</div>
-          <div className="md:w-3/5 overflow-auto">{renderProducts()}</div>
+          <div className="md:w-2/5 overflow-auto bg-white p-4 rounded-lg shadow-sm mb-4">
+            {renderUsers()}
+          </div>
+          <div className="md:w-3/5 overflow-auto bg-white p-4 rounded-lg shadow-sm mb-4 ml-2">
+            {renderProducts()}
+          </div>
         </div>
 
-        <div>{renderUserProducts()}</div>
+        <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
+          {renderUserProducts()}
+        </div>
       </div>
     );
   }

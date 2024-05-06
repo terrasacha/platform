@@ -232,7 +232,7 @@ class Validators extends Component {
     const renderValidators = () => {
       if (validators.length > 0) {
         return (
-          <div className="container mx-auto mt-8">
+          <div className="container mx-auto mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
             <h4 className="text-lg font-semibold mb-4">List Validators</h4>
             <div className="overflow-x-auto">
               <table className="table-auto w-full">
@@ -289,8 +289,8 @@ class Validators extends Component {
     };
 
     return (
-      <div className="container mx-auto">
-        <div className="mt-8 mb-8">
+      <div className="container mx-auto ">
+        <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
           <h4 className="text-lg">Create new validator</h4>
           <form className="mt-4">
             <div className="mb-4">
