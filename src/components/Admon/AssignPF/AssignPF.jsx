@@ -174,7 +174,7 @@ query ListUsers(
     nextToken
   }
 }
-`
+`;
 export default class AssignPF extends Component {
   constructor(props) {
     super(props);
@@ -271,9 +271,12 @@ export default class AssignPF extends Component {
       await API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       );
-      notify({msg: "Validador asignado", type: "success"})
+      notify({ msg: "Validador asignado", type: "success" });
     } else {
-      notify({msg: "El validador ya se encuentra asignado al proyecto", type: "error"})
+      notify({
+        msg: "El validador ya se encuentra asignado al proyecto",
+        type: "error",
+      });
     }
     this.cleanState();
   }
@@ -298,21 +301,13 @@ export default class AssignPF extends Component {
     const renderUsers = () => {
       if (usersCopy.length > 0) {
         return (
-          <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <h2 className="mr-5">Users</h2>
-            </div>
-            <Table bordered hover style={{ cursor: "pointer" }}>
-              <thead>
+          <div className="mx-auto mt-8">
+            <h2 className="text-xl font-semibold mb-4">Users</h2>
+            <table className="w-full border-collapse border border-gray-300 hover:border-blue-500">
+              <thead className="bg-gray-200">
                 <tr>
-                  <th>Name</th>
-                  <th>Subrole</th>
+                  <th className="px-4 py-2">Name</th>
+                  <th className="px-4 py-2">Subrole</th>
                 </tr>
               </thead>
               <tbody>
@@ -320,33 +315,33 @@ export default class AssignPF extends Component {
                   return (
                     <tr
                       key={user.id}
-                      onClick={(e) => this.handleSelectUser(user)}
+                      onClick={() => this.handleSelectUser(user)}
+                      className="cursor-pointer hover:bg-gray-100"
                     >
-                      <td>{user.name}</td>
-                      <td>
-                      {user.subrole}
-                      </td>
+                      <td className="border px-4 py-2">{user.name}</td>
+                      <td className="border px-4 py-2">{user.subrole}</td>
                     </tr>
                   );
                 })}
               </tbody>
-            </Table>
-          </>
+            </table>
+          </div>
         );
       }
     };
+
     const renderProducts = () => {
       console.log(products);
       if (products.length > 0) {
         return (
-          <>
-            <h2>Products</h2>
-            <Table bordered hover style={{ cursor: "pointer" }}>
-              <thead>
+          <div className="mx-auto mt-8 ml-2">
+            <h2 className="text-xl font-semibold mb-4">Products</h2>
+            <table className="w-full border-collapse border border-gray-300 hover:border-blue-500">
+              <thead className="bg-gray-200">
                 <tr>
-                  <th>Proyecto</th>
-                  <th>Categoría</th>
-                  <th>Verificadores</th>
+                  <th className="px-4 py-2">Proyecto</th>
+                  <th className="px-4 py-2">Categoría</th>
+                  <th className="px-4 py-2">Verificadores</th>
                 </tr>
               </thead>
               <tbody>
@@ -357,55 +352,68 @@ export default class AssignPF extends Component {
                   return (
                     <tr
                       key={product.id}
-                      onClick={(e) => this.handleSelectProduct(product)}
+                      onClick={() => this.handleSelectProduct(product)}
+                      className="cursor-pointer hover:bg-gray-100"
                     >
-                      <td>{product.name}</td>
-                      <td>{product.categoryID}</td>
-                      <td>
-                        <ul style={{ listStyle: "none", padding: "0" }}>
-                          {verificadores.length > 0
-                            ? verificadores.map((v) => (
-                                <li key={v.id}>
-                                  <div>
-                                    {v.user.name}
-                                    <Button
-                                      className="m-2"
-                                      variant="danger"
-                                      size="sm"
-                                      onClick={() =>
-                                        this.handleRemoveValidatorFromProject(
-                                          v.id
-                                        )
-                                      }
+                      <td className="border px-4 py-2">{product.name}</td>
+                      <td className="border px-4 py-2">{product.categoryID}</td>
+                      <td className="border px-4 py-2">
+                        <ul className="list-none p-0">
+                          {verificadores.length > 0 ? (
+                            verificadores.map((v) => (
+                              <li key={v.id} className="mb-2">
+                                <div className="flex items-center">
+                                  {v.user.name}
+                                  <button
+                                    className="ml-2 text-white bg-red-500 border border-red-600 rounded-sm w-6 h-6 flex items-center justify-center"
+                                    onClick={() =>
+                                      this.handleRemoveValidatorFromProject(
+                                        v.id
+                                      )
+                                    }
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                      fill="currentColor"
+                                      className="w-4 h-4"
                                     >
-                                      <XIcon />
-                                    </Button>
-                                  </div>
-                                </li>
-                              ))
-                            : "Sin asignar"}
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M14.293 5.293a1 1 0 011.414 1.414L11.414 12l4.293 4.293a1 1 0 11-1.414 1.414L10 13.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 12 4.293 7.707a1 1 0 111.414-1.414L10 10.586l4.293-4.293a1 1 0 011.414 0z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </li>
+                            ))
+                          ) : (
+                            <li>Sin asignar</li>
+                          )}
                         </ul>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
-            </Table>
-          </>
+            </table>
+          </div>
         );
       }
     };
+
     const renderUserProducts = () => {
       if (products.length > 0) {
         return (
-          <>
-            <h2>Products</h2>
-            <Table bordered hover style={{ cursor: "pointer" }}>
-              <thead>
+          <div className="mx-auto mt-8">
+            <h2 className="text-xl font-semibold mb-4">Products</h2>
+            <table className="w-full border-collapse border border-gray-300 hover:border-blue-500">
+              <thead className="bg-gray-200">
                 <tr>
-                  <th>Proyecto</th>
-                  <th>Categoría</th>
-                  <th>Verificadores</th>
+                  <th className="px-4 py-2">Proyecto</th>
+                  <th className="px-4 py-2">Categoría</th>
+                  <th className="px-4 py-2">Verificadores</th>
                 </tr>
               </thead>
               <tbody>
@@ -416,88 +424,92 @@ export default class AssignPF extends Component {
                   return (
                     <tr
                       key={product.id}
-                      onClick={(e) => this.handleSelectProduct(product)}
+                      onClick={() => this.handleSelectProduct(product)}
+                      className="cursor-pointer hover:bg-gray-100"
                     >
-                      <td>{product.name}</td>
-                      <td>{product.categoryID}</td>
-                      <td>
-                        <ul style={{ listStyle: "none", padding: "0" }}>
-                          {verificadores.length > 0
-                            ? verificadores.map((v) => <li key={v.id}>{v.user.name}</li>)
-                            : "Sin asignar"}
+                      <td className="border px-4 py-2">{product.name}</td>
+                      <td className="border px-4 py-2">{product.categoryID}</td>
+                      <td className="border px-4 py-2">
+                        <ul className="list-none p-0">
+                          {verificadores.length > 0 ? (
+                            verificadores.map((v) => (
+                              <li key={v.id}>{v.user.name}</li>
+                            ))
+                          ) : (
+                            <li>Sin asignar</li>
+                          )}
                         </ul>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
-            </Table>
-          </>
+            </table>
+          </div>
         );
       }
     };
-    return (
-      <>
-        <Container>
-          <Container>
-            <h2>Assign Product</h2>
-            <Form>
-              <Row className="mb-2">
-                <Form.Group as={Col}>
-                  <Form.Label>User</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Seleccionar un usuario"
-                    value={
-                      this.state.userSelected !== null
-                        ? this.state.userSelected.name
-                        : ""
-                    }
-                    onChange={() => ""}
-                  />
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label>Proyecto</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Seleccionar un proyecto"
-                    value={
-                      this.state.productselected !== null
-                        ? `${this.state.productselected.name} `
-                        : ""
-                    }
-                    onChange={() => ""}
-                  />
-                </Form.Group>
-              </Row>
 
-              <Row className="mb-1">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  disabled={
-                    userSelected === null || productselected === null
-                      ? true
-                      : false
-                  }
-                  onClick={() => this.handleAssignProduct()}
-                >
-                  ASIGNAR VERIFICADOR
-                </Button>
-              </Row>
-            </Form>
-          </Container>
-          <Container style={{ display: "flex", height: "580px" }}>
-            <Container style={{ overflow: "auto", width: "40%" }}>
-              {renderUsers()}
-            </Container>
-            <Container style={{ overflow: "auto" }}>
-              {renderProducts()}
-            </Container>
-          </Container>
-          <Container>{renderUserProducts()}</Container>
-        </Container>
-      </>
+    return (
+      <div className="container mx-auto">
+        <div className="container">
+          <h2 className="text-2xl font-semibold">Assign Product</h2>
+          <form>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="col-span-1">
+                <label htmlFor="user" className="block mb-1">
+                  User
+                </label>
+                <input
+                  id="user"
+                  type="text"
+                  placeholder="Seleccionar un usuario"
+                  value={userSelected ? userSelected.name : ""}
+                  onChange={() => ""}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  readOnly
+                />
+              </div>
+              <div className="col-span-1">
+                <label htmlFor="project" className="block mb-1">
+                  Proyecto
+                </label>
+                <input
+                  id="project"
+                  type="text"
+                  placeholder="Seleccionar un proyecto"
+                  value={productselected ? productselected.name : ""}
+                  onChange={() => ""}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                  readOnly
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <button
+                type="button"
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md ${
+                  userSelected && productselected
+                    ? ""
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+                disabled={!userSelected || !productselected}
+                onClick={() => this.handleAssignProduct()}
+              >
+                ASIGNAR VERIFICADOR
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="flex flex-col md:flex-row mt-4 h-96 overflow-auto">
+          <div className="md:w-2/5 overflow-auto">{renderUsers()}</div>
+          <div className="md:w-3/5 overflow-auto">{renderProducts()}</div>
+        </div>
+
+        <div>{renderUserProducts()}</div>
+      </div>
     );
   }
 }

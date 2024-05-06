@@ -10,7 +10,6 @@ import LOGO from "components/common/_images/suan_logo.png";
 import { Auth } from "aws-amplify";
 import s from "components/Constructor/Navbar/HeaderNavbar.module.css";
 
-
 export default function NewHeaderNavbar() {
   let role = localStorage.getItem("role");
 
@@ -26,28 +25,24 @@ export default function NewHeaderNavbar() {
 
   const findLastAuthUserKey = () => {
     for (let key in localStorage) {
-      if (key.includes("CognitoIdentityServiceProvider") && key.includes(".LastAuthUser")) {
+      if (
+        key.includes("CognitoIdentityServiceProvider") &&
+        key.includes(".LastAuthUser")
+      ) {
         const userlog = localStorage[key];
         return userlog;
       }
     }
     return null;
   };
-  
+
   let userlog = findLastAuthUserKey();
-  
-  
+
   return (
     <Navbar key="sm" bg="light" expand="lg" fixed="top">
       <Container fluid>
         <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
-          <img
-            src={LOGO}
-            height="40"
-            width="auto"
-            className="d-inline-block align-top"
-            alt="ATP"
-          />
+          <img src={LOGO} className="w-8 h-auto" alt="ATP" />
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Offcanvas
@@ -58,13 +53,7 @@ export default function NewHeaderNavbar() {
           <Offcanvas.Header closeButton>
             <Offcanvas.Title id={`offcanvasNavbarLabel-expand-$'sm'`}>
               <a href="/">
-                <img
-                  src={LOGO}
-                  width="40"
-                  height="40"
-                  className="d-inline-block align-top"
-                  alt="ATP"
-                />
+                <img src={LOGO} className="w-8 h-auto" alt="ATP" />
               </a>
             </Offcanvas.Title>
           </Offcanvas.Header>
@@ -78,17 +67,13 @@ export default function NewHeaderNavbar() {
               <Nav className={s.navGroup}>
                 {role === "constructor" && (
                   <>
-                  <Nav.Link
-                    onClick={() =>
-                      (window.location.href = "/constructor")
-                    }
-                  >
-                    Mis Proyectos
-                  </Nav.Link>
                     <Nav.Link
-                      onClick={() =>
-                        (window.location.href = "/new_project")
-                      }
+                      onClick={() => (window.location.href = "/constructor")}
+                    >
+                      Mis Proyectos
+                    </Nav.Link>
+                    <Nav.Link
+                      onClick={() => (window.location.href = "/new_project")}
                     >
                       Postular proyecto
                     </Nav.Link>
@@ -114,17 +99,24 @@ export default function NewHeaderNavbar() {
                 )}
                 {localStorage.getItem("role") ? (
                   <div>
-                    <button className={s.signing} onClick={() => handleSignOut()}>
+                    <button
+                      className={s.signing}
+                      onClick={() => handleSignOut()}
+                    >
                       Desconectar
                     </button>
-                  <button className='role'>
-                    {userlog}<br></br>              
-                    <p className='role_btn'>
-                      {role === 'validator' ? 'Validador' : (role === 'constructor' ? 'Propietario' : role)}
-                    </p>
-                </button>
+                    <button className="role">
+                      {userlog}
+                      <br></br>
+                      <p className="role_btn">
+                        {role === "validator"
+                          ? "Validador"
+                          : role === "constructor"
+                          ? "Propietario"
+                          : role}
+                      </p>
+                    </button>
                   </div>
-
                 ) : (
                   <button
                     className={s.signing}

@@ -99,14 +99,16 @@ class Items extends Component {
   }
 
   filterByConcept = (productFeatures, concept) => {
-    return productFeatures.filter(objeto => {
+    return productFeatures.filter((objeto) => {
       // Parsear el valor del atributo "value" como un array de objetos
       const valores = JSON.parse(objeto.value);
-  
+
       // Verificar si alguno de los objetos tiene el concepto buscado
-      return valores.some(valor => valor.CONCEPTO.replace(/\t/g, '') === concept);
+      return valores.some(
+        (valor) => valor.CONCEPTO.replace(/\t/g, "") === concept
+      );
     });
-  }
+  };
 
   async handleCRUDCategory() {
     let tempNewCategory = this.state.newCategory;
@@ -126,34 +128,37 @@ class Items extends Component {
         name: this.state.newCategory.name,
         type: this.state.newCategory.type,
       };
-      const oldName = await getProductItemName(tempNewCategory.id)
+      const oldName = await getProductItemName(tempNewCategory.id);
       await API.graphql(
         graphqlOperation(updateProductItem, { input: tempNewCategory })
       );
       await this.cleanCategoryOnCreate();
 
       // Update al product features related to GLOBAL_INGRESOS_POR_PRODUCTO	GLOBAL_INDICADORES_FINANCIEROS GLOBAL_INDICADORES_FINANCIEROS_TOKEN GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO
-      let featureID
+      let featureID;
       if (tempNewCategory.type === "Ingresos por producto") {
-        featureID = "GLOBAL_INGRESOS_POR_PRODUCTO"
+        featureID = "GLOBAL_INGRESOS_POR_PRODUCTO";
       }
       if (tempNewCategory.type === "Productos del ciclo del proyecto") {
-        featureID = "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"
+        featureID = "GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO";
       }
       if (tempNewCategory.type === "Indicadores financieros (Proyecto)") {
-        featureID = "GLOBAL_INDICADORES_FINANCIEROS"
+        featureID = "GLOBAL_INDICADORES_FINANCIEROS";
       }
       if (tempNewCategory.type === "Indicadores financieros (Token)") {
-        featureID = "GLOBAL_INDICADORES_FINANCIEROS_TOKEN"
+        featureID = "GLOBAL_INDICADORES_FINANCIEROS_TOKEN";
       }
 
-      const productFeatures = await getFilteredProductFeatures(featureID)
-      const productFeaturesFiltered = this.filterByConcept(productFeatures, oldName)
+      const productFeatures = await getFilteredProductFeatures(featureID);
+      const productFeaturesFiltered = this.filterByConcept(
+        productFeatures,
+        oldName
+      );
       productFeaturesFiltered.forEach(async (pf) => {
         let pfValue = JSON.parse(pf.value);
 
-        pfValue.forEach(valor => {
-          if (valor.CONCEPTO.replace(/\t/g, '') === oldName) {
+        pfValue.forEach((valor) => {
+          if (valor.CONCEPTO.replace(/\t/g, "") === oldName) {
             valor.CONCEPTO = tempNewCategory.name;
           }
         });
@@ -163,12 +168,14 @@ class Items extends Component {
           value: JSON.stringify(pfValue),
         };
         await API.graphql(
-          graphqlOperation(updateProductFeature, { input: tempUpdatedProductFeature })
+          graphqlOperation(updateProductFeature, {
+            input: tempUpdatedProductFeature,
+          })
         );
       });
-      console.log("oldName", oldName)
-      console.log("productFeatures", productFeatures)
-      console.log("productFeaturesFiltered", productFeaturesFiltered)
+      console.log("oldName", oldName);
+      console.log("productFeatures", productFeatures);
+      console.log("productFeaturesFiltered", productFeaturesFiltered);
     }
   }
 
@@ -197,62 +204,67 @@ class Items extends Component {
     const renderCategorys = () => {
       if (categorys.length > 0) {
         return (
-          <Container>
-            <Table striped bordered hover>
-              <thead>
+          <div className="container">
+            <table className="w-full border-collapse border rounded-lg">
+              <thead className="bg-gray-200">
                 <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Action</th>
+                  <th className="px-4 py-2">Name</th>
+                  <th className="px-4 py-2">Type</th>
+                  <th className="px-4 py-2">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {categorys.map((category) => (
-                  <tr key={category.id}>
-                    <td>{category.name}</td>
-                    <td>{category.type}</td>
-                    <td>
-                      <Button
-                        variant="primary"
-                        size="sm"
+                  <tr key={category.id} className="bg-white border-b">
+                    <td className="px-4 py-2">{category.name}</td>
+                    <td className="px-4 py-2">{category.type}</td>
+                    <td className="px-4 py-2">
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         onClick={(e) =>
                           this.handleLoadEditCategory(category, e)
                         }
                       >
                         Editar
-                      </Button>
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </Table>
-          </Container>
+            </table>
+          </div>
         );
       }
     };
 
     return (
-      <Container style={{ display: "flex", flexDirection: "column" }}>
-        <Container>
-          <h2>
+      <div className="container mx-auto mt-8">
+        <div className="container mb-8 p-4 bg-white rounded-md">
+          <h2 className="text-2xl mb-4">
             {CRUDButtonName} Items de proyecto: {newCategory.name}
           </h2>
-          <Form>
-            <Row className="mb-2">
-              <Form.Group as={Col} controlId="formGridNewCategoryName">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
+          <form className="space-y-4">
+            <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+              <div className="w-full md:w-1/2">
+                <label className="block">Nombre</label>
+                <input
                   type="text"
+                  id="formGridNewCategoryName"
+                  className="form-input"
                   placeholder="Ex. NUEVO CONCEPTO"
                   name="category.name"
                   value={newCategory.name}
                   onChange={(e) => this.handleOnChangeInputForm(e)}
                 />
-                <Form.Label>Categoria</Form.Label>
-                <Form.Select
+              </div>
+              <div className="w-full md:w-1/2">
+                <label className="block">Categoría</label>
+                <select
+                  id="formGridNewCategoryType"
+                  className="form-select"
                   name="category.type"
-                  onChange={(e) => this.handleOnChangeInputForm(e)}
                   value={newCategory.type}
+                  onChange={(e) => this.handleOnChangeInputForm(e)}
                 >
                   <option disabled value="">
                     Selecciona una opción
@@ -272,25 +284,23 @@ class Items extends Component {
                   <option value="Distribución volumen de tokens">
                     Distribución volumen de tokens
                   </option>
-                </Form.Select>
-              </Form.Group>
-            </Row>
-
-            <Row className="mb-1">
-              <Button
-                variant="primary"
-                size="sm"
+                </select>
+              </div>
+            </div>
+            <div>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={this.handleCRUDCategory}
                 disabled={this.state.isCRUDButtonDisable}
               >
                 {CRUDButtonName}
-              </Button>
-            </Row>
-          </Form>
-        </Container>
-        <br></br>
+              </button>
+            </div>
+          </form>
+        </div>
+        <br />
         {renderCategorys()}
-      </Container>
+      </div>
     );
   }
 }

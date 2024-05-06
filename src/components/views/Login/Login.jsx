@@ -297,7 +297,7 @@ export default function LogIn() {
                     name="username"
                     onChange={onChange}
                     placeholder="Usuario"
-                    className="input_login"
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                   {inputError.username && (
                     <span style={{ color: "red", fontSize: ".8em" }}>
@@ -311,7 +311,7 @@ export default function LogIn() {
                     name="email"
                     onChange={onChange}
                     placeholder="example@example.com"
-                    className="input_login"
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
                 <fieldset>
@@ -320,7 +320,7 @@ export default function LogIn() {
                     type="password"
                     onChange={onChange}
                     placeholder="contraseña"
-                    className="input_login"
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
                 <fieldset>
@@ -329,7 +329,7 @@ export default function LogIn() {
                     type="password"
                     onChange={onChange}
                     placeholder="Confirmar Contraseña"
-                    className="input_login"
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
                 <fieldset>
@@ -337,7 +337,7 @@ export default function LogIn() {
                   <select
                     name="role"
                     onChange={onChange}
-                    className="input_login"
+                    className="border-[1px] border-gray-300 rounded-md"
                   >
                     <option value="investor">Inversionista</option>
                     <option value="constructor">Propietario</option>
@@ -463,7 +463,7 @@ export default function LogIn() {
                   <input
                     name="username"
                     onChange={onChange}
-                    className="input_login"
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
                 <fieldset>
@@ -472,7 +472,7 @@ export default function LogIn() {
                     type="password"
                     name="password"
                     onChange={onChange}
-                    className="input_login"
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
                 <span
