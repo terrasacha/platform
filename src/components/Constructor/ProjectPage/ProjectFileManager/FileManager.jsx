@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import Card from "components/common/Card";
-import Breadcrumb from "react-bootstrap/Breadcrumb";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import { Button, Form, Table } from "react-bootstrap";
 import { FolderIcon } from "components/common/icons/FolderIcon";
 import { AddFolderIcon } from "components/common/icons/AddFolderIcon";
 import { convertAWSDatetimeToDate } from "../utils";
@@ -30,12 +28,12 @@ export default function FileManager(props) {
       .then((data) => {
         // const actualFolder = currentPath.length === 0 ? rootFolder : currentPath.join("/");
         setS3Objects(data);
-        if(currentPath.length === 0) {
+        if (currentPath.length === 0) {
           setSelectedFolder(data[rootFolder].data);
           setCurrentPath([rootFolder]);
         } else {
           let currentData = data;
-          
+
           // Itera a través de currentPath para navegar por la estructura de datos
           for (const pathSegment of currentPath) {
             currentData = currentData[pathSegment].data;
@@ -138,17 +136,17 @@ export default function FileManager(props) {
     try {
       const id = doc;
       const response = await Storage.get(id, { download: true });
-  
+
       // Extraer el nombre del archivo de la ruta de S3
       const fileName = id.split("/").pop();
-  
+
       const url = URL.createObjectURL(response.Body);
       const link = document.createElement("a");
       link.href = url;
-  
+
       // Usar el nombre del archivo para el atributo 'download'
       link.download = fileName;
-  
+
       link.click();
     } catch (error) {
       console.log("Error al descargar el archivo:", error);
@@ -243,7 +241,7 @@ export default function FileManager(props) {
     } else {
       return "-";
     }
-  }
+  };
 
   const getVisibleStatus = (key) => {
     const file =
@@ -253,17 +251,19 @@ export default function FileManager(props) {
     if (file) {
       if (file.visible) {
         return (
-          <Form.Check
+          <input
+            type="checkbox"
             checked={true}
             onChange={() => handleUpdateVisibleStatus(file.id, false)}
-          ></Form.Check>
+          />
         );
       } else {
         return (
-          <Form.Check
+          <input
+            type="checkbox"
             checked={false}
             onChange={() => handleUpdateVisibleStatus(file.id, true)}
-          ></Form.Check>
+          />
         );
       }
     } else {
@@ -303,24 +303,47 @@ export default function FileManager(props) {
     <Card className={className}>
       <Card.Body>
         <div className="d-flex justify-content-between">
-          <Breadcrumb className="border pt-3 px-3 ">
-            {currentPath.map((path, index) => (
-              <Breadcrumb.Item
-                href="#"
-                key={path}
-                onClick={() => backToAnyFolder(path)}
-                active={path === currentPath[currentPath.length - 1]}
-              >
-                {index === 0 ? "Inicio" : path}
-              </Breadcrumb.Item>
-            ))}
-          </Breadcrumb>
+          <nav
+            class="flex  flex-start text-gray-700 py-3"
+            aria-label="Breadcrumb"
+          >
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+              {currentPath.map((path, index) => (
+                <li>
+                  <div
+                    class="flex items-center"
+                    href="#"
+                    key={path}
+                    onClick={() => backToAnyFolder(path)}
+                  >
+                    {index !== 0 && (
+                      <svg
+                        class="w-6 h-6 text-gray-400"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    )}
+                    <a class="text-gray-700 hover:text-gray-900 ml-1 md:ml-2 text-sm font-medium">
+                      {index === 0 ? "Inicio" : path}
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </nav>
           <div className="d-flex gap-2">
             <NewFolderOnS3Modal uploadRoute={currentPath.join("/")} />
             <UploadFileModal uploadRoute={currentPath.join("/")} />
           </div>
         </div>
-        <Table responsive>
+        <table className="w-full">
           <thead>
             <tr>
               <th style={{ width: "600px" }}>Nombre</th>
@@ -344,15 +367,15 @@ export default function FileManager(props) {
               </tr>
             )} */}
             {currentPath.length > 1 && (
-              <tr>
+              <tr className="border-t-[1px] w-full" style={{ height: "3rem" }}>
                 <td
                   onClick={() =>
                     backToAnyFolder(currentPath[currentPath.length - 2])
                   }
                 >
-                  <div>
+                  <div className="flex items-end">
                     <FolderIcon />
-                    <span className="fs-6 ms-2">...</span>
+                    <span className="text-lg w-fit pl-2">...</span>
                   </div>
                 </td>
                 <td></td>
@@ -366,19 +389,23 @@ export default function FileManager(props) {
               .filter((sf) => sf !== "backup")
               .map((folder, index) => {
                 return (
-                  <tr key={index}>
+                  <tr
+                    key={index}
+                    className="border-t-[1px]"
+                    style={{ height: "3rem" }}
+                  >
                     <td
                       onClick={() => handleClickSelect(folder)}
                       style={{ cursor: "pointer" }}
                     >
-                      <div>
+                      <div className="flex items-end">
                         {selectedFolder[folder].type === "folder" ? (
                           <FolderIcon />
                         ) : (
                           <></>
                         )}
 
-                        <span className="fs-6 ms-2">{folder}</span>
+                        <span className="text-lg w-fit pl-2">{folder}</span>
                       </div>
                     </td>
                     <td className="text-center">
@@ -393,7 +420,9 @@ export default function FileManager(props) {
                           )
                         : ""}
                     </td>
-                    <td className="text-center">{getUploadedByName(selectedFolder[folder].key)}</td>
+                    <td className="text-center">
+                      {getUploadedByName(selectedFolder[folder].key)}
+                    </td>
                     <td className="text-center">
                       {selectedFolder[folder].type === "file" && (
                         <div className="d-flex justify-content-center">
@@ -412,15 +441,15 @@ export default function FileManager(props) {
                       <Dropdown.Item eventKey="2">Cambiar nombre</Dropdown.Item> */}
                         {selectedFolder[folder].type === "file" && (
                           <>
-                          <Dropdown.Item
-                            eventKey="3"
-                            onClick={() =>
-                              handleDownload(selectedFolder[folder].key)
-                            }
-                          >
-                            Descargar
-                          </Dropdown.Item>
-                          <Dropdown.Divider />
+                            <Dropdown.Item
+                              eventKey="3"
+                              onClick={() =>
+                                handleDownload(selectedFolder[folder].key)
+                              }
+                            >
+                              Descargar
+                            </Dropdown.Item>
+                            <Dropdown.Divider />
                           </>
                         )}
                         <Dropdown.Item
@@ -442,7 +471,7 @@ export default function FileManager(props) {
                 );
               })}
           </tbody>
-        </Table>
+        </table>
       </Card.Body>
     </Card>
   );

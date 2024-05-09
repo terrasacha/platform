@@ -10,10 +10,8 @@ import GeodataInfoCard from "./InfoCards/GeodataInfoCard";
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import UseRestrictionsInfoCard from "./InfoCards/UseRestrictionsInfoCard";
 import { useAuth } from "context/AuthContext";
-import { Alert, ProgressBar } from "react-bootstrap";
 import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
-import { XIcon } from "components/common/icons/XIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import CadastralRecordsInfoCard from "./InfoCards/CadastralRecordsInfoCard";
 
@@ -69,8 +67,8 @@ export default function ProjectDetails({ visible }) {
           {autorizedUser &&
             !(user?.role === "validator" || user?.role === "admon") && (
               <div className="col-12 col-xl-12">
-                <Alert variant="success" className="mb-0">
-                  <Alert.Heading>Hola, {user?.name}</Alert.Heading>
+                <div className="p-4 bg-[#fff3cd] rounded">
+                  <h3 className="text-2xl">Hola, {user?.name}</h3>
                   <p>
                     Podras realizar ajustes a la información del proyecto
                     durante los primeros 20 dias despues de su postulación.
@@ -83,14 +81,14 @@ export default function ProjectDetails({ visible }) {
                     {20 - parseInt(projectData?.projectInfo.projectAge)} Dias
                     restantes
                   </p>
-                </Alert>
+                </div>
               </div>
             )}
 
           {(autorizedUser || isPostulant) && progressObj && (
             <div className="col-12 col-xl-12">
-              <Alert variant="warning" className="mb-0">
-                <Alert.Heading>
+              <div className="p-4 bg-[#fff3cd] rounded">
+                <h3 className="text-2xl">
                   Estado de requerimientos para la publicación del proyecto en{" "}
                   <a
                     href="https://marketplace.suan.global/"
@@ -99,7 +97,7 @@ export default function ProjectDetails({ visible }) {
                   >
                     Marketplace
                   </a>
-                </Alert.Heading>
+                </h3>
                 <p>
                   Para garantizar la transparencia, confiabilidad y calidad de
                   los proyectos presentados, es necesario cumplir con las
@@ -111,7 +109,7 @@ export default function ProjectDetails({ visible }) {
                     <div>
                       <p className="mb-0">Requerimientos del postulante</p>
                       <ul>
-                        <li className="fw-bold">
+                        <li className="font-bold flex">
                           (
                           {progressObj.sectionsStatus.projectInfo ? (
                             <CheckIcon className="text-success" />
@@ -120,7 +118,7 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Completar información del proyecto
                         </li>
-                        {/* <li className="fw-bold">
+                        {/* <li className="font-bold flex">
                           (
                           {progressObj.sectionsStatus.ownersInfo ? (
                             <CheckIcon className="text-success" />
@@ -130,7 +128,7 @@ export default function ProjectDetails({ visible }) {
                           ) Completar información de titulares y certificados de
                           tradición
                         </li> */}
-                        <li className="fw-bold">
+                        <li className="font-bold flex">
                           (
                           {progressObj.sectionsStatus.geodataInfo ? (
                             <CheckIcon className="text-success" />
@@ -139,7 +137,7 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Completar ubicación geográfica
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold flex">
                           (
                           {progressObj.sectionsStatus.ownerAcceptsConditions ? (
                             <CheckIcon className="text-success" />
@@ -148,7 +146,7 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Aceptar condiciones financieras
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold flex">
                           <p className="mb-0">
                             (
                             {progressObj.sectionsStatus.validationsComplete &&
@@ -161,7 +159,7 @@ export default function ProjectDetails({ visible }) {
                             ) Revisión por parte de los validadores
                           </p>
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold flex">
                           (
                           {progressObj.sectionsStatus.tokenGenesis ? (
                             <CheckIcon className="text-success" />
@@ -180,8 +178,8 @@ export default function ProjectDetails({ visible }) {
                         de validadores SUAN.
                       </p>
                       <ul>
-                        <li className="fw-bold">
-                          <p className="mb-0">
+                        <li className="font-bold flex">
+                          <p className="mb-0 flex">
                             (
                             {progressObj.sectionsStatus.validationsComplete ? (
                               <CheckIcon className="text-success" />
@@ -191,8 +189,8 @@ export default function ProjectDetails({ visible }) {
                             ) Validación de documentos
                           </p>
                         </li>
-                        <li className="fw-bold">
-                          <p className="mb-0">
+                        <li className="font-bold flex">
+                          <p className="mb-0 flex">
                             (
                             {progressObj.sectionsStatus.technicalInfo ? (
                               <CheckIcon className="text-success" />
@@ -202,8 +200,8 @@ export default function ProjectDetails({ visible }) {
                             ) Oficialización de información Técnica
                           </p>
                         </li>
-                        <li className="fw-bold">
-                          <p className="mb-0">
+                        <li className="font-bold flex">
+                          <p className="mb-0 flex">
                             (
                             {progressObj.sectionsStatus.financialInfo ? (
                               <CheckIcon className="text-success" />
@@ -213,7 +211,7 @@ export default function ProjectDetails({ visible }) {
                             ) Oficialización de información Financiera
                           </p>
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold flex">
                           (
                           {progressObj.sectionsStatus.ownerAcceptsConditions ? (
                             <CheckIcon className="text-success" />
@@ -222,8 +220,8 @@ export default function ProjectDetails({ visible }) {
                           )}
                           ) Propietario acepta condiciones financieras
                         </li>
-                        <li className="fw-bold">
-                          <p className="mb-0">
+                        <li className="font-bold flex">
+                          <p className="mb-0 flex">
                             (
                             {progressObj.sectionsStatus.projectInfo &&
                             progressObj.sectionsStatus.geodataInfo ? (
@@ -234,7 +232,7 @@ export default function ProjectDetails({ visible }) {
                             ) Completar información del proyecto
                           </p>
                         </li>
-                        <li className="fw-bold">
+                        <li className="font-bold flex">
                           (
                           {progressObj.sectionsStatus.tokenGenesis ? (
                             <CheckIcon className="text-success" />
@@ -263,7 +261,7 @@ export default function ProjectDetails({ visible }) {
                 />
               </div>
             </div> */}
-              </Alert>
+              </div>
             </div>
           )}
           <div className="col">

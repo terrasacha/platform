@@ -6,7 +6,6 @@ import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
-import { Button } from "react-bootstrap";
 import { notify } from "../../../../../utilities/notify";
 
 export default function EcosystemInfoCard(props) {
@@ -121,7 +120,7 @@ export default function EcosystemInfoCard(props) {
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );
-        setNacimientoPfID(response.data.createProductFeature.id)
+        setNacimientoPfID(response.data.createProductFeature.id);
       }
     }
 
@@ -248,9 +247,13 @@ export default function EcosystemInfoCard(props) {
         </div>
         {autorizedUser && (
           <div className="d-flex justify-content-center">
-            <Button onClick={() => handleSaveBtn()} variant="success">
+            <button
+              className="p-2 text-white bg-green-700 rounded-md"
+              onClick={() => handleSaveBtn()}
+              variant="success"
+            >
               Guardar
-            </Button>
+            </button>
           </div>
         )}
       </Card.Body>

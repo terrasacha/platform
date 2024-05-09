@@ -9,9 +9,6 @@ import {
   updateProductFeature,
 } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
-import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
@@ -527,39 +524,41 @@ export default function TokenSettingsCard(props) {
             <p>Historico del token</p>
             <div>
               {editTokenHistoricalData ? (
-                <Button
-                  size="md"
-                  variant="danger"
-                  className="m-1"
+                <button
+                  className={`${
+                    canEdit || projectData.isFinancialFreeze
+                      ? "bg-red-400"
+                      : "bg-red-600 hover:bg-red-700"
+                  } p-2 text-white  rounded-md ml-2 `}
                   disabled={canEdit || projectData.isFinancialFreeze}
                   onClick={() => setEditTokenHistoricalData(false)}
                 >
                   <XIcon />
-                </Button>
+                </button>
               ) : (
-                <Button
-                  size="md"
-                  variant="warning"
-                  className="m-1"
+                <button
+                  className={`${
+                    canEdit || projectData.isFinancialFreeze
+                      ? "bg-[#f8d771]"
+                      : "bg-yellow-500 hover:bg-yellow-600"
+                  } p-2 text-white  rounded-md  `}
                   disabled={canEdit || projectData.isFinancialFreeze}
                   onClick={() => setEditTokenHistoricalData(true)}
                 >
                   <EditIcon />
-                </Button>
+                </button>
               )}
-              <Button
-                size="md"
-                variant="success"
-                className="m-1"
+              <button
+                className={`p-2 text-white bg-green-700 rounded-md  hover:bg-green-800 ml-2`}
                 disabled={!editTokenHistoricalData}
                 onClick={() => saveHistoricalData()}
               >
                 <SaveDiskIcon />
-              </Button>
+              </button>
             </div>
           </div>
           <div>
-            <Table responsive>
+            <table className="w-full">
               <thead className="text-center">
                 <tr>
                   <th style={{ width: "80px" }}>Periodo</th>
@@ -578,68 +577,68 @@ export default function TokenSettingsCard(props) {
               <tbody className="align-middle">
                 {tokenHistoricalData.map((data, index) => {
                   return (
-                    <tr key={index} className="text-center">
+                    <tr
+                      key={index}
+                      className="text-center border-t-[1px]"
+                      style={{ height: "3rem" }}
+                    >
                       {editTokenHistoricalData ? (
                         <>
                           <td>
-                            <Form.Control
-                              size="sm"
+                            <input
                               type="number"
                               value={tokenHistoricalData[index].period}
-                              className="text-center"
+                              className="text-center p-2 border rounded-md"
                               name={`token_period_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
                           <td>
-                            <Form.Control
-                              size="sm"
+                            <input
                               type="date"
                               value={data.date}
-                              className="text-center"
+                              className="text-center p-2 border rounded-md"
                               name={`token_date_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
                           <td>
-                            <Form.Control
+                            <input
                               size="sm"
                               type="number"
                               value={data.amount}
-                              className="text-center"
+                              className="text-center p-2 border rounded-md"
                               name={`token_amount_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
                           <td>
-                            <Form.Control
+                            <input
                               size="sm"
                               type="number"
                               value={data.correction}
-                              className="text-center"
+                              className="text-center p-2 border rounded-md"
                               name={`token_correction_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
                           <td>
-                            <Form.Control
+                            <input
                               size="sm"
                               type="number"
                               value={data.price}
-                              className="text-center"
+                              className="text-center p-2 border rounded-md"
                               name={`token_price_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
                             />
                           </td>
                           <td>
-                            <Button
-                              size="sm"
-                              variant="danger"
-                              className="m-1"
+                            <button
+                              className={`bg-red-600 hover:bg-red-700 p-2 text-white  rounded-md ml-2 `}
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
                               <XIcon />
-                            </Button>
+                            </button>
                           </td>
                         </>
                       ) : (
@@ -666,20 +665,22 @@ export default function TokenSettingsCard(props) {
                 <tr>
                   <td colSpan={6}>
                     <div className="d-flex">
-                      <Button
-                        size="xs"
-                        variant="secondary"
-                        className="w-100"
+                      <button
+                        className={`${
+                          canEdit || !editTokenHistoricalData
+                            ? "bg-gray-300"
+                            : "bg-gray-400 hover:bg-gray-500"
+                        } text-white p-2  rounded-md w-full flex justify-center `}
                         disabled={canEdit || !editTokenHistoricalData}
                         onClick={() => handleAddNewPeriodToHistoricalData()}
                       >
                         <PlusIcon></PlusIcon>
-                      </Button>
+                      </button>
                     </div>
                   </td>
                 </tr>
               </tbody>
-            </Table>
+            </table>
           </div>
           <p className="mb-0">
             Volumen total de Tokens:{" "}

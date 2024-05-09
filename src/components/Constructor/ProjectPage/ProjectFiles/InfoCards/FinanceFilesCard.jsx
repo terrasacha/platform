@@ -9,7 +9,6 @@ import {
 } from "recharts";
 
 import { API, graphqlOperation } from "aws-amplify";
-import Button from "react-bootstrap/Button";
 import { updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { validateProjectFeatures } from "./validateProjectFeatures";
@@ -19,7 +18,6 @@ import { PlusIcon } from "components/common/icons/PlusIcon";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
-import { Form, Table } from "react-bootstrap";
 import { notify } from "utilities/notify";
 
 export default function FinanceCard({ visible }) {
@@ -85,14 +83,14 @@ export default function FinanceCard({ visible }) {
               por SUAN.{" "}
             </span>
             <br></br>
-            <Button
-              className="m-auto d-block w-25 mt-3"
+            <button
+              className="w-2/6 p-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
               onClick={() => {
                 handleBotoncheckpostulant();
               }}
             >
               Aceptar información financiera
-            </Button>
+            </button>
           </div>
         )}
         <div className="container">

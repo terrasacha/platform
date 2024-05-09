@@ -1,8 +1,5 @@
 import React from "react";
 
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-
 import Card from "../../../../common/Card";
 import MessageSection from "../../../../common/chat/MessageSection";
 import { UserSearchIcon } from "../../../../common/icons/UserSearchIcon";
@@ -44,20 +41,19 @@ export default function MessagesHistoryCard(props) {
         })}
         {(isPostulant || isFileVerifier) && !isDocApproved && (
           <div className="d-flex">
-            <Form.Control
-              size="sm"
+            <input
               type="text"
               placeholder="Escribe tu comentario aquí"
+              className="border-[1px] w-full p-2 rounded-md"
               onChange={(e) => setNewMessage(e.target.value)}
               value={newMessage}
             />
-            <Button
-              variant="dark"
-              className="ms-2"
+            <button
+              className="px-2 py-1 rounded-md bg-slate-900 text-white"
               onClick={handleSendMessageButtonClick}
             >
               Enviar
-            </Button>
+            </button>
           </div>
         )}
       </Card.Body>

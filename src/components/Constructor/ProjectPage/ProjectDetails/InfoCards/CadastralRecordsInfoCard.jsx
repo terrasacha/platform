@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "../../../../common/Card";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { TrashIcon } from "components/common/icons/TrashIcon";
-import { Button, Form, InputGroup, Table } from "react-bootstrap";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
@@ -628,7 +627,7 @@ export default function CadastralRecordsInfoCard(props) {
       <Card.Header title="Información predial" sep={true} tooltip={tooltip} />
       <Card.Body>
         <div className="row">
-          <Table responsive>
+          <table>
             <thead className="text-center">
               <tr>
                 <th style={{ width: "240px" }}>Identificador catastral</th>
@@ -642,16 +641,19 @@ export default function CadastralRecordsInfoCard(props) {
             <tbody className="align-middle">
               {multipleData.map((data, index) => {
                 return (
-                  <tr key={index} className="text-center">
+                  <tr
+                    key={index}
+                    className="text-center border-b-2"
+                    style={{ height: "3rem" }}
+                  >
                     {data.editing ? (
                       <>
                         <td>
-                          <div className="d-flex align-items-center">
-                            <Form.Control
-                              size="sm"
+                          <div className="flex items-center">
+                            <input
                               type="text"
                               value={data.cadastralNumber}
-                              className="text-center"
+                              className="text-center p-2 border rounded-md w-full"
                               name={`cadastraldata_cadastralNumber_${index}`}
                               onInput={(e) => handleChangeInputValue(e)}
                             />
@@ -664,11 +666,10 @@ export default function CadastralRecordsInfoCard(props) {
                           </div>
                         </td>
                         <td>
-                          <Form.Control
-                            size="sm"
+                          <input
                             type="text"
                             value={data.matricula}
-                            className="text-center"
+                            className="text-center p-2 border rounded-md w-full"
                             name={`cadastraldata_matricula_${index}`}
                             onChange={(e) => handleChangeInputValue(e)}
                           />
@@ -680,11 +681,14 @@ export default function CadastralRecordsInfoCard(props) {
                             style={{ display: "none" }}
                             onChange={(e) => handleFileChange(e, index)}
                           />
-                          <Button onClick={handleUploadButton} size="sm">
+                          <button
+                            className="p-2 text-white rounded-md bg-blue-500"
+                            onClick={handleUploadButton}
+                          >
                             {data.certificate || data.documentID !== undefined
                               ? "Actualizar"
                               : "Cargar"}
-                          </Button>
+                          </button>
                         </td>
                         <td>
                           {renderPredioNameByCadastralNumber(
@@ -694,23 +698,19 @@ export default function CadastralRecordsInfoCard(props) {
                         <td>
                           {renderAreaByCadastralNumber(data.cadastralNumber)}
                         </td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="success"
-                            className="m-1"
+                        <td className="flex justify-end gap-1">
+                          <button
+                            className="p-2 text-white rounded-md bg-green-700"
                             onClick={() => handleSaveHistoricalData(index)}
                           >
                             <SaveDiskIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
+                          </button>
+                          <button
+                            className="p-2 text-white rounded-md bg-red-500"
                             onClick={() => handleDeleteHistoricalData(index)}
                           >
                             <TrashIcon />
-                          </Button>
+                          </button>
                         </td>
                       </>
                     ) : (
@@ -728,25 +728,21 @@ export default function CadastralRecordsInfoCard(props) {
                         <td>
                           {renderAreaByCadastralNumber(data.cadastralNumber)}
                         </td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="warning"
-                            className="m-1"
+                        <td className="flex justify-end gap-1">
+                          <button
+                            className="p-2 text-white rounded-md bg-yellow-400"
                             disabled={!autorizedUser}
                             onClick={() => handleEditHistoricalData(index)}
                           >
                             <EditIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
+                          </button>
+                          <button
+                            className="p-2 text-white rounded-md bg-red-500"
                             disabled={!autorizedUser}
                             onClick={() => handleDeleteHistoricalData(index)}
                           >
                             <TrashIcon />
-                          </Button>
+                          </button>
                         </td>
                       </>
                     )}
@@ -755,21 +751,19 @@ export default function CadastralRecordsInfoCard(props) {
               })}
               <tr>
                 <td colSpan={6}>
-                  <div className="d-flex">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-100"
+                  <div className="flex">
+                    <button
+                      className="p-2 w-full text-white rounded-md bg-slate-600 flex justify-center"
                       disabled={!autorizedUser}
                       onClick={() => handleAddNewPeriodToHistoricalData()}
                     >
                       <PlusIcon></PlusIcon>
-                    </Button>
+                    </button>
                   </div>
                 </td>
               </tr>
             </tbody>
-          </Table>
+          </table>
         </div>
       </Card.Body>
     </Card>

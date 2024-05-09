@@ -56,7 +56,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
         projectData.projectFeatures.filter((item) => {
           return item.featureID === "D_actual_use";
         })[0]?.id || null;
-        setUsesPfID(pfIDUse);
+      setUsesPfID(pfIDUse);
 
       setFormData((prevState) => ({
         ...prevState,
@@ -177,7 +177,7 @@ export default function ActualUseAndPotentialInfoCard(props) {
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );
-        setUsesPfID(response.data.createProductFeature.id)
+        setUsesPfID(response.data.createProductFeature.id);
       }
     }
 
@@ -591,9 +591,12 @@ export default function ActualUseAndPotentialInfoCard(props) {
         </div>
         {autorizedUser && (
           <div className="d-flex justify-content-center">
-            <Button onClick={() => handleSaveBtn()} variant="success">
+            <button
+              className="p-2 text-white bg-green-700 rounded-md"
+              onClick={() => handleSaveBtn()}
+            >
               Guardar
-            </Button>
+            </button>
           </div>
         )}
       </Card.Body>

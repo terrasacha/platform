@@ -35,9 +35,12 @@ export default function NewFolderOnS3Modal(props) {
 
   return (
     <div>
-      <Button variant="primary" size="md" onClick={openModal}>
+      <button
+        className="p-2 text-white bg-blue-600 rounded-md"
+        onClick={openModal}
+      >
         <AddFolderIcon />
-      </Button>
+      </button>
 
       <Modal show={showModal} onHide={closeModal} size="md" centered>
         <Modal.Header closeButton>
@@ -56,15 +59,18 @@ export default function NewFolderOnS3Modal(props) {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
+          <button
+            className="p-2 text-white bg-slate-700 rounded-md"
+            onClick={closeModal}
+          >
             Cerrar
-          </Button>
-          <Button
-            variant="primary"
+          </button>
+          <button
+            className="p-2 text-white bg-blue-600 rounded-md"
             onClick={() => handleCreateFolderOnS3(newFolderName)}
           >
             Crear
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

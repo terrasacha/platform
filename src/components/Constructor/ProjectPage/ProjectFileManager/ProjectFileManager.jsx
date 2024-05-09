@@ -1,17 +1,15 @@
 import React from "react";
-
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import FileManager from "./FileManager";
 
 export default function ProjectFileManager({ visible }) {
   const { projectData } = useProjectData();
 
-  // projectData.projectInfo.id
   return (
     <>
       {visible && (
-        <div className="row row-cols-1 row-cols-xl-2 g-4">
-          <div className="col-12 col-xl-12">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="lg:w-full">
             <FileManager rootFolder={projectData.projectInfo.id} />
           </div>
         </div>
