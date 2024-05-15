@@ -8,7 +8,8 @@ import { getPredialData2ByCadastralNumber } from "services/getPredialData2ByCada
 // Borrar despues de pasar a componentes
 
 export default function GeodataInfoCard(props) {
-  const { autorizedUser, setProgressChange, tooltip } = props;
+  const { autorizedUser, setProgressChange, tooltip, setLatLngCentroid } =
+    props;
   const { projectData } = useProjectData();
 
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
@@ -182,6 +183,10 @@ export default function GeodataInfoCard(props) {
 
                   // Setear centroide
                   map.fitBounds(bounds);
+
+                  // Obtener coordenadas del centroide
+                  var center = bounds.getCenter();
+                  setLatLngCentroid(`${center.lat() + " " + center.lng()} 0 0`);
                 }
               }}
               yesIWantToUseGoogleMapApiInternals
