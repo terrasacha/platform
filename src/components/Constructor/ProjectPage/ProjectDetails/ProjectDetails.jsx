@@ -25,6 +25,7 @@ export default function ProjectDetails({ visible }) {
   const { user } = useAuth();
 
   const [totalArea, setTotalArea] = useState(0);
+  const [latLngCentroid, setLatLngCentroid] = useState(null);
   const [progressChange, setProgressChange] = useState(false);
   const [progressObj, setProgressObj] = useState(null);
 
@@ -285,6 +286,7 @@ export default function ProjectDetails({ visible }) {
             <GeodataInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
+              setLatLngCentroid={setLatLngCentroid}
               tooltip={
                 (autorizedUser || isPostulant) &&
                 (progressObj?.sectionsStatus.geodataInfo ? (
@@ -299,6 +301,8 @@ export default function ProjectDetails({ visible }) {
             <CadastralRecordsInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
+              totalArea={totalArea}
+              latLngCentroid={latLngCentroid}
               setTotalArea={setTotalArea}
             />
           </div>

@@ -12,7 +12,8 @@ import { getPredialData2ByCadastralNumber } from "services/getPredialData2ByCada
 // Borrar despues de pasar a componentes
 
 export default function GeodataInfoCard(props) {
-  const { autorizedUser, setProgressChange, tooltip } = props;
+  const { autorizedUser, setProgressChange, tooltip, setLatLngCentroid } =
+    props;
   const { projectData } = useProjectData();
 
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
@@ -51,16 +52,18 @@ export default function GeodataInfoCard(props) {
       ); // Llamada a la función getData
 
       if (polygonGeoJson) {
-        polygonGeoJson.features = polygonGeoJson.features.map((feature, index) => {
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              ...predialData[feature.properties.CODIGO],
-              ...predialData2[feature.properties.CODIGO]
-            }
+        polygonGeoJson.features = polygonGeoJson.features.map(
+          (feature, index) => {
+            return {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                ...predialData[feature.properties.CODIGO],
+                ...predialData2[feature.properties.CODIGO],
+              },
+            };
           }
-        });
+        );
       }
       console.log("polygonGeoJson", polygonGeoJson);
       console.log("predialData", predialData);
@@ -134,12 +137,20 @@ export default function GeodataInfoCard(props) {
                   map.data.addListener("click", (event) => {
                     const titulo = event.feature.getProperty("DIRECCION");
                     const codigo = event.feature.getProperty("CODIGO");
-                    const departamento = event.feature.getProperty("NOMBRE_DEPARTAMENTO");
-                    const municipio = event.feature.getProperty("NOMBRE_MUNICIPIO");
-                    const destinoEconomico = event.feature.getProperty("NOMBRE_DESTINOECONOMICO");
-                    const descripcionDestinoEconomico = event.feature.getProperty("DESCRIPCION_DESTINOECONOMICO");
-                    const areaTerreno = event.feature.getProperty("AREA_TERRENO");
-                    const areaConstruida = event.feature.getProperty("AREA_CONSTRUIDA");
+                    const departamento = event.feature.getProperty(
+                      "NOMBRE_DEPARTAMENTO"
+                    );
+                    const municipio =
+                      event.feature.getProperty("NOMBRE_MUNICIPIO");
+                    const destinoEconomico = event.feature.getProperty(
+                      "NOMBRE_DESTINOECONOMICO"
+                    );
+                    const descripcionDestinoEconomico =
+                      event.feature.getProperty("DESCRIPCION_DESTINOECONOMICO");
+                    const areaTerreno =
+                      event.feature.getProperty("AREA_TERRENO");
+                    const areaConstruida =
+                      event.feature.getProperty("AREA_CONSTRUIDA");
                     const contentString = `
                       <div class='infoWindowContainer'>
                         <p>${titulo}</p>
@@ -147,8 +158,12 @@ export default function GeodataInfoCard(props) {
                         <p class='mb-0'>Departamento: ${departamento}</p>
                         <p class='mb-0'>Municipio: ${municipio}</p>
                         <p class='mb-0'>Destino económico: ${destinoEconomico} (${descripcionDestinoEconomico})</p>
-                        <p class='mb-0'>Área de terreno: ${parseFloat(areaTerreno).toLocaleString('es-ES')} m2</p>
-                        <p class='mb-0'>Área construida: ${parseFloat(areaConstruida).toLocaleString('es-ES')} m2</p>
+                        <p class='mb-0'>Área de terreno: ${parseFloat(
+                          areaTerreno
+                        ).toLocaleString("es-ES")} m2</p>
+                        <p class='mb-0'>Área construida: ${parseFloat(
+                          areaConstruida
+                        ).toLocaleString("es-ES")} m2</p>
                       </div>
                     `;
 
@@ -172,6 +187,10 @@ export default function GeodataInfoCard(props) {
 
                   // Setear centroide
                   map.fitBounds(bounds);
+
+                  // Obtener coordenadas del centroide
+                  var center = bounds.getCenter();
+                  setLatLngCentroid(`${center.lat() + " " + center.lng()} 0 0`);
                 }
               }}
               yesIWantToUseGoogleMapApiInternals

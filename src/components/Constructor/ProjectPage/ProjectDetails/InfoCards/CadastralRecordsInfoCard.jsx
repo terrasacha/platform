@@ -28,7 +28,7 @@ import { CheckIcon } from "components/common/icons/CheckIcon";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 
 export default function CadastralRecordsInfoCard(props) {
-  const { className, autorizedUser, setProgressChange, tooltip, setTotalArea } =
+  const { className, autorizedUser, setProgressChange, tooltip, setTotalArea, totalArea } =
     props;
   const {
     projectData,
@@ -43,6 +43,7 @@ export default function CadastralRecordsInfoCard(props) {
   const [multipleData, setMultipleData] = useState([]);
   const [executedOnce, setExecutedOnce] = useState(false);
   const [cadastralData, setCadastralDataPfID] = useState(null);
+  const [areaData, setAreaDataPfID] = useState(null);
   const [predialFetchedData, setPredialFetchedData] = useState({});
 
   useEffect(() => {
@@ -58,6 +59,14 @@ export default function CadastralRecordsInfoCard(props) {
         ) || [];
 
       setCadastralDataPfID(projectData.projectCadastralRecords.pfID);
+
+      
+      const areaPfID = projectData.projectFeatures.filter((item) => {
+        return item.featureID === "D_area";
+      })[0]?.id || null;
+      if(areaPfID) {
+        setAreaDataPfID(areaPfID);
+      }
       setMultipleData(ownersData);
     }
   }, [projectData]);
@@ -321,6 +330,9 @@ export default function CadastralRecordsInfoCard(props) {
     return docID;
   };
 
+  
+  // Crear una función que actualice el area
+
   const handleSaveHistoricalData = async (indexToSave) => {
     let error = false;
     const newCadastralNumber = multipleData[indexToSave].cadastralNumber;
@@ -411,6 +423,33 @@ export default function CadastralRecordsInfoCard(props) {
             : item
         )
       );
+      
+      if(areaData) {
+        let tempProductFeature = {
+          id: areaData,
+          value: totalArea,
+        };
+        const response = await API.graphql(
+          graphqlOperation(updateProductFeature, { input: tempProductFeature })
+        );
+
+        if (!response.data.updateProductFeature) error = true;
+      } else {
+        let tempProductFeature = {
+          value: totalArea,
+          isToBlockChain: false,
+          isOnMainCard: false,
+          productID: projectData.projectInfo.id,
+          featureID: "D_area",
+        };
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, { input: tempProductFeature })
+        );
+
+        setCadastralDataPfID(response.data.createProductFeature.id);
+
+        if (!response.data.createProductFeature) error = true;
+      }
 
       if (cadastralData) {
         let tempProductFeature = {
