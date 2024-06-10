@@ -11,6 +11,8 @@ export const createUser = /* GraphQL */ `
       name
       dateOfBirth
       isProfileUpdated
+      isValidatedStep1
+      isValidatedStep2
       addresss
       cellphone
       role
@@ -110,6 +112,32 @@ export const createUser = /* GraphQL */ `
           description
           userID
           productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      payments {
+        items {
+          id
+          orderType
+          ref
+          walletAddress
+          statusCode
+          walletStakeAddress
+          tokenName
+          tokenAmount
+          fee
+          baseValue
+          finalValue
+          currency
+          exchangeRate
+          timestamp
+          productID
+          userID
+          claimedByUser
           createdAt
           updatedAt
           __typename
@@ -133,6 +161,8 @@ export const updateUser = /* GraphQL */ `
       name
       dateOfBirth
       isProfileUpdated
+      isValidatedStep1
+      isValidatedStep2
       addresss
       cellphone
       role
@@ -232,6 +262,32 @@ export const updateUser = /* GraphQL */ `
           description
           userID
           productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      payments {
+        items {
+          id
+          orderType
+          ref
+          walletAddress
+          statusCode
+          walletStakeAddress
+          tokenName
+          tokenAmount
+          fee
+          baseValue
+          finalValue
+          currency
+          exchangeRate
+          timestamp
+          productID
+          userID
+          claimedByUser
           createdAt
           updatedAt
           __typename
@@ -255,6 +311,8 @@ export const deleteUser = /* GraphQL */ `
       name
       dateOfBirth
       isProfileUpdated
+      isValidatedStep1
+      isValidatedStep2
       addresss
       cellphone
       role
@@ -354,6 +412,32 @@ export const deleteUser = /* GraphQL */ `
           description
           userID
           productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      payments {
+        items {
+          id
+          orderType
+          ref
+          walletAddress
+          statusCode
+          walletStakeAddress
+          tokenName
+          tokenAmount
+          fee
+          baseValue
+          finalValue
+          currency
+          exchangeRate
+          timestamp
+          productID
+          userID
+          claimedByUser
           createdAt
           updatedAt
           __typename
@@ -389,6 +473,8 @@ export const createWallet = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -419,8 +505,30 @@ export const createWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
+        __typename
+      }
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          scriptID
+          walletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
         __typename
       }
       createdAt
@@ -451,6 +559,8 @@ export const updateWallet = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -481,8 +591,30 @@ export const updateWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
+        __typename
+      }
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          scriptID
+          walletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
         __typename
       }
       createdAt
@@ -513,6 +645,8 @@ export const deleteWallet = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -543,8 +677,30 @@ export const deleteWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
+        __typename
+      }
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          scriptID
+          walletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
         __typename
       }
       createdAt
@@ -569,6 +725,8 @@ export const createVerification = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -596,6 +754,10 @@ export const createVerification = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -609,6 +771,8 @@ export const createVerification = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -636,6 +800,10 @@ export const createVerification = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -742,6 +910,8 @@ export const updateVerification = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -769,6 +939,10 @@ export const updateVerification = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -782,6 +956,8 @@ export const updateVerification = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -809,6 +985,10 @@ export const updateVerification = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -915,6 +1095,8 @@ export const deleteVerification = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -942,6 +1124,10 @@ export const deleteVerification = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -955,6 +1141,8 @@ export const deleteVerification = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -982,6 +1170,10 @@ export const deleteVerification = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -1093,6 +1285,8 @@ export const createVerificationComment = /* GraphQL */ `
           name
           dateOfBirth
           isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
           addresss
           cellphone
           role
@@ -1109,6 +1303,8 @@ export const createVerificationComment = /* GraphQL */ `
           name
           dateOfBirth
           isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
           addresss
           cellphone
           role
@@ -1168,6 +1364,8 @@ export const updateVerificationComment = /* GraphQL */ `
           name
           dateOfBirth
           isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
           addresss
           cellphone
           role
@@ -1184,6 +1382,8 @@ export const updateVerificationComment = /* GraphQL */ `
           name
           dateOfBirth
           isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
           addresss
           cellphone
           role
@@ -1243,6 +1443,8 @@ export const deleteVerificationComment = /* GraphQL */ `
           name
           dateOfBirth
           isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
           addresss
           cellphone
           role
@@ -1259,6 +1461,8 @@ export const deleteVerificationComment = /* GraphQL */ `
           name
           dateOfBirth
           isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
           addresss
           cellphone
           role
@@ -1383,6 +1587,8 @@ export const createDocument = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -1410,6 +1616,10 @@ export const createDocument = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -1509,6 +1719,8 @@ export const updateDocument = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -1536,6 +1748,10 @@ export const updateDocument = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -1635,6 +1851,8 @@ export const deleteDocument = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -1662,6 +1880,10 @@ export const deleteDocument = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -1947,6 +2169,32 @@ export const createProduct = /* GraphQL */ `
         nextToken
         __typename
       }
+      payments {
+        items {
+          id
+          orderType
+          ref
+          walletAddress
+          statusCode
+          walletStakeAddress
+          tokenName
+          tokenAmount
+          fee
+          baseValue
+          finalValue
+          currency
+          exchangeRate
+          timestamp
+          productID
+          userID
+          claimedByUser
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       scripts {
         items {
           id
@@ -2102,6 +2350,32 @@ export const updateProduct = /* GraphQL */ `
           description
           userID
           productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      payments {
+        items {
+          id
+          orderType
+          ref
+          walletAddress
+          statusCode
+          walletStakeAddress
+          tokenName
+          tokenAmount
+          fee
+          baseValue
+          finalValue
+          currency
+          exchangeRate
+          timestamp
+          productID
+          userID
+          claimedByUser
           createdAt
           updatedAt
           __typename
@@ -2271,6 +2545,32 @@ export const deleteProduct = /* GraphQL */ `
         nextToken
         __typename
       }
+      payments {
+        items {
+          id
+          orderType
+          ref
+          walletAddress
+          statusCode
+          walletStakeAddress
+          tokenName
+          tokenAmount
+          fee
+          baseValue
+          finalValue
+          currency
+          exchangeRate
+          timestamp
+          productID
+          userID
+          claimedByUser
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       scripts {
         items {
           id
@@ -2372,6 +2672,10 @@ export const createImage = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -2448,6 +2752,10 @@ export const updateImage = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -2521,6 +2829,10 @@ export const deleteImage = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -3829,6 +4141,10 @@ export const createProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -4002,6 +4318,10 @@ export const updateProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -4172,6 +4492,10 @@ export const deleteProductFeature = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -4614,6 +4938,8 @@ export const createUserProduct = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -4641,6 +4967,10 @@ export const createUserProduct = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -4687,6 +5017,10 @@ export const createUserProduct = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -4722,6 +5056,8 @@ export const updateUserProduct = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -4749,6 +5085,10 @@ export const updateUserProduct = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -4795,6 +5135,10 @@ export const updateUserProduct = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -4830,6 +5174,8 @@ export const deleteUserProduct = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -4857,6 +5203,10 @@ export const deleteUserProduct = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -4906,6 +5256,10 @@ export const deleteUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -4931,13 +5285,94 @@ export const createOrder = /* GraphQL */ `
   ) {
     createOrder(input: $input, condition: $condition) {
       id
-      walletAddress
       statusCode
-      walletStakeAddress
+      tokenPolicyId
       tokenName
       tokenAmount
       utxos
       value
+      scriptID
+      script {
+        id
+        scriptParentID
+        scripts {
+          nextToken
+          __typename
+        }
+        name
+        script_type
+        script_category
+        pbk
+        token_name
+        cbor
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
+        testnetAddr
+        MainnetAddr
+        Active
+        base_code
+        orders {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      walletID
+      wallet {
+        id
+        name
+        status
+        password
+        seed
+        address
+        stake_address
+        isSelected
+        isAdmin
+        claimed_token
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -4951,13 +5386,94 @@ export const updateOrder = /* GraphQL */ `
   ) {
     updateOrder(input: $input, condition: $condition) {
       id
-      walletAddress
       statusCode
-      walletStakeAddress
+      tokenPolicyId
       tokenName
       tokenAmount
       utxos
       value
+      scriptID
+      script {
+        id
+        scriptParentID
+        scripts {
+          nextToken
+          __typename
+        }
+        name
+        script_type
+        script_category
+        pbk
+        token_name
+        cbor
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
+        testnetAddr
+        MainnetAddr
+        Active
+        base_code
+        orders {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      walletID
+      wallet {
+        id
+        name
+        status
+        password
+        seed
+        address
+        stake_address
+        isSelected
+        isAdmin
+        claimed_token
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -4971,13 +5487,487 @@ export const deleteOrder = /* GraphQL */ `
   ) {
     deleteOrder(input: $input, condition: $condition) {
       id
+      statusCode
+      tokenPolicyId
+      tokenName
+      tokenAmount
+      utxos
+      value
+      scriptID
+      script {
+        id
+        scriptParentID
+        scripts {
+          nextToken
+          __typename
+        }
+        name
+        script_type
+        script_category
+        pbk
+        token_name
+        cbor
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
+        testnetAddr
+        MainnetAddr
+        Active
+        base_code
+        orders {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      walletID
+      wallet {
+        id
+        name
+        status
+        password
+        seed
+        address
+        stake_address
+        isSelected
+        isAdmin
+        claimed_token
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          createdAt
+          updatedAt
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createPayment = /* GraphQL */ `
+  mutation CreatePayment(
+    $input: CreatePaymentInput!
+    $condition: ModelPaymentConditionInput
+  ) {
+    createPayment(input: $input, condition: $condition) {
+      id
+      orderType
+      ref
       walletAddress
       statusCode
       walletStakeAddress
       tokenName
       tokenAmount
-      utxos
-      value
+      fee
+      baseValue
+      finalValue
+      currency
+      exchangeRate
+      timestamp
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      claimedByUser
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updatePayment = /* GraphQL */ `
+  mutation UpdatePayment(
+    $input: UpdatePaymentInput!
+    $condition: ModelPaymentConditionInput
+  ) {
+    updatePayment(input: $input, condition: $condition) {
+      id
+      orderType
+      ref
+      walletAddress
+      statusCode
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      fee
+      baseValue
+      finalValue
+      currency
+      exchangeRate
+      timestamp
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      claimedByUser
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deletePayment = /* GraphQL */ `
+  mutation DeletePayment(
+    $input: DeletePaymentInput!
+    $condition: ModelPaymentConditionInput
+  ) {
+    deletePayment(input: $input, condition: $condition) {
+      id
+      orderType
+      ref
+      walletAddress
+      statusCode
+      walletStakeAddress
+      tokenName
+      tokenAmount
+      fee
+      baseValue
+      finalValue
+      currency
+      exchangeRate
+      timestamp
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      claimedByUser
       createdAt
       updatedAt
       __typename
@@ -5044,6 +6034,10 @@ export const createTransactions = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -5128,6 +6122,10 @@ export const updateTransactions = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -5209,6 +6207,10 @@ export const deleteTransactions = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -5242,6 +6244,8 @@ export const createCompany = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -5269,6 +6273,10 @@ export const createCompany = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -5315,6 +6323,10 @@ export const createCompany = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -5351,6 +6363,8 @@ export const updateCompany = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -5378,6 +6392,10 @@ export const updateCompany = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -5424,6 +6442,10 @@ export const updateCompany = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -5460,6 +6482,8 @@ export const deleteCompany = /* GraphQL */ `
         name
         dateOfBirth
         isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
         addresss
         cellphone
         role
@@ -5487,6 +6511,10 @@ export const deleteCompany = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -5533,6 +6561,10 @@ export const deleteCompany = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
@@ -5632,6 +6664,10 @@ export const createScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -5648,6 +6684,24 @@ export const createScript = /* GraphQL */ `
       MainnetAddr
       Active
       base_code
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          scriptID
+          walletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -5732,6 +6786,10 @@ export const updateScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -5748,6 +6806,24 @@ export const updateScript = /* GraphQL */ `
       MainnetAddr
       Active
       base_code
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          scriptID
+          walletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -5832,6 +6908,10 @@ export const deleteScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -5848,6 +6928,24 @@ export const deleteScript = /* GraphQL */ `
       MainnetAddr
       Active
       base_code
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          scriptID
+          walletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -5948,6 +7046,10 @@ export const createToken = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -6019,6 +7121,10 @@ export const updateToken = /* GraphQL */ `
           nextToken
           __typename
         }
+        payments {
+          nextToken
+          __typename
+        }
         scripts {
           nextToken
           __typename
@@ -6087,6 +7193,10 @@ export const deleteToken = /* GraphQL */ `
           __typename
         }
         companies {
+          nextToken
+          __typename
+        }
+        payments {
           nextToken
           __typename
         }
