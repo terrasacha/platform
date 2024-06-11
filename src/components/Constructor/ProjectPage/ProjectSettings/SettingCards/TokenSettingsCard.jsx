@@ -38,7 +38,7 @@ export default function TokenSettingsCard(props) {
   );
 
   const totalTokens = totalTokensPF.reduce(
-    (sum, item) => sum + parseInt(item.amount) + parseInt(item.correction),
+    (sum, item) => sum + parseInt(item.amount) /* + parseInt(item.correction) */,
     0
   );
 
@@ -521,7 +521,7 @@ export default function TokenSettingsCard(props) {
             onClickSaveBtn={() => handleSaveBtn("tokenCurrency")}
           />
           <div className="mb-3 mt-3 pt-3 border-top d-flex justify-content-between">
-            <p>Historico del token</p>
+            <p>Histórico del token</p>
             <div>
               {editTokenHistoricalData ? (
                 <button
@@ -562,11 +562,11 @@ export default function TokenSettingsCard(props) {
               <thead className="text-center">
                 <tr>
                   <th style={{ width: "80px" }}>Periodo</th>
-                  <th style={{ width: "100px" }}>Fecha</th>
+                  <th style={{ width: "100px" }}>Fecha de cierre</th>
                   <th style={{ width: "100px" }}>Volumen inicial(tCO2eq)</th>
                   <th style={{ width: "100px" }}>Corrección volumen</th>
                   {!editTokenHistoricalData && (
-                    <th style={{ width: "100px" }}>Volumen actual</th>
+                    <th style={{ width: "100px" }}>Redimible</th>
                   )}
                   <th style={{ width: "100px" }}>Precio</th>
                   {editTokenHistoricalData && (
@@ -654,7 +654,7 @@ export default function TokenSettingsCard(props) {
                               : data.correction}
                           </td>
                           <td className="font-weight-bold">
-                            {parseInt(data.amount) + parseInt(data.correction)}
+                            {parseInt(data.amount) + (parseInt(data.correction) || 0)}
                           </td>
                           <td>{data.price}</td>
                         </>
