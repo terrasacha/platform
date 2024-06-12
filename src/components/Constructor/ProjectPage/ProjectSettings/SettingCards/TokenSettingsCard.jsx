@@ -15,6 +15,7 @@ import { EditIcon } from "components/common/icons/EditIcon";
 import { XIcon } from "components/common/icons/XIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 
+const regex = /^(0| |)$/;
 export default function TokenSettingsCard(props) {
   const { className, canEdit } = props;
   const { projectData, fetchProjectData } = useProjectData();
@@ -480,7 +481,11 @@ export default function TokenSettingsCard(props) {
       },
     ]);
   };
-
+  const checkEndDate = (data) =>{
+    const currentDate = new Date();
+    const dataDate = new Date(data.date);
+    return currentDate <= dataDate
+  }
   return (
     <>
       <Card className={className}>
@@ -526,11 +531,11 @@ export default function TokenSettingsCard(props) {
               {editTokenHistoricalData ? (
                 <button
                   className={`${
-                    canEdit || projectData.isFinancialFreeze
+                    /* canEdit || projectData.isFinancialFreeze
                       ? "bg-red-400"
-                      : "bg-red-600 hover:bg-red-700"
+                      : */ "bg-red-600 hover:bg-red-700"
                   } p-2 text-white  rounded-md ml-2 `}
-                  disabled={canEdit || projectData.isFinancialFreeze}
+                 /*  disabled={canEdit || projectData.isFinancialFreeze} */
                   onClick={() => setEditTokenHistoricalData(false)}
                 >
                   <XIcon />
@@ -538,11 +543,11 @@ export default function TokenSettingsCard(props) {
               ) : (
                 <button
                   className={`${
-                    canEdit || projectData.isFinancialFreeze
+                    /* canEdit || projectData.isFinancialFreeze
                       ? "bg-[#f8d771]"
-                      : "bg-yellow-500 hover:bg-yellow-600"
+                      :  */"bg-yellow-500 hover:bg-yellow-600"
                   } p-2 text-white  rounded-md  `}
-                  disabled={canEdit || projectData.isFinancialFreeze}
+                  /* disabled={canEdit || projectData.isFinancialFreeze} */
                   onClick={() => setEditTokenHistoricalData(true)}
                 >
                   <EditIcon />
@@ -588,6 +593,7 @@ export default function TokenSettingsCard(props) {
                             <input
                               type="number"
                               value={tokenHistoricalData[index].period}
+                              disabled={canEdit || projectData.isFinancialFreeze}
                               className="text-center p-2 border rounded-md"
                               name={`token_period_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
@@ -597,6 +603,7 @@ export default function TokenSettingsCard(props) {
                             <input
                               type="date"
                               value={data.date}
+                              disabled={canEdit || projectData.isFinancialFreeze}
                               className="text-center p-2 border rounded-md"
                               name={`token_date_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
@@ -607,6 +614,7 @@ export default function TokenSettingsCard(props) {
                               size="sm"
                               type="number"
                               value={data.amount}
+                              disabled={canEdit || projectData.isFinancialFreeze}
                               className="text-center p-2 border rounded-md"
                               name={`token_amount_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
@@ -617,6 +625,7 @@ export default function TokenSettingsCard(props) {
                               size="sm"
                               type="number"
                               value={data.correction}
+                              disabled={checkEndDate(data) && regex.test(String(data.correction))}
                               className="text-center p-2 border rounded-md"
                               name={`token_correction_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
@@ -627,6 +636,7 @@ export default function TokenSettingsCard(props) {
                               size="sm"
                               type="number"
                               value={data.price}
+                              disabled={canEdit || projectData.isFinancialFreeze}
                               className="text-center p-2 border rounded-md"
                               name={`token_price_${index}`}
                               onChange={(e) => handleChangeInputValue(e)}
@@ -634,7 +644,12 @@ export default function TokenSettingsCard(props) {
                           </td>
                           <td>
                             <button
-                              className={`bg-red-600 hover:bg-red-700 p-2 text-white  rounded-md ml-2 `}
+                              disabled={canEdit || projectData.isFinancialFreeze}
+                              className={`${
+                                canEdit || projectData.isFinancialFreeze
+                                  ? "bg-red-400"
+                                  : "bg-red-600 hover:bg-red-700"
+                              } p-2 text-white  rounded-md ml-2 `}
                               onClick={() => handleDeleteHistoricalData(index)}
                             >
                               <XIcon />
@@ -647,9 +662,9 @@ export default function TokenSettingsCard(props) {
                           <td>{data.date}</td>
                           <td>{data.amount}</td>
                           <td>
-                            {data.correction === 0
+                            {regex.test(String(data.correction))
                               ? "Sin corrección"
-                              : data.correction > 0
+                              : data.correction > 0 
                               ? `+${data.correction}`
                               : data.correction}
                           </td>
