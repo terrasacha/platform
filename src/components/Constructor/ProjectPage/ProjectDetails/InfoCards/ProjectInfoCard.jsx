@@ -545,7 +545,6 @@ export default function ProjectInfoCard(props) {
         fichaCatrastal: formData.projectInfoLocationFichaCatrastral,
       });
     }
-    setProgressChange(true);
 
     notify({ msg: "Información actualizada", type: "success" });
   };
@@ -674,40 +673,6 @@ export default function ProjectInfoCard(props) {
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
                 onClickSaveBtn={() =>
                   handleSaveBtn("projectInfoLocationMunicipio")
-                }
-              />
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Número de matrícula inmobiliaria del predio"
-                inputName="projectInfoLocationMatricula"
-                inputValue={formData.projectInfoLocationMatricula}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.matricula ===
-                  formData.projectInfoLocationMatricula
-                    ? true
-                    : false
-                }
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationMatricula")
-                }
-              />
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Número de ficha catastral que aparece en el impuesto predial del municipio del predio"
-                inputName="projectInfoLocationFichaCatrastral"
-                inputValue={formData.projectInfoLocationFichaCatrastral}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.fichaCatrastal ===
-                  formData.projectInfoLocationFichaCatrastral
-                    ? true
-                    : false
-                }
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationFichaCatrastral")
                 }
               />
               <div>
