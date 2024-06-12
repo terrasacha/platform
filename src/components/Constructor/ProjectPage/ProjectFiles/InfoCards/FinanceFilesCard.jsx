@@ -23,7 +23,7 @@ import { notify } from "utilities/notify";
 export default function FinanceCard({ visible }) {
   const { user } = useAuth();
 
-  const { projectData } = useProjectData();
+  const { projectData, fetchProjectData } = useProjectData();
   const [validadorShow, setValidadorShow] = useState(true);
   const dataToken =
     projectData.projectFinancialInfo.tokenAmountDistribution
@@ -46,6 +46,8 @@ export default function FinanceCard({ visible }) {
       );
     }
     setValidadorShow(false);
+    
+    await fetchProjectData();
   };
   useEffect(() => {
     const pf = projectData.projectFeatures.find(

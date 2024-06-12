@@ -21,6 +21,7 @@ import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
+import AlertMessage from "./AlertMessage";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -225,63 +226,71 @@ export default function ProjectPage() {
                       )}
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#file_manager"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveSection("file_manager");
-                    }}
-                    className={`${
-                      activeSection === "file_manager"
-                        ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                        : "text-blue-500"
-                    } flex py-2 px-3`}
-                  >
-                    Sistema de datos
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#settings"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveSection("settings");
-                    }}
-                    className={`${
-                      activeSection === "settings"
-                        ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                        : "text-blue-500"
-                    } py-2 px-3 flex`}
-                  >
-                    Configuración
-                    {(autorizedUser || isAdmon) &&
-                      (!progressObj?.sectionsStatus.technicalInfo ||
-                        !progressObj?.sectionsStatus.financialInfo) && (
-                        <HourGlassIcon className="text-danger ms-2" />
-                      )}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#finance"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveSection("finance");
-                    }}
-                    className={`${
-                      activeSection === "finance"
-                        ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                        : "text-blue-500"
-                    } flex py-2 px-3`}
-                  >
-                    Finanzas
-                    {(autorizedUser || isPostulant || isAdmon) &&
-                      !progressObj?.sectionsStatus.ownerAcceptsConditions && (
-                        <HourGlassIcon className="text-danger ms-2" />
-                      )}
-                  </a>
-                </li>
+
+                {(isVerifier || isAdmon) && (
+                  <>
+                    <li>
+                      <a
+                        href="#file_manager"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("file_manager");
+                        }}
+                        className={`${
+                          activeSection === "file_manager"
+                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                            : "text-blue-500"
+                        } flex py-2 px-3`}
+                      >
+                        Sistema de datos
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#settings"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("settings");
+                        }}
+                        className={`${
+                          activeSection === "settings"
+                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                            : "text-blue-500"
+                        } py-2 px-3 flex`}
+                      >
+                        Configuración
+                        {(autorizedUser || isAdmon) &&
+                          (!progressObj?.sectionsStatus.technicalInfo ||
+                            !progressObj?.sectionsStatus.financialInfo) && (
+                            <HourGlassIcon className="text-danger ms-2" />
+                          )}
+                      </a>
+                    </li>
+                  </>
+                )}
+
+                {user?.id && (isPostulant || isVerifier || isAdmon) && (
+                  <li>
+                    <a
+                      href="#finance"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveSection("finance");
+                      }}
+                      className={`${
+                        activeSection === "finance"
+                          ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                          : "text-blue-500"
+                      } flex py-2 px-3`}
+                    >
+                      Finanzas
+                      {(autorizedUser || isPostulant || isAdmon) &&
+                        !progressObj?.sectionsStatus.ownerAcceptsConditions && (
+                          <HourGlassIcon className="text-danger ms-2" />
+                        )}
+                    </a>
+                  </li>
+                )}
                 <li>
                   <a
                     href="#analysis"
@@ -300,6 +309,7 @@ export default function ProjectPage() {
                 </li>
               </ul>
             </div>
+            <AlertMessage />
             <ProjectDetails visible={activeSection === "details"} />
             <ProjectFileManager visible={activeSection === "file_manager"} />
             <ProjectFiles visible={activeSection === "files"} />

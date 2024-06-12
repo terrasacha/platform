@@ -181,7 +181,6 @@ export default function CadastralRecordsInfoCard(props) {
           {
             name: "",
             cadastralNumber: "",
-            matricula: "",
             certificate: null,
             editing: true,
           },
@@ -199,7 +198,6 @@ export default function CadastralRecordsInfoCard(props) {
     return cadastralDataFixed.map((cadastralData) => {
       return {
         cadastralNumber: cadastralData.cadastralNumber.trim(),
-        matricula: cadastralData.matricula,
         documentID: cadastralData.documentID,
       };
     });
@@ -670,7 +668,6 @@ export default function CadastralRecordsInfoCard(props) {
             <thead className="text-center">
               <tr>
                 <th style={{ width: "240px" }}>Identificador catastral</th>
-                <th style={{ width: "180px" }}>Matrícula inmobiliaria</th>
                 <th style={{ width: "180px" }}>Certificado de tradición</th>
                 <th style={{ width: "180px" }}>Nombre de predio</th>
                 <th style={{ width: "180px" }}>Área</th>
@@ -703,15 +700,6 @@ export default function CadastralRecordsInfoCard(props) {
                               <XIcon className="ms-2 text-danger" />
                             )}
                           </div>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            value={data.matricula}
-                            className="text-center p-2 border rounded-md w-full"
-                            name={`cadastraldata_matricula_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          />
                         </td>
                         <td>
                           <input
@@ -757,7 +745,6 @@ export default function CadastralRecordsInfoCard(props) {
                         <td className="text-break">
                           {data.cadastralNumber?.toUpperCase()}
                         </td>
-                        <td className="text-break">{data.matricula}</td>
                         <td>{renderFileLinkByDocumentID(data.documentID)}</td>
                         <td className="text-break">
                           {renderPredioNameByCadastralNumber(
