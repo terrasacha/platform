@@ -143,7 +143,7 @@ export default class HeaderNavbar extends Component {
                       </a>
                       <a
                         className="m-2 item-menu"
-                        href="https://marketplace.suan.global/"
+                        href={process.env.REACT_APP_URL_MARKETPLACE}
                         target="_blank"
                         rel="noreferrer"
                       >

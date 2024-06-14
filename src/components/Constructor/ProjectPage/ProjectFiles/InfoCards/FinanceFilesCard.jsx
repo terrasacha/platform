@@ -286,7 +286,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
       </p>
       <div className="d-flex justify-content-center">
         <a
-          href="https://marketplace.suan.global/auth/login"
+          href={`${process.env.REACT_APP_URL_MARKETPLACE}/auth/login`}
           target="_blank"
           rel="noreferrer"
           className="btn btn-warning"

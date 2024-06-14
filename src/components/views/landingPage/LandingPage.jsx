@@ -182,7 +182,7 @@ export default class LandingPage extends Component {
               fácil, rápido y seguro.</p>
           <div className='row'>
             <div className='col p-2 mx-3'>
-              <a className='m-2 fondo-azul btn' href='https://marketplace.suan.global/'>Ver proyectos</a>
+              <a className='m-2 fondo-azul btn' href={process.env.REACT_APP_URL_MARKETPLACE}>Ver proyectos</a>
               <Button className="m-2 fondo-azul btn" onClick={this.handleShow}>
               Tengo un proyecto
               </Button>
@@ -308,7 +308,7 @@ export default class LandingPage extends Component {
                   <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
               </div>
               <div className='col'>
-                  <a href="https://marketplace.suan.global/" target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
+                  <a href={process.env.REACT_APP_URL_MARKETPLACE} target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
                   <button className="m-2 btn-cta" onClick={this.handleShow}>
                   Tengo un proyecto
                   </button>                  
