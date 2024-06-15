@@ -806,6 +806,7 @@ export const onCreateVerification = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -990,6 +991,7 @@ export const onUpdateVerification = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -1174,6 +1176,7 @@ export const onDeleteVerification = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -1504,6 +1507,7 @@ export const onCreateDocument = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -1633,6 +1637,7 @@ export const onUpdateDocument = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -1762,6 +1767,7 @@ export const onDeleteDocument = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -1876,6 +1882,7 @@ export const onCreateCategory = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -1909,6 +1916,7 @@ export const onUpdateCategory = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -1942,6 +1950,7 @@ export const onDeleteCategory = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -2012,6 +2021,7 @@ export const onCreateProduct = /* GraphQL */ `
       name
       description
       isActive
+      isActiveOnPlatform
       showOn
       order
       status
@@ -2197,6 +2207,7 @@ export const onUpdateProduct = /* GraphQL */ `
       name
       description
       isActive
+      isActiveOnPlatform
       showOn
       order
       status
@@ -2382,6 +2393,7 @@ export const onDeleteProduct = /* GraphQL */ `
       name
       description
       isActive
+      isActiveOnPlatform
       showOn
       order
       status
@@ -2579,6 +2591,7 @@ export const onCreateImage = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -2656,6 +2669,7 @@ export const onUpdateImage = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -2733,6 +2747,7 @@ export const onDeleteImage = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -4005,6 +4020,7 @@ export const onCreateProductFeature = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -4181,6 +4197,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -4357,6 +4374,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -4537,6 +4555,7 @@ export const onCreateProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -4638,6 +4657,7 @@ export const onUpdateProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -4739,6 +4759,7 @@ export const onDeleteProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -4878,6 +4899,7 @@ export const onCreateUserProduct = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -4995,6 +5017,7 @@ export const onUpdateUserProduct = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -5112,6 +5135,7 @@ export const onDeleteUserProduct = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -5200,6 +5224,7 @@ export const onCreateOrder = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -5298,6 +5323,7 @@ export const onUpdateOrder = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -5396,6 +5422,7 @@ export const onDeleteOrder = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -5487,6 +5514,7 @@ export const onCreatePayment = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -5615,6 +5643,7 @@ export const onUpdatePayment = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -5743,6 +5772,7 @@ export const onDeletePayment = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -5874,6 +5904,7 @@ export const onCreateTransactions = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -5958,6 +5989,7 @@ export const onUpdateTransactions = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6042,6 +6074,7 @@ export const onDeleteTransactions = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6158,6 +6191,7 @@ export const onCreateCompany = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6274,6 +6308,7 @@ export const onUpdateCompany = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6390,6 +6425,7 @@ export const onDeleteCompany = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6487,6 +6523,7 @@ export const onCreateScript = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6606,6 +6643,7 @@ export const onUpdateScript = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6725,6 +6763,7 @@ export const onDeleteScript = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6851,6 +6890,7 @@ export const onCreateToken = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6923,6 +6963,7 @@ export const onUpdateToken = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -6995,6 +7036,7 @@ export const onDeleteToken = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status

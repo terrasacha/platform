@@ -46,7 +46,7 @@ export default function FinanceCard({ visible }) {
       );
     }
     setValidadorShow(false);
-    
+
     await fetchProjectData();
   };
   useEffect(() => {
@@ -272,6 +272,12 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
     console.log(data);
   };
 
+  const market_url = {
+    dev: "https://test-marketplace.suan.global",
+    prod: "https://marketplace.suan.global",
+  };
+  console.log('process.env.USER_BRANCH', process.env.USER_BRANCH)
+
   return (
     <div className="box-postulant p-3">
       <strong className="mb-3 text-bold text-danger">¡Importante!</strong>
@@ -286,7 +292,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
       </p>
       <div className="d-flex justify-content-center">
         <a
-          href="https://marketplace.suan.global/auth/login"
+          href={`${market_url[process.env.USER_BRANCH]}/auth/login`}
           target="_blank"
           rel="noreferrer"
           className="btn btn-warning"

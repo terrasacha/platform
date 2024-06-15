@@ -1,13 +1,7 @@
 import React, { Component } from "react";
 
 //Bootstrap
-import {
-  Button,
-  Card,
-  Container,
-  Stack,
-  Badge,
-} from "react-bootstrap";
+import { Button, Card, Container, Stack, Badge } from "react-bootstrap";
 import HeaderNavbar from "../../Investor/Navbars/HeaderNavbar";
 // GraphQL
 import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
@@ -185,8 +179,11 @@ class ValidatorAdmon extends Component {
     const response = await API.graphql(graphqlOperation(listProducts));
     const verifierAssignedProducts = response.data.listProducts.items.filter(
       (product) => {
-        const isProjectVerifier = product.userProducts?.items.some(up => up.user.id === this.state.actualUser);
-        return isProjectVerifier;
+        const isProjectVerifier = product.userProducts?.items.some(
+          (up) => up.user.id === this.state.actualUser
+        );
+        const isVisible = product.isActiveOnPlatform;
+        return isProjectVerifier && isVisible;
       }
     );
 
@@ -219,45 +216,47 @@ class ValidatorAdmon extends Component {
       if (products) {
         return (
           <>
-          <h2 className="mt-5">Tus Proyectos Asignados</h2>
-          <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
-            {products.length > 0 &&
-              products.map((product, index) => {
-                return (
-                  <div key={index} className="p-3">
-                    <Card key={product.id} className="p-0">
-                      <img
-                        variant="top"
-                        src={getImagesCategories(product.categoryID)}
-                        style={{ height: "150px" }}
-                        alt="Hola"
+            <h2 className="mt-5">Tus Proyectos Asignados</h2>
+            <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
+              {products.length > 0 &&
+                products.map((product, index) => {
+                  return (
+                    <div key={index} className="p-3">
+                      <Card key={product.id} className="p-0">
+                        <img
+                          variant="top"
+                          src={getImagesCategories(product.categoryID)}
+                          style={{ height: "150px" }}
+                          alt="Hola"
                         />
-                      <Card.Body>
-                        <div className="d-flex">
-                          <Stack direction="horizontal" gap={2}>
-                            <Badge bg="primary">
-                              {getYearFromAWSDatetime(product.createdAt)}
-                            </Badge>
-                            <Badge bg="primary">{product.categoryID}</Badge>
-                          </Stack>
-                        </div>
-                        <p className="fs-5 my-2">{product.name}</p>
-                        <hr className="mb-2" />
-                        <p className="fs-6 my-2 text-h">{product.description}</p>
-                      </Card.Body>
-                      <Card.Footer>
-                        <div className="d-flex justify-content-center align-items-center">
-                          <a href={"project/" + product.id}>
-                            <Button>Ver más</Button>
-                          </a>
-                        </div>
-                      </Card.Footer>
-                    </Card>
-                  </div>
-                );
-              })}
-          </div>
-        </>
+                        <Card.Body>
+                          <div className="d-flex">
+                            <Stack direction="horizontal" gap={2}>
+                              <Badge bg="primary">
+                                {getYearFromAWSDatetime(product.createdAt)}
+                              </Badge>
+                              <Badge bg="primary">{product.categoryID}</Badge>
+                            </Stack>
+                          </div>
+                          <p className="fs-5 my-2">{product.name}</p>
+                          <hr className="mb-2" />
+                          <p className="fs-6 my-2 text-h">
+                            {product.description}
+                          </p>
+                        </Card.Body>
+                        <Card.Footer>
+                          <div className="d-flex justify-content-center align-items-center">
+                            <a href={"project/" + product.id}>
+                              <Button>Ver más</Button>
+                            </a>
+                          </div>
+                        </Card.Footer>
+                      </Card>
+                    </div>
+                  );
+                })}
+            </div>
+          </>
         );
       } else {
         return <div>is loading ...</div>;

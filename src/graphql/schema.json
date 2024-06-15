@@ -3732,6 +3732,17 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
+          "name" : "isActiveOnPlatform",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
           "name" : "showOn",
           "description" : null,
           "args" : [ ],
@@ -4454,6 +4465,15 @@
           "defaultValue" : null
         }, {
           "name" : "isActive",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelBooleanInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "isActiveOnPlatform",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -15987,6 +16007,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "isActiveOnPlatform",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "showOn",
           "description" : null,
           "type" : {
@@ -16091,6 +16120,15 @@
           "defaultValue" : null
         }, {
           "name" : "isActive",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelBooleanInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "isActiveOnPlatform",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -16247,6 +16285,15 @@
           "defaultValue" : null
         }, {
           "name" : "isActive",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "isActiveOnPlatform",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -23999,6 +24046,15 @@
           "defaultValue" : null
         }, {
           "name" : "isActive",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelSubscriptionBooleanInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "isActiveOnPlatform",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",

@@ -450,6 +450,7 @@ export const getVerification = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -734,6 +735,7 @@ export const getDocument = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -907,6 +909,7 @@ export const getCategory = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -991,6 +994,7 @@ export const getProduct = /* GraphQL */ `
       name
       description
       isActive
+      isActiveOnPlatform
       showOn
       order
       status
@@ -1181,6 +1185,7 @@ export const listProducts = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -1257,6 +1262,7 @@ export const getImage = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -1339,6 +1345,7 @@ export const listImages = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -2006,6 +2013,7 @@ export const getProductFeature = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -2185,6 +2193,7 @@ export const listProductFeatures = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -2259,6 +2268,7 @@ export const getProductFeatureResult = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -2444,6 +2454,7 @@ export const getUserProduct = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -2536,6 +2547,7 @@ export const listUserProducts = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -2587,6 +2599,7 @@ export const getOrder = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -2738,6 +2751,7 @@ export const getPayment = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -2871,6 +2885,7 @@ export const listPayments = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -2935,6 +2950,7 @@ export const getTransactions = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -3022,6 +3038,7 @@ export const listTransactions = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -3101,6 +3118,7 @@ export const getCompany = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -3194,6 +3212,7 @@ export const listCompanies = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -3254,6 +3273,7 @@ export const getScript = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -3360,6 +3380,7 @@ export const listScripts = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
@@ -3431,6 +3452,7 @@ export const getToken = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         showOn
         order
         status
@@ -3508,6 +3530,7 @@ export const listTokens = /* GraphQL */ `
           name
           description
           isActive
+          isActiveOnPlatform
           showOn
           order
           status
