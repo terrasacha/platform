@@ -200,7 +200,7 @@ export default function DynamicForm(props) {
     note: ({ label }) => <div className="col-12 col-12-lg">{label}</div>,
     text: ({ name, label, appearance, hint, required, readonly }) => {
       const inputType = appearance === "multiline" ? "textarea" : "text";
-      const disabled = readonly === "true";
+      const disabled = /* readonly === "true"; */false
       return renderFormGroup(
         inputType,
         name,

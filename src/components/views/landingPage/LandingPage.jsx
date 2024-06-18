@@ -26,7 +26,8 @@ export default class LandingPage extends Component {
     super(props)
     this.state = {
       productsLanding: [],
-      productsImagesIsOnCarousel: []
+      productsImagesIsOnCarousel: [],
+      userLogged: false
     }
     this.logOut = this.logOut.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -34,6 +35,12 @@ export default class LandingPage extends Component {
   }
 
   componentDidMount = async () => {
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      this.setState({ userLogged: {username: user.username, role: user.attributes["custom:role"]}})
+    } catch (error) {
+      
+    }
     await this.loadProducts()
   }
   handleClose() {
@@ -41,6 +48,7 @@ export default class LandingPage extends Component {
   }
 
   handleShow() {
+    if(this.state.userLogged && this.state.userLogged.role === 'constructor') return window.location.href = '/new_project'
     this.setState({ show: true });
   }
 
@@ -206,7 +214,7 @@ export default class LandingPage extends Component {
                   </ol>                
                 </Modal.Body>
                 <Modal.Footer>
-                  <a className='m-2 fondo-azul btn m-auto d-block'href='/login'>Registrarme</a>
+                  <a className='m-2 fondo-azul btn m-auto d-block'href='/login' >Registrarme</a>
                 </Modal.Footer>
               </Modal>
             
