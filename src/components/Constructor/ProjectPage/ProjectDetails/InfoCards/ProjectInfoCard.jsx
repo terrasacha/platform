@@ -173,7 +173,8 @@ export default function ProjectInfoCard(props) {
     const formattedFilename = fileName
       .toLowerCase()
       .trim()
-      .replaceAll(" ", "_");
+      .replaceAll(" ", "_")
+      .replaceAll("-", "_");
     const filenameWithoutAccents = removeAccents(formattedFilename);
     return encodeURIComponent(filenameWithoutAccents);
   };
