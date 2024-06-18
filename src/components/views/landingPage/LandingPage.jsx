@@ -206,7 +206,7 @@ export default class LandingPage extends Component {
                   </ol>                
                 </Modal.Body>
                 <Modal.Footer>
-                  <a className='m-2 fondo-azul btn m-auto d-block'href='https://platform.suan.global/login' >Registrarme</a>
+                  <a className='m-2 fondo-azul btn m-auto d-block'href={process.env.REACT_APP_URL_MARKETPLACE} >Registrarme</a>
                 </Modal.Footer>
               </Modal>
             
