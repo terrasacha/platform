@@ -206,7 +206,7 @@ export default class LandingPage extends Component {
                   </ol>                
                 </Modal.Body>
                 <Modal.Footer>
-                  <a className='m-2 fondo-azul btn m-auto d-block'href={process.env.REACT_APP_URL_MARKETPLACE} >Registrarme</a>
+                  <a className='m-2 fondo-azul btn m-auto d-block'href='/login'>Registrarme</a>
                 </Modal.Footer>
               </Modal>
             
