@@ -45,6 +45,7 @@ type Wallet @model {
   userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
   orders: [Order] @hasMany(indexName: "byWallet", fields: ["id"])
+  transactions: [Transactions] @hasMany(indexName: "byWallet", fields: ["id"])
 }
 
 type Verification @model {
@@ -107,6 +108,7 @@ type Product @model {
   name: String!
   description: String
   isActive: Boolean!
+  isActiveOnPlatform: Boolean
   showOn: String
   order: Int
   status: String
@@ -293,6 +295,7 @@ type Transactions @model {
   id: ID!
   addressOrigin: String
   addressDestination: String
+  walletID: ID @index(name: "byWallet")
   txIn: String
   txCborhex: String
   txHash: String
