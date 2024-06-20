@@ -34,8 +34,10 @@ const mapProjectVerifiers = async (data) => {
   //   });
   // });
 
+  console.log(data.userProducts)
+
   const projectVerifiers = data.userProducts.items
-    .filter((up) => up.user.role === "validator")
+    .filter((up) => up.user?.role === "validator")
     .map((userProduct) => {
       return userProduct.user.id;
     });
@@ -55,7 +57,7 @@ const mapProductFeatures = async (productFeatures) => {
 
 const mapProjectVerifiersNames = async (data) => {
   const projectVerifiersNames = data.userProducts.items
-    .filter((up) => up.user.role === "validator")
+    .filter((up) => up.user?.role === "validator")
     .map((userProduct) => {
       return userProduct.user.name;
     });

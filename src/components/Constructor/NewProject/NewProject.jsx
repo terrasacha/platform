@@ -117,7 +117,7 @@ export default function NewProject() {
       "C_plano_predio",
     ];
 
-    // Validadores por defecto
+    /* // Validadores por defecto
     let tempUserProduct;
     // Moxie
     tempUserProduct = {
@@ -148,7 +148,7 @@ export default function NewProject() {
       API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       )
-    );
+    ); */
 
     // Creación de pf Token Name GLOBAL_TOKEN_NAME
     const newProductFeatureTokenName = {
@@ -446,6 +446,7 @@ export default function NewProject() {
       name: formData["A_asset_names"],
       description: formData["A_description"],
       isActive: false,
+      isActiveOnPlatform: true,
       status: "Prefactibilidad",
       categoryID: formData["A_category"],
       order: 0,
