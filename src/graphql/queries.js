@@ -204,6 +204,24 @@ export const getVerification = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -315,6 +333,24 @@ export const getDocument = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -380,6 +416,24 @@ export const getCategory = /* GraphQL */ `
       name
       isSelected
       products {
+        items {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -590,6 +644,24 @@ export const listImages = /* GraphQL */ `
         isActive
         order
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1009,6 +1081,24 @@ export const listProductFeatures = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -1033,6 +1123,24 @@ export const getProductFeatureResult = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -1140,6 +1248,24 @@ export const listUserProducts = /* GraphQL */ `
         isFavorite
         userID
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1170,6 +1296,24 @@ export const getOrder = /* GraphQL */ `
         token_name
         cbor
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         testnetAddr
         MainnetAddr
         Active
@@ -1311,6 +1455,24 @@ export const listPayments = /* GraphQL */ `
         exchangeRate
         timestamp
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         userID
         claimedByUser
         createdAt
@@ -1391,6 +1553,24 @@ export const listTransactions = /* GraphQL */ `
         policyID
         stakeAddress
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1462,6 +1642,24 @@ export const listCompanies = /* GraphQL */ `
         description
         userID
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1536,6 +1734,24 @@ export const listScripts = /* GraphQL */ `
         token_name
         cbor
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         testnetAddr
         MainnetAddr
         Active
@@ -1624,6 +1840,24 @@ export const listTokens = /* GraphQL */ `
       items {
         id
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         policyID
         tokenName
         supply

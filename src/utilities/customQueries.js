@@ -100,6 +100,7 @@ export const listProducts = /* GraphQL */ `
         name
         description
         isActive
+        isActiveOnPlatform
         order
         status
         timeOnVerification
@@ -217,6 +218,7 @@ export const getUserProjects = /* GraphQL */ `
             createdAt
             description
             isActive
+            isActiveOnPlatform
             name
             order
             projectReadiness

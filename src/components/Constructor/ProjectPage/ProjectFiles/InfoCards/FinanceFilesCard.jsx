@@ -46,7 +46,7 @@ export default function FinanceCard({ visible }) {
       );
     }
     setValidadorShow(false);
-    
+
     await fetchProjectData();
   };
   useEffect(() => {

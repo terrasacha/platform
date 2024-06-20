@@ -356,6 +356,24 @@ export const createVerification = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -426,6 +444,24 @@ export const updateVerification = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -496,6 +532,24 @@ export const deleteVerification = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -620,6 +674,24 @@ export const createDocument = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -674,6 +746,24 @@ export const updateDocument = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -728,6 +818,24 @@ export const deleteDocument = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -767,6 +875,24 @@ export const createCategory = /* GraphQL */ `
       name
       isSelected
       products {
+        items {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -786,6 +912,24 @@ export const updateCategory = /* GraphQL */ `
       name
       isSelected
       products {
+        items {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -805,6 +949,24 @@ export const deleteCategory = /* GraphQL */ `
       name
       isSelected
       products {
+        items {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -2031,6 +2193,24 @@ export const createProductFeatureResult = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -2070,6 +2250,24 @@ export const updateProductFeatureResult = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -2109,6 +2307,24 @@ export const deleteProductFeatureResult = /* GraphQL */ `
         isOnMainCard
         isResult
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         featureID
         createdAt
         updatedAt
@@ -2308,6 +2524,24 @@ export const createOrder = /* GraphQL */ `
         token_name
         cbor
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         testnetAddr
         MainnetAddr
         Active
@@ -2363,6 +2597,24 @@ export const updateOrder = /* GraphQL */ `
         token_name
         cbor
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         testnetAddr
         MainnetAddr
         Active
@@ -2418,6 +2670,24 @@ export const deleteOrder = /* GraphQL */ `
         token_name
         cbor
         productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          createdAt
+          updatedAt
+          __typename
+        }
         testnetAddr
         MainnetAddr
         Active
