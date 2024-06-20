@@ -261,6 +261,7 @@ type Order @model {
   tokenAmount: Float
   utxos: String
   value: Float
+  borrar: String
   scriptID: ID @index(name: "byScript")
   script: Script @belongsTo(fields: ["scriptID"])
   walletID: ID @index(name: "byWallet")

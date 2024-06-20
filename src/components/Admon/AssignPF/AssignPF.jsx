@@ -347,7 +347,7 @@ export default class AssignPF extends Component {
               <tbody>
                 {products?.map((product) => {
                   let verificadores = product.userProducts.items.filter(
-                    (up) => up.user.role === "validator"
+                    (up) => up.user?.role === "validator"
                   );
                   return (
                     <tr
@@ -419,7 +419,7 @@ export default class AssignPF extends Component {
               <tbody>
                 {products?.map((product) => {
                   let verificadores = product.userProducts.items.filter(
-                    (up) => up.user.role === "validator"
+                    (up) => up.user?.role === "validator"
                   );
                   return (
                     <tr

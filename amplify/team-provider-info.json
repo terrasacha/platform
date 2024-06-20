@@ -1,14 +1,14 @@
 {
-  "dev": {
+  "prod": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-kiosuanbcrjsapp-dev-145518-authRole",
-      "UnauthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-dev-145518-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-dev-145518-authRole",
+      "AuthRoleName": "amplify-kiosuanbcrjsapp-prod-150248-authRole",
+      "UnauthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-prod-150248-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-prod-150248-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-kiosuanbcrjsapp-dev-145518-deployment",
-      "UnauthRoleName": "amplify-kiosuanbcrjsapp-dev-145518-unauthRole",
-      "StackName": "amplify-kiosuanbcrjsapp-dev-145518",
-      "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-kiosuanbcrjsapp-dev-145518/559de2a0-3079-11ed-b603-0e7e05b7cb39",
+      "DeploymentBucketName": "amplify-kiosuanbcrjsapp-prod-150248-deployment",
+      "UnauthRoleName": "amplify-kiosuanbcrjsapp-prod-150248-unauthRole",
+      "StackName": "amplify-kiosuanbcrjsapp-prod-150248",
+      "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-kiosuanbcrjsapp-prod-150248/39065e40-f5d2-11ee-aba5-12bf686c025f",
       "AmplifyAppId": "db3zbcxaygrmf"
     },
     "categories": {

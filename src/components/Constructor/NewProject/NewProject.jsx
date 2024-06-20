@@ -122,13 +122,15 @@ export default function NewProject() {
     // Moxie
     tempUserProduct = {
       productID: productID,
-      userID: "8d244cec-b39a-42f0-83e8-d8a289947ba2",
+      userID: "064db0a1e576",
     };
     promises.push(
       API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       )
     );
+
+    /*
     // Sebastian Azcona
     tempUserProduct = {
       productID: productID,
@@ -148,7 +150,7 @@ export default function NewProject() {
       API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       )
-    );
+    ); */
 
     // Creación de pf Token Name GLOBAL_TOKEN_NAME
     const newProductFeatureTokenName = {
@@ -446,6 +448,7 @@ export default function NewProject() {
       name: formData["A_asset_names"],
       description: formData["A_description"],
       isActive: false,
+      isActiveOnPlatform: true,
       status: "Prefactibilidad",
       categoryID: formData["A_category"],
       order: 0,
