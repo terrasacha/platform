@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
-import { notify } from "utilities/notify";
 import { useProjectData } from "context/ProjectDataContext";
 import { API, Storage, graphqlOperation } from "aws-amplify";
 import {
@@ -21,13 +18,12 @@ export default function UploadFileModal(props) {
   const [fileNames, setFileNames] = useState([]);
   const [isLoadingDoc, setIsLoadingDoc] = useState(false);
 
-
   const { projectData, handleUpdateContextProjectFileValidators } =
     useProjectData();
   const { user } = useAuth();
 
   const openModal = () => {
-    console.log(uploadRoute)
+    console.log(uploadRoute);
     setShowModal(true);
   };
 
@@ -71,9 +67,7 @@ export default function UploadFileModal(props) {
       const file = files[index];
 
       try {
-        const urlPath = `${uploadRoute}/${formatFileName(
-          file.name
-        )}`;
+        const urlPath = `${uploadRoute}/${formatFileName(file.name)}`;
         const uploadFileResult = await Storage.put(urlPath, file, {
           level: "public",
           contentType: "*/*",
@@ -94,9 +88,10 @@ export default function UploadFileModal(props) {
   const createDocumentsFromFileURL = async (urls, userID, pfID) => {
     const results = await Promise.all(
       urls.map(async (filePath, index) => {
-        const awsUrlFullPath = WebAppConfig.url_s3_public_images + encodeURIComponent(filePath);
+        const awsUrlFullPath =
+          WebAppConfig.url_s3_public_images + encodeURIComponent(filePath);
 
-        const segments = filePath.split('/');
+        const segments = filePath.split("/");
         const fileName = segments.pop();
 
         const tempNewDocument = {
@@ -185,9 +180,12 @@ export default function UploadFileModal(props) {
 
   return (
     <div>
-      <Button variant="primary " size="md" onClick={openModal}>
+      <button
+        className="p-2 text-white bg-blue-600 rounded-md"
+        onClick={openModal}
+      >
         Subir archivo
-      </Button>
+      </button>
 
       <Modal show={showModal} onHide={closeModal} size="lg" centered>
         <Modal.Header closeButton>
@@ -195,23 +193,20 @@ export default function UploadFileModal(props) {
         </Modal.Header>
 
         <Modal.Body>
-          <Form.Control
+          <input
             type="file"
-            size="sm"
             multiple
             onChange={handleFileChange}
-            className="mb-3"
+            className="border w-full"
           />
           {selectedFiles.length > 0 && (
             <div className="border">
               <div className="row row-cols-1 p-3 g-2">
                 {selectedFiles.map((file, index) => (
                   <div key={index}>
-                    <Form.Group controlId={`file${index}`}>
-                      <Form.Label>
-                        Archivo #{index + 1}: {file.name}
-                      </Form.Label>
-                    </Form.Group>
+                    <p controlId={`file${index}`}>
+                      Archivo #{index + 1}: {file.name}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -220,16 +215,22 @@ export default function UploadFileModal(props) {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
+          <button
+            className="p-2 text-white bg-slate-600 rounded-md"
+            onClick={closeModal}
+          >
             Cerrar
-          </Button>
-          <Button variant="primary" onClick={() => handleSaveChanges()}>
+          </button>
+          <button
+            className="p-2 text-white bg-blue-600 rounded-md"
+            onClick={() => handleSaveChanges()}
+          >
             {isLoadingDoc ? (
               <Spinner size="sm" className="p-2"></Spinner>
             ) : (
               "Cargar"
             )}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

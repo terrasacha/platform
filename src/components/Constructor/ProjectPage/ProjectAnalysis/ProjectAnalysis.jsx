@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import Card from "components/common/Card";
 import { getPolygonByCadastralNumber } from "services/getPolygonByCadastralNumber";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 import { getPredialData2ByCadastralNumber } from "services/getPredialData2ByCadastralNumber";
 //import { generateJSONFile } from "utilities/generateJsonFile";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
+import Spinner from "react-bootstrap/Spinner";
+import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
+import { XIcon } from "components/common/icons/XIcon";
+import { notify } from "utilities/notify";
 import BarGraphComponent from "./BarGraphComponent";
 //import SankeyGraphComponent from "./SankeyGraphComponent";
 export default function ProjectAnalysis({ visible }) {
   const { projectData } = useProjectData();
   const [comparativeAnalysis, setComparativeAnalysis] = useState(null);
+  const [file, setFile] = useState(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const inputFileRef = useRef(null);
 
   useEffect(() => {
     handleComparativeAreaAnalysis();
@@ -84,9 +91,7 @@ export default function ProjectAnalysis({ visible }) {
         "https://oraculo.terrasacha.com/api/v1/consulta-proyecto";
 
       const idProyecto = projectData.projectInfo.id;
-      //console.log(`${endpoint}?id_proyecto=${idProyecto}`);
       const url = `${endpoint}?id_proyecto=${idProyecto}`;
-      console.log("url", url);
       const request = await fetch(url, {
         method: "POST",
         headers: {
@@ -104,17 +109,82 @@ export default function ProjectAnalysis({ visible }) {
       }
     }
   };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setFile(file);
+  };
+  const handleClearFile = () => {
+    setFile(null);
+    if (inputFileRef.current) {
+      inputFileRef.current.value = null;
+    }
+  };
+  const handleAddFileChange = async () => {
+    setUploadingFile(true);
+    if (!file) {
+      notify({
+        msg: "No se ha seleccionado ningún archivo.",
+        type: "error",
+      });
+      return;
+    }
+
+    const formData = new FormData(); // Crear un objeto FormData para enviar los datos
+
+    formData.append("folder_name", projectData.projectInfo.id); // Añadir el nombre de la carpeta
+    formData.append("file", file); // Añadir el archivo seleccionado
+
+    const url =
+      "https://3x52k6rtsg.execute-api.us-east-1.amazonaws.com/v4/upload";
+    const apiKey = "ZDkguG9HwA5bAwAMQISGy1lukLsB9xA72vuzBFFB";
+    console.log(formData);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "x-api-key": apiKey,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      switch (data.statusCode) {
+        case 400:
+          notify({
+            msg: data.body,
+            type: "error",
+          });
+          break;
+        case 200:
+          notify({
+            msg: data.body,
+            type: "success",
+          });
+          await handleComparativeAreaAnalysis();
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Error al enviar la solicitud:", error);
+    }
+    handleClearFile();
+    setUploadingFile(false);
+  };
 
   const handleComparativeAreaAnalysis = async () => {
-    const comparativeFile = projectData.projectFeatures.find(
-      (item) => item.featureID === "comparative_area_analysis"
-    );
-    if (!comparativeFile) return;
-    const response = await fetch(
-      `https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/${projectData.projectInfo.id}/data/${comparativeFile.value}`
-    );
-    const data = await response.json();
-    return setComparativeAnalysis(data);
+    try {
+      console.log(projectData.projectInfo.id, "projectData.projectInfo.id");
+      const response = await fetch(
+        `https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/${projectData.projectInfo.id}/data/area_analysis.json`
+      );
+      const data = await response.json();
+      console.log(data, "handleComparativeAreaAnalysis");
+      return setComparativeAnalysis(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -138,7 +208,7 @@ export default function ProjectAnalysis({ visible }) {
               <Card.Header title="Análisis Comparativo de Áreas" sep={true} />
               <Card.Body>
                 <div className="d-flex justify-content-center align-items-center mb-24">
-                  <div className="d-flex flex-column w-5/6 align-items-center gap-4">
+                  <div className="d-flex flex-column w-100 align-items-center gap-4">
                     {comparativeAnalysis ? (
                       <>
                         <h4>Evolución de áreas</h4>
@@ -153,9 +223,46 @@ export default function ProjectAnalysis({ visible }) {
                         /> */}
                       </>
                     ) : (
-                      <p className="mb-0 me-4">
-                        La información no se encuentra disponible
-                      </p>
+                      <div className="d-flex align-items-center w-100">
+                        <Form.Group controlId="formFile" className="mb-3">
+                          <Form.Label>
+                            Agregar información de comparación de areas
+                          </Form.Label>
+                          <div className="d-flex">
+                            <Form.Control
+                              type="file"
+                              size="md"
+                              ref={inputFileRef}
+                              style={{ marginRight: ".7rem" }}
+                              onChange={handleFileChange}
+                            />
+                            <Button
+                              variant="success"
+                              style={{ marginRight: ".7rem" }}
+                              disabled={!file}
+                              onClick={() => handleAddFileChange()}
+                            >
+                              {!uploadingFile ? (
+                                <SaveDiskIcon />
+                              ) : (
+                                <Spinner
+                                  animation="border"
+                                  size="sm"
+                                  role="status"
+                                ></Spinner>
+                              )}
+                            </Button>
+                            {file && !uploadingFile && (
+                              <Button
+                                variant="danger"
+                                onClick={() => handleClearFile()}
+                              >
+                                <XIcon />
+                              </Button>
+                            )}
+                          </div>
+                        </Form.Group>
+                      </div>
                     )}
                   </div>
                 </div>

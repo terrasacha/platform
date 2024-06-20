@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import Card from "../../../../common/Card";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { DownloadIcon } from "../../../../common/icons/DownloadIcon";
 import { MessagesIcon } from "../../../../common/icons/MessagesIcon";
@@ -25,7 +23,7 @@ export default function PostulantFilesInfoCard(props) {
     setIsDocApproved,
     isVerifier,
     isPostulant,
-    handleSendMessage
+    handleSendMessage,
   } = props;
   const [isValidating, setIsValidating] = useState(false);
   const [isLoadingDoc, setIsLoadingDoc] = useState(false);
@@ -40,8 +38,8 @@ export default function PostulantFilesInfoCard(props) {
 
   const handleUpdateDocumentStatus = async (fileIndex, docId, status) => {
     const file = projectData.projectFiles[fileIndex];
-    let verificationId
-    
+    let verificationId;
+
     if (!file.verification) {
       const newVerification = {
         productFeatureID: file.pfID,
@@ -118,25 +116,27 @@ export default function PostulantFilesInfoCard(props) {
       setIsDocApproved(status);
 
       if (status) {
-        await handleSendMessage("Tú archivo fue aceptado", verificationId)
+        await handleSendMessage("Tú archivo fue aceptado", verificationId);
         notify({
           msg: "El archivo fue aceptado",
           type: "success",
         });
       } else {
-        await handleSendMessage("Tú archivo fue rechazado, por favor sube un nuevo archivo con la documentación correcta", verificationId)
+        await handleSendMessage(
+          "Tú archivo fue rechazado, por favor sube un nuevo archivo con la documentación correcta",
+          verificationId
+        );
         notify({
           msg: "El archivo fue rechazado, el postulante deberá subir un nuevo archivo",
           type: "success",
         });
       }
-      
     } catch (error) {
       notify({
         msg: "Ups!, parece que algo ha fallado",
         type: "error",
       });
-      return
+      return;
     }
 
     // En caso de que todos los documentos sean aprobados, se actualiza el estado del proyecto a Verificado
@@ -212,7 +212,10 @@ export default function PostulantFilesInfoCard(props) {
       });
 
       // Agregar comentario al componente de Messages
-      await handleSendMessage("Se ha subido un nuevo archivo, por favor verifícalo", verificationId)
+      await handleSendMessage(
+        "Se ha subido un nuevo archivo, por favor verifícalo",
+        verificationId
+      );
 
       notify({
         msg: "Archivo subido y enviado a validación exitosamente",
@@ -238,38 +241,32 @@ export default function PostulantFilesInfoCard(props) {
       if (isValidating) {
         return (
           <>
-            <Button
-              className="m-1 scale-up-ver-top"
-              size="sm"
-              variant="primary"
+            <button
+              className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
               onClick={() =>
                 handleUpdateDocumentStatus(fileIndex, file.id, true)
               }
             >
               <CheckIcon />
-            </Button>
-            <Button
-              className="m-1 scale-up-ver-top"
-              size="sm"
-              variant="danger"
+            </button>
+            <button
+              className="px-2 py-1 text-white rounded-md bg-red-500"
               onClick={() =>
                 handleUpdateDocumentStatus(fileIndex, file.id, false)
               }
             >
               <XIcon />
-            </Button>
+            </button>
           </>
         );
       } else {
         return (
-          <Button
-            className="m-1"
-            size="sm"
-            variant="outline-primary"
+          <button
+            className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
             onClick={() => setIsValidating(true)}
           >
             Verificar
-          </Button>
+          </button>
         );
       }
     } else {
@@ -279,9 +276,9 @@ export default function PostulantFilesInfoCard(props) {
 
   return (
     <Card className={className}>
-      <Card.Header title="Documentos del postulante" sep="true"/>
+      <Card.Header title="Documentos del postulante" sep="true" />
       <Card.Body>
-        <Table className="text-center" responsive>
+        <table className="w-full text-center">
           <thead>
             <tr>
               <th>Tipo</th>
@@ -293,11 +290,15 @@ export default function PostulantFilesInfoCard(props) {
           <tbody className="align-middle">
             {projectFiles?.map((file, fileIndex) => {
               return (
-                <tr key={file.id}>
+                <tr
+                  key={file.id}
+                  className="border-b-2"
+                  style={{ height: "4rem" }}
+                >
                   <td>{file.title}</td>
                   <td>{file.updatedAt}</td>
                   <td>{getValidationRender(file, fileIndex)}</td>
-                  <td className="text-end">
+                  <td className="text-end flex justify-end items-center h-[4rem] gap-x-2">
                     {isPostulant && file.status === "denied" && (
                       <>
                         <input
@@ -308,10 +309,8 @@ export default function PostulantFilesInfoCard(props) {
                             handleUpdateDocumentFile(e, fileIndex, file)
                           }
                         />
-                        <Button
-                          className="m-1"
-                          size="sm"
-                          variant="outline-primary"
+                        <button
+                          className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
                           onClick={() => handleUploadDocumentButtonClick()}
                         >
                           {isLoadingDoc ? (
@@ -319,34 +318,28 @@ export default function PostulantFilesInfoCard(props) {
                           ) : (
                             "Actualizar documentación"
                           )}
-                        </Button>
+                        </button>
                       </>
                     )}
                     <a href={file.url} target="_blank" rel="noreferrer">
-                      <Button
-                        className="m-1"
-                        size="sm"
-                        variant="outline-primary"
-                      >
+                      <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white">
                         <DownloadIcon />
-                      </Button>
+                      </button>
                     </a>
                     {file.verification && (
-                      <Button
-                        className="m-1"
-                        size="sm"
-                        variant="outline-primary"
+                      <button
+                        className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
                         onClick={() => handleMessageButtonClick(fileIndex)}
                       >
                         <MessagesIcon />
-                      </Button>
+                      </button>
                     )}
                   </td>
                 </tr>
               );
             })}
           </tbody>
-        </Table>
+        </table>
       </Card.Body>
     </Card>
   );

@@ -44,26 +44,14 @@ export default class HeaderNavbar extends Component {
         <Navbar key="sm" bg="light" expand="lg" fixed="top">
           <Container>
             <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
-              <img
-                src={LOGO}
-                height="40"
-                width="auto"
-                className="d-inline-block align-top"
-                alt="ATP"
-              />
+              <img src={LOGO} className="w-8 h-auto" alt="ATP" />
             </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Offcanvas placement="end">
               <Offcanvas.Header closeButton>
                 <Offcanvas.Title>
                   <a href="/">
-                    <img
-                      src={LOGO}
-                      width="40"
-                      height="40"
-                      className="d-inline-block align-top"
-                      alt="ATP"
-                    />
+                    <img src={LOGO} className="w-8 h-auto" alt="ATP" />
                   </a>
                 </Offcanvas.Title>
               </Offcanvas.Header>

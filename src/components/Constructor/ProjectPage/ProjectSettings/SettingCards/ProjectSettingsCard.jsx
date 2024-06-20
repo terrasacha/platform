@@ -7,7 +7,6 @@ import FormGroup from "../../../../common/FormGroup";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { updateProduct } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
-import { Button } from "react-bootstrap";
 
 import { fetchProjectDataByProjectID } from "../../api";
 
@@ -36,7 +35,7 @@ export default function ProjectSettingsCard(props) {
     await API.graphql(
       graphqlOperation(updateProduct, { input: updatedProduct })
     );
-    
+
     await fetchProjectData();
 
     if (!projectIsActive === true) {
@@ -69,9 +68,9 @@ export default function ProjectSettingsCard(props) {
     await API.graphql(
       graphqlOperation(updateProduct, { input: updatedProduct })
     );
-    
+
     await fetchProjectData();
-    
+
     notify({
       msg: "El estado del proyecto ha sido actualizado",
       type: "success",

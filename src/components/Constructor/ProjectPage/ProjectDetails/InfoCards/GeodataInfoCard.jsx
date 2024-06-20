@@ -1,22 +1,19 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import Card from "../../../../common/Card";
-import { Button, Form } from "react-bootstrap";
 import { useProjectData } from "context/ProjectDataContext";
-import { API, graphqlOperation } from "aws-amplify";
-import { createProductFeature, updateProductFeature } from "graphql/mutations";
-import { notify } from "utilities/notify";
 import { getPolygonByCadastralNumber } from "services/getPolygonByCadastralNumber";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 import { getPredialData2ByCadastralNumber } from "services/getPredialData2ByCadastralNumber";
-// Borrar despues de pasar a componentes
+import { Spinner } from "react-bootstrap";
 
 export default function GeodataInfoCard(props) {
-  const { autorizedUser, setProgressChange, tooltip } = props;
+  const { autorizedUser, setProgressChange, tooltip, setLatLngCentroid } = props;
   const { projectData } = useProjectData();
-
+  const [loading, setLoading] = useState(false)
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
   const [polygonsFetchedData, setPolygonsFetchedData] = useState(null);
+  const [mapKey, setMapKey] = useState(0);  // Key to force map reload
 
   const [formData, setFormData] = useState({
     coords: {
@@ -24,6 +21,7 @@ export default function GeodataInfoCard(props) {
       lng: 0,
     },
   });
+
   const [geoData, setGeoData] = useState({
     coords: {
       lat: 4.73,
@@ -36,19 +34,13 @@ export default function GeodataInfoCard(props) {
 
   useEffect(() => {
     async function updatePredialData() {
-      const cadastralNumbersArray =
-        projectData.projectCadastralRecords.cadastralRecords.map(
-          (item) => item.cadastralNumber
-        );
-      let polygonGeoJson = await getPolygonByCadastralNumber(
-        cadastralNumbersArray
-      ); // Llamada a la función getData
-      const predialData = await getPredialDataByCadastralNumber(
-        cadastralNumbersArray
-      ); // Llamada a la función getData
-      const predialData2 = await getPredialData2ByCadastralNumber(
-        cadastralNumbersArray
-      ); // Llamada a la función getData
+    setLoading(true)
+      const cadastralNumbersArray = projectData.projectCadastralRecords.cadastralRecords.map(
+        (item) => item.cadastralNumber
+      );
+      let polygonGeoJson = await getPolygonByCadastralNumber(cadastralNumbersArray);
+      const predialData = await getPredialDataByCadastralNumber(cadastralNumbersArray);
+      const predialData2 = await getPredialData2ByCadastralNumber(cadastralNumbersArray);
 
       if (polygonGeoJson) {
         polygonGeoJson.features = polygonGeoJson.features.map((feature, index) => {
@@ -57,26 +49,26 @@ export default function GeodataInfoCard(props) {
             properties: {
               ...feature.properties,
               ...predialData[feature.properties.CODIGO],
-              ...predialData2[feature.properties.CODIGO]
-            }
-          }
+              ...predialData2[feature.properties.CODIGO],
+            },
+          };
         });
       }
-      console.log("polygonGeoJson", polygonGeoJson);
-      console.log("predialData", predialData);
-      console.log("predialData2", predialData2);
       setPolygonsFetchedData(polygonGeoJson);
+      setTimeout(() => {
+        setLoading(false)
+      }, 1000);
+
     }
 
     updatePredialData();
-  }, [projectData]);
+  }, [projectData.projectCadastralRecords.cadastralRecords]);
 
   useEffect(() => {
     if (projectData && projectData.projectGeoData && projectData.projectInfo) {
-      const pfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "C_ubicacion";
-        })[0]?.id || null;
+      const pfID = projectData.projectFeatures.filter((item) => {
+        return item.featureID === "C_ubicacion";
+      })[0]?.id || null;
       setUbicacionPfId(pfID);
 
       if (projectData?.projectInfo?.location.coords.lat !== "") {
@@ -106,81 +98,88 @@ export default function GeodataInfoCard(props) {
     }
   }, [projectData]);
 
-  //let markers = [];
+  useEffect(() => {
+    setMapKey((prevKey) => prevKey + 1);
+  }, [polygonsFetchedData]);
+
+  const LoadingOverlay = () => (
+    <div className="absolute h-full w-full flex items-center justify-center bg-black bg-opacity-50 z-10">
+      <Spinner variant="light" />
+    </div>
+  );
 
   return (
     <Card>
       <Card.Header title="Ubicación Geográfica" sep={true} tooltip={tooltip} />
-      <div style={{ height: "570px", width: "100%" }}>
-        {polygonsFetchedData && (
-          <>
-            <GoogleMapReact
-              // key={new Date().getTime()}
-              bootstrapURLKeys={{
-                key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
-              }}
-              defaultCenter={geoData.coords}
-              defaultZoom={6}
-              onGoogleApiLoaded={({ map, maps }) => {
-                map.setZoom(geoData.zoom);
+        <div style={{ height: "570px", width: "100%", position: 'relative' }}>
+          {loading && <LoadingOverlay />}
+          <div style={{ height: "570px", width: "100%" }}>
+            {polygonsFetchedData && (
+              <>
+                <GoogleMapReact
+                  key={mapKey} // Key to force reload
+                  bootstrapURLKeys={{
+                    key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
+                  }}
+                  defaultCenter={geoData.coords}
+                  defaultZoom={6}
+                  onGoogleApiLoaded={({ map, maps }) => {
+                    map.setZoom(geoData.zoom);
 
-                if (polygonsFetchedData.features.length > 0) {
-                  // Load GeoJSON.
-                  map.data.addGeoJson(polygonsFetchedData);
+                    if (polygonsFetchedData.features.length > 0) {
+                      map.data.addGeoJson(polygonsFetchedData);
 
-                  // Create empty bounds object
-                  let bounds = new maps.LatLngBounds();
+                      let bounds = new maps.LatLngBounds();
 
-                  map.data.addListener("click", (event) => {
-                    const titulo = event.feature.getProperty("DIRECCION");
-                    const codigo = event.feature.getProperty("CODIGO");
-                    const departamento = event.feature.getProperty("NOMBRE_DEPARTAMENTO");
-                    const municipio = event.feature.getProperty("NOMBRE_MUNICIPIO");
-                    const destinoEconomico = event.feature.getProperty("NOMBRE_DESTINOECONOMICO");
-                    const descripcionDestinoEconomico = event.feature.getProperty("DESCRIPCION_DESTINOECONOMICO");
-                    const areaTerreno = event.feature.getProperty("AREA_TERRENO");
-                    const areaConstruida = event.feature.getProperty("AREA_CONSTRUIDA");
-                    const contentString = `
-                      <div class='infoWindowContainer'>
-                        <p>${titulo}</p>
-                        <p class='mb-0'>Identificador catastral: ${codigo}</p>
-                        <p class='mb-0'>Departamento: ${departamento}</p>
-                        <p class='mb-0'>Municipio: ${municipio}</p>
-                        <p class='mb-0'>Destino económico: ${destinoEconomico} (${descripcionDestinoEconomico})</p>
-                        <p class='mb-0'>Área de terreno: ${parseFloat(areaTerreno).toLocaleString('es-ES')} m2</p>
-                        <p class='mb-0'>Área construida: ${parseFloat(areaConstruida).toLocaleString('es-ES')} m2</p>
-                      </div>
-                    `;
+                      map.data.addListener("click", (event) => {
+                        const titulo = event.feature.getProperty("DIRECCION");
+                        const codigo = event.feature.getProperty("CODIGO");
+                        const departamento = event.feature.getProperty("NOMBRE_DEPARTAMENTO");
+                        const municipio = event.feature.getProperty("NOMBRE_MUNICIPIO");
+                        const destinoEconomico = event.feature.getProperty("NOMBRE_DESTINOECONOMICO");
+                        const descripcionDestinoEconomico = event.feature.getProperty("DESCRIPCION_DESTINOECONOMICO");
+                        const areaTerreno = event.feature.getProperty("AREA_TERRENO");
+                        const areaConstruida = event.feature.getProperty("AREA_CONSTRUIDA");
+                        const contentString = `
+                          <div class='infoWindowContainer'>
+                            <p>${titulo}</p>
+                            <p class='mb-0'>Identificador catastral: ${codigo}</p>
+                            <p class='mb-0'>Departamento: ${departamento}</p>
+                            <p class='mb-0'>Municipio: ${municipio}</p>
+                            <p class='mb-0'>Destino económico: ${destinoEconomico} (${descripcionDestinoEconomico})</p>
+                            <p class='mb-0'>Área de terreno: ${parseFloat(areaTerreno).toLocaleString("es-ES")} m2</p>
+                            <p class='mb-0'>Área construida: ${parseFloat(areaConstruida).toLocaleString("es-ES")} m2</p>
+                          </div>
+                        `;
 
-                    let infoWindow = new maps.InfoWindow({
-                      content: contentString,
-                      ariaLabel: codigo,
-                    });
-                    //setInfoWindow(infoWindow);
-                    infoWindow.setPosition(event.latLng);
-                    infoWindow.open(map, event.latLng);
-                  });
+                        let infoWindow = new maps.InfoWindow({
+                          content: contentString,
+                          ariaLabel: codigo,
+                        });
+                        infoWindow.setPosition(event.latLng);
+                        infoWindow.open(map, event.latLng);
+                      });
 
-                  // Calcular centroide
-                  map.data.forEach(function (feature) {
-                    var geo = feature.getGeometry();
+                      map.data.forEach(function (feature) {
+                        var geo = feature.getGeometry();
+                        geo.forEachLatLng(function (LatLng) {
+                          bounds.extend(LatLng);
+                        });
+                      });
 
-                    geo.forEachLatLng(function (LatLng) {
-                      bounds.extend(LatLng);
-                    });
-                  });
-
-                  // Setear centroide
-                  map.fitBounds(bounds);
-                }
-              }}
-              yesIWantToUseGoogleMapApiInternals
-            >
-              {/* <Marker lat={formData.coords?.lat} lng={formData.coords?.lng} /> */}
-            </GoogleMapReact>
-          </>
-        )}
-      </div>
+                      map.fitBounds(bounds);
+                      var center = bounds.getCenter();
+                      setLatLngCentroid(`${center.lat() + " " + center.lng()} 0 0`);
+                    }
+                  }}
+                  yesIWantToUseGoogleMapApiInternals
+                            >
+                </GoogleMapReact>
+              </>
+            )}
+          </div>
+        </div>
     </Card>
   );
 }
+

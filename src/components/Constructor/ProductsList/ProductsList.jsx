@@ -17,10 +17,12 @@ import vacio from '../../views/_images/caja-vacia-gris.png'
 export default function ProductsList() {
   const { userProjects } = useUserProjects();
 
+  const userProjectsFiltered = userProjects.filter((project) => project.product.isActiveOnPlatform === true)
+
   return (
     <>
       <h2 className="mt-5">Tus Proyectos</h2>
-      {userProjects.length === 0 ? (
+      {userProjectsFiltered.length === 0 ? (
         <div className="m-4 text-center pt-6 mt-4">
           <img src={vacio} 
                 height="150"
@@ -33,7 +35,7 @@ export default function ProductsList() {
         </div>
       ) : (
         <div className="row row-cols-1 row-cols-lg-3 g-2 m-4">
-          {userProjects.map((product, index) => {
+          {userProjectsFiltered.map((product, index) => {
             return (
               <div className="p-3" key={index}>
                 <Card key={product.id} className="p-0">

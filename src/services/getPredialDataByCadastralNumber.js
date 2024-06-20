@@ -5,7 +5,7 @@ import { getEconomicDestiny } from "./getEconomicDestiny";
 export const getPredialDataByCadastralNumber = async (cadastralNumbers) => {
   // URL de la consulta
   const url =
-    "https://services2.arcgis.com/RVvWzU3lgJISqdke/arcgis/rest/services/CATASTRO_PUBLICO_Noviembre_2023_gdb/FeatureServer/17/query";
+    "https://services2.arcgis.com/RVvWzU3lgJISqdke/ArcGIS/rest/services/CATASTRO_PUBLICO_Mayo_15_2024_gdb/FeatureServer/17/query";
 
   const whereClause = `NUMERO_DEL_PREDIO IN ('${cadastralNumbers.join(
     "','"

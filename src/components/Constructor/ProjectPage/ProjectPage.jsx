@@ -9,9 +9,6 @@ import ProjectSettings from "./ProjectSettings/ProjectSettings";
 
 // Components
 import MiniInfoCard from "../../common/MiniInfoCard";
-import Nav from "react-bootstrap/Nav";
-import Badge from "react-bootstrap/Badge";
-import Stack from "react-bootstrap/Stack";
 
 // Contexts
 import { useProjectData } from "context/ProjectDataContext";
@@ -24,6 +21,7 @@ import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
+import AlertMessage from "./AlertMessage";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -106,22 +104,22 @@ export default function ProjectPage() {
               <div className="row gy-2">
                 <header className="d-flex justify-content-between">
                   <p className="fs-3 mb-0">{projectData.projectInfo.title}</p>
-                  <Stack direction="horizontal" gap={2}>
-                    <Badge bg="primary">
+                  <div className="flex gap-2">
+                    <div className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap h-8">
                       {projectStatusMapper[projectData.projectInfo.status]}
-                    </Badge>
-                    <Badge
-                      bg={
+                    </div>
+                    <div
+                      className={`${
                         projectData.projectVerifiers?.length > 0
-                          ? "success"
-                          : "danger"
-                      }
+                          ? "bg-green-600"
+                          : "bg-red-500"
+                      } text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap h-8`}
                     >
                       {projectData.projectVerifiers?.length > 0
                         ? "Validador asignado"
                         : "Sin validador"}
-                    </Badge>
-                  </Stack>
+                    </div>
+                  </div>
                 </header>
                 <section>
                   <p className="fs-6 mb-0 fw-bold">Fecha de creación:</p>
@@ -170,30 +168,35 @@ export default function ProjectPage() {
                 {projectData.projectVerifierNames.length > 0 && (
                   <section>
                     <p className="fs-6 mb-0 fw-bold">Validadores:</p>
-                    <Stack direction="horizontal" gap={2}>
+                    <div className="flex gap-2">
                       {projectData.projectVerifierNames.map((pvn, index) => {
                         return (
-                          <Badge bg="success" className="w-auto" key={index}>
+                          <div
+                            className="bg-green-600 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
+                            key={index}
+                          >
                             Validador {index + 1}: {pvn}
-                          </Badge>
+                          </div>
                         );
                       })}
-                    </Stack>
+                    </div>
                   </section>
                 )}
               </div>
-              <Nav
-                variant="tabs"
-                className="mt-3"
-                defaultActiveKey={"#" + activeSection}
-              >
-                <Nav.Item>
-                  <Nav.Link
+              <ul className="font-medium flex mt-4 pl-0 ">
+                <li>
+                  <a
                     href="#details"
                     onClick={(e) => {
                       e.preventDefault();
                       setActiveSection("details");
                     }}
+                    className={`${
+                      activeSection === "details"
+                        ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                        : "text-blue-500"
+                    } flex py-2 px-3`}
+                    aria-current="page"
                   >
                     Detalles
                     {(autorizedUser || isPostulant || isAdmon) &&
@@ -201,43 +204,59 @@ export default function ProjectPage() {
                         !progressObj?.sectionsStatus.geodataInfo) && (
                         <HourGlassIcon className="text-danger ms-2" />
                       )}
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link
+                  </a>
+                </li>
+                <li>
+                  <a
                     href="#files"
                     onClick={(e) => {
                       e.preventDefault();
                       setActiveSection("files");
                     }}
+                    className={`${
+                      activeSection === "files"
+                        ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                        : "text-blue-500"
+                    } flex py-2 px-3`}
                   >
                     Validación
                     {(autorizedUser || isPostulant || isAdmon) &&
                       !progressObj?.sectionsStatus.validationsComplete && (
                         <HourGlassIcon className="text-danger ms-2" />
                       )}
-                  </Nav.Link>
-                </Nav.Item>
+                  </a>
+                </li>
+
                 {(isVerifier || isAdmon) && (
                   <>
-                    <Nav.Item>
-                      <Nav.Link
+                    <li>
+                      <a
                         href="#file_manager"
                         onClick={(e) => {
                           e.preventDefault();
                           setActiveSection("file_manager");
                         }}
+                        className={`${
+                          activeSection === "file_manager"
+                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                            : "text-blue-500"
+                        } flex py-2 px-3`}
                       >
                         Sistema de datos
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                      <Nav.Link
+                      </a>
+                    </li>
+                    <li>
+                      <a
                         href="#settings"
                         onClick={(e) => {
                           e.preventDefault();
                           setActiveSection("settings");
                         }}
+                        className={`${
+                          activeSection === "settings"
+                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                            : "text-blue-500"
+                        } py-2 px-3 flex`}
                       >
                         Configuración
                         {(autorizedUser || isAdmon) &&
@@ -245,40 +264,52 @@ export default function ProjectPage() {
                             !progressObj?.sectionsStatus.financialInfo) && (
                             <HourGlassIcon className="text-danger ms-2" />
                           )}
-                      </Nav.Link>
-                    </Nav.Item>
+                      </a>
+                    </li>
                   </>
                 )}
+
                 {user?.id && (isPostulant || isVerifier || isAdmon) && (
-                  <>
-                    <Nav.Item>
-                      <Nav.Link
-                        href="#finance"
-                        onClick={() => setActiveSection("finance")}
-                      >
-                        Finanzas
-                        {(autorizedUser || isPostulant || isAdmon) &&
-                          !progressObj?.sectionsStatus
-                            .ownerAcceptsConditions && (
-                            <HourGlassIcon className="text-danger ms-2" />
-                          )}
-                      </Nav.Link>
-                    </Nav.Item>
-                  </>
+                  <li>
+                    <a
+                      href="#finance"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveSection("finance");
+                      }}
+                      className={`${
+                        activeSection === "finance"
+                          ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                          : "text-blue-500"
+                      } flex py-2 px-3`}
+                    >
+                      Finanzas
+                      {(autorizedUser || isPostulant || isAdmon) &&
+                        !progressObj?.sectionsStatus.ownerAcceptsConditions && (
+                          <HourGlassIcon className="text-danger ms-2" />
+                        )}
+                    </a>
+                  </li>
                 )}
-                <Nav.Item>
-                  <Nav.Link
+                <li>
+                  <a
                     href="#analysis"
                     onClick={(e) => {
                       e.preventDefault();
                       setActiveSection("analysis");
                     }}
+                    className={`${
+                      activeSection === "analysis"
+                        ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                        : "text-blue-500"
+                    } flex py-2 px-3`}
                   >
                     Análisis
-                  </Nav.Link>
-                </Nav.Item>
-              </Nav>
+                  </a>
+                </li>
+              </ul>
             </div>
+            <AlertMessage />
             <ProjectDetails visible={activeSection === "details"} />
             <ProjectFileManager visible={activeSection === "file_manager"} />
             <ProjectFiles visible={activeSection === "files"} />
@@ -286,7 +317,9 @@ export default function ProjectPage() {
             <ProjectSettings
               visible={activeSection === "settings" && (isVerifier || isAdmon)}
             />
-            <ProjectAnalysis visible={activeSection === "analysis"}></ProjectAnalysis>
+            <ProjectAnalysis
+              visible={activeSection === "analysis"}
+            ></ProjectAnalysis>
           </div>
           <ToastContainer></ToastContainer>
         </div>

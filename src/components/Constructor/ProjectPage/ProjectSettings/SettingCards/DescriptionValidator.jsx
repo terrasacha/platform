@@ -69,16 +69,16 @@ export default function DescriptionValidator(props) {
     <Card className={className}>
       <Card.Header title="Descripción detallada del proyecto" sep={true} />
       <Card.Body>
-        <Form.Control
-          as="textarea"
+        <textarea
+          className={`border w-full p-2 rounded-md ${canEdit && "bg-gray-200"}`}
           style={{ minHeight: "10rem", maxHeight: "20rem", resize: "none" }}
           value={projectDescription}
           disabled={canEdit}
           onChange={handleOnChange}
         />
         <div className="d-flex justify-content-end mt-3">
-          <Button
-            variant="success"
+          <button
+            className="p-2 rounded-md text-white bg-green-700"
             disabled={
               projectDescription.length === 0 ||
               projectDescription ===
@@ -88,7 +88,7 @@ export default function DescriptionValidator(props) {
             onClick={() => saveVerifierDescription()}
           >
             <SaveDiskIcon />
-          </Button>
+          </button>
         </div>
       </Card.Body>
     </Card>

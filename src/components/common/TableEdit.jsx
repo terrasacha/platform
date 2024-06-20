@@ -1,5 +1,4 @@
 import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
 import { TrashIcon } from "components/common/icons/TrashIcon";
@@ -25,7 +24,7 @@ export default function TableEdit({
   }, [infoTable]);
 
   return (
-    <Table responsive>
+    <table className="w-full">
       <thead className="text-center">
         <tr>
           {columns.map((column) => {
@@ -43,7 +42,8 @@ export default function TableEdit({
           data.map((row, index) => {
             return (
               <tr
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 "
+                className="bg-white border-t-[1px]"
+                style={{ height: "3rem" }}
                 key={index}
               >
                 {columns.map((column) => (
@@ -93,34 +93,34 @@ export default function TableEdit({
                 ))}
                 <td className="text-end">
                   {row.editing ? (
-                    <Button
-                      size="sm"
-                      variant="success"
-                      className="m-1"
+                    <button
+                      className={`p-2 text-white bg-green-700 rounded-md  hover:bg-green-800 `}
                       onClick={() => handleSaveHistoricalData(index)}
                     >
                       <SaveDiskIcon />
-                    </Button>
+                    </button>
                   ) : (
-                    <Button
-                      size="sm"
-                      variant="warning"
-                      className="m-1"
+                    <button
+                      className={`${
+                        canEdit
+                          ? "bg-[#f8d771]"
+                          : "bg-yellow-500 hover:bg-yellow-600"
+                      } p-2 text-white  rounded-md  `}
                       disabled={canEdit}
                       onClick={() => handleEditValue(index)}
                     >
                       <EditIcon />
-                    </Button>
+                    </button>
                   )}
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    className="m-1"
+                  <button
+                    className={`${
+                      canEdit ? "bg-red-400" : "bg-red-600 hover:bg-red-700"
+                    } p-2 text-white  rounded-md ml-2 `}
                     disabled={canEdit}
                     onClick={() => handleDeleteHistoricalData(index)}
                   >
                     <TrashIcon />
-                  </Button>
+                  </button>
                 </td>
               </tr>
             );
@@ -128,19 +128,19 @@ export default function TableEdit({
         <tr>
           <td colSpan={5}>
             <div className="d-flex">
-              <Button
-                size="sm"
-                variant="secondary"
-                className="w-100"
+              <button
+                className={`${
+                  canEdit ? "bg-gray-300" : "bg-gray-400 hover:bg-gray-500"
+                } text-white p-2  rounded-md w-full flex justify-center `}
                 disabled={canEdit}
                 onClick={() => handleAddCashFlow()}
               >
                 <PlusIcon></PlusIcon>
-              </Button>
+              </button>
             </div>
           </td>
         </tr>
       </tbody>
-    </Table>
+    </table>
   );
 }

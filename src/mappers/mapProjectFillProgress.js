@@ -28,14 +28,6 @@ const getProjectInfoStatus = (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "A_municipio";
     })[0]?.value || null;
-  const matricula =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "A_matricula";
-    })[0]?.value || null;
-  const fichaCatrastal =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "A_ficha_catastral";
-    })[0]?.value || null;
   // const planoPredio =
   //   data.productFeatures.items.filter((item) => {
   //     return item.featureID === "C_plano_predio";
@@ -47,8 +39,6 @@ const getProjectInfoStatus = (data) => {
   if (!area) tempStatus = false;
   if (!vereda) tempStatus = false;
   if (!municipio) tempStatus = false;
-  if (!matricula) tempStatus = false;
-  if (!fichaCatrastal) tempStatus = false;
   // if (!planoPredio) tempStatus = false;
 
   return tempStatus;
@@ -66,6 +56,21 @@ const getGeodataInfoStatus = (data) => {
 
   return tempStatus;
 };
+
+const getPredialInfoStatus = (data) => {
+  let tempStatus = true;
+
+  const predialData = JSON.parse(
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "A_predio_ficha_catastral";
+    })[0]?.value || "[]"
+  );
+
+  if (Object.keys(predialData).length === 0) tempStatus = false;
+
+  return tempStatus;
+
+}
 
 const getOwnersInfoStatus = (data) => {
   let tempStatus = true;
@@ -257,6 +262,7 @@ export const mapProjectFillProgress = async (data, userRole) => {
   let sectionsStatus = {
     projectInfo: false,
     geodataInfo: false,
+    predialInfo: false,
     //ownersInfo: false,
     financialInfo: false,
     technicalInfo: false,
@@ -273,6 +279,7 @@ export const mapProjectFillProgress = async (data, userRole) => {
   // Requerimientos postulante
   sectionsStatus.projectInfo = getProjectInfoStatus(data);
   sectionsStatus.geodataInfo = getGeodataInfoStatus(data);
+  sectionsStatus.predialInfo = getPredialInfoStatus(data);
   // sectionsStatus.ownersInfo = getOwnersInfoStatus(data);
   sectionsStatus.ownerAcceptsConditions =
     getOwnerAcceptsConditionsInfoStatus(data);

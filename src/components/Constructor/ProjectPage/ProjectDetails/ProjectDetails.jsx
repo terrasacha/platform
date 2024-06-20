@@ -10,10 +10,8 @@ import GeodataInfoCard from "./InfoCards/GeodataInfoCard";
 import { useProjectData } from "../../../../context/ProjectDataContext";
 import UseRestrictionsInfoCard from "./InfoCards/UseRestrictionsInfoCard";
 import { useAuth } from "context/AuthContext";
-import { Alert, ProgressBar } from "react-bootstrap";
 import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
-import { XIcon } from "components/common/icons/XIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import CadastralRecordsInfoCard from "./InfoCards/CadastralRecordsInfoCard";
 
@@ -25,6 +23,7 @@ export default function ProjectDetails({ visible }) {
   const { user } = useAuth();
 
   const [totalArea, setTotalArea] = useState(0);
+  const [latLngCentroid, setLatLngCentroid] = useState(null);
   const [progressChange, setProgressChange] = useState(false);
   const [progressObj, setProgressObj] = useState(null);
 
@@ -42,7 +41,7 @@ export default function ProjectDetails({ visible }) {
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));
     }
-  }, [projectData]);
+  }, [user, projectData]);
 
   useEffect(() => {
     if (user && projectData.projectInfo) {
@@ -66,206 +65,6 @@ export default function ProjectDetails({ visible }) {
     <>
       {visible && (
         <div className="row row-cols-1 row-cols-xl-2 g-4">
-          {autorizedUser &&
-            !(user?.role === "validator" || user?.role === "admon") && (
-              <div className="col-12 col-xl-12">
-                <Alert variant="success" className="mb-0">
-                  <Alert.Heading>Hola, {user?.name}</Alert.Heading>
-                  <p>
-                    Podras realizar ajustes a la información del proyecto
-                    durante los primeros 20 dias despues de su postulación.
-                    Posterior a esto se congelan los cambios a menos que exista
-                    solicitud formal y se abra manualmente en casos
-                    excepcionales.
-                  </p>
-                  <hr />
-                  <p className="mb-0">
-                    {20 - parseInt(projectData?.projectInfo.projectAge)} Dias
-                    restantes
-                  </p>
-                </Alert>
-              </div>
-            )}
-
-          {(autorizedUser || isPostulant) && progressObj && (
-            <div className="col-12 col-xl-12">
-              <Alert variant="warning" className="mb-0">
-                <Alert.Heading>
-                  Estado de requerimientos para la publicación del proyecto en{" "}
-                  <a
-                    href="https://marketplace.suan.global/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Marketplace
-                  </a>
-                </Alert.Heading>
-                <p>
-                  Para garantizar la transparencia, confiabilidad y calidad de
-                  los proyectos presentados, es necesario cumplir con las
-                  siguientes condiciones antes de que un proyecto pueda ser
-                  visualizado en el Marketplace para su comercialización:
-                </p>
-                <div className="row row-cols-2">
-                  {isPostulant && (
-                    <div>
-                      <p className="mb-0">Requerimientos del postulante</p>
-                      <ul>
-                        <li className="fw-bold">
-                          (
-                          {progressObj.sectionsStatus.projectInfo ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Completar información del proyecto
-                        </li>
-                        {/* <li className="fw-bold">
-                          (
-                          {progressObj.sectionsStatus.ownersInfo ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Completar información de titulares y certificados de
-                          tradición
-                        </li> */}
-                        <li className="fw-bold">
-                          (
-                          {progressObj.sectionsStatus.geodataInfo ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Completar ubicación geográfica
-                        </li>
-                        <li className="fw-bold">
-                          (
-                          {progressObj.sectionsStatus.ownerAcceptsConditions ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Aceptar condiciones financieras
-                        </li>
-                        <li className="fw-bold">
-                          <p className="mb-0">
-                            (
-                            {progressObj.sectionsStatus.validationsComplete &&
-                            progressObj.sectionsStatus.technicalInfo &&
-                            progressObj.sectionsStatus.financialInfo ? (
-                              <CheckIcon className="text-success" />
-                            ) : (
-                              <HourGlassIcon className="text-danger" />
-                            )}
-                            ) Revisión por parte de los validadores
-                          </p>
-                        </li>
-                        <li className="fw-bold">
-                          (
-                          {progressObj.sectionsStatus.tokenGenesis ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Distribución de tokens del proyecto
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                  {isVerifier && (
-                    <div>
-                      <p className="mb-0">
-                        Estado de verificación del proyecto por parte del equipo
-                        de validadores SUAN.
-                      </p>
-                      <ul>
-                        <li className="fw-bold">
-                          <p className="mb-0">
-                            (
-                            {progressObj.sectionsStatus.validationsComplete ? (
-                              <CheckIcon className="text-success" />
-                            ) : (
-                              <HourGlassIcon className="text-danger" />
-                            )}
-                            ) Validación de documentos
-                          </p>
-                        </li>
-                        <li className="fw-bold">
-                          <p className="mb-0">
-                            (
-                            {progressObj.sectionsStatus.technicalInfo ? (
-                              <CheckIcon className="text-success" />
-                            ) : (
-                              <HourGlassIcon className="text-danger" />
-                            )}
-                            ) Oficialización de información Técnica
-                          </p>
-                        </li>
-                        <li className="fw-bold">
-                          <p className="mb-0">
-                            (
-                            {progressObj.sectionsStatus.financialInfo ? (
-                              <CheckIcon className="text-success" />
-                            ) : (
-                              <HourGlassIcon className="text-danger" />
-                            )}
-                            ) Oficialización de información Financiera
-                          </p>
-                        </li>
-                        <li className="fw-bold">
-                          (
-                          {progressObj.sectionsStatus.ownerAcceptsConditions ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Propietario acepta condiciones financieras
-                        </li>
-                        <li className="fw-bold">
-                          <p className="mb-0">
-                            (
-                            {progressObj.sectionsStatus.projectInfo &&
-                            progressObj.sectionsStatus.geodataInfo ? (
-                              <CheckIcon className="text-success" />
-                            ) : (
-                              <HourGlassIcon className="text-danger" />
-                            )}
-                            ) Completar información del proyecto
-                          </p>
-                        </li>
-                        <li className="fw-bold">
-                          (
-                          {progressObj.sectionsStatus.tokenGenesis ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Distribución de tokens del proyecto
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
-                <hr />
-                <p className="mb-0">
-                  {progressObj.progressValue === 100
-                    ? "Este proyecto cumple la totalidad de los requerimientos"
-                    : "Este proyecto aún no cumple la totalidad de requerimientos para su publicación"}
-                </p>
-                {/* <hr />
-            <div>
-              <div>
-                <ProgressBar
-                  striped
-                  variant="danger"
-                  now={progressObj.progressValue}
-                />
-              </div>
-            </div> */}
-              </Alert>
-            </div>
-          )}
           <div className="col">
             <ProjectInfoCard
               autorizedUser={autorizedUser}
@@ -285,6 +84,7 @@ export default function ProjectDetails({ visible }) {
             <GeodataInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
+              setLatLngCentroid={setLatLngCentroid}
               tooltip={
                 (autorizedUser || isPostulant) &&
                 (progressObj?.sectionsStatus.geodataInfo ? (
@@ -299,7 +99,17 @@ export default function ProjectDetails({ visible }) {
             <CadastralRecordsInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
+              totalArea={totalArea}
+              latLngCentroid={latLngCentroid}
               setTotalArea={setTotalArea}
+              tooltip={
+                (autorizedUser || isPostulant) &&
+                (progressObj?.sectionsStatus.predialInfo ? (
+                  <CheckIcon className="text-success" />
+                ) : (
+                  <HourGlassIcon className="text-danger" />
+                ))
+              }
             />
           </div>
           {/* <div className="col">

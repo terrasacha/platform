@@ -5,6 +5,7 @@ import { findObjectByName, getFieldRelevantCondition } from "./utils";
 import { notify } from "utilities/notify";
 import { ToastContainer } from "react-toastify";
 import FormGroup from "components/common/FormGroup";
+import { LoadingIcon } from "components/common/icons/LoadingIcon";
 
 export default function DynamicForm(props) {
   const {
@@ -121,9 +122,9 @@ export default function DynamicForm(props) {
         data.survey,
         fieldName
       );
-      if(fieldName === 'C_ubicacion') {
-        console.log('required', required)
-        console.log('required_message', required_message)
+      if (fieldName === "C_ubicacion") {
+        console.log("required", required);
+        console.log("required_message", required_message);
       }
       const isRequired = required === "yes";
 
@@ -134,7 +135,7 @@ export default function DynamicForm(props) {
     return errors;
   };
 
-  const validateAndHandleSubmit = (e) => {
+  const validateAndHandleSubmit = async (e) => {
     e.preventDefault();
 
     setIsLoading(true);
@@ -163,7 +164,7 @@ export default function DynamicForm(props) {
       type: "success",
     });
 
-    handleSubmit(e);
+    await handleSubmit(e);
 
     setIsLoading(false);
   };
@@ -199,7 +200,7 @@ export default function DynamicForm(props) {
     note: ({ label }) => <div className="col-12 col-12-lg">{label}</div>,
     text: ({ name, label, appearance, hint, required, readonly }) => {
       const inputType = appearance === "multiline" ? "textarea" : "text";
-      const disabled = readonly === "true";
+      const disabled = /* readonly === "true"; */false
       return renderFormGroup(
         inputType,
         name,
@@ -319,11 +320,7 @@ export default function DynamicForm(props) {
           </div>
           <div className="d-flex justify-content-center my-5">
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <Spinner size="sm" className="p-2"></Spinner>
-              ) : (
-                submitBtnLabel
-              )}
+              {isLoading ? <LoadingIcon className="h-6 w-6" /> : submitBtnLabel}
             </Button>
           </div>
         </form>

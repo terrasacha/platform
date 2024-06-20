@@ -8,7 +8,6 @@ import GenericInputTable from "./SettingCards/GenericInputTable";
 import FinancialIndicators from "./SettingCards/FinancialIndicators";
 import DescriptionValidator from "./SettingCards/DescriptionValidator";
 import { useProjectData } from "context/ProjectDataContext";
-import { Button } from "react-bootstrap";
 import { notify } from "utilities/notify";
 import { fetchProjectDataByProjectID } from "../api";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
@@ -18,7 +17,8 @@ import TokenDistributionInputTable from "./SettingCards/TokenDistributionInputTa
 export default function ProjectSettings({ visible }) {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
-  const { projectData, handleUpdateContextProjectData } = useProjectData();
+  const { projectData, handleUpdateContextProjectData, fetchProjectData } =
+    useProjectData();
   const { projectItems } = useProjectItems();
 
   console.log(projectData, "projectData");
@@ -67,7 +67,7 @@ export default function ProjectSettings({ visible }) {
         });
         return;
       }
-      handleUpdateContextProjectData({ isTechnicalFreeze: true });
+      // handleUpdateContextProjectData({ isTechnicalFreeze: true });
 
       const technicalInfoPfID =
         projectData.projectFeatures.filter((item) => {
@@ -84,6 +84,8 @@ export default function ProjectSettings({ visible }) {
           input: updatedProductFeature,
         })
       );
+
+      await fetchProjectData();
 
       notify({
         msg: "Se ha oficializado la información técnica.",
@@ -141,6 +143,8 @@ export default function ProjectSettings({ visible }) {
           input: updatedProductFeature,
         })
       );
+
+      await fetchProjectData();
 
       notify({
         msg: "Se ha oficializado la información financiera.",
@@ -244,14 +248,19 @@ export default function ProjectSettings({ visible }) {
                 />
               </div>
               <div className="d-flex justify-content-center mb-2">
-                <Button
+                <button
+                  className={`${
+                    projectData.isTechnicalFreeze
+                      ? "bg-blue-400 p-2 text-white  rounded-md"
+                      : "bg-blue-600 p-2 text-white rounded-md"
+                  } `}
                   disabled={projectData.isTechnicalFreeze}
                   onClick={() =>
                     handleSetValidatorDataComplete("technicalInfo")
                   }
                 >
                   Oficializar información técnica
-                </Button>
+                </button>
               </div>
             </>
           )}
@@ -293,14 +302,19 @@ export default function ProjectSettings({ visible }) {
                 />
               </div>
               <div className="d-flex justify-content-center mb-2">
-                <Button
+                <button
+                  className={`${
+                    projectData.isFinancialFreeze
+                      ? "bg-blue-400 p-2 text-white  rounded-md"
+                      : "bg-blue-600 p-2 text-white rounded-md"
+                  } `}
                   disabled={projectData.isFinancialFreeze}
                   onClick={() =>
                     handleSetValidatorDataComplete("financialInfo")
                   }
                 >
                   Oficializar información financiera
-                </Button>
+                </button>
               </div>
             </>
           )}

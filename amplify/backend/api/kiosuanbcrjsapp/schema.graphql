@@ -12,6 +12,8 @@ type User @model {
   name: String!
   dateOfBirth: AWSDate
   isProfileUpdated: Boolean!
+  isValidatedStep1: Boolean
+  isValidatedStep2: Boolean
   addresss: String
   cellphone: AWSPhone
   role: String!
@@ -26,6 +28,7 @@ type User @model {
   userProducts: [UserProduct] @hasMany(indexName: "byUser", fields: ["id"])
   documents: [Document] @hasMany(indexName: "byUser", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byUser", fields: ["id"])
+  payments: [Payment] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Wallet @model {
@@ -41,6 +44,8 @@ type Wallet @model {
   claimed_token: Boolean
   userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
+  orders: [Order] @hasMany(indexName: "byWallet", fields: ["id"])
+  transactions: [Transactions] @hasMany(indexName: "byWallet", fields: ["id"])
 }
 
 type Verification @model {
@@ -103,6 +108,7 @@ type Product @model {
   name: String!
   description: String
   isActive: Boolean!
+  isActiveOnPlatform: Boolean
   showOn: String
   order: Int
   status: String
@@ -118,7 +124,9 @@ type Product @model {
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
+  payments: [Payment] @hasMany(indexName: "byProduct", fields: ["id"])
   scripts: [Script] @hasMany(indexName: "byProduct", fields: ["id"])
+  tokens: [Token] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Image @model {
@@ -246,19 +254,48 @@ type UserProduct @model {
 
 type Order @model {
   id: ID! # local order ID
+  statusCode: String
+  tokenPolicyId: String
+  tokenName: String
+  tokenAmount: Float
+  utxos: String
+  value: Float
+  scriptID: ID @index(name: "byScript")
+  script: Script @belongsTo(fields: ["scriptID"])
+  walletID: ID @index(name: "byWallet")
+  wallet: Wallet @belongsTo(fields: ["walletID"])
+}
+
+# En caso wallet guardar ADAS recibidos
+# Agregar tasa de cambio
+# Tabla nueva
+type Payment @model {
+  id: ID! # local order ID
+  orderType: String # fiat | wallet
+  ref: String
   walletAddress: String
   statusCode: String
   walletStakeAddress: String
   tokenName: String
-  tokenAmount: Float
-  utxos: AWSJSON
-  value: Float
+  tokenAmount: Int
+  fee: Float
+  baseValue: Float
+  finalValue: Float
+  currency: String
+  exchangeRate: Float # Tasa de cambio
+  timestamp: AWSTimestamp # timestamp
+  productID: ID! @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  userID: ID @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
+  claimedByUser: Boolean
 }
 
 type Transactions @model {
   id: ID!
   addressOrigin: String
   addressDestination: String
+  walletID: ID @index(name: "byWallet")
   txIn: String
   txCborhex: String
   txHash: String
@@ -301,10 +338,21 @@ type Script @model {
   MainnetAddr: String!
   Active: Boolean!
   base_code: AWSURL
+  orders: [Order] @hasMany(indexName: "byWallet", fields: ["id"])
 }
 
 type Rate @model {
   id: ID!
   currency: String
   value: Float
+}
+
+type Token @model {
+  id: ID!
+  productID: ID @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  policyID: String
+  tokenName: String
+  supply: Int
+  oraclePrice: Int
 }

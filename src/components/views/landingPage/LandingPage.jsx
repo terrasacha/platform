@@ -25,20 +25,28 @@ export default class LandingPage extends Component {
     this.state = {
       productsLanding: [],
       productsImagesIsOnCarousel: [],
-    };
+      userLogged: false
+    }
     this.logOut = this.logOut.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleShow = this.handleShow.bind(this);
   }
 
   componentDidMount = async () => {
-    await this.loadProducts();
-  };
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      this.setState({ userLogged: {username: user.username, role: user.attributes["custom:role"]}})
+    } catch (error) {
+      
+    }
+    await this.loadProducts()
+  }
   handleClose() {
     this.setState({ show: false });
   }
 
   handleShow() {
+    if(this.state.userLogged && this.state.userLogged.role === 'constructor') return window.location.href = '/new_project'
     this.setState({ show: true });
   }
 
@@ -175,25 +183,15 @@ export default class LandingPage extends Component {
         ))}
         </Carousel> */}
         <div className={s.container}>
-          <h1 className="p-2 mx-2">
-            Aceleramos la transición hacia un<br></br>
-            mundo de
-            <strong> carbono neutral</strong>
-          </h1>
-          <p className="p-2 mx-3 w-1/2">
-            Una <strong>plataforma</strong> para <strong>invertir</strong> en
-            <br></br> <strong>activos ambientales</strong> en desarrollo ,
-            <br></br>
-            fácil, rápido y seguro.
-          </p>
-          <div className="row">
-            <div className="col p-2 mx-3">
-              <a
-                className="m-2 fondo-azul btn"
-                href="https://marketplace.suan.global/"
-              >
-                Ver proyectos
-              </a>
+          <h1 className='p-2 mx-2'>Aceleramos la
+              transición hacia un<br></br>
+              mundo de
+              <strong> carbono neutral</strong></h1>
+          <p className='p-2 mx-3 w-1/2'>Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
+              fácil, rápido y seguro.</p>
+          <div className='row'>
+            <div className='col p-2 mx-3'>
+              <a className='m-2 fondo-azul btn' href={process.env.REACT_APP_URL_MARKETPLACE}>Ver proyectos</a>
               <Button className="m-2 fondo-azul btn" onClick={this.handleShow}>
                 Tengo un proyecto
               </Button>
@@ -227,12 +225,7 @@ export default class LandingPage extends Component {
                   </ol>
                 </Modal.Body>
                 <Modal.Footer>
-                  <a
-                    className="m-2 fondo-azul btn m-auto d-block"
-                    href="https://platform.suan.global/login"
-                  >
-                    Registrarme
-                  </a>
+                  <a className='m-2 fondo-azul btn m-auto d-block'href='/login' >Registrarme</a>
                 </Modal.Footer>
               </Modal>
             </div>
@@ -410,25 +403,19 @@ export default class LandingPage extends Component {
               </div>
             </div>
           </div>
-        </div>
-        <div className="container-fluid fondo-azul p-5">
-          <div className="row ">
-            <div className="col">
-              <h2 className="text-center">SÉ PARTE DE NOSOTROS</h2>
+          <div className='container-fluid fondo-azul p-5'>
+            <div className='row '>
+              <div className='col'>
+                  <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
+              </div>
+              <div className='col'>
+                  <a href={process.env.REACT_APP_URL_MARKETPLACE} target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
+                  <button className="m-2 btn-cta" onClick={this.handleShow}>
+                  Tengo un proyecto
+                  </button>                  
+              </div>
+
             </div>
-            <div className="col">
-              <a
-                href="https://marketplace.suan.global/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <button className="m-2 btn-cta">Ver proyectos</button>
-              </a>
-              <button className="m-2 btn-cta" onClick={this.handleShow}>
-                Tengo un proyecto
-              </button>
-            </div>
-          </div>
         </div>
         <div className="container">
           <h2 className="p-4">¿Quieres conocer más?</h2>

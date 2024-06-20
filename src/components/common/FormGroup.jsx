@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Button from "react-bootstrap/Button";
 import { SaveDiskIcon } from "./icons/SaveDiskIcon";
 import GoogleMapReact from "google-map-react";
 import { MapPinIcon } from "./icons/MapPinIcon";
@@ -42,28 +41,26 @@ export default class FormGroup extends Component {
         inputType === "password"
       ) {
         return (
-          <Form.Control
-            disabled={disabled}
-            size={inputSize}
+          <input
             type={inputType}
+            disabled={disabled}
             name={inputName}
             placeholder={inputPlaceholder}
             value={inputValue}
             onChange={onChangeInputValue}
+            className="border-[1px] w-full p-2 rounded-md"
           />
         );
       }
       if (inputType === "textarea") {
         return (
-          <Form.Control
+          <textarea
             disabled={disabled}
             name={inputName}
-            size={inputSize}
-            as={inputType}
-            rows={4}
             placeholder={inputPlaceholder}
             value={inputValue}
             onChange={onChangeInputValue}
+            className="border-[1px] w-full p-2 rounded-md h-20"
           />
         );
       }
@@ -79,9 +76,7 @@ export default class FormGroup extends Component {
             <option disabled value=""></option>
             {optionList.map(({ label, value }, index) => {
               return (
-                <option key={index}
-                  value={value}
-                >
+                <option key={index} value={value}>
                   {label}
                 </option>
               );
@@ -166,15 +161,17 @@ export default class FormGroup extends Component {
           <>
             {optionList.map(({ label, value }) => (
               <div key={`opt-${label}`}>
-                <Form.Check
+                <input
+                  type={inputType}
                   disabled={disabled}
                   value={value}
                   name={inputName}
                   checked={optionCheckedList.includes(value)}
                   onChange={onChangeInputValue}
-                  type={inputType}
-                  label={label}
                 />
+                <label for={value} className="ml-2 text-sm">
+                  {label}
+                </label>
               </div>
             ))}
           </>
@@ -216,29 +213,32 @@ export default class FormGroup extends Component {
     }
     if (type === "flex") {
       return (
-        <Form.Group className={className + " mb-3"}>
-          <div className="row align-items-center">
+        <div className={className + " mb-3"}>
+          <div className="grid grid-cols-12 gap-4">
             {inputType !== "switch" && (
-              <Form.Label column sm="5">
-                {label}
-              </Form.Label>
+              <label className="col-span-5">{label}</label>
             )}
-            <div className="col">{handleInputRenderByInputType(inputType)}</div>
-            {
-              saveBtnVisible && (
-                <div className="col-auto">
-                  <Button
-                    disabled={saveBtnDisabled}
-                    variant="success"
-                    onClick={onClickSaveBtn}
-                  >
-                    <SaveDiskIcon />
-                  </Button>
-                </div>
-              )
-            }
+            <div className="col-span-5">
+              {handleInputRenderByInputType(inputType)}
+            </div>
+            {saveBtnVisible && (
+              <div className="col-span-2">
+                <button
+                  disabled={saveBtnDisabled}
+                  variant="success"
+                  onClick={onClickSaveBtn}
+                  className={`p-2 text-white rounded-md ${
+                    saveBtnDisabled
+                      ? "bg-[#6ab190] cursor-not-allowed "
+                      : "bg-green-600 text-white"
+                  }`}
+                >
+                  <SaveDiskIcon />
+                </button>
+              </div>
+            )}
           </div>
-        </Form.Group>
+        </div>
       );
     }
   }

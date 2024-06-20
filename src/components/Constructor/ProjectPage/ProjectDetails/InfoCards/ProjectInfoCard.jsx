@@ -15,7 +15,6 @@ import {
 import { useAuth } from "context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
 import useCategories from "hooks/useCategories";
-import { Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { fetchProjectDataByProjectID } from "../../api";
@@ -174,7 +173,8 @@ export default function ProjectInfoCard(props) {
     const formattedFilename = fileName
       .toLowerCase()
       .trim()
-      .replaceAll(" ", "_");
+      .replaceAll(" ", "_")
+      .replaceAll("-", "_");
     const filenameWithoutAccents = removeAccents(formattedFilename);
     return encodeURIComponent(filenameWithoutAccents);
   };
@@ -546,7 +546,6 @@ export default function ProjectInfoCard(props) {
         fichaCatrastal: formData.projectInfoLocationFichaCatrastral,
       });
     }
-    setProgressChange(true);
 
     notify({ msg: "Información actualizada", type: "success" });
   };
@@ -581,16 +580,15 @@ export default function ProjectInfoCard(props) {
           <div
             className={autorizedUser ? "col-12 col-md-12" : "col-12 col-md-6"}
           >
-            <Form.Group className={className + " mb-3"}>
-              <div className="row align-items-center">
-                <Form.Label column sm="5">
-                  Área total (hectáreas)
-                </Form.Label>
-                <div className="col">
-                  {parseFloat(totalArea/10000).toLocaleString("es-ES") + " ha"}
+            <div className={className + " mb-3"}>
+              <div className="grid grid-cols-12 gap-4">
+                <label className="col-span-5">Área total (hectáreas)</label>
+                <div className="col-span-5">
+                  {parseFloat(totalArea / 10000).toLocaleString("es-ES") +
+                    " ha"}
                 </div>
               </div>
-            </Form.Group>
+            </div>
           </div>
           <div className="col-12">
             <FormGroup
@@ -678,59 +676,24 @@ export default function ProjectInfoCard(props) {
                   handleSaveBtn("projectInfoLocationMunicipio")
                 }
               />
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Número de matrícula inmobiliaria del predio"
-                inputName="projectInfoLocationMatricula"
-                inputValue={formData.projectInfoLocationMatricula}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.matricula ===
-                  formData.projectInfoLocationMatricula
-                    ? true
-                    : false
-                }
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationMatricula")
-                }
-              />
-              <FormGroup
-                disabled={!autorizedUser}
-                type={autorizedUser && "flex"}
-                label="Número de ficha catastral que aparece en el impuesto predial del municipio del predio"
-                inputName="projectInfoLocationFichaCatrastral"
-                inputValue={formData.projectInfoLocationFichaCatrastral}
-                saveBtnDisabled={
-                  projectData.projectInfo?.location.fichaCatrastal ===
-                  formData.projectInfoLocationFichaCatrastral
-                    ? true
-                    : false
-                }
-                onChangeInputValue={(e) => handleChangeInputValue(e)}
-                onClickSaveBtn={() =>
-                  handleSaveBtn("projectInfoLocationFichaCatrastral")
-                }
-              />
               <div>
-                <Form.Group className="mb-3">
-                  <div className="row align-items-center">
-                    <Form.Label column sm="5">
+                <div className="mb-3">
+                  <div className="grid grid-cols-12 gap-4">
+                    <label className="col-span-5">
                       Cargue planos del predio (pueden ser a mano alzada)
-                    </Form.Label>
-                    <div className="col">
+                    </label>
+                    <div className="col-span-5">
                       {planosPredio.length > 0 ? (
                         <>
                           {planosPredio.map((file) => (
                             <div key={file.id} className="mb-2">
-                              <Button
+                              <button
                                 onClick={() => handleDeleteFile(file)}
                                 size="sm"
-                                className="me-2"
-                                variant="danger"
+                                className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                               >
                                 <XIcon />
-                              </Button>
+                              </button>
                               <a
                                 href={file.url}
                                 target="_blank"
@@ -755,16 +718,16 @@ export default function ProjectInfoCard(props) {
                         onChange={(e) => handleChangeInputValue(e)}
                         hidden
                       />
-                      <Button
+                      <button
                         disabled={!autorizedUser}
                         onClick={handleUploadButton}
-                        size="md"
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                       >
                         Cargar nuevo archivo
-                      </Button>
+                      </button>
                     </div>
                   </div>
-                </Form.Group>
+                </div>
               </div>
             </div>
           </div>

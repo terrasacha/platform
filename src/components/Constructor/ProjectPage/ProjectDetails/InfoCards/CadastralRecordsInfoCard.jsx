@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "../../../../common/Card";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { TrashIcon } from "components/common/icons/TrashIcon";
-import { Button, Form, InputGroup, Table } from "react-bootstrap";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
@@ -28,7 +27,7 @@ import { CheckIcon } from "components/common/icons/CheckIcon";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 
 export default function CadastralRecordsInfoCard(props) {
-  const { className, autorizedUser, setProgressChange, tooltip, setTotalArea } =
+  const { className, autorizedUser, setProgressChange, tooltip, setTotalArea, totalArea } =
     props;
   const {
     projectData,
@@ -43,6 +42,7 @@ export default function CadastralRecordsInfoCard(props) {
   const [multipleData, setMultipleData] = useState([]);
   const [executedOnce, setExecutedOnce] = useState(false);
   const [cadastralData, setCadastralDataPfID] = useState(null);
+  const [areaData, setAreaDataPfID] = useState(null);
   const [predialFetchedData, setPredialFetchedData] = useState({});
 
   useEffect(() => {
@@ -58,6 +58,14 @@ export default function CadastralRecordsInfoCard(props) {
         ) || [];
 
       setCadastralDataPfID(projectData.projectCadastralRecords.pfID);
+
+      
+      const areaPfID = projectData.projectFeatures.filter((item) => {
+        return item.featureID === "D_area";
+      })[0]?.id || null;
+      if(areaPfID) {
+        setAreaDataPfID(areaPfID);
+      }
       setMultipleData(ownersData);
     }
   }, [projectData]);
@@ -173,7 +181,6 @@ export default function CadastralRecordsInfoCard(props) {
           {
             name: "",
             cadastralNumber: "",
-            matricula: "",
             certificate: null,
             editing: true,
           },
@@ -191,7 +198,6 @@ export default function CadastralRecordsInfoCard(props) {
     return cadastralDataFixed.map((cadastralData) => {
       return {
         cadastralNumber: cadastralData.cadastralNumber.trim(),
-        matricula: cadastralData.matricula,
         documentID: cadastralData.documentID,
       };
     });
@@ -321,6 +327,9 @@ export default function CadastralRecordsInfoCard(props) {
     return docID;
   };
 
+  
+  // Crear una función que actualice el area
+
   const handleSaveHistoricalData = async (indexToSave) => {
     let error = false;
     const newCadastralNumber = multipleData[indexToSave].cadastralNumber;
@@ -411,6 +420,33 @@ export default function CadastralRecordsInfoCard(props) {
             : item
         )
       );
+      
+      if(areaData) {
+        let tempProductFeature = {
+          id: areaData,
+          value: totalArea,
+        };
+        const response = await API.graphql(
+          graphqlOperation(updateProductFeature, { input: tempProductFeature })
+        );
+
+        if (!response.data.updateProductFeature) error = true;
+      } else {
+        let tempProductFeature = {
+          value: totalArea,
+          isToBlockChain: false,
+          isOnMainCard: false,
+          productID: projectData.projectInfo.id,
+          featureID: "D_area",
+        };
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, { input: tempProductFeature })
+        );
+
+        setCadastralDataPfID(response.data.createProductFeature.id);
+
+        if (!response.data.createProductFeature) error = true;
+      }
 
       if (cadastralData) {
         let tempProductFeature = {
@@ -628,11 +664,10 @@ export default function CadastralRecordsInfoCard(props) {
       <Card.Header title="Información predial" sep={true} tooltip={tooltip} />
       <Card.Body>
         <div className="row">
-          <Table responsive>
+          <table>
             <thead className="text-center">
               <tr>
                 <th style={{ width: "240px" }}>Identificador catastral</th>
-                <th style={{ width: "180px" }}>Matrícula inmobiliaria</th>
                 <th style={{ width: "180px" }}>Certificado de tradición</th>
                 <th style={{ width: "180px" }}>Nombre de predio</th>
                 <th style={{ width: "180px" }}>Área</th>
@@ -642,16 +677,19 @@ export default function CadastralRecordsInfoCard(props) {
             <tbody className="align-middle">
               {multipleData.map((data, index) => {
                 return (
-                  <tr key={index} className="text-center">
+                  <tr
+                    key={index}
+                    className="text-center border-b-2"
+                    style={{ height: "3rem" }}
+                  >
                     {data.editing ? (
                       <>
                         <td>
-                          <div className="d-flex align-items-center">
-                            <Form.Control
-                              size="sm"
+                          <div className="flex items-center">
+                            <input
                               type="text"
                               value={data.cadastralNumber}
-                              className="text-center"
+                              className="text-center p-2 border rounded-md w-full"
                               name={`cadastraldata_cadastralNumber_${index}`}
                               onInput={(e) => handleChangeInputValue(e)}
                             />
@@ -664,27 +702,20 @@ export default function CadastralRecordsInfoCard(props) {
                           </div>
                         </td>
                         <td>
-                          <Form.Control
-                            size="sm"
-                            type="text"
-                            value={data.matricula}
-                            className="text-center"
-                            name={`cadastraldata_matricula_${index}`}
-                            onChange={(e) => handleChangeInputValue(e)}
-                          />
-                        </td>
-                        <td>
                           <input
                             type="file"
                             ref={fileInputRef}
                             style={{ display: "none" }}
                             onChange={(e) => handleFileChange(e, index)}
                           />
-                          <Button onClick={handleUploadButton} size="sm">
+                          <button
+                            className="p-2 text-white rounded-md bg-blue-500"
+                            onClick={handleUploadButton}
+                          >
                             {data.certificate || data.documentID !== undefined
                               ? "Actualizar"
                               : "Cargar"}
-                          </Button>
+                          </button>
                         </td>
                         <td>
                           {renderPredioNameByCadastralNumber(
@@ -694,23 +725,19 @@ export default function CadastralRecordsInfoCard(props) {
                         <td>
                           {renderAreaByCadastralNumber(data.cadastralNumber)}
                         </td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="success"
-                            className="m-1"
+                        <td className="flex justify-end gap-1">
+                          <button
+                            className="p-2 text-white rounded-md bg-green-700"
                             onClick={() => handleSaveHistoricalData(index)}
                           >
                             <SaveDiskIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
+                          </button>
+                          <button
+                            className="p-2 text-white rounded-md bg-red-500"
                             onClick={() => handleDeleteHistoricalData(index)}
                           >
                             <TrashIcon />
-                          </Button>
+                          </button>
                         </td>
                       </>
                     ) : (
@@ -718,7 +745,6 @@ export default function CadastralRecordsInfoCard(props) {
                         <td className="text-break">
                           {data.cadastralNumber?.toUpperCase()}
                         </td>
-                        <td className="text-break">{data.matricula}</td>
                         <td>{renderFileLinkByDocumentID(data.documentID)}</td>
                         <td className="text-break">
                           {renderPredioNameByCadastralNumber(
@@ -728,25 +754,21 @@ export default function CadastralRecordsInfoCard(props) {
                         <td>
                           {renderAreaByCadastralNumber(data.cadastralNumber)}
                         </td>
-                        <td className="text-end">
-                          <Button
-                            size="sm"
-                            variant="warning"
-                            className="m-1"
+                        <td className="flex justify-end gap-1">
+                          <button
+                            className="p-2 text-white rounded-md bg-yellow-400"
                             disabled={!autorizedUser}
                             onClick={() => handleEditHistoricalData(index)}
                           >
                             <EditIcon />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            className="m-1"
+                          </button>
+                          <button
+                            className="p-2 text-white rounded-md bg-red-500"
                             disabled={!autorizedUser}
                             onClick={() => handleDeleteHistoricalData(index)}
                           >
                             <TrashIcon />
-                          </Button>
+                          </button>
                         </td>
                       </>
                     )}
@@ -755,21 +777,19 @@ export default function CadastralRecordsInfoCard(props) {
               })}
               <tr>
                 <td colSpan={6}>
-                  <div className="d-flex">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="w-100"
+                  <div className="flex">
+                    <button
+                      className="p-2 w-full text-white rounded-md bg-slate-600 flex justify-center"
                       disabled={!autorizedUser}
                       onClick={() => handleAddNewPeriodToHistoricalData()}
                     >
                       <PlusIcon></PlusIcon>
-                    </Button>
+                    </button>
                   </div>
                 </td>
               </tr>
             </tbody>
-          </Table>
+          </table>
         </div>
       </Card.Body>
     </Card>
