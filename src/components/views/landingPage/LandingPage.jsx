@@ -35,9 +35,9 @@ export default class LandingPage extends Component {
   componentDidMount = async () => {
     try {
       const user = await Auth.currentAuthenticatedUser()
-      this.setState({ userLogged: {username: user.username, role: user.attributes["custom:role"]}})
+      this.setState({ userLogged: { username: user.username, role: user.attributes["custom:role"] } })
     } catch (error) {
-      
+
     }
     await this.loadProducts()
   }
@@ -46,7 +46,7 @@ export default class LandingPage extends Component {
   }
 
   handleShow() {
-    if(this.state.userLogged && this.state.userLogged.role === 'constructor') return window.location.href = '/new_project'
+    if (this.state.userLogged && this.state.userLogged.role === 'constructor') return window.location.href = '/new_project'
     this.setState({ show: true });
   }
 
@@ -184,11 +184,11 @@ export default class LandingPage extends Component {
         </Carousel> */}
         <div className={s.container}>
           <h1 className='p-2 mx-2'>Aceleramos la
-              transición hacia un<br></br>
-              mundo de
-              <strong> carbono neutral</strong></h1>
+            transición hacia un<br></br>
+            mundo de
+            <strong> carbono neutral</strong></h1>
           <p className='p-2 mx-3 w-1/2'>Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
-              fácil, rápido y seguro.</p>
+            fácil, rápido y seguro.</p>
           <div className='row'>
             <div className='col p-2 mx-3'>
               <a className='m-2 fondo-azul btn' href={process.env.REACT_APP_URL_MARKETPLACE}>Ver proyectos</a>
@@ -225,7 +225,7 @@ export default class LandingPage extends Component {
                   </ol>
                 </Modal.Body>
                 <Modal.Footer>
-                  <a className='m-2 fondo-azul btn m-auto d-block'href='/login' >Registrarme</a>
+                  <a className='m-2 fondo-azul btn m-auto d-block' href='/login' >Registrarme</a>
                 </Modal.Footer>
               </Modal>
             </div>
@@ -406,50 +406,51 @@ export default class LandingPage extends Component {
           <div className='container-fluid fondo-azul p-5'>
             <div className='row '>
               <div className='col'>
-                  <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
+                <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
               </div>
               <div className='col'>
-                  <a href={process.env.REACT_APP_URL_MARKETPLACE} target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
-                  <button className="m-2 btn-cta" onClick={this.handleShow}>
+                <a href={process.env.REACT_APP_URL_MARKETPLACE} target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
+                <button className="m-2 btn-cta" onClick={this.handleShow}>
                   Tengo un proyecto
-                  </button>                  
+                </button>
               </div>
 
             </div>
-        </div>
-        <div className="container">
-          <h2 className="p-4">¿Quieres conocer más?</h2>
-          <div className="row">
-            <div className="col">
-              <a
-                className="m-auto d-block btn-landing text-center"
-                href="https://suan-1.gitbook.io/documentacion-suan-sandbox/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                ¿Como entrar?
-              </a>
-            </div>
-            <div className="col">
-              <a
-                className="m-auto d-block btn-landing text-center"
-                href="https://suan-1.gitbook.io/documentacion-suan/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Documentación tecnica
-              </a>
+          </div>
+          <div className="container">
+            <h2 className="p-4">¿Quieres conocer más?</h2>
+            <div className="row">
+              <div className="col">
+                <a
+                  className="m-auto d-block btn-landing text-center"
+                  href="https://suan-1.gitbook.io/documentacion-suan-sandbox/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  ¿Como entrar?
+                </a>
+              </div>
+              <div className="col">
+                <a
+                  className="m-auto d-block btn-landing text-center"
+                  href="https://suan-1.gitbook.io/documentacion-suan/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Documentación tecnica
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-        <div className={s.containerFeaturedProducts}>
-          {this.state.productsLanding.map((product) => (
-            <ProductCard
-              product={product}
-              urlS3Image={urlS3Image}
-              key={product.id}
-            />
-          ))}
+          <div className={s.containerFeaturedProducts}>
+            {this.state.productsLanding.map((product) => (
+              <ProductCard
+                product={product}
+                urlS3Image={urlS3Image}
+                key={product.id}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );
