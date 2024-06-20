@@ -25,5 +25,12 @@
         "s37845b3b9": {}
       }
     }
+  },
+  "prod": {
+    "categories": {
+      "auth": {
+        "kiosuanbcrjsappa6accc93": {}
+      }
+    }
   }
 }

@@ -241,6 +241,7 @@ type ProductFeatureResult @model {
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
   resultID: ID @index(name: "byResult")
   result: Result @belongsTo(fields: ["resultID"])
+  name: String
 }
 
 type UserProduct @model {

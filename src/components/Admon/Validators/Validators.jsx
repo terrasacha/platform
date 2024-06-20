@@ -156,7 +156,7 @@ class Validators extends Component {
   async loadValidatorUsers() {
     let filter = {
       role: {
-        eq: "validator",
+        contains: "validator",
       },
     };
     const listUsersResult = await API.graphql({
