@@ -117,18 +117,20 @@ export default function NewProject() {
       "C_plano_predio",
     ];
 
-    /* // Validadores por defecto
+    // Validadores por defecto
     let tempUserProduct;
     // Moxie
     tempUserProduct = {
       productID: productID,
-      userID: "8d244cec-b39a-42f0-83e8-d8a289947ba2",
+      userID: "064db0a1e576",
     };
     promises.push(
       API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       )
     );
+
+    /*
     // Sebastian Azcona
     tempUserProduct = {
       productID: productID,
