@@ -491,7 +491,7 @@ export default function TokenSettingsCard(props) {
       <Card className={className}>
         <Card.Header title="Configuración del Token" sep={true} />
         <Card.Body>
-          <FormGroup
+{/*           <FormGroup
             disabled={isDisabledTokenName}
             type="flex"
             inputType="text"
@@ -504,7 +504,7 @@ export default function TokenSettingsCard(props) {
             }
             onChangeInputValue={(e) => handleChangeInputValue(e)}
             onClickSaveBtn={() => handleSaveBtn("tokenName")}
-          />
+          /> */}
           <FormGroup
             disabled={canEdit}
             type="flex"

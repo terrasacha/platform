@@ -122,7 +122,7 @@ export default function NewProject() {
     // Moxie
     tempUserProduct = {
       productID: productID,
-      userID: "064db0a1e576",
+      userID: "c48814e8-1091-70ff-212b-58b68b42687f",
     };
     promises.push(
       API.graphql(

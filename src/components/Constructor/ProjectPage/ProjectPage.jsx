@@ -136,13 +136,13 @@ export default function ProjectPage() {
                 <section>
                   <p className="fs-6 mb-0 fw-bold">Tokenomics:</p>
                   <div className="d-flex">
-                    {projectData.projectInfo.token.name && (
+                    {/* {projectData.projectInfo.token.name && (
                       <MiniInfoCard
                         label="Nombre del token"
                         value={projectData.projectInfo.token.name}
                         className="me-2 bg-dark text-white"
                       />
-                    )}
+                    )} */}
                     {projectData.projectInfo.token.actualPeriodTokenAmount && (
                       <MiniInfoCard
                         label="Cantidad de tokens"
