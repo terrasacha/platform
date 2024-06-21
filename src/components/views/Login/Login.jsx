@@ -74,7 +74,7 @@ export default function LogIn() {
   }
   function validarString(str, regex) {
     if (!regex.test(str)) {
-      return "Espacios no permitidos";
+      return "Espacios y caracteres especiales no permitidos";
     }
     return "";
   }
