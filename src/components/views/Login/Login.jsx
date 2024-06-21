@@ -305,6 +305,7 @@ export default function LogIn() {
                     </span>
                   )}
                 </fieldset>
+                <p style={{ color: "#797979", fontSize: ".6em", margin: 0, width:"100%"}}>El nombre de usuario no debe contener espacios</p>
                 <fieldset>
                   <input
                     type="email"
@@ -323,6 +324,7 @@ export default function LogIn() {
                     className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
+                <p style={{ color: "#797979", fontSize: ".6em", margin: 0}}>La contraseña debe constar de más de 8 caracteres y contener por lo menos un valor numérico</p>
                 <fieldset>
                   <input
                     name="confirmPassword"
@@ -344,7 +346,7 @@ export default function LogIn() {
                   </select>
                 </fieldset>
                 {
-                  <p style={{ color: "#797979", fontSize: ".8em" }}>
+                  <p style={{ color: "#797979", fontSize: ".6em" }}>
                     {explain}
                   </p>
                 }
