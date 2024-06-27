@@ -139,7 +139,7 @@ export default function LogIn() {
           "Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente"
         );
         setError(
-          "A user for that e-mail address already exists. Please use a different e-mail address"
+          "El nombre de usuario ya existe. Por favor, escoja otro."
         );
       }
     } else {

@@ -219,7 +219,7 @@ class Validators extends Component {
         await API.graphql(graphqlOperation(createUser, { input: userPayload }));
       } catch (error) {
         console.log(
-          "A user for that e-mail address already exists. Please use a different e-mail address"
+           "El nombre de usuario ya existe. Por favor, escoja otro."
         );
       }
     } else {
