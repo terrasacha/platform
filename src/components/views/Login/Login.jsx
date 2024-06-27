@@ -426,7 +426,7 @@ export default function LogIn() {
               <form className={s.inputContainer}>
                 <fieldset>
                   <legend>Codigo de verificación</legend>
-                  <input name="authCode" onChange={onChange} />
+                  <input name="authCode" onChange={onChange} className="border-[1px] border-gray-300 rounded-md"/>
                 </fieldset>
                 <span
                   style={{
@@ -504,7 +504,7 @@ export default function LogIn() {
                 </button>
               </form>
               <div className={s.needAccount}>
-                Necesitas una cuenta?{" "}
+                ¿Necesitas una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
                   onClick={() =>
@@ -613,6 +613,7 @@ export default function LogIn() {
                     type="password"
                     name="newPassword"
                     onChange={onChange}
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
                 <fieldset>
@@ -621,6 +622,7 @@ export default function LogIn() {
                     type="password"
                     name="confirmNewPassword"
                     onChange={onChange}
+                    className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
                 <button
