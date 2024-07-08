@@ -236,6 +236,8 @@ class ValidatorAdmon extends Component {
                                 {getYearFromAWSDatetime(product.createdAt)}
                               </Badge>
                               <Badge bg="primary">{product.categoryID}</Badge>
+                              {product.isActive&& <Badge bg="success">Publicado</Badge>}
+                              {product.showOn && <Badge bg="secondary">Marketplace {product.showOn}</Badge>}
                             </Stack>
                           </div>
                           <p className="fs-5 my-2">{product.name}</p>

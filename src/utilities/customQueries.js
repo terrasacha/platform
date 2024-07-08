@@ -105,6 +105,7 @@ export const listProducts = /* GraphQL */ `
         status
         timeOnVerification
         projectReadiness
+        showOn
         categoryID
         userProducts {
           items {
