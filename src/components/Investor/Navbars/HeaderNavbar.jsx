@@ -5,15 +5,20 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import s from "./HeaderNavbar.module.css";
 // Import images
 import LOGO from "../../common/_images/suan_logo.png";
+import { Auth } from "aws-amplify";
 
 export default class HeaderNavbar extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      user: null
+    };
     this.handleChangeNavBar = this.handleChangeNavBar.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
   }
-
+  componentDidMount(){
+    Auth.currentAuthenticatedUser().then(data => this.setState({user: data})).catch(err => console.log(err))
+  }
   async handleChangeNavBar(pRequest) {
     console.log("handleChangeNavBar: ", pRequest);
     this.props.changeHeaderNavBarRequest(pRequest);
@@ -37,8 +42,8 @@ export default class HeaderNavbar extends Component {
   }
 
   render() {
-    let role = localStorage.getItem("role");
-    let userlog = this.findLastAuthUserKey();
+    let role = this.state.user?.attributes['custom:role'] || ''
+    let userlog = this.state.user?.username || ''
     return (
       <>
         <Navbar key="sm" bg="light" expand="lg" fixed="top">

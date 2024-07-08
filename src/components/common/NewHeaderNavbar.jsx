@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // Bootstrap
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -11,8 +11,14 @@ import { Auth } from "aws-amplify";
 import s from "components/Constructor/Navbar/HeaderNavbar.module.css";
 
 export default function NewHeaderNavbar() {
-  let role = localStorage.getItem("role");
+  const [user, setUser] = useState(null)
 
+  useEffect(() =>{
+    Auth.currentAuthenticatedUser()
+    .then(data => setUser(data))
+    .catch(err => console.log(err))
+
+  },[])
   const handleSignOut = async () => {
     try {
       await Auth.signOut();
@@ -65,7 +71,7 @@ export default function NewHeaderNavbar() {
             ></Nav>
             <Nav>
               <Nav className={s.navGroup}>
-                {role === "constructor" && (
+                {user.attributes['custom:role'] === "constructor" && (
                   <>
                     <Nav.Link
                       onClick={() => (window.location.href = "/constructor")}
@@ -86,7 +92,7 @@ export default function NewHeaderNavbar() {
                     </Nav.Link> */}
                   </>
                 )}
-                {role === "validator" && (
+                {user.attributes['custom:role'] === "validator" && (
                   <>
                     <Nav.Link
                       onClick={() =>
@@ -97,7 +103,7 @@ export default function NewHeaderNavbar() {
                     </Nav.Link>
                   </>
                 )}
-                {localStorage.getItem("role") ? (
+                {user ? (
                   <div>
                     <button
                       className={s.signing}
@@ -106,14 +112,10 @@ export default function NewHeaderNavbar() {
                       Desconectar
                     </button>
                     <button className="role">
-                      {userlog}
+                      {user.username}
                       <br></br>
                       <p className="role_btn">
-                        {role === "validator"
-                          ? "Validador"
-                          : role === "constructor"
-                          ? "Propietario"
-                          : role}
+                        {user.attributes['custom:role']}
                       </p>
                     </button>
                   </div>

@@ -11,6 +11,17 @@ import LOGO from "../../common/_images/suan_logo.png";
 import s from "./HeaderNavbar.module.css";
 
 export default class HeaderNavbar extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+        user: null
+    }
+  }
+  
+  componentDidMount(){
+    Auth.currentAuthenticatedUser().then(data => this.setState({user: data})).catch(err => console.log(err))
+  }
   async logOut() {
     await Auth.signOut();
     window.location.href = "/";
@@ -31,8 +42,8 @@ export default class HeaderNavbar extends Component {
   }
 
   render() {
-    let role = localStorage.getItem("role");
-    let userlog = this.findLastAuthUserKey();
+    let role = this.state.user?.attributes['custom:role'] || ''
+    let userlog = this.state.user?.username || ''
     return (
       <Navbar key="sm" bg="light" expand="sm">
         <Container fluid>
