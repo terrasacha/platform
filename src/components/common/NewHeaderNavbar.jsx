@@ -43,7 +43,7 @@ export default function NewHeaderNavbar() {
   };
 
   let userlog = findLastAuthUserKey();
-
+  if(!user)return null
   return (
     <Navbar key="sm" bg="light" expand="lg" fixed="top">
       <Container fluid>
