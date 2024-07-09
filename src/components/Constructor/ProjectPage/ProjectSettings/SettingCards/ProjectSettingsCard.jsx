@@ -134,7 +134,7 @@ export default function ProjectSettingsCard(props) {
           onClickSaveBtn={() => handleSaveProjectShowOn()}
         />
         <FormGroup
-          disabled={!projectData.projectInfo.showOn}
+          disabled={!projectData.isFinancialComplete && !projectData.isTechnicalComplete}
           label="Proyecto visible en Marketplace"
           inputType="switch"
           checked={projectIsActive}
