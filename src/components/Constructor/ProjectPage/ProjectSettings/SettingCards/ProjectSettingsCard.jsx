@@ -17,9 +17,11 @@ export default function ProjectSettingsCard(props) {
   const [projectIsActive, setProjectIsActive] = useState(false);
   const [projectStatus, setProjectStatus] = useState("");
   const [projectShowOn, setProjectShowOn] = useState("");
-
+  const [projectReadyToPublish, setProjectReadyToPublish] = useState(false)
   useEffect(() => {
     if (projectData) {
+      let projectReadyToPublishData = projectData.projectFeatures.find(item => item.featureID === 'GLOBAL_OWNER_ACCEPTS_CONDITIONS').value || "false"
+      setProjectReadyToPublish(JSON.parse(projectReadyToPublishData))
       setProjectIsActive(projectData.projectInfo.isActive);
       setProjectStatus(projectData.projectInfo.status);
       setProjectShowOn(projectData.projectInfo.showOn);
@@ -134,7 +136,7 @@ export default function ProjectSettingsCard(props) {
           onClickSaveBtn={() => handleSaveProjectShowOn()}
         />
         <FormGroup
-          disabled={!projectData.isFinancialComplete && !projectData.isTechnicalComplete}
+          disabled={!projectReadyToPublish}
           label="Proyecto visible en Marketplace"
           inputType="switch"
           checked={projectIsActive}
