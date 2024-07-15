@@ -15,10 +15,7 @@ import DynamicForm from "components/DynamicForm/DynamicForm";
 import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
 
 export default function NewProject() {
-  const formURL =
-    "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+SIMPLIFICADO.xlsx";
-  //const formURL = "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS.xlsx";
-  //const formURL = "https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+TEST.xlsx"
+  const formURL = `${process.env.REACT_APP_URL_BUCKET}/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+SIMPLIFICADO.xlsx`;
 
   const { user } = useAuth();
   const [formData, setFormData] = useState({});
