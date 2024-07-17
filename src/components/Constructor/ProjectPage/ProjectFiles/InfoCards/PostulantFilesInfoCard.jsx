@@ -278,68 +278,72 @@ export default function PostulantFilesInfoCard(props) {
     <Card className={className}>
       <Card.Header title="Documentos del postulante" sep="true" />
       <Card.Body>
-        <table className="w-full text-center">
-          <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Ultima actualización</th>
-              <th>Estado Validación</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody className="align-middle">
-            {projectFiles?.map((file, fileIndex) => {
-              return (
-                <tr
-                  key={file.id}
-                  className="border-b-2"
-                  style={{ height: "4rem" }}
-                >
-                  <td>{file.title}</td>
-                  <td>{file.updatedAt}</td>
-                  <td>{getValidationRender(file, fileIndex)}</td>
-                  <td className="text-end flex justify-end items-center h-[4rem] gap-x-2">
-                    {isPostulant && file.status === "denied" && (
-                      <>
-                        <input
-                          type="file"
-                          style={{ display: "none" }}
-                          ref={fileInputRef}
-                          onChange={(e) =>
-                            handleUpdateDocumentFile(e, fileIndex, file)
-                          }
-                        />
+        {projectFiles && projectFiles.length > 0 ? (
+          <table className="w-full text-center">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Ultima actualización</th>
+                <th>Estado Validación</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody className="align-middle">
+              {projectFiles?.map((file, fileIndex) => {
+                return (
+                  <tr
+                    key={file.id}
+                    className="border-b-2"
+                    style={{ height: "4rem" }}
+                  >
+                    <td>{file.title}</td>
+                    <td>{file.updatedAt}</td>
+                    <td>{getValidationRender(file, fileIndex)}</td>
+                    <td className="text-end flex justify-end items-center h-[4rem] gap-x-2">
+                      {isPostulant && file.status === "denied" && (
+                        <>
+                          <input
+                            type="file"
+                            style={{ display: "none" }}
+                            ref={fileInputRef}
+                            onChange={(e) =>
+                              handleUpdateDocumentFile(e, fileIndex, file)
+                            }
+                          />
+                          <button
+                            className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
+                            onClick={() => handleUploadDocumentButtonClick()}
+                          >
+                            {isLoadingDoc ? (
+                              <Spinner size="sm" className="p-2"></Spinner>
+                            ) : (
+                              "Actualizar documentación"
+                            )}
+                          </button>
+                        </>
+                      )}
+                      <a href={file.url} target="_blank" rel="noreferrer">
+                        <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white">
+                          <DownloadIcon />
+                        </button>
+                      </a>
+                      {file.verification && (
                         <button
                           className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-                          onClick={() => handleUploadDocumentButtonClick()}
+                          onClick={() => handleMessageButtonClick(fileIndex)}
                         >
-                          {isLoadingDoc ? (
-                            <Spinner size="sm" className="p-2"></Spinner>
-                          ) : (
-                            "Actualizar documentación"
-                          )}
+                          <MessagesIcon />
                         </button>
-                      </>
-                    )}
-                    <a href={file.url} target="_blank" rel="noreferrer">
-                      <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white">
-                        <DownloadIcon />
-                      </button>
-                    </a>
-                    {file.verification && (
-                      <button
-                        className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-                        onClick={() => handleMessageButtonClick(fileIndex)}
-                      >
-                        <MessagesIcon />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          "No se han subido archivos para validación"
+        )}
       </Card.Body>
     </Card>
   );

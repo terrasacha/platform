@@ -16,7 +16,6 @@ import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
 
 export default function NewProject() {
   const formURL = `${process.env.REACT_APP_URL_BUCKET}/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+SIMPLIFICADO.xlsx`;
-
   const { user } = useAuth();
   const [formData, setFormData] = useState({});
   const [formDataErrors, setFormDataErrors] = useState({});
@@ -117,7 +116,7 @@ export default function NewProject() {
     // Validadores por defecto
     let tempUserProduct;
     // Moxie
-    tempUserProduct = {
+    /* tempUserProduct = {
       productID: productID,
       userID: "c48814e8-1091-70ff-212b-58b68b42687f",
     };
@@ -125,7 +124,7 @@ export default function NewProject() {
       API.graphql(
         graphqlOperation(createUserProduct, { input: tempUserProduct })
       )
-    );
+    ); */
 
     /*
     // Sebastian Azcona
