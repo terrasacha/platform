@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
-
+import HeaderNavbar from "components/views/Navbars/HeaderNavbar"
 // Import images
 import LOGO from "components/common/_images/suan_logo.png";
 import { Auth } from "aws-amplify";
@@ -43,7 +43,7 @@ export default function NewHeaderNavbar() {
   };
 
   let userlog = findLastAuthUserKey();
-  if(!user)return null
+  if(!user)return <HeaderNavbar />
   return (
     <Navbar key="sm" bg="light" expand="lg" fixed="top">
       <Container fluid>

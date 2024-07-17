@@ -45,7 +45,7 @@ export default class HeaderNavbar extends Component {
     let role = this.state.user?.attributes['custom:role'] || ''
     let userlog = this.state.user?.username || ''
     return (
-      <Navbar key="sm" bg="light" expand="sm">
+      <Navbar key="sm" bg="light" expand="lg" fixed="top">
         <Container fluid>
           <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
             <img src={LOGO} className="w-8 h-auto" alt="ATP" />
