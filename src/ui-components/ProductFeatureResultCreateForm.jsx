@@ -6,7 +6,13 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, SwitchField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SwitchField,
+  TextField,
+} from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { API } from "aws-amplify";
 import { createProductFeatureResult } from "../graphql/mutations";
@@ -23,15 +29,19 @@ export default function ProductFeatureResultCreateForm(props) {
   } = props;
   const initialValues = {
     isActive: false,
+    name: "",
   };
   const [isActive, setIsActive] = React.useState(initialValues.isActive);
+  const [name, setName] = React.useState(initialValues.name);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setIsActive(initialValues.isActive);
+    setName(initialValues.name);
     setErrors({});
   };
   const validations = {
     isActive: [{ type: "Required" }],
+    name: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -60,6 +70,7 @@ export default function ProductFeatureResultCreateForm(props) {
         event.preventDefault();
         let modelFields = {
           isActive,
+          name,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -123,6 +134,7 @@ export default function ProductFeatureResultCreateForm(props) {
           if (onChange) {
             const modelFields = {
               isActive: value,
+              name,
             };
             const result = onChange(modelFields);
             value = result?.isActive ?? value;
@@ -137,6 +149,31 @@ export default function ProductFeatureResultCreateForm(props) {
         hasError={errors.isActive?.hasError}
         {...getOverrideProps(overrides, "isActive")}
       ></SwitchField>
+      <TextField
+        label="Name"
+        isRequired={false}
+        isReadOnly={false}
+        value={name}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              isActive,
+              name: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.name ?? value;
+          }
+          if (errors.name?.hasError) {
+            runValidationTasks("name", value);
+          }
+          setName(value);
+        }}
+        onBlur={() => runValidationTasks("name", name)}
+        errorMessage={errors.name?.errorMessage}
+        hasError={errors.name?.hasError}
+        {...getOverrideProps(overrides, "name")}
+      ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
