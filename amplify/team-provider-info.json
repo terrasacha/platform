@@ -1,4 +1,31 @@
 {
+  "test": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-kiosuanbcrjsapp-test-47325-authRole",
+      "UnauthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-test-47325-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::036134507423:role/amplify-kiosuanbcrjsapp-test-47325-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-kiosuanbcrjsapp-test-47325-deployment",
+      "UnauthRoleName": "amplify-kiosuanbcrjsapp-test-47325-unauthRole",
+      "StackName": "amplify-kiosuanbcrjsapp-test-47325",
+      "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-kiosuanbcrjsapp-test-47325/c9e11960-33e3-11ef-aa38-1281b60ccfcd",
+      "AmplifyAppId": "db3zbcxaygrmf"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "db3zbcxaygrmf",
+          "type": "cicd"
+        }
+      },
+      "auth": {
+        "kiosuanbcrjsappa6accc93": {}
+      },
+      "storage": {
+        "s37845b3b9": {}
+      }
+    }
+  },
   "prod": {
     "awscloudformation": {
       "AuthRoleName": "amplify-kiosuanbcrjsapp-prod-150248-authRole",
