@@ -177,7 +177,7 @@ export default function ProjectAnalysis({ visible }) {
     try {
       console.log(projectData.projectInfo.id, "projectData.projectInfo.id");
       const response = await fetch(
-        `https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/${projectData.projectInfo.id}/data/area_analysis.json`
+        `${process.env.REACT_APP_URL_BUCKET}/public/${projectData.projectInfo.id}/data/area_analysis.json`
       );
       const data = await response.json();
       console.log(data, "handleComparativeAreaAnalysis");

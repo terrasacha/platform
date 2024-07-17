@@ -180,7 +180,7 @@ class ValidatorAdmon extends Component {
     const verifierAssignedProducts = response.data.listProducts.items.filter(
       (product) => {
         const isProjectVerifier = product.userProducts?.items.some(
-          (up) => up.user.id === this.state.actualUser
+          (up) => up.user?.id === this.state.actualUser
         );
         const isVisible = product.isActiveOnPlatform;
         return isProjectVerifier && isVisible;

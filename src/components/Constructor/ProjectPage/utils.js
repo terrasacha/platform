@@ -73,7 +73,7 @@ export const capitalizeWords = async (str) => {
 
 export const getImagesCategories = (category) => {
   try {
-    let url = `https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/category-projects-images/${category}.jpg`;
+    let url = `${process.env.REACT_APP_URL_BUCKET}/public/category-projects-images/${category}.jpg`;
     url = url.replace("REDD+", "REDD%2B");
     return url;
   } catch (error) {

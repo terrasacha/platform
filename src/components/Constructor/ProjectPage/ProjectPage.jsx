@@ -133,38 +133,44 @@ export default function ProjectPage() {
                     {projectData.projectInfo.description}
                   </p>
                 </section>
-                <section>
-                  <p className="fs-6 mb-0 fw-bold">Tokenomics:</p>
-                  <div className="d-flex">
-                    {/* {projectData.projectInfo.token.name && (
-                      <MiniInfoCard
-                        label="Nombre del token"
-                        value={projectData.projectInfo.token.name}
-                        className="me-2 bg-dark text-white"
-                      />
-                    )} */}
-                    {projectData.projectInfo.token.actualPeriodTokenAmount && (
-                      <MiniInfoCard
-                        label="Cantidad de tokens"
-                        value={formatNumberWithThousandsSeparator(
-                          projectData.projectInfo.token.totalTokenAmount
+                {projectData.projectInfo.token.actualPeriodTokenAmount &&
+                  projectData.projectInfo.token.actualPeriodTokenPrice && (
+                    <section>
+                      <p className="fs-6 mb-0 fw-bold">Tokenomics:</p>
+                      <div className="d-flex">
+                        {/* {projectData.projectInfo.token.name && (
+                        <MiniInfoCard
+                          label="Nombre del token"
+                          value={projectData.projectInfo.token.name}
+                          className="me-2 bg-dark text-white"
+                        />
+                      )} */}
+                        {projectData.projectInfo.token
+                          .actualPeriodTokenAmount && (
+                          <MiniInfoCard
+                            label="Cantidad de tokens"
+                            value={formatNumberWithThousandsSeparator(
+                              projectData.projectInfo.token.totalTokenAmount
+                            )}
+                            className="me-2 bg-dark text-white"
+                          />
                         )}
-                        className="me-2 bg-dark text-white"
-                      />
-                    )}
-                    {projectData.projectInfo.token.actualPeriodTokenPrice && (
-                      <MiniInfoCard
-                        label="Valor del token"
-                        value={
-                          projectData.projectInfo.token.actualPeriodTokenPrice +
-                          " " +
-                          projectData.projectInfo.token.currency
-                        }
-                        className="me-2 bg-dark text-white"
-                      />
-                    )}
-                  </div>
-                </section>
+                        {projectData.projectInfo.token
+                          .actualPeriodTokenPrice && (
+                          <MiniInfoCard
+                            label="Valor del token"
+                            value={
+                              projectData.projectInfo.token
+                                .actualPeriodTokenPrice +
+                              " " +
+                              projectData.projectInfo.token.currency
+                            }
+                            className="me-2 bg-dark text-white"
+                          />
+                        )}
+                      </div>
+                    </section>
+                  )}
                 {projectData.projectVerifierNames.length > 0 && (
                   <section>
                     <p className="fs-6 mb-0 fw-bold">Validadores:</p>
@@ -269,28 +275,32 @@ export default function ProjectPage() {
                   </>
                 )}
 
-                {user?.id && (isPostulant || isVerifier || isAdmon) && (
-                  <li>
-                    <a
-                      href="#finance"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setActiveSection("finance");
-                      }}
-                      className={`${
-                        activeSection === "finance"
-                          ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                          : "text-blue-500"
-                      } flex py-2 px-3`}
-                    >
-                      Finanzas
-                      {(autorizedUser || isPostulant || isAdmon) &&
-                        !progressObj?.sectionsStatus.ownerAcceptsConditions && (
-                          <HourGlassIcon className="text-danger ms-2" />
-                        )}
-                    </a>
-                  </li>
-                )}
+                {user?.id &&
+                  (isPostulant || isVerifier || isAdmon) &&
+                  projectData.isFinancialFreeze &&
+                  projectData.isTechnicalFreeze && (
+                    <li>
+                      <a
+                        href="#finance"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("finance");
+                        }}
+                        className={`${
+                          activeSection === "finance"
+                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                            : "text-blue-500"
+                        } flex py-2 px-3`}
+                      >
+                        Finanzas
+                        {(autorizedUser || isPostulant || isAdmon) &&
+                          !progressObj?.sectionsStatus
+                            .ownerAcceptsConditions && (
+                            <HourGlassIcon className="text-danger ms-2" />
+                          )}
+                      </a>
+                    </li>
+                  )}
                 <li>
                   <a
                     href="#analysis"

@@ -1,2 +1,2 @@
-const URLS3 = 'https://kiosuanbcrjsappcad3eb2dd1b14457b491c910d5aa45dd145518-dev.s3.amazonaws.com/public/'
+const URLS3 = `${process.env.REACT_APP_URL_BUCKET}/public/`
 export default URLS3
