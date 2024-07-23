@@ -20,8 +20,7 @@
 
 export const getPolygonByCadastralNumber = async (cadastralNumbers) => {
   // URL de la consulta
-  const url =
-    "https://services2.arcgis.com/RVvWzU3lgJISqdke/ArcGIS/rest/services/CATASTRO_PUBLICO_Mayo_15_2024_gdb/FeatureServer/14/query";
+  const url = `${process.env["REACT_APP_CADASTRAL_QUERY_URL"]}/14/query`;
 
   const whereClause = `CODIGO IN ('${cadastralNumbers.join("','")}')`;
 
