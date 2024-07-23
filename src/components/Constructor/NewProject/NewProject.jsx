@@ -114,7 +114,7 @@ export default function NewProject() {
     ];
 
     // Validadores por defecto
-    let tempUserProduct;
+    //let tempUserProduct;
     // Moxie
     /* tempUserProduct = {
       productID: productID,
