@@ -127,6 +127,29 @@ type Product @model {
   payments: [Payment] @hasMany(indexName: "byProduct", fields: ["id"])
   scripts: [Script] @hasMany(indexName: "byProduct", fields: ["id"])
   tokens: [Token] @hasMany(indexName: "byProduct", fields: ["id"])
+  analisis: [Analisis] @hasMany(indexName: "byProduct", fields: ["id"])
+}
+
+type Analisis @model {
+  id: ID!
+  proyectoID: ID! @index(name: "byProduct")
+  proyecto: Product @belongsTo(fields: ["proyectoID"])
+  imgAnteriorNombreImg: String
+  imgAnteriorSatellite: String
+  imgAnteriorYear: Int
+  imgAnteriorMesInicial: Int
+  imgAnteriorMesFinal: Int
+  imgAnteriorNubosidadMaxima: Int
+  imgAnteriorBandas: String
+  imgPosteriorNombreImg: String
+  imgPosteriorSatellite: String
+  imgPosteriorYear: Int
+  imgPosteriorMesInicial: Int
+  imgPosteriorMesFinal: Int
+  imgPosteriorNubosidadMaxima: Int
+  imgPosteriorBandas: String
+  resultados: AWSJSON
+  ajustado: Boolean
 }
 
 type Image @model {
