@@ -320,20 +320,19 @@ type Transactions @model {
   addressOrigin: String
   addressDestination: String
   walletID: ID @index(name: "byWallet")
-  txIn: String
+  txIn: AWSJSON
+  txOutput: AWSJSON
   txCborhex: String
   txHash: String
-  metadataUrl: AWSJSON
+  mint: AWSJSON
+  scriptDataHash: String
+  metadataUrl: String
   fees: Float
   network: String
-  txProcessed: Boolean
   type: String
-  tokenName: String
-  amountOfTokens: Int
-  policyID: String
-  stakeAddress: String
-  productID: ID! @index(name: "byProduct")
+  productID: ID @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
+  signed: Boolean!
 }
 
 type Company @model {
