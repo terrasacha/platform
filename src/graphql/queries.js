@@ -290,18 +290,17 @@ export const getWallet = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -1103,18 +1102,17 @@ export const getProduct = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -3165,17 +3163,15 @@ export const getTransactions = /* GraphQL */ `
       addressDestination
       walletID
       txIn
+      txOutput
       txCborhex
       txHash
+      mint
+      scriptDataHash
       metadataUrl
       fees
       network
-      txProcessed
       type
-      tokenName
-      amountOfTokens
-      policyID
-      stakeAddress
       productID
       product {
         id
@@ -3239,6 +3235,7 @@ export const getTransactions = /* GraphQL */ `
         updatedAt
         __typename
       }
+      signed
       createdAt
       updatedAt
       __typename
@@ -3258,17 +3255,15 @@ export const listTransactions = /* GraphQL */ `
         addressDestination
         walletID
         txIn
+        txOutput
         txCborhex
         txHash
+        mint
+        scriptDataHash
         metadataUrl
         fees
         network
-        txProcessed
         type
-        tokenName
-        amountOfTokens
-        policyID
-        stakeAddress
         productID
         product {
           id
@@ -3288,6 +3283,7 @@ export const listTransactions = /* GraphQL */ `
           updatedAt
           __typename
         }
+        signed
         createdAt
         updatedAt
         __typename

@@ -527,18 +527,17 @@ export const onCreateWallet = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -637,18 +636,17 @@ export const onUpdateWallet = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -747,18 +745,17 @@ export const onDeleteWallet = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -2180,18 +2177,17 @@ export const onCreateProduct = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -2394,18 +2390,17 @@ export const onUpdateProduct = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -2608,18 +2603,17 @@ export const onDeleteProduct = /* GraphQL */ `
           addressDestination
           walletID
           txIn
+          txOutput
           txCborhex
           txHash
+          mint
+          scriptDataHash
           metadataUrl
           fees
           network
-          txProcessed
           type
-          tokenName
-          amountOfTokens
-          policyID
-          stakeAddress
           productID
+          signed
           createdAt
           updatedAt
           __typename
@@ -6392,17 +6386,15 @@ export const onCreateTransactions = /* GraphQL */ `
       addressDestination
       walletID
       txIn
+      txOutput
       txCborhex
       txHash
+      mint
+      scriptDataHash
       metadataUrl
       fees
       network
-      txProcessed
       type
-      tokenName
-      amountOfTokens
-      policyID
-      stakeAddress
       productID
       product {
         id
@@ -6466,6 +6458,7 @@ export const onCreateTransactions = /* GraphQL */ `
         updatedAt
         __typename
       }
+      signed
       createdAt
       updatedAt
       __typename
@@ -6482,17 +6475,15 @@ export const onUpdateTransactions = /* GraphQL */ `
       addressDestination
       walletID
       txIn
+      txOutput
       txCborhex
       txHash
+      mint
+      scriptDataHash
       metadataUrl
       fees
       network
-      txProcessed
       type
-      tokenName
-      amountOfTokens
-      policyID
-      stakeAddress
       productID
       product {
         id
@@ -6556,6 +6547,7 @@ export const onUpdateTransactions = /* GraphQL */ `
         updatedAt
         __typename
       }
+      signed
       createdAt
       updatedAt
       __typename
@@ -6572,17 +6564,15 @@ export const onDeleteTransactions = /* GraphQL */ `
       addressDestination
       walletID
       txIn
+      txOutput
       txCborhex
       txHash
+      mint
+      scriptDataHash
       metadataUrl
       fees
       network
-      txProcessed
       type
-      tokenName
-      amountOfTokens
-      policyID
-      stakeAddress
       productID
       product {
         id
@@ -6646,6 +6636,7 @@ export const onDeleteTransactions = /* GraphQL */ `
         updatedAt
         __typename
       }
+      signed
       createdAt
       updatedAt
       __typename
