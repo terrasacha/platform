@@ -318,7 +318,7 @@ type Payment @model {
 type Transactions @model {
   id: ID!
   addressOrigin: String
-  addressDestination: String
+  addressDestination: AWSJSON
   walletID: ID @index(name: "byWallet")
   txIn: AWSJSON
   txOutput: AWSJSON
