@@ -109,11 +109,11 @@ a {
         ;
 }
 
-.btn:hover,
+/* .btn:hover,
 .btn-landing:hover {
         color: #6B8E0F !important;
         border: solid 2px #6B8E0F;
-}
+} */
 
 .fondo-azul {
         background: #1C3541 !important;

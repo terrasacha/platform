@@ -168,6 +168,7 @@ export const listUsers = /* GraphQL */ `
         subrole
         status
         email
+        marketplace
         wallets {
           nextToken
           __typename

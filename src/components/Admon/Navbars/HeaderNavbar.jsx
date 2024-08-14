@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 // Bootstrap
-import { Button, Container, Nav, Navbar } from "react-bootstrap";
+import { Button, Container, Nav, Navbar, Dropdown } from "react-bootstrap";
 // Import React Bootstrap Icons
 /* import { Filter, InfoCircle } from 'react-bootstrap-icons' */
 // import { InfoCircle, Rulers, Printer, Filter, Percent, ListTask } from 'react-bootstrap-icons'
@@ -119,29 +119,37 @@ export default class HeaderNavbar extends Component {
                   <Nav.Link style={{ fontWeight: "700", color: "#FE4849" }}>
                     {role ? role : ""}
                   </Nav.Link>
-                  {/* <Nav.Link href="#assign_products" onClick={(e) => this.changeHeaderNavBarRequest('assign_products', e)}>
-                                    Assign Products
-                                </Nav.Link>   */}
-                  <Nav.Link href="/new_project">Crear proyecto</Nav.Link>
-                  <Nav.Link
-                    href="#assign_pf"
-                    onClick={(e) =>
-                      this.changeHeaderNavBarRequest("assign_pf", e)
-                    }
-                  >
-                    Asignar Validadores
-                  </Nav.Link>
-                  <Nav.Link
-                    href="#validators"
-                    onClick={(e) =>
-                      this.changeHeaderNavBarRequest("validators", e)
-                    }
-                  >
-                    Validadores
-                  </Nav.Link>
-                  <button onClick={(e) => this.handleChangeObjectElement()}>
-                    Sign Out
-                  </button>
+                  <Dropdown align={'end'}>
+                    <Dropdown.Toggle variant="secondary" id="dropdown-basic" style={{ margin:'0 2rem'}}>
+                      Más acciones
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item href="/new_project">Crear proyecto</Dropdown.Item>
+                      <Dropdown.Item href="#assign_pf"
+                          onClick={(e) =>
+                            this.changeHeaderNavBarRequest("assign_pf", e)
+                          }
+                      >
+                        Asignar Validadores</Dropdown.Item>
+                      <Dropdown.Item href="#validators"
+                        onClick={(e) =>
+                          this.changeHeaderNavBarRequest("validators", e)
+                        }
+                      >
+                        Validadores</Dropdown.Item>
+                        <Dropdown.Item href="#marketplace_admin"
+                        onClick={(e) =>
+                          this.changeHeaderNavBarRequest("marketplace_admin", e)
+                        }
+                      >
+                        Crear marketplace admin</Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item onClick={(e) => this.handleChangeObjectElement()}>
+                          Sign Out
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </Nav>
               </Navbar.Collapse>
             </Container>

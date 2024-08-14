@@ -14,6 +14,7 @@ import Features from "./Features/Features";
 import Formulas from "./Formulas/Formulas";
 import HeaderNavbar from "./Navbars/HeaderNavbar";
 import Validators from "./Validators/Validators";
+import ManageMarketplaceAdmin from "./ManageMarketplaceAdmin/ManageMarketplaceAdmin";
 import Products from "./Products/Products";
 import Results from "./Results/Results";
 import UOM from "./UOM/UOM";
@@ -47,6 +48,7 @@ export default class Admon extends Component {
       isShowUOM: false,
       isShowFormulas: false,
       isShowValidators: false,
+      isShowMarketplaceAdmin: false,
       isShowResults: false,
       isShowDocuments: false,
       isShowAPF: false,
@@ -116,6 +118,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
 
@@ -135,6 +138,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
 
@@ -154,6 +158,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
 
@@ -173,6 +178,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
 
@@ -192,6 +198,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "features") {
@@ -210,6 +217,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "uom") {
@@ -228,6 +236,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "formulas") {
@@ -246,6 +255,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "results") {
@@ -264,6 +274,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "documents") {
@@ -282,6 +293,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "assign_products") {
@@ -300,6 +312,7 @@ export default class Admon extends Component {
         isShowAProducts: true,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
 
@@ -319,6 +332,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "settings") {
@@ -337,6 +351,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: true,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "validators") {
@@ -355,6 +370,7 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
+        isShowMarketplaceAdmin:false
       });
     }
     if (pRequest === "assign_pf") {
@@ -373,6 +389,26 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: true,
+        isShowMarketplaceAdmin:false
+      });
+    }
+    if (pRequest === "marketplace_admin") {
+      this.setState({
+        isShowProducts: false,
+        isShowCategorys: false,
+        isShowItems: false,
+        isShowFeatures: false,
+        isShowAdmonProfile: false,
+        isShowNotAuthorize: false,
+        isShowUOM: false,
+        isShowFormulas: false,
+        isShowResults: false,
+        isShowDocuments: false,
+        isShowValidators: false,
+        isShowAProducts: false,
+        isShowConfigure: false,
+        isShowAPF: false,
+        isShowMarketplaceAdmin:true
       });
     }
   }
@@ -433,6 +469,7 @@ export default class Admon extends Component {
       isShowAProducts,
       isShowConfigure,
       isShowAPF,
+      isShowMarketplaceAdmin
     } = this.state;
     return (
       <div className="min-h-screen bg-gray-100 pt-20">
@@ -521,6 +558,7 @@ export default class Admon extends Component {
           {isShowAProducts && <UserProducts />}
           {isShowAPF && <AssignPF />}
           {isShowValidators && <Validators />}
+          {isShowMarketplaceAdmin && <ManageMarketplaceAdmin/>}
           {isShowConfigure && (
             <Configure
               user={this.state.user}
