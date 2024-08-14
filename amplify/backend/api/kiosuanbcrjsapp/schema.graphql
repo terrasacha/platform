@@ -29,6 +29,7 @@ type User @model {
   documents: [Document] @hasMany(indexName: "byUser", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byUser", fields: ["id"])
   payments: [Payment] @hasMany(indexName: "byUser", fields: ["id"])
+  marketplace: String
 }
 
 type Wallet @model {
@@ -45,6 +46,7 @@ type Wallet @model {
   userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
   orders: [Order] @hasMany(indexName: "byWallet", fields: ["id"])
+  boughtOrders: [Order] @hasMany(indexName: "byWalletBuyer", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byWallet", fields: ["id"])
 }
 
@@ -123,6 +125,7 @@ type Product @model {
     @hasMany(indexName: "byProduct", fields: ["id"])
   userProducts: [UserProduct] @hasMany(indexName: "byProduct", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byProduct", fields: ["id"])
+  orders: [Order] @hasMany(indexName: "byProduct", fields: ["id"])
   companies: [Company] @hasMany(indexName: "byProduct", fields: ["id"])
   payments: [Payment] @hasMany(indexName: "byProduct", fields: ["id"])
   scripts: [Script] @hasMany(indexName: "byProduct", fields: ["id"])
@@ -284,11 +287,14 @@ type Order @model {
   tokenAmount: Float
   utxos: String
   value: Float
-  borrar: String
+  walletBuyerID: ID @index(name: "byWalletBuyer")
+  walletBuyer: Wallet @belongsTo(fields: ["walletBuyerID"])
   scriptID: ID @index(name: "byScript")
   script: Script @belongsTo(fields: ["scriptID"])
   walletID: ID @index(name: "byWallet")
   wallet: Wallet @belongsTo(fields: ["walletID"])
+  productID: ID @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
 }
 
 # En caso wallet guardar ADAS recibidos
@@ -328,6 +334,7 @@ type Transactions @model {
   mint: AWSJSON
   scriptDataHash: String
   metadataUrl: String
+  redeemer: String
   fees: Float
   network: String
   type: String
