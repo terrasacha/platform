@@ -142,6 +142,7 @@ export const onCreateUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      marketplace
       createdAt
       updatedAt
       __typename
@@ -289,6 +290,7 @@ export const onUpdateUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      marketplace
       createdAt
       updatedAt
       __typename
@@ -436,6 +438,7 @@ export const onDeleteUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      marketplace
       createdAt
       updatedAt
       __typename
@@ -497,6 +500,7 @@ export const onCreateWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -510,9 +514,30 @@ export const onCreateWallet = /* GraphQL */ `
           tokenAmount
           utxos
           value
-          borrar
+          walletBuyerID
           scriptID
           walletID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      boughtOrders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          walletBuyerID
+          scriptID
+          walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -533,6 +558,7 @@ export const onCreateWallet = /* GraphQL */ `
           mint
           scriptDataHash
           metadataUrl
+          redeemer
           fees
           network
           type
@@ -606,6 +632,7 @@ export const onUpdateWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -619,9 +646,30 @@ export const onUpdateWallet = /* GraphQL */ `
           tokenAmount
           utxos
           value
-          borrar
+          walletBuyerID
           scriptID
           walletID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      boughtOrders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          walletBuyerID
+          scriptID
+          walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -642,6 +690,7 @@ export const onUpdateWallet = /* GraphQL */ `
           mint
           scriptDataHash
           metadataUrl
+          redeemer
           fees
           network
           type
@@ -715,6 +764,7 @@ export const onDeleteWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -728,9 +778,30 @@ export const onDeleteWallet = /* GraphQL */ `
           tokenAmount
           utxos
           value
-          borrar
+          walletBuyerID
           scriptID
           walletID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      boughtOrders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          walletBuyerID
+          scriptID
+          walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -751,6 +822,7 @@ export const onDeleteWallet = /* GraphQL */ `
           mint
           scriptDataHash
           metadataUrl
+          redeemer
           fees
           network
           type
@@ -820,6 +892,7 @@ export const onCreateVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -866,6 +939,7 @@ export const onCreateVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -1005,6 +1079,7 @@ export const onUpdateVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -1051,6 +1126,7 @@ export const onUpdateVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -1190,6 +1266,7 @@ export const onDeleteVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -1236,6 +1313,7 @@ export const onDeleteVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -1352,6 +1430,7 @@ export const onCreateVerificationComment = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -1370,6 +1449,7 @@ export const onCreateVerificationComment = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -1430,6 +1510,7 @@ export const onUpdateVerificationComment = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -1448,6 +1529,7 @@ export const onUpdateVerificationComment = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -1508,6 +1590,7 @@ export const onDeleteVerificationComment = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -1526,6 +1609,7 @@ export const onDeleteVerificationComment = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -1678,6 +1762,7 @@ export const onCreateDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -1808,6 +1893,7 @@ export const onUpdateDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -1938,6 +2024,7 @@ export const onDeleteDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -2183,11 +2270,32 @@ export const onCreateProduct = /* GraphQL */ `
           mint
           scriptDataHash
           metadataUrl
+          redeemer
           fees
           network
           type
           productID
           signed
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          walletBuyerID
+          scriptID
+          walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -2396,11 +2504,32 @@ export const onUpdateProduct = /* GraphQL */ `
           mint
           scriptDataHash
           metadataUrl
+          redeemer
           fees
           network
           type
           productID
           signed
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          walletBuyerID
+          scriptID
+          walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -2609,11 +2738,32 @@ export const onDeleteProduct = /* GraphQL */ `
           mint
           scriptDataHash
           metadataUrl
+          redeemer
           fees
           network
           type
           productID
           signed
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      orders {
+        items {
+          id
+          statusCode
+          tokenPolicyId
+          tokenName
+          tokenAmount
+          utxos
+          value
+          walletBuyerID
+          scriptID
+          walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -2774,6 +2924,10 @@ export const onCreateAnalisis = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -2863,6 +3017,10 @@ export const onUpdateAnalisis = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -2949,6 +3107,10 @@ export const onDeleteAnalisis = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -3050,6 +3212,10 @@ export const onCreateImage = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -3132,6 +3298,10 @@ export const onUpdateImage = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -3211,6 +3381,10 @@ export const onDeleteImage = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -4491,6 +4665,10 @@ export const onCreateProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -4672,6 +4850,10 @@ export const onUpdateProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -4850,6 +5032,10 @@ export const onDeleteProductFeature = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -5339,6 +5525,7 @@ export const onCreateUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -5379,6 +5566,10 @@ export const onCreateUserProduct = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -5461,6 +5652,7 @@ export const onUpdateUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -5501,6 +5693,10 @@ export const onUpdateUserProduct = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -5583,6 +5779,7 @@ export const onDeleteUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -5626,6 +5823,10 @@ export const onDeleteUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -5666,7 +5867,53 @@ export const onCreateOrder = /* GraphQL */ `
       tokenAmount
       utxos
       value
-      borrar
+      walletBuyerID
+      walletBuyer {
+        id
+        name
+        status
+        password
+        seed
+        address
+        stake_address
+        isSelected
+        isAdmin
+        claimed_token
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplace
+          createdAt
+          updatedAt
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        boughtOrders {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       scriptID
       script {
         id
@@ -5738,6 +5985,7 @@ export const onCreateOrder = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -5746,7 +5994,78 @@ export const onCreateOrder = /* GraphQL */ `
           nextToken
           __typename
         }
+        boughtOrders {
+          nextToken
+          __typename
+        }
         transactions {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analisis {
           nextToken
           __typename
         }
@@ -5770,7 +6089,53 @@ export const onUpdateOrder = /* GraphQL */ `
       tokenAmount
       utxos
       value
-      borrar
+      walletBuyerID
+      walletBuyer {
+        id
+        name
+        status
+        password
+        seed
+        address
+        stake_address
+        isSelected
+        isAdmin
+        claimed_token
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplace
+          createdAt
+          updatedAt
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        boughtOrders {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       scriptID
       script {
         id
@@ -5842,6 +6207,7 @@ export const onUpdateOrder = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -5850,7 +6216,78 @@ export const onUpdateOrder = /* GraphQL */ `
           nextToken
           __typename
         }
+        boughtOrders {
+          nextToken
+          __typename
+        }
         transactions {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analisis {
           nextToken
           __typename
         }
@@ -5874,7 +6311,53 @@ export const onDeleteOrder = /* GraphQL */ `
       tokenAmount
       utxos
       value
-      borrar
+      walletBuyerID
+      walletBuyer {
+        id
+        name
+        status
+        password
+        seed
+        address
+        stake_address
+        isSelected
+        isAdmin
+        claimed_token
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplace
+          createdAt
+          updatedAt
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        boughtOrders {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       scriptID
       script {
         id
@@ -5946,6 +6429,7 @@ export const onDeleteOrder = /* GraphQL */ `
           subrole
           status
           email
+          marketplace
           createdAt
           updatedAt
           __typename
@@ -5954,7 +6438,78 @@ export const onDeleteOrder = /* GraphQL */ `
           nextToken
           __typename
         }
+        boughtOrders {
+          nextToken
+          __typename
+        }
         transactions {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analisis {
           nextToken
           __typename
         }
@@ -6024,6 +6579,10 @@ export const onCreatePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -6090,6 +6649,7 @@ export const onCreatePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -6157,6 +6717,10 @@ export const onUpdatePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -6223,6 +6787,7 @@ export const onUpdatePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -6290,6 +6855,10 @@ export const onDeletePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -6356,6 +6925,7 @@ export const onDeletePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -6383,6 +6953,7 @@ export const onCreateTransactions = /* GraphQL */ `
       mint
       scriptDataHash
       metadataUrl
+      redeemer
       fees
       network
       type
@@ -6422,6 +6993,10 @@ export const onCreateTransactions = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -6472,6 +7047,7 @@ export const onUpdateTransactions = /* GraphQL */ `
       mint
       scriptDataHash
       metadataUrl
+      redeemer
       fees
       network
       type
@@ -6511,6 +7087,10 @@ export const onUpdateTransactions = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -6561,6 +7141,7 @@ export const onDeleteTransactions = /* GraphQL */ `
       mint
       scriptDataHash
       metadataUrl
+      redeemer
       fees
       network
       type
@@ -6600,6 +7181,10 @@ export const onDeleteTransactions = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -6682,6 +7267,7 @@ export const onCreateCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -6722,6 +7308,10 @@ export const onCreateCompany = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -6803,6 +7393,7 @@ export const onUpdateCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -6843,6 +7434,10 @@ export const onUpdateCompany = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -6924,6 +7519,7 @@ export const onDeleteCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        marketplace
         createdAt
         updatedAt
         __typename
@@ -6964,6 +7560,10 @@ export const onDeleteCompany = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
@@ -7069,6 +7669,10 @@ export const onCreateScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -7106,9 +7710,10 @@ export const onCreateScript = /* GraphQL */ `
           tokenAmount
           utxos
           value
-          borrar
+          walletBuyerID
           scriptID
           walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -7194,6 +7799,10 @@ export const onUpdateScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -7231,9 +7840,10 @@ export const onUpdateScript = /* GraphQL */ `
           tokenAmount
           utxos
           value
-          borrar
+          walletBuyerID
           scriptID
           walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -7319,6 +7929,10 @@ export const onDeleteScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -7356,9 +7970,10 @@ export const onDeleteScript = /* GraphQL */ `
           tokenAmount
           utxos
           value
-          borrar
+          walletBuyerID
           scriptID
           walletID
+          productID
           createdAt
           updatedAt
           __typename
@@ -7451,6 +8066,10 @@ export const onCreateToken = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -7528,6 +8147,10 @@ export const onUpdateToken = /* GraphQL */ `
           nextToken
           __typename
         }
+        orders {
+          nextToken
+          __typename
+        }
         companies {
           nextToken
           __typename
@@ -7602,6 +8225,10 @@ export const onDeleteToken = /* GraphQL */ `
           __typename
         }
         transactions {
+          nextToken
+          __typename
+        }
+        orders {
           nextToken
           __typename
         }
