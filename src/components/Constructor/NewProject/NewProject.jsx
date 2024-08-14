@@ -52,6 +52,7 @@ export default function NewProject() {
       // "H_aliados_estrategicos_desc",
       // "H_grupo_comunitario_desc",
     ];
+    
     const productFeaturesGroupsToCreate1 = [
       //   "D_actual_use",
       //   "D_area_potrero",
