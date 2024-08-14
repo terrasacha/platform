@@ -4598,7 +4598,6 @@ export const createResult = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename
@@ -4655,7 +4654,6 @@ export const updateResult = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename
@@ -4712,7 +4710,6 @@ export const deleteResult = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename
@@ -4899,7 +4896,6 @@ export const createProductFeature = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename
@@ -5086,7 +5082,6 @@ export const updateProductFeature = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename
@@ -5273,7 +5268,6 @@ export const deleteProductFeature = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename

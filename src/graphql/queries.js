@@ -2228,7 +2228,6 @@ export const getResult = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename
@@ -2447,7 +2446,6 @@ export const getProductFeature = /* GraphQL */ `
           isActive
           productFeatureID
           resultID
-          name
           createdAt
           updatedAt
           __typename
