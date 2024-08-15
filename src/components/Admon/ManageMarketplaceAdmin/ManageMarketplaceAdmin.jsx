@@ -96,7 +96,7 @@ export default function ManageMarketplaceAdmin() {
         "username": newAdmin.username,
         "marketplace-name": newAdmin.marketplace,
         "email": newAdmin.email,
-        "env": "test"
+        "env": process.env.REACT_APP_ENV.toLocaleLowerCase()
     };
 
     fetch(endpoint, {
