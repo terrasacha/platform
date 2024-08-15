@@ -116,9 +116,12 @@ export default class HeaderNavbar extends Component {
                   </Nav.Link>
                 </Nav>
                 <Nav>
-                  <Nav.Link style={{ fontWeight: "700", color: "#FE4849" }}>
+                <div style={{ fontWeight: "700", color: "#FE4849", border: '3px solid #FE4849', padding: '.2rem 2rem', marginRight: '1rem'}}>
+                    {process.env.REACT_APP_ENV}
+                  </div>
+                  <div style={{ fontWeight: "700", color: "#FE4849", padding: '.2rem 2rem' }}>
                     {role ? role : ""}
-                  </Nav.Link>
+                  </div>
                   <Dropdown align={'end'}>
                     <Dropdown.Toggle variant="secondary" id="dropdown-basic" style={{ margin:'0 2rem'}}>
                       Más acciones

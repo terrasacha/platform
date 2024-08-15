@@ -193,6 +193,7 @@ export default function ManageMarketplaceAdmin() {
                     <th className="border px-4 py-2">Username</th>
                     <th className="border px-4 py-2">Email</th>
                     <th className="border px-4 py-2">Marketplace</th>
+                    <th className="border px-4 py-2">Entorno</th>
                     <th className="border px-4 py-2"></th>
                   </tr>
                 </thead>
@@ -202,6 +203,7 @@ export default function ManageMarketplaceAdmin() {
                       <td className="border px-4 py-2">{admin.name}</td>
                       <td className="border px-4 py-2">{admin.email}</td>
                       <td className="border px-4 py-2">{admin.marketplace}</td>
+                      <td className="border px-4 py-2">{process.env.REACT_APP_ENV}</td>
                       <td className="border px-4 py-2">
                         <button
                           className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`}
