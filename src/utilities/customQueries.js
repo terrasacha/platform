@@ -9,6 +9,9 @@ export const getProduct = /* GraphQL */ `
       order
       status
       showOn
+      marketplace {
+        name
+      }
       timeOnVerification
       projectReadiness
       categoryID

@@ -142,7 +142,23 @@ export const getUser = /* GraphQL */ `
         nextToken
         __typename
       }
-      marketplace
+      marketplaceID
+      marketplace {
+        id
+        name
+        oracleWallet
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -169,7 +185,6 @@ export const listUsers = /* GraphQL */ `
         subrole
         status
         email
-        marketplace
         wallets {
           nextToken
           __typename
@@ -198,7 +213,15 @@ export const listUsers = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -263,7 +286,15 @@ export const getWallet = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -372,7 +403,7 @@ export const listWallets = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -447,7 +478,15 @@ export const getVerification = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -494,7 +533,15 @@ export const getVerification = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -522,6 +569,7 @@ export const getVerification = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -609,7 +657,7 @@ export const listVerifications = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -628,7 +676,7 @@ export const listVerifications = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -686,7 +734,7 @@ export const getVerificationComment = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -705,7 +753,7 @@ export const getVerificationComment = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -811,6 +859,7 @@ export const getDocument = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -895,7 +944,15 @@ export const getDocument = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -952,7 +1009,7 @@ export const listDocuments = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -987,6 +1044,7 @@ export const getCategory = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -1056,6 +1114,91 @@ export const listProductItems = /* GraphQL */ `
     }
   }
 `;
+export const getMarketplace = /* GraphQL */ `
+  query GetMarketplace($id: ID!) {
+    getMarketplace(id: $id) {
+      id
+      name
+      oracleWallet
+      products {
+        items {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      users {
+        items {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listMarketplaces = /* GraphQL */ `
+  query ListMarketplaces(
+    $filter: ModelMarketplaceFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMarketplaces(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        oracleWallet
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getProduct = /* GraphQL */ `
   query GetProduct($id: ID!) {
     getProduct(id: $id) {
@@ -1077,6 +1220,23 @@ export const getProduct = /* GraphQL */ `
         name
         isSelected
         products {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      marketplaceID
+      marketplace {
+        id
+        name
+        oracleWallet
+        products {
+          nextToken
+          __typename
+        }
+        users {
           nextToken
           __typename
         }
@@ -1257,10 +1417,10 @@ export const getProduct = /* GraphQL */ `
         nextToken
         __typename
       }
-      analisis {
+      analysis {
         items {
           id
-          proyectoID
+          productID
           imgAnteriorNombreImg
           imgAnteriorSatellite
           imgAnteriorYear
@@ -1277,6 +1437,33 @@ export const getProduct = /* GraphQL */ `
           imgPosteriorBandas
           resultados
           ajustado
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      apiQueries {
+        items {
+          id
+          productID
+          cedulaCatastral
+          imgAnteriorSatellite
+          imgAnteriorYear
+          imgAnteriorMesInicial
+          imgAnteriorMesFinal
+          imgAnteriorNubosidadMaxima
+          imgPosteriorSatellite
+          imgPosteriorYear
+          imgPosteriorMesInicial
+          imgPosteriorMesFinal
+          imgPosteriorNubosidadMaxima
+          fechaHoraConsulta
+          fechaHoraActualizacion
+          verificado
+          rawConsulta
+          resultadoConsulta
           createdAt
           updatedAt
           __typename
@@ -1319,78 +1506,11 @@ export const listProducts = /* GraphQL */ `
           updatedAt
           __typename
         }
-        images {
-          nextToken
-          __typename
-        }
-        productFeatures {
-          nextToken
-          __typename
-        }
-        userProducts {
-          nextToken
-          __typename
-        }
-        transactions {
-          nextToken
-          __typename
-        }
-        orders {
-          nextToken
-          __typename
-        }
-        companies {
-          nextToken
-          __typename
-        }
-        payments {
-          nextToken
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        tokens {
-          nextToken
-          __typename
-        }
-        analisis {
-          nextToken
-          __typename
-        }
-        createdAt
-        updatedAt
-        __typename
-      }
-      nextToken
-      __typename
-    }
-  }
-`;
-export const getAnalisis = /* GraphQL */ `
-  query GetAnalisis($id: ID!) {
-    getAnalisis(id: $id) {
-      id
-      proyectoID
-      proyecto {
-        id
-        name
-        description
-        isActive
-        isActiveOnPlatform
-        showOn
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        tokenClaimedByOwner
-        tokenGenesis
-        categoryID
-        category {
+        marketplaceID
+        marketplace {
           id
           name
-          isSelected
+          oracleWallet
           createdAt
           updatedAt
           __typename
@@ -1431,7 +1551,100 @@ export const getAnalisis = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getAnalysis = /* GraphQL */ `
+  query GetAnalysis($id: ID!) {
+    getAnalysis(id: $id) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -1461,17 +1674,17 @@ export const getAnalisis = /* GraphQL */ `
     }
   }
 `;
-export const listAnalises = /* GraphQL */ `
-  query ListAnalises(
-    $filter: ModelAnalisisFilterInput
+export const listAnalyses = /* GraphQL */ `
+  query ListAnalyses(
+    $filter: ModelAnalysisFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listAnalises(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listAnalyses(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        proyectoID
-        proyecto {
+        productID
+        product {
           id
           name
           description
@@ -1485,6 +1698,7 @@ export const listAnalises = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -1505,6 +1719,210 @@ export const listAnalises = /* GraphQL */ `
         imgPosteriorBandas
         resultados
         ajustado
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getAnalysisResult = /* GraphQL */ `
+  query GetAnalysisResult($id: ID!) {
+    getAnalysisResult(id: $id) {
+      id
+      fuente
+      modelo
+      cobertura
+      valor
+      unidad
+      proyecto
+      nombreImagen
+      data
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listAnalysisResults = /* GraphQL */ `
+  query ListAnalysisResults(
+    $filter: ModelAnalysisResultFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listAnalysisResults(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        fuente
+        modelo
+        cobertura
+        valor
+        unidad
+        proyecto
+        nombreImagen
+        data
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getApiQuery = /* GraphQL */ `
+  query GetApiQuery($id: ID!) {
+    getApiQuery(id: $id) {
+      id
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      cedulaCatastral
+      imgAnteriorSatellite
+      imgAnteriorYear
+      imgAnteriorMesInicial
+      imgAnteriorMesFinal
+      imgAnteriorNubosidadMaxima
+      imgPosteriorSatellite
+      imgPosteriorYear
+      imgPosteriorMesInicial
+      imgPosteriorMesFinal
+      imgPosteriorNubosidadMaxima
+      fechaHoraConsulta
+      fechaHoraActualizacion
+      verificado
+      rawConsulta
+      resultadoConsulta
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listApiQueries = /* GraphQL */ `
+  query ListApiQueries(
+    $filter: ModelApiQueryFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listApiQueries(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        cedulaCatastral
+        imgAnteriorSatellite
+        imgAnteriorYear
+        imgAnteriorMesInicial
+        imgAnteriorMesFinal
+        imgAnteriorNubosidadMaxima
+        imgPosteriorSatellite
+        imgPosteriorYear
+        imgPosteriorMesInicial
+        imgPosteriorMesFinal
+        imgPosteriorNubosidadMaxima
+        fechaHoraConsulta
+        fechaHoraActualizacion
+        verificado
+        rawConsulta
+        resultadoConsulta
         createdAt
         updatedAt
         __typename
@@ -1550,6 +1968,15 @@ export const getImage = /* GraphQL */ `
           updatedAt
           __typename
         }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         images {
           nextToken
           __typename
@@ -1586,7 +2013,11 @@ export const getImage = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -1633,6 +2064,7 @@ export const listImages = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -2309,6 +2741,15 @@ export const getProductFeature = /* GraphQL */ `
           updatedAt
           __typename
         }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         images {
           nextToken
           __typename
@@ -2345,7 +2786,11 @@ export const getProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -2489,6 +2934,7 @@ export const listProductFeatures = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -2564,6 +3010,7 @@ export const getProductFeatureResult = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -2731,7 +3178,15 @@ export const getUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2755,6 +3210,15 @@ export const getUserProduct = /* GraphQL */ `
           id
           name
           isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
           createdAt
           updatedAt
           __typename
@@ -2795,7 +3259,11 @@ export const getUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -2833,7 +3301,7 @@ export const listUserProducts = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -2853,6 +3321,7 @@ export const listUserProducts = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -2902,7 +3371,7 @@ export const getOrder = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -2952,6 +3421,7 @@ export const getOrder = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -2994,7 +3464,7 @@ export const getOrder = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3038,6 +3508,15 @@ export const getOrder = /* GraphQL */ `
           updatedAt
           __typename
         }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         images {
           nextToken
           __typename
@@ -3074,7 +3553,11 @@ export const getOrder = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -3171,6 +3654,7 @@ export const listOrders = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3224,6 +3708,15 @@ export const getPayment = /* GraphQL */ `
           updatedAt
           __typename
         }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         images {
           nextToken
           __typename
@@ -3260,7 +3753,11 @@ export const getPayment = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -3310,7 +3807,15 @@ export const getPayment = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3359,6 +3864,7 @@ export const listPayments = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3377,7 +3883,7 @@ export const listPayments = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3433,6 +3939,15 @@ export const getTransactions = /* GraphQL */ `
           updatedAt
           __typename
         }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         images {
           nextToken
           __typename
@@ -3469,7 +3984,11 @@ export const getTransactions = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -3522,6 +4041,7 @@ export const listTransactions = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3584,7 +4104,15 @@ export const getCompany = /* GraphQL */ `
           nextToken
           __typename
         }
-        marketplace
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3608,6 +4136,15 @@ export const getCompany = /* GraphQL */ `
           id
           name
           isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
           createdAt
           updatedAt
           __typename
@@ -3648,7 +4185,11 @@ export const getCompany = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -3687,7 +4228,7 @@ export const listCompanies = /* GraphQL */ `
           subrole
           status
           email
-          marketplace
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3707,6 +4248,7 @@ export const listCompanies = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3776,6 +4318,15 @@ export const getScript = /* GraphQL */ `
           updatedAt
           __typename
         }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         images {
           nextToken
           __typename
@@ -3812,7 +4363,11 @@ export const getScript = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -3885,6 +4440,7 @@ export const listScripts = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
@@ -3965,6 +4521,15 @@ export const getToken = /* GraphQL */ `
           updatedAt
           __typename
         }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         images {
           nextToken
           __typename
@@ -4001,7 +4566,11 @@ export const getToken = /* GraphQL */ `
           nextToken
           __typename
         }
-        analisis {
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
           nextToken
           __typename
         }
@@ -4043,6 +4612,7 @@ export const listTokens = /* GraphQL */ `
           tokenClaimedByOwner
           tokenGenesis
           categoryID
+          marketplaceID
           createdAt
           updatedAt
           __typename
