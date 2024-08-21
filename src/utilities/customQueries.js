@@ -10,6 +10,7 @@ export const getProduct = /* GraphQL */ `
       status
       showOn
       marketplace {
+        id
         name
       }
       timeOnVerification
