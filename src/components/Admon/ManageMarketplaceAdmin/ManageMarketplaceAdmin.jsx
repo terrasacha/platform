@@ -3,7 +3,8 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { Modal, Spinner } from 'react-bootstrap'
 import { onCreateUser, onUpdateUser, onDeleteUser } from 'graphql/subscriptions'
 import { deleteUser } from 'graphql/mutations'
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const listUsers = /* GraphQL */ `
 query ListUsers(
   $filter: ModelUserFilterInput
@@ -108,8 +109,11 @@ export default function ManageMarketplaceAdmin() {
     })
     .then(response => {
         if (!response.ok) {
+            console.log(response)
+            notifyError('Ya existe administrador para ese marketplace o el nombre de usuario ya está en uso')
             throw new Error('Network response was not ok');
         }
+        notify()
         return response.json();
     })
     .then(data => {
@@ -124,6 +128,31 @@ export default function ManageMarketplaceAdmin() {
         setLoadingCreate(false)
     })
   }
+  const notify = () => {
+    toast.success("Usuario creado con éxito", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+  const notifyError = (e) => {
+    toast.error(e, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    this.setState({ loading: false });
+  };
   return (
     <div className="container mx-auto ">
         <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
@@ -302,6 +331,7 @@ export default function ManageMarketplaceAdmin() {
             </button>
           </Modal.Footer>
         </Modal>}
+        <ToastContainer />
       </div>
   )
 }
