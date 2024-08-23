@@ -110,6 +110,7 @@ type Marketplace @model {
   id: ID!
   name: String!
   oracleWallet: String
+  scripts: [Script] @hasMany(indexName: "byMarketplace", fields: ["id"])
   products: [Product] @hasMany(indexName: "byMarketplace", fields: ["id"])
   users: [User] @hasMany(indexName: "byMarketplace", fields: ["id"])
 }
@@ -405,6 +406,8 @@ type Script @model {
   name: String!
   script_type: String! # mintSuanCO2/mintProject/spend/any
   script_category: String! # NativeScript/PlutusV1/PlutusV2/PlutusV3
+  marketplaceID: ID @index(name: "byMarketplace")
+  marketplace: Marketplace @belongsTo(fields: ["marketplaceID"])
   pbk: [String] # List[pkh]
   token_name: String
   cbor: String!

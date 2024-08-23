@@ -150,6 +150,10 @@ export const createUser = /* GraphQL */ `
         id
         name
         oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
         products {
           nextToken
           __typename
@@ -317,6 +321,10 @@ export const updateUser = /* GraphQL */ `
         id
         name
         oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
         products {
           nextToken
           __typename
@@ -484,6 +492,10 @@ export const deleteUser = /* GraphQL */ `
         id
         name
         oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
         products {
           nextToken
           __typename
@@ -2386,6 +2398,29 @@ export const createMarketplace = /* GraphQL */ `
       id
       name
       oracleWallet
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          marketplaceID
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       products {
         items {
           id
@@ -2446,6 +2481,29 @@ export const updateMarketplace = /* GraphQL */ `
       id
       name
       oracleWallet
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          marketplaceID
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       products {
         items {
           id
@@ -2506,6 +2564,29 @@ export const deleteMarketplace = /* GraphQL */ `
       id
       name
       oracleWallet
+      scripts {
+        items {
+          id
+          scriptParentID
+          name
+          script_type
+          script_category
+          marketplaceID
+          pbk
+          token_name
+          cbor
+          productID
+          testnetAddr
+          MainnetAddr
+          Active
+          base_code
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       products {
         items {
           id
@@ -2593,6 +2674,10 @@ export const createProduct = /* GraphQL */ `
         id
         name
         oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
         products {
           nextToken
           __typename
@@ -2748,6 +2833,7 @@ export const createProduct = /* GraphQL */ `
           name
           script_type
           script_category
+          marketplaceID
           pbk
           token_name
           cbor
@@ -2874,6 +2960,10 @@ export const updateProduct = /* GraphQL */ `
         id
         name
         oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
         products {
           nextToken
           __typename
@@ -3029,6 +3119,7 @@ export const updateProduct = /* GraphQL */ `
           name
           script_type
           script_category
+          marketplaceID
           pbk
           token_name
           cbor
@@ -3155,6 +3246,10 @@ export const deleteProduct = /* GraphQL */ `
         id
         name
         oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
         products {
           nextToken
           __typename
@@ -3310,6 +3405,7 @@ export const deleteProduct = /* GraphQL */ `
           name
           script_type
           script_category
+          marketplaceID
           pbk
           token_name
           cbor
@@ -7083,6 +7179,15 @@ export const createOrder = /* GraphQL */ `
         name
         script_type
         script_category
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         pbk
         token_name
         cbor
@@ -7322,6 +7427,15 @@ export const updateOrder = /* GraphQL */ `
         name
         script_type
         script_category
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         pbk
         token_name
         cbor
@@ -7561,6 +7675,15 @@ export const deleteOrder = /* GraphQL */ `
         name
         script_type
         script_category
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleWallet
+          createdAt
+          updatedAt
+          __typename
+        }
         pbk
         token_name
         cbor
@@ -9004,6 +9127,7 @@ export const createScript = /* GraphQL */ `
           name
           script_type
           script_category
+          marketplaceID
           pbk
           token_name
           cbor
@@ -9022,6 +9146,27 @@ export const createScript = /* GraphQL */ `
       name
       script_type
       script_category
+      marketplaceID
+      marketplace {
+        id
+        name
+        oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       pbk
       token_name
       cbor
@@ -9150,6 +9295,7 @@ export const updateScript = /* GraphQL */ `
           name
           script_type
           script_category
+          marketplaceID
           pbk
           token_name
           cbor
@@ -9168,6 +9314,27 @@ export const updateScript = /* GraphQL */ `
       name
       script_type
       script_category
+      marketplaceID
+      marketplace {
+        id
+        name
+        oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       pbk
       token_name
       cbor
@@ -9296,6 +9463,7 @@ export const deleteScript = /* GraphQL */ `
           name
           script_type
           script_category
+          marketplaceID
           pbk
           token_name
           cbor
@@ -9314,6 +9482,27 @@ export const deleteScript = /* GraphQL */ `
       name
       script_type
       script_category
+      marketplaceID
+      marketplace {
+        id
+        name
+        oracleWallet
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       pbk
       token_name
       cbor
