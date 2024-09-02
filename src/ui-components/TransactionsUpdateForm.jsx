@@ -34,17 +34,17 @@ export default function TransactionsUpdateForm(props) {
     addressOrigin: "",
     addressDestination: "",
     txIn: "",
+    txOutput: "",
     txCborhex: "",
     txHash: "",
+    mint: "",
+    scriptDataHash: "",
     metadataUrl: "",
+    redeemer: "",
     fees: "",
     network: "",
-    txProcessed: false,
     type: "",
-    tokenName: "",
-    amountOfTokens: "",
-    policyID: "",
-    stakeAddress: "",
+    signed: false,
   };
   const [addressOrigin, setAddressOrigin] = React.useState(
     initialValues.addressOrigin
@@ -53,49 +53,57 @@ export default function TransactionsUpdateForm(props) {
     initialValues.addressDestination
   );
   const [txIn, setTxIn] = React.useState(initialValues.txIn);
+  const [txOutput, setTxOutput] = React.useState(initialValues.txOutput);
   const [txCborhex, setTxCborhex] = React.useState(initialValues.txCborhex);
   const [txHash, setTxHash] = React.useState(initialValues.txHash);
+  const [mint, setMint] = React.useState(initialValues.mint);
+  const [scriptDataHash, setScriptDataHash] = React.useState(
+    initialValues.scriptDataHash
+  );
   const [metadataUrl, setMetadataUrl] = React.useState(
     initialValues.metadataUrl
   );
+  const [redeemer, setRedeemer] = React.useState(initialValues.redeemer);
   const [fees, setFees] = React.useState(initialValues.fees);
   const [network, setNetwork] = React.useState(initialValues.network);
-  const [txProcessed, setTxProcessed] = React.useState(
-    initialValues.txProcessed
-  );
   const [type, setType] = React.useState(initialValues.type);
-  const [tokenName, setTokenName] = React.useState(initialValues.tokenName);
-  const [amountOfTokens, setAmountOfTokens] = React.useState(
-    initialValues.amountOfTokens
-  );
-  const [policyID, setPolicyID] = React.useState(initialValues.policyID);
-  const [stakeAddress, setStakeAddress] = React.useState(
-    initialValues.stakeAddress
-  );
+  const [signed, setSigned] = React.useState(initialValues.signed);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = transactionsRecord
       ? { ...initialValues, ...transactionsRecord }
       : initialValues;
     setAddressOrigin(cleanValues.addressOrigin);
-    setAddressDestination(cleanValues.addressDestination);
-    setTxIn(cleanValues.txIn);
+    setAddressDestination(
+      typeof cleanValues.addressDestination === "string" ||
+        cleanValues.addressDestination === null
+        ? cleanValues.addressDestination
+        : JSON.stringify(cleanValues.addressDestination)
+    );
+    setTxIn(
+      typeof cleanValues.txIn === "string" || cleanValues.txIn === null
+        ? cleanValues.txIn
+        : JSON.stringify(cleanValues.txIn)
+    );
+    setTxOutput(
+      typeof cleanValues.txOutput === "string" || cleanValues.txOutput === null
+        ? cleanValues.txOutput
+        : JSON.stringify(cleanValues.txOutput)
+    );
     setTxCborhex(cleanValues.txCborhex);
     setTxHash(cleanValues.txHash);
-    setMetadataUrl(
-      typeof cleanValues.metadataUrl === "string" ||
-        cleanValues.metadataUrl === null
-        ? cleanValues.metadataUrl
-        : JSON.stringify(cleanValues.metadataUrl)
+    setMint(
+      typeof cleanValues.mint === "string" || cleanValues.mint === null
+        ? cleanValues.mint
+        : JSON.stringify(cleanValues.mint)
     );
+    setScriptDataHash(cleanValues.scriptDataHash);
+    setMetadataUrl(cleanValues.metadataUrl);
+    setRedeemer(cleanValues.redeemer);
     setFees(cleanValues.fees);
     setNetwork(cleanValues.network);
-    setTxProcessed(cleanValues.txProcessed);
     setType(cleanValues.type);
-    setTokenName(cleanValues.tokenName);
-    setAmountOfTokens(cleanValues.amountOfTokens);
-    setPolicyID(cleanValues.policyID);
-    setStakeAddress(cleanValues.stakeAddress);
+    setSigned(cleanValues.signed);
     setErrors({});
   };
   const [transactionsRecord, setTransactionsRecord] = React.useState(
@@ -118,19 +126,19 @@ export default function TransactionsUpdateForm(props) {
   React.useEffect(resetStateValues, [transactionsRecord]);
   const validations = {
     addressOrigin: [],
-    addressDestination: [],
-    txIn: [],
+    addressDestination: [{ type: "JSON" }],
+    txIn: [{ type: "JSON" }],
+    txOutput: [{ type: "JSON" }],
     txCborhex: [],
     txHash: [],
-    metadataUrl: [{ type: "JSON" }],
+    mint: [{ type: "JSON" }],
+    scriptDataHash: [],
+    metadataUrl: [],
+    redeemer: [],
     fees: [],
     network: [],
-    txProcessed: [],
     type: [],
-    tokenName: [],
-    amountOfTokens: [],
-    policyID: [],
-    stakeAddress: [],
+    signed: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -161,17 +169,17 @@ export default function TransactionsUpdateForm(props) {
           addressOrigin: addressOrigin ?? null,
           addressDestination: addressDestination ?? null,
           txIn: txIn ?? null,
+          txOutput: txOutput ?? null,
           txCborhex: txCborhex ?? null,
           txHash: txHash ?? null,
+          mint: mint ?? null,
+          scriptDataHash: scriptDataHash ?? null,
           metadataUrl: metadataUrl ?? null,
+          redeemer: redeemer ?? null,
           fees: fees ?? null,
           network: network ?? null,
-          txProcessed: txProcessed ?? null,
           type: type ?? null,
-          tokenName: tokenName ?? null,
-          amountOfTokens: amountOfTokens ?? null,
-          policyID: policyID ?? null,
-          stakeAddress: stakeAddress ?? null,
+          signed,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -235,17 +243,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin: value,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.addressOrigin ?? value;
@@ -260,7 +268,7 @@ export default function TransactionsUpdateForm(props) {
         hasError={errors.addressOrigin?.hasError}
         {...getOverrideProps(overrides, "addressOrigin")}
       ></TextField>
-      <TextField
+      <TextAreaField
         label="Address destination"
         isRequired={false}
         isReadOnly={false}
@@ -272,17 +280,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination: value,
               txIn,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.addressDestination ?? value;
@@ -298,8 +306,8 @@ export default function TransactionsUpdateForm(props) {
         errorMessage={errors.addressDestination?.errorMessage}
         hasError={errors.addressDestination?.hasError}
         {...getOverrideProps(overrides, "addressDestination")}
-      ></TextField>
-      <TextField
+      ></TextAreaField>
+      <TextAreaField
         label="Tx in"
         isRequired={false}
         isReadOnly={false}
@@ -311,17 +319,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination,
               txIn: value,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.txIn ?? value;
@@ -335,7 +343,44 @@ export default function TransactionsUpdateForm(props) {
         errorMessage={errors.txIn?.errorMessage}
         hasError={errors.txIn?.hasError}
         {...getOverrideProps(overrides, "txIn")}
-      ></TextField>
+      ></TextAreaField>
+      <TextAreaField
+        label="Tx output"
+        isRequired={false}
+        isReadOnly={false}
+        value={txOutput}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              addressOrigin,
+              addressDestination,
+              txIn,
+              txOutput: value,
+              txCborhex,
+              txHash,
+              mint,
+              scriptDataHash,
+              metadataUrl,
+              redeemer,
+              fees,
+              network,
+              type,
+              signed,
+            };
+            const result = onChange(modelFields);
+            value = result?.txOutput ?? value;
+          }
+          if (errors.txOutput?.hasError) {
+            runValidationTasks("txOutput", value);
+          }
+          setTxOutput(value);
+        }}
+        onBlur={() => runValidationTasks("txOutput", txOutput)}
+        errorMessage={errors.txOutput?.errorMessage}
+        hasError={errors.txOutput?.hasError}
+        {...getOverrideProps(overrides, "txOutput")}
+      ></TextAreaField>
       <TextField
         label="Tx cborhex"
         isRequired={false}
@@ -348,17 +393,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex: value,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.txCborhex ?? value;
@@ -385,17 +430,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex,
               txHash: value,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.txHash ?? value;
@@ -411,6 +456,80 @@ export default function TransactionsUpdateForm(props) {
         {...getOverrideProps(overrides, "txHash")}
       ></TextField>
       <TextAreaField
+        label="Mint"
+        isRequired={false}
+        isReadOnly={false}
+        value={mint}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              addressOrigin,
+              addressDestination,
+              txIn,
+              txOutput,
+              txCborhex,
+              txHash,
+              mint: value,
+              scriptDataHash,
+              metadataUrl,
+              redeemer,
+              fees,
+              network,
+              type,
+              signed,
+            };
+            const result = onChange(modelFields);
+            value = result?.mint ?? value;
+          }
+          if (errors.mint?.hasError) {
+            runValidationTasks("mint", value);
+          }
+          setMint(value);
+        }}
+        onBlur={() => runValidationTasks("mint", mint)}
+        errorMessage={errors.mint?.errorMessage}
+        hasError={errors.mint?.hasError}
+        {...getOverrideProps(overrides, "mint")}
+      ></TextAreaField>
+      <TextField
+        label="Script data hash"
+        isRequired={false}
+        isReadOnly={false}
+        value={scriptDataHash}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              addressOrigin,
+              addressDestination,
+              txIn,
+              txOutput,
+              txCborhex,
+              txHash,
+              mint,
+              scriptDataHash: value,
+              metadataUrl,
+              redeemer,
+              fees,
+              network,
+              type,
+              signed,
+            };
+            const result = onChange(modelFields);
+            value = result?.scriptDataHash ?? value;
+          }
+          if (errors.scriptDataHash?.hasError) {
+            runValidationTasks("scriptDataHash", value);
+          }
+          setScriptDataHash(value);
+        }}
+        onBlur={() => runValidationTasks("scriptDataHash", scriptDataHash)}
+        errorMessage={errors.scriptDataHash?.errorMessage}
+        hasError={errors.scriptDataHash?.hasError}
+        {...getOverrideProps(overrides, "scriptDataHash")}
+      ></TextField>
+      <TextField
         label="Metadata url"
         isRequired={false}
         isReadOnly={false}
@@ -422,17 +541,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl: value,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.metadataUrl ?? value;
@@ -446,7 +565,44 @@ export default function TransactionsUpdateForm(props) {
         errorMessage={errors.metadataUrl?.errorMessage}
         hasError={errors.metadataUrl?.hasError}
         {...getOverrideProps(overrides, "metadataUrl")}
-      ></TextAreaField>
+      ></TextField>
+      <TextField
+        label="Redeemer"
+        isRequired={false}
+        isReadOnly={false}
+        value={redeemer}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              addressOrigin,
+              addressDestination,
+              txIn,
+              txOutput,
+              txCborhex,
+              txHash,
+              mint,
+              scriptDataHash,
+              metadataUrl,
+              redeemer: value,
+              fees,
+              network,
+              type,
+              signed,
+            };
+            const result = onChange(modelFields);
+            value = result?.redeemer ?? value;
+          }
+          if (errors.redeemer?.hasError) {
+            runValidationTasks("redeemer", value);
+          }
+          setRedeemer(value);
+        }}
+        onBlur={() => runValidationTasks("redeemer", redeemer)}
+        errorMessage={errors.redeemer?.errorMessage}
+        hasError={errors.redeemer?.hasError}
+        {...getOverrideProps(overrides, "redeemer")}
+      ></TextField>
       <TextField
         label="Fees"
         isRequired={false}
@@ -463,17 +619,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees: value,
               network,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.fees ?? value;
@@ -500,17 +656,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network: value,
-              txProcessed,
               type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.network ?? value;
@@ -525,43 +681,6 @@ export default function TransactionsUpdateForm(props) {
         hasError={errors.network?.hasError}
         {...getOverrideProps(overrides, "network")}
       ></TextField>
-      <SwitchField
-        label="Tx processed"
-        defaultChecked={false}
-        isDisabled={false}
-        isChecked={txProcessed}
-        onChange={(e) => {
-          let value = e.target.checked;
-          if (onChange) {
-            const modelFields = {
-              addressOrigin,
-              addressDestination,
-              txIn,
-              txCborhex,
-              txHash,
-              metadataUrl,
-              fees,
-              network,
-              txProcessed: value,
-              type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
-            };
-            const result = onChange(modelFields);
-            value = result?.txProcessed ?? value;
-          }
-          if (errors.txProcessed?.hasError) {
-            runValidationTasks("txProcessed", value);
-          }
-          setTxProcessed(value);
-        }}
-        onBlur={() => runValidationTasks("txProcessed", txProcessed)}
-        errorMessage={errors.txProcessed?.errorMessage}
-        hasError={errors.txProcessed?.hasError}
-        {...getOverrideProps(overrides, "txProcessed")}
-      ></SwitchField>
       <TextField
         label="Type"
         isRequired={false}
@@ -574,17 +693,17 @@ export default function TransactionsUpdateForm(props) {
               addressOrigin,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type: value,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed,
             };
             const result = onChange(modelFields);
             value = result?.type ?? value;
@@ -599,158 +718,43 @@ export default function TransactionsUpdateForm(props) {
         hasError={errors.type?.hasError}
         {...getOverrideProps(overrides, "type")}
       ></TextField>
-      <TextField
-        label="Token name"
-        isRequired={false}
-        isReadOnly={false}
-        value={tokenName}
+      <SwitchField
+        label="Signed"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={signed}
         onChange={(e) => {
-          let { value } = e.target;
+          let value = e.target.checked;
           if (onChange) {
             const modelFields = {
               addressOrigin,
               addressDestination,
               txIn,
+              txOutput,
               txCborhex,
               txHash,
+              mint,
+              scriptDataHash,
               metadataUrl,
+              redeemer,
               fees,
               network,
-              txProcessed,
               type,
-              tokenName: value,
-              amountOfTokens,
-              policyID,
-              stakeAddress,
+              signed: value,
             };
             const result = onChange(modelFields);
-            value = result?.tokenName ?? value;
+            value = result?.signed ?? value;
           }
-          if (errors.tokenName?.hasError) {
-            runValidationTasks("tokenName", value);
+          if (errors.signed?.hasError) {
+            runValidationTasks("signed", value);
           }
-          setTokenName(value);
+          setSigned(value);
         }}
-        onBlur={() => runValidationTasks("tokenName", tokenName)}
-        errorMessage={errors.tokenName?.errorMessage}
-        hasError={errors.tokenName?.hasError}
-        {...getOverrideProps(overrides, "tokenName")}
-      ></TextField>
-      <TextField
-        label="Amount of tokens"
-        isRequired={false}
-        isReadOnly={false}
-        type="number"
-        step="any"
-        value={amountOfTokens}
-        onChange={(e) => {
-          let value = isNaN(parseInt(e.target.value))
-            ? e.target.value
-            : parseInt(e.target.value);
-          if (onChange) {
-            const modelFields = {
-              addressOrigin,
-              addressDestination,
-              txIn,
-              txCborhex,
-              txHash,
-              metadataUrl,
-              fees,
-              network,
-              txProcessed,
-              type,
-              tokenName,
-              amountOfTokens: value,
-              policyID,
-              stakeAddress,
-            };
-            const result = onChange(modelFields);
-            value = result?.amountOfTokens ?? value;
-          }
-          if (errors.amountOfTokens?.hasError) {
-            runValidationTasks("amountOfTokens", value);
-          }
-          setAmountOfTokens(value);
-        }}
-        onBlur={() => runValidationTasks("amountOfTokens", amountOfTokens)}
-        errorMessage={errors.amountOfTokens?.errorMessage}
-        hasError={errors.amountOfTokens?.hasError}
-        {...getOverrideProps(overrides, "amountOfTokens")}
-      ></TextField>
-      <TextField
-        label="Policy id"
-        isRequired={false}
-        isReadOnly={false}
-        value={policyID}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              addressOrigin,
-              addressDestination,
-              txIn,
-              txCborhex,
-              txHash,
-              metadataUrl,
-              fees,
-              network,
-              txProcessed,
-              type,
-              tokenName,
-              amountOfTokens,
-              policyID: value,
-              stakeAddress,
-            };
-            const result = onChange(modelFields);
-            value = result?.policyID ?? value;
-          }
-          if (errors.policyID?.hasError) {
-            runValidationTasks("policyID", value);
-          }
-          setPolicyID(value);
-        }}
-        onBlur={() => runValidationTasks("policyID", policyID)}
-        errorMessage={errors.policyID?.errorMessage}
-        hasError={errors.policyID?.hasError}
-        {...getOverrideProps(overrides, "policyID")}
-      ></TextField>
-      <TextField
-        label="Stake address"
-        isRequired={false}
-        isReadOnly={false}
-        value={stakeAddress}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              addressOrigin,
-              addressDestination,
-              txIn,
-              txCborhex,
-              txHash,
-              metadataUrl,
-              fees,
-              network,
-              txProcessed,
-              type,
-              tokenName,
-              amountOfTokens,
-              policyID,
-              stakeAddress: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.stakeAddress ?? value;
-          }
-          if (errors.stakeAddress?.hasError) {
-            runValidationTasks("stakeAddress", value);
-          }
-          setStakeAddress(value);
-        }}
-        onBlur={() => runValidationTasks("stakeAddress", stakeAddress)}
-        errorMessage={errors.stakeAddress?.errorMessage}
-        hasError={errors.stakeAddress?.hasError}
-        {...getOverrideProps(overrides, "stakeAddress")}
-      ></TextField>
+        onBlur={() => runValidationTasks("signed", signed)}
+        errorMessage={errors.signed?.errorMessage}
+        hasError={errors.signed?.hasError}
+        {...getOverrideProps(overrides, "signed")}
+      ></SwitchField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

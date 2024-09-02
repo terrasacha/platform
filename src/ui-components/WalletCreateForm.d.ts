@@ -30,7 +30,6 @@ export declare type WalletCreateFormInputValues = {
     stake_address?: string;
     isSelected?: boolean;
     isAdmin?: boolean;
-    claimed_token?: boolean;
 };
 export declare type WalletCreateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -41,7 +40,6 @@ export declare type WalletCreateFormValidationValues = {
     stake_address?: ValidationFunction<string>;
     isSelected?: ValidationFunction<boolean>;
     isAdmin?: ValidationFunction<boolean>;
-    claimed_token?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type WalletCreateFormOverridesProps = {
@@ -54,7 +52,6 @@ export declare type WalletCreateFormOverridesProps = {
     stake_address?: PrimitiveOverrideProps<TextFieldProps>;
     isSelected?: PrimitiveOverrideProps<SwitchFieldProps>;
     isAdmin?: PrimitiveOverrideProps<SwitchFieldProps>;
-    claimed_token?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type WalletCreateFormProps = React.PropsWithChildren<{
     overrides?: WalletCreateFormOverridesProps | undefined | null;

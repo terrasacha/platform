@@ -41,14 +41,15 @@ type Wallet @model {
   seed: String
   address: String!
   stake_address: String!
+  claimed_token: Boolean
   isSelected: Boolean
   isAdmin: Boolean
-  claimed_token: Boolean
   userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
   orders: [Order] @hasMany(indexName: "byWallet", fields: ["id"])
   boughtOrders: [Order] @hasMany(indexName: "byWalletBuyer", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byWallet", fields: ["id"])
+  claimedToken: [ClaimedToken] @hasMany(indexName: "byWallet", fields: ["id"])
 }
 
 type Verification @model {
@@ -113,6 +114,7 @@ type Marketplace @model {
   scripts: [Script] @hasMany(indexName: "byMarketplace", fields: ["id"])
   products: [Product] @hasMany(indexName: "byMarketplace", fields: ["id"])
   users: [User] @hasMany(indexName: "byMarketplace", fields: ["id"])
+  claimedToken: [ClaimedToken] @hasMany(indexName: "byMarketplace", fields: ["id"])
 }
 
 type Product @model {
@@ -434,4 +436,12 @@ type Token @model {
   tokenName: String
   supply: Int
   oraclePrice: Int
+}
+
+type ClaimedToken @model {
+  id: ID!
+  marketplaceID: ID! @index(name: "byMarketplace")
+  walletID: ID! @index(name: "byWallet")
+  marketplace: Marketplace @belongsTo(fields: ["marketplaceID"])
+  wallet: Wallet @belongsTo(fields: ["walletID"])
 }

@@ -36,7 +36,6 @@ export default function WalletCreateForm(props) {
     stake_address: "",
     isSelected: false,
     isAdmin: false,
-    claimed_token: false,
   };
   const [name, setName] = React.useState(initialValues.name);
   const [status, setStatus] = React.useState(initialValues.status);
@@ -48,9 +47,6 @@ export default function WalletCreateForm(props) {
   );
   const [isSelected, setIsSelected] = React.useState(initialValues.isSelected);
   const [isAdmin, setIsAdmin] = React.useState(initialValues.isAdmin);
-  const [claimed_token, setClaimed_token] = React.useState(
-    initialValues.claimed_token
-  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setName(initialValues.name);
@@ -61,7 +57,6 @@ export default function WalletCreateForm(props) {
     setStake_address(initialValues.stake_address);
     setIsSelected(initialValues.isSelected);
     setIsAdmin(initialValues.isAdmin);
-    setClaimed_token(initialValues.claimed_token);
     setErrors({});
   };
   const validations = {
@@ -73,7 +68,6 @@ export default function WalletCreateForm(props) {
     stake_address: [{ type: "Required" }],
     isSelected: [],
     isAdmin: [],
-    claimed_token: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -109,7 +103,6 @@ export default function WalletCreateForm(props) {
           stake_address,
           isSelected,
           isAdmin,
-          claimed_token,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -180,7 +173,6 @@ export default function WalletCreateForm(props) {
               stake_address,
               isSelected,
               isAdmin,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -212,7 +204,6 @@ export default function WalletCreateForm(props) {
               stake_address,
               isSelected,
               isAdmin,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.status ?? value;
@@ -244,7 +235,6 @@ export default function WalletCreateForm(props) {
               stake_address,
               isSelected,
               isAdmin,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.password ?? value;
@@ -276,7 +266,6 @@ export default function WalletCreateForm(props) {
               stake_address,
               isSelected,
               isAdmin,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.seed ?? value;
@@ -308,7 +297,6 @@ export default function WalletCreateForm(props) {
               stake_address,
               isSelected,
               isAdmin,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.address ?? value;
@@ -340,7 +328,6 @@ export default function WalletCreateForm(props) {
               stake_address: value,
               isSelected,
               isAdmin,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.stake_address ?? value;
@@ -372,7 +359,6 @@ export default function WalletCreateForm(props) {
               stake_address,
               isSelected: value,
               isAdmin,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.isSelected ?? value;
@@ -404,7 +390,6 @@ export default function WalletCreateForm(props) {
               stake_address,
               isSelected,
               isAdmin: value,
-              claimed_token,
             };
             const result = onChange(modelFields);
             value = result?.isAdmin ?? value;
@@ -418,38 +403,6 @@ export default function WalletCreateForm(props) {
         errorMessage={errors.isAdmin?.errorMessage}
         hasError={errors.isAdmin?.hasError}
         {...getOverrideProps(overrides, "isAdmin")}
-      ></SwitchField>
-      <SwitchField
-        label="Claimed token"
-        defaultChecked={false}
-        isDisabled={false}
-        isChecked={claimed_token}
-        onChange={(e) => {
-          let value = e.target.checked;
-          if (onChange) {
-            const modelFields = {
-              name,
-              status,
-              password,
-              seed,
-              address,
-              stake_address,
-              isSelected,
-              isAdmin,
-              claimed_token: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.claimed_token ?? value;
-          }
-          if (errors.claimed_token?.hasError) {
-            runValidationTasks("claimed_token", value);
-          }
-          setClaimed_token(value);
-        }}
-        onBlur={() => runValidationTasks("claimed_token", claimed_token)}
-        errorMessage={errors.claimed_token?.errorMessage}
-        hasError={errors.claimed_token?.hasError}
-        {...getOverrideProps(overrides, "claimed_token")}
       ></SwitchField>
       <Flex
         justifyContent="space-between"

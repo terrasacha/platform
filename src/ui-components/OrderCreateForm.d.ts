@@ -28,7 +28,6 @@ export declare type OrderCreateFormInputValues = {
     tokenAmount?: number;
     utxos?: string;
     value?: number;
-    borrar?: string;
 };
 export declare type OrderCreateFormValidationValues = {
     statusCode?: ValidationFunction<string>;
@@ -37,7 +36,6 @@ export declare type OrderCreateFormValidationValues = {
     tokenAmount?: ValidationFunction<number>;
     utxos?: ValidationFunction<string>;
     value?: ValidationFunction<number>;
-    borrar?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type OrderCreateFormOverridesProps = {
@@ -48,7 +46,6 @@ export declare type OrderCreateFormOverridesProps = {
     tokenAmount?: PrimitiveOverrideProps<TextFieldProps>;
     utxos?: PrimitiveOverrideProps<TextFieldProps>;
     value?: PrimitiveOverrideProps<TextFieldProps>;
-    borrar?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type OrderCreateFormProps = React.PropsWithChildren<{
     overrides?: OrderCreateFormOverridesProps | undefined | null;

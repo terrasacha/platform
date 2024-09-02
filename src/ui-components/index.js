@@ -4,10 +4,16 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
-export { default as AnalisisCreateForm } from "./AnalisisCreateForm";
-export { default as AnalisisUpdateForm } from "./AnalisisUpdateForm";
+export { default as AnalysisCreateForm } from "./AnalysisCreateForm";
+export { default as AnalysisResultCreateForm } from "./AnalysisResultCreateForm";
+export { default as AnalysisResultUpdateForm } from "./AnalysisResultUpdateForm";
+export { default as AnalysisUpdateForm } from "./AnalysisUpdateForm";
+export { default as ApiQueryCreateForm } from "./ApiQueryCreateForm";
+export { default as ApiQueryUpdateForm } from "./ApiQueryUpdateForm";
 export { default as CategoryCreateForm } from "./CategoryCreateForm";
 export { default as CategoryUpdateForm } from "./CategoryUpdateForm";
+export { default as ClaimedTokenCreateForm } from "./ClaimedTokenCreateForm";
+export { default as ClaimedTokenUpdateForm } from "./ClaimedTokenUpdateForm";
 export { default as CompanyCreateForm } from "./CompanyCreateForm";
 export { default as CompanyUpdateForm } from "./CompanyUpdateForm";
 export { default as DocumentCreateForm } from "./DocumentCreateForm";
@@ -22,6 +28,8 @@ export { default as FormulaCreateForm } from "./FormulaCreateForm";
 export { default as FormulaUpdateForm } from "./FormulaUpdateForm";
 export { default as ImageCreateForm } from "./ImageCreateForm";
 export { default as ImageUpdateForm } from "./ImageUpdateForm";
+export { default as MarketplaceCreateForm } from "./MarketplaceCreateForm";
+export { default as MarketplaceUpdateForm } from "./MarketplaceUpdateForm";
 export { default as OrderCreateForm } from "./OrderCreateForm";
 export { default as OrderUpdateForm } from "./OrderUpdateForm";
 export { default as PaymentCreateForm } from "./PaymentCreateForm";

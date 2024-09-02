@@ -21,6 +21,7 @@ const listUsers = /* GraphQL */ `
         name
         role
         email
+        marketplaceID
         marketplace {
           name
         }
@@ -90,7 +91,7 @@ export default function ManageMarketplaceAdmin() {
       graphqlOperation(listUsers, { filter: { role: { eq: "admon" } } })
     ).then((data) => {
       const admins = data.data.listUsers.items.filter(
-        (item) => item.marketplace
+        (item) => item.marketplaceID
       );
       setListUserItems(admins);
       console.log(admins);
