@@ -146,7 +146,12 @@ export default class HeaderNavbar extends Component {
                           this.changeHeaderNavBarRequest("marketplace_admin", e)
                         }
                       >
-                        Crear marketplace admin</Dropdown.Item>
+                        Crear marketplace admin</Dropdown.Item><Dropdown.Item href="#apps_status"
+                        onClick={(e) =>
+                          this.changeHeaderNavBarRequest("apps_status", e)
+                        }
+                      >
+                        Apps status</Dropdown.Item>
                         <Dropdown.Divider />
                         <Dropdown.Item onClick={(e) => this.handleChangeObjectElement()}>
                           Sign Out

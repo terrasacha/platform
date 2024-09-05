@@ -28,6 +28,7 @@ export declare type WalletCreateFormInputValues = {
     seed?: string;
     address?: string;
     stake_address?: string;
+    claimed_token?: boolean;
     isSelected?: boolean;
     isAdmin?: boolean;
 };
@@ -38,6 +39,7 @@ export declare type WalletCreateFormValidationValues = {
     seed?: ValidationFunction<string>;
     address?: ValidationFunction<string>;
     stake_address?: ValidationFunction<string>;
+    claimed_token?: ValidationFunction<boolean>;
     isSelected?: ValidationFunction<boolean>;
     isAdmin?: ValidationFunction<boolean>;
 };
@@ -50,6 +52,7 @@ export declare type WalletCreateFormOverridesProps = {
     seed?: PrimitiveOverrideProps<TextFieldProps>;
     address?: PrimitiveOverrideProps<TextFieldProps>;
     stake_address?: PrimitiveOverrideProps<TextFieldProps>;
+    claimed_token?: PrimitiveOverrideProps<SwitchFieldProps>;
     isSelected?: PrimitiveOverrideProps<SwitchFieldProps>;
     isAdmin?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;

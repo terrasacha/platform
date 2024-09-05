@@ -34,6 +34,7 @@ export default function WalletCreateForm(props) {
     seed: "",
     address: "",
     stake_address: "",
+    claimed_token: false,
     isSelected: false,
     isAdmin: false,
   };
@@ -45,6 +46,9 @@ export default function WalletCreateForm(props) {
   const [stake_address, setStake_address] = React.useState(
     initialValues.stake_address
   );
+  const [claimed_token, setClaimed_token] = React.useState(
+    initialValues.claimed_token
+  );
   const [isSelected, setIsSelected] = React.useState(initialValues.isSelected);
   const [isAdmin, setIsAdmin] = React.useState(initialValues.isAdmin);
   const [errors, setErrors] = React.useState({});
@@ -55,6 +59,7 @@ export default function WalletCreateForm(props) {
     setSeed(initialValues.seed);
     setAddress(initialValues.address);
     setStake_address(initialValues.stake_address);
+    setClaimed_token(initialValues.claimed_token);
     setIsSelected(initialValues.isSelected);
     setIsAdmin(initialValues.isAdmin);
     setErrors({});
@@ -66,6 +71,7 @@ export default function WalletCreateForm(props) {
     seed: [],
     address: [{ type: "Required" }],
     stake_address: [{ type: "Required" }],
+    claimed_token: [],
     isSelected: [],
     isAdmin: [],
   };
@@ -101,6 +107,7 @@ export default function WalletCreateForm(props) {
           seed,
           address,
           stake_address,
+          claimed_token,
           isSelected,
           isAdmin,
         };
@@ -171,6 +178,7 @@ export default function WalletCreateForm(props) {
               seed,
               address,
               stake_address,
+              claimed_token,
               isSelected,
               isAdmin,
             };
@@ -202,6 +210,7 @@ export default function WalletCreateForm(props) {
               seed,
               address,
               stake_address,
+              claimed_token,
               isSelected,
               isAdmin,
             };
@@ -233,6 +242,7 @@ export default function WalletCreateForm(props) {
               seed,
               address,
               stake_address,
+              claimed_token,
               isSelected,
               isAdmin,
             };
@@ -264,6 +274,7 @@ export default function WalletCreateForm(props) {
               seed: value,
               address,
               stake_address,
+              claimed_token,
               isSelected,
               isAdmin,
             };
@@ -295,6 +306,7 @@ export default function WalletCreateForm(props) {
               seed,
               address: value,
               stake_address,
+              claimed_token,
               isSelected,
               isAdmin,
             };
@@ -326,6 +338,7 @@ export default function WalletCreateForm(props) {
               seed,
               address,
               stake_address: value,
+              claimed_token,
               isSelected,
               isAdmin,
             };
@@ -343,6 +356,38 @@ export default function WalletCreateForm(props) {
         {...getOverrideProps(overrides, "stake_address")}
       ></TextField>
       <SwitchField
+        label="Claimed token"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={claimed_token}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              name,
+              status,
+              password,
+              seed,
+              address,
+              stake_address,
+              claimed_token: value,
+              isSelected,
+              isAdmin,
+            };
+            const result = onChange(modelFields);
+            value = result?.claimed_token ?? value;
+          }
+          if (errors.claimed_token?.hasError) {
+            runValidationTasks("claimed_token", value);
+          }
+          setClaimed_token(value);
+        }}
+        onBlur={() => runValidationTasks("claimed_token", claimed_token)}
+        errorMessage={errors.claimed_token?.errorMessage}
+        hasError={errors.claimed_token?.hasError}
+        {...getOverrideProps(overrides, "claimed_token")}
+      ></SwitchField>
+      <SwitchField
         label="Is selected"
         defaultChecked={false}
         isDisabled={false}
@@ -357,6 +402,7 @@ export default function WalletCreateForm(props) {
               seed,
               address,
               stake_address,
+              claimed_token,
               isSelected: value,
               isAdmin,
             };
@@ -388,6 +434,7 @@ export default function WalletCreateForm(props) {
               seed,
               address,
               stake_address,
+              claimed_token,
               isSelected,
               isAdmin: value,
             };
