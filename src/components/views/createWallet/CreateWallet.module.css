@@ -1,0 +1,132 @@
+.container{
+    width: 100%;
+    display: flex;
+    padding-top: 2%;
+    justify-content: center;
+    margin-bottom: 20%;
+    font-family: 'Mulish', sans-serif;
+}
+.steps{
+    position: relative;
+    width: 20%;
+    margin-right: 5%;
+}
+.steps ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: sticky;
+    top: 4rem;
+}
+.steps ul li{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: start;
+    padding: 5% 2%;
+    border-top: 1px solid rgb(190, 190, 190);
+}
+.steps ul li span{
+    width: 90%;
+}
+.arrowSteps{
+    height: 2rem;
+    width: 100%;
+    cursor: pointer;
+}
+.steps ul li a{
+    height: 2rem;
+    width: 10%;
+    cursor: pointer;
+    transition: .3s;
+}
+.steps ul li a:hover{
+    transform: scale(1.15);
+}
+.containerSteps{
+    width: 60%;
+}
+.titleContainer{
+    width: 90%;
+    margin-top: 1%;
+    padding: 2% 0;
+    border-bottom: 1px solid rgb(190, 190, 190);
+}
+.titleContainer h2{
+    font-family: 'Catamaran', sans-serif;
+    font-weight: 700;
+    color: #4DBC5E;
+}
+.titleContainer p{
+    width: 80%;
+    font-size: 1.1em;
+    color: #292929;
+}
+.titleContainer p ul li a{
+    text-decoration: none;
+    color: #4DBC5E;
+}
+.containerSteps ul{
+    font-size: 1.1em;
+    width: 80%;
+    color: #292929;
+}
+.containerSteps ul li{
+    padding: 2% 0 0 0;
+    
+}
+.containerSteps ul li img{
+    padding: 2% 0 0 0;
+}
+img{
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .steps{
+        display: none;
+    }
+    .containerSteps{
+        width: 95%;
+    }
+    .titleContainer{
+        width: 90%;
+        margin-top: 1%;
+        padding: 2% 0;
+        border-bottom: 1px solid rgb(190, 190, 190);
+    }
+    .titleContainer h2{
+        font-weight: 700;
+        color: #4DBC5E;
+    }
+    .titleContainer p{
+        width: 100%;
+        font-size: 1.1em;
+        color: #292929;
+    }
+    .titleContainer p ul li a{
+        text-decoration: none;
+        color: #4DBC5E;
+    }
+    .containerSteps ul{
+        font-size: 1.1em;
+        width: 90%;
+        color: #292929;
+    }
+    .containerSteps ul li{
+        padding: 2% 0 0 0;
+        
+    }
+    .containerSteps ul li img{
+        padding: 2% 0 0 0;
+    }
+  }
+  
+  /* Estilos para pantallas medianas */
+  @media (min-width: 601px) and (max-width: 1024px) {
+  }
+  
+  /* Estilos para pantallas grandes */
+  @media (min-width: 1025px) {
+    /* Estilos CSS aquí */
+  }

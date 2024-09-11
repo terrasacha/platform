@@ -1,0 +1,57 @@
+.container_profile{
+    width: 90%;
+    display: flex;
+    padding: 2%;
+    border-bottom: 1px solid rgb(190, 190, 190);
+}
+.profile_image_container{
+    width: 10%;
+    display: flex;
+    margin-right: 2%;
+    justify-content: center;
+}
+.profile_image{
+    width: 90%;
+    height: auto;
+
+}
+.profile_info_container{
+    width: 85%;
+    display: flex;
+    align-items: center;
+}
+.profile_info{
+    width: 80%;
+}
+.profile_info h4{
+    font-size: 1.3em;
+}
+.profile_info h6{
+    font-size: 1em;
+
+}
+.button_container{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+}
+.button_update_profile{
+    background-color: transparent;
+    border: none;
+    color: rgb(76,189,127);
+}
+.desactivateButtonStyle{
+    all: unset
+}
+.walletIDContainer{
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    align-items: flex-start;
+    border: 1px solid red;
+}
+.walletIDContainer button{
+    margin-left: 1rem;
+}

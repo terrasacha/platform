@@ -1,0 +1,301 @@
+.container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5%;
+}
+.titleContainer{
+    width: 80%;
+    margin-top: 1%;
+    padding: 2% 0;
+    border-bottom: 1px solid rgb(190, 190, 190);
+}
+.titleContainer h2{
+    font-weight: 700;
+    color: #4DBC5E;
+}
+.titleContainer p{
+    width: 80%;
+    font-size: 1.1em;
+    color: #292929;
+}
+.selectTypeProyect{
+    width: 80%;
+    margin: 2% 0;
+    display: flex;
+}
+/* .selectTypeProyect button{
+    width: 50%;
+    height: 3rem;
+    border: 1px solid rgb(77,188,94);
+    font-size: .9em;
+    color: rgb(77,188,94);
+    background: #fff;
+    transition: .3s;
+}
+.selectTypeProyect button:hover{
+    color: white;
+    background: rgb(77,188,94);
+    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
+} */
+.formContainer{
+    width: 80%; 
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #4e4e4e;
+}
+.formContainercompany{
+    width: 80%; 
+    margin-top: 2%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #4e4e4e;
+}
+.formContainercompany h2{
+    width: 60%;
+}
+.formcompany{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+}
+.formcompany .inputContainer input{
+    width: 90%;
+    height: 2rem;
+}
+.formContainer h2{
+    width: 100%;
+    margin-bottom: 2%;
+}
+.formInputs1{
+    display: flex;
+    justify-content: start;
+    width: 90%;
+    margin-bottom: 3%;
+}
+.formInputs3{
+    display: flex;
+    justify-content: start;
+    width: 90%;
+    margin-bottom: 3%;
+}
+.inputContainer{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+.inputContainer legend{
+    display: flex;
+    font-size: 1em;
+}
+.inputContainer input{
+    width: 80%;
+    height: 2.7rem;
+}
+.inputContainer select{
+    width: 90%;
+    height: 3rem;
+}
+.formInputs2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.formInputs2 .inputContainer{
+    width: 100%;
+    margin: 1% auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.formInputs2 .inputContainer legend{
+    width: 90%;
+}
+.formInputs2 .inputContainer textarea{
+    border: 1px solid #4e4e4e;
+    width: 90%;
+    box-sizing: border-box;
+    height: 10rem;
+}
+.formInputs2 .inputContainer textarea::placeholder {
+    position: absolute;
+    width: 90%;
+    top: 5%;
+    left: 1%;
+    text-align: left;
+}
+.solicitudButtonDisabled{
+    padding: 1% 0;
+    margin-top: 3%;
+    cursor: pointer;
+    width: 40%;
+    border: 1px solid rgb(77,188,94);
+    font-size: .9em;
+    color: white;
+    background: rgb(77,188,94);
+    background: linear-gradient(45deg, rgb(117, 189, 127) 0%, rgb(85, 155, 156) 100%);
+}
+.solicitudButton{
+    padding: 1% 0;
+    margin-top: 3%;
+    cursor: pointer;
+    width: 40%;
+    border: 1px solid rgb(77,188,94);
+    font-size: .9em;
+    color: rgb(77,188,94);
+    background: #fff;
+    transition: .3s;
+}
+.solicitudButton:hover{
+    color: white;
+    background: rgb(77,188,94);
+    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
+}
+.infoCircle{
+    width: 14px;
+
+}
+.tooltip {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 2em;
+    width: 10rem;
+    font-size: .6em;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+.tooltip-text{
+    display: flex;
+    position: relative;
+    padding-left: .2em;
+    align-items: center;
+}
+  
+  .tooltip-text:hover .tooltip {
+    display: inline-block;
+  }
+.saveButton{
+    position: fixed;
+    padding: .7% 0;
+    cursor: pointer;
+    width: 8rem;
+    border: 1px solid rgb(77,188,94);
+    font-size: 1em;
+    color: rgb(77,188,94);
+    background: #fff;
+    transition: .3s;
+    bottom: 3.5rem;
+    right: 3rem;
+}
+.saveButton:hover{
+    color: white;
+    background: rgb(77,188,94);
+    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
+}
+/* Estilos para pantallas pequeñas */
+@media (max-width: 1024px) {
+    .titleContainer{
+        width: 95%;
+        margin-top:3%;
+    }
+    .titleContainer p{
+        width: 90%;
+        font-size: .9em;
+    }
+    .formContainer{
+        width: 95%; 
+        margin-top: 2%;
+    }
+    .formContainercompany{
+        flex-direction: column;
+    }
+    .formContainercompany h2{
+        width: 100%;
+    }
+    .formContainer h2{
+        margin-bottom: 4%;
+    }
+    .formInputs1{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 3%;
+    }
+    .inputContainer{
+        width: 100%;
+    }
+    .inputContainer legend{
+        font-size: 1.2em;
+    }
+    .inputContainer input{
+        width: 100%;
+        height: 3rem;
+    }
+    .inputContainer select{
+        width: 100%;
+        height: 3rem;
+    }
+    .formInputs2{
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    .formInputs2 .inputContainer{
+        width: 100%;
+    }
+    .formInputs2 .inputContainer legend{
+        width: 100%;
+        
+    }
+    .formInputs2 .inputContainer textarea{
+        width: 100%;
+    }
+    .solicitudButtonDisabled{
+        padding: 2% 0;
+        margin-top: 5%;
+        width: 100%;
+    }
+    .solicitudButton{
+        padding: 2% 0;
+        margin-top: 5%;
+        width: 100%;
+    }
+    .selectTypeProyect{
+        width: 95%;
+        font-size: .8em;
+    }
+    .saveButton{
+        padding: 2% 0;
+        cursor: pointer;
+        width: 8rem;
+        border: 1px solid rgb(77,188,94);
+        font-size: 1em;
+        color: rgb(77,188,94);
+        background: #fff;
+        transition: .3s;
+        bottom: 3.5rem;
+        right: 1rem;
+    }
+    .saveButton:hover{
+        color: white;
+        background: rgb(77,188,94);
+        background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
+    }
+
+  }
+
+  
+  
+  /* Estilos para pantallas grandes */
+  @media (min-width: 1025px) {
+    /* Estilos CSS aquí */
+  }

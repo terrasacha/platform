@@ -1,0 +1,11 @@
+.signing {
+    height: 100%;
+    background-color: transparent;
+    font-weight: 700;
+    color: #4DBC5E
+}
+
+.navGroup button {
+    padding-left: 3em;
+
+}
