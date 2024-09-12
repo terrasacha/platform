@@ -41,7 +41,6 @@ type Wallet @model {
   seed: String
   address: String!
   stake_address: String!
-  claimed_token: Boolean
   isSelected: Boolean
   isAdmin: Boolean
   userID: ID @index(name: "byUser")

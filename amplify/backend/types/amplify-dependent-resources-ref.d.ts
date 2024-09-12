@@ -1,22 +1,24 @@
 export type AmplifyDependentResourcesAttributes = {
   "api": {
-    "kiosuanbcrjsapp": {
+    "platform": {
       "GraphQLAPIEndpointOutput": "string",
       "GraphQLAPIIdOutput": "string",
       "GraphQLAPIKeyOutput": "string"
     }
   },
   "auth": {
-    "kiosuanbcrjsappa6accc93": {
+    "platformauth": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
+      "IdentityPoolId": "string",
+      "IdentityPoolName": "string",
       "UserPoolArn": "string",
       "UserPoolId": "string",
       "UserPoolName": "string"
     }
   },
   "storage": {
-    "s37845b3b9": {
+    "platformstorage": {
       "BucketName": "string",
       "Region": "string"
     }
