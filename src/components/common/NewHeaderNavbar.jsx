@@ -71,7 +71,7 @@ export default function NewHeaderNavbar() {
             ></Nav>
             <Nav>
               <Nav className={s.navGroup}>
-                {user.attributes['custom:role'] === "constructor" && (
+                {(user.attributes['custom:role'] === "constructor" || user.attributes['custom:role'] === "investor") && (
                   <>
                     <Nav.Link
                       onClick={() => (window.location.href = "/constructor")}

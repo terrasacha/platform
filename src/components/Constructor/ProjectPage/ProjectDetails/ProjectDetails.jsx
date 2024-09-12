@@ -126,9 +126,9 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div> */}
-          <div className="col">
+          {/* <div className="col">
             <PostulantInfoCard autorizedUser={autorizedUser} />
-          </div>
+          </div> */}
           <div
             className={
               projectData.projectUses?.replaceUse.types.length > 0 ||
