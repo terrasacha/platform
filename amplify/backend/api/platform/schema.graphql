@@ -42,6 +42,7 @@ type Wallet @model {
   address: String!
   stake_address: String!
   isSelected: Boolean
+  claimed_token: Boolean
   isAdmin: Boolean
   userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
