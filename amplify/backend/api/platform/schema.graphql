@@ -42,6 +42,7 @@ type Wallet @model {
   address: String!
   stake_address: String!
   isSelected: Boolean
+  claimed_token: Boolean
   isAdmin: Boolean
   userID: ID @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
@@ -49,6 +50,7 @@ type Wallet @model {
   boughtOrders: [Order] @hasMany(indexName: "byWalletBuyer", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byWallet", fields: ["id"])
   claimedToken: [ClaimedToken] @hasMany(indexName: "byWallet", fields: ["id"])
+  
 }
 
 type Verification @model {
