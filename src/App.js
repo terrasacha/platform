@@ -56,7 +56,17 @@ function App() {
             exact
           />
           <Route path="/products" element={<Products />} />
-          <Route path="/products/:id" element={<Product />} />
+          <Route
+            path="/products/:id"
+            element={
+              <RoleMiddleware
+                allowedRoles={["constructor", "admon", "investor", "validator"]}
+                redirectPath="/"
+              >
+                <Product />
+              </RoleMiddleware>
+            }
+          />
           <Route path="/creating_wallet" element={<CreateWallet />} />
           <Route path="/terms_&_conditions" element={<TermCondition />} />
           <Route path="/use_terms" element={<UseTerms />} />

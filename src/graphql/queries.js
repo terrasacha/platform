@@ -99,6 +99,7 @@ export const getWallet = /* GraphQL */ `
       seed
       address
       stake_address
+      claimed_token
       isSelected
       claimed_token
       isAdmin
@@ -158,6 +159,7 @@ export const listWallets = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -1470,6 +1472,7 @@ export const getOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -1507,6 +1510,7 @@ export const getOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin

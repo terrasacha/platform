@@ -20,10 +20,12 @@ const initialFormState = {
   privacy_policy: false,
   role: "investor",
   code: "",
+  totpCode: ""
 };
 
 export default function LogIn() {
   const [formState, updateFormState] = useState(initialFormState);
+  const[signInUserData,setSignInUserData] = useState(null)
   const [user, updateUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -174,17 +176,24 @@ export default function LogIn() {
   async function signIn(e) {
     e.preventDefault();
     const { username, password } = formState;
-
+  
     try {
       setError("");
       setLoading(true);
-
+  
       const response = await Auth.signIn(username, password);
-
+      console.log(response, 'response');
+  
       if (response.challengeName === "NEW_PASSWORD_REQUIRED") {
         setLoading(false);
         updateUser(response);
         updateFormState(() => ({ ...formState, formType: "changePassword" }));
+      } else if (response.challengeName === "SOFTWARE_TOKEN_MFA") {
+        // El usuario tiene activado MFA con TOTP
+        setLoading(false);
+        updateFormState(() => ({ ...formState, formType: "confirmTOTP" }));
+        setSignInUserData(response)
+        // Aquí debes mostrar un formulario donde el usuario ingrese el código TOTP
       } else {
         updateFormState(() => ({ ...formState, formType: "signedIn" }));
         let currentUser = await Auth.currentAuthenticatedUser();
@@ -196,7 +205,30 @@ export default function LogIn() {
     }
     setLoading(false);
   }
-
+  
+  async function confirmTOTP(e) {
+    e.preventDefault();
+    const { totpCode } = formState; // Asegúrate de tener un campo para capturar el código TOTP
+    const { username } = formState;
+    console.log(signInUserData)
+    try {
+      setError("");
+      setLoading(true);
+  
+      const response = await Auth.confirmSignIn(signInUserData, totpCode, "SOFTWARE_TOKEN_MFA");
+      console.log(response, 'response');
+      
+      updateFormState(() => ({ ...formState, formType: "signedIn" }));
+      let currentUser = await Auth.currentAuthenticatedUser();
+      currentUser = currentUser.attributes["custom:role"];
+      localStorage.setItem("role", currentUser);
+    } catch (error) {
+      console.log(error)
+      setError("Invalid TOTP code. Please try again.");
+    }
+    setLoading(false);
+  }
+  
   async function forgotPassword(e) {
     e.preventDefault();
     const { username } = formState;
@@ -520,6 +552,50 @@ export default function LogIn() {
             </div>
           </div>
         )}
+        {formType === "confirmTOTP" && (
+  <div className={s.containerLogin}>
+    <div className={s.containerCard}>
+      <div className={s.containerTitle}>
+        <img src={LOGO} style={{ width: "30px" }} alt="logo" />
+        <h2 className="text-center mb-4">Verificación TOTP</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
+      </div>
+      <form className={s.inputContainer}>
+        <fieldset>
+          <legend>Código TOTP</legend>
+          <input
+            name="totpCode"
+            onChange={onChange} // Asegúrate de tener la función onChange definida para actualizar el estado
+            className="border-[1px] border-gray-300 rounded-md"
+            placeholder="Introduce el código TOTP"
+          />
+        </fieldset>
+        <button
+          type="submit"
+          disabled={loading}
+          onClick={(e) => confirmTOTP(e)} // Llama al método confirmTOTP cuando se haga submit
+          className="btn-login"
+        >
+          {loading ? "Verificando..." : "Verificar"}
+        </button>
+      </form>
+      <div className={s.needAccount}>
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() =>
+            updateFormState(() => ({
+              ...formState,
+              formType: "signIn", // Regresa al formulario de inicio de sesión si el usuario desea cancelar
+            }))
+          }
+        >
+          Regresar a inicio de sesión
+        </span>
+      </div>
+    </div>
+  </div>
+)}
+
         {formType === "ForgotPassword" && (
           <div>
             <div className={s.containerCard}>

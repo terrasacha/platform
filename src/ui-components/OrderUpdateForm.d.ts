@@ -28,7 +28,6 @@ export declare type OrderUpdateFormInputValues = {
     tokenAmount?: number;
     utxos?: string;
     value?: number;
-    borrar?: string;
 };
 export declare type OrderUpdateFormValidationValues = {
     statusCode?: ValidationFunction<string>;
@@ -37,7 +36,6 @@ export declare type OrderUpdateFormValidationValues = {
     tokenAmount?: ValidationFunction<number>;
     utxos?: ValidationFunction<string>;
     value?: ValidationFunction<number>;
-    borrar?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type OrderUpdateFormOverridesProps = {
@@ -48,7 +46,6 @@ export declare type OrderUpdateFormOverridesProps = {
     tokenAmount?: PrimitiveOverrideProps<TextFieldProps>;
     utxos?: PrimitiveOverrideProps<TextFieldProps>;
     value?: PrimitiveOverrideProps<TextFieldProps>;
-    borrar?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type OrderUpdateFormProps = React.PropsWithChildren<{
     overrides?: OrderUpdateFormOverridesProps | undefined | null;

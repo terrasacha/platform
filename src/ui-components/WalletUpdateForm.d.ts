@@ -28,9 +28,9 @@ export declare type WalletUpdateFormInputValues = {
     seed?: string;
     address?: string;
     stake_address?: string;
+    claimed_token?: boolean;
     isSelected?: boolean;
     isAdmin?: boolean;
-    claimed_token?: boolean;
 };
 export declare type WalletUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -39,9 +39,9 @@ export declare type WalletUpdateFormValidationValues = {
     seed?: ValidationFunction<string>;
     address?: ValidationFunction<string>;
     stake_address?: ValidationFunction<string>;
+    claimed_token?: ValidationFunction<boolean>;
     isSelected?: ValidationFunction<boolean>;
     isAdmin?: ValidationFunction<boolean>;
-    claimed_token?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type WalletUpdateFormOverridesProps = {
@@ -52,9 +52,9 @@ export declare type WalletUpdateFormOverridesProps = {
     seed?: PrimitiveOverrideProps<TextFieldProps>;
     address?: PrimitiveOverrideProps<TextFieldProps>;
     stake_address?: PrimitiveOverrideProps<TextFieldProps>;
+    claimed_token?: PrimitiveOverrideProps<SwitchFieldProps>;
     isSelected?: PrimitiveOverrideProps<SwitchFieldProps>;
     isAdmin?: PrimitiveOverrideProps<SwitchFieldProps>;
-    claimed_token?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type WalletUpdateFormProps = React.PropsWithChildren<{
     overrides?: WalletUpdateFormOverridesProps | undefined | null;

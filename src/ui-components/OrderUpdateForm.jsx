@@ -30,7 +30,6 @@ export default function OrderUpdateForm(props) {
     tokenAmount: "",
     utxos: "",
     value: "",
-    borrar: "",
   };
   const [statusCode, setStatusCode] = React.useState(initialValues.statusCode);
   const [tokenPolicyId, setTokenPolicyId] = React.useState(
@@ -42,7 +41,6 @@ export default function OrderUpdateForm(props) {
   );
   const [utxos, setUtxos] = React.useState(initialValues.utxos);
   const [value, setValue] = React.useState(initialValues.value);
-  const [borrar, setBorrar] = React.useState(initialValues.borrar);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = orderRecord
@@ -54,7 +52,6 @@ export default function OrderUpdateForm(props) {
     setTokenAmount(cleanValues.tokenAmount);
     setUtxos(cleanValues.utxos);
     setValue(cleanValues.value);
-    setBorrar(cleanValues.borrar);
     setErrors({});
   };
   const [orderRecord, setOrderRecord] = React.useState(orderModelProp);
@@ -80,7 +77,6 @@ export default function OrderUpdateForm(props) {
     tokenAmount: [],
     utxos: [],
     value: [],
-    borrar: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -114,7 +110,6 @@ export default function OrderUpdateForm(props) {
           tokenAmount: tokenAmount ?? null,
           utxos: utxos ?? null,
           value: value ?? null,
-          borrar: borrar ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -181,7 +176,6 @@ export default function OrderUpdateForm(props) {
               tokenAmount,
               utxos,
               value,
-              borrar,
             };
             const result = onChange(modelFields);
             value = result?.statusCode ?? value;
@@ -211,7 +205,6 @@ export default function OrderUpdateForm(props) {
               tokenAmount,
               utxos,
               value,
-              borrar,
             };
             const result = onChange(modelFields);
             value = result?.tokenPolicyId ?? value;
@@ -241,7 +234,6 @@ export default function OrderUpdateForm(props) {
               tokenAmount,
               utxos,
               value,
-              borrar,
             };
             const result = onChange(modelFields);
             value = result?.tokenName ?? value;
@@ -275,7 +267,6 @@ export default function OrderUpdateForm(props) {
               tokenAmount: value,
               utxos,
               value,
-              borrar,
             };
             const result = onChange(modelFields);
             value = result?.tokenAmount ?? value;
@@ -305,7 +296,6 @@ export default function OrderUpdateForm(props) {
               tokenAmount,
               utxos: value,
               value,
-              borrar,
             };
             const result = onChange(modelFields);
             value = result?.utxos ?? value;
@@ -339,7 +329,6 @@ export default function OrderUpdateForm(props) {
               tokenAmount,
               utxos,
               value: value,
-              borrar,
             };
             const result = onChange(modelFields);
             value = result?.value ?? value;
@@ -353,36 +342,6 @@ export default function OrderUpdateForm(props) {
         errorMessage={errors.value?.errorMessage}
         hasError={errors.value?.hasError}
         {...getOverrideProps(overrides, "value")}
-      ></TextField>
-      <TextField
-        label="Borrar"
-        isRequired={false}
-        isReadOnly={false}
-        value={borrar}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              statusCode,
-              tokenPolicyId,
-              tokenName,
-              tokenAmount,
-              utxos,
-              value,
-              borrar: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.borrar ?? value;
-          }
-          if (errors.borrar?.hasError) {
-            runValidationTasks("borrar", value);
-          }
-          setBorrar(value);
-        }}
-        onBlur={() => runValidationTasks("borrar", borrar)}
-        errorMessage={errors.borrar?.errorMessage}
-        hasError={errors.borrar?.hasError}
-        {...getOverrideProps(overrides, "borrar")}
       ></TextField>
       <Flex
         justifyContent="space-between"

@@ -197,6 +197,7 @@ export const createWallet = /* GraphQL */ `
       seed
       address
       stake_address
+      claimed_token
       isSelected
       claimed_token
       isAdmin
@@ -254,6 +255,7 @@ export const updateWallet = /* GraphQL */ `
       seed
       address
       stake_address
+      claimed_token
       isSelected
       claimed_token
       isAdmin
@@ -311,6 +313,7 @@ export const deleteWallet = /* GraphQL */ `
       seed
       address
       stake_address
+      claimed_token
       isSelected
       claimed_token
       isAdmin
@@ -2894,6 +2897,7 @@ export const createOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -2931,6 +2935,7 @@ export const createOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -2987,6 +2992,7 @@ export const updateOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -3024,6 +3030,7 @@ export const updateOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -3080,6 +3087,7 @@ export const deleteOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -3117,6 +3125,7 @@ export const deleteOrder = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin

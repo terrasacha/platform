@@ -705,7 +705,7 @@ export const mapProjectData = async (data) => {
       title: data.name,
       description: data.description,
       category: data.categoryID,
-      showOn: data.showOn,
+      showOn: data.marketplace?.id || null,
       area: area,
       token: {
         pfIDs: {

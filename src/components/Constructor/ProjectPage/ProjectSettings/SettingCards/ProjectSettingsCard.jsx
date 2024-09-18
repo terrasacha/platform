@@ -10,6 +10,21 @@ import { notify } from "../../../../../utilities/notify";
 
 import { fetchProjectDataByProjectID } from "../../api";
 
+const listMarketplacess = /* GraphQL */ `
+  query ListMarketplaces(
+    $filter: ModelMarketplaceFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMarketplaces(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export default function ProjectSettingsCard(props) {
   const { className } = props;
 
@@ -17,11 +32,27 @@ export default function ProjectSettingsCard(props) {
   const [projectIsActive, setProjectIsActive] = useState(false);
   const [projectStatus, setProjectStatus] = useState("");
   const [projectShowOn, setProjectShowOn] = useState("");
-  const [projectReadyToPublish, setProjectReadyToPublish] = useState(false)
+  const [projectReadyToPublish, setProjectReadyToPublish] = useState(false);
+  const [listMarketplaces, setListMarketplaces] = useState([]);
+
+  useEffect(() => {
+    const loadMarketplaces = async () => {
+      API.graphql(graphqlOperation(listMarketplacess)).then((data) => {
+        const marketplaces = data.data.listMarketplaces.items;
+        setListMarketplaces(marketplaces);
+        console.log(marketplaces);
+      });
+    };
+
+    loadMarketplaces();
+  }, []);
   useEffect(() => {
     if (projectData) {
-      let projectReadyToPublishData = projectData.projectFeatures.find(item => item.featureID === 'GLOBAL_OWNER_ACCEPTS_CONDITIONS').value || "false"
-      setProjectReadyToPublish(JSON.parse(projectReadyToPublishData))
+      let projectReadyToPublishData =
+        projectData.projectFeatures.find(
+          (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
+        ).value || "false";
+      setProjectReadyToPublish(JSON.parse(projectReadyToPublishData));
       setProjectIsActive(projectData.projectInfo.isActive);
       setProjectStatus(projectData.projectInfo.status);
       setProjectShowOn(projectData.projectInfo.showOn);
@@ -81,14 +112,14 @@ export default function ProjectSettingsCard(props) {
   const handleSaveProjectShowOn = async () => {
     let updatedProduct = {
       id: projectData.projectInfo.id,
-      showOn: projectShowOn,
+      marketplaceID: projectShowOn,
     };
     await API.graphql(
       graphqlOperation(updateProduct, { input: updatedProduct })
     );
     await fetchProjectData();
     notify({
-      msg: `El ahora se muestra en el marketplace de ${projectShowOn}`,
+      msg: `Se ha asignado el proyecto a un nuevo marketplace`,
       type: "success",
     });
   };
@@ -124,10 +155,12 @@ export default function ProjectSettingsCard(props) {
           label="El proyecto debe mostrarse en: "
           inputType="select"
           inputSize="md"
-          optionList={[
-            { value: "Suan", label: "Suan" },
-            { value: "Terrasacha", label: "Terrasacha" },
-          ]}
+          optionList={listMarketplaces.map((marketplace) => {
+            return {
+              value: marketplace.id,
+              label: marketplace.name
+            }
+          })}
           inputValue={projectShowOn}
           saveBtnDisabled={
             projectData.projectInfo?.showOn === projectShowOn ? true : false
