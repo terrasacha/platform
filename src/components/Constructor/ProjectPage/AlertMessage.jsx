@@ -76,7 +76,7 @@ export default function AlertMessage({ visible }) {
             <h3 className="text-2xl">
               Estado de requerimientos para la publicación del proyecto en{" "}
               <a
-                href={process.env.REACT_APP_URL_MARKETPLACE}
+                href={'https://test-marketplace-cauca.suan.global'} // remove href={process.env.REACT_APP_URL_MARKETPLACE}
                 target="_blank"
                 rel="noreferrer"
               >

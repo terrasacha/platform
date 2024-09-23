@@ -5,10 +5,12 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { Auth } from "aws-amplify";
+import { Dropdown } from "react-bootstrap";
 
 // Import images
 import LOGO from "../../common/_images/suan_logo.png";
 import s from "./HeaderNavbar.module.css";
+import DropDownProjects from "components/common/DropDownProjects";
 
 export default class HeaderNavbar extends Component {
 
@@ -145,21 +147,14 @@ export default class HeaderNavbar extends Component {
                       </button>
                     </div>
                   ) : (
-                    <div>
+                    <div style={{ display: 'flex'}}>
                       <a className="m-2 item-menu" href="#tecnologia">
                         Tecnología
                       </a>
                       <a className="m-2 item-menu" href="#porque">
                         ¿Por qué Suan?
                       </a>
-                      <a
-                        className="m-2 item-menu"
-                        href={process.env.REACT_APP_URL_MARKETPLACE}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Proyectos
-                      </a>
+                      <DropDownProjects variant={'secondary'}/>
                       <button
                         className={s.signing}
                         onClick={() => (window.location.href = "/login")}
