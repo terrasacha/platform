@@ -50,7 +50,6 @@ type Wallet @model {
   boughtOrders: [Order] @hasMany(indexName: "byWalletBuyer", fields: ["id"])
   transactions: [Transactions] @hasMany(indexName: "byWallet", fields: ["id"])
   claimedToken: [ClaimedToken] @hasMany(indexName: "byWallet", fields: ["id"])
-  
 }
 
 type Verification @model {
