@@ -185,8 +185,8 @@ export const onCreateWallet = /* GraphQL */ `
       seed
       address
       stake_address
-      claimed_token
       isSelected
+      claimed_token
       isAdmin
       userID
       user {
@@ -239,8 +239,8 @@ export const onUpdateWallet = /* GraphQL */ `
       seed
       address
       stake_address
-      claimed_token
       isSelected
+      claimed_token
       isAdmin
       userID
       user {
@@ -293,8 +293,8 @@ export const onDeleteWallet = /* GraphQL */ `
       seed
       address
       stake_address
-      claimed_token
       isSelected
+      claimed_token
       isAdmin
       userID
       user {
@@ -2759,8 +2759,8 @@ export const onCreateOrder = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -2796,8 +2796,8 @@ export const onCreateOrder = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -2849,8 +2849,8 @@ export const onUpdateOrder = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -2886,8 +2886,8 @@ export const onUpdateOrder = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -2939,8 +2939,8 @@ export const onDeleteOrder = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -2976,8 +2976,8 @@ export const onDeleteOrder = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -3829,8 +3829,8 @@ export const onCreateClaimedToken = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -3867,8 +3867,8 @@ export const onUpdateClaimedToken = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
@@ -3905,8 +3905,8 @@ export const onDeleteClaimedToken = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
+        claimed_token
         isAdmin
         userID
         createdAt
