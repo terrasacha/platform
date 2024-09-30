@@ -171,6 +171,15 @@ export default function ProjectPage() {
                       </div>
                     </section>
                   )}
+                <section>
+                    <div className="flex gap-2">
+                          <div
+                            className={`${projectData.projectInfo.isActive? "bg-green-600" : "bg-red-500"} text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap`}
+                          >
+                            {projectData.projectInfo.isActive? 'Publicado en marketplace' : 'No publicado en marketplace'}
+                          </div>
+                    </div>
+                  </section>
                 {projectData.projectVerifierNames.length > 0 && (
                   <section>
                     <p className="fs-6 mb-0 fw-bold">Validadores:</p>
@@ -178,7 +187,7 @@ export default function ProjectPage() {
                       {projectData.projectVerifierNames.map((pvn, index) => {
                         return (
                           <div
-                            className="bg-green-600 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
+                            className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
                             key={index}
                           >
                             Validador {index + 1}: {pvn}
@@ -188,6 +197,7 @@ export default function ProjectPage() {
                     </div>
                   </section>
                 )}
+                
               </div>
               <ul className="font-medium flex mt-4 pl-0 ">
                 <li>
