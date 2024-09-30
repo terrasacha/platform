@@ -3,6 +3,8 @@ import Card from "components/common/Card";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import Spinner from "react-bootstrap/Spinner";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
+import { ToastContainer, toast } from "react-toastify";
+import { notify } from "utilities/notify";
 
 const satelliteOptions = ['LC08', 'LC09'];
 const yearOptions = Array.from({ length: new Date().getFullYear() - 2016 }, (_, i) => (2017 + i).toString());
@@ -61,6 +63,19 @@ export default function ConsultOraculo() {
     }));
   };
 
+  const notify = (text, method) => {
+    toast[method](text, { //method: success, error
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -85,9 +100,10 @@ export default function ConsultOraculo() {
       }
 
       const result = await response.json();
-      console.log(result, 'response handleSumbit');
+      notify('fetch successfully', 'success')
   } catch (error) {
       console.error('Error:', error);
+      notify('fail to fetch', 'error')
   } finally {
       setLoading(false);
   }
