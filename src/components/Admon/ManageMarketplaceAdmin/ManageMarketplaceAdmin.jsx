@@ -143,8 +143,7 @@ export default function ManageMarketplaceAdmin() {
 
   const confirmCreateUser = async () => {
     setLoadingCreate(true);
-    const endpoint =
-      "https://vhal4tf7id.execute-api.us-east-1.amazonaws.com/create-admin-marketplace";
+    const endpoint = process.env.CREATE_MARKETPLACE_ADMIN_ENDPOINT;
       
     const marketplaceName = listMarketplaces.find((marketplace) => marketplace.id === newAdmin.marketplace).name
     const data = {
