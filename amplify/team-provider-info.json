@@ -54,13 +54,10 @@
       "AmplifyAppId": "d2h9ii739cixji"
     },
     "categories": {
-      "api": {
+      "auth": {
         "platform": {}
       },
       "storage": {
-        "platformstorage": {}
-      },
-      "auth": {
         "platform": {}
       }
     }
