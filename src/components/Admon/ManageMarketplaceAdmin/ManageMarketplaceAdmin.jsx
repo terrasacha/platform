@@ -143,7 +143,7 @@ export default function ManageMarketplaceAdmin() {
 
   const confirmCreateUser = async () => {
     setLoadingCreate(true);
-    const endpoint = process.env.CREATE_MARKETPLACE_ADMIN_ENDPOINT;
+    const endpoint = process.env.REACT_APP_CREATE_MARKETPLACE_ADMIN_ENDPOINT;
       
     const marketplaceName = listMarketplaces.find((marketplace) => marketplace.id === newAdmin.marketplace).name
     const data = {
