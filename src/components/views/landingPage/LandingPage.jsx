@@ -18,6 +18,7 @@ import blockchain from "../_images/cadena-de-bloques.png";
 import plataforma from "../_images/diseno-de-respuesta.png";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import DropDownProjects from "components/common/DropDownProjects";
 
 export default class LandingPage extends Component {
   constructor(props) {
@@ -191,10 +192,10 @@ export default class LandingPage extends Component {
             fácil, rápido y seguro.</p>
           <div className='row'>
             <div className='col p-2 mx-3'>
-              <a className='m-2 fondo-azul btn' href={process.env.REACT_APP_URL_MARKETPLACE}>Ver proyectos</a>
-              <Button className="m-2 fondo-azul btn" onClick={this.handleShow}>
+              <Button className="fondo-azul btn" onClick={this.handleShow}>
                 Tengo un proyecto
               </Button>
+              <DropDownProjects/>
 
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
@@ -278,7 +279,7 @@ export default class LandingPage extends Component {
                   <p>
                     Nuestra plataforma se apalanca en tecnología blockchain para
                     lograr total transparencia en los proyectos
-                  </p>
+                  </p>style={}
                 </div>
               </div>
               <div className="col">
@@ -409,10 +410,12 @@ export default class LandingPage extends Component {
                 <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
               </div>
               <div className='col'>
-                <a href={process.env.REACT_APP_URL_MARKETPLACE} target="_blank" rel='noreferrer'><button className='m-2 btn-cta'>Ver proyectos</button></a>
-                <button className="m-2 btn-cta" onClick={this.handleShow}>
+                <div className="flex">
+                <DropDownProjects className="btn-cta" variant={'transparent'}/>
+                <button className="ml-2 btn-cta" onClick={this.handleShow}>
                   Tengo un proyecto
                 </button>
+                </div>
               </div>
 
             </div>

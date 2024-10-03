@@ -337,6 +337,7 @@ class Validators extends Component {
               >
                 <option value="financial">Financiero</option>
                 <option value="technical">Técnico</option>
+                <option value="fullaccessvalidator">Full access</option>
               </select>
             </div>
             <button
