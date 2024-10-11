@@ -59,6 +59,9 @@
       },
       "storage": {
         "platform": {}
+      },
+      "api": {
+        "platform": {}
       }
     }
   }
