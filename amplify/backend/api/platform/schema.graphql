@@ -110,7 +110,11 @@ type ProductItem @model {
 type Marketplace @model {
   id: ID!
   name: String!
-  oracleWallet: String
+  oracleTokenName: String
+  oracleWalletID: ID
+  oracleWallet: Wallet @hasOne(fields: ["oracleWalletID"])
+  adminWalletID: ID
+  adminWallet: Wallet @hasOne(fields: ["adminWalletID"])
   scripts: [Script] @hasMany(indexName: "byMarketplace", fields: ["id"])
   products: [Product] @hasMany(indexName: "byMarketplace", fields: ["id"])
   users: [User] @hasMany(indexName: "byMarketplace", fields: ["id"])
