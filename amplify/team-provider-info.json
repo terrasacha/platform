@@ -17,6 +17,9 @@
       },
       "storage": {
         "platform": {}
+      },
+      "api": {
+        "platform": {}
       }
     }
   },
@@ -59,30 +62,6 @@
       },
       "storage": {
         "platform": {}
-      }
-    }
-  },
-  "prod": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-platform-prod-14898-authRole",
-      "UnauthRoleArn": "arn:aws:iam::036134507423:role/amplify-platform-prod-14898-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::036134507423:role/amplify-platform-prod-14898-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-platform-prod-14898-deployment",
-      "UnauthRoleName": "amplify-platform-prod-14898-unauthRole",
-      "StackName": "amplify-platform-prod-14898",
-      "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-platform-prod-14898/d50dfdb0-7459-11ef-ac30-0eae98b316b5",
-      "AmplifyAppId": "d2p2m0o7qufcng"
-    },
-    "categories": {
-      "auth": {
-        "platformauth": {}
-      },
-      "api": {
-        "platform": {}
-      },
-      "storage": {
-        "platformstorage": {}
       }
     }
   }
