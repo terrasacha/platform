@@ -1,4 +1,28 @@
 {
+  "internal": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-platform-internal-6c75a-authRole",
+      "UnauthRoleArn": "arn:aws:iam::036134507423:role/amplify-platform-internal-6c75a-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::036134507423:role/amplify-platform-internal-6c75a-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-platform-internal-6c75a-deployment",
+      "UnauthRoleName": "amplify-platform-internal-6c75a-unauthRole",
+      "StackName": "amplify-platform-internal-6c75a",
+      "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-platform-internal-6c75a/39323730-7b7f-11ef-bd14-0afff1e6c27f",
+      "AmplifyAppId": "d2p2m0o7qufcng"
+    },
+    "categories": {
+      "auth": {
+        "platformauth": {}
+      },
+      "storage": {
+        "platformstorage": {}
+      },
+      "api": {
+        "platform": {}
+      }
+    }
+  },
   "prod": {
     "awscloudformation": {
       "AuthRoleName": "amplify-platform-prod-14898-authRole",
@@ -17,6 +41,9 @@
       },
       "storage": {
         "platformstorage": {}
+      },
+      "api": {
+        "platform": {}
       }
     }
   },
@@ -38,30 +65,9 @@
       },
       "storage": {
         "platformstorage": {}
-      }
-    }
-  },
-  "internal": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-platform-internal-6c75a-authRole",
-      "UnauthRoleArn": "arn:aws:iam::036134507423:role/amplify-platform-internal-6c75a-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::036134507423:role/amplify-platform-internal-6c75a-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-platform-internal-6c75a-deployment",
-      "UnauthRoleName": "amplify-platform-internal-6c75a-unauthRole",
-      "StackName": "amplify-platform-internal-6c75a",
-      "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-platform-internal-6c75a/39323730-7b7f-11ef-bd14-0afff1e6c27f",
-      "AmplifyAppId": "d2p2m0o7qufcng"
-    },
-    "categories": {
-      "auth": {
-        "platformauth": {}
       },
       "api": {
         "platform": {}
-      },
-      "storage": {
-        "platformstorage": {}
       }
     }
   }
