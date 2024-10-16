@@ -51,7 +51,6 @@ export const createUser = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -112,7 +111,6 @@ export const updateUser = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -173,7 +171,6 @@ export const deleteUser = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -1046,7 +1043,6 @@ export const createProduct = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -1132,7 +1128,6 @@ export const updateProduct = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -1218,7 +1213,6 @@ export const deleteProduct = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -3674,7 +3668,6 @@ export const createScript = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -3735,7 +3728,6 @@ export const updateScript = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -3796,7 +3788,6 @@ export const deleteScript = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -4006,7 +3997,6 @@ export const createClaimedToken = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -4045,7 +4035,6 @@ export const updateClaimedToken = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -4084,7 +4073,6 @@ export const deleteClaimedToken = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
