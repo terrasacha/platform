@@ -48,7 +48,6 @@ export const getUser = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -503,7 +502,6 @@ export const listMarketplaces = /* GraphQL */ `
       items {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -541,7 +539,6 @@ export const getProduct = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -1838,7 +1835,6 @@ export const getScript = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
@@ -2009,7 +2005,6 @@ export const getClaimedToken = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleWallet
         createdAt
         updatedAt
         __typename
