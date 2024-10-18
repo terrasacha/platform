@@ -15,11 +15,11 @@
       "auth": {
         "platformauth": {}
       },
-      "storage": {
-        "platformstorage": {}
-      },
       "api": {
         "platform": {}
+      },
+      "storage": {
+        "platformstorage": {}
       }
     }
   },
@@ -65,9 +65,6 @@
       },
       "storage": {
         "platformstorage": {}
-      },
-      "api": {
-        "platform": {}
       }
     }
   }
