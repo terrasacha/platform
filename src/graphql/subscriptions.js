@@ -92,6 +92,7 @@ export const onCreateUser = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID
@@ -298,6 +299,7 @@ export const onUpdateUser = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID
@@ -504,6 +506,7 @@ export const onDeleteUser = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID
@@ -1957,6 +1960,7 @@ export const onCreateDocument = /* GraphQL */ `
       signedHash
       isApproved
       status
+      visible
       isUploadedToBlockChain
       productFeatureID
       productFeature {
@@ -2099,6 +2103,7 @@ export const onUpdateDocument = /* GraphQL */ `
       signedHash
       isApproved
       status
+      visible
       isUploadedToBlockChain
       productFeatureID
       productFeature {
@@ -2241,6 +2246,7 @@ export const onDeleteDocument = /* GraphQL */ `
       signedHash
       isApproved
       status
+      visible
       isUploadedToBlockChain
       productFeatureID
       productFeature {
@@ -6448,6 +6454,7 @@ export const onCreateProductFeature = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID
@@ -6648,6 +6655,7 @@ export const onUpdateProductFeature = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID
@@ -6848,6 +6856,7 @@ export const onDeleteProductFeature = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID

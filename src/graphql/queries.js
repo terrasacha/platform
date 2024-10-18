@@ -92,6 +92,7 @@ export const getUser = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID
@@ -901,6 +902,7 @@ export const getDocument = /* GraphQL */ `
       signedHash
       isApproved
       status
+      visible
       isUploadedToBlockChain
       productFeatureID
       productFeature {
@@ -1048,6 +1050,7 @@ export const listDocuments = /* GraphQL */ `
         signedHash
         isApproved
         status
+        visible
         isUploadedToBlockChain
         productFeatureID
         productFeature {
@@ -3176,6 +3179,7 @@ export const getProductFeature = /* GraphQL */ `
           signedHash
           isApproved
           status
+          visible
           isUploadedToBlockChain
           productFeatureID
           userID
@@ -5674,6 +5678,7 @@ export const documentsByProductFeatureID = /* GraphQL */ `
         signedHash
         isApproved
         status
+        visible
         isUploadedToBlockChain
         productFeatureID
         productFeature {
@@ -5742,6 +5747,7 @@ export const documentsByUserID = /* GraphQL */ `
         signedHash
         isApproved
         status
+        visible
         isUploadedToBlockChain
         productFeatureID
         productFeature {
