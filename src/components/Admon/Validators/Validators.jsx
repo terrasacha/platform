@@ -1,3 +1,26 @@
+import React, { Component } from "react";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Table,
+  Modal,
+} from "react-bootstrap";
+
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import {
+  onCreateUser,
+  onUpdateUser,
+  onDeleteUser,
+} from "../../../graphql/subscriptions";
+import {
+  createUser,
+  updateUser,
+  deleteUser,
+  deleteUserProduct,
+} from "../../../graphql/mutations";
 import { listUserProducts } from "../../../graphql/queries";
 import { v4 as uuidv4 } from "uuid";
 const listUserValidators = `

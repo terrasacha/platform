@@ -24,7 +24,8 @@ import { API, graphqlOperation } from "aws-amplify";
 import { updateUser } from "../../graphql/mutations";
 import AssignPF from "./AssignPF/AssignPF";
 import { ToastContainer } from "react-toastify";
-import Analysts from "./Analista/Analysts";
+import Analysts from "./Analitic/Analysts";
+
 
 export default class Admon extends Component {
   constructor(props) {
