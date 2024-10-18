@@ -1,6 +1,30 @@
+import React, { Component } from "react";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Table,
+  Modal,
+} from "react-bootstrap";
+
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import {
+  onCreateUser,
+  onUpdateUser,
+  onDeleteUser,
+} from "../../../graphql/subscriptions";
+import {
+  createUser,
+  updateUser,
+  deleteUser,
+  deleteUserProduct,
+} from "../../../graphql/mutations";
 import { listUserProducts } from "../../../graphql/queries";
 import { v4 as uuidv4 } from "uuid";
-const listUserValidators = `
+
+const listUserAnalysts = `
 query ListUsers(
   $filter: ModelUserFilterInput
   $limit: Int
@@ -21,17 +45,18 @@ query ListUsers(
   }
 }
 `;
-class Validators extends Component {
+
+class Analysts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      validators: [],
+      analysts: [],
       newUser: {
         id: "",
         username: "",
         email: "",
-        role: "validator",
-        subRole: "financial",
+        role: "Analista", // Rol de "analyst"
+        subRole: "",
       },
       showModal: false,
       showModalCreate: false,
@@ -41,37 +66,37 @@ class Validators extends Component {
   }
 
   componentDidMount = async () => {
-    // OnCreate User
-    await this.loadValidatorUsers();
-    this.createValidatorListener = API.graphql(
+    await this.loadAnalystUsers();
+    this.createAnalystListener = API.graphql(
       graphqlOperation(onCreateUser)
     ).subscribe({
       next: (createdUser) => {
-        this.loadValidatorUsers();
+        this.loadAnalystUsers();
       },
     });
-    this.deleteValidatorListener = API.graphql(
+    this.deleteAnalystListener = API.graphql(
       graphqlOperation(onDeleteUser)
     ).subscribe({
       next: (deleteUser) => {
-        this.loadValidatorUsers();
+        this.loadAnalystUsers();
       },
     });
     this.updateUserListener = API.graphql(
       graphqlOperation(onUpdateUser)
     ).subscribe({
       next: (updatedUserData) => {
-        let tempValidators = this.state.validators.map((mapValidators) => {
-          if (updatedUserData.value.data.onUpdateUser.id === mapValidators.id) {
+        let tempAnalysts = this.state.analysts.map((mapAnalysts) => {
+          if (updatedUserData.value.data.onUpdateUser.id === mapAnalysts.id) {
             return updatedUserData.value.data.onUpdateUser;
           } else {
-            return mapValidators;
+            return mapAnalysts;
           }
         });
-        this.setState({ validators: tempValidators });
+        this.setState({ analysts: tempAnalysts });
       },
     });
   };
+
   handleDeleteUser = async (id) => {
     const input = { id };
     let promises = [];
@@ -92,20 +117,21 @@ class Validators extends Component {
     });
     promises.push(API.graphql(graphqlOperation(deleteUser, { input: input })));
     await Promise.all(promises)
-      .then((result) => {
+      .then(() => {
         console.log("información eliminada exitosamente");
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
   showModalCreate() {
     this.setState({
       showModalCreate: true,
     });
   }
+
   showModalDelete(user) {
-    // Set the user to delete and show the modal
     this.setState({
       userToDelete: user,
       showModal: true,
@@ -126,22 +152,24 @@ class Validators extends Component {
       this.handleDeleteUser(userToDelete.id);
       this.setState({
         userToDelete: { id: null, username: null },
-        showModal: false, // Hide the modal after confirmation
+        showModal: false,
       });
     }
   }
-  async loadValidatorUsers() {
+
+  async loadAnalystUsers() {
     let filter = {
       role: {
-        contains: "validator",
+        contains: "analyst", // Filtrar usuarios con rol "analyst"
       },
     };
     const listUsersResult = await API.graphql({
-      query: listUserValidators,
+      query: listUserAnalysts,
       variables: { filter: filter },
     });
-    this.setState({ validators: listUsersResult.data.listUsers.items });
+    this.setState({ analysts: listUsersResult.data.listUsers.items });
   }
+
   handleOnChangeInputForm = async (event) => {
     let tempNewUser = this.state.newUser;
     if (event.target.name === "newUser.username") {
@@ -156,6 +184,7 @@ class Validators extends Component {
 
     this.setState({ newUser: tempNewUser });
   };
+
   async handleCRUDUser() {
     let tempNewUser = this.state.newUser;
     await this.signUp(
@@ -164,24 +193,28 @@ class Validators extends Component {
       tempNewUser.role
     );
   }
+
   handleHideModal() {
     this.setState({ showModal: !this.state.showModal });
   }
+
   handleHideModalCreate() {
     this.setState({ showModalCreate: !this.state.showModalCreate });
   }
+
   cleanUserOnCreate() {
     this.setState({
       newUser: {
         id: "",
         username: "",
         email: "",
-        role: "Validador",
+        role: "analyst", // Mantener rol de "analyst"
         subRole: "financial",
       },
       showModalCreate: false,
     });
   }
+
   async signUp() {
     const { username, email, role, subRole } = this.state.newUser;
     if (username !== "" && email !== "") {
@@ -193,62 +226,67 @@ class Validators extends Component {
           isProfileUpdated: false,
           role: `${role}_${subRole}`,
         };
-        await API.graphql(graphqlOperation(createUser, { input: userPayload }));
+       const response = await API.graphql(graphqlOperation(createUser, { input: userPayload }));
+       console.log(response);
+       this.setState({ message: "Usuario creado exitosamente!" });
+        this.handleHideModalCreate();
+        this.cleanUserOnCreate();
       } catch (error) {
-        console.log(
-           "El nombre de usuario ya existe. Por favor, escoja otro."
-        );
+        console.log(error);
       }
     } else {
       console.log("Agregar usuario e email");
     }
   }
-  render() {
-    let { validators, newUser } = this.state;
 
-    const renderValidators = () => {
-      if (validators.length > 0) {
+  render() {
+    let { analysts, newUser } = this.state;
+
+    const renderAnalysts = () => {
+      if (analysts.length > 0) {
         return (
           <div className="container mx-auto mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
-            <h4 className="text-lg font-semibold mb-4">Lista Validadores</h4>
+            <h4 className="text-lg font-semibold mb-4">Lista de analista</h4>
             <div className="overflow-x-auto">
               <table className="table-auto w-full">
                 <thead>
                   <tr>
-                    <th className="border px-4 py-2">Nombe</th>
+                    <th className="border px-4 py-2">Nombre</th>
                     <th className="border px-4 py-2">Email</th>
                     <th className="border px-4 py-2">Subrol</th>
-                    <th className="border px-4 py-2">Creado:</th>
+                    <th className="border px-4 py-2">Creado :</th>
                     <th className="border px-4 py-2">Confirmacion</th>
                     <th className="border px-4 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {validators.map((validator) => (
-                    <tr key={validator.id}>
-                      <td className="border px-4 py-2">{validator.name}</td>
-                      <td className="border px-4 py-2">{validator.email}</td>
-                      <td className="border px-4 py-2">{validator.subrole}</td>
+                  {analysts.map((analyst) => (
+                    <tr key={analyst.id}>
+                      <td className="border px-4 py-2">{analyst.name}</td>
+                      <td className="border px-4 py-2">{analyst.email}</td>
+                      <td className="border px-4 py-2">{analyst.subrole}</td>
                       <td className="border px-4 py-2">
-                        {`${validator.createdAt.split("T")[0].split("-")[2]}-${
-                          validator.createdAt.split("T")[0].split("-")[1]
-                        }-${validator.createdAt.split("T")[0].split("-")[0]}`}
+                        {`${analyst.createdAt.split("T")[0].split("-")[2]}-${
+                          analyst.createdAt.split("T")[0].split("-")[1]
+                        }-${analyst.createdAt.split("T")[0].split("-")[0]}`}
                       </td>
                       <td className="border px-4 py-2">
-                        {validator.isProfileUpdated ? "Confirmado" : "Pendiente"}
+                        {analyst.isProfileUpdated
+                          ? "Confirmado"
+                          : "Pendiente"}
                       </td>
                       <td className="border px-4 py-2">
                         <button
                           className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${
-                            !validator.isProfileUpdated
+                            !analyst.isProfileUpdated
                               ? "opacity-50 cursor-not-allowed"
                               : ""
                           }`}
-                          disabled={!validator.isProfileUpdated}
+                          disabled={!analyst.isProfileUpdated}
                           onClick={() =>
                             this.showModalDelete({
-                              id: validator.id,
-                              username: validator.name,
+                              id: analyst.id,
+                              username: analyst.name,
                             })
                           }
                         >
@@ -268,10 +306,13 @@ class Validators extends Component {
     return (
       <div className="container mx-auto ">
         <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
-          <h4 className="text-lg">Crear un nuevo validador</h4>
+          <h4 className="text-lg">Crea un nuevo analista</h4>
           <form className="mt-4">
             <div className="mb-4">
-              <label htmlFor="formGridUsername" className="block font-semibold">
+              <label
+                htmlFor="formGridUsername"
+                className="block font-semibold"
+              >
                 Nombre de usuario
               </label>
               <input
@@ -303,7 +344,7 @@ class Validators extends Component {
                 htmlFor="formGridValidatorType"
                 className="block font-semibold"
               >
-               Tipo de validador
+                Tipo de analista
               </label>
               <select
                 id="formGridValidatorType"
@@ -312,9 +353,7 @@ class Validators extends Component {
                 onChange={(e) => this.handleOnChangeInputForm(e)}
                 className="block w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
               >
-                <option value="financial">Financiero</option>
-                <option value="technical">Técnico</option>
-                <option value="fullaccessvalidator">Full access</option>
+                <option value="financial">Analista</option>
               </select>
             </div>
             <button
@@ -326,7 +365,7 @@ class Validators extends Component {
             </button>
           </form>
         </div>
-        {renderValidators()}
+        {renderAnalysts()}
         <Modal
           show={this.state.showModal}
           onHide={() => this.setState({ showModal: false })}
@@ -368,7 +407,6 @@ class Validators extends Component {
                   <th className="border px-4 py-2">Nombre</th>
                   <th className="border px-4 py-2">Email</th>
                   <th className="border px-4 py-2">Rol</th>
-                  <th className="border px-4 py-2">Sub rol</th>
                 </tr>
               </thead>
               <tbody>
@@ -382,9 +420,6 @@ class Validators extends Component {
                   <td className="border px-4 py-2">
                     {this.state.newUser.role}
                   </td>
-                  <td className="border px-4 py-2">
-                    {this.state.newUser.subRole}
-                  </td>
                 </tr>
               </tbody>
             </table>
@@ -395,7 +430,7 @@ class Validators extends Component {
               onClick={() => this.setState({ showModalCreate: false })}
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="button"
@@ -411,4 +446,4 @@ class Validators extends Component {
   }
 }
 
-export default Validators;
+export default Analysts;
