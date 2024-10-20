@@ -37,7 +37,6 @@ query ListUsers(
       email
       isProfileUpdated
       role
-      subrole
       status
       createdAt
     }
@@ -55,8 +54,7 @@ class Analysts extends Component {
         id: "",
         username: "",
         email: "",
-        role: "Analista", // Rol de "analyst"
-        subRole: "",
+        role: "analyst"
       },
       showModal: false,
       showModalCreate: false,
@@ -155,7 +153,7 @@ class Analysts extends Component {
         showModal: false,
       });
     }
-  }
+}
 
   async loadAnalystUsers() {
     let filter = {
@@ -177,9 +175,6 @@ class Analysts extends Component {
     }
     if (event.target.name === "newUser.email") {
       tempNewUser.email = event.target.value;
-    }
-    if (event.target.name === "newUser.subRole") {
-      tempNewUser.subRole = event.target.value;
     }
 
     this.setState({ newUser: tempNewUser });
@@ -209,14 +204,13 @@ class Analysts extends Component {
         username: "",
         email: "",
         role: "analyst", // Mantener rol de "analyst"
-        subRole: "financial",
       },
       showModalCreate: false,
     });
   }
 
   async signUp() {
-    const { username, email, role, subRole } = this.state.newUser;
+    const { username, email, role } = this.state.newUser;
     if (username !== "" && email !== "") {
       try {
         const userPayload = {
@@ -224,7 +218,7 @@ class Analysts extends Component {
           name: username,
           email: email,
           isProfileUpdated: false,
-          role: `${role}_${subRole}`,
+          role: `${role}`,
         };
        const response = await API.graphql(graphqlOperation(createUser, { input: userPayload }));
        console.log(response);
@@ -253,7 +247,6 @@ class Analysts extends Component {
                   <tr>
                     <th className="border px-4 py-2">Nombre</th>
                     <th className="border px-4 py-2">Email</th>
-                    <th className="border px-4 py-2">Subrol</th>
                     <th className="border px-4 py-2">Creado :</th>
                     <th className="border px-4 py-2">Confirmacion</th>
                     <th className="border px-4 py-2"></th>
@@ -264,7 +257,6 @@ class Analysts extends Component {
                     <tr key={analyst.id}>
                       <td className="border px-4 py-2">{analyst.name}</td>
                       <td className="border px-4 py-2">{analyst.email}</td>
-                      <td className="border px-4 py-2">{analyst.subrole}</td>
                       <td className="border px-4 py-2">
                         {`${analyst.createdAt.split("T")[0].split("-")[2]}-${
                           analyst.createdAt.split("T")[0].split("-")[1]
@@ -346,15 +338,6 @@ class Analysts extends Component {
               >
                 Tipo de analista
               </label>
-              <select
-                id="formGridValidatorType"
-                name="newUser.subRole"
-                value={newUser.subRole}
-                onChange={(e) => this.handleOnChangeInputForm(e)}
-                className="block w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
-              >
-                <option value="financial">Analista</option>
-              </select>
             </div>
             <button
               type="button"

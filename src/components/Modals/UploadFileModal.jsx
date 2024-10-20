@@ -93,7 +93,7 @@ export default function UploadFileModal(props) {
 
         const segments = filePath.split("/");
         const fileName = segments.pop();
-
+        console.log(awsUrlFullPath, "awsUrlFullPath")
         const tempNewDocument = {
           isApproved: true,
           isUploadedToBlockChain: false,
@@ -174,9 +174,6 @@ export default function UploadFileModal(props) {
     setIsLoadingDoc(false);
     closeModal();
   };
-
-  console.log(selectedFiles);
-  console.log(fileNames);
 
   return (
     <div>

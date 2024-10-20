@@ -31,11 +31,12 @@ export default function ProjectPage() {
   const { user } = useAuth();
 
   const [progressObj, setProgressObj] = useState(null);
-  const [activeSection, setActiveSection] = useState("details");
+  const [activeSection, setActiveSection] = useState("details"); 
   const [autorizedUser, setAutorizedUser] = useState(false);
   const [isPostulant, setIsPostulant] = useState(false);
   const [isVerifier, setIsVerifier] = useState(false);
   const [isAdmon, setIsAdmon] = useState(false);
+  const [isAnalyst, setIsAnalyst] = useState(false);
 
   const projectStatusMapper = {
     draft: "En borrador",
@@ -71,6 +72,7 @@ export default function ProjectPage() {
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));
       setIsAdmon(user?.role === "admon");
+      setIsAnalyst(user?.role === "analyst")
     }
   }, [projectData, user]);
 
@@ -222,7 +224,7 @@ export default function ProjectPage() {
                       )}
                   </a>
                 </li>
-                <li>
+                {(isVerifier || isAdmon || isAnalyst) && <li>
                   <a
                     href="#files"
                     onClick={(e) => {
@@ -241,9 +243,9 @@ export default function ProjectPage() {
                         <HourGlassIcon className="text-danger ms-2" />
                       )}
                   </a>
-                </li>
+                </li>}
 
-                {(isVerifier || isAdmon) && (
+                {(isVerifier || isAdmon || isAnalyst) && (
                   <>
                     <li>
                       <a
@@ -311,7 +313,7 @@ export default function ProjectPage() {
                       </a>
                     </li>
                   )}
-                <li>
+                {(isVerifier || isAdmon || isAnalyst) &&<li>
                   <a
                     href="#analysis"
                     onClick={(e) => {
@@ -326,12 +328,12 @@ export default function ProjectPage() {
                   >
                     Análisis
                   </a>
-                </li>
+                </li>}
               </ul>
             </div>
             <AlertMessage />
             <ProjectDetails visible={activeSection === "details"} />
-            <ProjectFileManager visible={activeSection === "file_manager"} />
+            <ProjectFileManager visible={activeSection === "file_manager"} isAnalyst={isAnalyst} />
             <ProjectFiles visible={activeSection === "files"} />
             <FinanceCard visible={activeSection === "finance"} />
             <ProjectSettings

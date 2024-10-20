@@ -14,7 +14,7 @@ import { moveToBackupFolderS3, removeFolderS3 } from "utilities/moveToBackupS3";
 import NewFolderOnS3Modal from "components/Modals/NewFolderOnS3Modal";
 
 export default function FileManager(props) {
-  const { className, rootFolder } = props;
+  const { className, rootFolder, isAnalyst } = props;
 
   const [s3Objects, setS3Objects] = useState({});
   const [selectedFolder, setSelectedFolder] = useState({});
@@ -29,7 +29,11 @@ export default function FileManager(props) {
         // const actualFolder = currentPath.length === 0 ? rootFolder : currentPath.join("/");
         setS3Objects(data);
         if (currentPath.length === 0) {
-          setSelectedFolder(data[rootFolder].data);
+          console.log(data[rootFolder].data, 'data[rootFolder].data')
+          console.log([rootFolder], '[rootFolder]')
+          console.log(data, 'data 32')
+          console.log(isAnalyst, 'isAnalyst')
+          setSelectedFolder(isAnalyst? {Analista: data[rootFolder].data["Analista"]}: data[rootFolder].data);
           setCurrentPath([rootFolder]);
         } else {
           let currentData = data;
@@ -119,6 +123,9 @@ export default function FileManager(props) {
     console.log(pathToBack, "pathToBack");
 
     const index = currentPath.indexOf(pathToBack);
+
+    console.log(index, 'currentPath.indexOf(pathToBack)')
+    console.log(currentPath, 'currentPath')
     if (index !== -1) {
       const goBackArray = currentPath.slice(0, index + 1);
       let tempState = s3Objects[rootFolder].data;
@@ -128,6 +135,11 @@ export default function FileManager(props) {
         tempState = aux;
       }
 
+      console.log(goBackArray)
+      console.log(tempState)
+      if(index === 0 && isAnalyst){
+        tempState = {Analista: tempState.Analista}
+      }
       setCurrentPath(goBackArray);
       setSelectedFolder(tempState);
     }
@@ -294,43 +306,43 @@ export default function FileManager(props) {
     );
   };
 
-  console.log(s3Objects, "s3Objects");
+  /* console.log(s3Objects, "s3Objects");
   console.log(Object.keys(selectedFolder), "selectedFolder");
   console.log(selectedFolder, "selectedFolder");
-  console.log(currentPath, "currentPath");
+  console.log(currentPath, "currentPath"); */
   //console.log(Object.keys(s3Objects[Object.keys(selectedFolder)[0]].data), "Este es")
   return (
     <Card className={className}>
       <Card.Body>
         <div className="d-flex justify-content-between">
           <nav
-            class="flex  flex-start text-gray-700 py-3"
+            className="flex  flex-start text-gray-700 py-3"
             aria-label="Breadcrumb"
           >
-            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <ol className="inline-flex items-center space-x-1 md:space-x-3">
               {currentPath.map((path, index) => (
                 <li>
                   <div
-                    class="flex items-center"
+                    className="flex items-center"
                     href="#"
-                    key={path}
+                    key={index}
                     onClick={() => backToAnyFolder(path)}
                   >
                     {index !== 0 && (
                       <svg
-                        class="w-6 h-6 text-gray-400"
+                        className="w-6 h-6 text-gray-400"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                           clip-rule="evenodd"
                         ></path>
                       </svg>
                     )}
-                    <a class="text-gray-700 hover:text-gray-900 ml-1 md:ml-2 text-sm font-medium">
+                    <a className="text-gray-700 hover:text-gray-900 ml-1 md:ml-2 text-sm font-medium">
                       {index === 0 ? "Inicio" : path}
                     </a>
                   </div>
