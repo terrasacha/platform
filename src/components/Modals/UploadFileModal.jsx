@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { useProjectData } from "context/ProjectDataContext";
 import { API, Storage, graphqlOperation } from "aws-amplify";
+import { S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { useS3Client } from "context/s3ClientContext";
 import {
   createDocument,
   createProductFeature,
@@ -10,9 +13,12 @@ import {
 import { useAuth } from "context/AuthContext";
 import { Spinner } from "react-bootstrap";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UploadFileModal(props) {
   const { uploadRoute } = props;
+  const { s3Client, bucketName } = useS3Client()
   const [showModal, setShowModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [fileNames, setFileNames] = useState([]);
@@ -60,18 +66,41 @@ export default function UploadFileModal(props) {
     const filenameWithoutAccents = removeAccents(formattedFilename);
     return encodeURIComponent(filenameWithoutAccents);
   };
+  const uploadImage = async (file, urlPath) => {
+    if (!s3Client) return;
+    const command = new PutObjectCommand({
+      Bucket: bucketName,
+      Key: urlPath,
+      Body: file,
+      ContentType: file.type,
+    });
 
+    try {
+      console.log(s3Client, 's3client')
+      const result = await s3Client.send(command);
+      notify('success', 'Archivo subido a S3 👍')
+
+      console.log("document uploaded successfully!");
+      return result
+    } catch (error) {
+      notify('error', 'Hubo un error al intentar subir el archivo a S3 😔. Si crees que esto podría deberse a un problema de permisos, por favor, contacta al equipo de desarrollo.')
+
+      console.error("Error uploading image:", error);
+    }
+  };
   const uploadFilesToS3 = async (files) => {
     let urls = [];
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
 
       try {
-        const urlPath = `${uploadRoute}/${formatFileName(file.name)}`;
-        const uploadFileResult = await Storage.put(urlPath, file, {
+        const urlPath = `projects/${uploadRoute}/${formatFileName(file.name)}`;
+        
+        const uploadFileResult = await uploadImage(file, urlPath)
+        /* const uploadFileResult = await Storage.put(urlPath, file, {
           level: "public",
-          contentType: "*/*",
-        });
+          contentType: "",
+        }); */
         urls.push(urlPath);
 
         console.log("urlPath", urlPath);
@@ -122,13 +151,25 @@ export default function UploadFileModal(props) {
 
     return results;
   };
+  const notify = (type, msg) => {
+    toast[type](msg, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
 
   const handleSaveChanges = async () => {
     setIsLoadingDoc(true);
 
     let pfProjectValidatorDocumentsID;
 
-    if (!projectData.projectFilesValidators.pfProjectValidatorDocumentsID) {
+    /* if (!projectData.projectFilesValidators.pfProjectValidatorDocumentsID) {
       let tempProductFeature = {
         value: "",
         isToBlockChain: false,
@@ -145,10 +186,10 @@ export default function UploadFileModal(props) {
     } else {
       pfProjectValidatorDocumentsID =
         projectData.projectFilesValidators.pfProjectValidatorDocumentsID;
-    }
+    } */
 
     const filesS3URL = await uploadFilesToS3(selectedFiles);
-    const docData = await createDocumentsFromFileURL(
+    /* const docData = await createDocumentsFromFileURL(
       filesS3URL,
       user.id,
       pfProjectValidatorDocumentsID
@@ -171,7 +212,7 @@ export default function UploadFileModal(props) {
       graphqlOperation(updateProductFeature, { input: tempProductFeature })
     );
 
-    setIsLoadingDoc(false);
+    setIsLoadingDoc(false); */
     closeModal();
   };
 

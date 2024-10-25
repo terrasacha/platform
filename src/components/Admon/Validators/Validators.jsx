@@ -199,7 +199,7 @@ class Validators extends Component {
         id: "",
         username: "",
         email: "",
-        role: "Validador",
+        role: "validator",
         subRole: "financial",
       },
       showModalCreate: false,

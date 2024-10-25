@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-
+// S3 client
+import { useS3Client } from "context/s3ClientContext";
+import { S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
+// end S3 client
 import Card from "components/common/Card";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -12,10 +16,12 @@ import { deleteDocument, updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "context/ProjectDataContext";
 import { moveToBackupFolderS3, removeFolderS3 } from "utilities/moveToBackupS3";
 import NewFolderOnS3Modal from "components/Modals/NewFolderOnS3Modal";
+import { notify } from "utilities/notify";
 
 export default function FileManager(props) {
-  const { className, rootFolder, isAnalyst } = props;
-
+  const { className, rootFolder } = props;
+  const { s3Client, bucketName } = useS3Client()
+  console.log(s3Client, 'S3Client filemanager')
   const [s3Objects, setS3Objects] = useState({});
   const [selectedFolder, setSelectedFolder] = useState({});
   const [currentPath, setCurrentPath] = useState([]);
@@ -24,7 +30,7 @@ export default function FileManager(props) {
     useProjectData();
 
   useEffect(() => {
-    listObjectsInFolder(rootFolder)
+    listObjects(s3Client)
       .then((data) => {
         // const actualFolder = currentPath.length === 0 ? rootFolder : currentPath.join("/");
         setS3Objects(data);
@@ -32,8 +38,7 @@ export default function FileManager(props) {
           console.log(data[rootFolder].data, 'data[rootFolder].data')
           console.log([rootFolder], '[rootFolder]')
           console.log(data, 'data 32')
-          console.log(isAnalyst, 'isAnalyst')
-          setSelectedFolder(isAnalyst? {Analista: data[rootFolder].data["Analista"]}: data[rootFolder].data);
+          setSelectedFolder(data[rootFolder].data);
           setCurrentPath([rootFolder]);
         } else {
           let currentData = data;
@@ -50,10 +55,28 @@ export default function FileManager(props) {
         console.error("Error al listar objetos:", error);
       });
   }, [projectData]);
-
+  const listObjects = async (s3Client) => {
+    const command = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: `projects/${rootFolder}`, 
+    });
+    
+    try {
+      const response = await s3Client.send(command);
+      console.log(response, '67')
+      if (response.Contents) {
+        const objectKeys = response.Contents.map((object)=> object.Key);
+      console.log(objectKeys, 'objets listObjects')
+      return processPathList(objectKeys)
+      }
+    } catch (error) {
+      console.error("Error listing objects:", error);
+    }
+  };
   async function listObjectsInFolder(folder) {
     try {
       const objects = await Storage.list(folder, { pageSize: 1000 });
+      console.log(objects, 'objets listObjectsInFolder')
       let nestedStorage = processStorageList(objects);
       return nestedStorage;
     } catch (error) {
@@ -61,7 +84,31 @@ export default function FileManager(props) {
       throw error;
     }
   }
+  function processPathList(paths) {
+    const filesystem = {};
+    
+    const addPath = (path, target) => {
+        const elements = path.split("/");
+        const element = elements.shift();
+        
+        if (!element) return;
 
+        // Verifica si el elemento actual es un archivo (tiene una extensión)
+        const isFile = element.includes('.') && elements.length === 0;
+
+        if (isFile) {
+            // Crea un objeto de tipo archivo si es un archivo
+            target[element] = { type: "file", key: path};
+        } else {
+            // Asegúrate de que se está creando un objeto para la carpeta
+            target[element] = target[element] || { type: "folder", data: {} };
+            addPath(elements.join("/"), target[element].data);
+        }
+    };
+
+    paths.forEach(path => addPath(path.replace(/\/$/, ''), filesystem));
+    return {[rootFolder]: filesystem.projects.data[rootFolder]}
+}
   function processStorageList(response) {
     const filesystem = {};
     const add = (source, target, item) => {
@@ -137,34 +184,54 @@ export default function FileManager(props) {
 
       console.log(goBackArray)
       console.log(tempState)
-      if(index === 0 && isAnalyst){
-        tempState = {Analista: tempState.Analista}
-      }
       setCurrentPath(goBackArray);
       setSelectedFolder(tempState);
     }
   };
   const handleDownload = async (doc) => {
+    console.log(doc);
+    const fileName = Object.keys(doc)[0];
+    console.log(fileName)
     try {
-      const id = doc;
-      const response = await Storage.get(id, { download: true });
-
-      // Extraer el nombre del archivo de la ruta de S3
-      const fileName = id.split("/").pop();
-
-      const url = URL.createObjectURL(response.Body);
-      const link = document.createElement("a");
-      link.href = url;
-
-      // Usar el nombre del archivo para el atributo 'download'
-      link.download = fileName;
-
-      link.click();
+      const id = "projects/" + currentPath.join('/') + `/${fileName}`
+      const response = await handleDownloadObject(id)
     } catch (error) {
       console.log("Error al descargar el archivo:", error);
     }
   };
+  const handleDownloadObject = async (id) => {
+    console.log(id, 'id handleDownloadObject')
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: id,
+    });
 
+    try {
+      const response = await s3Client.send(command);
+      const stream = response.Body.getReader();
+      const chunks = [];
+      while (true) {
+        const { done, value } = await stream.read();
+        if (done) break;
+        chunks.push(value);
+      }
+      const blob = new Blob(chunks);
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = id.split('/').pop(); 
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      notify({ msg: 'Tienes acceso a este archivo 😄.', type: 'success'})
+    } catch (error) {
+      notify({ msg: 'Error al descargar el archivo 😔. No tienes permisos para acceder a este archivo. Si crees que esto es un error, por favor, comunicate con el equipo de desarrollo',type: 'error'})
+      console.error('Error descargando el objeto:', error);
+    }
+  };
   const handleDeleteFolder = async (folder) => {
     const folderToDelete = currentPath.join("/") + "/" + folder;
     console.log(folderToDelete);
@@ -456,7 +523,7 @@ export default function FileManager(props) {
                             <Dropdown.Item
                               eventKey="3"
                               onClick={() =>
-                                handleDownload(selectedFolder[folder].key)
+                                handleDownload(selectedFolder)
                               }
                             >
                               Descargar
