@@ -108,7 +108,7 @@ const mapDocumentsData = async (data, ownersData) => {
   const verifiablePF = data.productFeatures.items.filter(
     (pf) => pf.feature.isVerifable === true
   );
-
+  console.log(verifiablePF, 'verifiablePF')
   const documentsPromises = verifiablePF.map((pf) =>
     pf.documents.items
       .filter((document) => document.status !== "validatorFile")
@@ -133,6 +133,7 @@ const mapDocumentsData = async (data, ownersData) => {
         };
       })
   );
+  console.log('documentsPromises', documentsPromises)
   const documents = await Promise.all(documentsPromises.flat());
   return documents;
 };

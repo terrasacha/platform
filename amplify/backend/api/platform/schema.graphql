@@ -85,6 +85,7 @@ type Document @model {
   signedHash: String
   isApproved: Boolean
   status: String
+  visible: Boolean
   isUploadedToBlockChain: Boolean
   productFeatureID: ID! @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])

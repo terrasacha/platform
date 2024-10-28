@@ -21,7 +21,6 @@ export default function ProjectSettings({ visible }) {
     useProjectData();
   const { projectItems } = useProjectItems();
 
-  console.log(projectData, "projectData");
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((data) => {
@@ -39,7 +38,6 @@ export default function ProjectSettings({ visible }) {
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
     );
-    console.log(updatedProjectData, "updatedProjectData");
     if (item === "technicalInfo") {
       if (!updatedProjectData.isTechnicalComplete) {
         let toFixMessage = "";

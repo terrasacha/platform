@@ -24,6 +24,8 @@ import { API, graphqlOperation } from "aws-amplify";
 import { updateUser } from "../../graphql/mutations";
 import AssignPF from "./AssignPF/AssignPF";
 import { ToastContainer } from "react-toastify";
+import Analysts from "./Analitic/Analysts";
+
 
 export default class Admon extends Component {
   constructor(props) {
@@ -55,6 +57,7 @@ export default class Admon extends Component {
       isShowAPF: false,
       isShowAProducts: false,
       isShowConfigure: false,
+      isShowAnalysts: false,
       isShowAppStatus: false
     };
     this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this);
@@ -121,9 +124,33 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
-        isShowAppStatus: false
+        isShowAppStatus: false,
+        isShowAnalysts: false,
       });
     }
+
+    if (pRequest === "analysts") {
+      this.setState({
+        isShowProducts: false,
+        isShowCategorys: false,
+        isShowItems: false,
+        isShowFeatures: false,
+        isShowAdmonProfile: false,
+        isShowNotAuthorize: false,
+        isShowUOM: false,
+        isShowFormulas: false,
+        isShowValidators: false,
+        isShowResults: false,
+        isShowDocuments: false,
+        isShowAProducts: false,
+        isShowConfigure: false,
+        isShowAPF: false,
+        isShowMarketplaceAdmin: false,
+        isShowAppStatus: false,
+        isShowAnalysts: true,  // Mostrar analistas
+      });
+    }
+    
 
     if (pRequest === "user_not_authorize") {
       this.setState({
@@ -142,6 +169,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -163,6 +191,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -184,6 +213,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -205,6 +235,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -225,6 +256,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -245,6 +277,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -265,6 +298,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -305,6 +339,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -325,6 +360,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -346,6 +382,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -366,6 +403,7 @@ export default class Admon extends Component {
         isShowConfigure: true,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -386,6 +424,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -406,6 +445,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: true,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -426,6 +466,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:true,
+        isShowAnalysts: false,
         isShowAppStatus: false
       });
     }
@@ -446,6 +487,7 @@ export default class Admon extends Component {
         isShowConfigure: false,
         isShowAPF: false,
         isShowMarketplaceAdmin:false,
+        isShowAnalysts: false,
         isShowAppStatus: true
       });
     }
@@ -508,7 +550,8 @@ export default class Admon extends Component {
       isShowConfigure,
       isShowAPF,
       isShowMarketplaceAdmin,
-      isShowAppStatus
+      isShowAppStatus,
+      isShowAnalysts
     } = this.state;
     return (
       <div className="min-h-screen bg-gray-100 pt-20">
@@ -589,6 +632,14 @@ export default class Admon extends Component {
               handleCUUser={this.handleCUUser}
             />
           )}
+          {isShowAnalysts && (
+  <Analysts
+    user={this.state.user}
+    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+    handleCUUser={this.handleCUUser}
+  />
+)}
+
           {isShowNotAuthorize && (
             <Alert key="key_warning" variant="warning">
               Perfil no autorizado

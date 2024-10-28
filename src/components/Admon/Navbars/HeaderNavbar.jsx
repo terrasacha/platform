@@ -129,33 +129,51 @@ export default class HeaderNavbar extends Component {
 
                     <Dropdown.Menu>
                       <Dropdown.Item href="/new_project">Crear proyecto</Dropdown.Item>
-                      <Dropdown.Item href="#assign_pf"
-                          onClick={(e) =>
-                            this.changeHeaderNavBarRequest("assign_pf", e)
-                          }
+                      <Dropdown.Item
+                        href="#assign_pf"
+                        onClick={(e) =>
+                          this.changeHeaderNavBarRequest("assign_pf", e)
+                        }
                       >
-                        Asignar Validadores</Dropdown.Item>
-                      <Dropdown.Item href="#validators"
+                        Asignar Validadores
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        href="#validators"
                         onClick={(e) =>
                           this.changeHeaderNavBarRequest("validators", e)
                         }
                       >
-                        Validadores</Dropdown.Item>
-                        <Dropdown.Item href="#marketplace_admin"
+                        Validadores
+                      </Dropdown.Item>
+                      {/* Nueva entrada para Analistas */}
+                      <Dropdown.Item
+                        href="#analysts"
+                        onClick={(e) =>
+                          this.changeHeaderNavBarRequest("analysts", e)
+                        }
+                      >
+                        Analistas
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        href="#marketplace_admin"
                         onClick={(e) =>
                           this.changeHeaderNavBarRequest("marketplace_admin", e)
                         }
                       >
-                        Crear marketplace admin</Dropdown.Item><Dropdown.Item href="#apps_status"
+                        Crear marketplace admin
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        href="#apps_status"
                         onClick={(e) =>
                           this.changeHeaderNavBarRequest("apps_status", e)
                         }
                       >
-                        Apps status</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item onClick={(e) => this.handleChangeObjectElement()}>
-                          Sign Out
-                        </Dropdown.Item>
+                        Apps status
+                      </Dropdown.Item>
+                      <Dropdown.Divider />
+                      <Dropdown.Item onClick={(e) => this.handleChangeObjectElement()}>
+                        Sign Out
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </Nav>

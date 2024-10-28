@@ -13,6 +13,7 @@ import MiniInfoCard from "../../common/MiniInfoCard";
 // Contexts
 import { useProjectData } from "context/ProjectDataContext";
 import { useAuth } from "context/AuthContext";
+import { S3ClientProvider } from "context/s3ClientContext";
 import { fetchProjectDataByProjectID } from "./api";
 import { formatNumberWithThousandsSeparator } from "./utils";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
@@ -31,11 +32,12 @@ export default function ProjectPage() {
   const { user } = useAuth();
 
   const [progressObj, setProgressObj] = useState(null);
-  const [activeSection, setActiveSection] = useState("details");
+  const [activeSection, setActiveSection] = useState("details"); 
   const [autorizedUser, setAutorizedUser] = useState(false);
   const [isPostulant, setIsPostulant] = useState(false);
   const [isVerifier, setIsVerifier] = useState(false);
   const [isAdmon, setIsAdmon] = useState(false);
+  const [isAnalyst, setIsAnalyst] = useState(false);
 
   const projectStatusMapper = {
     draft: "En borrador",
@@ -71,6 +73,7 @@ export default function ProjectPage() {
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));
       setIsAdmon(user?.role === "admon");
+      setIsAnalyst(user?.role === "analyst")
     }
   }, [projectData, user]);
 
@@ -92,6 +95,7 @@ export default function ProjectPage() {
   }, [projectData, user]);
 
   return (
+    <S3ClientProvider>
     <div>
       {projectData ? (
         <div className="container-sm">
@@ -171,6 +175,15 @@ export default function ProjectPage() {
                       </div>
                     </section>
                   )}
+                <section>
+                    <div className="flex gap-2">
+                          <div
+                            className={`${projectData.projectInfo.isActive? "bg-green-600" : "bg-red-500"} text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap`}
+                          >
+                            {projectData.projectInfo.isActive? 'Publicado en marketplace' : 'No publicado en marketplace'}
+                          </div>
+                    </div>
+                  </section>
                 {projectData.projectVerifierNames.length > 0 && (
                   <section>
                     <p className="fs-6 mb-0 fw-bold">Validadores:</p>
@@ -178,7 +191,7 @@ export default function ProjectPage() {
                       {projectData.projectVerifierNames.map((pvn, index) => {
                         return (
                           <div
-                            className="bg-green-600 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
+                            className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
                             key={index}
                           >
                             Validador {index + 1}: {pvn}
@@ -188,6 +201,7 @@ export default function ProjectPage() {
                     </div>
                   </section>
                 )}
+                
               </div>
               <ul className="font-medium flex mt-4 pl-0 ">
                 <li>
@@ -212,7 +226,7 @@ export default function ProjectPage() {
                       )}
                   </a>
                 </li>
-                <li>
+                {(isVerifier || isAdmon || isAnalyst) && <li>
                   <a
                     href="#files"
                     onClick={(e) => {
@@ -231,9 +245,9 @@ export default function ProjectPage() {
                         <HourGlassIcon className="text-danger ms-2" />
                       )}
                   </a>
-                </li>
+                </li>}
 
-                {(isVerifier || isAdmon) && (
+                {(isVerifier || isAdmon || isAnalyst) && (
                   <>
                     <li>
                       <a
@@ -301,7 +315,7 @@ export default function ProjectPage() {
                       </a>
                     </li>
                   )}
-                <li>
+                {(isVerifier || isAdmon || isAnalyst) &&<li>
                   <a
                     href="#analysis"
                     onClick={(e) => {
@@ -316,12 +330,12 @@ export default function ProjectPage() {
                   >
                     Análisis
                   </a>
-                </li>
+                </li>}
               </ul>
             </div>
             <AlertMessage />
             <ProjectDetails visible={activeSection === "details"} />
-            <ProjectFileManager visible={activeSection === "file_manager"} />
+            <ProjectFileManager visible={activeSection === "file_manager"} isAnalyst={isAnalyst} />
             <ProjectFiles visible={activeSection === "files"} />
             <FinanceCard visible={activeSection === "finance"} />
             <ProjectSettings
@@ -337,5 +351,6 @@ export default function ProjectPage() {
         <p>Loading or no data available</p>
       )}
     </div>
+    </S3ClientProvider>
   );
 }
