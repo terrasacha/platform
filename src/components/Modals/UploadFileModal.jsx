@@ -103,9 +103,9 @@ export default function UploadFileModal(props) {
         }); */
         urls.push(urlPath);
 
-        console.log("urlPath", urlPath);
+        /* console.log("urlPath", urlPath);
         console.log("file", file);
-        console.log("uploadFileResult", uploadFileResult);
+        console.log("uploadFileResult", uploadFileResult); */
       } catch (error) {
         console.error("Error al subir el archivo:", error);
         throw new Error("Error al subir el archivo");
@@ -118,7 +118,7 @@ export default function UploadFileModal(props) {
     const results = await Promise.all(
       urls.map(async (filePath, index) => {
         const awsUrlFullPath =
-          WebAppConfig.url_s3_public_images + encodeURIComponent(filePath);
+          WebAppConfig.url_s3_images + encodeURIComponent(filePath);
 
         const segments = filePath.split("/");
         const fileName = segments.pop();
@@ -169,7 +169,7 @@ export default function UploadFileModal(props) {
 
     let pfProjectValidatorDocumentsID;
 
-    /* if (!projectData.projectFilesValidators.pfProjectValidatorDocumentsID) {
+    if (!projectData.projectFilesValidators.pfProjectValidatorDocumentsID) {
       let tempProductFeature = {
         value: "",
         isToBlockChain: false,
@@ -186,10 +186,11 @@ export default function UploadFileModal(props) {
     } else {
       pfProjectValidatorDocumentsID =
         projectData.projectFilesValidators.pfProjectValidatorDocumentsID;
-    } */
+    }
 
     const filesS3URL = await uploadFilesToS3(selectedFiles);
-    /* const docData = await createDocumentsFromFileURL(
+    console.log(filesS3URL, 'filesS3URL')
+    const docData = await createDocumentsFromFileURL(
       filesS3URL,
       user.id,
       pfProjectValidatorDocumentsID
@@ -212,7 +213,7 @@ export default function UploadFileModal(props) {
       graphqlOperation(updateProductFeature, { input: tempProductFeature })
     );
 
-    setIsLoadingDoc(false); */
+    setIsLoadingDoc(false);
     closeModal();
   };
 
@@ -242,7 +243,7 @@ export default function UploadFileModal(props) {
               <div className="row row-cols-1 p-3 g-2">
                 {selectedFiles.map((file, index) => (
                   <div key={index}>
-                    <p controlId={`file${index}`}>
+                    <p controlid={`file${index}`}>
                       Archivo #{index + 1}: {file.name}
                     </p>
                   </div>

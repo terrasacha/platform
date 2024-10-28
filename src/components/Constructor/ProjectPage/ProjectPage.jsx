@@ -13,6 +13,7 @@ import MiniInfoCard from "../../common/MiniInfoCard";
 // Contexts
 import { useProjectData } from "context/ProjectDataContext";
 import { useAuth } from "context/AuthContext";
+import { S3ClientProvider } from "context/s3ClientContext";
 import { fetchProjectDataByProjectID } from "./api";
 import { formatNumberWithThousandsSeparator } from "./utils";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
@@ -94,6 +95,7 @@ export default function ProjectPage() {
   }, [projectData, user]);
 
   return (
+    <S3ClientProvider>
     <div>
       {projectData ? (
         <div className="container-sm">
@@ -349,5 +351,6 @@ export default function ProjectPage() {
         <p>Loading or no data available</p>
       )}
     </div>
+    </S3ClientProvider>
   );
 }

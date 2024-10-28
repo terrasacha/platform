@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // S3 client
 import { useS3Client } from "context/s3ClientContext";
-import { S3Client } from "@aws-sdk/client-s3";
+
 import { GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
 // end S3 client
 import Card from "components/common/Card";
@@ -14,30 +14,27 @@ import { API, Storage, graphqlOperation } from "aws-amplify";
 import UploadFileModal from "components/Modals/UploadFileModal";
 import { deleteDocument, updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "context/ProjectDataContext";
-import { moveToBackupFolderS3, removeFolderS3 } from "utilities/moveToBackupS3";
+import { moveToBackupFolderS3, removeFolderS3, moveFile } from "utilities/moveToBackupS3";
 import NewFolderOnS3Modal from "components/Modals/NewFolderOnS3Modal";
 import { notify } from "utilities/notify";
-
+import { Spinner } from "react-bootstrap";
 export default function FileManager(props) {
   const { className, rootFolder } = props;
   const { s3Client, bucketName } = useS3Client()
-  console.log(s3Client, 'S3Client filemanager')
   const [s3Objects, setS3Objects] = useState({});
   const [selectedFolder, setSelectedFolder] = useState({});
   const [currentPath, setCurrentPath] = useState([]);
-
+  const [loading, setLoading] = useState(false)
   const { projectData, handleUpdateContextProjectFileValidators } =
     useProjectData();
 
   useEffect(() => {
+    setLoading(true)
     listObjects(s3Client)
       .then((data) => {
         // const actualFolder = currentPath.length === 0 ? rootFolder : currentPath.join("/");
         setS3Objects(data);
         if (currentPath.length === 0) {
-          console.log(data[rootFolder].data, 'data[rootFolder].data')
-          console.log([rootFolder], '[rootFolder]')
-          console.log(data, 'data 32')
           setSelectedFolder(data[rootFolder].data);
           setCurrentPath([rootFolder]);
         } else {
@@ -52,8 +49,10 @@ export default function FileManager(props) {
         }
       })
       .catch((error) => {
+        notify({type: 'error', msg: 'Error al listar objetos'})
         console.error("Error al listar objetos:", error);
-      });
+      })
+      .finally(setLoading(false))
   }, [projectData]);
   const listObjects = async (s3Client) => {
     const command = new ListObjectsV2Command({
@@ -63,10 +62,8 @@ export default function FileManager(props) {
     
     try {
       const response = await s3Client.send(command);
-      console.log(response, '67')
       if (response.Contents) {
         const objectKeys = response.Contents.map((object)=> object.Key);
-      console.log(objectKeys, 'objets listObjects')
       return processPathList(objectKeys)
       }
     } catch (error) {
@@ -76,7 +73,6 @@ export default function FileManager(props) {
   async function listObjectsInFolder(folder) {
     try {
       const objects = await Storage.list(folder, { pageSize: 1000 });
-      console.log(objects, 'objets listObjectsInFolder')
       let nestedStorage = processStorageList(objects);
       return nestedStorage;
     } catch (error) {
@@ -131,9 +127,9 @@ export default function FileManager(props) {
       return s3Objects[rootFolder].data;
     }
     const selectedItem = object[propertyName];
-    console.log(selectedItem, "selectedItem");
+    /* console.log(selectedItem, "selectedItem");
     console.log(object, "object");
-    console.log(propertyName, "propertyName");
+    console.log(propertyName, "propertyName"); */
     if (selectedItem.type === "folder") {
       return object[propertyName].data;
     } else if (selectedItem.type === "file") {
@@ -147,7 +143,7 @@ export default function FileManager(props) {
       setSelectedFolder(selectedFolder[propertyName].data);
       setCurrentPath([...currentPath, propertyName]);
     } else if (selectedItem.type === "file") {
-      handleDownload(selectedItem.key);
+      handleDownload(selectedFolder);
       console.log(`Archivo ${propertyName}:`, selectedItem);
     }
   };
@@ -167,12 +163,9 @@ export default function FileManager(props) {
 
   const backToAnyFolder = (path) => {
     const pathToBack = path;
-    console.log(pathToBack, "pathToBack");
 
     const index = currentPath.indexOf(pathToBack);
 
-    console.log(index, 'currentPath.indexOf(pathToBack)')
-    console.log(currentPath, 'currentPath')
     if (index !== -1) {
       const goBackArray = currentPath.slice(0, index + 1);
       let tempState = s3Objects[rootFolder].data;
@@ -182,16 +175,12 @@ export default function FileManager(props) {
         tempState = aux;
       }
 
-      console.log(goBackArray)
-      console.log(tempState)
       setCurrentPath(goBackArray);
       setSelectedFolder(tempState);
     }
   };
   const handleDownload = async (doc) => {
-    console.log(doc);
     const fileName = Object.keys(doc)[0];
-    console.log(fileName)
     try {
       const id = "projects/" + currentPath.join('/') + `/${fileName}`
       const response = await handleDownloadObject(id)
@@ -200,7 +189,6 @@ export default function FileManager(props) {
     }
   };
   const handleDownloadObject = async (id) => {
-    console.log(id, 'id handleDownloadObject')
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: id,
@@ -245,7 +233,7 @@ export default function FileManager(props) {
         (file, index) => file.filePathS3.includes(folderToDelete)
       );
     for (let i = 0; i < filesToDelete.length; i++) {
-      await moveToBackupFolderS3(filesToDelete[i].filePathS3);
+      await moveToBackupFolderS3(s3Client, bucketName,filesToDelete[i].filePathS3);
 
       const fileToDeleteID = filesToDelete[i].id;
 
@@ -264,8 +252,13 @@ export default function FileManager(props) {
     await API.graphql(
       graphqlOperation(updateProductFeature, { input: tempProductFeature })
     );
-
-    await removeFolderS3(folderToDelete);
+    let result;
+    try {
+      result = await removeFolderS3(s3Client, bucketName, currentPath, folder);
+      notify({type: result.status, msg: result.msg})
+    } catch (error) {
+      notify({type: result.status, msg: result.msg})
+    }
 
     await handleUpdateContextProjectFileValidators({
       projectValidatorDocuments: updatedDocsData,
@@ -273,33 +266,42 @@ export default function FileManager(props) {
   };
 
   const handleDeleteFile = async (key) => {
-    await moveToBackupFolderS3(key);
+    /* await moveToBackupFolderS3(key); */
+    let result;
+    try {
+      result = await moveFile(s3Client, bucketName, key, 'backup', currentPath)
+      console.log(result.sourceFilePath, 'result.sourceFilePath')
+      const updatedDocsData =
+        projectData.projectFilesValidators.projectValidatorDocuments.filter(
+          (file, index) => file.filePathS3 !== result.sourceFilePath
+        );
+      console.log(updatedDocsData,'updatedDocsData result.sourceFilePath')
+      await handleUpdateContextProjectFileValidators({
+        projectValidatorDocuments: updatedDocsData,
+      });
 
-    const updatedDocsData =
-      projectData.projectFilesValidators.projectValidatorDocuments.filter(
-        (file, index) => file.filePathS3 !== key
+      const fileToDeleteID =
+        projectData.projectFilesValidators.projectValidatorDocuments.filter(
+          (file) => file.filePathS3 === result.sourceFilePath
+        )[0].id;
+        console.log(fileToDeleteID,'fileToDeleteID result.sourceFilePath')
+      let docToDelete = {
+        id: fileToDeleteID,
+      };
+      await API.graphql(graphqlOperation(deleteDocument, { input: docToDelete }));
+
+      let tempProductFeature = {
+        id: projectData.projectFilesValidators.pfProjectValidatorDocumentsID,
+        value: JSON.stringify(updatedDocsData),
+      };
+      await API.graphql(
+        graphqlOperation(updateProductFeature, { input: tempProductFeature })
       );
-    await handleUpdateContextProjectFileValidators({
-      projectValidatorDocuments: updatedDocsData,
-    });
-
-    const fileToDeleteID =
-      projectData.projectFilesValidators.projectValidatorDocuments.filter(
-        (file) => file.filePathS3 === key
-      )[0].id;
-
-    let docToDelete = {
-      id: fileToDeleteID,
-    };
-    await API.graphql(graphqlOperation(deleteDocument, { input: docToDelete }));
-
-    let tempProductFeature = {
-      id: projectData.projectFilesValidators.pfProjectValidatorDocumentsID,
-      value: JSON.stringify(updatedDocsData),
-    };
-    await API.graphql(
-      graphqlOperation(updateProductFeature, { input: tempProductFeature })
-    );
+      notify({msg: result.msg, type: result.status})
+    } catch (error) {
+      notify({msg: result.msg, type: result.status}) 
+    }
+    
   };
 
   // function to convert bytes into friendly format
@@ -372,12 +374,13 @@ export default function FileManager(props) {
       graphqlOperation(updateProductFeature, { input: tempProductFeature })
     );
   };
-
-  /* console.log(s3Objects, "s3Objects");
-  console.log(Object.keys(selectedFolder), "selectedFolder");
-  console.log(selectedFolder, "selectedFolder");
-  console.log(currentPath, "currentPath"); */
-  //console.log(Object.keys(s3Objects[Object.keys(selectedFolder)[0]].data), "Este es")
+  if(loading) return (
+    <Card className={className}>
+      <Card.Body className="flex justify-center">
+        <Spinner variant="info" />
+      </Card.Body>
+    </Card>
+  )
   return (
     <Card className={className}>
       <Card.Body>
@@ -388,7 +391,7 @@ export default function FileManager(props) {
           >
             <ol className="inline-flex items-center space-x-1 md:space-x-3">
               {currentPath.map((path, index) => (
-                <li>
+                <li key={index}>
                   <div
                     className="flex items-center"
                     href="#"
@@ -405,7 +408,7 @@ export default function FileManager(props) {
                         <path
                           fillRule="evenodd"
                           d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                          clip-rule="evenodd"
+                          cliprrule="evenodd"
                         ></path>
                       </svg>
                     )}
@@ -535,7 +538,7 @@ export default function FileManager(props) {
                           eventKey="4"
                           onClick={() => {
                             if (selectedFolder[folder].type === "file") {
-                              handleDeleteFile(selectedFolder[folder].key);
+                              handleDeleteFile(selectedFolder[folder]);
                             }
                             if (selectedFolder[folder].type === "folder") {
                               handleDeleteFolder(folder);
