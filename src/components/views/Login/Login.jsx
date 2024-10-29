@@ -373,7 +373,6 @@ export default function LogIn() {
                     onChange={onChange}
                     className="border-[1px] border-gray-300 rounded-md"
                   >
-                    <option value="investor">Inversionista</option>
                     <option value="constructor">Propietario</option>
                   </select>
                 </fieldset>
