@@ -1,0 +1,102 @@
+import { GetObjectCommand, CopyObjectCommand, DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+export const handleOpenObject = async (s3Client, bucketName, id) => {
+    const doc_key = id.split("/").slice(3).join('/')
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: doc_key,
+    });
+  
+    try {
+      const response = await s3Client.send(command);
+      const stream = response.Body.getReader();
+      const chunks = [];
+      while (true) {
+        const { done, value } = await stream.read();
+        if (done) break;
+        chunks.push(value);
+      }
+      const blob = new Blob(chunks);
+      const url = URL.createObjectURL(blob);
+  
+      // Abre el archivo en una nueva ventana/pestaña
+      window.open(url, '_blank');
+  
+    } catch (error) {
+      console.error('Error abriendo el objeto:', error);
+    }
+  };
+
+export const copyOnPublic = async (s3Client, bucketName, pathArr) => {
+  let sourceFile = pathArr.join('/');
+  pathArr.splice(2, 0, "public")
+  const destionationPath = pathArr.join("/")
+  console.log(destionationPath,'destionationPath')
+    try {
+        const copyParams = {
+            Bucket: bucketName,
+            CopySource: `${bucketName}/${sourceFile}`,
+            Key: destionationPath,
+        };
+        
+        await s3Client.send(new CopyObjectCommand(copyParams));
+        console.log(`File copied to ${destionationPath}`);
+  
+        return true
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+export const uploadToPublic = async (s3Client, bucketName, pathArr, copy) => {
+  console.log(pathArr)
+  if(copy){
+    copyOnPublic(s3Client, bucketName, pathArr)
+  }else{
+    pathArr.splice(2, 0, "public")
+    const fileOnPublicPath = pathArr.join("/")
+    console.log(fileOnPublicPath,'fileOnPublicPath')
+    
+    const deleteParams = {
+      Bucket: bucketName,
+      Key: fileOnPublicPath,
+    };
+    try {
+      await s3Client.send(new DeleteObjectCommand(deleteParams));
+      
+    } catch (error) {
+      throw error
+    }
+  }
+}
+
+
+export const uploadFile = async (s3Client, bucketName, urlPath, file) =>{
+  const command = new PutObjectCommand({
+    Bucket: bucketName,
+    Key: urlPath,
+    Body: file,
+    ContentType: file.type,
+  });
+
+  try {
+    const uploadImageResult = await s3Client.send(command);
+    console.log("Archivo subido:", uploadImageResult);
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const deleteFile = async (s3Client, bucketName, urlPath) =>{
+  try {
+    const deleteParams = {
+        Bucket: bucketName,
+        Key: urlPath,
+    };
+    await s3Client.send(new DeleteObjectCommand(deleteParams));
+    console.log(`File deleted from ${urlPath}`);
+    return { status: 'success', msg: 'Borrado exitoso', urlPath };
+} catch (error) {
+    return { status: 'error', msg: 'Error al borrar el archivo', urlPath: null };
+}
+}

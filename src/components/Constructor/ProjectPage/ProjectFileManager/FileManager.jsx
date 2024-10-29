@@ -18,6 +18,8 @@ import { moveToBackupFolderS3, removeFolderS3, moveFile } from "utilities/moveTo
 import NewFolderOnS3Modal from "components/Modals/NewFolderOnS3Modal";
 import { notify } from "utilities/notify";
 import { Spinner } from "react-bootstrap";
+import WebAppConfig from "components/common/_conf/WebAppConfig";
+import { uploadToPublic } from "utilities/s3clientcommands";
 export default function FileManager(props) {
   const { className, rootFolder } = props;
   const { s3Client, bucketName } = useS3Client()
@@ -70,7 +72,7 @@ export default function FileManager(props) {
       console.error("Error listing objects:", error);
     }
   };
-  async function listObjectsInFolder(folder) {
+  /* async function listObjectsInFolder(folder) {
     try {
       const objects = await Storage.list(folder, { pageSize: 1000 });
       let nestedStorage = processStorageList(objects);
@@ -79,7 +81,7 @@ export default function FileManager(props) {
       console.error("Error al listar objetos:", error);
       throw error;
     }
-  }
+  } */
   function processPathList(paths) {
     const filesystem = {};
     
@@ -325,10 +327,15 @@ export default function FileManager(props) {
   };
 
   const getVisibleStatus = (key) => {
+    let path = `projects/${currentPath.join('/')}/${key}`
+    console.log(key, 'getVisibleStatus')
+    console.log(path, 'getVisibleStatus path')
+    console.log(projectData.projectFilesValidators.projectValidatorDocuments, 'getVisibleStatus')
     const file =
       projectData.projectFilesValidators.projectValidatorDocuments.filter(
-        (file) => file.filePathS3 === key
+        (file) => file.filePathS3 === path
       )[0];
+      console.log(file, 'getVisibleStatus file')
     if (file) {
       if (file.visible) {
         return (
@@ -354,14 +361,21 @@ export default function FileManager(props) {
 
   const handleUpdateVisibleStatus = async (id, status) => {
     const updatedDocsData =
-      projectData.projectFilesValidators.projectValidatorDocuments.map(
-        (file, index) => {
-          if (file.id === id) {
-            file.visible = status;
-          }
-          return file;
+    projectData.projectFilesValidators.projectValidatorDocuments.map(
+      (file, index) => {
+        if (file.id === id) {
+          file.visible = status;
         }
-      );
+        return file;
+      }
+    );
+    let pathArr = updatedDocsData.filter(item => item.id === id)[0].filePathS3.split('/')
+    try {
+      uploadToPublic(s3Client, bucketName, pathArr, status)
+      notify({msg:status? 'Archivo público' : 'Archivo privato', type: 'success'})
+    } catch (error) {
+      
+    }
     await handleUpdateContextProjectFileValidators({
       projectValidatorDocuments: updatedDocsData,
     });
