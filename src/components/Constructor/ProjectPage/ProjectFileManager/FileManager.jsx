@@ -21,7 +21,7 @@ import { Spinner } from "react-bootstrap";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { uploadToPublic } from "utilities/s3clientcommands";
 export default function FileManager(props) {
-  const { className, rootFolder } = props;
+  const { className, rootFolder, foldersToShow, userGroup} = props;
   const { s3Client, bucketName } = useS3Client()
   const [s3Objects, setS3Objects] = useState({});
   const [selectedFolder, setSelectedFolder] = useState({});
@@ -66,7 +66,9 @@ export default function FileManager(props) {
       const response = await s3Client.send(command);
       if (response.Contents) {
         const objectKeys = response.Contents.map((object)=> object.Key);
-      return processPathList(objectKeys)
+        const filteredObjectKeys = foldersToShow[0]!== "*" ? objectKeys.filter(item => foldersToShow.includes(item.split('/')[2])) : objectKeys
+        console.log(objectKeys, 'objectKeys,')
+      return processPathList(filteredObjectKeys)
       }
     } catch (error) {
       console.error("Error listing objects:", error);
@@ -372,7 +374,7 @@ export default function FileManager(props) {
     let pathArr = updatedDocsData.filter(item => item.id === id)[0].filePathS3.split('/')
     try {
       uploadToPublic(s3Client, bucketName, pathArr, status)
-      notify({msg:status? 'Archivo público' : 'Archivo privato', type: 'success'})
+      notify({msg:status? 'Archivo público. Este archivo será publicado en el marketplace.' : 'Archivo privato', type: 'success'})
     } catch (error) {
       
     }
@@ -450,7 +452,7 @@ export default function FileManager(props) {
               <th className="text-center" style={{ width: "100px" }}>
                 Subido por
               </th>
-              <th className="text-center">Visible</th>
+              {userGroup !== 'analyst' && <th className="text-center">Visible</th>}
               <th></th>
             </tr>
           </thead>
@@ -519,13 +521,13 @@ export default function FileManager(props) {
                     <td className="text-center">
                       {getUploadedByName(selectedFolder[folder].key)}
                     </td>
-                    <td className="text-center">
+                    {userGroup !== 'analyst' && <td className="text-center">
                       {selectedFolder[folder].type === "file" && (
                         <div className="d-flex justify-content-center">
                           {getVisibleStatus(selectedFolder[folder].key)}
                         </div>
                       )}
-                    </td>
+                    </td>}
                     <td className="text-end">
                       <DropdownButton
                         align="end"

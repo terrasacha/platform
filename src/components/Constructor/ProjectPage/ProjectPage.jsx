@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-
+import { Auth } from "aws-amplify";
 // Sections
 import ProjectDetails from "./ProjectDetails/ProjectDetails";
 import ProjectFiles from "./ProjectFiles/ProjectFiles";
@@ -38,7 +38,7 @@ export default function ProjectPage() {
   const [isVerifier, setIsVerifier] = useState(false);
   const [isAdmon, setIsAdmon] = useState(false);
   const [isAnalyst, setIsAnalyst] = useState(false);
-
+  const [userGroup, setUserGroup] = useState('')
   const projectStatusMapper = {
     draft: "En borrador",
     verified: "Verificado",
@@ -53,6 +53,17 @@ export default function ProjectPage() {
   };
 
   useEffect(() => {
+    const fetchUserGroups = async () => {
+      try {
+        const user = await Auth.currentAuthenticatedUser();
+        const groups = user.signInUserSession.idToken.payload['cognito:groups'] || [''];
+        setUserGroup(groups[0])
+      } catch (error) {
+        console.error('Error fetching user groups: ', error);
+      }
+    };
+
+    fetchUserGroups();
     const fetchProjectData = async () => {
       await handleProjectData({ pID: id });
     };
@@ -335,7 +346,7 @@ export default function ProjectPage() {
             </div>
             <AlertMessage />
             <ProjectDetails visible={activeSection === "details"} />
-            <ProjectFileManager visible={activeSection === "file_manager"} isAnalyst={isAnalyst} />
+            <ProjectFileManager visible={activeSection === "file_manager"} userGroup={userGroup} />
             <ProjectFiles visible={activeSection === "files"} />
             <FinanceCard visible={activeSection === "finance"} />
             <ProjectSettings
