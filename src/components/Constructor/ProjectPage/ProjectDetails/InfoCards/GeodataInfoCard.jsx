@@ -119,7 +119,7 @@ export default function GeodataInfoCard(props) {
                 <GoogleMapReact
                   key={mapKey} // Key to force reload
                   bootstrapURLKeys={{
-                    key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
+                    key: process.env['REACT_APP_GMAPS_API_KEY'] || '',
                   }}
                   defaultCenter={geoData.coords}
                   defaultZoom={6}
