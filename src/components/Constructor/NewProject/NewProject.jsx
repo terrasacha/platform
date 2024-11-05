@@ -431,10 +431,10 @@ export default function NewProject() {
     }
 
     // Creación de carpetas base
-    await Promise.all([
+    /* await Promise.all([
       makeFolderOnS3(`${productID}/Técnica/`),
       makeFolderOnS3(`${productID}/Financiera/`),
-    ]);
+    ]); */
   };
 
   const handleSubmit = async () => {

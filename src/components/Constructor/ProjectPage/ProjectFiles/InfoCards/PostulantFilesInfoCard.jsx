@@ -14,7 +14,8 @@ import {
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { useAuth } from "../../../../../context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
-
+import { handleOpenObject, uploadFile } from "utilities/s3clientcommands";
+import { useS3Client } from "context/s3ClientContext";
 export default function PostulantFilesInfoCard(props) {
   const {
     className,
@@ -32,6 +33,7 @@ export default function PostulantFilesInfoCard(props) {
     handleUpdateContextFileVerification,
     projectData,
   } = useProjectData();
+  const { s3Client, bucketName } = useS3Client();
   const { user } = useAuth();
 
   const fileInputRef = React.createRef();
@@ -161,23 +163,19 @@ export default function PostulantFilesInfoCard(props) {
 
     const newFile = e.target.files[0];
 
-    const getFilePathRegex = /\/public\/(.+)$/;
+    const getFilePathRegex = /\/projects\/(.+)$/;
 
     const verificationId = file.verification.id;
 
     if (newFile) {
-      const fileToDeleteName = decodeURIComponent(
+      let fileToDeleteName = decodeURIComponent(
         file.url.match(getFilePathRegex)[1]
       );
-
+      fileToDeleteName = "projects/" + fileToDeleteName
+      console.log(fileToDeleteName, 'fileToDeleteName')
       try {
-        const uploadImageResult = await Storage.put(fileToDeleteName, newFile, {
-          level: "public",
-          contentType: "*/*",
-        });
-
+        await uploadFile(s3Client, bucketName, fileToDeleteName, file)
         console.log("Archivo seleccionado:", newFile);
-        console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
         notify({
           msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
@@ -322,11 +320,9 @@ export default function PostulantFilesInfoCard(props) {
                           </button>
                         </>
                       )}
-                      <a href={file.url} target="_blank" rel="noreferrer">
-                        <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white">
+                        <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white" onClick={() => handleOpenObject(s3Client, bucketName, file.url)}>
                           <DownloadIcon />
                         </button>
-                      </a>
                       {file.verification && (
                         <button
                           className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"

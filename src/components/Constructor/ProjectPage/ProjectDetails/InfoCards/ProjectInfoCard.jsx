@@ -19,6 +19,8 @@ import Swal from "sweetalert2";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { fetchProjectDataByProjectID } from "../../api";
 import { XIcon } from "components/common/icons/XIcon";
+import { useS3Client } from "context/s3ClientContext";
+import { deleteFile, handleOpenObject, uploadFile } from "utilities/s3clientcommands";
 
 export default function ProjectInfoCard(props) {
   const { className, autorizedUser, setProgressChange, tooltip, totalArea } =
@@ -30,6 +32,7 @@ export default function ProjectInfoCard(props) {
     handleSetContextProjectFile,
     refresh,
   } = useProjectData();
+  const {s3Client, bucketName } = useS3Client();
   const { user } = useAuth();
   const { categoryList } = useCategories();
 
@@ -182,12 +185,13 @@ export default function ProjectInfoCard(props) {
   const handleDeleteFile = async (file) => {
     console.log(file, "file");
     // Eliminar S3
-    const getFilePathRegex = /\/public\/(.+)$/;
-    const fileToDeleteName = decodeURIComponent(
+    const getFilePathRegex = /\/projects\/(.+)$/;
+    let fileToDeleteName = decodeURIComponent(
       file.url.match(getFilePathRegex)[1]
     );
+    fileToDeleteName = 'projects/' + fileToDeleteName
     try {
-      await Storage.remove(fileToDeleteName);
+      await deleteFile(s3Client, bucketName, fileToDeleteName)
     } catch (error) {
       console.error("Error removing the file:", error);
     }
@@ -222,19 +226,13 @@ export default function ProjectInfoCard(props) {
 
   const saveFileOnDB = async (filesToSave) => {
     for (var i = 0; i < filesToSave.length; i++) {
-      const urlPath = `${
+      const urlPath = `projects/${
         projectData.projectInfo.id
-      }/archivos_postulante/planos_predio/${formatFileName(
+      }/other/archivos_postulante/planos_predio/${formatFileName(
         filesToSave[i].name
       )}`;
       try {
-        const uploadImageResult = await Storage.put(urlPath, filesToSave[i], {
-          level: "public",
-          contentType: "*/*",
-        });
-
-        console.log("Archivo seleccionado:", filesToSave[i]);
-        console.log("Archivo subido:", uploadImageResult);
+        uploadFile(s3Client, bucketName, urlPath, filesToSave[i])
       } catch (error) {
         notify({
           msg:
@@ -263,7 +261,7 @@ export default function ProjectInfoCard(props) {
         status: "pending",
         isApproved: false,
         isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + urlPath,
+        url: WebAppConfig.url_s3_images + urlPath,
       };
 
       await API.graphql(
@@ -694,13 +692,11 @@ export default function ProjectInfoCard(props) {
                               >
                                 <XIcon />
                               </button>
-                              <a
-                                href={file.url}
-                                target="_blank"
-                                rel="noreferrer"
+                              <button
+                                onClick={() =>{handleOpenObject(s3Client, bucketName, file.url)}}
                               >
                                 {file.nombre}
-                              </a>
+                              </button>
                             </div>
                           ))}
                         </>

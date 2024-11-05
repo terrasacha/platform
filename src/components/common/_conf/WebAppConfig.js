@@ -3,6 +3,7 @@
 
 const WebAppConfig = {
     "url_s3_public_images": `${process.env.REACT_APP_URL_BUCKET}/public/`,
+    "url_s3_images": `${process.env.REACT_APP_URL_BUCKET}/`,
     "admon": "a5e0ea8d-95f6-4a8b-bd13-e28f9fa49934"
 };
 

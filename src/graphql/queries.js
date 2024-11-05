@@ -147,57 +147,6 @@ export const getUser = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleTokenName
-        oracleWalletID
-        oracleWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        adminWalletID
-        adminWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        products {
-          nextToken
-          __typename
-        }
-        users {
-          nextToken
-          __typename
-        }
-        claimedToken {
-          nextToken
-          __typename
-        }
         createdAt
         updatedAt
         __typename
@@ -1389,57 +1338,6 @@ export const listMarketplaces = /* GraphQL */ `
       items {
         id
         name
-        oracleTokenName
-        oracleWalletID
-        oracleWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        adminWalletID
-        adminWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        products {
-          nextToken
-          __typename
-        }
-        users {
-          nextToken
-          __typename
-        }
-        claimedToken {
-          nextToken
-          __typename
-        }
         createdAt
         updatedAt
         __typename
@@ -1481,57 +1379,6 @@ export const getProduct = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleTokenName
-        oracleWalletID
-        oracleWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        adminWalletID
-        adminWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        products {
-          nextToken
-          __typename
-        }
-        users {
-          nextToken
-          __typename
-        }
-        claimedToken {
-          nextToken
-          __typename
-        }
         createdAt
         updatedAt
         __typename
@@ -4637,57 +4484,6 @@ export const getScript = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleTokenName
-        oracleWalletID
-        oracleWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        adminWalletID
-        adminWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        products {
-          nextToken
-          __typename
-        }
-        users {
-          nextToken
-          __typename
-        }
-        claimedToken {
-          nextToken
-          __typename
-        }
         createdAt
         updatedAt
         __typename
@@ -5054,57 +4850,6 @@ export const getClaimedToken = /* GraphQL */ `
       marketplace {
         id
         name
-        oracleTokenName
-        oracleWalletID
-        oracleWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        adminWalletID
-        adminWallet {
-          id
-          name
-          status
-          password
-          seed
-          address
-          stake_address
-          isSelected
-          claimed_token
-          isAdmin
-          userID
-          createdAt
-          updatedAt
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        products {
-          nextToken
-          __typename
-        }
-        users {
-          nextToken
-          __typename
-        }
-        claimedToken {
-          nextToken
-          __typename
-        }
         createdAt
         updatedAt
         __typename
@@ -5117,6 +4862,7 @@ export const getClaimedToken = /* GraphQL */ `
         seed
         address
         stake_address
+        claimed_token
         isSelected
         claimed_token
         isAdmin

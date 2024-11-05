@@ -8,6 +8,11 @@ import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { notify } from "../../../../../utilities/notify";
 import { API, Storage, graphqlOperation } from "aws-amplify";
+import { handleOpenObject } from "utilities/s3clientcommands";
+// s3Client
+import { useS3Client } from "context/s3ClientContext";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+// s3Client
 import Swal from "sweetalert2";
 import {
   createDocument,
@@ -36,7 +41,7 @@ export default function CadastralRecordsInfoCard(props) {
     handleSetContextProjectFile,
   } = useProjectData();
   const { user } = useAuth();
-
+  const { s3Client, bucketName } = useS3Client()
   const fileInputRef = useRef(null);
 
   const [multipleData, setMultipleData] = useState([]);
@@ -217,9 +222,7 @@ export default function CadastralRecordsInfoCard(props) {
 
   const saveFileOnDB = async (fileToSave, documentID = null) => {
     let docID = documentID;
-    const urlPath = `${
-      projectData.projectInfo.id
-    }/archivos_postulante/certificados_tradicion/${formatFileName(
+    const urlPath = `projects/${projectData.projectInfo.id}/other/archivos_postulante/certificados_tradicion/${formatFileName(
       fileToSave.name
     )}`;
 
@@ -281,15 +284,27 @@ export default function CadastralRecordsInfoCard(props) {
       );
     } else {
       // Crear pf y document
+      console.log(s3Client, 's3client 284')
+      console.log(urlPath, 'urlPath cadastral 284')
+      console.log(fileToSave, 'fileToSave cadastral 285')
+
+      const command = new PutObjectCommand({
+        Bucket: bucketName,
+        Key: urlPath,
+        Body: fileToSave,
+        ContentType: fileToSave.type,
+      });
+
       try {
-        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
-          level: "public",
-          contentType: "*/*",
-        });
+        const uploadImageResult = await s3Client.send(command);
+        console.log(uploadImageResult, 'uploadImageResult')
+        /* const uploadImageResult = await Storage.put(urlPath, fileToSave, {
+        }); */
 
         console.log("Archivo seleccionado:", fileToSave);
         console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
+        console.error(error)
         notify({
           msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
           type: "error",
@@ -315,7 +330,7 @@ export default function CadastralRecordsInfoCard(props) {
         status: "pending",
         isApproved: false,
         isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + urlPath,
+        url: WebAppConfig.url_s3_images + urlPath,
       };
 
       const createDocumentResponse = await API.graphql(
@@ -353,6 +368,11 @@ export default function CadastralRecordsInfoCard(props) {
       let documentID = multipleData[indexToSave].documentID;
       let docID = null;
       if (certificate) {
+        console.log('certificate 371',
+
+          certificate,
+          documentID
+        )
         docID = await saveFileOnDB(
           certificate,
           documentID !== undefined ? documentID : null
@@ -515,15 +535,16 @@ export default function CadastralRecordsInfoCard(props) {
     const documentToDelete = projectData.projectFiles.find(
       (item) => item.id === multipleData[indexToDelete].documentID
     );
-
+    console.log('documentToDelete', documentToDelete)
     if (documentToDelete) {
       // Borrar de S3
-      const getFilePathRegex = /\/public\/(.+)$/;
+      const getFilePathRegex = /\/projects\/(.+)$/;
 
       const fileToDeleteName = decodeURIComponent(
         documentToDelete.url.match(getFilePathRegex)[1]
       );
-      try {
+      console.log(fileToDeleteName, 'filetodelete')
+      /* try {
         await Storage.remove(fileToDeleteName);
       } catch (error) {
         console.error("Error removing the file:", error);
@@ -567,7 +588,7 @@ export default function CadastralRecordsInfoCard(props) {
             );
           });
         }
-      }
+      } */
     }
 
     // Actualizar multipleData
@@ -622,16 +643,15 @@ export default function CadastralRecordsInfoCard(props) {
       });
     }
   };
-
+  
   const renderFileLinkByDocumentID = (documentID) => {
     if (documentID) {
       const document = projectData.projectFiles.find(
         (item) => item.id === documentID
       );
       return (
-        <a href={document?.url} target="_blank" rel="noreferrer">
-          Archivo
-        </a>
+        <button onClick={() => handleOpenObject(s3Client, bucketName, document?.url)}>Archivo</button>
+          
       );
     } else {
       return "Sin archivo";
