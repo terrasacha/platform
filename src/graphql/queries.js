@@ -147,8 +147,77 @@ export const getUser = /* GraphQL */ `
       marketplace {
         id
         name
+        oracleTokenName
+        oracleWalletID
+        oracleWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        adminWalletID
+        adminWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        claimedToken {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
+        __typename
+      }
+      campaigns {
+        items {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
         __typename
       }
       createdAt
@@ -214,6 +283,10 @@ export const listUsers = /* GraphQL */ `
           adminWalletID
           createdAt
           updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
           __typename
         }
         createdAt
@@ -289,6 +362,10 @@ export const getWallet = /* GraphQL */ `
           adminWalletID
           createdAt
           updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
           __typename
         }
         createdAt
@@ -501,6 +578,10 @@ export const getVerification = /* GraphQL */ `
           updatedAt
           __typename
         }
+        campaigns {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -558,6 +639,10 @@ export const getVerification = /* GraphQL */ `
           updatedAt
           __typename
         }
+        campaigns {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -586,6 +671,7 @@ export const getVerification = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -877,6 +963,7 @@ export const getDocument = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -972,6 +1059,10 @@ export const getDocument = /* GraphQL */ `
           updatedAt
           __typename
         }
+        campaigns {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1065,6 +1156,7 @@ export const getCategory = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -1281,6 +1373,7 @@ export const getMarketplace = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -1338,6 +1431,738 @@ export const listMarketplaces = /* GraphQL */ `
       items {
         id
         name
+        oracleTokenName
+        oracleWalletID
+        oracleWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        adminWalletID
+        adminWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        claimedToken {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getCampaign = /* GraphQL */ `
+  query GetCampaign($id: ID!) {
+    getCampaign(id: $id) {
+      id
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
+          nextToken
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      name
+      description
+      initialDate
+      endDate
+      available
+      images
+      properties {
+        items {
+          id
+          cadastralNumber
+          productID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listCampaigns = /* GraphQL */ `
+  query ListCampaigns(
+    $filter: ModelCampaignFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCampaigns(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        name
+        description
+        initialDate
+        endDate
+        available
+        images
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getProperty = /* GraphQL */ `
+  query GetProperty($id: ID!) {
+    getProperty(id: $id) {
+      id
+      cadastralNumber
+      productID
+      product {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
+          nextToken
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      campaignID
+      campaign {
+        id
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        name
+        description
+        initialDate
+        endDate
+        available
+        images
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      propertyFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          propertyID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listProperties = /* GraphQL */ `
+  query ListProperties(
+    $filter: ModelPropertyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProperties(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        cadastralNumber
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        propertyFeatures {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getPropertyFeature = /* GraphQL */ `
+  query GetPropertyFeature($id: ID!) {
+    getPropertyFeature(id: $id) {
+      id
+      value
+      isToBlockChain
+      order
+      isOnMainCard
+      isResult
+      propertyID
+      property {
+        id
+        cadastralNumber
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        propertyFeatures {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      featureID
+      feature {
+        id
+        name
+        description
+        isTemplate
+        isVerifable
+        defaultValue
+        formOrder
+        formHint
+        formRequired
+        formAppearance
+        formRelevant
+        formConstraint
+        formRequiredMessage
+        parentID
+        children {
+          nextToken
+          __typename
+        }
+        featureTypeID
+        featureType {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          __typename
+        }
+        unitOfMeasureID
+        unitOfMeasure {
+          id
+          engineeringUnit
+          description
+          isFloat
+          createdAt
+          updatedAt
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        propertyFeatures {
+          nextToken
+          __typename
+        }
+        featureFormulas {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listPropertyFeatures = /* GraphQL */ `
+  query ListPropertyFeatures(
+    $filter: ModelPropertyFeatureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPropertyFeatures(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        value
+        isToBlockChain
+        order
+        isOnMainCard
+        isResult
+        propertyID
+        property {
+          id
+          cadastralNumber
+          productID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1379,6 +2204,57 @@ export const getProduct = /* GraphQL */ `
       marketplace {
         id
         name
+        oracleTokenName
+        oracleWalletID
+        oracleWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        adminWalletID
+        adminWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        claimedToken {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1611,6 +2487,76 @@ export const getProduct = /* GraphQL */ `
         nextToken
         __typename
       }
+      campaignID
+      campaign {
+        id
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        name
+        description
+        initialDate
+        endDate
+        available
+        images
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      properties {
+        items {
+          id
+          cadastralNumber
+          productID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -1698,6 +2644,25 @@ export const listProducts = /* GraphQL */ `
           __typename
         }
         apiQueries {
+          nextToken
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -1792,6 +2757,25 @@ export const getAnalysis = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1843,6 +2827,7 @@ export const listAnalyses = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -1998,6 +2983,25 @@ export const getApiQuery = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2049,6 +3053,7 @@ export const listApiQueries = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -2169,6 +3174,25 @@ export const getImage = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2213,6 +3237,7 @@ export const listImages = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -2377,6 +3402,23 @@ export const getFeature = /* GraphQL */ `
         nextToken
         __typename
       }
+      propertyFeatures {
+        items {
+          id
+          value
+          isToBlockChain
+          order
+          isOnMainCard
+          isResult
+          propertyID
+          featureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       featureFormulas {
         items {
           id
@@ -2441,6 +3483,10 @@ export const listFeatures = /* GraphQL */ `
           __typename
         }
         productFeatures {
+          nextToken
+          __typename
+        }
+        propertyFeatures {
           nextToken
           __typename
         }
@@ -2675,6 +3721,10 @@ export const getFeatureFormula = /* GraphQL */ `
           __typename
         }
         productFeatures {
+          nextToken
+          __typename
+        }
+        propertyFeatures {
           nextToken
           __typename
         }
@@ -2944,6 +3994,25 @@ export const getProductFeature = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2988,6 +4057,10 @@ export const getProductFeature = /* GraphQL */ `
           __typename
         }
         productFeatures {
+          nextToken
+          __typename
+        }
+        propertyFeatures {
           nextToken
           __typename
         }
@@ -3086,6 +4159,7 @@ export const listProductFeatures = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -3162,6 +4236,7 @@ export const getProductFeatureResult = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -3340,6 +4415,10 @@ export const getUserProduct = /* GraphQL */ `
           updatedAt
           __typename
         }
+        campaigns {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3422,6 +4501,25 @@ export const getUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3477,6 +4575,7 @@ export const listUserProducts = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -3592,6 +4691,7 @@ export const getOrder = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -3737,6 +4837,25 @@ export const getOrder = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3832,6 +4951,7 @@ export const listOrders = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -3940,6 +5060,25 @@ export const getPayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3997,6 +5136,10 @@ export const getPayment = /* GraphQL */ `
           updatedAt
           __typename
         }
+        campaigns {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4046,6 +5189,7 @@ export const listPayments = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -4175,6 +5319,25 @@ export const getTransactions = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4225,6 +5388,7 @@ export const listTransactions = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -4296,6 +5460,10 @@ export const getCompany = /* GraphQL */ `
           adminWalletID
           createdAt
           updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
           __typename
         }
         createdAt
@@ -4380,6 +5548,25 @@ export const getCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4436,6 +5623,7 @@ export const listCompanies = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -4484,6 +5672,57 @@ export const getScript = /* GraphQL */ `
       marketplace {
         id
         name
+        oracleTokenName
+        oracleWalletID
+        oracleWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        adminWalletID
+        adminWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        claimedToken {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4569,6 +5808,25 @@ export const getScript = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4650,6 +5908,7 @@ export const listScripts = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -4785,6 +6044,25 @@ export const getToken = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4824,6 +6102,7 @@ export const listTokens = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -4850,6 +6129,57 @@ export const getClaimedToken = /* GraphQL */ `
       marketplace {
         id
         name
+        oracleTokenName
+        oracleWalletID
+        oracleWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        adminWalletID
+        adminWallet {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        products {
+          nextToken
+          __typename
+        }
+        users {
+          nextToken
+          __typename
+        }
+        claimedToken {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -4862,7 +6192,6 @@ export const getClaimedToken = /* GraphQL */ `
         seed
         address
         stake_address
-        claimed_token
         isSelected
         claimed_token
         isAdmin
@@ -5022,6 +6351,10 @@ export const usersByMarketplaceID = /* GraphQL */ `
           adminWalletID
           createdAt
           updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
           __typename
         }
         createdAt
@@ -5537,6 +6870,342 @@ export const documentsByUserID = /* GraphQL */ `
     }
   }
 `;
+export const campaignsByUserID = /* GraphQL */ `
+  query CampaignsByUserID(
+    $userID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelCampaignFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    campaignsByUserID(
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        name
+        description
+        initialDate
+        endDate
+        available
+        images
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const propertiesByProductID = /* GraphQL */ `
+  query PropertiesByProductID(
+    $productID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPropertyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    propertiesByProductID(
+      productID: $productID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        cadastralNumber
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        propertyFeatures {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const propertiesByCampaignID = /* GraphQL */ `
+  query PropertiesByCampaignID(
+    $campaignID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPropertyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    propertiesByCampaignID(
+      campaignID: $campaignID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        cadastralNumber
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        propertyFeatures {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const propertyFeaturesByPropertyID = /* GraphQL */ `
+  query PropertyFeaturesByPropertyID(
+    $propertyID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPropertyFeatureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    propertyFeaturesByPropertyID(
+      propertyID: $propertyID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        value
+        isToBlockChain
+        order
+        isOnMainCard
+        isResult
+        propertyID
+        property {
+          id
+          cadastralNumber
+          productID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const propertyFeaturesByFeatureID = /* GraphQL */ `
+  query PropertyFeaturesByFeatureID(
+    $featureID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPropertyFeatureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    propertyFeaturesByFeatureID(
+      featureID: $featureID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        value
+        isToBlockChain
+        order
+        isOnMainCard
+        isResult
+        propertyID
+        property {
+          id
+          cadastralNumber
+          productID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        featureID
+        feature {
+          id
+          name
+          description
+          isTemplate
+          isVerifable
+          defaultValue
+          formOrder
+          formHint
+          formRequired
+          formAppearance
+          formRelevant
+          formConstraint
+          formRequiredMessage
+          parentID
+          featureTypeID
+          unitOfMeasureID
+          createdAt
+          updatedAt
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const productsByCategoryID = /* GraphQL */ `
   query ProductsByCategoryID(
     $categoryID: ID!
@@ -5626,6 +7295,25 @@ export const productsByCategoryID = /* GraphQL */ `
           __typename
         }
         apiQueries {
+          nextToken
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -5730,6 +7418,25 @@ export const productsByMarketplaceID = /* GraphQL */ `
           nextToken
           __typename
         }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5772,6 +7479,7 @@ export const analysesByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -5834,6 +7542,7 @@ export const apiQueriesByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -5905,6 +7614,7 @@ export const imagesByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -5972,6 +7682,10 @@ export const featureByParent = /* GraphQL */ `
           __typename
         }
         productFeatures {
+          nextToken
+          __typename
+        }
+        propertyFeatures {
           nextToken
           __typename
         }
@@ -6045,6 +7759,10 @@ export const featuresByFeatureTypeID = /* GraphQL */ `
           nextToken
           __typename
         }
+        propertyFeatures {
+          nextToken
+          __typename
+        }
         featureFormulas {
           nextToken
           __typename
@@ -6112,6 +7830,10 @@ export const featuresByUnitOfMeasureID = /* GraphQL */ `
           __typename
         }
         productFeatures {
+          nextToken
+          __typename
+        }
+        propertyFeatures {
           nextToken
           __typename
         }
@@ -6371,6 +8093,7 @@ export const productFeaturesByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -6456,6 +8179,7 @@ export const productFeaturesByFeatureID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -6660,6 +8384,7 @@ export const userProductsByUserID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -6726,6 +8451,7 @@ export const userProductsByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -6832,6 +8558,7 @@ export const ordersByWalletBuyerID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -6938,6 +8665,7 @@ export const ordersByScriptID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7044,6 +8772,7 @@ export const ordersByWalletID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7150,6 +8879,7 @@ export const ordersByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7209,6 +8939,7 @@ export const paymentsByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7288,6 +9019,7 @@ export const paymentsByUserID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7368,6 +9100,7 @@ export const transactionsByWalletID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7429,6 +9162,7 @@ export const transactionsByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7497,6 +9231,7 @@ export const companiesByUserID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7564,6 +9299,7 @@ export const companiesByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7632,6 +9368,7 @@ export const scriptsByScriptParentID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7708,6 +9445,7 @@ export const scriptsByMarketplaceID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7784,6 +9522,7 @@ export const scriptsByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
@@ -7838,6 +9577,7 @@ export const tokensByProductID = /* GraphQL */ `
           tokenGenesis
           categoryID
           marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
