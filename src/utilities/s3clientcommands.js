@@ -28,7 +28,7 @@ export const handleOpenObject = async (s3Client, bucketName, id) => {
 
 export const copyOnPublic = async (s3Client, bucketName, pathArr) => {
   let sourceFile = pathArr.join('/');
-  pathArr.splice(2, 0, "public")
+  pathArr.splice(3, 0, "public")
   const destionationPath = pathArr.join("/")
   console.log(destionationPath,'destionationPath')
     try {
@@ -37,7 +37,7 @@ export const copyOnPublic = async (s3Client, bucketName, pathArr) => {
             CopySource: `${bucketName}/${sourceFile}`,
             Key: destionationPath,
         };
-        
+        console.log(copyParams, 'copyParams')
         await s3Client.send(new CopyObjectCommand(copyParams));
         console.log(`File copied to ${destionationPath}`);
   

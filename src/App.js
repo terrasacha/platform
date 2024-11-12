@@ -26,6 +26,8 @@ import ProjectPage from "./components/Constructor/ProjectPage/ProjectPage";
 import ListS3 from "components/ListS3";
 import NewProject from "components/Constructor/NewProject/NewProject";
 import Dashboard from "components/Dashboard/Dashboard";
+import NewCampaign from "components/Constructor/Campaign/NewCampaign";
+import Campaign from "components/Constructor/Campaign/Campaign";
 
 function App() {
   return (
@@ -113,7 +115,16 @@ function App() {
             }
           />
           <Route path="/login" element={<LogIn />} />
-          <Route path="/lists3" element={<ListS3 />} />
+          <Route path="/new_campaign" element={<NewCampaign />} />
+          <Route path="/campaigns" element={<NewCampaign/>} />
+          <Route
+            path="/campaign/:id"
+            element={
+                <Campaign />
+            }
+            exact
+          />
+          {/* <Route path="/lists3" element={<ListS3 />} /> */}
           <Route path="/*" element={<Error />} />
         </Routes>
         <Footer />

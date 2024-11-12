@@ -5,6 +5,8 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import HeaderNavbar from "components/views/Navbars/HeaderNavbar"
+import { Dropdown } from "react-bootstrap";
+import { useNavigate, Link } from "react-router";
 // Import images
 import LOGO from "components/common/_images/suan_logo.png";
 import { Auth } from "aws-amplify";
@@ -12,7 +14,7 @@ import s from "components/Constructor/Navbar/HeaderNavbar.module.css";
 
 export default function NewHeaderNavbar() {
   const [user, setUser] = useState(null)
-
+  const navigate = useNavigate()
   useEffect(() =>{
     Auth.currentAuthenticatedUser()
     .then(data => setUser(data))
@@ -83,13 +85,28 @@ export default function NewHeaderNavbar() {
                     >
                       Postular proyecto
                     </Nav.Link>
-                    {/* <Nav.Link
-                      onClick={() =>
-                        (window.location.href = "/creating_wallet")
-                      }
-                    >
-                      ¿Cómo crear tu billetera?
-                    </Nav.Link> */}
+                    <Dropdown >
+                      <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ paddingLeft: '.7rem'}}>
+                        Campañas
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          onClick={(e) =>
+                            navigate('/new_campaign')
+                          }
+                        >
+                          Crear campaña
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={(e) =>
+                            navigate('/campaigns')
+                          }
+                        >
+                          Mis campañas
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </>
                 )}
                 {user.attributes['custom:role'] === "validator" && (
@@ -113,7 +130,6 @@ export default function NewHeaderNavbar() {
                     </button>
                     <button className="role">
                       {user.username}
-                      <br></br>
                       <p className="role_btn">
                         {user.attributes['custom:role']}
                       </p>
