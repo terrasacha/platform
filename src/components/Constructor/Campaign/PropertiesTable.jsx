@@ -1,4 +1,11 @@
+import ModalAcceptProperty from "./ModalAcceptProperty";
+import { useState } from "react";
 export default function PropertiesTable() {
+  const [showModalAcceptProperty, setShowModalAcceptProperty] = useState(false)
+  
+    const handleCloseModalAcceptProperty = () => setShowModalAcceptProperty(false);
+    const handleShowModalAcceptProperty = () => setShowModalAcceptProperty(true);
+
   const properties = [
     {
       id: "12345",
@@ -30,6 +37,7 @@ export default function PropertiesTable() {
             <th style={{ width: "180px" }}>Nombre de predio</th>
             <th style={{ width: "180px" }}>Área</th>
             <th style={{ width: "120px" }}></th>
+            <th style={{ width: "120px" }}></th>
           </tr>
         </thead>
         <tbody>
@@ -44,12 +52,18 @@ export default function PropertiesTable() {
               <td>{property.nombrePredio}</td>
               <td>{property.area}</td>
               <td>
-                <button className="round bg-yellow-500 rounded-md p-2">Detalles</button>
+                <button className="round border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">Detalles</button>
+              </td>
+              <td>
+                <button 
+                  onClick={handleShowModalAcceptProperty}
+                  className="round border-2 border-gray-400 text-gray-400 rounded-md px-2 py-1 active:bg-gray-500 active:border-gray-500">Validación</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <ModalAcceptProperty handleCloseModalAcceptProperty={handleCloseModalAcceptProperty} showModalAcceptProperty={showModalAcceptProperty}/>
     </div>
   );
 }

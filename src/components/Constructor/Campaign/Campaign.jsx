@@ -8,19 +8,18 @@ import { FiEdit3 } from "react-icons/fi";
 import PropertiesTable from './PropertiesTable';
 import ModalEditCampaign from './ModalEditCampaign';
 import ModalEndCampaign from './ModalEndCampaign';
+import ModalAcceptProperty from './ModalAcceptProperty';
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
   const [editable, setEditable] = useState(false)
   const [showModal, setShowModal] = useState(false);
+  const [showModalEndCampaign, setShowModalEndCampaign] = useState(false)
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
-  
-  const [showModalEndCampaign, setShowModalEndCampaign] = useState(false);
 
   const handleCloseEndCampaign = () => setShowModalEndCampaign(false);
   const handleShowEndCampaign = () => setShowModalEndCampaign(true);
-
   const navigate = useNavigate();
   const { id } = useParams();
 
