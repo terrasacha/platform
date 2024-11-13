@@ -312,3 +312,37 @@ export const getProductItem = /* GraphQL */ `
     }
   }
 `;
+
+export const listCampaigns = /* GraphQL */ `
+  query ListCampaigns(
+    $filter: ModelCampaignFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCampaigns(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        user {
+          id
+          name
+          role
+          subrole
+          email
+        }
+        productID
+        name
+        description
+        initialDate
+        endDate
+        available
+        images
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
