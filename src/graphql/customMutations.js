@@ -15,6 +15,6 @@ export const updateCampaign = `
 mutation updateCampaign($input: UpdateCampaignInput!) {
   updateCampaign(input: $input) {
     id
-    images
+    available
   }
 }`
