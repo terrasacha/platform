@@ -5,6 +5,7 @@ import Card from 'components/common/Card';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { getCampaign } from 'graphql/queries';
 import { FiEdit3 } from "react-icons/fi";
+import PropertiesTable from './PropertiesTable';
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
   const [editable, setEditable] = useState(false)
@@ -64,6 +65,7 @@ export default function Campaign() {
             </section>
           </article>
           <h2 className='text-2xl text-gray-600'>Predios postulados</h2>
+          <PropertiesTable/>
         </Card.Body>
       </Card>
     </div>
