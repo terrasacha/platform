@@ -8,7 +8,6 @@ import { FiEdit3 } from "react-icons/fi";
 import PropertiesTable from './PropertiesTable';
 import ModalEditCampaign from './ModalEditCampaign';
 import ModalEndCampaign from './ModalEndCampaign';
-import { CloudSearch } from 'aws-sdk';
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
   const [editable, setEditable] = useState(false)
