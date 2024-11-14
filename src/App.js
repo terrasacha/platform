@@ -29,6 +29,7 @@ import Dashboard from "components/Dashboard/Dashboard";
 import NewCampaign from "components/Constructor/Campaign/NewCampaign";
 import Campaign from "components/Constructor/Campaign/Campaign";
 import CampaignList from "components/Constructor/Campaign/CampaignList";
+import PQRForm from "components/views/landingPage/PQRForm";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
             exact
           />
           <Route path="/products" element={<Products />} />
+          <Route path="/PQR" element={<PQRForm />} />
           <Route
             path="/products/:id"
             element={

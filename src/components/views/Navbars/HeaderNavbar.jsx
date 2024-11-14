@@ -84,16 +84,26 @@ export default class HeaderNavbar extends Component {
                   ) : (
                     ""
                   )}
-                  {role === "investor" ? (
-                    <Nav.Link
-                      onClick={() => (window.location.href = "/investor_admon")}
-                    >
-                      Perfil
-                    </Nav.Link>
-                  ) : (
-                    ""
+                 {role === "investor" && (
+                    <>
+                      <Nav.Link
+                        onClick={() =>
+                          (window.location.href = "/investor_admon")
+                        }
+                      >
+                        Perfil
+                      </Nav.Link>
+                      <Nav.Link
+                        onClick={() =>
+                          (window.location.href = "/PQR")
+                        }
+                      >
+                        PQR
+                      </Nav.Link>
+                    </>
                   )}
-                  {role === "validator" ? (
+                  {role === "validator" && (
+                    <>
                     <Nav.Link
                       onClick={() =>
                         (window.location.href = "/validator_admon")
@@ -101,24 +111,48 @@ export default class HeaderNavbar extends Component {
                     >
                       Perfil
                     </Nav.Link>
-                  ) : (
-                    ""
+                    <Nav.Link
+                        onClick={() =>
+                          (window.location.href = "/PQR")
+                        }
+                      >
+                        PQR
+                      </Nav.Link>
+                    </>
                   )}
-                  {role === "constructor" ? (
+                   {role === "analyst" && (
+                    <>
+                    <Nav.Link
+                        onClick={() =>
+                          (window.location.href = "/PQR")
+                        }
+                      >
+                        PQR
+                      </Nav.Link>
+                    </>
+                  )}
+                  {role === "constructor" && (
+                    <>
                     <Nav.Link
                       onClick={() => (window.location.href = "/constructor")}
                     >
                       Perfil
                     </Nav.Link>
-                  ) : (
-                    ""
+                    <Nav.Link
+                        onClick={() =>
+                          (window.location.href = "/PQR")
+                        }
+                      >
+                        PQR
+                      </Nav.Link>
+                    </>
                   )}
                 </Nav>
                 <Nav className={s.navGroup}>
                   {/* <Nav.Link href="#home" onClick={() => window.location.href="/"}>Inicio</Nav.Link> */}
                   {/* <Nav.Link href="#products" onClick={() => window.location.href="/products"}>Proyectos</Nav.Link> */}
                   {localStorage.getItem("role") ? (
-                    <div>
+                    <div >
                       <button
                         className={s.signing}
                         onClick={() => this.logOut()}
