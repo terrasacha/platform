@@ -14,7 +14,7 @@ const initialForm = {
   description: '',
   initialDate: '',
   endDate: '',
-  available: false,
+  available: true,
   images: JSON.stringify([])
 };
 
