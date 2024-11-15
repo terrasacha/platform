@@ -357,6 +357,7 @@ query ListProperties(
       items {
         id
         productID
+        status
         createdAt
         updatedAt
       }

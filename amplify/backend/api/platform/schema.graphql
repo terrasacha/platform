@@ -32,6 +32,7 @@ type User @model {
   marketplaceID: ID @index(name: "byMarketplace")
   marketplace: Marketplace @belongsTo(fields: ["marketplaceID"])
   campaigns: [Campaign] @hasMany(indexName: "byUser", fields: ["id"])
+  properties: [Property] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Wallet @model {
@@ -138,15 +139,25 @@ type Campaign @model {
   properties: [Property] @hasMany(indexName: "byCampaign", fields: ["id"])
 }
 
+enum PropertyStatusType {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 type Property @model {
   id: ID!
   cadastralNumber: AWSJSON
-  productID: ID! @index(name: "byProduct")
+  productID: ID @index(name: "byProduct")
   product: Product @belongsTo(fields: ["productID"])
-  campaignID: ID! @index(name: "byCampaign")
+  campaignID: ID @index(name: "byCampaign")
   campaign: Campaign @belongsTo(fields: ["campaignID"])
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
   propertyFeatures: [PropertyFeature]
     @hasMany(indexName: "byProperty", fields: ["id"])
+  status: PropertyStatusType
+  reason: String
 }
 
 type PropertyFeature @model {

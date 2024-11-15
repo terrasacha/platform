@@ -1,6 +1,6 @@
 import useFetchPropertiesCampaign from "hooks/useFetchPropertiesCampaign";
 import ModalAcceptProperty from "./ModalAcceptProperty";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { Spinner } from "react-bootstrap";
 
 /* const properties = [
@@ -23,7 +23,11 @@ import { Spinner } from "react-bootstrap";
       area: "6200 m²",
     },
   ]; */
-
+  const status = {
+    REJECTED: 'REJECTED',
+    ACCEPTED: 'APPROVED',
+    PENDING: 'PENDING'
+}
 export default function PropertiesTable() {
   const [showModalAcceptProperty, setShowModalAcceptProperty] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null)
@@ -66,7 +70,7 @@ export default function PropertiesTable() {
         </thead>
         <tbody>
           {toShowProperties.map((property, index) => (
-            <tr key={index} className="border-b-2" style={{ height: "3rem" }}>
+            <tr key={property.id} className="border-b-2" style={{ height: "3rem" }}>
               <td className="text-left">{property.id}</td>
               <td className="text-left">{property.certificado}</td>
               <td className="text-left">{property.nombrePredio}</td>
@@ -76,13 +80,27 @@ export default function PropertiesTable() {
                   Detalles
                 </button>
               </td>
-              <td>
-                <button
-                  onClick={() => handleShowModalAcceptProperty(property)}
-                  className="border-2 border-gray-400 text-gray-400 rounded-md px-2 py-1 active:bg-gray-500 active:border-gray-500"
-                >
-                  Validación
-                </button>
+              <td className="align-middle text-center">
+                {property.status === status.PENDING ? (
+                  <button
+                    onClick={() => handleShowModalAcceptProperty(property)}
+                    className="border-2 border-gray-400 text-gray-400 rounded-md px-2 py-1 active:bg-gray-500 active:border-gray-500 w-32"
+                  >
+                    Validación
+                  </button>
+                ) : property.status === status.ACCEPTED ? (
+                  <button
+                    className="cursor-not-allowed border-2 border-green-600 text-white rounded-md px-2 py-1 bg-green-600 w-32"
+                  >
+                    {status.ACCEPTED}
+                  </button>
+                ) : (
+                  <button
+                    className="cursor-not-allowed border-2 border-red-600 text-white rounded-md px-2 py-1 bg-red-600 w-32"
+                  >
+                    {status.REJECTED}
+                  </button>
+                )}
               </td>
             </tr>
           ))}
