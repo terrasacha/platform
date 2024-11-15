@@ -220,6 +220,23 @@ export const onCreateUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      properties {
+        items {
+          id
+          name
+          cadastralNumber
+          productID
+          campaignID
+          userID
+          status
+          reason
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -438,6 +455,23 @@ export const onUpdateUser = /* GraphQL */ `
           endDate
           available
           images
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      properties {
+        items {
+          id
+          name
+          cadastralNumber
+          productID
+          campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -670,6 +704,23 @@ export const onDeleteUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      properties {
+        items {
+          id
+          name
+          cadastralNumber
+          productID
+          campaignID
+          userID
+          status
+          reason
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -743,6 +794,10 @@ export const onCreateWallet = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -904,6 +959,10 @@ export const onUpdateWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1062,6 +1121,10 @@ export const onDeleteWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1216,6 +1279,10 @@ export const onCreateVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1274,6 +1341,10 @@ export const onCreateVerification = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -1433,6 +1504,10 @@ export const onUpdateVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1491,6 +1566,10 @@ export const onUpdateVerification = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -1650,6 +1729,10 @@ export const onDeleteVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1708,6 +1791,10 @@ export const onDeleteVerification = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -2179,6 +2266,10 @@ export const onCreateDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2327,6 +2418,10 @@ export const onUpdateDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -2472,6 +2567,10 @@ export const onDeleteDocument = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -3287,6 +3386,10 @@ export const onCreateCampaign = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3401,9 +3504,13 @@ export const onCreateCampaign = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -3478,6 +3585,10 @@ export const onUpdateCampaign = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3592,9 +3703,13 @@ export const onUpdateCampaign = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -3669,6 +3784,10 @@ export const onDeleteCampaign = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -3783,9 +3902,13 @@ export const onDeleteCampaign = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -3803,6 +3926,7 @@ export const onCreateProperty = /* GraphQL */ `
   subscription OnCreateProperty($filter: ModelSubscriptionPropertyFilterInput) {
     onCreateProperty(filter: $filter) {
       id
+      name
       cadastralNumber
       productID
       product {
@@ -3962,6 +4086,71 @@ export const onCreateProperty = /* GraphQL */ `
         updatedAt
         __typename
       }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       propertyFeatures {
         items {
           id
@@ -3979,6 +4168,8 @@ export const onCreateProperty = /* GraphQL */ `
         nextToken
         __typename
       }
+      status
+      reason
       createdAt
       updatedAt
       __typename
@@ -3989,6 +4180,7 @@ export const onUpdateProperty = /* GraphQL */ `
   subscription OnUpdateProperty($filter: ModelSubscriptionPropertyFilterInput) {
     onUpdateProperty(filter: $filter) {
       id
+      name
       cadastralNumber
       productID
       product {
@@ -4148,6 +4340,71 @@ export const onUpdateProperty = /* GraphQL */ `
         updatedAt
         __typename
       }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       propertyFeatures {
         items {
           id
@@ -4165,6 +4422,8 @@ export const onUpdateProperty = /* GraphQL */ `
         nextToken
         __typename
       }
+      status
+      reason
       createdAt
       updatedAt
       __typename
@@ -4175,6 +4434,7 @@ export const onDeleteProperty = /* GraphQL */ `
   subscription OnDeleteProperty($filter: ModelSubscriptionPropertyFilterInput) {
     onDeleteProperty(filter: $filter) {
       id
+      name
       cadastralNumber
       productID
       product {
@@ -4334,6 +4594,71 @@ export const onDeleteProperty = /* GraphQL */ `
         updatedAt
         __typename
       }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       propertyFeatures {
         items {
           id
@@ -4351,6 +4676,8 @@ export const onDeleteProperty = /* GraphQL */ `
         nextToken
         __typename
       }
+      status
+      reason
       createdAt
       updatedAt
       __typename
@@ -4371,6 +4698,7 @@ export const onCreatePropertyFeature = /* GraphQL */ `
       propertyID
       property {
         id
+        name
         cadastralNumber
         productID
         product {
@@ -4408,10 +4736,31 @@ export const onCreatePropertyFeature = /* GraphQL */ `
           updatedAt
           __typename
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
         propertyFeatures {
           nextToken
           __typename
         }
+        status
+        reason
         createdAt
         updatedAt
         __typename
@@ -4491,6 +4840,7 @@ export const onUpdatePropertyFeature = /* GraphQL */ `
       propertyID
       property {
         id
+        name
         cadastralNumber
         productID
         product {
@@ -4528,10 +4878,31 @@ export const onUpdatePropertyFeature = /* GraphQL */ `
           updatedAt
           __typename
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
         propertyFeatures {
           nextToken
           __typename
         }
+        status
+        reason
         createdAt
         updatedAt
         __typename
@@ -4611,6 +4982,7 @@ export const onDeletePropertyFeature = /* GraphQL */ `
       propertyID
       property {
         id
+        name
         cadastralNumber
         productID
         product {
@@ -4648,10 +5020,31 @@ export const onDeletePropertyFeature = /* GraphQL */ `
           updatedAt
           __typename
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
         propertyFeatures {
           nextToken
           __typename
         }
+        status
+        reason
         createdAt
         updatedAt
         __typename
@@ -5092,9 +5485,13 @@ export const onCreateProduct = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -5483,9 +5880,13 @@ export const onUpdateProduct = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -5874,9 +6275,13 @@ export const onDeleteProduct = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -9380,6 +9785,10 @@ export const onCreateUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -9555,6 +9964,10 @@ export const onUpdateUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -9727,6 +10140,10 @@ export const onDeleteUserProduct = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -10847,6 +11264,10 @@ export const onCreatePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -11033,6 +11454,10 @@ export const onUpdatePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -11216,6 +11641,10 @@ export const onDeletePayment = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -11677,6 +12106,10 @@ export const onCreateCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -11851,6 +12284,10 @@ export const onUpdateCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -12022,6 +12459,10 @@ export const onDeleteCompany = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }

@@ -29,6 +29,8 @@ import Dashboard from "components/Dashboard/Dashboard";
 import NewCampaign from "components/Constructor/Campaign/NewCampaign";
 import Campaign from "components/Constructor/Campaign/Campaign";
 import CampaignList from "components/Constructor/Campaign/CampaignList";
+import NewProperty from "components/Constructor/Property/NewProperty";
+import Property from "components/Property/Property";
 
 function App() {
   return (
@@ -117,6 +119,14 @@ function App() {
           />
           <Route path="/login" element={<LogIn />} />
           <Route path="/new_campaign" element={<NewCampaign />} />
+          <Route path="/new_property" element={<NewProperty />} />
+          <Route
+            path="/property/:id"
+            element={
+                <Property/>
+            }
+            exact
+          />
           <Route path="/campaigns" element={<CampaignList/>} />
           <Route
             path="/campaign/:id"

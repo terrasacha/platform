@@ -1,0 +1,107 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { API, Auth, graphqlOperation } from "aws-amplify";
+// Sections
+import ProjectDetails from "components/Constructor/ProjectPage/ProjectDetails/ProjectDetails";
+
+
+// Contexts
+import { S3ClientProvider } from "context/s3ClientContext";
+import NewHeaderNavbar from "components/common/NewHeaderNavbar";
+import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
+import { getProperty } from "graphql/queries";
+// Mostrar si tiene asignado validador
+// Tiempo restante para verificar
+
+export default function Property() {
+  const { id } = useParams();
+  const [property, setProperty] = useState(null);
+  const [editable, setEditable] = useState(false);
+
+  const [activeSection, setActiveSection] = useState("details");
+
+  const isAuthor = async (id) => {
+    try {
+      const userLogged = await Auth.currentAuthenticatedUser();
+
+      if (userLogged.attributes.sub === id) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  const fetchProperty = async () => {
+    try {
+      const data = await API.graphql(graphqlOperation(getProperty, { id }));
+      console.log(data.data.getProperty);
+      setProperty(data.data.getProperty);
+      const isAuthorResult = await isAuthor(data.data.getProperty.userID);
+      setEditable(isAuthorResult);
+    } catch (error) {
+      console.error("Error fetching campaign:", error);
+    }
+  };
+  useEffect(() => {
+    fetchProperty();
+  }, []);
+
+  if (!property) return null;
+
+  return (
+    <S3ClientProvider>
+      <div>
+        <div className="container-sm">
+          <div className="mb-5">
+            <NewHeaderNavbar></NewHeaderNavbar>
+          </div>
+          <div className="my-2">-</div>
+          <div>
+            <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">
+              <div className="row gy-2">
+                <header className="d-flex justify-content-between">
+                  <p className="fs-3 mb-0">{property.name}</p>
+                </header>
+                <section>
+                  <p className="fs-6 mb-0 fw-bold">Fecha de creación:</p>
+                  <p className="fs-6 mb-0">{property.createdAt}</p>
+                </section>
+                <section>
+                  <p className="fs-6 mb-0 fw-bold">Descripción:</p>
+                  <p className="fs-6 mb-0">Descripcion aca</p>
+                </section>
+              </div>
+              <ul className="font-medium flex mt-4 pl-0 ">
+                <li>
+                  <a
+                    href="#details"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("details");
+                    }}
+                    className={`${
+                      activeSection === "details"
+                        ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                        : "text-blue-500"
+                    } flex py-2 px-3`}
+                    aria-current="page"
+                  >
+                    Detalles
+                    <HourGlassIcon className="text-danger ms-2" />
+                  </a>
+                </li>
+              </ul>
+            </div>
+            {/* <ProjectDetails visible={activeSection === "details"} /> */}
+          </div>
+          <ToastContainer></ToastContainer>
+        </div>
+      </div>
+    </S3ClientProvider>
+  );
+}
