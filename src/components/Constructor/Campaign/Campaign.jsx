@@ -9,6 +9,7 @@ import PropertiesTable from './PropertiesTable';
 import ModalEditCampaign from './ModalEditCampaign';
 import ModalEndCampaign from './ModalEndCampaign';
 import ModalAcceptProperty from './ModalAcceptProperty';
+import { ToastContainer } from 'react-toastify';
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
   const [editable, setEditable] = useState(false)
@@ -96,12 +97,13 @@ export default function Campaign() {
               }
             </section>
           </article>
-          <h2 className='text-2xl text-gray-600'>Predios postulados</h2>
+          <h2 className='text-2xl text-gray-600 mb-2'>Predios postulados</h2>
           <PropertiesTable/>
         </Card.Body>
       </Card>
       <ModalEditCampaign showModal={showModal} handleClose={handleClose} campaign={campaign} fetchCampaign={fetchCampaign}/>
       <ModalEndCampaign campaign={campaign} fetchCampaign={fetchCampaign} showModalEndCampaign={showModalEndCampaign} handleCloseEndCampaign={handleCloseEndCampaign}/>
+      <ToastContainer />
     </div>
   );
 }

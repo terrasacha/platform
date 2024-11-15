@@ -1,12 +1,9 @@
+import useFetchPropertiesCampaign from "hooks/useFetchPropertiesCampaign";
 import ModalAcceptProperty from "./ModalAcceptProperty";
 import { useState } from "react";
-export default function PropertiesTable() {
-  const [showModalAcceptProperty, setShowModalAcceptProperty] = useState(false)
-  
-    const handleCloseModalAcceptProperty = () => setShowModalAcceptProperty(false);
-    const handleShowModalAcceptProperty = () => setShowModalAcceptProperty(true);
+import { Spinner } from "react-bootstrap";
 
-  const properties = [
+/* const properties = [
     {
       id: "12345",
       certificado: "CT-987654",
@@ -25,45 +22,73 @@ export default function PropertiesTable() {
       nombrePredio: "Villa del Sol",
       area: "6200 m²",
     },
-  ];
+  ]; */
+
+export default function PropertiesTable() {
+  const [showModalAcceptProperty, setShowModalAcceptProperty] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState(null)
+  const { loading, properties, error } = useFetchPropertiesCampaign();
+  const handleCloseModalAcceptProperty = () => {
+    setShowModalAcceptProperty(false)
+    setSelectedProperty(null)
+  }
+  const handleShowModalAcceptProperty = (property) => {
+    setSelectedProperty(property)
+    setShowModalAcceptProperty(true)
+  }
+
+  if (loading)
+    return (
+      <div className="w-full flex justify-center items-center h-20">
+        <Spinner variant="success" />
+      </div>
+    );
+
+  const toShowProperties = properties.map((item) => {
+    item.certificado = "CT-123456";
+    item.nombrePredio = "Villa del Sol";
+    item.area = "6200 m²";
+    return item;
+  });
 
   return (
     <div className="row">
-      <table>
-        <thead className="text-center">
+      <table className="w-full">
+        <thead>
           <tr>
-            <th style={{ width: "240px" }}>Identificador catastral</th>
-            <th style={{ width: "180px" }}>Certificado de tradición</th>
-            <th style={{ width: "180px" }}>Nombre de predio</th>
-            <th style={{ width: "180px" }}>Área</th>
+            <th className="text-left" style={{ width: "240px" }}>Identificador catastral</th>
+            <th className="text-left" style={{ width: "180px" }}>Certificado de tradición</th>
+            <th className="text-left" style={{ width: "180px" }}>Nombre de predio</th>
+            <th className="text-left" style={{ width: "180px" }}>Área</th>
             <th style={{ width: "120px" }}></th>
             <th style={{ width: "120px" }}></th>
           </tr>
         </thead>
         <tbody>
-          {properties.map((property, index) => (
-            <tr
-              key={index}
-              className="text-center border-b-2"
-              style={{ height: "3rem" }}
-            >
-              <td>{property.id}</td>
-              <td>{property.certificado}</td>
-              <td>{property.nombrePredio}</td>
-              <td>{property.area}</td>
+          {toShowProperties.map((property, index) => (
+            <tr key={index} className="border-b-2" style={{ height: "3rem" }}>
+              <td className="text-left">{property.id}</td>
+              <td className="text-left">{property.certificado}</td>
+              <td className="text-left">{property.nombrePredio}</td>
+              <td className="text-left">{property.area}</td>
               <td>
-                <button className="round border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">Detalles</button>
+                <button className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
+                  Detalles
+                </button>
               </td>
               <td>
-                <button 
-                  onClick={handleShowModalAcceptProperty}
-                  className="round border-2 border-gray-400 text-gray-400 rounded-md px-2 py-1 active:bg-gray-500 active:border-gray-500">Validación</button>
+                <button
+                  onClick={() => handleShowModalAcceptProperty(property)}
+                  className="border-2 border-gray-400 text-gray-400 rounded-md px-2 py-1 active:bg-gray-500 active:border-gray-500"
+                >
+                  Validación
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <ModalAcceptProperty handleCloseModalAcceptProperty={handleCloseModalAcceptProperty} showModalAcceptProperty={showModalAcceptProperty}/>
+      <ModalAcceptProperty handleCloseModalAcceptProperty={handleCloseModalAcceptProperty} showModalAcceptProperty={showModalAcceptProperty} selectedProperty={selectedProperty}/>
     </div>
   );
 }

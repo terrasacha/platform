@@ -346,3 +346,21 @@ export const listCampaigns = /* GraphQL */ `
     }
   }
 `;
+
+export const listProperties = `
+query ListProperties(
+    $filter: ModelPropertyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProperties(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        productID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+  `
