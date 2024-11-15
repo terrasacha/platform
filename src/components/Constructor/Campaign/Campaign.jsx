@@ -9,13 +9,19 @@ import PropertiesTable from './PropertiesTable';
 import ModalEditCampaign from './ModalEditCampaign';
 import ModalEndCampaign from './ModalEndCampaign';
 import ModalAcceptProperty from './ModalAcceptProperty';
-import { ToastContainer } from 'react-toastify';
+import ModalNewProperty from './ModalNewProperty';
+import { toast, ToastContainer } from 'react-toastify';
+
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
   const [editable, setEditable] = useState(false)
   const [showModal, setShowModal] = useState(false);
+  const [showModalNewProperty, setShowModalNewProperty] = useState(false);
   const [showModalEndCampaign, setShowModalEndCampaign] = useState(false)
 
+  const handleCloseNewProperty = () => setShowModalNewProperty(false);
+  const handleShowNewProperty = () => setShowModalNewProperty(true);
+  
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
@@ -63,8 +69,6 @@ export default function Campaign() {
       timeZone: 'UTC'
     });
   };
-  
-  
 
   return (
     <div className="container-sm">
@@ -87,7 +91,7 @@ export default function Campaign() {
                   Cerrar convocatoria ahora
                 </button>
                 :
-                <button className='bg-green-600 py-3 text-md font-medium text-white rounded-md w-3/6 active:bg-green-700'>
+                <button onClick={handleShowNewProperty} className='bg-green-600 py-3 text-md font-medium text-white rounded-md w-3/6 active:bg-green-700'>
                   Postular predio
                 </button>
                 :
@@ -103,6 +107,7 @@ export default function Campaign() {
       </Card>
       <ModalEditCampaign showModal={showModal} handleClose={handleClose} campaign={campaign} fetchCampaign={fetchCampaign}/>
       <ModalEndCampaign campaign={campaign} fetchCampaign={fetchCampaign} showModalEndCampaign={showModalEndCampaign} handleCloseEndCampaign={handleCloseEndCampaign}/>
+      <ModalNewProperty showModal={showModalNewProperty} handleClose={handleCloseNewProperty} campaignId={campaign.id} fetchCampaign={fetchCampaign}/>
       <ToastContainer />
     </div>
   );

@@ -220,6 +220,23 @@ export const getUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      properties {
+        items {
+          id
+          name
+          cadastralNumber
+          productID
+          campaignID
+          userID
+          status
+          reason
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -286,6 +303,10 @@ export const listUsers = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -365,6 +386,10 @@ export const getWallet = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -582,6 +607,10 @@ export const getVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -640,6 +669,10 @@ export const getVerification = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -1060,6 +1093,10 @@ export const getDocument = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -1552,6 +1589,10 @@ export const getCampaign = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -1666,9 +1707,13 @@ export const getCampaign = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -1754,6 +1799,7 @@ export const getProperty = /* GraphQL */ `
   query GetProperty($id: ID!) {
     getProperty(id: $id) {
       id
+      name
       cadastralNumber
       productID
       product {
@@ -1913,6 +1959,71 @@ export const getProperty = /* GraphQL */ `
         updatedAt
         __typename
       }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
       propertyFeatures {
         items {
           id
@@ -1930,6 +2041,8 @@ export const getProperty = /* GraphQL */ `
         nextToken
         __typename
       }
+      status
+      reason
       createdAt
       updatedAt
       __typename
@@ -1945,6 +2058,7 @@ export const listProperties = /* GraphQL */ `
     listProperties(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        name
         cadastralNumber
         productID
         product {
@@ -1982,10 +2096,31 @@ export const listProperties = /* GraphQL */ `
           updatedAt
           __typename
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
         propertyFeatures {
           nextToken
           __typename
         }
+        status
+        reason
         createdAt
         updatedAt
         __typename
@@ -2007,6 +2142,7 @@ export const getPropertyFeature = /* GraphQL */ `
       propertyID
       property {
         id
+        name
         cadastralNumber
         productID
         product {
@@ -2044,10 +2180,31 @@ export const getPropertyFeature = /* GraphQL */ `
           updatedAt
           __typename
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
         propertyFeatures {
           nextToken
           __typename
         }
+        status
+        reason
         createdAt
         updatedAt
         __typename
@@ -2134,9 +2291,13 @@ export const listPropertyFeatures = /* GraphQL */ `
         propertyID
         property {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -2547,9 +2708,13 @@ export const getProduct = /* GraphQL */ `
       properties {
         items {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -4419,6 +4584,10 @@ export const getUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5140,6 +5309,10 @@ export const getPayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -5463,6 +5636,10 @@ export const getCompany = /* GraphQL */ `
           __typename
         }
         campaigns {
+          nextToken
+          __typename
+        }
+        properties {
           nextToken
           __typename
         }
@@ -6357,6 +6534,10 @@ export const usersByMarketplaceID = /* GraphQL */ `
           nextToken
           __typename
         }
+        properties {
+          nextToken
+          __typename
+        }
         createdAt
         updatedAt
         __typename
@@ -6963,6 +7144,7 @@ export const propertiesByProductID = /* GraphQL */ `
     ) {
       items {
         id
+        name
         cadastralNumber
         productID
         product {
@@ -7000,10 +7182,31 @@ export const propertiesByProductID = /* GraphQL */ `
           updatedAt
           __typename
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
         propertyFeatures {
           nextToken
           __typename
         }
+        status
+        reason
         createdAt
         updatedAt
         __typename
@@ -7030,6 +7233,7 @@ export const propertiesByCampaignID = /* GraphQL */ `
     ) {
       items {
         id
+        name
         cadastralNumber
         productID
         product {
@@ -7067,10 +7271,120 @@ export const propertiesByCampaignID = /* GraphQL */ `
           updatedAt
           __typename
         }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
         propertyFeatures {
           nextToken
           __typename
         }
+        status
+        reason
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const propertiesByUserID = /* GraphQL */ `
+  query PropertiesByUserID(
+    $userID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPropertyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    propertiesByUserID(
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        cadastralNumber
+        productID
+        product {
+          id
+          name
+          description
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        propertyFeatures {
+          nextToken
+          __typename
+        }
+        status
+        reason
         createdAt
         updatedAt
         __typename
@@ -7105,9 +7419,13 @@ export const propertyFeaturesByPropertyID = /* GraphQL */ `
         propertyID
         property {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
@@ -7168,9 +7486,13 @@ export const propertyFeaturesByFeatureID = /* GraphQL */ `
         propertyID
         property {
           id
+          name
           cadastralNumber
           productID
           campaignID
+          userID
+          status
+          reason
           createdAt
           updatedAt
           __typename
