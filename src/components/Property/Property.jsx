@@ -61,7 +61,10 @@ export default function Property() {
             <NewHeaderNavbar></NewHeaderNavbar>
           </div>
           <div className="my-2">-</div>
-          <div>
+          <div className="mt-4">
+            <a href={`/campaign/${property.campaign.id}`} className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
+              Regresar a la campaña
+            </a>
             <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">
               <div className="row gy-2">
                 <header className="d-flex justify-content-between">
@@ -73,7 +76,11 @@ export default function Property() {
                 </section>
                 <section>
                   <p className="fs-6 mb-0 fw-bold">Descripción:</p>
-                  <p className="fs-6 mb-0">Descripcion aca</p>
+                  <p className="fs-6 mb-0">Descripcion de predios</p>
+                </section>
+                <section>
+                  <p className="fs-6 mb-0 fw-bold">Identificadores catastrales:</p>
+                  <p className="fs-6 mb-0">{property.cadastralNumber}</p>
                 </section>
               </div>
               <ul className="font-medium flex mt-4 pl-0 ">

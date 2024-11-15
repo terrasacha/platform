@@ -356,7 +356,11 @@ query ListProperties(
     listProperties(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        name
+        userID
         productID
+        campaignID
+        cadastralNumber
         createdAt
         updatedAt
       }

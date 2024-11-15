@@ -53,7 +53,7 @@ export default function ModalNewProperty({
       await fetchCampaign();
       handleClose();
   
-      toast.success('Campaña creada con éxito',{
+      toast.success('Predio postulado con éxito, serás redirigido ...',{
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -63,7 +63,9 @@ export default function ModalNewProperty({
         progress: undefined,
         theme: "light",
       });
-      navigate(`/property/${propertyId}`)
+      setTimeout(() => {
+        navigate(`/property/${propertyId}`)
+      }, 3000);
     } catch (error) {
       console.error("Error al actualizar la campaña:", error);
     } finally {

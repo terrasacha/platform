@@ -2,6 +2,7 @@ import useFetchPropertiesCampaign from "hooks/useFetchPropertiesCampaign";
 import ModalAcceptProperty from "./ModalAcceptProperty";
 import { useState } from "react";
 import { Spinner } from "react-bootstrap";
+import { formatDateTime } from "ui-components/utils";
 
 /* const properties = [
     {
@@ -51,6 +52,15 @@ export default function PropertiesTable() {
     return item;
   });
 
+  const formatDateToSimple = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11
+    const day = String(date.getDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }
+
   return (
     <div className="row">
       <table className="w-full">
@@ -60,6 +70,8 @@ export default function PropertiesTable() {
             <th className="text-left" style={{ width: "180px" }}>Certificado de tradición</th>
             <th className="text-left" style={{ width: "180px" }}>Nombre de predio</th>
             <th className="text-left" style={{ width: "180px" }}>Área</th>
+            <th className="text-left" style={{ width: "180px" }}>Fecha de postulación</th>
+            <th className="text-left" style={{ width: "180px" }}>Ultima actualización</th>
             <th style={{ width: "120px" }}></th>
             <th style={{ width: "120px" }}></th>
           </tr>
@@ -67,14 +79,16 @@ export default function PropertiesTable() {
         <tbody>
           {toShowProperties.map((property, index) => (
             <tr key={index} className="border-b-2" style={{ height: "3rem" }}>
-              <td className="text-left">{property.id}</td>
+              <td className="text-left">{property.cadastralNumber}</td>
               <td className="text-left">{property.certificado}</td>
-              <td className="text-left">{property.nombrePredio}</td>
+              <td className="text-left">{property.name}</td>
               <td className="text-left">{property.area}</td>
+              <td className="text-left">{formatDateToSimple(property.createdAt)}</td>
+              <td className="text-left">{formatDateToSimple(property.updatedAt)}</td>
               <td>
-                <button className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
+                <a href={`/property/${property.id}`} className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
                   Detalles
-                </button>
+                </a>
               </td>
               <td>
                 <button
