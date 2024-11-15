@@ -361,6 +361,7 @@ query ListProperties(
         productID
         campaignID
         cadastralNumber
+        status
         createdAt
         updatedAt
       }

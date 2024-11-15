@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Spinner } from 'react-bootstrap';
 import { API, graphqlOperation } from 'aws-amplify';
-import { updateCampaign } from 'graphql/customMutations';
+import { updateProperty } from 'graphql/customMutations';
 import { toast } from 'react-toastify';
+import useFetchPropertiesCampaign from 'hooks/useFetchPropertiesCampaign';
 const status = {
-    REJECTED: 'rejected',
-    ACCEPTED: 'accepted'
+    REJECTED: 'REJECTED',
+    ACCEPTED: 'APPROVED'
 }
 export default function ModalAcceptProperty({ showModalAcceptProperty, handleCloseModalAcceptProperty, selectedProperty }) {
+    const { fetchProperties } = useFetchPropertiesCampaign()
     const [selection, setSelection] = useState(null)
     const [loading, setLoading] = useState(false)
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -25,30 +27,29 @@ export default function ModalAcceptProperty({ showModalAcceptProperty, handleClo
 
     const handleConfirm = async () => {
         setLoading(true)
-        setTimeout(() => {
-            handleCloseModalAcceptProperty();
-            setShowConfirmation(false);
-            setLoading(false)
-            toast.success('Validación completada')
-
-            setSelection(null)
-            setConfirmationText("");
-        }, 2000);
-        /* try {
-            await API.graphql(graphqlOperation(updateCampaign, {
+        try {
+            console.log({
+                id: selectedProperty.id,
+                status: selection,
+                reason: confirmationText,
+            })
+            await API.graphql(graphqlOperation(updateProperty, {
                 input: {
                     id: selectedProperty.id,
-                    status: action,
-                    confirmationText: confirmationText,
+                    status: selection,
+                    reason: confirmationText,
                 }
             }));
+            toast.success('Validación completada')
             handleCloseModalAcceptProperty();
         } catch (error) {
             console.error("Error actualizando la campaña:", error);
+            toast.error('Error actualizando la campaña')
         } finally {
             setShowConfirmation(false);
             setConfirmationText("");
-        } */
+            setLoading(false)
+        }
     };
 
     const handleCancel = () => {

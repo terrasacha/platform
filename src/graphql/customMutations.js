@@ -18,3 +18,10 @@ mutation updateCampaign($input: UpdateCampaignInput!) {
     available
   }
 }`
+
+export const updateProperty = `
+mutation updateProperty($input: UpdatePropertyInput!) {
+  updateProperty(input: $input) {
+    id
+  }
+}`
