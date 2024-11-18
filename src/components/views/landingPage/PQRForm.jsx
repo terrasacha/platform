@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Form, Button, Modal, Container } from "react-bootstrap";
 import { Storage, Auth } from "aws-amplify";
 import s from "./LandingPage.module.css"; // Estilos personalizados
+import { FaArrowLeft } from "react-icons/fa"; // Importa el ícono
+
 
 export default class PQRForm extends Component {
   constructor(props) {
@@ -110,6 +112,15 @@ export default class PQRForm extends Component {
     return (
       <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
         <Container className={`${s.pqrContainer} mt-5 p-4`}>
+        <Button
+          variant="link"
+          style={{ color: "#1C3541" }}
+          className="mb-4 d-flex align-items-center gap-2"
+          onClick={() => (window.location.href = "/")}
+        >
+          <FaArrowLeft />
+          Regresar
+        </Button>
           <h2 className="text-center mb-4">Envía tu PQR</h2>
           <Form onSubmit={this.handlePRQSubmit}>
             <Form.Group controlId="prqDescription" className="mb-3">
@@ -120,20 +131,39 @@ export default class PQRForm extends Component {
                 value={prqDescription}
                 onChange={(e) => this.setState({ prqDescription: e.target.value })}
                 required
-                minLength="15"
+                minLength="30"
                 placeholder="Describe detalladamente tu consulta"
               />
               <Form.Text className="text-muted">
-                La descripción debe tener al menos 15 caracteres.
+                La descripción debe tener al menos 30 caracteres.
               </Form.Text>
             </Form.Group>
             <Form.Group controlId="prqImage" className="mb-3">
-              <Form.Label>Imagen (opcional)</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={(e) => this.setState({ prqImage: e.target.files[0] })}
-              />
-            </Form.Group>
+  <Form.Label>Imagen (opcional)</Form.Label>
+  <Form.Control
+    type="file"
+    accept="image/png, image/gif, image/jpeg, image/jpg"
+    onChange={(e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const maxFileSize = 15 * 1024 * 1024; // 15 MB en bytes
+        if (!["image/png", "image/gif", "image/jpeg", "image/jpg"].includes(file.type)) {
+          alert("Solo se aceptan imágenes en formato PNG, GIF, JPEG o JPG.");
+          e.target.value = null; // Limpiar el campo de archivo
+        } else if (file.size > maxFileSize) {
+          alert("El tamaño máximo permitido para la imagen es de 15 MB.");
+          e.target.value = null; // Limpiar el campo de archivo
+        } else {
+          this.setState({ prqImage: file });
+        }
+      }
+    }}
+  />
+  <Form.Text className="text-muted">
+    Formatos aceptados: PNG, GIF, JPEG, JPG. Tamaño máximo: 15 MB.
+  </Form.Text>
+</Form.Group>
+
             <Form.Group controlId="prqEmail" className="mb-3">
               <Form.Label>Correo de contacto</Form.Label>
               <Form.Control
@@ -144,7 +174,7 @@ export default class PQRForm extends Component {
                 placeholder="Ingresa tu correo electrónico"
               />
             </Form.Group>
-            <Button type="submit" variant="primary" className="w-100 mt-3">
+            <Button  style={{ backgroundColor: "#1C3541", borderColor: "#1C3541", color: "#fff",}} variant="primary" className="w-100 mt-3">
               Enviar PQR
             </Button>
           </Form>

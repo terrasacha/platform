@@ -129,6 +129,13 @@ export default class HeaderNavbar extends Component {
                       >
                         PQR
                       </Nav.Link>
+                      <Nav.Link
+                        onClick={() =>
+                          (window.location.href = "/investor_admon")
+                        }
+                      >
+                        Ver Proyectos
+                      </Nav.Link>
                     </>
                   )}
                   {role === "constructor" && (
