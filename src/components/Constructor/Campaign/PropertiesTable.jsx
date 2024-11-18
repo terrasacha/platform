@@ -1,28 +1,9 @@
 import useFetchPropertiesCampaign from "hooks/useFetchPropertiesCampaign";
 import ModalAcceptProperty from "./ModalAcceptProperty";
 import { useState, useEffect} from "react";
-import { Spinner } from "react-bootstrap";
-
-/* const properties = [
-    {
-      id: "12345",
-      certificado: "CT-987654",
-      nombrePredio: "Finca La Esperanza",
-      area: "5000 m²",
-    },
-    {
-      id: "67890",
-      certificado: "CT-123456",
-      nombrePredio: "Hacienda El Paraíso",
-      area: "7500 m²",
-    },
-    {
-      id: "54321",
-      certificado: "CT-789012",
-      nombrePredio: "Villa del Sol",
-      area: "6200 m²",
-    },
-  ]; */
+import { Spinner, DropdownButton, Dropdown} from "react-bootstrap";
+import { updateProperty } from "graphql/customMutations";
+import { API, graphqlOperation } from 'aws-amplify'
   const status = {
     REJECTED: 'REJECTED',
     ACCEPTED: 'APPROVED',
@@ -40,7 +21,19 @@ export default function PropertiesTable() {
     setSelectedProperty(property)
     setShowModalAcceptProperty(true)
   }
-
+  const handleRevokeValidation = async (property) =>{
+    try {
+      await API.graphql(graphqlOperation(updateProperty, { input: {
+        id: property.id,
+        status: status.PENDING,
+        reason: ''
+      }}))
+      return true
+    } catch (error) {
+      console.error(error)
+      return false
+    }
+  }
   if (loading)
     return (
       <div className="w-full flex justify-center items-center h-20">
@@ -80,26 +73,19 @@ export default function PropertiesTable() {
                   Detalles
                 </button>
               </td>
-              <td className="align-middle text-center">
+              <td className="w-32 flex justify-end">
                 {property.status === status.PENDING ? (
-                  <button
-                    onClick={() => handleShowModalAcceptProperty(property)}
-                    className="border-2 border-gray-400 text-gray-400 rounded-md px-2 py-1 active:bg-gray-500 active:border-gray-500 w-32"
-                  >
-                    Validación
-                  </button>
+                  <DropdownButton title="VALIDACIÓN" variant='secondary'>
+                    <Dropdown.Item onClick={() => handleShowModalAcceptProperty(property)}>Validar predio</Dropdown.Item>
+                  </DropdownButton>
                 ) : property.status === status.ACCEPTED ? (
-                  <button
-                    className="cursor-not-allowed border-2 border-green-600 text-white rounded-md px-2 py-1 bg-green-600 w-32"
-                  >
-                    {status.ACCEPTED}
-                  </button>
+                  <DropdownButton title="APPROVED" variant='success'>
+                    <Dropdown.Item href="#/action-2" onClick={() =>handleRevokeValidation(property)}>Revocar valicación</Dropdown.Item>
+                  </DropdownButton>
                 ) : (
-                  <button
-                    className="cursor-not-allowed border-2 border-red-600 text-white rounded-md px-2 py-1 bg-red-600 w-32"
-                  >
-                    {status.REJECTED}
-                  </button>
+                  <DropdownButton title="REJECTED" variant='danger'>
+                    <Dropdown.Item href="#/action-2" onClick={() =>handleRevokeValidation(property)}>Revocar valicación</Dropdown.Item>
+                  </DropdownButton>
                 )}
               </td>
             </tr>
