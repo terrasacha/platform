@@ -3,7 +3,7 @@ import NewHeaderNavbar from 'components/common/NewHeaderNavbar';
 import { useNavigate, useParams } from 'react-router';
 import Card from 'components/common/Card';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { getCampaign } from 'graphql/queries';
+import { getCampaign } from 'utilities/customQueries';
 import { FiEdit3 } from "react-icons/fi";
 import PropertiesTable from './PropertiesTable';
 import ModalEditCampaign from './ModalEditCampaign';
@@ -54,7 +54,7 @@ export default function Campaign() {
         return false
       }
     } catch (error) {
-      console.error(error)
+      console.log(error)
       return false
     }
   }

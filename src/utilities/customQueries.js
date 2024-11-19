@@ -360,6 +360,9 @@ query ListProperties(
         userID
         productID
         campaignID
+        campaign {
+          name
+        }
         cadastralNumber
         status
         createdAt
@@ -369,3 +372,43 @@ query ListProperties(
     }
   }
   `
+
+  export const getCampaign = /* GraphQL */ `
+  query GetCampaign($id: ID!) {
+    getCampaign(id: $id) {
+      id
+      userID
+      productID
+      product {
+        id
+        name
+      }
+      name
+      description
+      initialDate
+      endDate
+      available
+      images
+      properties {
+        items {
+          id
+          name
+          cadastralNumber
+          productID
+          campaignID
+          userID
+          status
+          reason
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

@@ -53,12 +53,14 @@ export default function FinanceCard({ visible }) {
     const pf = projectData.projectFeatures.find(
       (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
     );
+    if(pf){
 
-    const pfID = pf.id;
-    const pfValue = pf.value;
-
-    setGlobalOwnerAcceptsPfID(pfID);
-    setIsAccepted(pfValue === "true" ? true : false);
+      const pfID = pf.id;
+      const pfValue = pf.value;
+  
+      setGlobalOwnerAcceptsPfID(pfID);
+      setIsAccepted(pfValue === "true" ? true : false);
+    }
   }, []);
 
   return (

@@ -14,6 +14,7 @@ import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import CadastralRecordsInfoCard from "./InfoCards/CadastralRecordsInfoCard";
+import PropertiesTable from "./InfoCards/PropertiesTable";
 
 export default function ProjectDetails({ visible }) {
   const { projectData } = useProjectData();
@@ -95,7 +96,7 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div>
-          <div className="col-12 col-xl-12">
+          {/* <div className="col-12 col-xl-12">
             <CadastralRecordsInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -112,7 +113,7 @@ export default function ProjectDetails({ visible }) {
               }
             />
           </div>
-          {/* <div className="col">
+          <div className="col">
             <OwnerInfoCard
               autorizedUser={autorizedUser}
               setProgressChange={setProgressChange}
@@ -125,10 +126,10 @@ export default function ProjectDetails({ visible }) {
                 ))
               }
             />
-          </div> */}
-          {/* <div className="col">
+          </div>
+          <div className="col">
             <PostulantInfoCard autorizedUser={autorizedUser} />
-          </div> */}
+          </div>
           <div
             className={
               projectData.projectUses?.replaceUse.types.length > 0 ||
@@ -157,6 +158,9 @@ export default function ProjectDetails({ visible }) {
           </div>
           <div className="col">
             <RelationsInfoCard autorizedUser={autorizedUser} />
+          </div> */}
+          <div className="col-12 col-xl-12">
+            <PropertiesTable />
           </div>
         </div>
       )}

@@ -640,7 +640,7 @@ export default function ProjectInfoCard(props) {
                   : "row row-cols-1 row-cols-md-2"
               }
             >
-              <FormGroup
+              {/* <FormGroup
                 disabled={!autorizedUser}
                 type={autorizedUser && "flex"}
                 label="Vereda al que pertenece el Predio"
@@ -673,8 +673,8 @@ export default function ProjectInfoCard(props) {
                 onClickSaveBtn={() =>
                   handleSaveBtn("projectInfoLocationMunicipio")
                 }
-              />
-              <div>
+              /> */}
+              {/* <div>
                 <div className="mb-3">
                   <div className="grid grid-cols-12 gap-4">
                     <label className="col-span-5">
@@ -724,7 +724,7 @@ export default function ProjectInfoCard(props) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

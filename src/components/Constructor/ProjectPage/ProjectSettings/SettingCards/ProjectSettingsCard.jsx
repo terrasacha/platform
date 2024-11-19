@@ -51,11 +51,13 @@ export default function ProjectSettingsCard(props) {
       let projectReadyToPublishData =
         projectData.projectFeatures.find(
           (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
-        ).value || "false";
-      setProjectReadyToPublish(JSON.parse(projectReadyToPublishData));
-      setProjectIsActive(projectData.projectInfo.isActive);
-      setProjectStatus(projectData.projectInfo.status);
-      setProjectShowOn(projectData.projectInfo.showOn);
+        )?.value || "false";
+      if(projectReadyToPublishData){
+        setProjectReadyToPublish(JSON.parse(projectReadyToPublishData));
+        setProjectIsActive(projectData.projectInfo.isActive);
+        setProjectStatus(projectData.projectInfo.status);
+        setProjectShowOn(projectData.projectInfo.showOn);
+      }
     }
   }, [projectData]);
 
