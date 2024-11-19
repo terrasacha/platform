@@ -1,4 +1,13 @@
-
+export const createProduct = /* GraphQL */ `
+  mutation CreateProduct(
+    $input: CreateProductInput!
+    $condition: ModelProductConditionInput
+  ) {
+    createProduct(input: $input, condition: $condition) {
+      id
+    }
+  }
+`;
 export const createCampaign = /* GraphQL */ `
   mutation createCampaign(
     $input: CreateCampaignInput!
