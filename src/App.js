@@ -32,6 +32,7 @@ import CampaignList from "components/Constructor/Campaign/CampaignList";
 import PQRForm from "components/views/landingPage/PQRForm";
 import NewProperty from "components/Constructor/Property/NewProperty";
 import Property from "components/Property/Property";
+import { PropertyDataProvider } from "context/PropertyDataContext";
 
 function App() {
   return (
@@ -121,11 +122,12 @@ function App() {
           />
           <Route path="/login" element={<LogIn />} />
           <Route path="/new_campaign" element={<NewCampaign />} />
-          <Route path="/new_property" element={<NewProperty />} />
           <Route
             path="/property/:id"
             element={
+              <PropertyDataProvider>
                 <Property/>
+              </PropertyDataProvider>
             }
             exact
           />

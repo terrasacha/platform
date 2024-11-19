@@ -63,8 +63,10 @@ type Verification @model {
   userVerifier: User @belongsTo(fields: ["userVerifierID"])
   userVerifiedID: ID @index(name: "byVerifiedUser")
   userVerified: User @belongsTo(fields: ["userVerifiedID"])
-  productFeatureID: ID! @index(name: "byProductFeature")
+  productFeatureID: ID @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+  propertyFeatureID: ID @index(name: "byPropertyFeature")
+  propertyFeature: PropertyFeature @belongsTo(fields: ["propertyFeatureID"])
   verificationComments: [VerificationComment]
     @hasMany(indexName: "byVerification", fields: ["id"])
 }
@@ -89,8 +91,10 @@ type Document @model {
   status: String
   visible: Boolean
   isUploadedToBlockChain: Boolean
-  productFeatureID: ID! @index(name: "byProductFeature")
+  productFeatureID: ID @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+  propertyFeatureID: ID @index(name: "byPropertyFeature")
+  propertyFeature: PropertyFeature @belongsTo(fields: ["propertyFeatureID"])
   userID: ID! @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
 }
@@ -172,6 +176,9 @@ type PropertyFeature @model {
   property: Property @belongsTo(fields: ["propertyID"])
   featureID: ID! @index(name: "byFeature")
   feature: Feature @belongsTo(fields: ["featureID"])
+  verifications: [Verification]
+    @hasMany(indexName: "byPropertyFeature", fields: ["id"])
+  documents: [Document] @hasMany(indexName: "byPropertyFeature", fields: ["id"])
 }
 
 type Product @model {

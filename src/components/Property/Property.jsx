@@ -2,24 +2,44 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { API, Auth, graphqlOperation } from "aws-amplify";
-// Sections
-import ProjectDetails from "components/Constructor/ProjectPage/ProjectDetails/ProjectDetails";
-
 
 // Contexts
 import { S3ClientProvider } from "context/s3ClientContext";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import { getProperty } from "graphql/queries";
+import PropertyDetails from "./PropertyDetails";
+import { usePropertyData } from "context/PropertyDataContext";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
 export default function Property() {
   const { id } = useParams();
+  const { propertyData, handlePropertyData } = usePropertyData();
   const [property, setProperty] = useState(null);
   const [editable, setEditable] = useState(false);
 
   const [activeSection, setActiveSection] = useState("details");
+
+  useEffect(() => {
+    /* const fetchUserGroups = async () => {
+      try {
+        const user = await Auth.currentAuthenticatedUser();
+        const groups = user.signInUserSession.idToken.payload['cognito:groups'] || [''];
+        setUserGroup(groups[0])
+      } catch (error) {
+        console.error('Error fetching user groups: ', error);
+      }
+    };
+
+    fetchUserGroups(); */
+    const fetchPropertyData = async () => {
+      await handlePropertyData({ pID: id });
+    };
+    if (id) {
+      fetchPropertyData();
+    }
+  }, [id]);
 
   const isAuthor = async (id) => {
     try {
@@ -52,6 +72,7 @@ export default function Property() {
   }, []);
 
   if (!property) return null;
+  console.log('propertyData', propertyData)
 
   return (
     <S3ClientProvider>
@@ -104,7 +125,7 @@ export default function Property() {
                 </li>
               </ul>
             </div>
-            {/* <ProjectDetails visible={activeSection === "details"} /> */}
+            <PropertyDetails visible={activeSection === "details"} />
           </div>
           <ToastContainer></ToastContainer>
         </div>

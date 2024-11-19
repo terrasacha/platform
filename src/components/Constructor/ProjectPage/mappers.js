@@ -812,3 +812,76 @@ export const mapProjectData = async (data) => {
     isFinancialFreeze: isFinancialFreeze,
   };
 };
+
+export const mapPropertyData = async (data) => {
+
+  const projectUses =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "D_actual_use";
+    })[0]?.value || "";
+  
+  // E
+  const restrictionsDesc =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "E_restriccion_desc";
+    })[0]?.value || "";
+
+  const restrictionsOther =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "E_resctriccion_other";
+    })[0]?.value || "";
+
+  // F
+  const projectEcosystem =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "F_nacimiento_agua";
+    })[0]?.value || "";
+
+  // G
+  const propertyGeneralAspects =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "G_habita_predio";
+    })[0]?.value || "";
+
+  // H
+  const technicalAssistance =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "H_asistance_desc";
+    })[0]?.value || "";
+
+  const strategicAllies =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "H_aliados_estrategicos_desc";
+    })[0]?.value || "";
+
+  const communityGroups =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "H_grupo_comunitario_desc";
+    })[0]?.value || "";
+
+
+  return {
+    propertyInfo: {
+      id: data.id,
+      projectAge: await getElapsedDays(data.createdAt),
+    },
+    projectPostulant: {
+      id: data.userID,
+    },
+    propertyUses: await mapProjectUses(projectUses),
+    projectRestrictions: {
+      desc: restrictionsDesc,
+      other: restrictionsOther,
+    },
+    projectEcosystem: await mapProjectEcosystems(projectEcosystem),
+    projectGeneralAspects: await mapProjectGeneralAspects(
+      propertyGeneralAspects
+    ),
+    projectRelations: {
+      technicalAssistance: technicalAssistance,
+      strategicAllies: strategicAllies,
+      communityGroups: communityGroups,
+    },
+    propertyFeatures: await mapProductFeatures(data.propertyFeatures.items),
+  }
+}

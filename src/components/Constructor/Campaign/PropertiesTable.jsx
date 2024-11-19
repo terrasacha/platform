@@ -69,9 +69,9 @@ export default function PropertiesTable() {
               <td className="text-left">{property.nombrePredio}</td>
               <td className="text-left">{property.area}</td>
               <td>
-                <button className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
+                <a href={`/property/${property.id}`} className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
                   Detalles
-                </button>
+                </a>
               </td>
               <td className="w-32 flex justify-end">
                 {property.status === status.PENDING ? (
