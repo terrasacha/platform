@@ -128,9 +128,14 @@ export default function Campaign() {
                   </button>
                 )
               ) : (
-                <div className="bg-gray-400 py-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6">
-                  Convocatoria cerrada
-                </div>
+                <>
+                  <div className="bg-gray-400 py-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6">
+                    Convocatoria cerrada
+                  </div>
+                  <button onClick={() => navigate(`/project/${campaign.productID}`)} className="bg-green-600 py-3 mt-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6 active:bg-green-700">
+                    Ver campaña
+                  </button>
+                </>
               )}
               {projectVerifiers.length > 0 && (
                 <section>

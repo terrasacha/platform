@@ -2191,6 +2191,47 @@ export const getProperty = /* GraphQL */ `
           isOnMainCard
           isResult
           propertyID
+          feature {
+            name
+            isVerifable
+          }
+          documents {
+            items {
+              id
+              status
+              url
+              signed
+              signedHash
+              isUploadedToBlockChain
+              isApproved
+              createdAt
+              updatedAt
+            }
+          }
+          verifications {
+            items {
+              id
+              userVerifiedID
+              userVerified {
+                name
+              }
+              userVerifierID
+              userVerifier {
+                name
+              }
+              verificationComments {
+                items {
+                  comment
+                  verificationID
+                  isCommentByVerifier
+                  createdAt
+                  updatedAt
+                }
+              }
+              createdAt
+              updatedAt
+            }
+          }
           featureID
           createdAt
           updatedAt
