@@ -211,7 +211,7 @@ type Product @model {
   analysis: [Analysis] @hasMany(indexName: "byProduct", fields: ["id"])
   apiQueries: [ApiQuery] @hasMany(indexName: "byProduct", fields: ["id"])
   campaignID: ID
-  campaign: Campaign @hasOne(fields: ["campaignID"])
+  campaign: Campaign @belongsTo(fields: ["campaignID"])
   properties: [Property] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 

@@ -43,6 +43,8 @@ export default function Campaign() {
           return { id: userProduct.user.id, name: userProduct.user.name};
         });
 
+      console.log('up', data.data.getCampaign.product.userProducts.items)
+
       const isAuthorResult = await isAuthor([data.data.getCampaign.userID, ...projectVerifiers.map((pv) => pv.id)]);
       setEditable(isAuthorResult);
       setProjectVerifiers(projectVerifiers)
@@ -56,6 +58,7 @@ export default function Campaign() {
   const isAuthor = async (ids) => {
     try {
       const userLogged = await Auth.currentAuthenticatedUser();
+      console.log('ids', ids)
   
       // Verificar si el ID del usuario autenticado está en el array de IDs
       if (ids.includes(userLogged.attributes.sub)) {

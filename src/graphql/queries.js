@@ -2192,42 +2192,6 @@ export const getProperty = /* GraphQL */ `
           isResult
           propertyID
           featureID
-          feature {
-            name
-            isVerifable
-          }
-          documents {
-            items {
-              id
-              status
-              signed
-              signedHash
-              isUploadedToBlockChain
-              isApproved
-            }
-          }
-          verifications {
-            items {
-              id
-              userVerifierID
-              userVerifier {
-                name
-              }
-              userVerifiedID
-              userVerified {
-                name
-              }
-              verificationComments {
-                items {
-                  isCommentByVerifier
-                  verificationID
-                  comment
-                  createdAt
-                  updatedAt
-                }
-              }
-            }
-          }
           createdAt
           updatedAt
           __typename

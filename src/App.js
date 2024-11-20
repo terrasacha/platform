@@ -30,7 +30,6 @@ import NewCampaign from "components/Constructor/Campaign/NewCampaign";
 import Campaign from "components/Constructor/Campaign/Campaign";
 import CampaignList from "components/Constructor/Campaign/CampaignList";
 import PQRForm from "components/views/landingPage/PQRForm";
-import NewProperty from "components/Constructor/Property/NewProperty";
 import Property from "components/Property/Property";
 import { PropertyDataProvider } from "context/PropertyDataContext";
 
