@@ -31,8 +31,8 @@ export default function ProjectFiles({ visible }) {
     }
   }, [user, projectData]);
 
-  const handleMessageButtonClick = async (fileIndex) => {
-    const file = projectData.projectFiles[fileIndex];
+  const handleMessageButtonClick = async (fileIndex, type) => {
+    const file = type === 'productFeature'? projectData.projectFiles[fileIndex] :  projectData.projectPropertyFiles[fileIndex]
     setIsMessageCardActive(!isMessageCardActive);
     setSelectedVerificationId(file.verification.id);
     setIsDocApproved(file.isApproved);

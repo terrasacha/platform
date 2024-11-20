@@ -332,7 +332,7 @@ export default function PostulantFilesInfoCard(props) {
                         {file.verification && (
                           <button
                             className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-                            onClick={() => handleMessageButtonClick(fileIndex)}
+                            onClick={() => handleMessageButtonClick(fileIndex, 'productFeature')}
                           >
                             <MessagesIcon />
                           </button>
@@ -404,7 +404,7 @@ export default function PostulantFilesInfoCard(props) {
                       {file.verification && (
                         <button
                           className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-                          onClick={() => handleMessageButtonClick(fileIndex)}
+                          onClick={() => handleMessageButtonClick(fileIndex, 'propertyFeature')}
                         >
                           <MessagesIcon />
                         </button>
