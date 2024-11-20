@@ -13,22 +13,6 @@ export default function ModalEndCampaign({fetchCampaign, showModalEndCampaign, h
             };
             
             await API.graphql(graphqlOperation(updateCampaign, { input: inputUpdate }));
-            const result = await API.graphql(graphqlOperation(createProduct, { input:{
-                name: `product-campaign-${campaign.id}`,
-                description: "",
-                isActive: false,
-                categoryID: "MIXTO",
-                campaignID: campaign.id
-            }}))
-            await API.graphql(graphqlOperation(updateCampaign, { input: {id: campaign.id, productID: result.data.createProduct.id} }));
-            const propertiesToUpdate = getApprovedProperties()
-            console.log(propertiesToUpdate)
-            let promises = []
-            propertiesToUpdate.map(item => promises.push(API.graphql(graphqlOperation(updateProperty, { input:{
-                id:item.id,
-                productID: result.data.createProduct.id
-            }}))))
-            await Promise.allSettled(promises)
             await fetchCampaign()
             handleCloseEndCampaign();
         } catch (error) {

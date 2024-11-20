@@ -42,7 +42,7 @@ export default function ModalNewProperty({
         name: formData.name,
         cadastralNumber: JSON.stringify(formData.cadastralNumbers),
         campaignID: campaignId,
-        productId: productId,
+        productID: productId,
         userID: userID.current,
         status: formData.status,
       };

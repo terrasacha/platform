@@ -473,7 +473,6 @@ query ListProperties(
             }
           }
         }
-        cadastralNumber
         status
         createdAt
         updatedAt
