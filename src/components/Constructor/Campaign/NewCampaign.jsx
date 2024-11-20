@@ -8,7 +8,7 @@ import { Auth } from "aws-amplify";
 import { toast, ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import { createProduct } from "graphql/mutations";
+import { createProduct, createUserProduct } from "graphql/mutations";
 const initialForm = {
   name: "",
   userID: "",
@@ -106,7 +106,10 @@ export default function NewCampaign() {
           })
         );
       }
-
+      await API.graphql(graphqlOperation(createUserProduct, { input:{
+        userID: userID.current,
+        productID: productId
+      }}))
       toast.success("Campaña creada con éxito", {
         position: "bottom-right",
         autoClose: 5000,

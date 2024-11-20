@@ -178,7 +178,58 @@ const mapDocumentsData = async (data, ownersData) => {
   const documents = await Promise.all(documentsPromises.flat());
   return documents;
 };
+const mapPropertyDocumentsData = async (data) => {
+  const PFNameMapper = {
+    B_owner_certificado: "Certificado de tradición",
+    C_plano_predio: "Plano del predio",
+  };
 
+  // Filtrar propiedades que tienen características verificables
+  const filterPropertiesWithVerifables = data.properties.items.map(item => {
+    const verifiablePF = item.propertyFeatures.items.filter(
+      (pf) => pf.feature.isVerifable === true
+    );
+    item.propertyFeatures.items = verifiablePF;
+    return item;
+  }).filter(item => item.propertyFeatures.items.length > 0);
+
+  let arrayDocs = [];
+
+  // Usamos un ciclo for...of para manejar las promesas correctamente
+  for (const item of filterPropertiesWithVerifables) {
+    for (const pf of item.propertyFeatures.items) {
+      let docsFiltered = pf.documents.items
+        .filter((document) => document.status !== "validatorFile");
+      
+      // Ahora usamos Promise.all para manejar las promesas dentro del map
+      const mappedDocs = await Promise.all(docsFiltered.map(async (document) => {
+        return {
+          id: document.id,
+          pfID: pf.id,
+          title: `${PFNameMapper[pf.feature.name]}`,
+          url: document.url,
+          signed: document.signed,
+          signedHash: document.signedHash,
+          userID: item.userID,
+          isUploadedToBlockChain: document.isUploadedToBlockChain,
+          isApproved: document.isApproved,
+          property: {
+            name: item.name,
+            id: item.id
+          },
+          verification: await mapVerificationsData(pf.verifications.items),
+          updatedAt: convertAWSDatetimeToDate(pf.updatedAt),
+          status: document.status,
+        };
+      }));
+
+      // Agregamos los documentos mapeados al array final
+      arrayDocs.push(...mappedDocs);
+    }
+  }
+  console.log(arrayDocs, 'arrayDocs 230')
+  return arrayDocs;
+};
 const mapLocationData = async (location) => {
   if (!location) {
     return {
@@ -812,6 +863,7 @@ export const mapProjectData = async (data) => {
       strategicAllies: strategicAllies,
       communityGroups: communityGroups,
     },
+    projectPropertyFiles: await mapPropertyDocumentsData(data),
     projectFiles: await mapDocumentsData(data, ownersData),
     projectFilesValidators: {
       pfProjectValidatorDocumentsID: pfProjectValidatorDocumentsID,

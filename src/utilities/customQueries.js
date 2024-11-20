@@ -9,6 +9,73 @@ export const getProduct = /* GraphQL */ `
       order
       status
       showOn
+      properties {
+        items {
+          id
+          name
+          productID
+          status
+          userID
+          campaignID
+          campaign {
+            id
+            name
+          }
+          propertyFeatures {
+            items {
+              id
+              value
+              verifications {
+                items {
+                  userVerifierID
+                  userVerifiedID
+                  verificationComments {
+                    items {
+                      comment
+                      createdAt
+                      id
+                      isCommentByVerifier
+                    }
+                  }
+                  userVerified {
+                    name
+                  }
+                  userVerifier {
+                    name
+                  }
+                  id
+                }
+              }
+              documents {
+                items {
+                  id
+                  url
+                  isApproved
+                  docHash
+                  data
+                  isUploadedToBlockChain
+                  productFeatureID
+                  signed
+                  signedHash
+                  status
+                  timeStamp
+                  userID
+                }
+              }
+              feature {
+                name
+                isVerifable
+              }
+              featureID
+              createdAt
+              updatedAt
+            }
+            nextToken
+          }
+        }
+        nextToken
+        __typename
+      }
       marketplace {
         id
         name

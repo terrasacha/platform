@@ -99,6 +99,7 @@ export default function ProjectFiles({ visible }) {
           <div className={isMessageCardActive ? "col" : "col-12 col-xl-12"}>
             <PostulantFilesInfoCard
               projectFiles={projectData.projectFiles}
+              propertyFiles={projectData.projectPropertyFiles}
               handleMessageButtonClick={handleMessageButtonClick}
               setIsDocApproved={setIsDocApproved}
               isVerifier={isVerifier}
