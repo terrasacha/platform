@@ -168,6 +168,7 @@ export default function Campaign() {
         showModal={showModalNewProperty}
         handleClose={handleCloseNewProperty}
         campaignId={campaign.id}
+        productId={campaign.productID}
         fetchCampaign={fetchCampaign}
       />
       <ToastContainer />

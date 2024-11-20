@@ -20,6 +20,7 @@ export default function ModalNewProperty({
   showModal,
   handleClose,
   campaignId,
+  productId,
   fetchCampaign
 }) {
   const [loading, setLoading] = useState(false);
@@ -41,6 +42,7 @@ export default function ModalNewProperty({
         name: formData.name,
         cadastralNumber: JSON.stringify(formData.cadastralNumbers),
         campaignID: campaignId,
+        productId: productId,
         userID: userID.current,
         status: formData.status,
       };
