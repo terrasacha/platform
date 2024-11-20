@@ -72,6 +72,7 @@ export default function Property() {
   }, []);
 
   if (!property) return null;
+  if (!propertyData) return null;
   console.log('propertyData', propertyData)
 
   return (
@@ -96,13 +97,17 @@ export default function Property() {
                   <p className="fs-6 mb-0">{property.createdAt}</p>
                 </section>
                 <section>
+                  <p className="fs-6 mb-0 fw-bold">Área Total:</p>
+                  <p className="fs-6 mb-0">{propertyData.projectCadastralRecords.totalAreaFormatted}</p>
+                </section>
+                {/* <section>
                   <p className="fs-6 mb-0 fw-bold">Descripción:</p>
                   <p className="fs-6 mb-0">Descripcion de predios</p>
                 </section>
                 <section>
                   <p className="fs-6 mb-0 fw-bold">Identificadores catastrales:</p>
                   <p className="fs-6 mb-0">{property.cadastralNumber}</p>
-                </section>
+                </section> */}
               </div>
               <ul className="font-medium flex mt-4 pl-0 ">
                 <li>

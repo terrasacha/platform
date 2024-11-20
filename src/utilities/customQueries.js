@@ -363,6 +363,49 @@ query ListProperties(
         campaign {
           name
         }
+        propertyFeatures {
+          items {
+            id
+            featureID
+            value
+            feature {
+              name
+              isVerifable
+            }
+            documents {
+              items {
+                id
+                status
+                signed
+                signedHash
+                isUploadedToBlockChain
+                isApproved
+              }
+            }
+            verifications {
+              items {
+                id
+                userVerifierID
+                userVerifier {
+                  name
+                }
+                userVerifiedID
+                userVerified {
+                  name
+                }
+                verificationComments {
+                  items {
+                    isCommentByVerifier
+                    verificationID
+                    comment
+                    createdAt
+                    updatedAt
+                  }
+                }
+              }
+            }
+          }
+        }
         cadastralNumber
         status
         createdAt
@@ -382,6 +425,15 @@ query ListProperties(
       product {
         id
         name
+        userProducts {
+          items {
+            user {
+              id
+              name
+              role
+            }
+          }
+        }
       }
       name
       description
@@ -393,6 +445,49 @@ query ListProperties(
         items {
           id
           name
+          propertyFeatures {
+            items {
+              id
+              featureID
+              value
+              feature {
+                name
+                isVerifable
+              }
+              documents {
+                items {
+                  id
+                  status
+                  signed
+                  signedHash
+                  isUploadedToBlockChain
+                  isApproved
+                }
+              }
+              verifications {
+                items {
+                  id
+                  userVerifierID
+                  userVerifier {
+                    name
+                  }
+                  userVerifiedID
+                  userVerified {
+                    name
+                  }
+                  verificationComments {
+                    items {
+                      isCommentByVerifier
+                      verificationID
+                      comment
+                      createdAt
+                      updatedAt
+                    }
+                  }
+                }
+              }
+            }
+          }
           cadastralNumber
           productID
           campaignID

@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import Card from "../../../../common/Card";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
-import { notify } from "../../../../../utilities/notify";
 import { API, Storage, graphqlOperation } from "aws-amplify";
 import { handleOpenObject } from "utilities/s3clientcommands";
 // s3Client
@@ -15,23 +13,25 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import Swal from "sweetalert2";
 import {
   createDocument,
-  createProductFeature,
+  createPropertyFeature,
   updateDocument,
-  updateProductFeature,
+  updatePropertyFeature,
 } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
-import { fetchProjectDataByProjectID } from "../../api";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 import { XIcon } from "components/common/icons/XIcon";
 import { CheckIcon } from "components/common/icons/CheckIcon";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 import { usePropertyData } from "context/PropertyDataContext";
+import { notify } from "utilities/notify";
+import { fetchPropertyDataByPropertyID } from "components/Constructor/ProjectPage/api";
+import Card from "components/common/Card";
 
 export default function CadastralRecords(props) {
-  const { className, autorizedUser, setProgressChange, tooltip, setTotalArea, totalArea } =
+  const { className, autorizedUser, tooltip, setTotalArea, totalArea } =
     props;
   const {
-    projectData,
+    propertyData,
     refresh
   } = usePropertyData();
   const { user } = useAuth();
@@ -41,13 +41,13 @@ export default function CadastralRecords(props) {
   const [multipleData, setMultipleData] = useState([]);
   const [executedOnce, setExecutedOnce] = useState(false);
   const [cadastralData, setCadastralDataPfID] = useState(null);
-  const [areaData, setAreaDataPfID] = useState(null);
+  const [areaDataPfID, setAreaDataPfID] = useState(null);
   const [predialFetchedData, setPredialFetchedData] = useState({});
 
   useEffect(() => {
-    if (projectData && projectData.projectCadastralRecords) {
+    if (propertyData && propertyData.projectCadastralRecords) {
       let ownersData =
-        [...projectData.projectCadastralRecords.cadastralRecords].map(
+        [...propertyData.projectCadastralRecords.cadastralRecords].map(
           (cadastralData) => {
             return {
               ...cadastralData,
@@ -56,18 +56,12 @@ export default function CadastralRecords(props) {
           }
         ) || [];
 
-      setCadastralDataPfID(projectData.projectCadastralRecords.pfID);
+      setCadastralDataPfID(propertyData.projectCadastralRecords.cadastralDataPfID);
+      setAreaDataPfID(propertyData.projectCadastralRecords.totalAreaPfID);
 
-      
-      const areaPfID = projectData.projectFeatures.filter((item) => {
-        return item.featureID === "D_area";
-      })[0]?.id || null;
-      if(areaPfID) {
-        setAreaDataPfID(areaPfID);
-      }
       setMultipleData(ownersData);
     }
-  }, [projectData]);
+  }, [propertyData]);
 
   useEffect(() => {
     async function updatePredialData() {
@@ -216,12 +210,12 @@ export default function CadastralRecords(props) {
 
   const saveFileOnDB = async (fileToSave, documentID = null) => {
     let docID = documentID;
-    const urlPath = `projects/${projectData.projectInfo.id}/other/archivos_postulante/certificados_tradicion/${formatFileName(
+    const urlPath = `public/campaign/${propertyData.propertyInfo.campaignID}-campaign/properties/${propertyData.propertyInfo.id}-property/other/archivos_postulante/certificados_tradicion/${formatFileName(
       fileToSave.name
     )}`;
 
     if (documentID) {
-      const oldDocument = projectData.projectFiles.find(
+      const oldDocument = propertyData.projectFiles.find(
         (item) => item.id === documentID
       );
       // Si toca actualizar
@@ -261,7 +255,7 @@ export default function CadastralRecords(props) {
       };
       console.log("updatedProductFeature:", updatedProductFeature);
       await API.graphql(
-        graphqlOperation(updateProductFeature, { input: updatedProductFeature })
+        graphqlOperation(updatePropertyFeature, { input: updatedProductFeature })
       );
 
       const updatedDocument = {
@@ -306,19 +300,19 @@ export default function CadastralRecords(props) {
         return;
       }
 
-      const newProductFeature = {
+      const newPropertyFeature = {
         featureID: "B_owner_certificado",
-        productID: projectData.projectInfo.id,
+        propertyID: propertyData.propertyInfo.id,
         value: fileToSave.name,
       };
-      console.log("newProductFeature:", newProductFeature);
-      const createProductFeatureResponse = await API.graphql(
-        graphqlOperation(createProductFeature, { input: newProductFeature })
+      console.log("newPropertyFeature:", newPropertyFeature);
+      const createPropertyFeatureResponse = await API.graphql(
+        graphqlOperation(createPropertyFeature, { input: newPropertyFeature })
       );
 
       const newDocument = {
-        productFeatureID:
-          createProductFeatureResponse.data.createProductFeature.id,
+        propertyFeatureID:
+          createPropertyFeatureResponse.data.createPropertyFeature.id,
         userID: user.id,
         timeStamp: Date.now(),
         status: "pending",
@@ -343,9 +337,9 @@ export default function CadastralRecords(props) {
     let error = false;
     const newCadastralNumber = multipleData[indexToSave].cadastralNumber;
     const certificate = multipleData[indexToSave].certificate;
-    // const count = projectData.projectInfo.token.historicalData.reduce((acc, hd) => (hd.period === multipleData[indexToSave].period ? acc + 1 : acc), 0);
+    // const count = propertyData.propertyInfo.token.historicalData.reduce((acc, hd) => (hd.period === multipleData[indexToSave].period ? acc + 1 : acc), 0);
     const isAlreadyExistingCadastralNumber =
-      projectData.projectCadastralRecords.cadastralRecords.some(
+      propertyData.projectCadastralRecords.cadastralRecords.some(
         (cd, index) =>
           cd.cadastralNumber === newCadastralNumber && index !== indexToSave
       );
@@ -435,62 +429,63 @@ export default function CadastralRecords(props) {
         )
       );
       
-      if(areaData) {
-        let tempProductFeature = {
-          id: areaData,
+      if(areaDataPfID) {
+        let tempPropertyFeature = {
+          id: areaDataPfID,
           value: totalArea,
         };
         const response = await API.graphql(
-          graphqlOperation(updateProductFeature, { input: tempProductFeature })
+          graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })
         );
 
-        if (!response.data.updateProductFeature) error = true;
+        if (!response.data.updatePropertyFeature) error = true;
       } else {
-        let tempProductFeature = {
+        let tempPropertyFeature = {
           value: totalArea,
           isToBlockChain: false,
           isOnMainCard: false,
-          productID: projectData.projectInfo.id,
+          propertyID: propertyData.propertyInfo.id,
           featureID: "D_area",
         };
         const response = await API.graphql(
-          graphqlOperation(createProductFeature, { input: tempProductFeature })
+          graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
         );
 
-        setCadastralDataPfID(response.data.createProductFeature.id);
+        setAreaDataPfID(response.data.createPropertyFeature.id);
 
-        if (!response.data.createProductFeature) error = true;
+        if (!response.data.createPropertyFeature) error = true;
       }
 
       if (cadastralData) {
-        let tempProductFeature = {
+        let tempPropertyFeature = {
           id: cadastralData,
           value: JSON.stringify(getImportantValues(tempMultipleData)),
         };
         const response = await API.graphql(
-          graphqlOperation(updateProductFeature, { input: tempProductFeature })
+          graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })
         );
 
-        if (!response.data.updateProductFeature) error = true;
+        if (!response.data.updatePropertyFeature) error = true;
       } else {
-        let tempProductFeature = {
+        let tempPropertyFeature = {
           value: JSON.stringify(getImportantValues(tempMultipleData)),
           isToBlockChain: false,
           isOnMainCard: false,
-          productID: projectData.projectInfo.id,
+          propertyID: propertyData.propertyInfo.id,
           featureID: "A_predio_ficha_catastral",
         };
+
         const response = await API.graphql(
-          graphqlOperation(createProductFeature, { input: tempProductFeature })
+          graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
         );
 
-        setCadastralDataPfID(response.data.createProductFeature.id);
+        setCadastralDataPfID(response.data.createPropertyFeature.id);
 
-        if (!response.data.createProductFeature) error = true;
+        if (!response.data.createPropertyFeature) error = true;
       }
 
-      const updatedPropertyData = await fetchProjectDataByProjectID(
-        projectData.projectInfo.id
+      /* const updatedPropertyData = await fetchPropertyDataByPropertyID(
+        propertyData.propertyInfo.id
       );
 
       const mappedDocument = updatedPropertyData.projectFiles.find(
@@ -498,7 +493,7 @@ export default function CadastralRecords(props) {
       );
 
       const projectCadastralRecordsData =
-        updatedPropertyData.projectCadastralRecords;
+        updatedPropertyData.projectCadastralRecords; */
 
       refresh()
     } else {
@@ -510,7 +505,6 @@ export default function CadastralRecords(props) {
     }
 
     if (!error) {
-      setProgressChange(true);
       notify({
         msg: "Propietarios guardados exitosamente",
         type: "success",
@@ -521,7 +515,7 @@ export default function CadastralRecords(props) {
   const handleDeleteHistoricalData = async (indexToDelete) => {
     let error = false;
 
-    const documentToDelete = projectData.projectFiles.find(
+    const documentToDelete = propertyData.projectFiles.find(
       (item) => item.id === multipleData[indexToDelete].documentID
     );
     console.log('documentToDelete', documentToDelete)
@@ -586,43 +580,54 @@ export default function CadastralRecords(props) {
     );
     setMultipleData(tempMultipleData);
 
+    if(areaDataPfID) {
+      let tempPropertyFeature = {
+        id: areaDataPfID,
+        value: totalArea - predialFetchedData[multipleData[indexToDelete].cadastralNumber].AREA_TERRENO,
+      };
+      const response = await API.graphql(
+        graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })
+      );
+
+      if (!response.data.updatePropertyFeature) error = true;
+    }
+
     if (cadastralData) {
-      let tempProductFeature = {
+      let tempPropertyFeature = {
         id: cadastralData,
         value: JSON.stringify(getImportantValues(tempMultipleData)),
       };
       const response = await API.graphql(
-        graphqlOperation(updateProductFeature, { input: tempProductFeature })
+        graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })
       );
 
-      if (!response.data.updateProductFeature) error = true;
+      if (!response.data.updatePropertyFeature) error = true;
     } else {
-      let tempProductFeature = {
+      let tempPropertyFeature = {
         value: JSON.stringify(getImportantValues(tempMultipleData)),
         isToBlockChain: false,
         isOnMainCard: false,
-        productID: projectData.projectInfo.id,
+        propertyID: propertyData.propertyInfo.id,
         featureID: "A_predio_ficha_catastral",
       };
       const response = await API.graphql(
-        graphqlOperation(createProductFeature, { input: tempProductFeature })
+        graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
       );
-      setCadastralDataPfID(response.data.createProductFeature.id);
+      setCadastralDataPfID(response.data.createPropertyFeature.id);
 
-      if (!response.data.createProductFeature) error = true;
+      if (!response.data.createPropertyFeature) error = true;
     }
 
-    const updatedPropertyData = await fetchProjectDataByProjectID(
-      projectData.projectInfo.id
+    /* const updatedPropertyData = await fetchPropertyDataByPropertyID(
+      propertyData.propertyInfo.id
     );
 
     const projectCadastralRecordsData =
-      updatedPropertyData.projectCadastralRecords;
+      updatedPropertyData.projectCadastralRecords; */
 
     refresh()
 
     if (!error) {
-      setProgressChange(true);
       notify({
         msg: "Valores borrados exitosamente",
         type: "success",
@@ -632,7 +637,7 @@ export default function CadastralRecords(props) {
   
   const renderFileLinkByDocumentID = (documentID) => {
     if (documentID) {
-      const document = projectData.projectFiles.find(
+      const document = propertyData.projectFiles.find(
         (item) => item.id === documentID
       );
       return (

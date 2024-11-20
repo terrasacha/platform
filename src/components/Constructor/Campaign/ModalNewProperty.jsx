@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { API, Auth, graphqlOperation } from "aws-amplify";
-import { createProperty } from "graphql/mutations";
+import { createProperty, createPropertyFeature } from "graphql/mutations";
 import { Trash } from "react-bootstrap-icons";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { useNavigate } from 'react-router';
@@ -49,6 +49,23 @@ export default function ModalNewProperty({
         graphqlOperation(createProperty, { input: newProperty })
       );
       const propertyId = result.data.createProperty.id;
+
+      const cadastralNumbers = formData.cadastralNumbers.map((cadNum) => {
+        return {
+          'cadastralNumber': cadNum
+        }
+      })
+
+      const tempPropertyFeature = {
+        value: JSON.stringify(cadastralNumbers),
+        isToBlockChain: false,
+        isOnMainCard: false,
+        propertyID: propertyId,
+        featureID: "A_predio_ficha_catastral",
+      }
+      await API.graphql(
+        graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
+      );
 
       await fetchCampaign();
       handleClose();

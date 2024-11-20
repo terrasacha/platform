@@ -8,7 +8,7 @@ import {
 } from "./utils";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 
-export const mapGeoData = async (validatorDocuments) => {
+export const mapGeoData = (validatorDocuments) => {
   const extensionesPermitidas = [".kml", ".kmz"];
 
   const archivosFiltrados = validatorDocuments.filter((archivo) => {
@@ -23,6 +23,10 @@ export const mapGeoData = async (validatorDocuments) => {
 
 const validateFinatialInfoIsComplete = async () => {};
 
+const formatArea = (area) => {
+  return parseFloat(area).toLocaleString("es-ES") + " m2";
+};
+
 const mapProjectVerifiers = async (data) => {
   // const verifiablePF = data.productFeatures.items.filter(
   //   (pf) => pf.feature.isVerifable === true
@@ -34,7 +38,7 @@ const mapProjectVerifiers = async (data) => {
   //   });
   // });
 
-  console.log(data.userProducts)
+  console.log(data.userProducts);
 
   const projectVerifiers = data.userProducts.items
     .filter((up) => up.user?.role === "validator")
@@ -45,7 +49,7 @@ const mapProjectVerifiers = async (data) => {
   return projectVerifiers;
 };
 
-const mapProductFeatures = async (productFeatures) => {
+const mapProductFeatures = (productFeatures) => {
   return productFeatures.map((pf) => {
     return {
       id: pf.id,
@@ -55,7 +59,7 @@ const mapProductFeatures = async (productFeatures) => {
   });
 };
 
-const mapProjectVerifiersNames = async (data) => {
+const mapProjectVerifiersNames = (data) => {
   const projectVerifiersNames = data.userProducts.items
     .filter((up) => up.user?.role === "validator")
     .map((userProduct) => {
@@ -99,16 +103,15 @@ const mapVerificationsData = async (verifications) => {
 
   return resolvedVerificationData[0];
 };
-
-const mapDocumentsData = async (data, ownersData) => {
+const mapDocumentsDataFromProperty = async (data, ownersData) => {
   const PFNameMapper = {
     B_owner_certificado: "Certificado de tradición",
     C_plano_predio: "Plano del predio",
   };
-  const verifiablePF = data.productFeatures.items.filter(
+  const verifiablePF = data.propertyFeatures.items.filter(
     (pf) => pf.feature.isVerifable === true
   );
-  console.log(verifiablePF, 'verifiablePF')
+  console.log(verifiablePF, "verifiablePF");
   const documentsPromises = verifiablePF.map((pf) =>
     pf.documents.items
       .filter((document) => document.status !== "validatorFile")
@@ -133,7 +136,45 @@ const mapDocumentsData = async (data, ownersData) => {
         };
       })
   );
-  console.log('documentsPromises', documentsPromises)
+  console.log("documentsPromises", documentsPromises);
+  const documents = await Promise.all(documentsPromises.flat());
+  return documents;
+};
+
+const mapDocumentsData = async (data, ownersData) => {
+  const PFNameMapper = {
+    B_owner_certificado: "Certificado de tradición",
+    C_plano_predio: "Plano del predio",
+  };
+  const verifiablePF = data.productFeatures.items.filter(
+    (pf) => pf.feature.isVerifable === true
+  );
+  console.log(verifiablePF, "verifiablePF");
+  const documentsPromises = verifiablePF.map((pf) =>
+    pf.documents.items
+      .filter((document) => document.status !== "validatorFile")
+      .map(async (document) => {
+        const ownerName =
+          ownersData.find((owner) => owner.documentID === document.id)?.name ||
+          null;
+        return {
+          id: document.id,
+          pfID: pf.id,
+          title: `${PFNameMapper[pf.feature.name]} ${
+            ownerName ? `(${ownerName})` : ""
+          }`,
+          url: document.url,
+          signed: document.signed,
+          signedHash: document.signedHash,
+          isUploadedToBlockChain: document.isUploadedToBlockChain,
+          isApproved: document.isApproved,
+          verification: await mapVerificationsData(pf.verifications.items),
+          updatedAt: await convertAWSDatetimeToDate(pf.updatedAt),
+          status: document.status,
+        };
+      })
+  );
+  console.log("documentsPromises", documentsPromises);
   const documents = await Promise.all(documentsPromises.flat());
   return documents;
 };
@@ -205,7 +246,7 @@ const mapUseTypes = async (types) => {
   return false;
 };
 
-const mapTrueOrFalseAnswers = async (answer) => {
+const mapTrueOrFalseAnswers = (answer) => {
   const mapper = {
     yes: "yes",
     no: "no",
@@ -214,7 +255,7 @@ const mapTrueOrFalseAnswers = async (answer) => {
   return mapper[answer] || false;
 };
 
-const mapTemporalOrPermanent = async (answer) => {
+const mapTemporalOrPermanent = (answer) => {
   const mapper = {
     temporal: "temporal",
     permanente: "permanente",
@@ -223,19 +264,18 @@ const mapTemporalOrPermanent = async (answer) => {
   return mapper[answer] || false;
 };
 
-const mapProjectGeneralAspects = async (data) => {
+const mapProjectGeneralAspects = (data) => {
   let parsedData = "";
   if (data) {
-    parsedData = await parseSerializedKoboData(data);
+    parsedData = parseSerializedKoboData(data);
   }
 
   return {
     postulant: {
-      livesOnProperty:
-        (await mapTrueOrFalseAnswers(parsedData?.G_habita_predio)) || "",
+      livesOnProperty: mapTrueOrFalseAnswers(parsedData?.G_habita_predio) || "",
       timeLivingOnProperty: parsedData?.G_habita_years || "",
       typeOfStay:
-        (await mapTemporalOrPermanent(parsedData?.G_Temporal_permanente)) || "",
+        mapTemporalOrPermanent(parsedData?.G_Temporal_permanente) || "",
     },
     households: parsedData?.G_viviendas_number || "",
     familiesNumber: parsedData?.G_familias || "",
@@ -244,24 +284,24 @@ const mapProjectGeneralAspects = async (data) => {
     municipalDistance: parsedData?.G_distancia_predio_municipal || "",
     conveyance: parsedData?.G_transport_mean || "",
     neighborhoodRoads:
-      (await mapTrueOrFalseAnswers(parsedData?.G_caminos_existence)) || "",
+      mapTrueOrFalseAnswers(parsedData?.G_caminos_existence) || "",
     collapseRisk: parsedData?.G_risks_erosion_derrumbe || "",
   };
 };
 
-const mapProjectEcosystems = async (data) => {
+const mapProjectEcosystems = (data) => {
   let parsedData = "";
   if (data) {
-    parsedData = await parseSerializedKoboData(data);
+    parsedData = parseSerializedKoboData(data);
   }
 
   return {
     waterSprings: {
-      exist: (await mapTrueOrFalseAnswers(parsedData?.F_nacimiento_agua)) || "",
+      exist: mapTrueOrFalseAnswers(parsedData?.F_nacimiento_agua) || "",
       quantity: parsedData?.F_nacimiento_agua_quantity || "",
     },
     concessions: {
-      exist: (await mapTrueOrFalseAnswers(parsedData?.F_agua_concede)) || "",
+      exist: mapTrueOrFalseAnswers(parsedData?.F_agua_concede) || "",
       entity: parsedData?.F_agua_concede_entity || "",
     },
     deforestationThreats: parsedData?.F_amenazas_defo_desc || "",
@@ -275,10 +315,10 @@ const mapProjectEcosystems = async (data) => {
   };
 };
 
-const mapProjectUses = async (data) => {
+const mapProjectUses = (data) => {
   let parsedData = "";
   if (data) {
-    parsedData = await parseSerializedKoboData(data);
+    parsedData = parseSerializedKoboData(data);
   }
 
   return {
@@ -467,7 +507,7 @@ export const mapProjectData = async (data) => {
     })[0]?.value || "[]"
   );
 
-  console.log(tokenHistoricalData, 'tokenHistoricalData')
+  console.log(tokenHistoricalData, "tokenHistoricalData");
   // const lastTokenHistoricalData =tokenHistoricalData.length > 0 && tokenHistoricalData[tokenHistoricalData.length - 1].periods || []
 
   const periods = tokenHistoricalData.map((tkhd) => {
@@ -478,7 +518,7 @@ export const mapProjectData = async (data) => {
       amount: tkhd.amount,
     };
   });
-  const actualPeriod = await getActualPeriod(Date.now(), periods);
+  const actualPeriod = getActualPeriod(Date.now(), periods);
   // const totalTokenAmount = periods.reduce(
   //   (total, item) => total + item.amount,
   //   0
@@ -737,8 +777,8 @@ export const mapProjectData = async (data) => {
         coords: await mapLocationData(location),
       },
       verificationLimitDate: data.timeOnVerification,
-      createdAt: await convertAWSDatetimeToDate(data.createdAt),
-      projectAge: await getElapsedDays(data.createdAt),
+      createdAt: convertAWSDatetimeToDate(data.createdAt),
+      projectAge: getElapsedDays(data.createdAt),
     },
     projectPostulant: {
       id: postulantID,
@@ -760,15 +800,13 @@ export const mapProjectData = async (data) => {
       pfID: pfCadastralDataID,
       cadastralRecords: cadastralData,
     },
-    projectUses: await mapProjectUses(projectUses),
+    projectUses: mapProjectUses(projectUses),
     projectRestrictions: {
       desc: restrictionsDesc,
       other: restrictionsOther,
     },
-    projectEcosystem: await mapProjectEcosystems(projectEcosystem),
-    projectGeneralAspects: await mapProjectGeneralAspects(
-      propertyGeneralAspects
-    ),
+    projectEcosystem: mapProjectEcosystems(projectEcosystem),
+    projectGeneralAspects: mapProjectGeneralAspects(propertyGeneralAspects),
     projectRelations: {
       technicalAssistance: technicalAssistance,
       strategicAllies: strategicAllies,
@@ -780,8 +818,8 @@ export const mapProjectData = async (data) => {
       projectValidatorDocuments: projectValidatorDocuments,
     },
     projectVerifiers: await mapProjectVerifiers(data),
-    projectVerifierNames: await mapProjectVerifiersNames(data),
-    projectGeoData: await mapGeoData(projectValidatorDocuments),
+    projectVerifierNames: mapProjectVerifiersNames(data),
+    projectGeoData: mapGeoData(projectValidatorDocuments),
     projectVerifierInfo: {
       verifierDescription: verifierDescription,
       verifierDescriptionID: verifierDescriptionID,
@@ -814,12 +852,33 @@ export const mapProjectData = async (data) => {
 };
 
 export const mapPropertyData = async (data) => {
-
   const projectUses =
     data.propertyFeatures.items.filter((item) => {
       return item.featureID === "D_actual_use";
     })[0]?.value || "";
-  
+
+  const areaPfId =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "D_area";
+    })[0]?.id || "";
+
+  const area =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "D_area";
+    })[0]?.value || 0;
+
+  // Owners Data
+  const pfOwnersDataID =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "B_owners";
+    })[0]?.id || "";
+
+  const ownersData = JSON.parse(
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "B_owners";
+    })[0]?.value || "[]"
+  );
+
   // E
   const restrictionsDesc =
     data.propertyFeatures.items.filter((item) => {
@@ -859,29 +918,54 @@ export const mapPropertyData = async (data) => {
       return item.featureID === "H_grupo_comunitario_desc";
     })[0]?.value || "";
 
+  // Cadsatral Data
+  const pfCadastralDataID =
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "A_predio_ficha_catastral";
+    })[0]?.id || "";
+
+  const cadastralData = JSON.parse(
+    data.propertyFeatures.items.filter((item) => {
+      return item.featureID === "A_predio_ficha_catastral";
+    })[0]?.value || "[]"
+  );
+
+  const cadastralNumbers = (
+    cadastralData.map((cadObj) => cadObj.cadastralNumber) || []
+  ).join(", ");
 
   return {
     propertyInfo: {
       id: data.id,
-      projectAge: await getElapsedDays(data.createdAt),
+      campaignID: data.campaign.id,
+      projectAge: getElapsedDays(data.createdAt),
+      name: data.name,
+      status: data.status,
     },
     projectPostulant: {
       id: data.userID,
     },
-    propertyUses: await mapProjectUses(projectUses),
+    projectFiles: await mapDocumentsDataFromProperty(data, ownersData),
+    propertyUses: mapProjectUses(projectUses),
     projectRestrictions: {
       desc: restrictionsDesc,
       other: restrictionsOther,
     },
-    projectEcosystem: await mapProjectEcosystems(projectEcosystem),
-    projectGeneralAspects: await mapProjectGeneralAspects(
-      propertyGeneralAspects
-    ),
+    projectEcosystem: mapProjectEcosystems(projectEcosystem),
+    projectGeneralAspects: mapProjectGeneralAspects(propertyGeneralAspects),
     projectRelations: {
       technicalAssistance: technicalAssistance,
       strategicAllies: strategicAllies,
       communityGroups: communityGroups,
     },
-    propertyFeatures: await mapProductFeatures(data.propertyFeatures.items),
-  }
-}
+    propertyFeatures: mapProductFeatures(data.propertyFeatures.items),
+    projectCadastralRecords: {
+      cadastralDataPfID: pfCadastralDataID,
+      totalAreaPfID: areaPfId,
+      cadastralRecords: cadastralData,
+      cadastralNumbers: cadastralNumbers,
+      totalArea: area,
+      totalAreaFormatted: formatArea(area),
+    },
+  };
+};

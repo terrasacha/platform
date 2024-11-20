@@ -10,6 +10,8 @@ import UseRestrictions from "./UseRestrictions";
 import Ecosystem from "./Ecosystem";
 import GeneralAspects from "./GeneralAspects";
 import Relations from "./Relations";
+import CadastralRecords from "./CadastralRecords";
+import AdditionalFiles from "./AdditionalFiles";
 
 export default function PropertyDetails({ visible }) {
   const { propertyData } = usePropertyData();
@@ -25,7 +27,7 @@ export default function PropertyDetails({ visible }) {
     if (user && propertyData) {
       const verifiers = [];
       const postulant = propertyData?.projectPostulant?.id;
-      const authorizedUsers = [...verifiers, postulant]
+      const authorizedUsers = [...verifiers, postulant];
       setAutorizedUser(
         authorizedUsers.includes(user.id) || user.role === "admon"
       );
@@ -38,6 +40,14 @@ export default function PropertyDetails({ visible }) {
     <>
       {visible && propertyData && (
         <div className="row row-cols-1 row-cols-xl-2 g-4">
+          <div className="col-12 col-xl-12">
+            <CadastralRecords
+              autorizedUser={autorizedUser}
+              totalArea={totalArea}
+              latLngCentroid={latLngCentroid}
+              setTotalArea={setTotalArea}
+            />
+          </div>
           <div
             className={
               propertyData.propertyUses?.replaceUse.types.length > 0 ||
@@ -66,6 +76,9 @@ export default function PropertyDetails({ visible }) {
           </div>
           <div className="col">
             <Relations autorizedUser={autorizedUser} />
+          </div>
+          <div className="col-12 col-xl-12">
+            <AdditionalFiles autorizedUser={autorizedUser} />
           </div>
         </div>
       )}

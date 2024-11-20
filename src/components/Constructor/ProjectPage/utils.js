@@ -1,4 +1,4 @@
-export const parseSerializedKoboData = async (data) => {
+export const parseSerializedKoboData = (data) => {
   const contenido = data.replace(/[{}[\]]/g, "");
   const pares = contenido.split(", ");
 
@@ -82,7 +82,7 @@ export const getImagesCategories = (category) => {
   }
 };
 
-export const getActualPeriod = async (actualDate, periods) => {
+export const getActualPeriod = (actualDate, periods) => {
   actualDate = new Date(actualDate);
 
   periods.sort((a, b) => a.date - b.date);
@@ -115,7 +115,7 @@ export const getActualPeriod = async (actualDate, periods) => {
   return null;
 };
 
-export const getElapsedDays = async (fechaISO) => {
+export const getElapsedDays = (fechaISO) => {
   const fechaSeleccionada = new Date(fechaISO);
 
   const fechaActual = new Date();

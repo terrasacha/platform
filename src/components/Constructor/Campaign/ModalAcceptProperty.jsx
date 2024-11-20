@@ -29,13 +29,13 @@ export default function ModalAcceptProperty({ showModalAcceptProperty, handleClo
         setLoading(true)
         try {
             console.log({
-                id: selectedProperty.id,
+                id: selectedProperty.propertyInfo.id,
                 status: selection,
                 reason: confirmationText,
             })
             await API.graphql(graphqlOperation(updateProperty, {
                 input: {
-                    id: selectedProperty.id,
+                    id: selectedProperty.propertyInfo.id,
                     status: selection,
                     reason: confirmationText,
                 }
