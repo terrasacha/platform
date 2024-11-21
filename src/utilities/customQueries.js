@@ -298,6 +298,7 @@ export const getUserProjects = /* GraphQL */ `
               name
               description
               createdAt
+              available
             }
             description
             isActive

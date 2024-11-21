@@ -138,7 +138,7 @@ export default function Campaign() {
                     Convocatoria cerrada
                   </div>
                   <button
-                    onClick={() => navigate(`/project/${campaign.productID}`)}
+                    onClick={() => navigate(`/project/${campaign.products.items[0].id}`)}
                     className="bg-green-600 py-3 mt-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6 active:bg-green-700"
                   >
                     Ver proyecto
@@ -192,7 +192,7 @@ export default function Campaign() {
         showModal={showModalNewProperty}
         handleClose={handleCloseNewProperty}
         campaignId={campaign.id}
-        productId={campaign.productID}
+        productId={campaign.products.items[0].id}
         fetchCampaign={fetchCampaign}
       />
       <ToastContainer />
