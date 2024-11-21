@@ -18,7 +18,7 @@ const initialFormState = {
   formType: "signIn",
   terms: false,
   privacy_policy: false,
-  role: "investor",
+  role: "constructor",
   code: "",
   totpCode: ""
 };
