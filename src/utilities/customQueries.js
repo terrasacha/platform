@@ -293,6 +293,12 @@ export const getUserProjects = /* GraphQL */ `
             id
             categoryID
             createdAt
+            campaign {
+              id
+              name
+              description
+              createdAt
+            }
             description
             isActive
             isActiveOnPlatform
@@ -406,6 +412,8 @@ export const listCampaigns = /* GraphQL */ `
           items {
             id
             name
+            categoryID
+            createdAt
           }
         }
         name

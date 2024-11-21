@@ -14,17 +14,70 @@ import useUserProjects from "hooks/useUserProjects";
 // Import images
 import vacio from "../../views/_images/caja-vacia-gris.png";
 import useUserProperties from "hooks/useUserProperties";
+import useUserCampaigns from "hooks/useUserCampaigns";
 
 export default function ProductsList() {
   const { userProjects } = useUserProjects();
   const { userProperties } = useUserProperties();
+  const { userCampaigns } = useUserCampaigns();
 
   const userProjectsFiltered = userProjects.filter(
     (project) => project.product?.isActiveOnPlatform === true
   );
 
+  console.log(userCampaigns, "userCampaigns");
+
   return (
     <>
+      {userCampaigns.length > 0 && (
+        <>
+          <h2 className="mt-5">Tus Campañas</h2>
+          <div className="row row-cols-1 row-cols-lg-3 g-2 m-4">
+            {userCampaigns.map((campeign, index) => {
+              return (
+                <div className="p-3" key={index}>
+                  <Card key={campeign.id} className="p-0">
+                    <img
+                      variant="top"
+                      src={getImagesCategories(
+                        campeign?.products.items[0].categoryID
+                      )}
+                      style={{ height: "150px" }}
+                      alt="Hola"
+                    />
+                    <Card.Body>
+                      <div className="d-flex">
+                        <Stack direction="horizontal" gap={2}>
+                          <Badge bg="primary">
+                            {getYearFromAWSDatetime(
+                              campeign?.products.items[0].createdAt
+                            )}
+                          </Badge>
+                          <Badge bg="primary">
+                            {campeign?.products.items[0].categoryID}
+                          </Badge>
+                        </Stack>
+                      </div>
+                      <p className="fs-5 my-2">{campeign?.name}</p>
+                      <hr className="mb-2" />
+                      <p className="fs-6 my-2 text-h">
+                        {campeign?.description}
+                      </p>
+                    </Card.Body>
+                    <Card.Footer>
+                      <div className="d-flex justify-content-center align-items-center">
+                        <a href={"campaign/" + campeign?.id}>
+                          <Button>Ver Campaña</Button>
+                        </a>
+                      </div>
+                    </Card.Footer>
+                  </Card>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
       {userProperties.length > 0 && (
         <>
           <h2 className="mt-5">Tus Predios postulados</h2>
