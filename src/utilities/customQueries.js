@@ -173,6 +173,11 @@ export const listProducts = /* GraphQL */ `
         isActive
         isActiveOnPlatform
         order
+        campaignID
+        campaign {
+          name
+          description
+        }
         status
         timeOnVerification
         projectReadiness
@@ -397,7 +402,12 @@ export const listCampaigns = /* GraphQL */ `
           subrole
           email
         }
-        productID
+        products {
+          items {
+            id
+            name
+          }
+        }
         name
         description
         initialDate
@@ -426,9 +436,13 @@ query ListProperties(
         name
         userID
         productID
+        product {
+          categoryID
+        }
         campaignID
         campaign {
           name
+          description
         }
         propertyFeatures {
           items {
@@ -487,16 +501,17 @@ query ListProperties(
     getCampaign(id: $id) {
       id
       userID
-      productID
-      product {
-        id
-        name
-        userProducts {
-          items {
-            user {
-              id
-              name
-              role
+      products {
+        items {
+          id
+          name
+          userProducts {
+            items {
+              user {
+                id
+                name
+                role
+              }
             }
           }
         }

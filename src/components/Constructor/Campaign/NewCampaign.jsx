@@ -72,20 +72,12 @@ export default function NewCampaign() {
             description: "",
             isActive: false,
             categoryID: "MIXTO",
-            isActiveOnPlatform: true
+            isActiveOnPlatform: true,
+            campaignID: campaignId
           },
         })
       );
       const productId = result2.data.createProduct.id;
-      
-      await API.graphql(
-        graphqlOperation(updateCampaign, {
-          input: {
-            id: campaignId,
-            productID: productId
-          },
-        })
-      );
 
       let imageUrls = [];
       if (images.length > 0) {
@@ -110,7 +102,6 @@ export default function NewCampaign() {
             input: {
               id: campaignId,
               images: JSON.stringify(imageUrls),
-              productID: productId
             },
           })
         );

@@ -209,7 +209,6 @@ export const onCreateUser = /* GraphQL */ `
         items {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -454,7 +453,6 @@ export const onUpdateUser = /* GraphQL */ `
         items {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -699,7 +697,6 @@ export const onDeleteUser = /* GraphQL */ `
         items {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -3781,105 +3778,28 @@ export const onCreateCampaign = /* GraphQL */ `
         updatedAt
         __typename
       }
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        isActiveOnPlatform
-        showOn
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        tokenClaimedByOwner
-        tokenGenesis
-        categoryID
-        category {
+      products {
+        items {
           id
-          name
-          isSelected
-          createdAt
-          updatedAt
-          __typename
-        }
-        marketplaceID
-        marketplace {
-          id
-          name
-          oracleTokenName
-          oracleWalletID
-          adminWalletID
-          createdAt
-          updatedAt
-          __typename
-        }
-        images {
-          nextToken
-          __typename
-        }
-        productFeatures {
-          nextToken
-          __typename
-        }
-        userProducts {
-          nextToken
-          __typename
-        }
-        transactions {
-          nextToken
-          __typename
-        }
-        orders {
-          nextToken
-          __typename
-        }
-        companies {
-          nextToken
-          __typename
-        }
-        payments {
-          nextToken
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        tokens {
-          nextToken
-          __typename
-        }
-        analysis {
-          nextToken
-          __typename
-        }
-        apiQueries {
-          nextToken
-          __typename
-        }
-        campaignID
-        campaign {
-          id
-          userID
-          productID
           name
           description
-          initialDate
-          endDate
-          available
-          images
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
         }
-        properties {
-          nextToken
-          __typename
-        }
-        createdAt
-        updatedAt
+        nextToken
         __typename
       }
       name
@@ -3980,105 +3900,28 @@ export const onUpdateCampaign = /* GraphQL */ `
         updatedAt
         __typename
       }
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        isActiveOnPlatform
-        showOn
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        tokenClaimedByOwner
-        tokenGenesis
-        categoryID
-        category {
+      products {
+        items {
           id
-          name
-          isSelected
-          createdAt
-          updatedAt
-          __typename
-        }
-        marketplaceID
-        marketplace {
-          id
-          name
-          oracleTokenName
-          oracleWalletID
-          adminWalletID
-          createdAt
-          updatedAt
-          __typename
-        }
-        images {
-          nextToken
-          __typename
-        }
-        productFeatures {
-          nextToken
-          __typename
-        }
-        userProducts {
-          nextToken
-          __typename
-        }
-        transactions {
-          nextToken
-          __typename
-        }
-        orders {
-          nextToken
-          __typename
-        }
-        companies {
-          nextToken
-          __typename
-        }
-        payments {
-          nextToken
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        tokens {
-          nextToken
-          __typename
-        }
-        analysis {
-          nextToken
-          __typename
-        }
-        apiQueries {
-          nextToken
-          __typename
-        }
-        campaignID
-        campaign {
-          id
-          userID
-          productID
           name
           description
-          initialDate
-          endDate
-          available
-          images
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
         }
-        properties {
-          nextToken
-          __typename
-        }
-        createdAt
-        updatedAt
+        nextToken
         __typename
       }
       name
@@ -4179,105 +4022,28 @@ export const onDeleteCampaign = /* GraphQL */ `
         updatedAt
         __typename
       }
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        isActiveOnPlatform
-        showOn
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        tokenClaimedByOwner
-        tokenGenesis
-        categoryID
-        category {
+      products {
+        items {
           id
-          name
-          isSelected
-          createdAt
-          updatedAt
-          __typename
-        }
-        marketplaceID
-        marketplace {
-          id
-          name
-          oracleTokenName
-          oracleWalletID
-          adminWalletID
-          createdAt
-          updatedAt
-          __typename
-        }
-        images {
-          nextToken
-          __typename
-        }
-        productFeatures {
-          nextToken
-          __typename
-        }
-        userProducts {
-          nextToken
-          __typename
-        }
-        transactions {
-          nextToken
-          __typename
-        }
-        orders {
-          nextToken
-          __typename
-        }
-        companies {
-          nextToken
-          __typename
-        }
-        payments {
-          nextToken
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        tokens {
-          nextToken
-          __typename
-        }
-        analysis {
-          nextToken
-          __typename
-        }
-        apiQueries {
-          nextToken
-          __typename
-        }
-        campaignID
-        campaign {
-          id
-          userID
-          productID
           name
           description
-          initialDate
-          endDate
-          available
-          images
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
         }
-        properties {
-          nextToken
-          __typename
-        }
-        createdAt
-        updatedAt
+        nextToken
         __typename
       }
       name
@@ -4397,7 +4163,6 @@ export const onCreateProperty = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -4438,25 +4203,8 @@ export const onCreateProperty = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -4651,7 +4399,6 @@ export const onUpdateProperty = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -4692,25 +4439,8 @@ export const onUpdateProperty = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -4905,7 +4635,6 @@ export const onDeleteProperty = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -4946,25 +4675,8 @@ export const onDeleteProperty = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -5112,7 +4824,6 @@ export const onCreatePropertyFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -5294,7 +5005,6 @@ export const onUpdatePropertyFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -5476,7 +5186,6 @@ export const onDeletePropertyFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -5954,25 +5663,8 @@ export const onCreateProduct = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -6349,25 +6041,8 @@ export const onUpdateProduct = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -6744,25 +6419,8 @@ export const onDeleteProduct = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -6888,7 +6546,6 @@ export const onCreateAnalysis = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7015,7 +6672,6 @@ export const onUpdateAnalysis = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7142,7 +6798,6 @@ export const onDeleteAnalysis = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7329,7 +6984,6 @@ export const onCreateApiQuery = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7456,7 +7110,6 @@ export const onUpdateApiQuery = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7583,7 +7236,6 @@ export const onDeleteApiQuery = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7719,7 +7371,6 @@ export const onCreateImage = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7839,7 +7490,6 @@ export const onUpdateImage = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7959,7 +7609,6 @@ export const onDeleteImage = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -9337,7 +8986,6 @@ export const onCreateProductFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -9563,7 +9211,6 @@ export const onUpdateProductFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -9789,7 +9436,6 @@ export const onDeleteProductFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -10388,7 +10034,6 @@ export const onCreateUserProduct = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -10567,7 +10212,6 @@ export const onUpdateUserProduct = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -10746,7 +10390,6 @@ export const onDeleteUserProduct = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -11023,7 +10666,6 @@ export const onCreateOrder = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -11300,7 +10942,6 @@ export const onUpdateOrder = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -11577,7 +11218,6 @@ export const onDeleteOrder = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -11701,7 +11341,6 @@ export const onCreatePayment = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -11891,7 +11530,6 @@ export const onUpdatePayment = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -12081,7 +11719,6 @@ export const onDeletePayment = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -12274,7 +11911,6 @@ export const onCreateTransactions = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -12402,7 +12038,6 @@ export const onUpdateTransactions = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -12530,7 +12165,6 @@ export const onDeleteTransactions = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -12709,7 +12343,6 @@ export const onCreateCompany = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -12887,7 +12520,6 @@ export const onUpdateCompany = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -13065,7 +12697,6 @@ export const onDeleteCompany = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -13265,7 +12896,6 @@ export const onCreateScript = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -13489,7 +13119,6 @@ export const onUpdateScript = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -13713,7 +13342,6 @@ export const onDeleteScript = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -13884,7 +13512,6 @@ export const onCreateToken = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -13999,7 +13626,6 @@ export const onUpdateToken = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -14114,7 +13740,6 @@ export const onDeleteToken = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate

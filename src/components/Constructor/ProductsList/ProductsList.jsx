@@ -12,26 +12,76 @@ import {
 import useUserProjects from "hooks/useUserProjects";
 
 // Import images
-import vacio from '../../views/_images/caja-vacia-gris.png'
+import vacio from "../../views/_images/caja-vacia-gris.png";
+import useUserProperties from "hooks/useUserProperties";
 
 export default function ProductsList() {
   const { userProjects } = useUserProjects();
+  const { userProperties } = useUserProperties();
 
-  const userProjectsFiltered = userProjects.filter((project) => project.product.isActiveOnPlatform === true)
+  const userProjectsFiltered = userProjects.filter(
+    (project) => project.product?.isActiveOnPlatform === true
+  );
 
   return (
     <>
+      {userProperties.length > 0 && (
+        <>
+          <h2 className="mt-5">Tus Predios postulados</h2>
+
+          <div className="row row-cols-1 row-cols-lg-3 g-2 m-4">
+            {userProperties.map((property, index) => {
+              return (
+                <div className="p-3" key={index}>
+                  <Card key={property.id} className="p-0">
+                    <Card.Body>
+                      <div className="d-flex">
+                        <Stack direction="horizontal" gap={2}>
+                          <Badge bg="primary">
+                            {getYearFromAWSDatetime(property?.createdAt)}
+                          </Badge>
+                          <Badge bg="primary">Vinculado a campaña</Badge>
+                        </Stack>
+                      </div>
+                      <p className="fs-3 font-bold my-2">
+                        {property?.campaign.name}
+                      </p>
+                      <p className="fs-5 my-2">{property?.name}</p>
+                      <p className="fs-6 my-2 text-h">
+                        {property?.campaign.description}
+                      </p>
+                    </Card.Body>
+                    <Card.Footer>
+                      <div className="d-flex justify-content-center align-items-center">
+                        <a href={"property/" + property?.id}>
+                          <Button>Ver más</Button>
+                        </a>
+                      </div>
+                    </Card.Footer>
+                  </Card>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
       <h2 className="mt-5">Tus Proyectos</h2>
       {userProjectsFiltered.length === 0 ? (
         <div className="m-4 text-center pt-6 mt-4">
-          <img src={vacio} 
-                height="150"
-                width="150"
-                className="d-inline-block align-top align-center mx-auto mt-3 mb-3 img-vacio"
-                alt="ATP"
-                />
-          <p className="color-grey">No tienes proyectos aún. Para crear el primero, te invitamos a dar click en Postular proyecto</p>
-          <Button href="/new_project" variant="primary">Postular Proyecto</Button>
+          <img
+            src={vacio}
+            height="150"
+            width="150"
+            className="d-inline-block align-top align-center mx-auto mt-3 mb-3 img-vacio"
+            alt="ATP"
+          />
+          <p className="color-grey">
+            No tienes proyectos aún. Para crear el primero, te invitamos a dar
+            click en Postular proyecto
+          </p>
+          <Button href="/new_project" variant="primary">
+            Postular Proyecto
+          </Button>
         </div>
       ) : (
         <div className="row row-cols-1 row-cols-lg-3 g-2 m-4">
@@ -51,12 +101,16 @@ export default function ProductsList() {
                         <Badge bg="primary">
                           {getYearFromAWSDatetime(product?.product.createdAt)}
                         </Badge>
-                        <Badge bg="primary">{product?.product.categoryID}</Badge>
+                        <Badge bg="primary">
+                          {product?.product.categoryID}
+                        </Badge>
                       </Stack>
                     </div>
                     <p className="fs-5 my-2">{product?.product.name}</p>
                     <hr className="mb-2" />
-                    <p className="fs-6 my-2 text-h">{product?.product.description}</p>
+                    <p className="fs-6 my-2 text-h">
+                      {product?.product.description}
+                    </p>
                   </Card.Body>
                   <Card.Footer>
                     <div className="d-flex justify-content-center align-items-center">

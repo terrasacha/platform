@@ -34,20 +34,25 @@ export default function Campaign() {
   const fetchCampaign = async () => {
     try {
       const data = await API.graphql(graphqlOperation(getCampaign, { id }));
+
       console.log(data.data.getCampaign);
       setCampaign(data.data.getCampaign);
+      const product = data.data.getCampaign.products.items[0]
 
-      const projectVerifiers = data.data.getCampaign.product.userProducts.items
+      const projectVerifiers = product.userProducts.items
         .filter((up) => up.user?.role === "validator")
         .map((userProduct) => {
-          return { id: userProduct.user.id, name: userProduct.user.name};
+          return { id: userProduct.user.id, name: userProduct.user.name };
         });
 
-      console.log('up', data.data.getCampaign.product.userProducts.items)
+      console.log("up", product.userProducts.items);
 
-      const isAuthorResult = await isAuthor([data.data.getCampaign.userID, ...projectVerifiers.map((pv) => pv.id)]);
+      const isAuthorResult = await isAuthor([
+        data.data.getCampaign.userID,
+        ...projectVerifiers.map((pv) => pv.id),
+      ]);
       setEditable(isAuthorResult);
-      setProjectVerifiers(projectVerifiers)
+      setProjectVerifiers(projectVerifiers);
     } catch (error) {
       console.error("Error fetching campaign:", error);
     }
@@ -58,8 +63,8 @@ export default function Campaign() {
   const isAuthor = async (ids) => {
     try {
       const userLogged = await Auth.currentAuthenticatedUser();
-      console.log('ids', ids)
-  
+      console.log("ids", ids);
+
       // Verificar si el ID del usuario autenticado está en el array de IDs
       if (ids.includes(userLogged.attributes.sub)) {
         return true;
@@ -71,7 +76,7 @@ export default function Campaign() {
       return false;
     }
   };
-  
+
   if (!campaign) return null;
 
   const formatDate = (timestamp) => {
@@ -132,14 +137,19 @@ export default function Campaign() {
                   <div className="bg-gray-400 py-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6">
                     Convocatoria cerrada
                   </div>
-                  <button onClick={() => navigate(`/project/${campaign.productID}`)} className="bg-green-600 py-3 mt-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6 active:bg-green-700">
-                    Ver campaña
+                  <button
+                    onClick={() => navigate(`/project/${campaign.productID}`)}
+                    className="bg-green-600 py-3 mt-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6 active:bg-green-700"
+                  >
+                    Ver proyecto
                   </button>
                 </>
               )}
               {projectVerifiers.length > 0 && (
                 <section>
-                  <p className="fs-6 mb-0 fw-bold text-gray-500 mt-3">Validadores asignados:</p>
+                  <p className="fs-6 mb-0 fw-bold text-gray-500 mt-3">
+                    Validadores asignados:
+                  </p>
                   <div className="flex gap-2">
                     {projectVerifiers.map((pvn, index) => {
                       return (
@@ -156,8 +166,14 @@ export default function Campaign() {
               )}
             </section>
           </article>
-          <h2 className="text-2xl text-gray-600 mb-2">Predios postulados</h2>
-          <PropertiesTable editable={editable}/>
+          {(campaign.properties.items.length > 0) && (
+            <>
+              <h2 className="text-2xl text-gray-600 my-4">
+                Predios postulados
+              </h2>
+              <PropertiesTable editable={editable} />
+            </>
+          )}
         </Card.Body>
       </Card>
       <ModalEditCampaign

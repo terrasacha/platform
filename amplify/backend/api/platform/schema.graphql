@@ -132,8 +132,7 @@ type Campaign @model {
   id: ID!
   userID: ID! @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
-  productID: ID
-  product: Product @hasOne(fields: ["productID"])
+  products: [Product] @hasMany(indexName: "byCampaign", fields: ["id"])
   name: String
   description: String
   initialDate: AWSTimestamp
@@ -210,7 +209,7 @@ type Product @model {
   tokens: [Token] @hasMany(indexName: "byProduct", fields: ["id"])
   analysis: [Analysis] @hasMany(indexName: "byProduct", fields: ["id"])
   apiQueries: [ApiQuery] @hasMany(indexName: "byProduct", fields: ["id"])
-  campaignID: ID
+  campaignID: ID @index(name: "byCampaign")
   campaign: Campaign @belongsTo(fields: ["campaignID"])
   properties: [Property] @hasMany(indexName: "byProduct", fields: ["id"])
 }

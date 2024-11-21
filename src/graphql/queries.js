@@ -209,7 +209,6 @@ export const getUser = /* GraphQL */ `
         items {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -1755,105 +1754,28 @@ export const getCampaign = /* GraphQL */ `
         updatedAt
         __typename
       }
-      productID
-      product {
-        id
-        name
-        description
-        isActive
-        isActiveOnPlatform
-        showOn
-        order
-        status
-        timeOnVerification
-        projectReadiness
-        tokenClaimedByOwner
-        tokenGenesis
-        categoryID
-        category {
+      products {
+        items {
           id
-          name
-          isSelected
-          createdAt
-          updatedAt
-          __typename
-        }
-        marketplaceID
-        marketplace {
-          id
-          name
-          oracleTokenName
-          oracleWalletID
-          adminWalletID
-          createdAt
-          updatedAt
-          __typename
-        }
-        images {
-          nextToken
-          __typename
-        }
-        productFeatures {
-          nextToken
-          __typename
-        }
-        userProducts {
-          nextToken
-          __typename
-        }
-        transactions {
-          nextToken
-          __typename
-        }
-        orders {
-          nextToken
-          __typename
-        }
-        companies {
-          nextToken
-          __typename
-        }
-        payments {
-          nextToken
-          __typename
-        }
-        scripts {
-          nextToken
-          __typename
-        }
-        tokens {
-          nextToken
-          __typename
-        }
-        analysis {
-          nextToken
-          __typename
-        }
-        apiQueries {
-          nextToken
-          __typename
-        }
-        campaignID
-        campaign {
-          id
-          userID
-          productID
           name
           description
-          initialDate
-          endDate
-          available
-          images
+          isActive
+          isActiveOnPlatform
+          showOn
+          order
+          status
+          timeOnVerification
+          projectReadiness
+          tokenClaimedByOwner
+          tokenGenesis
+          categoryID
+          marketplaceID
+          campaignID
           createdAt
           updatedAt
           __typename
         }
-        properties {
-          nextToken
-          __typename
-        }
-        createdAt
-        updatedAt
+        nextToken
         __typename
       }
       name
@@ -1913,25 +1835,8 @@ export const listCampaigns = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -2041,7 +1946,6 @@ export const getProperty = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -2082,25 +1986,8 @@ export const getProperty = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -2284,7 +2171,6 @@ export const listProperties = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -2368,7 +2254,6 @@ export const getPropertyFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -2917,25 +2802,8 @@ export const getProduct = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -3063,7 +2931,6 @@ export const listProducts = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -3173,7 +3040,6 @@ export const getAnalysis = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -3399,7 +3265,6 @@ export const getApiQuery = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -3590,7 +3455,6 @@ export const getImage = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -4410,7 +4274,6 @@ export const getProductFeature = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -4923,7 +4786,6 @@ export const getUserProduct = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -5259,7 +5121,6 @@ export const getOrder = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -5482,7 +5343,6 @@ export const getPayment = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -5745,7 +5605,6 @@ export const getTransactions = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -5978,7 +5837,6 @@ export const getCompany = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -6238,7 +6096,6 @@ export const getScript = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -6474,7 +6331,6 @@ export const getToken = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7589,25 +7445,8 @@ export const campaignsByUserID = /* GraphQL */ `
           updatedAt
           __typename
         }
-        productID
-        product {
-          id
-          name
-          description
-          isActive
-          isActiveOnPlatform
-          showOn
-          order
-          status
-          timeOnVerification
-          projectReadiness
-          tokenClaimedByOwner
-          tokenGenesis
-          categoryID
-          marketplaceID
-          campaignID
-          createdAt
-          updatedAt
+        products {
+          nextToken
           __typename
         }
         name
@@ -7673,7 +7512,6 @@ export const propertiesByProductID = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7762,7 +7600,6 @@ export const propertiesByCampaignID = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -7851,7 +7688,6 @@ export const propertiesByUserID = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -8142,7 +7978,6 @@ export const productsByCategoryID = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
           name
           description
           initialDate
@@ -8262,7 +8097,125 @@ export const productsByMarketplaceID = /* GraphQL */ `
         campaign {
           id
           userID
-          productID
+          name
+          description
+          initialDate
+          endDate
+          available
+          images
+          createdAt
+          updatedAt
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const productsByCampaignID = /* GraphQL */ `
+  query ProductsByCampaignID(
+    $campaignID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelProductFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    productsByCampaignID(
+      campaignID: $campaignID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        description
+        isActive
+        isActiveOnPlatform
+        showOn
+        order
+        status
+        timeOnVerification
+        projectReadiness
+        tokenClaimedByOwner
+        tokenGenesis
+        categoryID
+        category {
+          id
+          name
+          isSelected
+          createdAt
+          updatedAt
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        images {
+          nextToken
+          __typename
+        }
+        productFeatures {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        transactions {
+          nextToken
+          __typename
+        }
+        orders {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        scripts {
+          nextToken
+          __typename
+        }
+        tokens {
+          nextToken
+          __typename
+        }
+        analysis {
+          nextToken
+          __typename
+        }
+        apiQueries {
+          nextToken
+          __typename
+        }
+        campaignID
+        campaign {
+          id
+          userID
           name
           description
           initialDate
