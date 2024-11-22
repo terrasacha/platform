@@ -16,6 +16,7 @@ export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
   const [editable, setEditable] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [userLogged, setUserLogged] = useState(false);
   const [showModalNewProperty, setShowModalNewProperty] = useState(false);
   const [showModalEndCampaign, setShowModalEndCampaign] = useState(false);
   const [projectVerifiers, setProjectVerifiers] = useState([]);
@@ -63,10 +64,10 @@ export default function Campaign() {
   const isAuthor = async (ids) => {
     try {
       const userLogged = await Auth.currentAuthenticatedUser();
-      console.log("ids", ids);
+      setUserLogged(userLogged)
 
       // Verificar si el ID del usuario autenticado está en el array de IDs
-      if (ids.includes(userLogged.attributes.sub)) {
+      if (userLogged && ids.includes(userLogged.attributes.sub)) {
         return true;
       } else {
         return false;
@@ -126,7 +127,7 @@ export default function Campaign() {
                   </button>
                 ) : (
                   <button
-                    onClick={handleShowNewProperty}
+                    onClick={() => userLogged ? handleShowNewProperty() : navigate('/login')}
                     className="bg-green-600 py-3 text-md font-medium text-white rounded-md w-3/6 active:bg-green-700"
                   >
                     Postular predio

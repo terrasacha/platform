@@ -4,7 +4,7 @@ import { API, Auth, graphqlOperation } from "aws-amplify";
 import { createProperty, createPropertyFeature } from "graphql/mutations";
 import { Trash } from "react-bootstrap-icons";
 import { TrashIcon } from "components/common/icons/TrashIcon";
-import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
 const initialForm = {
@@ -21,19 +21,27 @@ export default function ModalNewProperty({
   handleClose,
   campaignId,
   productId,
-  fetchCampaign
+  fetchCampaign,
 }) {
   const [loading, setLoading] = useState(false);
   const userID = useRef(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState(initialForm);
 
   useEffect(() => {
-    Auth.currentAuthenticatedUser().then((data) => {
-      userID.current = data.attributes.sub;
-    });
+    const fetchAuthenticatedUser = async () => {
+      try {
+        const data = await Auth.currentAuthenticatedUser();
+        userID.current = data.attributes.sub;
+      } catch (error) {
+        console.error("Error fetching authenticated user:", error);
+      }
+    };
+  
+    fetchAuthenticatedUser();
   }, []);
+  
 
   const handleSave = async () => {
     setLoading(true);
@@ -54,9 +62,9 @@ export default function ModalNewProperty({
 
       const cadastralNumbers = formData.cadastralNumbers.map((cadNum) => {
         return {
-          'cadastralNumber': cadNum
-        }
-      })
+          cadastralNumber: cadNum,
+        };
+      });
 
       const tempPropertyFeature = {
         value: JSON.stringify(cadastralNumbers),
@@ -64,15 +72,15 @@ export default function ModalNewProperty({
         isOnMainCard: false,
         propertyID: propertyId,
         featureID: "A_predio_ficha_catastral",
-      }
+      };
       await API.graphql(
         graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
       );
 
       await fetchCampaign();
       handleClose();
-  
-      toast.success('Predio postulado con éxito, serás redirigido ...',{
+
+      toast.success("Predio postulado con éxito, serás redirigido ...", {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -83,7 +91,7 @@ export default function ModalNewProperty({
         theme: "light",
       });
       setTimeout(() => {
-        navigate(`/property/${propertyId}`)
+        navigate(`/property/${propertyId}`);
       }, 3000);
     } catch (error) {
       console.error("Error al actualizar la campaña:", error);
