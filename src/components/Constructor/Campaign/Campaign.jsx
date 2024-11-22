@@ -123,116 +123,129 @@ export default function Campaign() {
   };
 
   return (
-    <div className="container-sm">
+    <div className="container mx-auto px-4">
       <div className="mb-24">
         <NewHeaderNavbar />
       </div>
-      <Card className="px-10">
-        <Card.Body>
-          <article className="flex w-full">
+      <Card className="shadow-lg rounded-lg overflow-hidden">
+        <Card.Body className="p-6">
+          <article className="flex flex-col lg:flex-row gap-8">
             <img
               src={JSON.parse(campaign.images)[0]}
-              alt="campaign image"
-              className="w-1/2"
+              alt="Imagen de la campaña"
+              className="w-full lg:w-1/2 object-cover rounded-lg shadow-md"
             />
-            <section className="w-1/2 px-4 py-2 text-gray-700 h-full">
-              <h1 className="m-0 text-[2.5rem] font-bold flex items-center">
-                {campaign.name}{" "}
-                {editable && (
-                  <FiEdit3
-                    onClick={handleShow}
-                    className="text-2xl ml-2 cursor-pointer"
-                  />
-                )}
-              </h1>
-              <p className="text-lg font-medium text-gray-500">
-                Hasta {formatDate(campaign.endDate)}
-              </p>
-              <p className="text-md text-gray-500">{campaign.description}</p>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-100">
-                <div class="max-w-sm mx-auto p-4 bg-white shadow-md rounded-lg border border-gray-200">
-                  <h2 class="text-lg font-semibold text-gray-800">
-                    Predios Inscritos
-                  </h2>
-                  <p class="mt-2 text-3xl font-bold text-blue-600">
-                    {registeredProperties}
-                  </p>
-                </div>
-                <div class="max-w-sm mx-auto p-4 bg-white shadow-md rounded-lg border border-gray-200">
-                  <h2 class="text-lg font-semibold text-gray-800">
-                    Predios Elegidos
-                  </h2>
-                  <p class="mt-2 text-3xl font-bold text-blue-600">
-                    {chosenProperties}
-                  </p>
-                </div>
-                <div class="max-w-sm mx-auto p-4 bg-white shadow-md rounded-lg border border-gray-200">
-                  <h2 class="text-lg font-semibold text-gray-800">
-                    Area Total Elegidos
-                  </h2>
-                  <p class="mt-2 text-3xl font-bold text-blue-600">
-                    {totalChosenProperties}
-                  </p>
-                </div>
+            <section className="w-full lg:w-1/2 flex flex-col justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3 mb-4">
+                  {campaign.name}
+                  {editable && (
+                    <FiEdit3
+                      onClick={handleShow}
+                      className="text-gray-600 hover:text-gray-800 transition cursor-pointer"
+                    />
+                  )}
+                </h1>
+                <p className="text-lg text-gray-500 mb-2">
+                  Hasta{" "}
+                  <span className="font-semibold">
+                    {formatDate(campaign.endDate)}
+                  </span>
+                </p>
+                <p className="text-md text-gray-600 mb-6">
+                  {campaign.description}
+                </p>
               </div>
 
-              {campaign.available ? (
-                editable ? (
-                  <button
-                    onClick={handleShowEndCampaign}
-                    className="bg-gray-400 py-3 mt-3 text-md font-medium text-gray-100 rounded-md w-3/6 hover:bg-red-600 transition-colors duration-300"
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-100 p-6 rounded-lg shadow-md">
+                {[
+                  { label: "Predios Inscritos", value: registeredProperties },
+                  { label: "Predios Elegidos", value: chosenProperties },
+                  { label: "Área Total Elegida", value: totalChosenProperties },
+                ].map(({ label, value }, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col items-center justify-center bg-white p-6 rounded-lg shadow border border-gray-200 text-center"
                   >
-                    Cerrar convocatoria ahora
+                    <h2 className="text-lg font-semibold text-gray-700">
+                      {label}
+                    </h2>
+                    <p
+                      className="mt-3 font-extrabold text-blue-600"
+                      style={{
+                        fontSize: `clamp(1rem, ${Math.min(
+                          4 / `${value}`.length,
+                          1.5
+                        )}rem, 2.5rem)`,
+                        overflowWrap: "break-word",
+                        wordBreak: "break-word",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      {value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6">
+                {campaign.available ? (
+                  <button
+                    onClick={
+                      editable
+                        ? handleShowEndCampaign
+                        : userLogged
+                        ? handleShowNewProperty
+                        : () => navigate("/login")
+                    }
+                    className={`w-full lg:w-3/6 py-3 font-semibold rounded-md text-white shadow-md transition-all duration-300 ${
+                      editable
+                        ? "bg-red-500 hover:bg-red-600"
+                        : "bg-green-500 hover:bg-green-600"
+                    }`}
+                  >
+                    {editable ? "Cerrar convocatoria ahora" : "Postular predio"}
                   </button>
                 ) : (
-                  <button
-                    onClick={() =>
-                      userLogged ? handleShowNewProperty() : navigate("/login")
-                    }
-                    className="bg-green-600 py-3 text-md font-medium text-white rounded-md w-3/6 active:bg-green-700"
-                  >
-                    Postular predio
-                  </button>
-                )
-              ) : (
-                <>
-                  <div className="bg-gray-400 py-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6">
-                    Convocatoria cerrada
-                  </div>
-                  <button
-                    onClick={() =>
-                      navigate(`/project/${campaign.products.items[0].id}`)
-                    }
-                    className="bg-green-600 py-3 mt-3 text-md text-center font-medium text-gray-100 rounded-md w-3/6 active:bg-green-700"
-                  >
-                    Ver proyecto
-                  </button>
-                </>
-              )}
-              {projectVerifiers.length > 0 && (
-                <section>
-                  <p className="fs-6 mb-0 fw-bold text-gray-500 mt-3">
-                    Validadores asignados:
-                  </p>
-                  <div className="flex gap-2">
-                    {projectVerifiers.map((pvn, index) => {
-                      return (
-                        <div
-                          className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
-                          key={index}
-                        >
-                          Validador {index + 1}: {pvn.name}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-              )}
+                  <>
+                    <div className="bg-gray-400 py-3 font-semibold text-white text-center rounded-md shadow-md">
+                      Convocatoria cerrada
+                    </div>
+                    <button
+                      onClick={() =>
+                        navigate(`/project/${campaign.products.items[0].id}`)
+                      }
+                      className="w-full lg:w-3/6 mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
+                    >
+                      Ver proyecto
+                    </button>
+                  </>
+                )}
+              </div>
             </section>
           </article>
+
+          {projectVerifiers.length > 0 && (
+            <section className="mt-8">
+              <h3 className="text-md font-semibold text-gray-700 mb-4">
+                Validadores asignados:
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {projectVerifiers.map((pvn, index) => (
+                  <div
+                    key={index}
+                    className="bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-md shadow"
+                  >
+                    Validador {index + 1}: {pvn.name}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {campaign.properties.items.length > 0 && (
             <>
-              <h2 className="text-2xl text-gray-600 my-4">
+              <h2 className="text-2xl text-gray-700 font-semibold mt-10 mb-6">
                 Predios postulados
               </h2>
               <PropertiesTable editable={editable} />
@@ -240,6 +253,7 @@ export default function Campaign() {
           )}
         </Card.Body>
       </Card>
+
       <ModalEditCampaign
         showModal={showModal}
         handleClose={handleClose}

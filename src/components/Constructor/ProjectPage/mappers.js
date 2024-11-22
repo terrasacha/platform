@@ -1001,6 +1001,8 @@ export const mapPropertyData = async (data) => {
   const cadastralNumbers = (
     cadastralData.map((cadObj) => cadObj.cadastralNumber) || []
   ).join(", ");
+
+  console.log('data', data)
   return {
     propertyInfo: {
       id: data.id,
@@ -1008,6 +1010,10 @@ export const mapPropertyData = async (data) => {
       projectAge: getElapsedDays(data.createdAt),
       name: data.name,
       status: data.status,
+    },
+    propertyCampaign: {
+      id: data.campaign.id,
+      userId: data.campaign.userID,
     },
     projectPostulant: {
       id: data.userID,
