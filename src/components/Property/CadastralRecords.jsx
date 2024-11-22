@@ -580,10 +580,10 @@ export default function CadastralRecords(props) {
     );
     setMultipleData(tempMultipleData);
 
-    if(areaDataPfID) {
+    if(areaDataPfID && predialFetchedData[multipleData[indexToDelete].cadastralNumber]?.AREA_TERRENO) {
       let tempPropertyFeature = {
         id: areaDataPfID,
-        value: totalArea - predialFetchedData[multipleData[indexToDelete].cadastralNumber].AREA_TERRENO,
+        value: totalArea - predialFetchedData[multipleData[indexToDelete].cadastralNumber]?.AREA_TERRENO,
       };
       const response = await API.graphql(
         graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })

@@ -59,10 +59,12 @@ export default function Property() {
   const fetchProperty = async () => {
     try {
       const data = await API.graphql(graphqlOperation(getProperty, { id }));
+
       console.log(data.data.getProperty);
       setProperty(data.data.getProperty);
       const isAuthorResult = await isAuthor(data.data.getProperty.userID);
-      setEditable(isAuthorResult);
+
+      setEditable(isAuthorResult && propertyData.propertyInfo.status === null);
     } catch (error) {
       console.error("Error fetching campaign:", error);
     }
@@ -125,7 +127,6 @@ export default function Property() {
                     aria-current="page"
                   >
                     Detalles
-                    <HourGlassIcon className="text-danger ms-2" />
                   </a>
                 </li>
               </ul>

@@ -23,7 +23,7 @@ export const mapGeoData = (validatorDocuments) => {
 
 const validateFinatialInfoIsComplete = async () => {};
 
-const formatArea = (area) => {
+export const formatArea = (area) => {
   return parseFloat(area).toLocaleString("es-ES") + " m2";
 };
 
@@ -438,6 +438,7 @@ const mapProjectUses = (data) => {
 };
 
 export const mapProjectData = async (data) => {
+  console.log('dataa', data)
   const projectID = data.id;
   const projecIsActive = data.isActive;
   const verifierDescription =
