@@ -16,6 +16,7 @@ export const getProduct = /* GraphQL */ `
           productID
           status
           userID
+          cadastralNumber
           campaignID
           campaign {
             id

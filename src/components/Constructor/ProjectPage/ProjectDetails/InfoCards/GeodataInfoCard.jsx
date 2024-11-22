@@ -14,7 +14,7 @@ export default function GeodataInfoCard(props) {
   const [ubicacionPfId, setUbicacionPfId] = useState(null);
   const [polygonsFetchedData, setPolygonsFetchedData] = useState(null);
   const [mapKey, setMapKey] = useState(0);  // Key to force map reload
-
+  console.log(projectData.projectProperties.cadastralDataProperties, 'projectData.projectProperties.cadastralDataProperties')
   const [formData, setFormData] = useState({
     coords: {
       lat: 0,
@@ -35,12 +35,12 @@ export default function GeodataInfoCard(props) {
   useEffect(() => {
     async function updatePredialData() {
     setLoading(true)
-      const cadastralNumbersArray = projectData.projectCadastralRecords.cadastralRecords.map(
+      /* const cadastralNumbersArray = projectData.projectCadastralRecords.cadastralRecords.map(
         (item) => item.cadastralNumber
-      );
-      let polygonGeoJson = await getPolygonByCadastralNumber(cadastralNumbersArray);
-      const predialData = await getPredialDataByCadastralNumber(cadastralNumbersArray);
-      const predialData2 = await getPredialData2ByCadastralNumber(cadastralNumbersArray);
+      ); */
+      let polygonGeoJson = await getPolygonByCadastralNumber(projectData.projectProperties.cadastralDataProperties);
+      const predialData = await getPredialDataByCadastralNumber(projectData.projectProperties.cadastralDataProperties);
+      const predialData2 = await getPredialData2ByCadastralNumber(projectData.projectProperties.cadastralDataProperties);
 
       if (polygonGeoJson) {
         polygonGeoJson.features = polygonGeoJson.features.map((feature, index) => {

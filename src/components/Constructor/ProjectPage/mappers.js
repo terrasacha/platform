@@ -440,7 +440,6 @@ const mapProjectUses = (data) => {
 export const mapProjectData = async (data) => {
   const projectID = data.id;
   const projecIsActive = data.isActive;
-
   const verifierDescription =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "GLOBAL_VERIFIER_DESCRIPTION";
@@ -789,6 +788,19 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
     })[0]?.value === "true" || false;
 
+    const getCadastralPropertiesNumber = () => {
+      const cadastralNumbers = [];
+      data.properties?.items.forEach(item => {
+        try {
+          const parsedNumbers = JSON.parse(item.cadastralNumber);
+          if (Array.isArray(parsedNumbers)) {
+            cadastralNumbers.push(...parsedNumbers);
+          }
+        } catch (e) {}
+      });
+      console.log(cadastralNumbers, 'cadastralNumberscadastralNumbers')
+      return cadastralNumbers;
+    };
   return {
     projectInfo: {
       id: projectID,
@@ -893,6 +905,9 @@ export const mapProjectData = async (data) => {
         tokenAmountDistribution,
       },
     },
+    projectProperties:{
+      cadastralDataProperties : getCadastralPropertiesNumber()
+    },
     projectFeatures: await mapProductFeatures(data.productFeatures.items),
     isTechnicalComplete: isTechnicalComplete,
     financialProgress: financialProgress,
@@ -985,7 +1000,6 @@ export const mapPropertyData = async (data) => {
   const cadastralNumbers = (
     cadastralData.map((cadObj) => cadObj.cadastralNumber) || []
   ).join(", ");
-
   return {
     propertyInfo: {
       id: data.id,
