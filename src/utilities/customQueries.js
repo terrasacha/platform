@@ -451,6 +451,8 @@ query ListProperties(
         }
         campaignID
         campaign {
+          id
+          userID
           name
           description
         }

@@ -29,7 +29,7 @@ export default function PropertyDetails({ visible }) {
       const postulant = propertyData?.projectPostulant?.id;
       const authorizedUsers = [...verifiers, postulant];
       setAutorizedUser(
-        authorizedUsers.includes(user.id) || user.role === "admon"
+        (authorizedUsers.includes(user.id) && (propertyData.propertyInfo.status === null || propertyData.propertyInfo.status === 'PENDING')) || user.role === "admon"
       );
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));

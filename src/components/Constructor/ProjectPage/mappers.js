@@ -23,7 +23,7 @@ export const mapGeoData = (validatorDocuments) => {
 
 const validateFinatialInfoIsComplete = async () => {};
 
-const formatArea = (area) => {
+export const formatArea = (area) => {
   return parseFloat(area).toLocaleString("es-ES") + " m2";
 };
 
@@ -438,6 +438,7 @@ const mapProjectUses = (data) => {
 };
 
 export const mapProjectData = async (data) => {
+  console.log('dataa', data)
   const projectID = data.id;
   const projecIsActive = data.isActive;
   const verifierDescription =
@@ -1000,6 +1001,8 @@ export const mapPropertyData = async (data) => {
   const cadastralNumbers = (
     cadastralData.map((cadObj) => cadObj.cadastralNumber) || []
   ).join(", ");
+
+  console.log('data', data)
   return {
     propertyInfo: {
       id: data.id,
@@ -1007,6 +1010,10 @@ export const mapPropertyData = async (data) => {
       projectAge: getElapsedDays(data.createdAt),
       name: data.name,
       status: data.status,
+    },
+    propertyCampaign: {
+      id: data.campaign.id,
+      userId: data.campaign.userID,
     },
     projectPostulant: {
       id: data.userID,
