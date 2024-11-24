@@ -142,13 +142,13 @@ export default class PQRForm extends Component {
   <Form.Label>Imagen (opcional)</Form.Label>
   <Form.Control
     type="file"
-    accept="image/png, image/gif, image/jpeg, image/jpg"
+    accept="image/png, image/gif, image/jpeg, image/jpg, application/pdf "
     onChange={(e) => {
       const file = e.target.files[0];
       if (file) {
         const maxFileSize = 15 * 1024 * 1024; // 15 MB en bytes
-        if (!["image/png", "image/gif", "image/jpeg", "image/jpg"].includes(file.type)) {
-          alert("Solo se aceptan imágenes en formato PNG, GIF, JPEG o JPG.");
+        if (!["image/png", "image/gif", "image/jpeg", "image/jpg", "application/pdf"].includes(file.type)) {
+          alert("Solo se aceptan imágenes en formato PNG, GIF, PDF, JPEG o JPG.");
           e.target.value = null; // Limpiar el campo de archivo
         } else if (file.size > maxFileSize) {
           alert("El tamaño máximo permitido para la imagen es de 15 MB.");
@@ -160,7 +160,7 @@ export default class PQRForm extends Component {
     }}
   />
   <Form.Text className="text-muted">
-    Formatos aceptados: PNG, GIF, JPEG, JPG. Tamaño máximo: 15 MB.
+    Formatos aceptados: PNG, GIF, JPEG, PDF, JPG. Tamaño máximo: 15 MB.
   </Form.Text>
 </Form.Group>
 

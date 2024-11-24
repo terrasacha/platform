@@ -100,6 +100,13 @@ export default class HeaderNavbar extends Component {
                       >
                         PQR
                       </Nav.Link>
+                      <Nav.Link
+    href="https://suans-organization.gitbook.io/suan"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Ayuda
+  </Nav.Link>
                     </>
                   )}
                   {role === "validator" && (
@@ -118,6 +125,13 @@ export default class HeaderNavbar extends Component {
                       >
                         PQR
                       </Nav.Link>
+                      <Nav.Link
+    href="https://suans-organization.gitbook.io/suan"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Ayuda
+  </Nav.Link>
                     </>
                   )}
                    {role === "analyst" && (
@@ -131,11 +145,18 @@ export default class HeaderNavbar extends Component {
                       </Nav.Link>
                       <Nav.Link
                         onClick={() =>
-                          (window.location.href = "/investor_admon")
-                        }
+                          (window.location.href = "/project_analyst")
+                        } 
                       >
                         Ver Proyectos
                       </Nav.Link>
+                      <Nav.Link
+    href="https://suans-organization.gitbook.io/suan"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Ayuda
+  </Nav.Link>
                     </>
                   )}
                   {role === "constructor" && (

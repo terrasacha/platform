@@ -76,7 +76,7 @@ export default class HeaderNavbar extends Component {
                         )
                       }
                     >
-                      Proyectos Asignados
+                    
                     </Nav.Link>
                     {localStorage.getItem("role") ? (
                       <div>

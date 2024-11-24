@@ -138,6 +138,13 @@ export default class HeaderNavbar extends Component {
                         Asignar Validadores
                       </Dropdown.Item>
                       <Dropdown.Item
+                      href="#assign_analyst"
+                      onClick={(e) => this.changeHeaderNavBarRequest("assign_analyst", e)}
+                      >
+                      Asignar Analista
+                        </Dropdown.Item>
+
+                      <Dropdown.Item
                         href="#validators"
                         onClick={(e) =>
                           this.changeHeaderNavBarRequest("validators", e)

@@ -70,6 +70,8 @@ export default class ListProducts extends Component {
   componentDidMount = async () => {
     await this.loadProductFeatureResults();
   };
+
+  
   hasVerifiedProductFeatures(product) {
     let verifications = product.productFeatures.items.some(
       (feature) => feature.verifications.items.length > 0
