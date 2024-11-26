@@ -32,6 +32,7 @@ import CampaignList from "components/Constructor/Campaign/CampaignList";
 import PQRForm from "components/views/landingPage/PQRForm";
 import Property from "components/Property/Property";
 import { PropertyDataProvider } from "context/PropertyDataContext";
+import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
 
 function App() {
   return (
@@ -100,6 +101,14 @@ function App() {
             element={
               <RoleMiddleware allowedRoles={["constructor"]} redirectPath="/">
                 <ConstructorAdmon />
+              </RoleMiddleware>
+            }
+          />
+            <Route
+            path="/project_analyst"
+            element={
+              <RoleMiddleware allowedRoles={["analyst"]} redirectPath="/">
+                <AnalitycsAdmon />
               </RoleMiddleware>
             }
           />

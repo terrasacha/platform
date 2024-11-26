@@ -347,7 +347,7 @@ export default function ProjectPage() {
             <AlertMessage />
             <ProjectDetails visible={activeSection === "details"} />
             <ProjectFileManager visible={activeSection === "file_manager"} userGroup={userGroup} />
-            <ProjectFiles visible={activeSection === "files"} />
+            <ProjectFiles  visible={activeSection === "files" && !isAnalyst}  />
             <FinanceCard visible={activeSection === "finance"} />
             <ProjectSettings
               visible={activeSection === "settings" && (isVerifier || isAdmon)}
