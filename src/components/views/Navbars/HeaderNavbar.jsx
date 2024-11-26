@@ -173,6 +173,13 @@ export default class HeaderNavbar extends Component {
                       >
                         PQR
                       </Nav.Link>
+                      <Nav.Link
+    href="https://suans-organization.gitbook.io/suan"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Ayuda
+  </Nav.Link>
                     </>
                   )}
                 </Nav>
