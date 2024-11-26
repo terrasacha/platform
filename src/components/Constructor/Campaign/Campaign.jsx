@@ -9,6 +9,7 @@ import PropertiesTable from "./PropertiesTable";
 import ModalEditCampaign from "./ModalEditCampaign";
 import ModalEndCampaign from "./ModalEndCampaign";
 import ModalAcceptProperty from "./ModalAcceptProperty";
+import ModalLogin from "./ModalLogin";
 import ModalNewProperty from "./ModalNewProperty";
 import { toast, ToastContainer } from "react-toastify";
 import { formatArea } from "../ProjectPage/mappers";
@@ -20,6 +21,7 @@ export default function Campaign() {
   const [userLogged, setUserLogged] = useState(false);
   const [showModalNewProperty, setShowModalNewProperty] = useState(false);
   const [showModalEndCampaign, setShowModalEndCampaign] = useState(false);
+  const [showModalLogin, setShowModalLogin] = useState(false)
   const [projectVerifiers, setProjectVerifiers] = useState([]);
 
   const [registeredProperties, setRegisteredProperties] = useState(0);
@@ -34,9 +36,19 @@ export default function Campaign() {
 
   const handleCloseEndCampaign = () => setShowModalEndCampaign(false);
   const handleShowEndCampaign = () => setShowModalEndCampaign(true);
+  const handleCloseLogin = () => setShowModalLogin(false);
+
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const handleClickSeeProject = async (id) =>{
+    try {
+      await Auth.currentAuthenticatedUser()
+      navigate(`/project/${id}`)
+    } catch (error) {
+      setShowModalLogin(true)
+    }
+  }
   const fetchCampaign = async () => {
     try {
       const data = await API.graphql(graphqlOperation(getCampaign, { id }));
@@ -213,7 +225,7 @@ export default function Campaign() {
                     </div>
                     <button
                       onClick={() =>
-                        navigate(`/project/${campaign.products.items[0].id}`)
+                        handleClickSeeProject(campaign.products.items[0].id)
                       }
                       className="w-full lg:w-3/6 mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
                     >
@@ -272,6 +284,10 @@ export default function Campaign() {
         campaignId={campaign.id}
         productId={campaign.products.items[0].id}
         fetchCampaign={fetchCampaign}
+      />
+      <ModalLogin
+        showModal={showModalLogin} 
+        handleClose={handleCloseLogin}
       />
       <ToastContainer />
     </div>
