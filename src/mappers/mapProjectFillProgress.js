@@ -16,7 +16,7 @@ const calcularPorcentajeTrue = (objeto) => {
 const getProjectInfoStatus = (data) => {
   let tempStatus = true;
 
-  const area =
+  /* const area =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "D_area";
     })[0]?.value || null;
@@ -27,7 +27,7 @@ const getProjectInfoStatus = (data) => {
   const municipio =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "A_municipio";
-    })[0]?.value || null;
+    })[0]?.value || null; */
   // const planoPredio =
   //   data.productFeatures.items.filter((item) => {
   //     return item.featureID === "C_plano_predio";
@@ -36,9 +36,9 @@ const getProjectInfoStatus = (data) => {
   if (!data.name) tempStatus = false;
   if (!data.description) tempStatus = false;
   if (!data.categoryID) tempStatus = false;
-  if (!area) tempStatus = false;
+  /* if (!area) tempStatus = false;
   if (!vereda) tempStatus = false;
-  if (!municipio) tempStatus = false;
+  if (!municipio) tempStatus = false; */
   // if (!planoPredio) tempStatus = false;
 
   return tempStatus;
@@ -47,12 +47,12 @@ const getProjectInfoStatus = (data) => {
 const getGeodataInfoStatus = (data) => {
   let tempStatus = true;
 
-  const coordenadas =
+  /* const coordenadas =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "C_ubicacion";
     })[0]?.value || null;
 
-  if (!coordenadas) tempStatus = false;
+  if (!coordenadas) tempStatus = false; */
 
   return tempStatus;
 };
@@ -60,14 +60,14 @@ const getGeodataInfoStatus = (data) => {
 const getPredialInfoStatus = (data) => {
   let tempStatus = true;
 
-  const predialData = JSON.parse(
+  /* const predialData = JSON.parse(
     data.productFeatures.items.filter((item) => {
       return item.featureID === "A_predio_ficha_catastral";
     })[0]?.value || "[]"
   );
 
   if (Object.keys(predialData).length === 0) tempStatus = false;
-
+ */
   return tempStatus;
 
 }
