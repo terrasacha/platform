@@ -47,8 +47,32 @@ export default function ModalNewProperty({
     fetchAuthenticatedUser();
   }, []);
 
+  const findFirstDuplicate = arr => {
+    const set = new Set();
+    for (const value of arr) {
+      if (set.has(value)) return value;
+      set.add(value);
+    }
+    return null;
+  };
+
   const handleSave = async () => {
     setLoading(true);
+    const duplicatedCadastralNumbers = findFirstDuplicate(formData.cadastralNumbers)
+    if(duplicatedCadastralNumbers){
+      toast.error(`Número cadastral repetido. Nro: ${duplicatedCadastralNumbers}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setLoading(false)
+      return
+    }
     try {
       if(formData.name.trim() === "") {
         toast.error("Ingresa un nombre ...", {
