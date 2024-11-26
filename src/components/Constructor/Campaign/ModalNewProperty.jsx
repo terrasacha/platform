@@ -6,6 +6,9 @@ import { Trash } from "react-bootstrap-icons";
 import { TrashIcon } from "components/common/icons/TrashIcon";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
+import { CheckIcon } from "components/common/icons/CheckIcon";
+import { XIcon } from "components/common/icons/XIcon";
 
 const initialForm = {
   userID: "",
@@ -27,6 +30,8 @@ export default function ModalNewProperty({
   const userID = useRef(null);
   const navigate = useNavigate();
 
+  const [predialFetchedData, setPredialFetchedData] = useState(null);
+
   const [formData, setFormData] = useState(initialForm);
 
   useEffect(() => {
@@ -38,14 +43,26 @@ export default function ModalNewProperty({
         console.error("Error fetching authenticated user:", error);
       }
     };
-  
+
     fetchAuthenticatedUser();
   }, []);
-  
 
   const handleSave = async () => {
     setLoading(true);
     try {
+      if(formData.name.trim() === "") {
+        toast.error("Ingresa un nombre ...", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return
+      }
       const newProperty = {
         name: formData.name,
         cadastralNumber: JSON.stringify(formData.cadastralNumbers),
@@ -54,6 +71,39 @@ export default function ModalNewProperty({
         userID: userID.current,
         status: formData.status,
       };
+
+      const predialData = await getPredialDataByCadastralNumber(
+        formData.cadastralNumbers
+      );
+      setPredialFetchedData(predialData);
+      console.log("predialData", predialData);
+
+      let totalArea = 0;
+
+      const allGood = formData.cadastralNumbers.every((cadNum) => {
+        if (predialData.hasOwnProperty(cadNum)) {
+          const elemento = predialData[cadNum];
+          totalArea += elemento.AREA_TERRENO;
+          return true;
+        }
+        return false;
+      });
+
+      console.log("allGood", allGood);
+      console.log("totalArea", totalArea);
+      if (!allGood) {
+        toast.error("Identificador catastral no encontrado ...", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
 
       const result = await API.graphql(
         graphqlOperation(createProperty, { input: newProperty })
@@ -77,7 +127,20 @@ export default function ModalNewProperty({
         graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
       );
 
+      const tempPropertyFeature2 = {
+        value: totalArea,
+        isToBlockChain: false,
+        isOnMainCard: false,
+        propertyID: propertyId,
+        featureID: "D_area",
+      };
+      await API.graphql(
+        graphqlOperation(createPropertyFeature, { input: tempPropertyFeature2 })
+      );
+
       await fetchCampaign();
+      setPredialFetchedData(null)
+      setFormData(initialForm)
       handleClose();
 
       toast.success("Predio postulado con éxito, serás redirigido ...", {
@@ -164,14 +227,25 @@ export default function ModalNewProperty({
           <Form.Group className="pb-4" controlId="cadastralNumbers">
             <Form.Label>Identificadores catastrales</Form.Label>
             {formData.cadastralNumbers.map((cadastralNumber, index) => (
-              <div key={index} className="d-flex align-items-center mb-2">
-                <Form.Control
-                  type="text"
-                  name={`cadastralNumber-${index}`}
-                  value={cadastralNumber}
-                  onChange={(e) => handleCadastralChange(e, index)}
-                  required
-                />
+              <div key={index} className="flex w-100 align-items-center mb-2">
+                  <Form.Control
+                    type="text"
+                    className="border-dark"
+                    name={`cadastralNumber-${index}`}
+                    value={cadastralNumber}
+                    placeholder="ex: 505730002000000070093000000000"
+                    onChange={(e) => handleCadastralChange(e, index)}
+                    required
+                  />
+                  {predialFetchedData &&
+                    Object.keys(predialFetchedData).length > 0 &&
+                    cadastralNumber.trim() in predialFetchedData && (
+                      <CheckIcon className="ms-2 text-success" />
+                    )}
+                  {predialFetchedData &&
+                    !(cadastralNumber.trim() in predialFetchedData) && (
+                      <XIcon className="ms-2 text-danger" />
+                    )}
                 <button
                   type="button"
                   className="btn btn-danger ms-2"
