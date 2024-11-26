@@ -13,6 +13,7 @@ import ModalLogin from "./ModalLogin";
 import ModalNewProperty from "./ModalNewProperty";
 import { toast, ToastContainer } from "react-toastify";
 import { formatArea } from "../ProjectPage/mappers";
+import { onUpdateProperty } from "graphql/subscriptions";
 
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
@@ -105,6 +106,20 @@ export default function Campaign() {
   useEffect(() => {
     fetchCampaign();
   }, []);
+  useEffect(() => {
+    const subscription = API.graphql(
+      graphqlOperation(onUpdateProperty)
+    ).subscribe({
+      next: () => {
+        fetchCampaign();
+      },
+      error: (err) => console.error("Error in subscription", err),
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [campaign?.id]);
+
   const isAuthor = async (ids) => {
     try {
       const userLogged = await Auth.currentAuthenticatedUser();
