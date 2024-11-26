@@ -279,7 +279,7 @@ export default function PostulantFilesInfoCard(props) {
 
   return (
     <div>
-      <Card className={`${className} mb-4`}>
+      {/* <Card className={`${className} mb-4`}>
         <Card.Header title="Documentos del postulante" sep="true" />
         <Card.Body>
           {projectFiles && projectFiles.length > 0 ? (
@@ -348,7 +348,7 @@ export default function PostulantFilesInfoCard(props) {
           )}
 
         </Card.Body>
-      </Card>
+      </Card> */}
       <Card className={className}>
         <Card.Header title="Documentos de los predios" sep="true" />
         <Card.Body>
