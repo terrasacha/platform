@@ -58,8 +58,8 @@ const PropertyCard = ({ property }) => (
             Vinculado a campaña
           </span>
         </div>
-        <h3 className="text-lg font-bold mb-2">{property?.campaign.name}</h3>
-        <p className="text-gray-600 text-sm mb-4">{property?.campaign.description}</p>
+        <h3 className="text-lg font-bold mb-2">{property?.name}</h3>
+        <p className="text-gray-600 text-sm mb-4">{property?.campaign.name}</p>
         <a
           href={`property/${property?.id}`}
           className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
