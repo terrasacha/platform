@@ -226,6 +226,15 @@ export default function AlertMessage({ visible }) {
                       )}
                       ) Distribución de tokens del proyecto
                     </li>
+                    <li className="font-bold flex">
+                      (
+                      {progressObj.sectionsStatus.projectOnMarketplace ? (
+                        <CheckIcon className="text-success" />
+                      ) : (
+                        <HourGlassIcon className="text-danger" />
+                      )}
+                      ) Proyecto visible en Marketplace
+                    </li>
                   </ul>
                 </div>
               )}

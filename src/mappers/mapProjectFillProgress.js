@@ -259,6 +259,7 @@ const getTokenGenesisStatus = (data) => {
 };
 
 export const mapProjectFillProgress = async (data, userRole) => {
+  console.log(data,'data mapProjectFillProgress')
   let sectionsStatus = {
     projectInfo: false,
     geodataInfo: false,
@@ -269,6 +270,7 @@ export const mapProjectFillProgress = async (data, userRole) => {
     validationsComplete: false,
     ownerAcceptsConditions: false,
     tokenGenesis: false,
+    projectOnMarketplace: data.isActive
     // actualUseInfo: false,
     // limitationsInfo: false,
     // ecosystemInfo: false,
