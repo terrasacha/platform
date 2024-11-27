@@ -185,49 +185,54 @@ const mapPropertyDocumentsData = async (data) => {
   };
 
   // Filtrar propiedades que tienen características verificables
-  const filterPropertiesWithVerifables = data.properties.items.map(item => {
-    const verifiablePF = item.propertyFeatures.items.filter(
-      (pf) => pf.feature.isVerifable === true
-    );
-    item.propertyFeatures.items = verifiablePF;
-    return item;
-  }).filter(item => item.propertyFeatures.items.length > 0);
+  const filterPropertiesWithVerifables = data.properties.items
+    .map((item) => {
+      const verifiablePF = item.propertyFeatures.items.filter(
+        (pf) => pf.feature.isVerifable === true
+      );
+      item.propertyFeatures.items = verifiablePF;
+      return item;
+    })
+    .filter((item) => item.propertyFeatures.items.length > 0);
 
   let arrayDocs = [];
 
   // Usamos un ciclo for...of para manejar las promesas correctamente
   for (const item of filterPropertiesWithVerifables) {
     for (const pf of item.propertyFeatures.items) {
-      let docsFiltered = pf.documents.items
-        .filter((document) => document.status !== "validatorFile");
-      
+      let docsFiltered = pf.documents.items.filter(
+        (document) => document.status !== "validatorFile"
+      );
+
       // Ahora usamos Promise.all para manejar las promesas dentro del map
-      const mappedDocs = await Promise.all(docsFiltered.map(async (document) => {
-        return {
-          id: document.id,
-          pfID: pf.id,
-          title: `${PFNameMapper[pf.feature.name]}`,
-          url: document.url,
-          signed: document.signed,
-          signedHash: document.signedHash,
-          userID: item.userID,
-          isUploadedToBlockChain: document.isUploadedToBlockChain,
-          isApproved: document.isApproved,
-          property: {
-            name: item.name,
-            id: item.id
-          },
-          verification: await mapVerificationsData(pf.verifications.items),
-          updatedAt: convertAWSDatetimeToDate(pf.updatedAt),
-          status: document.status,
-        };
-      }));
+      const mappedDocs = await Promise.all(
+        docsFiltered.map(async (document) => {
+          return {
+            id: document.id,
+            pfID: pf.id,
+            title: `${PFNameMapper[pf.feature.name]}`,
+            url: document.url,
+            signed: document.signed,
+            signedHash: document.signedHash,
+            userID: item.userID,
+            isUploadedToBlockChain: document.isUploadedToBlockChain,
+            isApproved: document.isApproved,
+            property: {
+              name: item.name,
+              id: item.id,
+            },
+            verification: await mapVerificationsData(pf.verifications.items),
+            updatedAt: convertAWSDatetimeToDate(pf.updatedAt),
+            status: document.status,
+          };
+        })
+      );
 
       // Agregamos los documentos mapeados al array final
       arrayDocs.push(...mappedDocs);
     }
   }
-  console.log(arrayDocs, 'arrayDocs 230')
+  console.log(arrayDocs, "arrayDocs 230");
   return arrayDocs;
 };
 const mapLocationData = async (location) => {
@@ -438,7 +443,7 @@ const mapProjectUses = (data) => {
 };
 
 export const mapProjectData = async (data) => {
-  console.log('dataa', data)
+  console.log("dataa", data);
   const projectID = data.id;
   const projecIsActive = data.isActive;
   const verifierDescription =
@@ -789,19 +794,37 @@ export const mapProjectData = async (data) => {
       return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
     })[0]?.value === "true" || false;
 
-    const getCadastralPropertiesNumber = () => {
-      const cadastralNumbers = [];
-      data.properties?.items.forEach(item => {
-        try {
-          const parsedNumbers = JSON.parse(item.cadastralNumber);
-          if (Array.isArray(parsedNumbers)) {
-            cadastralNumbers.push(...parsedNumbers);
-          }
-        } catch (e) {}
-      });
-      console.log(cadastralNumbers, 'cadastralNumberscadastralNumbers')
-      return cadastralNumbers;
-    };
+  const getCadastralPropertiesNumber = () => {
+    const cadastralNumbers = [];
+    data.properties?.items.forEach((item) => {
+      try {
+        const parsedNumbers = JSON.parse(item.cadastralNumber);
+        if (Array.isArray(parsedNumbers)) {
+          cadastralNumbers.push(...parsedNumbers);
+        }
+      } catch (e) {}
+    });
+    console.log(cadastralNumbers, "cadastralNumberscadastralNumbers");
+    return cadastralNumbers;
+  };
+
+  let totalArea = 0
+  
+  data.properties.items.forEach(item => {
+    if (item.propertyFeatures && item.propertyFeatures.items) {
+        item.propertyFeatures.items.forEach(feature => {
+            // Verificamos si el featureID es "D_area"
+            if (feature.featureID === "D_area") {
+                // Sumamos el área (convertida a número)
+                const area = parseFloat(feature.value);
+                if (!isNaN(area)) {
+                  totalArea += area;
+                }
+            }
+        });
+    }
+});
+
   return {
     projectInfo: {
       id: projectID,
@@ -811,7 +834,7 @@ export const mapProjectData = async (data) => {
       description: data.description,
       category: data.categoryID,
       showOn: data.marketplace?.id || null,
-      area: area,
+      area: totalArea,
       token: {
         pfIDs: {
           pfTokenNameID: pfTokenNameID,
@@ -906,8 +929,8 @@ export const mapProjectData = async (data) => {
         tokenAmountDistribution,
       },
     },
-    projectProperties:{
-      cadastralDataProperties : getCadastralPropertiesNumber()
+    projectProperties: {
+      cadastralDataProperties: getCadastralPropertiesNumber(),
     },
     projectFeatures: await mapProductFeatures(data.productFeatures.items),
     isTechnicalComplete: isTechnicalComplete,
@@ -1002,7 +1025,13 @@ export const mapPropertyData = async (data) => {
     cadastralData.map((cadObj) => cadObj.cadastralNumber) || []
   ).join(", ");
 
-  console.log('data', data)
+  const projectVerifiers = data.product.userProducts?.items
+    .filter((up) => up.user?.role === "validator")
+    .map((userProduct) => {
+      return userProduct.user.id;
+    });
+
+  console.log("data", data);
   return {
     propertyInfo: {
       id: data.id,
@@ -1018,6 +1047,7 @@ export const mapPropertyData = async (data) => {
     projectPostulant: {
       id: data.userID,
     },
+    projectVerifiers: projectVerifiers,
     projectFiles: await mapDocumentsDataFromProperty(data, ownersData),
     propertyUses: mapProjectUses(projectUses),
     projectRestrictions: {

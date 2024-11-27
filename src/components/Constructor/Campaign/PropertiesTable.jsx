@@ -53,12 +53,6 @@ export default function PropertiesTable({ editable }) {
   };
   const handleShowModalAcceptProperty = (property) => {
     console.log("property", property);
-    if (!(property.projectCadastralRecords.cadastralRecords.length > 0)) {
-      toast.warning(
-        "El predio debe contener al menos un identificador catastral"
-      );
-      return;
-    }
     setSelectedProperty(property);
     setShowModalAcceptProperty(true);
   };
@@ -162,7 +156,7 @@ export default function PropertiesTable({ editable }) {
               )}
               <td className="px-4 py-2">
                 {property.projectPostulant.id === userId ||
-                property.propertyCampaign.userId === userId ? (
+                property.propertyCampaign.userId === userId || editable ? (
                   <button
                     onClick={() =>
                       navigate(`/property/${property.propertyInfo.id}`)

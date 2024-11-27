@@ -1907,7 +1907,12 @@ export const getProperty = /* GraphQL */ `
           __typename
         }
         userProducts {
-          nextToken
+          items {
+            user {
+              id
+              role
+            }
+          }
           __typename
         }
         transactions {

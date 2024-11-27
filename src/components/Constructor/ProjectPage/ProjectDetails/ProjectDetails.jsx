@@ -41,6 +41,7 @@ export default function ProjectDetails({ visible }) {
       );
       setIsPostulant(postulant === user.id);
       setIsVerifier(verifiers.includes(user.id));
+      setTotalArea(projectData.projectInfo.area)
     }
   }, [user, projectData]);
 

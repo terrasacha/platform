@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { API, graphqlOperation } from "aws-amplify";
-import { updateProductFeature } from "graphql/mutations";
+import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { validateProjectFeatures } from "./validateProjectFeatures";
 import { useAuth } from "context/AuthContext";
@@ -44,20 +44,33 @@ export default function FinanceCard({ visible }) {
       await API.graphql(
         graphqlOperation(updateProductFeature, { input: updatedProductFeature })
       );
+    } else {
+      const newProductFeature = {
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_OWNER_ACCEPTS_CONDITIONS",
+        value: "true",
+      };
+
+      const response = await API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: newProductFeature,
+        })
+      );
+      setGlobalOwnerAcceptsPfID(response.data.createProductFeature.id)
     }
     setValidadorShow(false);
 
     await fetchProjectData();
   };
   useEffect(() => {
+
     const pf = projectData.projectFeatures.find(
       (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
     );
-    if(pf){
-
+    if (pf) {
       const pfID = pf.id;
       const pfValue = pf.value;
-  
+
       setGlobalOwnerAcceptsPfID(pfID);
       setIsAccepted(pfValue === "true" ? true : false);
     }

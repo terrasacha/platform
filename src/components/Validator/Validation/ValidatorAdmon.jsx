@@ -270,7 +270,7 @@ class ValidatorAdmon extends Component {
             <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
               {products.length > 0 &&
                 products
-                  .filter((prod) => prod.campaignID === null)
+                  .filter((prod) => prod.campaign?.available === false || prod.campaignID === null)
                   .map((product, index) => {
                     return (
                       <div key={index} className="p-3">

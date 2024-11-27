@@ -21,6 +21,7 @@ import { fetchProjectDataByProjectID } from "../../api";
 import { XIcon } from "components/common/icons/XIcon";
 import { useS3Client } from "context/s3ClientContext";
 import { deleteFile, handleOpenObject, uploadFile } from "utilities/s3clientcommands";
+import { formatArea } from "../../mappers";
 
 export default function ProjectInfoCard(props) {
   const { className, autorizedUser, setProgressChange, tooltip, totalArea } =
@@ -580,10 +581,9 @@ export default function ProjectInfoCard(props) {
           >
             <div className={className + " mb-3"}>
               <div className="grid grid-cols-12 gap-4">
-                <label className="col-span-5">Área total (hectáreas)</label>
+                <label className="col-span-5">Área total (m^2)</label>
                 <div className="col-span-5">
-                  {parseFloat(totalArea / 10000).toLocaleString("es-ES") +
-                    " ha"}
+                  {formatArea(totalArea)}
                 </div>
               </div>
             </div>

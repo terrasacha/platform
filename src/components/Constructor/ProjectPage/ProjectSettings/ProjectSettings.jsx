@@ -17,11 +17,25 @@ import TokenDistributionInputTable from "./SettingCards/TokenDistributionInputTa
 export default function ProjectSettings({ visible }) {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
+  const [finInfoPfID, setFinInfoPfID] = useState(null);
+  const [tecInfoPfID, setTecInfoPfID] = useState(null);
   const { projectData, handleUpdateContextProjectData, fetchProjectData } =
     useProjectData();
   const { projectItems } = useProjectItems();
 
   useEffect(() => {
+    const financialInfoPfID =
+      projectData.projectFeatures.filter((item) => {
+        return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+      })[0]?.id || null;
+    setFinInfoPfID(financialInfoPfID);
+
+    const technicalInfoPfID =
+      projectData.projectFeatures.filter((item) => {
+        return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+      })[0]?.id || null;
+    setTecInfoPfID(technicalInfoPfID);
+
     Auth.currentAuthenticatedUser()
       .then((data) => {
         if (data.attributes["custom:subrole"]) {
@@ -67,21 +81,31 @@ export default function ProjectSettings({ visible }) {
       }
       // handleUpdateContextProjectData({ isTechnicalFreeze: true });
 
-      const technicalInfoPfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
-        })[0]?.id || null;
+      if (tecInfoPfID) {
+        const updatedProductFeature = {
+          id: tecInfoPfID,
+          value: "true",
+        };
 
-      const updatedProductFeature = {
-        id: technicalInfoPfID,
-        value: "true",
-      };
+        await API.graphql(
+          graphqlOperation(updateProductFeature, {
+            input: updatedProductFeature,
+          })
+        );
+      } else {
+        const newProductFeature = {
+          productID: projectData.projectInfo.id,
+          featureID: "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS",
+          value: true,
+        };
 
-      await API.graphql(
-        graphqlOperation(updateProductFeature, {
-          input: updatedProductFeature,
-        })
-      );
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, {
+            input: newProductFeature,
+          })
+        );
+        setTecInfoPfID(response.data.createProductFeature.id);
+      }
 
       await fetchProjectData();
 
@@ -126,21 +150,32 @@ export default function ProjectSettings({ visible }) {
       }
       handleUpdateContextProjectData({ isFinancialFreeze: true });
 
-      const financialInfoPfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
-        })[0]?.id || null;
+      if (finInfoPfID) {
+        const updatedProductFeature = {
+          id: finInfoPfID,
+          value: "true",
+        };
 
-      const updatedProductFeature = {
-        id: financialInfoPfID,
-        value: "true",
-      };
+        await API.graphql(
+          graphqlOperation(updateProductFeature, {
+            input: updatedProductFeature,
+          })
+        );
+      } else {
+        const newProductFeature = {
+          productID: projectData.projectInfo.id,
+          featureID: "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS",
+          value: true,
+        };
 
-      await API.graphql(
-        graphqlOperation(updateProductFeature, {
-          input: updatedProductFeature,
-        })
-      );
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, {
+            input: newProductFeature,
+          })
+        );
+
+        setFinInfoPfID(response.data.createProductFeature.id);
+      }
 
       await fetchProjectData();
 

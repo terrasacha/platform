@@ -178,6 +178,7 @@ export const listProducts = /* GraphQL */ `
         campaign {
           name
           description
+          available
         }
         status
         timeOnVerification
