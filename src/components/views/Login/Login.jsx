@@ -4,6 +4,7 @@ import { Alert } from "react-bootstrap";
 // GraphQL
 import { API, graphqlOperation } from "aws-amplify";
 import { createUser } from "../../../graphql/mutations";
+import { useNavigate } from "react-router";
 import s from "./Login.module.css";
 import LOGO from "../../common/_images/suan_logo.png";
 import { ToastContainer, toast } from "react-toastify";
@@ -24,6 +25,7 @@ const initialFormState = {
 };
 
 export default function LogIn() {
+  const navigate = useNavigate()
   const [formState, updateFormState] = useState(initialFormState);
   const[signInUserData,setSignInUserData] = useState(null)
   const [user, updateUser] = useState(null);
@@ -39,6 +41,20 @@ export default function LogIn() {
     /* checkUser() */
     setAuthListener();
   }, []);
+  useEffect(() => {
+    if (formState.formType === "signedIn") {
+      const redirectPath = window.sessionStorage.getItem("redirect_after_login");
+      if (redirectPath) {
+        const pathArray = JSON.parse(redirectPath);
+        window.sessionStorage.removeItem('redirect_after_login')
+        navigate('/' + pathArray.join('/'));
+      } else {
+        navigate("/");
+      }
+    }
+  }, [formState.formType, navigate]);
+  
+
   async function setAuthListener() {
     Hub.listen("auth", (data) => {
       switch (data.payload.event) {
@@ -712,7 +728,13 @@ export default function LogIn() {
           </div>
         )}
 
-        {formType === "signedIn" && (window.location.href = "/")}
+        {/* {formType === "signedIn" && (() => {
+          if(window.sessionStorage.getItem('redirect_after_login')){
+            navigate(JSON.parse(window.sessionStorage.getItem('redirect_after_login')))
+          }else{
+            navigate('/')
+          }
+        })} */}
       </div>
     </div>
   );

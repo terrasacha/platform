@@ -14,6 +14,7 @@ import ModalNewProperty from "./ModalNewProperty";
 import { toast, ToastContainer } from "react-toastify";
 import { formatArea } from "../ProjectPage/mappers";
 import { onUpdateProperty } from "graphql/subscriptions";
+import { WindowFullscreen } from "react-bootstrap-icons";
 
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
@@ -148,7 +149,11 @@ export default function Campaign() {
       timeZone: "UTC",
     });
   };
-
+  const redirectToLoginPage = (id) => {
+    const redirectArray = ["campaign", id];
+    window.sessionStorage.setItem("redirect_after_login", JSON.stringify(redirectArray));
+    navigate("/login");
+  };  
   return (
     <div className="container mx-auto px-4">
       <div className="mb-24">
@@ -218,12 +223,12 @@ export default function Campaign() {
               <div className="mt-6">
                 {campaign.available ? (
                   <button
-                    onClick={
+                    onClick={() => 
                       editable
-                        ? handleShowEndCampaign
+                        ? handleShowEndCampaign()
                         : userLogged
-                        ? handleShowNewProperty
-                        : () => navigate("/login")
+                        ? handleShowNewProperty()
+                        : redirectToLoginPage(campaign.id)
                     }
                     className={`w-full lg:w-3/6 py-3 font-semibold rounded-md text-white shadow-md transition-all duration-300 ${
                       editable
