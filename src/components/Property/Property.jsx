@@ -60,7 +60,7 @@ export default function Property() {
     try {
       const data = await API.graphql(graphqlOperation(getProperty, { id }));
 
-      console.log(data.data.getProperty);
+      console.log(data.data.getProperty, 'data.data.getProperty');
       setProperty(data.data.getProperty);
       const isAuthorResult = await isAuthor(data.data.getProperty.userID);
 
@@ -86,8 +86,9 @@ export default function Property() {
           </div>
           <div className="my-2">-</div>
           <div className="mt-4">
-            <a href={`/campaign/${property.campaign.id}`} className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
-              Regresar a la campaña
+
+            <a href={property.campaign.available? `/campaign/${property.campaign.id}` : `/project/${property.productID}` } className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
+              {property.campaign.available? 'Regresar a la campaña' : 'Regresar al proyecto'}
             </a>
             <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">
               <div className="row gy-2">
