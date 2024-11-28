@@ -28,14 +28,10 @@ import { fetchPropertyDataByPropertyID } from "components/Constructor/ProjectPag
 import Card from "components/common/Card";
 
 export default function CadastralRecords(props) {
-  const { className, autorizedUser, tooltip, setTotalArea, totalArea } =
-    props;
-  const {
-    propertyData,
-    refresh
-  } = usePropertyData();
+  const { className, autorizedUser, tooltip, setTotalArea, totalArea } = props;
+  const { propertyData, refresh } = usePropertyData();
   const { user } = useAuth();
-  const { s3Client, bucketName } = useS3Client()
+  const { s3Client, bucketName } = useS3Client();
   const fileInputRef = useRef(null);
 
   const [multipleData, setMultipleData] = useState([]);
@@ -56,7 +52,9 @@ export default function CadastralRecords(props) {
           }
         ) || [];
 
-      setCadastralDataPfID(propertyData.projectCadastralRecords.cadastralDataPfID);
+      setCadastralDataPfID(
+        propertyData.projectCadastralRecords.cadastralDataPfID
+      );
       setAreaDataPfID(propertyData.projectCadastralRecords.totalAreaPfID);
 
       setMultipleData(ownersData);
@@ -210,7 +208,11 @@ export default function CadastralRecords(props) {
 
   const saveFileOnDB = async (fileToSave, documentID = null) => {
     let docID = documentID;
-    const urlPath = `public/campaign/${propertyData.propertyInfo.campaignID}-campaign/properties/${propertyData.propertyInfo.id}-property/other/archivos_postulante/certificados_tradicion/${formatFileName(
+    const urlPath = `public/campaign/${
+      propertyData.propertyInfo.campaignID
+    }-campaign/properties/${
+      propertyData.propertyInfo.id
+    }-property/other/archivos_postulante/certificados_tradicion/${formatFileName(
       fileToSave.name
     )}`;
 
@@ -255,7 +257,9 @@ export default function CadastralRecords(props) {
       };
       console.log("updatedProductFeature:", updatedProductFeature);
       await API.graphql(
-        graphqlOperation(updatePropertyFeature, { input: updatedProductFeature })
+        graphqlOperation(updatePropertyFeature, {
+          input: updatedProductFeature,
+        })
       );
 
       const updatedDocument = {
@@ -272,9 +276,9 @@ export default function CadastralRecords(props) {
       );
     } else {
       // Crear pf y document
-      console.log(s3Client, 's3client 284')
-      console.log(urlPath, 'urlPath cadastral 284')
-      console.log(fileToSave, 'fileToSave cadastral 285')
+      console.log(s3Client, "s3client 284");
+      console.log(urlPath, "urlPath cadastral 284");
+      console.log(fileToSave, "fileToSave cadastral 285");
 
       const command = new PutObjectCommand({
         Bucket: bucketName,
@@ -285,14 +289,14 @@ export default function CadastralRecords(props) {
 
       try {
         const uploadImageResult = await s3Client.send(command);
-        console.log(uploadImageResult, 'uploadImageResult')
+        console.log(uploadImageResult, "uploadImageResult");
         /* const uploadImageResult = await Storage.put(urlPath, fileToSave, {
         }); */
 
         console.log("Archivo seleccionado:", fileToSave);
         console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
-        console.error(error)
+        console.error(error);
         notify({
           msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
           type: "error",
@@ -330,10 +334,16 @@ export default function CadastralRecords(props) {
     return docID;
   };
 
-  
   // Crear una función que actualice el area
 
   const handleSaveHistoricalData = async (indexToSave) => {
+    if (!predialFetchedData[multipleData[indexToSave].cadastralNumber]) {
+      notify({
+        msg: "Ingresa un identificador catastral valido",
+        type: "error",
+      });
+      return;
+    }
     let error = false;
     const newCadastralNumber = multipleData[indexToSave].cadastralNumber;
     const certificate = multipleData[indexToSave].certificate;
@@ -356,11 +366,12 @@ export default function CadastralRecords(props) {
       let documentID = multipleData[indexToSave].documentID;
       let docID = null;
       if (certificate) {
-        console.log('certificate 371',
+        console.log(
+          "certificate 371",
 
           certificate,
           documentID
-        )
+        );
         docID = await saveFileOnDB(
           certificate,
           documentID !== undefined ? documentID : null
@@ -428,14 +439,16 @@ export default function CadastralRecords(props) {
             : item
         )
       );
-      
-      if(areaDataPfID) {
+
+      if (areaDataPfID) {
         let tempPropertyFeature = {
           id: areaDataPfID,
           value: totalArea,
         };
         const response = await API.graphql(
-          graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })
+          graphqlOperation(updatePropertyFeature, {
+            input: tempPropertyFeature,
+          })
         );
 
         if (!response.data.updatePropertyFeature) error = true;
@@ -448,7 +461,9 @@ export default function CadastralRecords(props) {
           featureID: "D_area",
         };
         const response = await API.graphql(
-          graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
+          graphqlOperation(createPropertyFeature, {
+            input: tempPropertyFeature,
+          })
         );
 
         setAreaDataPfID(response.data.createPropertyFeature.id);
@@ -462,7 +477,9 @@ export default function CadastralRecords(props) {
           value: JSON.stringify(getImportantValues(tempMultipleData)),
         };
         const response = await API.graphql(
-          graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })
+          graphqlOperation(updatePropertyFeature, {
+            input: tempPropertyFeature,
+          })
         );
 
         if (!response.data.updatePropertyFeature) error = true;
@@ -476,7 +493,9 @@ export default function CadastralRecords(props) {
         };
 
         const response = await API.graphql(
-          graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
+          graphqlOperation(createPropertyFeature, {
+            input: tempPropertyFeature,
+          })
         );
 
         setCadastralDataPfID(response.data.createPropertyFeature.id);
@@ -495,7 +514,7 @@ export default function CadastralRecords(props) {
       const projectCadastralRecordsData =
         updatedPropertyData.projectCadastralRecords; */
 
-      refresh()
+      refresh();
     } else {
       notify({
         msg: "Completa todos los campos antes de guardar",
@@ -518,7 +537,7 @@ export default function CadastralRecords(props) {
     const documentToDelete = propertyData.projectFiles.find(
       (item) => item.id === multipleData[indexToDelete].documentID
     );
-    console.log('documentToDelete', documentToDelete)
+    console.log("documentToDelete", documentToDelete);
     if (documentToDelete) {
       // Borrar de S3
       const getFilePathRegex = /\/projects\/(.+)$/;
@@ -526,7 +545,7 @@ export default function CadastralRecords(props) {
       const fileToDeleteName = decodeURIComponent(
         documentToDelete.url.match(getFilePathRegex)[1]
       );
-      console.log(fileToDeleteName, 'filetodelete')
+      console.log(fileToDeleteName, "filetodelete");
       /* try {
         await Storage.remove(fileToDeleteName);
       } catch (error) {
@@ -580,10 +599,17 @@ export default function CadastralRecords(props) {
     );
     setMultipleData(tempMultipleData);
 
-    if(areaDataPfID && predialFetchedData[multipleData[indexToDelete].cadastralNumber]?.AREA_TERRENO) {
+    if (
+      areaDataPfID &&
+      predialFetchedData[multipleData[indexToDelete].cadastralNumber]
+        ?.AREA_TERRENO
+    ) {
       let tempPropertyFeature = {
         id: areaDataPfID,
-        value: totalArea - predialFetchedData[multipleData[indexToDelete].cadastralNumber]?.AREA_TERRENO,
+        value:
+          totalArea -
+          predialFetchedData[multipleData[indexToDelete].cadastralNumber]
+            ?.AREA_TERRENO,
       };
       const response = await API.graphql(
         graphqlOperation(updatePropertyFeature, { input: tempPropertyFeature })
@@ -625,7 +651,7 @@ export default function CadastralRecords(props) {
     const projectCadastralRecordsData =
       updatedPropertyData.projectCadastralRecords; */
 
-    refresh()
+    refresh();
 
     if (!error) {
       notify({
@@ -634,15 +660,18 @@ export default function CadastralRecords(props) {
       });
     }
   };
-  
+
   const renderFileLinkByDocumentID = (documentID) => {
     if (documentID) {
       const document = propertyData.projectFiles.find(
         (item) => item.id === documentID
       );
       return (
-        <button onClick={() => handleOpenObject(s3Client, bucketName, document?.url)}>Archivo</button>
-          
+        <button
+          onClick={() => handleOpenObject(s3Client, bucketName, document?.url)}
+        >
+          Archivo
+        </button>
       );
     } else {
       return "Sin archivo";
@@ -754,7 +783,11 @@ export default function CadastralRecords(props) {
                     ) : (
                       <>
                         <td className="text-break">
-                          {data.cadastralNumber?.toUpperCase()}
+                          {(user.role === "admon" ||
+                            user.role === "validator" ||
+                            user.id === propertyData.projectPostulant.id ||
+                            user.id === propertyData.propertyCampaign.userId) ?
+                            data.cadastralNumber?.toUpperCase() : '********************'}
                         </td>
                         <td>{renderFileLinkByDocumentID(data.documentID)}</td>
                         <td className="text-break">
@@ -767,14 +800,14 @@ export default function CadastralRecords(props) {
                         </td>
                         <td className="flex justify-end gap-1">
                           <button
-                            className="p-2 text-white rounded-md bg-yellow-400"
+                            className="p-2 text-white rounded-md bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={!autorizedUser}
                             onClick={() => handleEditHistoricalData(index)}
                           >
                             <EditIcon />
                           </button>
                           <button
-                            className="p-2 text-white rounded-md bg-red-500"
+                            className="p-2 text-white rounded-md bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={!autorizedUser}
                             onClick={() => handleDeleteHistoricalData(index)}
                           >
@@ -790,7 +823,7 @@ export default function CadastralRecords(props) {
                 <td colSpan={6}>
                   <div className="flex">
                     <button
-                      className="p-2 w-full text-white rounded-md bg-slate-600 flex justify-center"
+                      className="p-2 w-full text-white rounded-md bg-slate-600 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={!autorizedUser}
                       onClick={() => handleAddNewPeriodToHistoricalData()}
                     >

@@ -68,13 +68,13 @@ class InvestorAdmon extends Component {
     const result = await API.graphql(
       graphqlOperation(queryUserStatus, variables)
     );
-    let checkUserStatusValue = this.checkUser(result.data);
+    let checkUserStatusValue = this?.checkUser(result.data);
     this.setState({ checkUserStatus: checkUserStatusValue });
     this.loadActualLoggedUser(actualUser);
   }
   checkUser(data) {
     console.log(data);
-    if (data.getProduct.productFeatures.items.length > 0) {
+    if (data?.getProduct?.productFeatures?.items?.length > 0) {
       if (data.getProduct.productFeatures.items[0].value === undefined)
         return false;
       if (data.getProduct.productFeatures.items[0].value !== "verified")

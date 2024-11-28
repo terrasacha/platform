@@ -26,35 +26,51 @@ const statusEs = {
   APPROVED: "Aprobado",
   REJECTED: "Rechazado",
 } 
-const CampaignCard = ({ campaign }) => (
-  <div className="p-4">
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
-      <img
-        className="h-40 w-full object-cover"
-        src={getImagesCategories(campaign?.products.items[0].categoryID)}
-        alt="Imagen de la campaña"
-      />
-      <div className="p-4">
-        <div className="flex space-x-2 mb-2">
-          <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
-            {getYearFromAWSDatetime(campaign?.products.items[0].createdAt)}
-          </span>
-          <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
-            {campaign?.products.items[0].categoryID}
-          </span>
+const CampaignCard = ({ campaign }) => {
+  // Parseamos `images` para convertir la cadena JSON en un arreglo
+  let campaignImages = [];
+  try {
+    campaignImages = campaign?.images ? JSON.parse(campaign.images) : [];
+  } catch (error) {
+    console.error("Error al parsear las imágenes de la campaña:", error);
+  }
+
+  // Obtenemos la primera imagen si existe
+  const campaignImage = campaignImages.length > 0
+    ? campaignImages[0]
+    : "getImagesCategories(campaign?.products.items[0].categoryID"; // Imagen por defecto si no hay imágenes
+
+  return (
+    <div className="p-4">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <img
+          className="h-40 w-full object-cover"
+          src={campaignImage}
+          alt="Imagen de la campaña"
+        />
+        <div className="p-4">
+          <div className="flex space-x-2 mb-2">
+            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+              {getYearFromAWSDatetime(campaign?.products?.items?.[0]?.createdAt)}
+            </span>
+            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+              {campaign?.products?.items?.[0]?.categoryID}
+            </span>
+          </div>
+          <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
+          <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>
+          <a
+            href={`campaign/${campaign?.id}`}
+            className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Ver Campaña
+          </a>
         </div>
-        <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
-        <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>
-        <a
-          href={`campaign/${campaign?.id}`}
-          className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Ver Campaña
-        </a>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
 
 const PropertyCard = ({ property }) => (
   <div className="p-4">
@@ -150,24 +166,49 @@ export default function ProductsList() {
     )}
 
     <section>
-      <h2 className="text-xl font-bold mt-8 mb-4">Tus Proyectos</h2>
-      {userProjectsFiltered.length === 0 ? (
-        <div className="text-center py-12">
-          <img
-            src={vacio}
-            className="w-32 h-32 mx-auto mb-4"
-            alt="Sin proyectos"
-          />
-          <p className="text-gray-500 mb-4">
-            No tienes proyectos aún. Para crear el primero, da click en Postular proyecto.
-          </p>
-          <a
-            href="/new_project"
-            className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Postular Proyecto
-          </a>
-        </div>
+    <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Tus Campañas</h2>
+    {userCampaigns.length === 0 ? (
+      <div className="py-12 text-center">
+        <img
+          src={vacio}
+          className="w-32 h-32 mx-auto mb-4"
+          alt="Sin campañas"
+        />
+        <p className="text-gray-500 mb-4">
+          No tienes campañas aún. Para crear la primera, da click en Crear Campaña.
+        </p>
+        <a
+          href="/new_campaign"
+          className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Crear Campaña
+        </a>
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {userCampaigns.map((campaign) => (
+          <CampaignCard key={campaign.id} campaign={campaign} />
+        ))}
+      </div>
+    )}
+    <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Tus Proyectos</h2>
+    {userProjectsFiltered.length === 0 ? (
+      <div className="py-12 text-center">
+        <img
+          src={vacio}
+          className="w-32 h-32 mx-auto mb-4"
+          alt="Sin proyectos"
+        />
+        <p className="text-gray-500 mb-4">
+          No tienes proyectos aún. Para crear el primero, da click en Postular Proyecto.
+        </p>
+        <a
+          href="/new_project"
+          className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Postular Proyecto
+        </a>
+      </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {userProjectsFiltered.map((project) => (
