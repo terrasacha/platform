@@ -44,7 +44,7 @@ function App() {
             path="/project/:id"
             element={
               <RoleMiddleware
-                allowedRoles={["constructor", "admon", "investor", "validator"]}
+                allowedRoles={["constructor", "admon", "investor", "validator", "analyst"]}
                 redirectPath="/"
               >
               <ProjectDataProvider>
