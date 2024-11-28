@@ -15,6 +15,7 @@ const status = {
 export default function PropertiesTable({ editable }) {
   const [showModalAcceptProperty, setShowModalAcceptProperty] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [mappedProperties, setMappedProperties] = useState([]);
   const { loading, properties, error } = useFetchPropertiesCampaign();
@@ -25,6 +26,7 @@ export default function PropertiesTable({ editable }) {
       try {
         const data = await Auth.currentAuthenticatedUser();
         setUserId(data.attributes.sub);
+        setUserRole(data.attributes["custom:role"]);
       } catch (error) {
         console.error("Error fetching authenticated user:", error);
       }
@@ -108,9 +110,10 @@ export default function PropertiesTable({ editable }) {
               <td className="px-4 py-2">{property.propertyInfo.name}</td>
               <td className="px-4 py-2">
                 {property.projectPostulant.id === userId ||
-                property.propertyCampaign.userId === userId
+                editable ||
+                userRole === "admon"
                   ? property.projectCadastralRecords.cadastralNumbers
-                  : hideData(property.projectCadastralRecords.cadastralNumbers)}
+                  : '********************'}
               </td>
               <td className="px-4 py-2">
                 {property.projectCadastralRecords.totalAreaFormatted}
@@ -156,7 +159,8 @@ export default function PropertiesTable({ editable }) {
               )}
               <td className="px-4 py-2">
                 {property.projectPostulant.id === userId ||
-                property.propertyCampaign.userId === userId || editable ? (
+                property.propertyCampaign.userId === userId ||
+                editable ? (
                   <button
                     onClick={() =>
                       navigate(`/property/${property.propertyInfo.id}`)

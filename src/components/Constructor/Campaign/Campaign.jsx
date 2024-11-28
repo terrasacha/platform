@@ -275,7 +275,7 @@ export default function Campaign() {
             </section>
           )}
 
-          {campaign.properties.items.length > 0 && (
+          {campaign.properties.items.length > 0 && userLogged && (
             <>
               <h2 className="text-2xl text-gray-700 font-semibold mt-10 mb-6">
                 Predios postulados

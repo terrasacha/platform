@@ -808,22 +808,24 @@ export const mapProjectData = async (data) => {
     return cadastralNumbers;
   };
 
-  let totalArea = 0
-  
-  data.properties.items.forEach(item => {
+  let totalArea = 0;
+
+  data.properties.items.filter((prop) => prop.status === "APPROVED").forEach((item) => {
     if (item.propertyFeatures && item.propertyFeatures.items) {
-        item.propertyFeatures.items.forEach(feature => {
-            // Verificamos si el featureID es "D_area"
-            if (feature.featureID === "D_area") {
-                // Sumamos el área (convertida a número)
-                const area = parseFloat(feature.value);
-                if (!isNaN(area)) {
-                  totalArea += area;
-                }
-            }
-        });
+      item.propertyFeatures.items.forEach((feature) => {
+        // Verificamos si el featureID es "D_area"
+        if (feature.featureID === "D_area") {
+          // Sumamos el área (convertida a número)
+          const area = parseFloat(feature.value);
+          if (!isNaN(area)) {
+            totalArea += area;
+          }
+        }
+      });
     }
-});
+  });
+  console.log('data.properties.items', data.properties.items)
+  console.log('totalArea', totalArea)
 
   return {
     projectInfo: {
