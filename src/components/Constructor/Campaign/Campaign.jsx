@@ -15,6 +15,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { formatArea } from "../ProjectPage/mappers";
 import { onUpdateProperty } from "graphql/subscriptions";
 import { WindowFullscreen } from "react-bootstrap-icons";
+import ModalEditImage from "./ModalEditImage";
 
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
@@ -25,7 +26,7 @@ export default function Campaign() {
   const [showModalEndCampaign, setShowModalEndCampaign] = useState(false);
   const [showModalLogin, setShowModalLogin] = useState(false)
   const [projectVerifiers, setProjectVerifiers] = useState([]);
-
+  const [showModalEditImage, setShowModalEditImage] = useState(false);
   const [registeredProperties, setRegisteredProperties] = useState(0);
   const [chosenProperties, setChosenProperties] = useState(0);
   const [totalChosenProperties, setTotalChosenProperties] = useState(0);
@@ -35,6 +36,9 @@ export default function Campaign() {
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
+
+  const handleShowEditImage = () => setShowModalEditImage(true);
+const handleCloseEditImage = () => setShowModalEditImage(false);
 
   const handleCloseEndCampaign = () => setShowModalEndCampaign(false);
   const handleShowEndCampaign = () => setShowModalEndCampaign(true);
@@ -60,7 +64,7 @@ export default function Campaign() {
       const campaign = data.data.getCampaign;
       const product = campaign.products.items[0];
 
-      const projectVerifiers = product.userProducts.items
+      const projectVerifiers = product?.userProducts?.items
         .filter((up) => up.user?.role === "validator")
         .map((userProduct) => {
           return { id: userProduct.user.id, name: userProduct.user.name };
@@ -95,8 +99,8 @@ export default function Campaign() {
       setTotalChosenProperties(formatArea(totalDArea));
 
       const isAuthorResult = await isAuthor([
-        data.data.getCampaign.userID,
-        ...projectVerifiers.map((pv) => pv.id),
+        data?.data?.getCampaign?.userID,
+        ...projectVerifiers?.map((pv) => pv.id),
       ]);
       setEditable(isAuthorResult);
       setProjectVerifiers(projectVerifiers);
@@ -162,11 +166,23 @@ export default function Campaign() {
       <Card className="shadow-lg rounded-lg overflow-hidden">
         <Card.Body className="p-6">
           <article className="flex flex-col lg:flex-row gap-8">
-            <img
-              src={JSON.parse(campaign.images)[0]}
-              alt="Imagen de la campaña"
-              className="w-full lg:w-1/2 object-cover rounded-lg shadow-md"
-            />
+          <div className="relative w-full lg:w-1/2 flex justify-center items-center">
+  <img
+    src={JSON.parse(campaign.images)[0]}
+    alt="Imagen de la campaña"
+    className="object-cover w-full h-auto rounded-lg shadow-md"
+  />
+  {editable && (
+    <button
+      onClick={handleShowEditImage}
+      className="absolute top-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 hover:shadow-xl transition"
+    >
+      <FiEdit3 size={28} /> {/* Ícono más grande */}
+    </button>
+  )}
+</div>
+
+
             <section className="w-full lg:w-1/2 flex flex-col justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3 mb-4">
@@ -309,6 +325,13 @@ export default function Campaign() {
         showModal={showModalLogin} 
         handleClose={handleCloseLogin}
       />
+      <ModalEditImage
+  show={showModalEditImage}
+  handleClose={handleCloseEditImage}
+  campaignId={campaign.id}
+  fetchCampaign={fetchCampaign}
+/>
+
       <ToastContainer />
     </div>
   );
