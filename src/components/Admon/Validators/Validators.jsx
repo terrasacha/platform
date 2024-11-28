@@ -291,7 +291,7 @@ class Validators extends Component {
     return (
       <div className="container mx-auto ">
         <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
-          <h4 className="text-lg">Crear un nuevo validador</h4>
+          <h4 className="text-lg">Crear un nuevo consultor</h4>
           <form className="mt-4">
             <div className="mb-4">
               <label htmlFor="formGridUsername" className="block font-semibold">
@@ -326,7 +326,7 @@ class Validators extends Component {
                 htmlFor="formGridValidatorType"
                 className="block font-semibold"
               >
-               Tipo de validador
+               Tipo de consultor
               </label>
               <select
                 id="formGridValidatorType"

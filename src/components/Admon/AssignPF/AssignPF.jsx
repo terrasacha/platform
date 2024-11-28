@@ -265,7 +265,7 @@ export default class AssignPF extends Component {
       });
       await this.loadUserProducts();
     } catch (error) {
-      console.error("Error al asignar validador:", error);
+      console.error("Error al asignar Consultor:", error);
     }
   };
 
@@ -296,7 +296,7 @@ export default class AssignPF extends Component {
     return (
       <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
         <Container className="bg-white p-4 rounded-lg shadow-sm">
-          <h2 className="text-center mb-4">Asignar Validador</h2>
+          <h2 className="text-center mb-4">Asignar Consultor</h2>
 
           {/* Mensajes de alerta */}
           {showSuccess && (
@@ -305,7 +305,7 @@ export default class AssignPF extends Component {
               onClose={() => this.setState({ showSuccess: false })}
               dismissible
             >
-              Validador asignado correctamente.
+              Consultor asignado correctamente.
             </Alert>
           )}
           {showError && (
@@ -314,7 +314,7 @@ export default class AssignPF extends Component {
               onClose={() => this.setState({ showError: false })}
               dismissible
             >
-              Por favor, seleccione un validador y un producto antes de continuar.
+              Por favor, seleccione un consultor y un producto antes de continuar.
             </Alert>
           )}
           {showDeleteSuccess && (
@@ -330,14 +330,14 @@ export default class AssignPF extends Component {
           {/* Formulario de selección */}
           <Form>
             <Form.Group controlId="selectValidator" className="mb-3">
-              <Form.Label>Seleccionar Validador</Form.Label>
+              <Form.Label>Seleccionar consultor</Form.Label>
               <Form.Select
                 value={selectedValidator}
                 onChange={(e) =>
                   this.setState({ selectedValidator: e.target.value })
                 }
               >
-                <option value="">-- Seleccione un validador --</option>
+                <option value="">-- Seleccione un consultor --</option>
                 {validators.map((validator) => (
                   <option key={validator.id} value={validator.id}>
                     {validator.name}
@@ -370,7 +370,7 @@ export default class AssignPF extends Component {
                 onClick={this.handleAssignProduct}
                 disabled={!selectedValidator || !selectedProduct}
               >
-                Asignar Validador
+                Asignar Consultor
               </Button>
             </div>
           </Form>
@@ -381,7 +381,7 @@ export default class AssignPF extends Component {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>Validador</th>
+                <th>Consultor</th>
                 <th>Producto</th>
                 <th>Acción</th>
               </tr>
@@ -392,7 +392,7 @@ export default class AssignPF extends Component {
                   <tr key={up.id}>
                     <td>
                       {up.user.name}
-                      {up.user.role === "validator" ? " (Validador)" : " (Financiero)"}
+                      {up.user.role === "validator" ? " (Consultor)" : " (Financiero)"}
                     </td>
                     <td>{up.product.name}</td>
                     <td>

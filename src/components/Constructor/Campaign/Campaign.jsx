@@ -284,7 +284,7 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
                     key={index}
                     className="bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-md shadow"
                   >
-                    Validador {index + 1}: {pvn.name}
+                    Consultor {index + 1}: {pvn.name}
                   </div>
                 ))}
               </div>

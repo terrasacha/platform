@@ -49,7 +49,7 @@ export default function ValidatorFilesInfoCard(props) {
 
   return (
     <Card className={className}>
-      <Card.Header title="Documentos del validador" sep="true" />
+      <Card.Header title="Documentos del consultor" sep="true" />
       <Card.Body>
         {projectValidatorFiles.length > 0 ? (
           <Table className="text-center" responsive>
