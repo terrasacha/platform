@@ -17,6 +17,11 @@ const statusColor = {
   APPROVED: "bg-green-600",
   REJECTED: "bg-red-600",
 } 
+const statusEs = {
+  PENDING: "Pendiente",
+  APPROVED: "Aprobado",
+  REJECTED: "Rechazado",
+} 
 export default function Property() {
   const { id } = useParams();
   const { propertyData, handlePropertyData } = usePropertyData();
@@ -118,7 +123,7 @@ export default function Property() {
               </div>
               <span
                   className={`${statusColor[property.status]} absolute top-4 right-4 bg-blue-500 text-xs text-white font-bold px-4 py-2 w-fit rounded-md text-nowrap `}
-              >{property.status}</span>
+              >{statusEs[property.status]}</span>
               <ul className="font-medium flex mt-4 pl-0 ">
                 <li>
                   <a

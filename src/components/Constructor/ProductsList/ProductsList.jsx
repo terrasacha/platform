@@ -21,6 +21,11 @@ const statusColor = {
   APPROVED: "bg-green-600",
   REJECTED: "bg-red-600",
 } 
+const statusEs = {
+  PENDING: "Pendiente",
+  APPROVED: "Aprobado",
+  REJECTED: "Rechazado",
+} 
 const CampaignCard = ({ campaign }) => (
   <div className="p-4">
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -65,7 +70,7 @@ const PropertyCard = ({ property }) => (
             Vinculado a campaña
           </span>
           <span className={`${statusColor[property.status]} text-white text-xs font-medium px-2 py-1 rounded w-fit`}>
-            {property.status}
+            {statusEs[property.status]}
           </span>
         </div>
         <a
