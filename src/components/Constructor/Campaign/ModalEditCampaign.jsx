@@ -4,12 +4,16 @@ import { API, graphqlOperation } from 'aws-amplify';
 import { updateCampaign } from 'graphql/customMutations';
 
 export default function ModalEditCampaign({ showModal, handleClose, campaign, fetchCampaign }) {
+  const [name, setName] = useState(campaign.name || '');
   const [description, setDescription] = useState(campaign.description || '');
-  const [endDate, setEndDate] = useState(campaign.endDate ? new Date(campaign.endDate * 1000).toISOString().split('T')[0] : '');
+  const [endDate, setEndDate] = useState(
+    campaign.endDate ? new Date(campaign.endDate * 1000).toISOString().split('T')[0] : ''
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (showModal && campaign) {
+      setName(campaign.name || '');
       setDescription(campaign.description || '');
       setEndDate(campaign.endDate ? new Date(campaign.endDate * 1000).toISOString().split('T')[0] : '');
     }
@@ -20,15 +24,16 @@ export default function ModalEditCampaign({ showModal, handleClose, campaign, fe
     try {
       const timestampData = {
         id: campaign.id,
+        name,
         description,
         endDate: endDate ? Math.floor(new Date(endDate).getTime() / 1000) : null,
       };
-      
+
       await API.graphql(graphqlOperation(updateCampaign, { input: timestampData }));
-      await fetchCampaign()
+      await fetchCampaign();
       handleClose();
     } catch (error) {
-      console.error("Error al actualizar la campaña:", error);
+      console.error('Error al actualizar la campaña:', error);
     } finally {
       setLoading(false);
     }
@@ -37,13 +42,27 @@ export default function ModalEditCampaign({ showModal, handleClose, campaign, fe
   return (
     <Modal aria-labelledby="contained-modal-title-vcenter" centered show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title as="h1" className='text-lg text-gray-700'>
-          Editar convocatoria <span className='text-lg text-gray-700'>{campaign.name}</span>
+        <Modal.Title as="h1" className="text-lg text-gray-700">
+          Editar convocatoria
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group className='pb-4' controlId="description">
+          {/* Campo para editar el nombre */}
+          <Form.Group className="pb-4" controlId="name">
+            <Form.Label>Nombre</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ingrese el nombre de la campaña"
+              required
+            />
+          </Form.Group>
+
+          {/* Campo para editar la descripción */}
+          <Form.Group className="pb-4" controlId="description">
             <Form.Label>Descripción</Form.Label>
             <Form.Control
               as="textarea"
@@ -56,7 +75,8 @@ export default function ModalEditCampaign({ showModal, handleClose, campaign, fe
             />
           </Form.Group>
 
-          <Form.Group className='pb-4' controlId="endDate">
+          {/* Campo para editar la fecha de finalización */}
+          <Form.Group className="pb-4" controlId="endDate">
             <Form.Label>Fecha de finalización</Form.Label>
             <Form.Control
               type="date"
@@ -73,7 +93,7 @@ export default function ModalEditCampaign({ showModal, handleClose, campaign, fe
           Cerrar
         </Button>
         <Button variant="primary" onClick={handleSave} disabled={loading}>
-          {loading ? <Spinner animation="border" size="sm" /> : "Guardar Cambios"}
+          {loading ? <Spinner animation="border" size="sm" /> : 'Guardar Cambios'}
         </Button>
       </Modal.Footer>
     </Modal>
