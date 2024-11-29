@@ -208,7 +208,7 @@ export default class HeaderNavbar extends Component {
                         <br></br>
                         <p className="role_btn">
                           {role === "validator"
-                            ? "Validador"
+                            ? "Cnosultor"
                             : role === "constructor"
                             ? "Propietario"
                             : role}

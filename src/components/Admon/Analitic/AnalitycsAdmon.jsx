@@ -12,6 +12,7 @@ import {
   getImagesCategories,
   getYearFromAWSDatetime,
 } from "../../Constructor/ProjectPage/utils";
+import S3FileManager from "./S3FileManager";
 
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
@@ -211,12 +212,21 @@ class AnalitycsAdmon extends Component {
 
   render() {
     const { products } = this.state;
+
+    const renderUploadFiles = () => {
+      return (
+        <>
+          <S3FileManager userId={this.state.actualUser} />
+        </>
+      );
+    };
+
     const renderValidatingProjects = () => {
       console.log("products", products);
       if (products) {
         return (
           <>
-            <h2 className="mt-5">Tus Campañas asignadas</h2>
+            {/* <h2 className="mt-5">Tus Campañas asignadas</h2>
             <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
               {products.length > 0 &&
                 products
@@ -265,8 +275,10 @@ class AnalitycsAdmon extends Component {
                       </div>
                     );
                   })}
-            </div>
-            <h2 className="mt-5">Tus Proyectos Asignados</h2>
+            </div> */}
+            {products.length > 0 && (
+              <h2 className="mt-5">Tus Proyectos Asignados</h2>
+            )}
             <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
               {products.length > 0 &&
                 products
@@ -329,6 +341,7 @@ class AnalitycsAdmon extends Component {
           changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
         ></HeaderNavbar>
         <ToastContainer />
+        {renderUploadFiles()}
         {renderValidatingProjects()}
       </Container>
     );

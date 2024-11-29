@@ -131,8 +131,8 @@ export default function ProjectPage() {
                       } text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap h-8`}
                     >
                       {projectData.projectVerifiers?.length > 0
-                        ? "Validador asignado"
-                        : "Sin validador"}
+                        ? "Consultor asignado"
+                        : "Sin consultor"}
                     </div>
                   </div>
                 </header>
@@ -205,7 +205,7 @@ export default function ProjectPage() {
                             className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
                             key={index}
                           >
-                            Validador {index + 1}: {pvn}
+                            Consultor {index + 1}: {pvn}
                           </div>
                         );
                       })}

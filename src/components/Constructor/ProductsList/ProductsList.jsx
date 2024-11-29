@@ -13,9 +13,12 @@ const statusColor = {
   PENDING: "bg-gray-600",
   APPROVED: "bg-green-600",
   REJECTED: "bg-red-600",
-};
-
-// Campaign card component
+} 
+const statusEs = {
+  PENDING: "Pendiente",
+  APPROVED: "Aprobado",
+  REJECTED: "Rechazado",
+} 
 const CampaignCard = ({ campaign }) => {
   let campaignImages = [];
   try {
@@ -74,10 +77,8 @@ const PropertyCard = ({ property }) => (
           <span className="bg-blue-400 text-white text-xs font-medium px-2 py-1 rounded w-fit">
             Vinculado a campaña
           </span>
-          <span
-            className={`${statusColor[property.status]} text-white text-xs font-medium px-2 py-1 rounded w-fit`}
-          >
-            {property.status}
+          <span className={`${statusColor[property.status]} text-white text-xs font-medium px-2 py-1 rounded w-fit`}>
+            {statusEs[property.status]}
           </span>
         </div>
         <a
