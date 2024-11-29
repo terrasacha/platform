@@ -67,6 +67,30 @@ const S3FileManager = ({ userId }) => {
       return parts.length ? parts.join("/") + "/" : "";
     });
   };
+  const handleCreateFolder = async () => {
+    const folderName = prompt("Ingresa el nombre de la nueva carpeta:");
+
+    if (!folderName) {
+      alert("Debe ingresar un nombre para la carpeta.");
+      return;
+    }
+
+    try {
+      // Asegurarnos de que la ruta termina con '/'
+      const folderPath = `analyst/${userId}/${currentPath}${folderName}/`;
+
+      // Crear carpeta como un objeto vacío en S3
+      await Storage.put(folderPath, "", {
+        contentType: "application/x-directory", // No es obligatorio, pero puede indicar que es una carpeta
+      });
+
+      alert(`Carpeta '${folderName}' creada exitosamente.`);
+      listItems(); // Refresca la lista para mostrar la nueva carpeta
+    } catch (error) {
+      console.error("Error al crear carpeta:", error);
+      alert("No se pudo crear la carpeta. Intenta nuevamente.");
+    }
+  };
 
   const handleFileUpload = async (event) => {
     const filesToUpload = Array.from(event.target.files);
@@ -93,8 +117,8 @@ const S3FileManager = ({ userId }) => {
     for (const file of filesToUpload) {
       //const relativePath = file.name; // Puede personalizarse para manejar rutas de carpetas
       const relativePath = isFolder
-      ? file.webkitRelativePath.replace(currentPath, "")
-      : file.name;
+        ? file.webkitRelativePath.replace(currentPath, "")
+        : file.name;
       try {
         await Storage.put(
           `analyst/${userId}/${currentPath}${relativePath}`,
@@ -212,8 +236,14 @@ const S3FileManager = ({ userId }) => {
           Ruta actual: {currentPath || "/"}
         </p>
         <div className="flex gap-2">
-          <label className="p-2 text-white bg-blue-600 rounded-md">
+          <button
+            className="p-2 text-white bg-blue-600 rounded-md"
+            onClick={handleCreateFolder}
+          >
             <AddFolderIcon />
+          </button>
+          <label className="p-2 text-white bg-blue-600 rounded-md">
+            Subir Carpeta
             <input
               type="file"
               multiple
@@ -260,59 +290,64 @@ const S3FileManager = ({ userId }) => {
               <td></td>
             </tr>
           )}
-          {items.map((item, index) => (
-            <tr
-              key={index}
-              className="border-t-[1px]"
-              style={{ height: "3rem" }}
-            >
-              <td
-                onClick={() =>
-                  item.isFolder ? navigateToFolder(item.name) : null
-                }
-                style={{ cursor: "pointer" }}
+          {items
+            .filter((obj) => obj.name !== "")
+            .map((item, index) => (
+              <tr
+                key={index}
+                className="border-t-[1px]"
+                style={{ height: "3rem" }}
               >
-                <div className="flex items-end">
-                  {item.isFolder ? <FolderIcon /> : <></>}
-
-                  <span className="text-lg w-fit pl-2">{item.name}</span>
-                </div>
-              </td>
-              <td className="text-center">
-                {item.size ? bytesToSize(item.size) : ""}
-              </td>
-              <td className="text-center">
-                {item.lastModified
-                  ? new Date(item.lastModified).toLocaleString()
-                  : ""}
-              </td>
-              <td className="text-end">
-                <DropdownButton
-                  align="end"
-                  title="Acciones"
-                  drop="end"
-                  size="sm"
+                <td
+                  onClick={() =>
+                    item.isFolder ? navigateToFolder(item.name) : null
+                  }
+                  style={{ cursor: "pointer" }}
                 >
-                  {/* <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
+                  <div className="flex items-end">
+                    {item.isFolder ? <FolderIcon /> : <></>}
+
+                    <span className="text-lg w-fit pl-2">{item.name}</span>
+                  </div>
+                </td>
+                <td className="text-center">
+                  {item.size ? bytesToSize(item.size) : ""}
+                </td>
+                <td className="text-center">
+                  {item.lastModified
+                    ? new Date(item.lastModified).toLocaleString()
+                    : ""}
+                </td>
+                <td className="text-end">
+                  <DropdownButton
+                    align="end"
+                    title="Acciones"
+                    drop="end"
+                    size="sm"
+                  >
+                    {/* <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
                     <Dropdown.Item eventKey="2">Cambiar nombre</Dropdown.Item> */}
-                  {!item.isFolder && (
-                    <>
-                      <Dropdown.Item
-                        eventKey="3"
-                        /* onClick={() => handleDownload(selectedFolder)} */
-                      >
-                        Descargar
-                      </Dropdown.Item>
-                      <Dropdown.Divider />
-                    </>
-                  )}
-                  <Dropdown.Item eventKey="4" onClick={() => deleteItem(item)}>
-                    Eliminar
-                  </Dropdown.Item>
-                </DropdownButton>
-              </td>
-            </tr>
-          ))}
+                    {!item.isFolder && (
+                      <>
+                        <Dropdown.Item
+                          eventKey="3"
+                          /* onClick={() => handleDownload(selectedFolder)} */
+                        >
+                          Descargar
+                        </Dropdown.Item>
+                        <Dropdown.Divider />
+                      </>
+                    )}
+                    <Dropdown.Item
+                      eventKey="4"
+                      onClick={() => deleteItem(item)}
+                    >
+                      Eliminar
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
