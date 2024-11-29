@@ -215,42 +215,58 @@ const getValidationsCompleteInfoStatus = (data) => {
     C_plano_predio: "Plano del predio",
   };
 
-  const ownersData = JSON.parse(
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "B_owners";
-    })[0]?.value || "[]"
-  );
+  // Filtrar propiedades que tienen características verificables
+  const filterPropertiesWithVerifables = data.properties.items
+    .map((item) => {
+      const verifiablePF = item.propertyFeatures.items.filter(
+        (pf) => pf.feature.isVerifable === true
+      );
+      item.propertyFeatures.items = verifiablePF;
+      return item;
+    })
+    .filter((item) => item.propertyFeatures.items.length > 0);
 
-  const verifiablePF = data.productFeatures.items.filter(
-    (pf) => pf.feature.isVerifable === true
-  );
+  let arrayDocs = [];
 
-  const documents = verifiablePF
-    .map((pf) =>
-      pf.documents.items
-        .filter((document) => document.status !== "validatorFile")
-        .map((document) => {
-          const ownerName =
-            ownersData.find((owner) => owner.documentID === document.id)
-              ?.name || null;
+  // Usamos un ciclo for...of para manejar las promesas correctamente
+  for (const item of filterPropertiesWithVerifables) {
+    for (const pf of item.propertyFeatures.items) {
+      let docsFiltered = pf.documents.items.filter(
+        (document) => document.status !== "validatorFile"
+      );
+
+      const mappedDocs =
+        docsFiltered.map((document) => {
           return {
             id: document.id,
             pfID: pf.id,
-            title: `${PFNameMapper[pf.feature.name]} ${
-              ownerName ? `(${ownerName})` : ""
-            }`,
+            title: `${PFNameMapper[pf.feature.name]}`,
+            url: document.url,
+            signed: document.signed,
+            signedHash: document.signedHash,
+            userID: item.userID,
+            isUploadedToBlockChain: document.isUploadedToBlockChain,
             isApproved: document.isApproved,
+            property: {
+              name: item.name,
+              id: item.id,
+            },
+            status: document.status,
           };
         })
-    )
-    .flat();
 
-  const approvedDocuments = documents.filter(
-    (projectFile) => projectFile.isApproved === true
-  );
-  if (documents.length !== approvedDocuments.length) tempStatus = false;
-
-  return tempStatus;
+      // Agregamos los documentos mapeados al array final
+      arrayDocs.push(...mappedDocs);
+    }
+  }
+  console.log(arrayDocs, "arrayDocs 230");
+  if(arrayDocs.find(item => !item.isApproved)){
+    console.log('hay uno falso')
+    return false
+  }else{
+    console.log('todos validados')
+    return true
+  }
 };
 
 const getTokenGenesisStatus = (data) => {
