@@ -3,7 +3,7 @@ import { Modal, Button, Spinner } from "react-bootstrap";
 import { Storage, API, graphqlOperation } from "aws-amplify";
 import awsmobile from "aws-exports"; // Ajusta la ruta si es necesario
 import { updateCampaign } from "graphql/mutations";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 const ModalEditImage = ({ show, handleClose, campaignId, fetchCampaign }) => {
   const [file, setFile] = useState(null);

@@ -80,43 +80,52 @@ const S3FileManager = ({ userId }) => {
 
   const handleFolderUpload = async (event) => {
     const filesToUpload = Array.from(event.target.files);
-    await uploadFiles(filesToUpload, true);
+    if (filesToUpload.length > 0) {
+      // Cada archivo tiene su propia ruta relativa dentro de la carpeta
+      await uploadFiles(filesToUpload, true); // Indicamos que es una carpeta
+    }
   };
 
-  const uploadFiles = async (filesToUpload) => {
+  const uploadFiles = async (filesToUpload, isFolder) => {
     let totalLoaded = 0;
     let totalFiles = filesToUpload.length;
-  
+
     for (const file of filesToUpload) {
-      const relativePath = file.name; // Puede personalizarse para manejar rutas de carpetas
-  
+      //const relativePath = file.name; // Puede personalizarse para manejar rutas de carpetas
+      const relativePath = isFolder
+      ? file.webkitRelativePath.replace(currentPath, "")
+      : file.name;
       try {
-        await Storage.put(`analyst/${userId}/${currentPath}${relativePath}`, file, {
-          progressCallback(progressData) {
-            const fileProgress = Math.round(
-              (progressData.loaded / progressData.total) * 100
-            );
-            setProgress((prev) => ({
-              ...prev,
-              [file.name]: fileProgress,
-            }));
-  
-            // Calcular el progreso total basado en la carga de cada archivo
-            totalLoaded++;
-            const newTotalProgress = Math.round(
-              (totalLoaded / totalFiles) * 100
-            );
-            setTotalProgress(newTotalProgress);
-          },
-        });
-  
+        await Storage.put(
+          `analyst/${userId}/${currentPath}${relativePath}`,
+          file,
+          {
+            progressCallback(progressData) {
+              const fileProgress = Math.round(
+                (progressData.loaded / progressData.total) * 100
+              );
+              setProgress((prev) => ({
+                ...prev,
+                [file.name]: fileProgress,
+              }));
+
+              // Calcular el progreso total basado en la carga de cada archivo
+              totalLoaded++;
+              const newTotalProgress = Math.round(
+                (totalLoaded / totalFiles) * 100
+              );
+              setTotalProgress(newTotalProgress);
+            },
+          }
+        );
+
         // Después de completar un archivo, asegurarse de que se marca como 100%
         setProgress((prev) => ({ ...prev, [file.name]: 100 }));
       } catch (error) {
         console.error("Error al cargar archivo:", error);
       }
     }
-  
+
     // Reiniciar estado después de la carga de todos los archivos
     setUploadingFiles([]); // Vaciar lista de archivos subiendo
     setTotalProgress(0); // Reiniciar el progreso total
@@ -125,11 +134,42 @@ const S3FileManager = ({ userId }) => {
 
   const deleteItem = async (item) => {
     const key = `analyst/${userId}/${currentPath}${item.name}`;
+    setTotalProgress(0); // Inicia el progreso en 0%
+
+    const deleteFolderContents = async (folderKey) => {
+      try {
+        const listResult = await Storage.list(folderKey);
+        const keysToDelete = listResult.results.map((content) => content.key);
+
+        let deletedCount = 0;
+        const totalItems = keysToDelete.length;
+
+        for (const key of keysToDelete) {
+          await Storage.remove(key);
+          deletedCount++;
+          const progress = Math.round((deletedCount / totalItems) * 100);
+          setTotalProgress(progress);
+        }
+      } catch (error) {
+        console.error("Error al eliminar contenido de la carpeta:", error);
+      }
+    };
+
     try {
-      await Storage.remove(key);
-      listItems();
+      if (item.isFolder) {
+        // Si es una carpeta, elimina su contenido y luego la carpeta
+        const folderKey = `${key}/`;
+        await deleteFolderContents(folderKey);
+      } else {
+        // Si es un archivo, solo lo elimina
+        await Storage.remove(key);
+        setTotalProgress(100); // Marca el progreso como completo
+      }
+      listItems(); // Recarga la lista de elementos
     } catch (error) {
       console.error("Error al eliminar archivo o carpeta:", error);
+    } finally {
+      setTotalProgress(0); // Resetea el progreso una vez completado
     }
   };
 
@@ -161,7 +201,9 @@ const S3FileManager = ({ userId }) => {
               style={{ width: `${totalProgress}%` }}
             ></div>
           </div>
-          <p className="text-sm text-center text-gray-600">{totalProgress}% Cargado</p>
+          <p className="text-sm text-center text-gray-600">
+            {totalProgress}% Completado
+          </p>
         </div>
       )}
 
