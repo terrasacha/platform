@@ -52,6 +52,7 @@ export default function ProjectSettings({ visible }) {
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
     );
+    console.log(updatedProjectData, 'updatedProjectData')
     if (item === "technicalInfo") {
       if (!updatedProjectData.isTechnicalComplete) {
         let toFixMessage = "";
@@ -60,16 +61,16 @@ export default function ProjectSettings({ visible }) {
           toFixMessage = "No se ha agregado una descripción del proyecto";
         }
 
-        if (!updatedProjectData.technicalProgress.revenuesByProduct) {
+        else if(!updatedProjectData.technicalProgress.revenuesByProduct) {
           toFixMessage = "Aún no se han definido los ingresos por producto";
         }
 
-        if (!updatedProjectData.technicalProgress.productsOfCycleProject) {
+        else if(!updatedProjectData.technicalProgress.productsOfCycleProject) {
           toFixMessage =
             "Aún no se han definido los productos del ciclo del proyecto";
         }
 
-        if (!updatedProjectData.technicalProgress.verifierDescription) {
+        else if(!updatedProjectData.technicalProgress.financialIndicators) {
           toFixMessage =
             "Aún no se han definido los indicadores financieros del proyecto";
         }
