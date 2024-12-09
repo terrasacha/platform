@@ -396,27 +396,27 @@ export default class LandingPage extends Component {
             </div>
           </div>
           <div className='container-fluid fondo-azul p-5 my-24'>
-            <div className='row '>
-              <div className='col'>
-                <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
-              </div>
-              <div className='col'>
-                <div className="flex">
-                <DropDownProjects className="btn-cta" variant={'transparent'}/>
-                <button className="ml-2 btn-cta" onClick={this.handleShow}>
+          <div className='row'>
+            <div className='col'>
+              <h2 className='text-center'>SE PARTE DE NOSOTROS</h2>
+            </div>
+            <div className='col'>
+              <div className="flex flex-col sm:flex-row">
+                <DropDownProjects className="btn-cta mb-2 sm:mb-0" variant={'transparent'}/>
+                <button className="btn-cta sm:ml-2" onClick={this.handleShow}>
                   Tengo un proyecto
                 </button>
-                </div>
               </div>
-
             </div>
           </div>
-          <div className="container">
-            <h2 className="p-4">¿Quieres conocer más?</h2>
+
+          </div>
+          <div className="w-full">
+            <h2 className="p-4 text-nowrap">¿Quieres conocer más?</h2>
             <div className="row">
-              <div className="col">
+              <div className="col-12 sm:col-6">
                 <a
-                  className="m-auto d-block btn-landing text-center"
+                  className="m-auto d-block btn-landing text-center mb-2 sm:mb-0"
                   href="https://suan-1.gitbook.io/documentacion-suan-sandbox/"
                   target="_blank"
                   rel="noreferrer"
@@ -424,18 +424,20 @@ export default class LandingPage extends Component {
                   ¿Como entrar?
                 </a>
               </div>
-              <div className="col">
+              <div className="col-12 sm:col-6">
                 <a
-                  className="m-auto d-block btn-landing text-center"
+                  className="m-auto d-block btn-landing text-center sm:ml-2"
                   href="https://suan-1.gitbook.io/documentacion-suan/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Documentación tecnica
+                  Documentación técnica
                 </a>
               </div>
             </div>
           </div>
+
+
           <div className={s.containerFeaturedProducts}>
             {this.state.productsLanding.map((product) => (
               <ProductCard
