@@ -97,12 +97,13 @@ export default class HeaderNavbar extends Component {
                 </div>
                 
                 ) : (
-                  <div style={{ display: 'flex flex-row sm:flex-col' }}>
-                    <a className="item-menu block mb-2 sm:mb-0" href="#tecnologia">Tecnología</a>
-                    <a className="item-menu mb-4 sm:mb-0" href="#porque">¿Por qué Suan?</a>
-                    <DropDownProjects variant="secondary" />
-                    <button className={s.signing} onClick={() => window.location.href = "/login"}>Ingresar</button>
-                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-x-4">
+                  <a className="item-menu block " href="#tecnologia">Tecnología</a>
+                  <a className="item-menu" href="#porque">¿Por qué Suan?</a>
+                  <DropDownProjects variant="secondary" />
+                  <button className="text-green-700 font-bold w-fit" onClick={() => window.location.href = "/login"}>Ingresar</button>
+                </div>
+                
                 )}
               </Nav>
             </Offcanvas.Body>
