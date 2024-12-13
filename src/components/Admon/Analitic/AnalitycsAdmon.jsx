@@ -13,6 +13,7 @@ import {
   getYearFromAWSDatetime,
 } from "../../Constructor/ProjectPage/utils";
 import S3FileManager from "./S3FileManager";
+import { S3ClientProvider } from "context/s3ClientContext";
 
 export const listDocuments = /* GraphQL */ `
   query ListDocuments(
@@ -215,9 +216,9 @@ class AnalitycsAdmon extends Component {
 
     const renderUploadFiles = () => {
       return (
-        <>
-          <S3FileManager userId={this.state.actualUser} />
-        </>
+        <S3ClientProvider>
+          <S3FileManager userId={this.state.actualUser} products={products} />
+        </S3ClientProvider>
       );
     };
 
