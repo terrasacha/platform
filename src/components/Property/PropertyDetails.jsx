@@ -81,8 +81,8 @@ export default function PropertyDetails({ visible }) {
           <div className="col">
             <Relations autorizedUser={autorizedUser} />
           </div>
-          <div className="col-12 col-xl-12">
-            <AdditionalFiles autorizedUser={autorizedUser} />
+          <div className="col">
+            <AdditionalFiles autorizedUser={autorizedUser} basePath={`projects/${propertyData.propertyInfo?.projectID}/other/`} />
           </div>
         </div>
       )}
