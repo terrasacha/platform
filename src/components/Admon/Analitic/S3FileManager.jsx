@@ -165,6 +165,7 @@ const S3FileManager = ({ userId, products }) => {
     const oldPrefix = `public/analyst/${userId}/${currentPath}${selectedItem.name}`;
     const newPrefix = `${newPath}${selectedItem.name}`;
 
+    let totalLoaded = 0;
     setTotalProgress(0)
 
     try {
@@ -177,6 +178,8 @@ const S3FileManager = ({ userId, products }) => {
 
         const listResponse = await s3Client.send(listCommand);
         const itemsToMove = listResponse.Contents || [];
+
+        let totalFiles = itemsToMove.length
 
         for (const obj of itemsToMove) {
           const oldKey = obj.Key;
@@ -198,6 +201,11 @@ const S3FileManager = ({ userId, products }) => {
           });
 
           await s3Client.send(deleteCommand);
+
+          
+          totalLoaded++;
+          const newTotalProgress = Math.round((totalLoaded / totalFiles) * 100);
+          setTotalProgress(newTotalProgress);
         }
       } else {
         // Si es un archivo, solo copiar y borrar
@@ -220,8 +228,10 @@ const S3FileManager = ({ userId, products }) => {
         });
 
         await s3Client.send(deleteCommand);
+        
       }
 
+      setTotalProgress(0);
       alert(`Elemento '${selectedItem.name}' movido exitosamente a '${newPath}'.`);
       listItems(); // Actualiza la lista después de mover
     } catch (error) {
