@@ -237,7 +237,7 @@ export default function ProjectPage() {
                       )}
                   </a>
                 </li>
-                {(isVerifier || isAdmon || isAnalyst || isPostulant) && <li>
+                {(isVerifier || isAdmon || !isAnalyst || isPostulant) && <li>
                   <a
                     href="#files"
                     onClick={(e) => {
@@ -258,7 +258,7 @@ export default function ProjectPage() {
                   </a>
                 </li>}
 
-                {(isVerifier || isAdmon || isAnalyst) && (
+                {(isVerifier || isAdmon || !isAnalyst) && (
                   <>
                     <li>
                       <a
