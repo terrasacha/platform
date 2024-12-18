@@ -1037,6 +1037,7 @@ export const mapPropertyData = async (data) => {
   return {
     propertyInfo: {
       id: data.id,
+      projectID: data.productID,
       campaignID: data.campaign.id,
       projectAge: getElapsedDays(data.createdAt),
       name: data.name,

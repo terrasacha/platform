@@ -16,12 +16,12 @@ const statusColor = {
   PENDING: "bg-gray-600",
   APPROVED: "bg-green-600",
   REJECTED: "bg-red-600",
-} 
+};
 const statusEs = {
   PENDING: "Pendiente",
   APPROVED: "Aprobado",
   REJECTED: "Rechazado",
-} 
+};
 export default function Property() {
   const { id } = useParams();
   const { propertyData, handlePropertyData } = usePropertyData();
@@ -69,7 +69,7 @@ export default function Property() {
     try {
       const data = await API.graphql(graphqlOperation(getProperty, { id }));
 
-      console.log(data.data.getProperty, 'data.data.getProperty');
+      console.log(data.data.getProperty, "data.data.getProperty");
       setProperty(data.data.getProperty);
       const isAuthorResult = await isAuthor(data.data.getProperty.userID);
 
@@ -79,12 +79,14 @@ export default function Property() {
     }
   };
   useEffect(() => {
-    fetchProperty();
-  }, []);
+    if (propertyData) {
+      fetchProperty();
+    }
+  }, [propertyData]);
 
   if (!property) return null;
   if (!propertyData) return null;
-  console.log('propertyData', propertyData)
+  console.log("propertyData", propertyData);
 
   return (
     <S3ClientProvider>
@@ -95,9 +97,17 @@ export default function Property() {
           </div>
           <div className="my-2">-</div>
           <div className="mt-4">
-
-            <a href={property.campaign.available? `/campaign/${property.campaign.id}` : `/project/${property.productID}` } className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600">
-              {property.campaign.available? 'Regresar a la campaña' : 'Regresar al proyecto'}
+            <a
+              href={
+                property.campaign.available
+                  ? `/campaign/${property.campaign.id}`
+                  : `/project/${property.productID}`
+              }
+              className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+            >
+              {property.campaign.available
+                ? "Regresar a la campaña"
+                : "Regresar al proyecto"}
             </a>
             <div className="relative pt-3 px-4 mb-4 mt-4 border rounded shadow">
               <div className="row gy-2">
@@ -110,7 +120,9 @@ export default function Property() {
                 </section>
                 <section>
                   <p className="fs-6 mb-0 fw-bold">Área Total:</p>
-                  <p className="fs-6 mb-0">{propertyData.projectCadastralRecords.totalAreaFormatted}</p>
+                  <p className="fs-6 mb-0">
+                    {propertyData.projectCadastralRecords.totalAreaFormatted}
+                  </p>
                 </section>
                 {/* <section>
                   <p className="fs-6 mb-0 fw-bold">Descripción:</p>
@@ -122,8 +134,12 @@ export default function Property() {
                 </section> */}
               </div>
               <span
-                  className={`${statusColor[property.status]} absolute top-4 right-4 bg-blue-500 text-xs text-white font-bold px-4 py-2 w-fit rounded-md text-nowrap `}
-              >{statusEs[property.status]}</span>
+                className={`${
+                  statusColor[property.status]
+                } absolute top-4 right-4 bg-blue-500 text-xs text-white font-bold px-4 py-2 w-fit rounded-md text-nowrap `}
+              >
+                {statusEs[property.status]}
+              </span>
               <ul className="font-medium flex mt-4 pl-0 ">
                 <li>
                   <a

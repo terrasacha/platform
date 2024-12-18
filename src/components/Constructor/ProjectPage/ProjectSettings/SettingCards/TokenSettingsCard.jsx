@@ -467,6 +467,8 @@ export default function TokenSettingsCard(props) {
             date: "",
             price: "",
             amount: "",
+            tir: "",
+            investment: "",
           },
         ];
       });
@@ -478,6 +480,8 @@ export default function TokenSettingsCard(props) {
         date: "",
         price: "",
         amount: "",
+        tir: "",
+        investment: "",
       },
     ]);
   };
@@ -562,141 +566,168 @@ export default function TokenSettingsCard(props) {
               </button>
             </div>
           </div>
-          <div>
-            <table className="w-full">
-              <thead className="text-center">
-                <tr>
-                  <th style={{ width: "80px" }}>Periodo</th>
-                  <th style={{ width: "100px" }}>Fecha de cierre</th>
-                  <th style={{ width: "100px" }}>Volumen inicial(tCO2eq)</th>
-                  <th style={{ width: "100px" }}>Corrección volumen</th>
-                  {!editTokenHistoricalData && (
-                    <th style={{ width: "100px" }}>Redimible</th>
-                  )}
-                  <th style={{ width: "100px" }}>Precio</th>
-                  {editTokenHistoricalData && (
-                    <th style={{ width: "100px" }}></th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="align-middle">
-                {tokenHistoricalData.map((data, index) => {
-                  return (
-                    <tr
-                      key={index}
-                      className="text-center border-t-[1px]"
-                      style={{ height: "3rem" }}
-                    >
-                      {editTokenHistoricalData ? (
-                        <>
-                          <td>
-                            <input
-                              type="number"
-                              value={tokenHistoricalData[index].period}
-                              disabled={canEdit || projectData.isFinancialFreeze}
-                              className="text-center p-2 border rounded-md"
-                              name={`token_period_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="date"
-                              value={data.date}
-                              disabled={canEdit || projectData.isFinancialFreeze}
-                              className="text-center p-2 border rounded-md"
-                              name={`token_date_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              size="sm"
-                              type="number"
-                              value={data.amount}
-                              disabled={canEdit || projectData.isFinancialFreeze}
-                              className="text-center p-2 border rounded-md"
-                              name={`token_amount_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              size="sm"
-                              type="number"
-                              value={data.correction}
-                              disabled={checkEndDate(data) && regex.test(String(data.correction))}
-                              className="text-center p-2 border rounded-md"
-                              name={`token_correction_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              size="sm"
-                              type="number"
-                              value={data.price}
-                              disabled={canEdit || projectData.isFinancialFreeze}
-                              className="text-center p-2 border rounded-md"
-                              name={`token_price_${index}`}
-                              onChange={(e) => handleChangeInputValue(e)}
-                            />
-                          </td>
-                          <td>
-                            <button
-                              disabled={canEdit || projectData.isFinancialFreeze}
-                              className={`${
-                                canEdit || projectData.isFinancialFreeze
-                                  ? "bg-red-400"
-                                  : "bg-red-600 hover:bg-red-700"
-                              } p-2 text-white  rounded-md ml-2 `}
-                              onClick={() => handleDeleteHistoricalData(index)}
-                            >
-                              <XIcon />
-                            </button>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td>{data.period}</td>
-                          <td>{data.date}</td>
-                          <td>{data.amount}</td>
-                          <td>
-                            {regex.test(String(data.correction))
-                              ? "Sin corrección"
-                              : data.correction > 0 
-                              ? `+${data.correction}`
-                              : data.correction}
-                          </td>
-                          <td className="font-weight-bold">
-                            {parseInt(data.amount) + (parseInt(data.correction) || 0)}
-                          </td>
-                          <td>{data.price}</td>
-                        </>
-                      )}
-                    </tr>
-                  );
-                })}
-                <tr>
-                  <td colSpan={6}>
-                    <div className="d-flex">
-                      <button
-                        className={`${
-                          canEdit || !editTokenHistoricalData
-                            ? "bg-gray-300"
-                            : "bg-gray-400 hover:bg-gray-500"
-                        } text-white p-2  rounded-md w-full flex justify-center `}
-                        disabled={canEdit || !editTokenHistoricalData}
-                        onClick={() => handleAddNewPeriodToHistoricalData()}
-                      >
-                        <PlusIcon></PlusIcon>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="overflow-x-auto">
+  <table className="w-full">
+    <thead className="text-center">
+      <tr>
+        <th style={{ width: "80px" }}>Periodo</th>
+        <th style={{ width: "100px" }}>Fecha de cierre</th>
+        <th style={{ width: "100px" }}>Volumen inicial(tCO2eq)</th>
+        <th style={{ width: "100px" }}>Corrección volumen</th>
+        {!editTokenHistoricalData && (
+          <th style={{ width: "100px" }}>Redimible</th>
+        )}
+        <th style={{ width: "100px" }}>Precio</th>
+        <th style={{ width: "100px" }}>TIR</th>
+        <th style={{ width: "100px" }}>Inversión</th>
+        {editTokenHistoricalData && (
+          <th style={{ width: "100px" }}></th>
+        )}
+      </tr>
+    </thead>
+    <tbody className="align-middle">
+      {tokenHistoricalData.map((data, index) => {
+        return (
+          <tr
+            key={index}
+            className="text-center border-t-[1px]"
+            style={{ height: "3rem" }}
+          >
+            {editTokenHistoricalData ? (
+              <>
+                <td>
+                  <input
+                    type="number"
+                    value={tokenHistoricalData[index].period}
+                    disabled={canEdit || projectData.isFinancialFreeze}
+                    className="text-center p-2 border rounded-md"
+                    name={`token_period_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="date"
+                    value={data.date}
+                    disabled={canEdit || projectData.isFinancialFreeze}
+                    className="text-center p-2 border rounded-md"
+                    name={`token_date_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <input
+                    size="sm"
+                    type="number"
+                    value={data.amount}
+                    disabled={canEdit || projectData.isFinancialFreeze}
+                    className="text-center p-2 border rounded-md"
+                    name={`token_amount_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <input
+                    size="sm"
+                    type="number"
+                    value={data.correction}
+                    disabled={checkEndDate(data) && regex.test(String(data.correction))}
+                    className="text-center p-2 border rounded-md"
+                    name={`token_correction_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <input
+                    size="sm"
+                    type="number"
+                    value={data.price}
+                    disabled={canEdit || projectData.isFinancialFreeze}
+                    className="text-center p-2 border rounded-md"
+                    name={`token_price_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <input
+                    size="sm"
+                    type="number"
+                    value={data.tir}
+                    disabled={canEdit || projectData.isFinancialFreeze}
+                    className="text-center p-2 border rounded-md"
+                    name={`token_tir_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <input
+                    size="sm"
+                    type="number"
+                    value={data.investment}
+                    disabled={canEdit || projectData.isFinancialFreeze}
+                    className="text-center p-2 border rounded-md"
+                    name={`token_investment_${index}`}
+                    onChange={(e) => handleChangeInputValue(e)}
+                  />
+                </td>
+                <td>
+                  <button
+                    disabled={canEdit || projectData.isFinancialFreeze}
+                    className={`${
+                      canEdit || projectData.isFinancialFreeze
+                        ? "bg-red-400"
+                        : "bg-red-600 hover:bg-red-700"
+                    } p-2 text-white  rounded-md ml-2 `}
+                    onClick={() => handleDeleteHistoricalData(index)}
+                  >
+                    <XIcon />
+                  </button>
+                </td>
+              </>
+            ) : (
+              <>
+                <td>{data.period}</td>
+                <td>{data.date}</td>
+                <td>{data.amount}</td>
+                <td>
+                  {regex.test(String(data.correction))
+                    ? "Sin corrección"
+                    : data.correction > 0
+                    ? `+${data.correction}`
+                    : data.correction}
+                </td>
+                <td className="font-weight-bold">
+                  {parseInt(data.amount) + (parseInt(data.correction) || 0)}
+                </td>
+                <td>{data.price}</td>
+                <td>{data.tir}</td>
+                <td>{data.investment}</td>
+              </>
+            )}
+          </tr>
+        );
+      })}
+      <tr>
+        <td colSpan={8}>
+          <div className="d-flex">
+            <button
+              className={`${
+                canEdit || !editTokenHistoricalData
+                  ? "bg-gray-300"
+                  : "bg-gray-400 hover:bg-gray-500"
+              } text-white p-2  rounded-md w-full flex justify-center `}
+              disabled={canEdit || !editTokenHistoricalData}
+              onClick={() => handleAddNewPeriodToHistoricalData()}
+            >
+              <PlusIcon></PlusIcon>
+            </button>
           </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
           <p className="mb-0">
             Volumen total de Tokens:{" "}
             {parseFloat(totalTokens).toLocaleString("es-ES")}

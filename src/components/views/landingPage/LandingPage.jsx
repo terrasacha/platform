@@ -40,7 +40,7 @@ export default class LandingPage extends Component {
     } catch (error) {
 
     }
-    await this.loadProducts()
+    //await this.loadProducts()
   }
   handleClose() {
     this.setState({ show: false });
@@ -168,35 +168,22 @@ export default class LandingPage extends Component {
     return (
       <div style={{ minHeight: "100vh" }}>
         <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
-        {/*         <Carousel>
-        {this.state.productsImagesIsOnCarousel.map((image, idx) => (
-            <Carousel.Item key={idx}>
-                <img
-                className="d-block w-100"
-                src={urlS3Image+image.imageURL}
-                alt="First slide"
-                />
-                <Carousel.Caption>
-                <h3>{image.carouselLabel}</h3>
-                <p>{image.carouselDescription}</p>
-                </Carousel.Caption>
-                </Carousel.Item>
-        ))}
-        </Carousel> */}
         <div className={s.container}>
-          <h1 className='p-2 mx-2'>Aceleramos la
-            transición hacia un<br></br>
+          <h1 className='fade-in fade-in-title p-2 mx-2'>
+            Aceleramos la transición hacia un<br></br>
             mundo de
-            <strong> carbono neutral</strong></h1>
-          <p className='p-2 mx-3 w-1/2'>Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
-            fácil, rápido y seguro.</p>
-          <div className='row'>
+            <strong> carbono neutral</strong>
+          </h1>
+          <p className='fade-in fade-in-paragraph p-2 mx-2 w-1/2'>
+            Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
+            fácil, rápido y seguro.
+          </p>
+          <div className='fade-in fade-in-row row'>
             <div className='col p-2 mx-3'>
-              <Button className="fondo-azul btn" onClick={this.handleShow}>
+              <Button className="" onClick={this.handleShow}>
                 Tengo un proyecto
               </Button>
               <DropDownProjects/>
-
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
                   <div className="row">
@@ -216,8 +203,8 @@ export default class LandingPage extends Component {
                     <li>Ve a Perfil y luego a postular proyecto</li>
                     <li>Completa la información de tu proyecto</li>
                     <li>
-                      Tu proyecto será revisado y complementado por nuetros
-                      valdidadores
+                      Tu proyecto será revisado y complementado por nuestros
+                      validadores
                     </li>
                     <li>
                       Revisa la información adicional y aceptala, para que quede
@@ -233,22 +220,23 @@ export default class LandingPage extends Component {
             <div className="col"></div>
           </div>
         </div>
-        <div className="container">
+        <div className={`${s.block} container`}>
           <div className="row m-sm-4 p-sm-2">
             <div className="col-sm-6">
               <div className={s.titleContainerProducts}>
-                <h2 className="titulo-landing">REDUCIMOS EL CO2</h2>
-                <p className="p-5">
+                <h2 className="text-[#1C3541] text-4xl py-4">REDUCIMOS EL CO2</h2>
+                <p className="px-2">
                   Adquiere la capacidad de <strong>neutralizar carbono</strong>,
                   respalda la agricultura regenerativa y genera un impacto en el
-                  que puedas confiar plenamente. Cada Tonelada está respaldada
+                  que puedas confiar plenamente. 
+                </p>
+                <p className="px-2 mb-3">Cada Tonelada está respaldada
                   por <strong>tecnología Blockchain</strong>, y se entrega con
                   un certificado que ofrece una transparencia total sobre el
-                  proyecto específico de eliminación de carbono.
-                </p>
+                  proyecto específico de eliminación de carbono.</p>
               </div>
             </div>
-            <div className="col-sm-6">
+            <div className="col-sm-6 mb-8">
               <img
                 src={marketImage}
                 alt="imagen plataforma"
@@ -257,13 +245,13 @@ export default class LandingPage extends Component {
             </div>
           </div>
         </div>
-        <div className="container-fluid bg-porque p-5" id="porque">
-          <div className="container">
+        <div className={`container-fluid bg-porque p-5`} id="porque">
+          <div className={`${s.block}`}>
             <div className="row m-4 p-2">
               <h2 className="text-center">¿POR QUÉ SUAN?</h2>
             </div>
             <div className="row">
-              <div className="col">
+              <div className="col-12 col-md-6">
                 <div>
                   <svg
                     className="m-auto d-block"
@@ -279,10 +267,11 @@ export default class LandingPage extends Component {
                   <p>
                     Nuestra plataforma se apalanca en tecnología blockchain para
                     lograr total transparencia en los proyectos
-                  </p>style={}
+                  </p>
                 </div>
               </div>
-              <div className="col">
+              
+              <div className="col-12 col-md-6">
                 <div>
                   <svg
                     className="m-auto d-block"
@@ -301,7 +290,8 @@ export default class LandingPage extends Component {
                   </p>
                 </div>
               </div>
-              <div className="col">
+              
+              <div className="col-12 col-md-6">
                 <div>
                   <svg
                     className="m-auto d-block"
@@ -317,7 +307,8 @@ export default class LandingPage extends Component {
                   <p>Estamos comprometidos 100% con el medio ambiente</p>
                 </div>
               </div>
-              <div className="col">
+              
+              <div className="col-12 col-md-6">
                 <div>
                   <svg
                     className="m-auto d-block"
@@ -337,36 +328,35 @@ export default class LandingPage extends Component {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
-        <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
-          <div className="container">
+        <div className={`container-fluid bg-tecnologia p-5`} id="tecnologia">
+          <div className="">
             <div className="row m-4 p-2">
               <h2 className="text-center titulo-landing">NUESTRA TECNOLOGÍA</h2>
             </div>
-            <div className="">
-              <div className="row">
-                <div className="col">
+            <div className={``}>
+            <div className={`${s.block} flex flex-col sm:flex-row py-6`}>
+                <div className="col mb-4 sm:mb-0">
                   <img
                     src={blockchain}
                     alt="drones"
                     className="iconstech"
                     width="124"
                   />
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h4 className="">BLOCKCHAIN</h4>
                   <p>
-                    Revolucionamos los mercados de carbono al hacer públicas e
-                    inmutables todas las transacciones, estableciendo un
-                    estándar inigualable de transparencia. Cada proceso de
-                    eliminación de carbono se origina, rastrea y completa en la
-                    cadena de bloques.
+                    Revolucionamos los mercados de carbono al hacer públicas e inmutables todas las transacciones, estableciendo un estándar inigualable de transparencia. Cada proceso de eliminación de carbono se origina, rastrea y completa en la cadena de bloques.
                   </p>
                 </div>
               </div>
+
               <hr></hr>
-              <div className="row">
+
+             <div className={`${s.block} flex flex-col-reverse sm:flex-row py-6`}>
                 <div className="col">
                   <h4 className="">DRONES</h4>
                   <p>
@@ -383,8 +373,8 @@ export default class LandingPage extends Component {
                   />
                 </div>
               </div>
-              <hr></hr>
-              <div className="row">
+              <hr />
+              <div className={`${s.block} flex flex-col sm:flex-row py-6`}>
                 <div className="col">
                   <img
                     src={plataforma}
@@ -392,7 +382,7 @@ export default class LandingPage extends Component {
                     className="iconstech"
                     width="124"
                   />
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h4 className="">PLATAFORMA SUAN</h4>
                   <p>
@@ -402,30 +392,31 @@ export default class LandingPage extends Component {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className='container-fluid fondo-azul p-5'>
-            <div className='row '>
-              <div className='col'>
-                <h2 className='text-center'>SÉ PARTE DE NOSOTROS</h2>
-              </div>
-              <div className='col'>
-                <div className="flex">
-                <DropDownProjects className="btn-cta" variant={'transparent'}/>
-                <button className="ml-2 btn-cta" onClick={this.handleShow}>
-                  Tengo un proyecto
-                </button>
-                </div>
-              </div>
 
             </div>
           </div>
-          <div className="container">
-            <h2 className="p-4">¿Quieres conocer más?</h2>
+          <div className='container-fluid fondo-azul p-5 my-24'>
+          <div className='row'>
+            <div className='col'>
+              <h2 className='text-center'>SE PARTE DE NOSOTROS</h2>
+            </div>
+            <div className='col'>
+              <div className="flex flex-col sm:flex-row">
+                <DropDownProjects className="btn-cta mb-2 sm:mb-0" variant={'transparent'}/>
+                <button className="btn-cta sm:ml-2" onClick={this.handleShow}>
+                  Tengo un proyecto
+                </button>
+              </div>
+            </div>
+          </div>
+
+          </div>
+          <div className="w-full">
+            <h2 className="p-4 text-nowrap">¿Quieres conocer más?</h2>
             <div className="row">
-              <div className="col">
+              <div className="col-12 sm:col-6">
                 <a
-                  className="m-auto d-block btn-landing text-center"
+                  className="m-auto d-block btn-landing text-center mb-2 sm:mb-0"
                   href="https://suan-1.gitbook.io/documentacion-suan-sandbox/"
                   target="_blank"
                   rel="noreferrer"
@@ -433,18 +424,20 @@ export default class LandingPage extends Component {
                   ¿Como entrar?
                 </a>
               </div>
-              <div className="col">
+              <div className="col-12 sm:col-6">
                 <a
-                  className="m-auto d-block btn-landing text-center"
+                  className="m-auto d-block btn-landing text-center sm:ml-2"
                   href="https://suan-1.gitbook.io/documentacion-suan/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Documentación tecnica
+                  Documentación técnica
                 </a>
               </div>
             </div>
           </div>
+
+
           <div className={s.containerFeaturedProducts}>
             {this.state.productsLanding.map((product) => (
               <ProductCard
