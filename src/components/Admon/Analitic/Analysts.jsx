@@ -253,41 +253,38 @@ class Analysts extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {analysts.map((analyst) => (
-                    <tr key={analyst.id}>
-                      <td className="border px-4 py-2">{analyst.name}</td>
-                      <td className="border px-4 py-2">{analyst.email}</td>
-                      <td className="border px-4 py-2">
-                        {`${analyst.createdAt.split("T")[0].split("-")[2]}-${
-                          analyst.createdAt.split("T")[0].split("-")[1]
-                        }-${analyst.createdAt.split("T")[0].split("-")[0]}`}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {analyst.isProfileUpdated
-                          ? "Confirmado"
-                          : "Pendiente"}
-                      </td>
-                      <td className="border px-4 py-2">
-                        <button
-                          className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ${
-                            !analyst.isProfileUpdated
-                              ? "opacity-50 cursor-not-allowed"
-                              : ""
-                          }`}
-                          disabled={!analyst.isProfileUpdated}
-                          onClick={() =>
-                            this.showModalDelete({
-                              id: analyst.id,
-                              username: analyst.name,
-                            })
-                          }
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+  {analysts.map((analyst) => {
+    console.log("Analyst Profile Update Status:", analyst.isProfileUpdated);  // Aquí se hace el log
+    return (
+      <tr key={analyst.id}>
+        <td className="border px-4 py-2">{analyst.name}</td>
+        <td className="border px-4 py-2">{analyst.email}</td>
+        <td className="border px-4 py-2">
+          {`${analyst.createdAt.split("T")[0].split("-")[2]}-${
+            analyst.createdAt.split("T")[0].split("-")[1]
+          }-${analyst.createdAt.split("T")[0].split("-")[0]}`}
+        </td>
+        <td className="border px-4 py-2">
+          {analyst.isProfileUpdated ? "Confirmado" : "Pendiente"}
+        </td>
+        <td className="border px-4 py-2">
+          <button
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() =>
+              this.showModalDelete({
+                id: analyst.id,
+                username: analyst.name,
+              })
+            }
+          >
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
               </table>
             </div>
           </div>
