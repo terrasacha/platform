@@ -19,6 +19,7 @@ import {
   deleteVerificationComment,
   updateProduct,
   deleteProductFeature,
+  deleteCampaign,
 } from "../../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
 
