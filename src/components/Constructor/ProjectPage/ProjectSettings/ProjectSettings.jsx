@@ -47,12 +47,18 @@ export default function ProjectSettings({ visible }) {
       })
       .catch((error) => setValidatorSubRole(undefined));
   }, []);
-
+  const checkStakeHolders = (item) => {
+    const neededSH = ['BIOC', 'PROPIETARIO', 'BUFFER', 'INVERSIONISTA'];
+    const itemConcepts = item.map(i => i.CONCEPTO);
+    const allPresent = neededSH.every(sh => itemConcepts.includes(sh));
+    return allPresent;
+};
   const handleSetValidatorDataComplete = async (item) => {
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
     );
     console.log(updatedProjectData, 'updatedProjectData')
+    const neededStakeHolders = checkStakeHolders(updatedProjectData.projectFinancialInfo.tokenAmountDistribution.tokenAmountDistribution)
     if (item === "technicalInfo") {
       if (!updatedProjectData.isTechnicalComplete) {
         let toFixMessage = "";
@@ -116,6 +122,13 @@ export default function ProjectSettings({ visible }) {
       });
     }
     if (item === "financialInfo") {
+      if (!neededStakeHolders) {
+        notify({
+          msg: "Es obligatorio distribuir tokens a los siguientes stake holders: BIOC, PROPIETARIO, BUFFER e INVERSIONISTA.",
+          type: "error",
+        });
+        return;
+      }
       if (!updatedProjectData.isFinancialComplete) {
         let toFixMessage = "";
         if (!updatedProjectData.financialProgress.tokenHistoricalData) {

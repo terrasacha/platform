@@ -79,14 +79,14 @@ export default class HeaderNavbar extends Component {
                     
                     </Nav.Link>
                     {localStorage.getItem("role") ? (
-                      <div>
+                      <div className="flex">
                         <button
                           className={s.signing}
                           onClick={() => this.handleSignOut()}
                         >
                           Desconectar
                         </button>
-                        <button className="role">
+                        <button className="role flex flex-col">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="24"
