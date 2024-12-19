@@ -111,7 +111,7 @@ export default class FormGroup extends Component {
               <GoogleMapReact
                 // key={new Date().getTime()}
                 bootstrapURLKeys={{
-                  key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
+                  key: process.env['REACT_APP_GMAPS_API_KEY'] || '',
                 }}
                 defaultCenter={defaultData.coords}
                 defaultZoom={defaultData.zoom}
@@ -227,7 +227,7 @@ export default class FormGroup extends Component {
                   disabled={saveBtnDisabled}
                   variant="success"
                   onClick={onClickSaveBtn}
-                  className={`p-2 text-white rounded-md ${
+                  className={`p-2 text-white rounded-md bg-[#6e6c35] border-1 border-dark ${
                     saveBtnDisabled
                       ? "bg-[#6ab190] cursor-not-allowed "
                       : "bg-green-600 text-white"

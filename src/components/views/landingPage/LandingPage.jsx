@@ -19,6 +19,7 @@ import plataforma from "../_images/diseno-de-respuesta.png";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DropDownProjects from "components/common/DropDownProjects";
+import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 export default class LandingPage extends Component {
   constructor(props) {
@@ -167,7 +168,9 @@ export default class LandingPage extends Component {
     const urlS3Image = WebAppConfig.url_s3_public_images;
     return (
       <div style={{ minHeight: "100vh" }}>
-        <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
+
+        {/* <HeaderNavbar logOut={this.logOut}></HeaderNavbar> */}
+        <NewHeaderNavbar/>
         {/*         <Carousel>
         {this.state.productsImagesIsOnCarousel.map((image, idx) => (
             <Carousel.Item key={idx}>
@@ -190,7 +193,7 @@ export default class LandingPage extends Component {
             <strong> carbono neutral</strong></h1>
           <p className='p-2 mx-3 w-1/2'>Una <strong>plataforma</strong> para <strong>invertir</strong> en<br></br> <strong>activos ambientales</strong> en desarrollo ,<br></br>
             fácil, rápido y seguro.</p>
-          <div className='row'>
+          <div className='container'>
             <div className='col p-2 mx-3'>
               <Button className="fondo-azul btn" onClick={this.handleShow}>
                 Tengo un proyecto

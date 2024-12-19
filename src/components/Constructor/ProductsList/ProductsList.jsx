@@ -47,11 +47,11 @@ export default function ProductsList() {
                   />
                   <Card.Body>
                     <div className="d-flex">
-                      <Stack direction="horizontal" gap={2}>
-                        <Badge bg="primary">
+                      <Stack direction="horizontal" gap={2} >
+                        <Badge bg="" style={{backgroundColor: "#6e6c35"}}>
                           {getYearFromAWSDatetime(product?.product.createdAt)}
                         </Badge>
-                        <Badge bg="primary">{product?.product.categoryID}</Badge>
+                        <Badge bg="" style={{backgroundColor: "#6e6c35"}}>{product?.product.categoryID}</Badge>
                       </Stack>
                     </div>
                     <p className="fs-5 my-2">{product?.product.name}</p>
@@ -61,7 +61,7 @@ export default function ProductsList() {
                   <Card.Footer>
                     <div className="d-flex justify-content-center align-items-center">
                       <a href={"project/" + product?.product.id}>
-                        <Button>Ver más</Button>
+                        <button className="p-2 bg-[#6e6c35] text-white rounded-md border-1 border-dark">Ver más</button>
                       </a>
                     </div>
                   </Card.Footer>
