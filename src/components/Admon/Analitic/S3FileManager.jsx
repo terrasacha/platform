@@ -134,7 +134,8 @@ const S3FileManager = ({ userId, products }) => {
     let totalLoaded = 0;
     const totalSize = files.reduce((acc, file) => acc + file.size, 0);
 
-    setTotalProgress(1);
+    setTotalProgress(1); // Inicializa el progreso total
+
     for (const file of files) {
       try {
         const relativePath = file.webkitRelativePath || file.name;
@@ -142,13 +143,18 @@ const S3FileManager = ({ userId, products }) => {
 
         if (file.size > 5 * 1024 * 1024) {
           // Subir archivo grande con multipart upload
-          await uploadFileMultipart(s3Key, file, totalSize, (progress) => {
-            setTotalProgress(progress);
+          await uploadFileMultipart(s3Key, file, (fileProgress) => {
+            // Calcula el progreso acumulado basado en los bytes cargados
+            totalLoaded += fileProgress; // Incrementa el total con los bytes reportados
+            const totalProgress = (totalLoaded / totalSize) * 100; // Calcula progreso general
+            setTotalProgress(parseInt(totalProgress) === 0 ? 1 : totalProgress);
           });
         } else {
           // Subir archivo pequeño
           await uploadSmallFile(s3Key, file);
-          setTotalProgress(100);
+          totalLoaded += file.size;
+          const totalProgress = (totalLoaded / totalSize) * 100;
+          setTotalProgress(totalProgress);
         }
       } catch (error) {
         console.error(`Error en ${file.name}:`, error);
@@ -156,7 +162,7 @@ const S3FileManager = ({ userId, products }) => {
     }
 
     listItems();
-    setTotalProgress(0);
+    setTotalProgress(0); // Restablece el progreso total al finalizar
   };
 
   const uploadSmallFile = async (key, file) => {
@@ -176,32 +182,33 @@ const S3FileManager = ({ userId, products }) => {
     }
   };
 
-  const uploadFileMultipart = async (key, file, totalSize, onProgress) => {
+  const uploadFileMultipart = async (key, file, onProgress) => {
     const uploadId = await createMultipartUpload(key);
     activeUploads.set(key, { uploadId, paused: false, aborted: false });
-  
+
     const partSize = 5 * 1024 * 1024; // 5MB
     const parts = Math.ceil(file.size / partSize);
+    let completedBytes = 0; // Bytes cargados acumulados hasta ahora
     let completedParts = [];
-  
+
     for (let i = 0; i < parts; i++) {
       const start = i * partSize;
       const end = Math.min(start + partSize, file.size);
       const partNumber = i + 1;
-  
+      const partData = file.slice(start, end);
+
       // Control de pausa
       while (activeUploads.get(key).paused) {
         await new Promise((resolve) => setTimeout(resolve, 500)); // Espera activa
       }
-  
+
       // Control de cancelación
       if (activeUploads.get(key).aborted) {
         await abortMultipartUpload(key, uploadId);
         activeUploads.delete(key);
         return;
       }
-  
-      const partData = file.slice(start, end);
+
       const partResponse = await uploadPart(
         key,
         uploadId,
@@ -209,18 +216,15 @@ const S3FileManager = ({ userId, products }) => {
         partData
       );
       completedParts.push(partResponse);
-  
-      // Calcular progreso por partes
-      const progress = (completedParts.length / parts) * 100;
-      onProgress(progress); // Llama a la función con el progreso en porcentaje
+      completedBytes += end - start; // Incrementa bytes cargados acumulados
+      onProgress(end - start); // Notifica los bytes cargados en esta parte
     }
-  
+
     if (!activeUploads.get(key).aborted) {
       await completeMultipartUpload(key, uploadId, completedParts);
       activeUploads.delete(key);
     }
   };
-  
 
   const createMultipartUpload = async (key) => {
     const command = new CreateMultipartUploadCommand({
@@ -480,7 +484,7 @@ const S3FileManager = ({ userId, products }) => {
             ></div>
           </div>
           <p className="text-sm text-center text-gray-600">
-            {totalProgress}% Completado
+            {parseInt(totalProgress)}% Completado
           </p>
         </div>
       )}
