@@ -16,6 +16,7 @@ export default class PQRForm extends Component {
       modalMessage: "",
       modalType: "",
       isAuthenticated: false,
+      isLoading: false,
     };
     this.handlePRQSubmit = this.handlePRQSubmit.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -34,6 +35,8 @@ export default class PQRForm extends Component {
   async handlePRQSubmit(e) {
     e.preventDefault();
     const { prqDescription, prqFile, prqEmail } = this.state;
+
+    this.setState({ isLoading: true });
 
     let imageUrl = null;
     let pdfUrl = null;
@@ -98,12 +101,14 @@ export default class PQRForm extends Component {
           prqDescription: "",
           prqFile: null,
           prqEmail: "",
+          isLoading: false,
         });
       } else {
         this.setState({
           showModal: true,
           modalMessage: "Hubo un error al enviar el PQR. Inténtalo de nuevo.",
           modalType: "error",
+          isLoading: false,
         });
       }
     } catch (error) {
@@ -112,6 +117,7 @@ export default class PQRForm extends Component {
         showModal: true,
         modalMessage: "Hubo un error al enviar el PQR. Inténtalo de nuevo.",
         modalType: "error",
+        isLoading: false,
       });
     }
   }
@@ -128,6 +134,7 @@ export default class PQRForm extends Component {
       prqDescription,
       prqEmail,
       isAuthenticated,
+      isLoading,
     } = this.state;
 
     if (!isAuthenticated) {
@@ -223,6 +230,7 @@ export default class PQRForm extends Component {
               }}
               variant="primary"
               className="w-100 mt-3"
+              disabled={isLoading}
             >
               Enviar PQR
             </Button>

@@ -34,32 +34,41 @@ const CampaignCard = ({ campaign }) => {
 
   return (
     <div className="p-4">
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <img
-          className="h-40 w-full object-cover"
-          src={campaignImage}
-          alt="Imagen de la campaña"
-        />
-        <div className="p-4">
-          <div className="flex space-x-2 mb-2">
-            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
-              {getYearFromAWSDatetime(campaign?.products?.items?.[0]?.createdAt)}
-            </span>
-            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
-              {campaign?.products?.items?.[0]?.categoryID}
-            </span>
-          </div>
-          <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
-          <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>
-          <a
-            href={`campaign/${campaign?.id}`}
-            className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Ver Campaña
-          </a>
-        </div>
+  <div className="bg-white shadow-md rounded-lg overflow-hidden">
+    <img
+      className="h-40 w-full object-cover"
+      src={campaignImage}
+      alt="Imagen de la campaña"
+    />
+    <div className="p-4">
+      <div className="flex space-x-2 mb-2">
+        <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+          {getYearFromAWSDatetime(campaign?.products?.items?.[0]?.createdAt)}
+        </span>
+        <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+          {campaign?.products?.items?.[0]?.categoryID}
+        </span>
+      </div>
+      <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
+      <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>
+      <div className="flex justify-between items-center mt-3 space-x-4">
+        <a
+          href={`campaign/${campaign?.id}`}
+          className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Ver Campaña
+        </a>
+        <a
+    href={`project/${campaign?.products?.items?.[0]?.id}`}
+    className="inline-block bg-[#4DBC5E] text-white text-sm px-4 py-2 rounded hover:bg-green-600"
+  >
+    Ver Proyecto
+  </a>
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 
@@ -128,10 +137,20 @@ export default function ProductsList() {
   const { userProjects } = useUserProjects();
   const { userProperties } = useUserProperties();
   const { userCampaigns } = useUserCampaigns();
+  
+  const projectsWithoutCampaigns = userProjects.filter(
+    (project) => project.product && !project.product.campaign
+  );
 
-  const userProjectsFiltered = userProjects.filter(
+  const userProjectsFiltered = projectsWithoutCampaigns.filter(
     (project) => project.product?.isActiveOnPlatform
   );
+
+  
+
+  console.log("userCampaigns",userCampaigns)
+  console.log("userProjects",userProjects)
+  console.log("userProperties",userProperties)
 
   return (
     <>

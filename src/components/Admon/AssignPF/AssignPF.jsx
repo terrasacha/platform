@@ -292,6 +292,7 @@ export default class AssignPF extends Component {
       showError,
       showDeleteSuccess,
     } = this.state;
+    
 
     return (
       <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
@@ -348,21 +349,20 @@ export default class AssignPF extends Component {
             </Form.Group>
 
             <Form.Group controlId="selectProduct" className="mb-3">
-              <Form.Label>Seleccionar Producto</Form.Label>
-              <Form.Select
-                value={selectedProduct}
-                onChange={(e) =>
-                  this.setState({ selectedProduct: e.target.value })
-                }
-              >
-                <option value="">-- Seleccione un producto --</option>
-                {products.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+  <Form.Label>Seleccionar Producto</Form.Label>
+  <Form.Select
+    value={selectedProduct}
+    onChange={(e) => this.setState({ selectedProduct: e.target.value })}
+  >
+    <option value="">-- Seleccione un producto --</option>
+    {products.map((product) => (
+      <option key={product.id} value={product.id}>
+        {product.name} {product.campaign ? `(${product.campaign.name})` : ""}
+      </option>
+    ))}
+  </Form.Select>
+</Form.Group>
+
 
             <div className="text-center">
               <Button
