@@ -77,7 +77,7 @@ export default function AlertMessage({ visible }) {
             <h3 className="text-2xl">
               Estado de requerimientos para la publicación del proyecto{" "}
               <a
-                href={marketplaceURLMapper[projectData.projectInfo.marketplaceID][process.env.REACT_APP_ENV]} // remove href={process.env.REACT_APP_URL_MARKETPLACE}
+                href={marketplaceURLMapper[projectData.projectInfo.marketplaceID || 'suan'][process.env.REACT_APP_ENV]} // remove href={process.env.REACT_APP_URL_MARKETPLACE}
                 target="_blank"
                 rel="noreferrer"
               >

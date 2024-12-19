@@ -303,7 +303,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName, marketplaceID }) {
       </p>
       <div className="d-flex justify-content-center">
         <a
-          href={`${marketplaceURLMapper[marketplaceID][process.env.REACT_APP_ENV]}auth/login`} //remove ${process.env.REACT_APP_URL_MARKETPLACE}
+          href={`${marketplaceURLMapper[marketplaceID || 'suan'][process.env.REACT_APP_ENV]}auth/login`} //remove ${process.env.REACT_APP_URL_MARKETPLACE}
           target="_blank"
           rel="noreferrer"
           className="btn btn-warning"
