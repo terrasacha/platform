@@ -82,16 +82,13 @@ export default class PQRForm extends Component {
     };
 
     try {
-      const response = await fetch(
-        "https://y2alnoyxxc.execute-api.us-east-1.amazonaws.com/QA",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(process.env['REACT_APP_URL_API_PQR'], {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
 
       if (response.ok) {
         this.setState({
