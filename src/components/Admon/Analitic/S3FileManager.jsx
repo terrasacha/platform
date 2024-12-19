@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ListObjectsV2Command,
   PutObjectCommand,
   DeleteObjectCommand,
   CopyObjectCommand,
+  CompleteMultipartUploadCommand,
+  UploadPartCommand,
+  CreateMultipartUploadCommand,
+  AbortMultipartUploadCommand,
 } from "@aws-sdk/client-s3";
 import { FolderIcon } from "components/common/icons/FolderIcon";
 import { convertAWSDatetimeToDate } from "components/Constructor/ProjectPage/utils";
@@ -16,11 +20,11 @@ const S3FileManager = ({ userId, products }) => {
   const { s3Client, bucketName } = useS3Client();
   const [currentPath, setCurrentPath] = useState(""); // Ruta actual en la navegación
   const [items, setItems] = useState([]); // Archivos y carpetas en el nivel actual
-  const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [progress, setProgress] = useState({});
   const [totalProgress, setTotalProgress] = useState(0); // Progreso total
   const [showModalNewProperty, setShowModalNewProperty] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  const activeUploads = new Map();
 
   const handleCloseNewProperty = () => setShowModalNewProperty(false);
   const handleShowNewProperty = () => setShowModalNewProperty(true);
@@ -116,49 +120,216 @@ const S3FileManager = ({ userId, products }) => {
   };
 
   const handleFileUpload = async (event) => {
-    const input = event.target; // Referencia al input
+    const input = event.target;
     const filesToUpload = Array.from(input.files);
 
     if (filesToUpload.length > 0) {
-      setUploadingFiles(filesToUpload);
-      setProgress({});
       setTotalProgress(0);
-
       await uploadFiles(filesToUpload);
-
       input.value = "";
     }
   };
 
-  const uploadFiles = async (filesToUpload) => {
+  const uploadFiles = async (files) => {
     let totalLoaded = 0;
-    let totalFiles = filesToUpload.length;
+    const totalSize = files.reduce((acc, file) => acc + file.size, 0);
 
-    for (const file of filesToUpload) {
+    setTotalProgress(1);
+    for (const file of files) {
       try {
-        let relativePath = file.webkitRelativePath || file.name;
+        const relativePath = file.webkitRelativePath || file.name;
         const s3Key = `public/analyst/${userId}/${currentPath}${relativePath}`;
 
-        const command = new PutObjectCommand({
-          Bucket: bucketName,
-          Key: s3Key,
-          Body: file,
-        });
-
-        await s3Client.send(command);
-
-        totalLoaded++;
-        const newTotalProgress = Math.round((totalLoaded / totalFiles) * 100);
-        setTotalProgress(newTotalProgress);
+        if (file.size > 5 * 1024 * 1024) {
+          // Subir archivo grande con multipart upload
+          await uploadFileMultipart(s3Key, file, totalSize, (progress) => {
+            totalLoaded += progress;
+            totalLoaded = Math.min(totalLoaded, totalSize); // Asegura que no exceda totalSize
+            setTotalProgress(Math.round((totalLoaded / totalSize) * 100));
+          });
+        } else {
+          // Subir archivo pequeño
+          await uploadSmallFile(s3Key, file);
+          totalLoaded += file.size;
+          totalLoaded = Math.min(totalLoaded, totalSize); // Asegura que no exceda totalSize
+          setTotalProgress(Math.round((totalLoaded / totalSize) * 100));
+        }
       } catch (error) {
-        console.error("Error al cargar archivo:", error);
+        console.error(`Error en ${file.name}:`, error);
       }
     }
 
-    setUploadingFiles([]);
+    listItems();
+    setTotalProgress(0);
+  };
+
+  const uploadSmallFile = async (key, file) => {
+    try {
+      const command = new PutObjectCommand({
+        Bucket: bucketName, // Nombre del bucket S3
+        Key: key, // Ruta clave del archivo en el bucket
+        Body: file, // Contenido del archivo
+        ContentType: file.type, // Tipo de contenido (MIME)
+      });
+
+      await s3Client.send(command);
+      console.log(`Archivo ${key} subido correctamente.`);
+    } catch (error) {
+      console.error(`Error al subir el archivo pequeño (${key}):`, error);
+      throw error;
+    }
+  };
+
+  const uploadFileMultipart = async (key, file, totalSize, onProgress) => {
+    const uploadId = await createMultipartUpload(key);
+    activeUploads.set(key, { uploadId, paused: false, aborted: false });
+
+    const partSize = 5 * 1024 * 1024; // 5MB
+    const parts = Math.ceil(file.size / partSize);
+    let uploadedBytes = 0;
+    let completedParts = [];
+
+    for (let i = 0; i < parts; i++) {
+      const start = i * partSize;
+      const end = Math.min(start + partSize, file.size);
+      const partNumber = i + 1;
+
+      // Control de pausa
+      while (activeUploads.get(key).paused) {
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Espera activa
+      }
+
+      // Control de cancelación
+      if (activeUploads.get(key).aborted) {
+        await abortMultipartUpload(key, uploadId);
+        activeUploads.delete(key);
+        return;
+      }
+
+      const partData = file.slice(start, end);
+      const partResponse = await uploadPart(
+        key,
+        uploadId,
+        partNumber,
+        partData
+      );
+      completedParts.push(partResponse);
+      uploadedBytes += partData.size;
+
+      onProgress(uploadedBytes);
+    }
+
+    if (!activeUploads.get(key).aborted) {
+      await completeMultipartUpload(key, uploadId, completedParts);
+      activeUploads.delete(key);
+    }
+  };
+
+  const createMultipartUpload = async (key) => {
+    const command = new CreateMultipartUploadCommand({
+      Bucket: bucketName,
+      Key: key,
+    });
+    const response = await s3Client.send(command);
+    return response.UploadId;
+  };
+
+  const uploadPart = async (key, uploadId, partNumber, body) => {
+    const command = new UploadPartCommand({
+      Bucket: bucketName,
+      Key: key,
+      UploadId: uploadId,
+      PartNumber: partNumber,
+      Body: body,
+    });
+    const response = await s3Client.send(command);
+    return { PartNumber: partNumber, ETag: response.ETag };
+  };
+
+  const completeMultipartUpload = async (key, uploadId, completedParts) => {
+    const command = new CompleteMultipartUploadCommand({
+      Bucket: bucketName,
+      Key: key,
+      UploadId: uploadId,
+      MultipartUpload: { Parts: completedParts },
+    });
+    await s3Client.send(command);
+  };
+
+  const abortMultipartUpload = async (key, uploadId) => {
+    const command = new AbortMultipartUploadCommand({
+      Bucket: bucketName,
+      Key: key,
+      UploadId: uploadId,
+    });
+    await s3Client.send(command);
+    activeUploads.delete(key);
+  };
+
+  // Función para pausar una carga
+  const pauseUpload = (key) => {
+    if (activeUploads.has(key)) {
+      activeUploads.get(key).paused = true;
+      console.log(`Carga pausada para ${key}`);
+    }
+  };
+
+  // Función para reanudar una carga
+  const resumeUpload = (key) => {
+    if (activeUploads.has(key)) {
+      activeUploads.get(key).paused = false;
+      console.log(`Carga reanudada para ${key}`);
+    }
+  };
+
+  // Función para cancelar una carga
+  const cancelUpload = async (key) => {
+    if (activeUploads.has(key)) {
+      activeUploads.get(key).aborted = true;
+      const { uploadId } = activeUploads.get(key);
+      await abortMultipartUpload(key, uploadId);
+      activeUploads.delete(key);
+      console.log(`Carga cancelada para ${key}`);
+    }
+  };
+
+  /* const uploadFiles = async (filesToUpload) => {
+    let totalLoaded = 0;
+
+    for (const file of filesToUpload) {
+      try {
+        const s3Key = `public/analyst/${userId}/${currentPath}${file.name}`;
+        const fileSize = file.size;
+        const partSize = 5 * 1024 * 1024; // 5MB
+        const totalParts = Math.ceil(fileSize / partSize);
+        const uploadId = await initiateMultipartUpload(s3Key);
+
+        const uploadedParts = [];
+        for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+          const start = (partNumber - 1) * partSize;
+          const end = Math.min(start + partSize, fileSize);
+          const partData = file.slice(start, end);
+
+          const part = await uploadPart(s3Key, uploadId, partData, partNumber);
+          uploadedParts.push(part);
+
+          // Actualizar progreso por parte
+          totalLoaded += partData.size;
+          const progressPercent = Math.round((totalLoaded / fileSize) * 100);
+          setTotalProgress(progressPercent);
+        }
+
+        await completeMultipartUpload(s3Key, uploadId, uploadedParts);
+
+        console.log(`Archivo ${file.name} subido exitosamente.`);
+      } catch (error) {
+        console.error("Error al subir archivo:", error);
+      }
+    }
+
     setTotalProgress(0);
     listItems();
-  };
+  }; */
 
   const moveItem = async (newPath) => {
     const isFolder = selectedItem.isFolder;
@@ -166,7 +337,7 @@ const S3FileManager = ({ userId, products }) => {
     const newPrefix = `${newPath}${selectedItem.name}`;
 
     let totalLoaded = 0;
-    setTotalProgress(0)
+    setTotalProgress(0);
 
     try {
       if (isFolder) {
@@ -179,7 +350,7 @@ const S3FileManager = ({ userId, products }) => {
         const listResponse = await s3Client.send(listCommand);
         const itemsToMove = listResponse.Contents || [];
 
-        let totalFiles = itemsToMove.length
+        let totalFiles = itemsToMove.length;
 
         for (const obj of itemsToMove) {
           const oldKey = obj.Key;
@@ -202,7 +373,6 @@ const S3FileManager = ({ userId, products }) => {
 
           await s3Client.send(deleteCommand);
 
-          
           totalLoaded++;
           const newTotalProgress = Math.round((totalLoaded / totalFiles) * 100);
           setTotalProgress(newTotalProgress);
@@ -228,11 +398,12 @@ const S3FileManager = ({ userId, products }) => {
         });
 
         await s3Client.send(deleteCommand);
-        
       }
 
       setTotalProgress(0);
-      alert(`Elemento '${selectedItem.name}' movido exitosamente a '${newPath}'.`);
+      alert(
+        `Elemento '${selectedItem.name}' movido exitosamente a '${newPath}'.`
+      );
       listItems(); // Actualiza la lista después de mover
     } catch (error) {
       console.error("Error al mover archivo o carpeta:", error);
@@ -317,7 +488,8 @@ const S3FileManager = ({ userId, products }) => {
         </div>
       )}
 
-      <div className="flex justify-content-between mb-2">
+      {/* Opciones de gestión de carga */}
+      <div className="flex justify-between items-center mb-2">
         <p className="text-sm text-gray-600">
           Ruta actual: {currentPath || "/"}
         </p>
@@ -395,7 +567,6 @@ const S3FileManager = ({ userId, products }) => {
                   >
                     <div className="flex items-end">
                       {item.isFolder ? <FolderIcon /> : <></>}
-
                       <span className="text-lg w-fit pl-2">{item.name}</span>
                     </div>
                   </td>
@@ -414,8 +585,6 @@ const S3FileManager = ({ userId, products }) => {
                       drop="end"
                       size="sm"
                     >
-                      {/* <Dropdown.Item eventKey="1">Mover</Dropdown.Item>
-                    <Dropdown.Item eventKey="2">Cambiar nombre</Dropdown.Item> */}
                       {!item.isFolder && (
                         <>
                           <a
