@@ -143,16 +143,12 @@ const S3FileManager = ({ userId, products }) => {
         if (file.size > 5 * 1024 * 1024) {
           // Subir archivo grande con multipart upload
           await uploadFileMultipart(s3Key, file, totalSize, (progress) => {
-            totalLoaded += progress;
-            totalLoaded = Math.min(totalLoaded, totalSize); // Asegura que no exceda totalSize
-            setTotalProgress(Math.round((totalLoaded / totalSize) * 100));
+            setTotalProgress(progress);
           });
         } else {
           // Subir archivo pequeño
           await uploadSmallFile(s3Key, file);
-          totalLoaded += file.size;
-          totalLoaded = Math.min(totalLoaded, totalSize); // Asegura que no exceda totalSize
-          setTotalProgress(Math.round((totalLoaded / totalSize) * 100));
+          setTotalProgress(100);
         }
       } catch (error) {
         console.error(`Error en ${file.name}:`, error);
@@ -183,29 +179,28 @@ const S3FileManager = ({ userId, products }) => {
   const uploadFileMultipart = async (key, file, totalSize, onProgress) => {
     const uploadId = await createMultipartUpload(key);
     activeUploads.set(key, { uploadId, paused: false, aborted: false });
-
+  
     const partSize = 5 * 1024 * 1024; // 5MB
     const parts = Math.ceil(file.size / partSize);
-    let uploadedBytes = 0;
     let completedParts = [];
-
+  
     for (let i = 0; i < parts; i++) {
       const start = i * partSize;
       const end = Math.min(start + partSize, file.size);
       const partNumber = i + 1;
-
+  
       // Control de pausa
       while (activeUploads.get(key).paused) {
         await new Promise((resolve) => setTimeout(resolve, 500)); // Espera activa
       }
-
+  
       // Control de cancelación
       if (activeUploads.get(key).aborted) {
         await abortMultipartUpload(key, uploadId);
         activeUploads.delete(key);
         return;
       }
-
+  
       const partData = file.slice(start, end);
       const partResponse = await uploadPart(
         key,
@@ -214,16 +209,18 @@ const S3FileManager = ({ userId, products }) => {
         partData
       );
       completedParts.push(partResponse);
-      uploadedBytes += partData.size;
-
-      onProgress(uploadedBytes);
+  
+      // Calcular progreso por partes
+      const progress = (completedParts.length / parts) * 100;
+      onProgress(progress); // Llama a la función con el progreso en porcentaje
     }
-
+  
     if (!activeUploads.get(key).aborted) {
       await completeMultipartUpload(key, uploadId, completedParts);
       activeUploads.delete(key);
     }
   };
+  
 
   const createMultipartUpload = async (key) => {
     const command = new CreateMultipartUploadCommand({

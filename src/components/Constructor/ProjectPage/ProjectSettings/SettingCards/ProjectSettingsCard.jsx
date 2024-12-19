@@ -9,6 +9,8 @@ import { updateProduct } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
 
 import { fetchProjectDataByProjectID } from "../../api";
+import { CheckIcon } from "components/common/icons/CheckIcon";
+import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 
 const listMarketplacess = /* GraphQL */ `
   query ListMarketplaces(
@@ -52,7 +54,7 @@ export default function ProjectSettingsCard(props) {
         projectData.projectFeatures.find(
           (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
         )?.value || "false";
-      if(projectReadyToPublishData){
+      if (projectReadyToPublishData) {
         setProjectReadyToPublish(JSON.parse(projectReadyToPublishData));
         setProjectIsActive(projectData.projectInfo.isActive);
         setProjectStatus(projectData.projectInfo.status);
@@ -128,7 +130,17 @@ export default function ProjectSettingsCard(props) {
 
   return (
     <Card className={className}>
-      <Card.Header title="Configuración del Proyecto" sep={true} />
+      <Card.Header
+        title="Configuración del Proyecto"
+        sep={true}
+        tooltip={
+          projectData.projectInfo.isActive ? (
+            <CheckIcon className="text-success" />
+          ) : (
+            <HourGlassIcon className="text-danger" />
+          )
+        }
+      />
       <Card.Body>
         <FormGroup
           type="flex"
@@ -160,8 +172,8 @@ export default function ProjectSettingsCard(props) {
           optionList={listMarketplaces.map((marketplace) => {
             return {
               value: marketplace.id,
-              label: marketplace.name
-            }
+              label: marketplace.name,
+            };
           })}
           inputValue={projectShowOn}
           saveBtnDisabled={
