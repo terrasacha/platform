@@ -21,10 +21,25 @@ import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
+import { API, graphqlOperation } from "aws-amplify";
 import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 import AlertMessage from "./AlertMessage";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
+
+const GET_PRODUCT_QUERY = `
+  query MyQuery($id: ID!) {
+    getProduct(id: $id) {
+      id
+      name
+      campaign {
+        name
+        id
+      }
+      campaignID
+    }
+  }
+`;
 
 export default function ProjectPage() {
   const { id } = useParams();
@@ -38,6 +53,7 @@ export default function ProjectPage() {
   const [isVerifier, setIsVerifier] = useState(false);
   const [isAdmon, setIsAdmon] = useState(false);
   const [isAnalyst, setIsAnalyst] = useState(false);
+  const [campaign, setCampaign] = useState(null);
   const [userGroup, setUserGroup] = useState('')
   const projectStatusMapper = {
     draft: "En borrador",
@@ -89,6 +105,26 @@ export default function ProjectPage() {
   }, [projectData, user]);
 
   useEffect(() => {
+    const fetchCampaignData = async () => {
+      try {
+        const result = await API.graphql(
+          graphqlOperation(GET_PRODUCT_QUERY, { id })
+        );
+        const campaignData = result?.data?.getProduct?.campaign;
+        console.log("campaignData", campaignData);
+        setCampaign(campaignData); // Actualiza el estado con la campaña asociada
+      } catch (error) {
+        console.error("Error fetching campaign data: ", error);
+      }
+    };
+
+    if (id) {
+      fetchCampaignData();
+    }
+  }, [id]);
+
+
+  useEffect(() => {
     if (projectData && user) {
       const progress = async () => {
         try {
@@ -104,6 +140,9 @@ export default function ProjectPage() {
       progress();
     }
   }, [projectData, user]);
+
+
+  
 
   return (
     <S3ClientProvider>
@@ -148,6 +187,12 @@ export default function ProjectPage() {
                     {projectData.projectInfo.description}
                   </p>
                 </section>
+                {campaign && (
+              <div className="campaign-section bg-light p-3 rounded mb-4">
+              <h5 className="fs-6 mb-0 fw-bold">Pertenece a la campaña:</h5>
+              <p className="campaign-name">{campaign.name}</p>
+            </div>
+            )}
                 {projectData.projectInfo.token.actualPeriodTokenAmount &&
                   projectData.projectInfo.token.actualPeriodTokenPrice && (
                     <section>
