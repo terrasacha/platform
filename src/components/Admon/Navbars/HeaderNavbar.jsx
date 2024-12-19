@@ -128,7 +128,7 @@ export default class HeaderNavbar extends Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                      <Dropdown.Item href="/new_project">Crear proyecto</Dropdown.Item>
+                      {/* <Dropdown.Item href="/new_project">Crear proyecto</Dropdown.Item> */}
                       <Dropdown.Item
                         href="#assign_pf"
                         onClick={(e) =>

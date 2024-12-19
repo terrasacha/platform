@@ -80,11 +80,11 @@ export default function NewHeaderNavbar() {
                     >
                       Mis Proyectos
                     </Nav.Link>
-                    <Nav.Link
+                    {/* <Nav.Link
                       onClick={() => (window.location.href = "/new_project")}
                     >
                       Postular proyecto
-                    </Nav.Link>
+                    </Nav.Link> */}
                     <Dropdown >
                       <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ paddingLeft: '.7rem'}}>
                         Campañas

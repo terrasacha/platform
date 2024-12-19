@@ -47,7 +47,7 @@ export default class LandingPage extends Component {
   }
 
   handleShow() {
-    if (this.state.userLogged && this.state.userLogged.role === 'constructor') return window.location.href = '/new_project'
+    if (this.state.userLogged && this.state.userLogged.role === 'constructor') return window.location.href = '/new_campaign'
     this.setState({ show: true });
   }
 

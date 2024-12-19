@@ -196,7 +196,7 @@ export default function ProductsList() {
       <section>
         <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Tus Proyectos</h2>
         {userProjectsFiltered.length === 0 ? (
-          <div className="py-12 text-center">
+          {/* <div className="py-12 text-center">
             <img
               src={vacio}
               className="w-32 h-32 mx-auto mb-4"
@@ -211,7 +211,7 @@ export default function ProductsList() {
             >
               Postular Proyecto
             </a>
-          </div>
+          </div> */}
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {userProjectsFiltered.map((project) => (
