@@ -8,6 +8,19 @@ import {
 } from "./utils";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
 
+export const marketplaceURLMapper = {
+  suan: {
+    INTERNAL: "https://internal.d2h2yvb6fy5h0q.amplifyapp.com/",
+    TEST: "https://test-marketplace.suan.global/",
+    PROD: "https://marketplace.suan.global/",
+  },
+  cauca: {
+    INTERNAL: "https://internal.d3g6351f8sugd6.amplifyapp.com/",
+    TEST: "https://test-marketplace-cauca.suan.global/",
+    PROD: "https://marketplace-cauca.suan.global/",
+  },
+};
+
 export const mapGeoData = (validatorDocuments) => {
   const extensionesPermitidas = [".kml", ".kmz"];
 
@@ -810,22 +823,24 @@ export const mapProjectData = async (data) => {
 
   let totalArea = 0;
 
-  data.properties.items.filter((prop) => prop.status === "APPROVED").forEach((item) => {
-    if (item.propertyFeatures && item.propertyFeatures.items) {
-      item.propertyFeatures.items.forEach((feature) => {
-        // Verificamos si el featureID es "D_area"
-        if (feature.featureID === "D_area") {
-          // Sumamos el área (convertida a número)
-          const area = parseFloat(feature.value);
-          if (!isNaN(area)) {
-            totalArea += area;
+  data.properties.items
+    .filter((prop) => prop.status === "APPROVED")
+    .forEach((item) => {
+      if (item.propertyFeatures && item.propertyFeatures.items) {
+        item.propertyFeatures.items.forEach((feature) => {
+          // Verificamos si el featureID es "D_area"
+          if (feature.featureID === "D_area") {
+            // Sumamos el área (convertida a número)
+            const area = parseFloat(feature.value);
+            if (!isNaN(area)) {
+              totalArea += area;
+            }
           }
-        }
-      });
-    }
-  });
-  console.log('data.properties.items', data.properties.items)
-  console.log('totalArea', totalArea)
+        });
+      }
+    });
+  console.log("data.properties.items", data.properties.items);
+  console.log("totalArea", totalArea);
 
   return {
     projectInfo: {
@@ -835,6 +850,7 @@ export const mapProjectData = async (data) => {
       title: data.name,
       description: data.description,
       category: data.categoryID,
+      marketplaceID: data.marketplaceID,
       showOn: data.marketplace?.id || null,
       area: totalArea,
       token: {

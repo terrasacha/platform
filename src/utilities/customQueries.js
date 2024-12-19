@@ -6,6 +6,7 @@ export const getProduct = /* GraphQL */ `
       name
       description
       isActive
+      marketplaceID
       order
       status
       showOn

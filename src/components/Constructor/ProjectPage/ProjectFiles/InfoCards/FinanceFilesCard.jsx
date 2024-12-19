@@ -19,6 +19,7 @@ import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { notify } from "utilities/notify";
+import { marketplaceURLMapper } from "../../mappers";
 
 export default function FinanceCard({ visible }) {
   const { user } = useAuth();
@@ -139,6 +140,7 @@ export default function FinanceCard({ visible }) {
                   ownerTokensAmount={
                     projectData.projectInfo?.token.amountDistribution.owner
                   }
+                  marketplaceID={projectData.projectInfo.marketplaceID}
                 />
               )}
             <DistributionToken infoTable={dataToken} />
@@ -152,7 +154,7 @@ export default function FinanceCard({ visible }) {
   );
 }
 
-function ClaimTokens({ ownerTokensAmount, tokenName }) {
+function ClaimTokens({ ownerTokensAmount, tokenName, marketplaceID }) {
   const [tokenToAdressData, setTokenToAdressData] = useState([]);
   const [tokensAvaiableAmount, setTokensAvaiableAmount] = useState(0);
 
@@ -301,7 +303,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
       </p>
       <div className="d-flex justify-content-center">
         <a
-          href={`https://test-marketplace-cauca.suan.global/auth/login`} //remove ${process.env.REACT_APP_URL_MARKETPLACE}
+          href={`${marketplaceURLMapper[marketplaceID][process.env.REACT_APP_ENV]}auth/login`} //remove ${process.env.REACT_APP_URL_MARKETPLACE}
           target="_blank"
           rel="noreferrer"
           className="btn btn-warning"
