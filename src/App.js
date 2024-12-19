@@ -26,6 +26,13 @@ import ProjectPage from "./components/Constructor/ProjectPage/ProjectPage";
 import ListS3 from "components/ListS3";
 import NewProject from "components/Constructor/NewProject/NewProject";
 import Dashboard from "components/Dashboard/Dashboard";
+import NewCampaign from "components/Constructor/Campaign/NewCampaign";
+import Campaign from "components/Constructor/Campaign/Campaign";
+import CampaignList from "components/Constructor/Campaign/CampaignList";
+import PQRForm from "components/views/landingPage/PQRForm";
+import Property from "components/Property/Property";
+import { PropertyDataProvider } from "context/PropertyDataContext";
+import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
 
 function App() {
   return (
@@ -36,9 +43,14 @@ function App() {
           <Route
             path="/project/:id"
             element={
+              <RoleMiddleware
+                allowedRoles={["constructor", "admon", "investor", "validator", "analyst"]}
+                redirectPath="/"
+              >
               <ProjectDataProvider>
                 <ProjectPage />
               </ProjectDataProvider>
+              </RoleMiddleware>
             }
             exact
           />
@@ -56,6 +68,7 @@ function App() {
             exact
           />
           <Route path="/products" element={<Products />} />
+          <Route path="/PQR" element={<PQRForm />} />
           <Route
             path="/products/:id"
             element={
@@ -96,6 +109,14 @@ function App() {
               </RoleMiddleware>
             }
           />
+            <Route
+            path="/project_analyst"
+            element={
+              <RoleMiddleware allowedRoles={["analyst"]} redirectPath="/">
+                <AnalitycsAdmon />
+              </RoleMiddleware>
+            }
+          />
           <Route
             path="/validator_admon"
             element={
@@ -113,7 +134,30 @@ function App() {
             }
           />
           <Route path="/login" element={<LogIn />} />
-          <Route path="/lists3" element={<ListS3 />} />
+          <Route path="/new_campaign" element={<NewCampaign />} />
+          <Route
+            path="/property/:id"
+            element={
+              <RoleMiddleware
+                allowedRoles={["constructor", "admon", "investor", "validator"]}
+                redirectPath="/"
+              >
+                <PropertyDataProvider>
+                  <Property/>
+                </PropertyDataProvider>
+              </RoleMiddleware>
+            }
+            exact
+          />
+          <Route path="/campaigns" element={<CampaignList/>} />
+          <Route
+            path="/campaign/:id"
+            element={
+                <Campaign />
+            }
+            exact
+          />
+          {/* <Route path="/lists3" element={<ListS3 />} /> */}
           <Route path="/*" element={<Error />} />
         </Routes>
         <Footer />

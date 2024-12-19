@@ -216,47 +216,105 @@ class ValidatorAdmon extends Component {
       if (products) {
         return (
           <>
+            <h2 className="mt-5">Tus Campañas asignadas</h2>
+            <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
+              {products.length > 0 &&
+                products
+                  .filter((prod) => !(prod.campaignID === null))
+                  .map((product, index) => {
+                    return (
+                      <div key={index} className="p-3">
+                        <Card key={product.id} className="p-0">
+                          <img
+                            variant="top"
+                            src={getImagesCategories(product.categoryID)}
+                            style={{ height: "150px" }}
+                            alt="Hola"
+                          />
+                          <Card.Body>
+                            <div className="d-flex">
+                              <Stack direction="horizontal" gap={2}>
+                                <Badge bg="primary">
+                                  {getYearFromAWSDatetime(product.createdAt)}
+                                </Badge>
+                                <Badge bg="primary">{product.categoryID}</Badge>
+                                {product.isActive && (
+                                  <Badge bg="success">Publicado</Badge>
+                                )}
+                                {product.showOn && (
+                                  <Badge bg="secondary">
+                                    Marketplace {product.showOn}
+                                  </Badge>
+                                )}
+                              </Stack>
+                            </div>
+                            <p className="fs-5 my-2">{product.campaign.name}</p>
+                            <hr className="mb-2" />
+                            <p className="fs-6 my-2 text-h">
+                              {product.campaign.description}
+                            </p>
+                          </Card.Body>
+                          <Card.Footer>
+                            <div className="d-flex justify-content-center align-items-center">
+                              <a href={"campaign/" + product.campaignID}>
+                                <Button>Ver Campaña</Button>
+                              </a>
+                            </div>
+                          </Card.Footer>
+                        </Card>
+                      </div>
+                    );
+                  })}
+            </div>
             <h2 className="mt-5">Tus Proyectos Asignados</h2>
             <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
               {products.length > 0 &&
-                products.map((product, index) => {
-                  return (
-                    <div key={index} className="p-3">
-                      <Card key={product.id} className="p-0">
-                        <img
-                          variant="top"
-                          src={getImagesCategories(product.categoryID)}
-                          style={{ height: "150px" }}
-                          alt="Hola"
-                        />
-                        <Card.Body>
-                          <div className="d-flex">
-                            <Stack direction="horizontal" gap={2}>
-                              <Badge bg="primary">
-                                {getYearFromAWSDatetime(product.createdAt)}
-                              </Badge>
-                              <Badge bg="primary">{product.categoryID}</Badge>
-                              {product.isActive&& <Badge bg="success">Publicado</Badge>}
-                              {product.showOn && <Badge bg="secondary">Marketplace {product.showOn}</Badge>}
-                            </Stack>
-                          </div>
-                          <p className="fs-5 my-2">{product.name}</p>
-                          <hr className="mb-2" />
-                          <p className="fs-6 my-2 text-h">
-                            {product.description}
-                          </p>
-                        </Card.Body>
-                        <Card.Footer>
-                          <div className="d-flex justify-content-center align-items-center">
-                            <a href={"project/" + product.id}>
-                              <Button>Ver más</Button>
-                            </a>
-                          </div>
-                        </Card.Footer>
-                      </Card>
-                    </div>
-                  );
-                })}
+                products
+                  .filter((prod) => prod.campaign?.available === false || prod.campaignID === null)
+                  .map((product, index) => {
+                    return (
+                      <div key={index} className="p-3">
+                        <Card key={product.id} className="p-0">
+                          <img
+                            variant="top"
+                            src={getImagesCategories(product.categoryID)}
+                            style={{ height: "150px" }}
+                            alt="Hola"
+                          />
+                          <Card.Body>
+                            <div className="d-flex">
+                              <Stack direction="horizontal" gap={2}>
+                                <Badge bg="primary">
+                                  {getYearFromAWSDatetime(product.createdAt)}
+                                </Badge>
+                                <Badge bg="primary">{product.categoryID}</Badge>
+                                {product.isActive && (
+                                  <Badge bg="success">Publicado</Badge>
+                                )}
+                                {product.showOn && (
+                                  <Badge bg="secondary">
+                                    Marketplace {product.showOn}
+                                  </Badge>
+                                )}
+                              </Stack>
+                            </div>
+                            <p className="fs-5 my-2">{product.name}</p>
+                            <hr className="mb-2" />
+                            <p className="fs-6 my-2 text-h">
+                              {product.description}
+                            </p>
+                          </Card.Body>
+                          <Card.Footer>
+                            <div className="d-flex justify-content-center align-items-center">
+                              <a href={"project/" + product.id}>
+                                <Button>Ver más</Button>
+                              </a>
+                            </div>
+                          </Card.Footer>
+                        </Card>
+                      </div>
+                    );
+                  })}
             </div>
           </>
         );

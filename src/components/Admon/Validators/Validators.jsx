@@ -233,16 +233,16 @@ class Validators extends Component {
       if (validators.length > 0) {
         return (
           <div className="container mx-auto mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
-            <h4 className="text-lg font-semibold mb-4">List Validators</h4>
+            <h4 className="text-lg font-semibold mb-4">Lista Validadores</h4>
             <div className="overflow-x-auto">
               <table className="table-auto w-full">
                 <thead>
                   <tr>
-                    <th className="border px-4 py-2">Name</th>
+                    <th className="border px-4 py-2">Nombe</th>
                     <th className="border px-4 py-2">Email</th>
-                    <th className="border px-4 py-2">Subrole</th>
-                    <th className="border px-4 py-2">Created at</th>
-                    <th className="border px-4 py-2">Confirmation</th>
+                    <th className="border px-4 py-2">Subrol</th>
+                    <th className="border px-4 py-2">Creado:</th>
+                    <th className="border px-4 py-2">Confirmacion</th>
                     <th className="border px-4 py-2"></th>
                   </tr>
                 </thead>
@@ -258,7 +258,7 @@ class Validators extends Component {
                         }-${validator.createdAt.split("T")[0].split("-")[0]}`}
                       </td>
                       <td className="border px-4 py-2">
-                        {validator.isProfileUpdated ? "Confirmed" : "Pendiente"}
+                        {validator.isProfileUpdated ? "Confirmado" : "Pendiente"}
                       </td>
                       <td className="border px-4 py-2">
                         <button
@@ -275,7 +275,7 @@ class Validators extends Component {
                             })
                           }
                         >
-                          Delete
+                          Eliminar
                         </button>
                       </td>
                     </tr>
@@ -291,11 +291,11 @@ class Validators extends Component {
     return (
       <div className="container mx-auto ">
         <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
-          <h4 className="text-lg">Create new validator</h4>
+          <h4 className="text-lg">Crear un nuevo consultor</h4>
           <form className="mt-4">
             <div className="mb-4">
               <label htmlFor="formGridUsername" className="block font-semibold">
-                Username
+                Nombre de usuario
               </label>
               <input
                 type="text"
@@ -326,7 +326,7 @@ class Validators extends Component {
                 htmlFor="formGridValidatorType"
                 className="block font-semibold"
               >
-                Validator type
+               Tipo de consultor
               </label>
               <select
                 id="formGridValidatorType"
@@ -337,6 +337,7 @@ class Validators extends Component {
               >
                 <option value="financial">Financiero</option>
                 <option value="technical">Técnico</option>
+                <option value="fullaccessvalidator">Full access</option>
               </select>
             </div>
             <button
@@ -387,10 +388,10 @@ class Validators extends Component {
             <table className="table-auto">
               <thead>
                 <tr>
-                  <th className="border px-4 py-2">Name</th>
+                  <th className="border px-4 py-2">Nombre</th>
                   <th className="border px-4 py-2">Email</th>
-                  <th className="border px-4 py-2">Role</th>
-                  <th className="border px-4 py-2">Sub role</th>
+                  <th className="border px-4 py-2">Rol</th>
+                  <th className="border px-4 py-2">Sub rol</th>
                 </tr>
               </thead>
               <tbody>
@@ -417,7 +418,7 @@ class Validators extends Component {
               onClick={() => this.setState({ showModalCreate: false })}
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="button"

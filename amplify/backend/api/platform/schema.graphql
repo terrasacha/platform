@@ -31,6 +31,8 @@ type User @model {
   payments: [Payment] @hasMany(indexName: "byUser", fields: ["id"])
   marketplaceID: ID @index(name: "byMarketplace")
   marketplace: Marketplace @belongsTo(fields: ["marketplaceID"])
+  campaigns: [Campaign] @hasMany(indexName: "byUser", fields: ["id"])
+  properties: [Property] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Wallet @model {
@@ -61,8 +63,10 @@ type Verification @model {
   userVerifier: User @belongsTo(fields: ["userVerifierID"])
   userVerifiedID: ID @index(name: "byVerifiedUser")
   userVerified: User @belongsTo(fields: ["userVerifiedID"])
-  productFeatureID: ID! @index(name: "byProductFeature")
+  productFeatureID: ID @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+  propertyFeatureID: ID @index(name: "byPropertyFeature")
+  propertyFeature: PropertyFeature @belongsTo(fields: ["propertyFeatureID"])
   verificationComments: [VerificationComment]
     @hasMany(indexName: "byVerification", fields: ["id"])
 }
@@ -85,9 +89,12 @@ type Document @model {
   signedHash: String
   isApproved: Boolean
   status: String
+  visible: Boolean
   isUploadedToBlockChain: Boolean
-  productFeatureID: ID! @index(name: "byProductFeature")
+  productFeatureID: ID @index(name: "byProductFeature")
   productFeature: ProductFeature @belongsTo(fields: ["productFeatureID"])
+  propertyFeatureID: ID @index(name: "byPropertyFeature")
+  propertyFeature: PropertyFeature @belongsTo(fields: ["propertyFeatureID"])
   userID: ID! @index(name: "byUser")
   user: User @belongsTo(fields: ["userID"])
 }
@@ -121,6 +128,58 @@ type Marketplace @model {
   claimedToken: [ClaimedToken] @hasMany(indexName: "byMarketplace", fields: ["id"])
 }
 
+type Campaign @model {
+  id: ID!
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
+  products: [Product] @hasMany(indexName: "byCampaign", fields: ["id"])
+  name: String
+  description: String
+  initialDate: AWSTimestamp
+  endDate: AWSTimestamp
+  available: Boolean
+  images: AWSJSON
+  properties: [Property] @hasMany(indexName: "byCampaign", fields: ["id"])
+}
+
+enum PropertyStatusType {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+type Property @model {
+  id: ID!
+  name: String
+  cadastralNumber: AWSJSON
+  productID: ID @index(name: "byProduct")
+  product: Product @belongsTo(fields: ["productID"])
+  campaignID: ID @index(name: "byCampaign")
+  campaign: Campaign @belongsTo(fields: ["campaignID"])
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo(fields: ["userID"])
+  propertyFeatures: [PropertyFeature]
+    @hasMany(indexName: "byProperty", fields: ["id"])
+  status: PropertyStatusType
+  reason: String
+}
+
+type PropertyFeature @model {
+  id: ID!
+  value: String
+  isToBlockChain: Boolean
+  order: Int
+  isOnMainCard: Boolean
+  isResult: Boolean
+  propertyID: ID! @index(name: "byProperty")
+  property: Property @belongsTo(fields: ["propertyID"])
+  featureID: ID! @index(name: "byFeature")
+  feature: Feature @belongsTo(fields: ["featureID"])
+  verifications: [Verification]
+    @hasMany(indexName: "byPropertyFeature", fields: ["id"])
+  documents: [Document] @hasMany(indexName: "byPropertyFeature", fields: ["id"])
+}
+
 type Product @model {
   id: ID!
   name: String!
@@ -150,6 +209,9 @@ type Product @model {
   tokens: [Token] @hasMany(indexName: "byProduct", fields: ["id"])
   analysis: [Analysis] @hasMany(indexName: "byProduct", fields: ["id"])
   apiQueries: [ApiQuery] @hasMany(indexName: "byProduct", fields: ["id"])
+  campaignID: ID @index(name: "byCampaign")
+  campaign: Campaign @belongsTo(fields: ["campaignID"])
+  properties: [Property] @hasMany(indexName: "byProduct", fields: ["id"])
 }
 
 type Analysis @model {
@@ -251,6 +313,8 @@ type Feature @model {
   unitOfMeasureID: ID @index(name: "byUnitOfMeasure")
   unitOfMeasure: UnitOfMeasure @belongsTo(fields: ["unitOfMeasureID"])
   productFeatures: [ProductFeature]
+    @hasMany(indexName: "byFeature", fields: ["id"])
+  propertyFeatures: [PropertyFeature]
     @hasMany(indexName: "byFeature", fields: ["id"])
   featureFormulas: [FeatureFormula]
     @hasMany(indexName: "byFeature", fields: ["id"])

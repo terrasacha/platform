@@ -1,40 +1,27 @@
+import { CopyObjectCommand, DeleteObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 const { Storage } = require("aws-amplify");
 
-export async function moveToBackupFolderS3(sourceKey) {
-  console.log(sourceKey, "sourceKey");
-
-  // Codifica la ruta sourceKey
-  const encodedSourceKey = encodeURIComponent(sourceKey);
-  console.log(encodedSourceKey, "encodedSourceKey");
-  const segments = sourceKey.split("/");
-
-  const productID = segments[0];
-  const item = segments.pop();
-
-  console.log(item);
+export async function moveToBackupFolderS3(s3Client, bucketName, sourceKey) {
+  const file = sourceKey.split('/').pop();
+  const destinationFile = sourceKey.split('/').slice(0,3).join('/') + '/backup/' + file
   try {
-    // Copia el archivo codificado a la carpeta de respaldo
-    await Storage.copy(
-      { key: encodedSourceKey },
-      { key: `${productID}/backup/${item}` }
-    );
+      const copyParams = {
+          Bucket: bucketName,
+          CopySource: `${bucketName}/${sourceKey}`,
+          Key: destinationFile,
+      };
+      
+      await s3Client.send(new CopyObjectCommand(copyParams));
+      console.log(`File copied to ${destinationFile}`);
 
-    // Elimina el archivo original codificado
-    await Storage.remove(sourceKey);
-
-    console.log(`File moved from ${sourceKey} to ${productID}/backup/${item}`);
+      return true
   } catch (error) {
-    if (error.code === "NoSuchKey") {
-      console.log(
-        `El objeto ${item} no existe. Continuando con el siguiente objeto.`
-      );
-    } else {
-      console.error("Error moving the file:", error);
-    }
+      console.log(error)
+      throw error
   }
 }
 
-export async function removeFolderS3(path) {
+/* export async function removeFolderS3(path) {
   try {
     const list = await Storage.list(path);
     console.log(list,"list")
@@ -46,5 +33,80 @@ export async function removeFolderS3(path) {
     );
   } catch (error) {
     console.error("Error removing the folder:", error);
+  }
+}
+ */
+
+
+
+export async function moveFile(s3Client, bucketName, sourceFile, destinationFolder, currentPath) {
+  const fileName = sourceFile.key
+  const sourceFilePath = `projects/${currentPath.join('/')}/${fileName}`;
+  const destinationFile = `projects/${currentPath.slice(0, 2).join("/")}/${destinationFolder}/${fileName}`;
+  console.log(sourceFilePath,'sourceFilePath')
+  try {
+      const copyParams = {
+          Bucket: bucketName,
+          CopySource: `${bucketName}/${sourceFilePath}`,
+          Key: destinationFile,
+      };
+      
+      await s3Client.send(new CopyObjectCommand(copyParams));
+      console.log(`File copied to ${destinationFile}`);
+
+      const deleteParams = {
+          Bucket: bucketName,
+          Key: sourceFilePath,
+      };
+      
+      await s3Client.send(new DeleteObjectCommand(deleteParams));
+      console.log(`File deleted from ${sourceFilePath}`);
+      return { status: 'success', msg: 'Borrado exitoso', sourceFilePath };
+  } catch (error) {
+      return { status: 'error', msg: 'Error al borrar el archivo', sourceFilePath: null };
+  }
+      /* return { status: 'error', msg: 'testing', sourceFilePath }; */
+}
+
+export async function removeFolderS3(s3Client, bucketName, currentPath, folderToDelete) {
+  const currentPathJoin = 'projects/' + currentPath.join('/');
+  console.log(currentPathJoin);
+  console.log(folderToDelete, 'folderToDelete')
+  try {
+    // List objects in the specified folder
+    const listParams = {
+      Bucket: bucketName,
+      Prefix: currentPathJoin + `/${folderToDelete}`,
+    };
+
+    const listCommand = new ListObjectsV2Command(listParams);
+    const listResponse = await s3Client.send(listCommand);
+    console.log(listResponse, "list");
+
+    if (listResponse.Contents && listResponse.Contents.length > 0) {
+      const deleteParams = {
+        Bucket: bucketName,
+        Delete: {
+          Objects: listResponse.Contents.map(item => ({ Key: item.Key })),
+        },
+      };
+
+      const deleteCommand = new DeleteObjectsCommand(deleteParams);
+      const deleteResponse = await s3Client.send(deleteCommand);
+      
+      if (deleteResponse.Errors && deleteResponse.Errors.length > 0) {
+        console.error("Error removing folder:", deleteResponse.Errors);
+        return { status: 'error', msg: `Error al eliminar la carpeta ${folderToDelete}` };
+      }
+
+      console.log(deleteResponse, "Folder removed successfully.");
+      return { status: 'success', msg: 'Carpeta eliminada' };
+    } else {
+      console.log("No objects found in the specified folder.");
+      return { status: 'error', msg: 'No se encontraron objetos en la carpeta especificada.' };
+    }
+  } catch (error) {
+    console.error("Error removing the folder:", error);
+    return { status: 'error', msg: `Error al eliminar la carpeta ${folderToDelete}: ${error.message}` };
   }
 }

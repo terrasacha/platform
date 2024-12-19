@@ -1,14 +1,46 @@
-.container{
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
     background-image: url('../_images/fondo_landinf_banner.jpg');
     background-repeat: no-repeat;   
     background-size: cover;
-    height: 80vh;
+    height: 100dvh;
     display: flex;
+    justify-content: center;
     flex-direction: column;
     padding-top: 5%;
     color: white;
     padding-left: 2%;
+    animation: fadeIn 1s ease-out;
 }
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards;
+    animation-delay: 0.5s;
+}
+
+.fade-in-title {
+    animation-delay: 1s;
+}
+
+.fade-in-paragraph {
+    animation-delay: 1.5s;
+}
+
+.fade-in-row {
+    animation-delay: 2s;
+}
+
 a{
     text-decoration: none;
 }
@@ -50,17 +82,6 @@ a{
     font-family: 'Catamaran', sans-serif;
     color: #207E2E;
 }
-/* .titleContainerProducts h3{
-    font-family: 'Catamaran', sans-serif;
-    font-size: 3em;
-    font-weight: 700;
-}
-.titleContainerProducts p{
-    text-align: center;
-    width: 60%;
-    padding-top: 1%;
-    font-size: 1.2em;
-} */
 .containerFeaturedProducts{
     width: 100%;
     display: flex;
@@ -102,10 +123,27 @@ a{
     background: rgb(77,188,94);
     background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
 }
+@keyframes appear {
+  from {
+    transform: scale(0); 
+    opacity: 0; 
+  }
+  to {
+    transform: scale(1); 
+    opacity: 1; 
+  }
+}
+
+.block {
+  animation: appear 0.5s ease-out;
+  animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+}
 @media (max-width: 600px) {
 
     .container h1{
-        font-size: 2.2em;
+        width: 90%;
+        font-size: 2.5em;
     }
     .container p{
         padding-top: 6%;

@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import { API, graphqlOperation } from "aws-amplify";
-import { updateProductFeature } from "graphql/mutations";
+import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { validateProjectFeatures } from "./validateProjectFeatures";
 import { useAuth } from "context/AuthContext";
@@ -19,6 +19,7 @@ import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { notify } from "utilities/notify";
+import { marketplaceURLMapper } from "../../mappers";
 
 export default function FinanceCard({ visible }) {
   const { user } = useAuth();
@@ -44,21 +45,36 @@ export default function FinanceCard({ visible }) {
       await API.graphql(
         graphqlOperation(updateProductFeature, { input: updatedProductFeature })
       );
+    } else {
+      const newProductFeature = {
+        productID: projectData.projectInfo.id,
+        featureID: "GLOBAL_OWNER_ACCEPTS_CONDITIONS",
+        value: "true",
+      };
+
+      const response = await API.graphql(
+        graphqlOperation(createProductFeature, {
+          input: newProductFeature,
+        })
+      );
+      setGlobalOwnerAcceptsPfID(response.data.createProductFeature.id)
     }
     setValidadorShow(false);
 
     await fetchProjectData();
   };
   useEffect(() => {
+
     const pf = projectData.projectFeatures.find(
       (item) => item.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS"
     );
+    if (pf) {
+      const pfID = pf.id;
+      const pfValue = pf.value;
 
-    const pfID = pf.id;
-    const pfValue = pf.value;
-
-    setGlobalOwnerAcceptsPfID(pfID);
-    setIsAccepted(pfValue === "true" ? true : false);
+      setGlobalOwnerAcceptsPfID(pfID);
+      setIsAccepted(pfValue === "true" ? true : false);
+    }
   }, []);
 
   return (
@@ -124,6 +140,7 @@ export default function FinanceCard({ visible }) {
                   ownerTokensAmount={
                     projectData.projectInfo?.token.amountDistribution.owner
                   }
+                  marketplaceID={projectData.projectInfo.marketplaceID}
                 />
               )}
             <DistributionToken infoTable={dataToken} />
@@ -137,7 +154,7 @@ export default function FinanceCard({ visible }) {
   );
 }
 
-function ClaimTokens({ ownerTokensAmount, tokenName }) {
+function ClaimTokens({ ownerTokensAmount, tokenName, marketplaceID }) {
   const [tokenToAdressData, setTokenToAdressData] = useState([]);
   const [tokensAvaiableAmount, setTokensAvaiableAmount] = useState(0);
 
@@ -286,7 +303,7 @@ function ClaimTokens({ ownerTokensAmount, tokenName }) {
       </p>
       <div className="d-flex justify-content-center">
         <a
-          href={`${process.env.REACT_APP_URL_MARKETPLACE}/auth/login`}
+          href={`${marketplaceURLMapper[marketplaceID || 'suan'][process.env.REACT_APP_ENV]}auth/login`} //remove ${process.env.REACT_APP_URL_MARKETPLACE}
           target="_blank"
           rel="noreferrer"
           className="btn btn-warning"

@@ -19,6 +19,7 @@ import {
   deleteVerificationComment,
   updateProduct,
   deleteProductFeature,
+  deleteCampaign,
 } from "../../../graphql/mutations";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -70,6 +71,8 @@ export default class ListProducts extends Component {
   componentDidMount = async () => {
     await this.loadProductFeatureResults();
   };
+
+  
   hasVerifiedProductFeatures(product) {
     let verifications = product.productFeatures.items.some(
       (feature) => feature.verifications.items.length > 0
@@ -183,19 +186,21 @@ export default class ListProducts extends Component {
   handleDeleteProductFeature = async () => {
     let productFeature = this.state.selectedProductFeatureToDelete;
     let checked = this.state.selectedProductFeatureToDeleteConfirmationCheck;
+  
     if (productFeature != null && checked) {
       let isPossibleToDelete = true;
-
+  
       if (
         productFeature.product.status === "in_blockchain" ||
         productFeature.product.status === "rejected"
       )
         isPossibleToDelete = false;
+  
       if (productFeature.documents.items.length > 0) isPossibleToDelete = false;
-
+  
       if (isPossibleToDelete) {
         // Delete Verifications
-        productFeature.verifications.items.map((verification) => {
+        productFeature.verifications.items.forEach((verification) => {
           const inputVerificationToDelete = {
             id: verification.id,
           };
@@ -205,11 +210,11 @@ export default class ListProducts extends Component {
             })
           );
         });
-
+  
         // Delete Verification Comments
         productFeature.verifications.items
-          .map((verification) => verification.verificationComments.items)
-          .map((verificationComment) => {
+          .flatMap((verification) => verification.verificationComments.items)
+          .forEach((verificationComment) => {
             const inputVerificationCommentToDelete = {
               id: verificationComment.id,
             };
@@ -219,9 +224,9 @@ export default class ListProducts extends Component {
               })
             );
           });
-
+  
         // Delete Results
-        productFeature.productFeatureResults.items.map((result) => {
+        productFeature.productFeatureResults.items.forEach((result) => {
           const inputResultsToDelete = {
             id: result.id,
           };
@@ -231,22 +236,41 @@ export default class ListProducts extends Component {
             })
           );
         });
-
+  
         // Delete Product Feature Relation
-        API.graphql(
+        await API.graphql(
           graphqlOperation(deleteProductFeature, {
             input: { id: productFeature.id },
           })
         );
-
+  
+        // Check if the product is associated with a campaign
+        const campaign = productFeature.product.campaign;
+        if (campaign) {
+          console.log("Deleting campaign:", campaign.id, campaign.name);
+  
+          // Delete the campaign
+          const inputCampaignToDelete = {
+            id: campaign.id,
+          };
+          await API.graphql(
+            graphqlOperation(deleteCampaign, {
+              input: inputCampaignToDelete,
+            })
+          );
+  
+          console.log("Campaign deleted successfully:", campaign.name);
+        }
+  
         this.handleHideModalDeleteProductFeatureConfirmation();
-
+  
         this.notify(
-          "ProductFeature y componentes asociados eliminados existosamente"
+          "ProductFeature, associated campaign, and related components deleted successfully"
         );
       }
     }
   };
+  
 
   notify = (e) => {
     toast.success(e, {
@@ -289,6 +313,7 @@ export default class ListProducts extends Component {
       selectedProductFeatureToDeleteHasVerifications,
       selectedProductFeatureToDeleteHasVerificationComments,
     } = this.state;
+    console.log("que trae",selectedProductToShow)
     // Render Products
     let productsData = products.map((product) => {
       product.toCertified = false;
@@ -719,7 +744,7 @@ export default class ListProducts extends Component {
               <Modal.Title>Confirmar eliminación</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {`¿Estás seguro que quieres borrar el proyectoa?`}
+              {`¿Estás seguro que quieres borrar el proyecto?`}
             </Modal.Body>
             <Modal.Footer>
               <Button
@@ -730,9 +755,16 @@ export default class ListProducts extends Component {
               </Button>
               <Button
                 variant="danger"
-                onClick={() =>
-                  deleteAllInfoProduct(this.state.selectedProductToShow)
-                }
+                onClick={async () => {
+                  try {
+                    await deleteAllInfoProduct(this.state.selectedProductToShow);
+                    this.setState({ showModalDeleteProduct: false });
+                    this.notify("Producto eliminado exitosamente.");
+                  } catch (error) {
+                    console.error("Error al eliminar el producto:", error);
+                    this.notifyError("Error al eliminar el producto. Intente nuevamente.");
+                  }
+                }}
               >
                 Delete
               </Button>

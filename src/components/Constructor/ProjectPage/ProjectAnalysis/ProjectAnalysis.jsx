@@ -4,14 +4,13 @@ import Card from "components/common/Card";
 import { getPolygonByCadastralNumber } from "services/getPolygonByCadastralNumber";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 import { getPredialData2ByCadastralNumber } from "services/getPredialData2ByCadastralNumber";
-//import { generateJSONFile } from "utilities/generateJsonFile";
 import { Button, Form } from "react-bootstrap";
 import Spinner from "react-bootstrap/Spinner";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { XIcon } from "components/common/icons/XIcon";
 import { notify } from "utilities/notify";
 import BarGraphComponent from "./BarGraphComponent";
-//import SankeyGraphComponent from "./SankeyGraphComponent";
+import ConsultOraculo from "./ConsultOraculo";
 export default function ProjectAnalysis({ visible }) {
   const { projectData } = useProjectData();
   const [comparativeAnalysis, setComparativeAnalysis] = useState(null);
@@ -190,6 +189,9 @@ export default function ProjectAnalysis({ visible }) {
     <>
       {visible && (
         <div className="row row-cols-1 g-4">
+          <div className="col-12">
+            <ConsultOraculo />
+          </div>
           <div className="col-12">
             <Card>
               <Card.Header title="Analisis" sep={true} />

@@ -14,11 +14,13 @@ import {
 import { useProjectData } from "../../../../../context/ProjectDataContext";
 import { useAuth } from "../../../../../context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
-
+import { handleOpenObject, uploadFile } from "utilities/s3clientcommands";
+import { useS3Client } from "context/s3ClientContext";
 export default function PostulantFilesInfoCard(props) {
   const {
     className,
     projectFiles,
+    propertyFiles,
     handleMessageButtonClick,
     setIsDocApproved,
     isVerifier,
@@ -32,22 +34,27 @@ export default function PostulantFilesInfoCard(props) {
     handleUpdateContextFileVerification,
     projectData,
   } = useProjectData();
+  const { s3Client, bucketName } = useS3Client();
   const { user } = useAuth();
 
   const fileInputRef = React.createRef();
 
-  const handleUpdateDocumentStatus = async (fileIndex, docId, status) => {
-    const file = projectData.projectFiles[fileIndex];
+  const handleUpdateDocumentStatus = async (fileIndex, docId, status, type) => {
+    const typeVerification = {
+      productFeature: 'productFeatureID',
+      propertyFeature: 'propertyFeatureID'
+    }
+    const file = typeVerification[type] === 'productFeatureID' ? projectData.projectFiles[fileIndex] : projectData.projectPropertyFiles[fileIndex]
     let verificationId;
-
+    console.log(file, 'file verification')
     if (!file.verification) {
       const newVerification = {
-        productFeatureID: file.pfID,
+        [typeVerification[type]]: file.pfID,
         userVerifierID: user.id,
-        userVerifiedID: projectData.projectPostulant.id,
+        userVerifiedID: type=== 'productFeature'?  projectData.projectPostulant.id: file.userID,
       };
 
-      console.log(newVerification);
+      console.log(newVerification, 'newVerification');
 
       const createVerificationResult = await API.graphql(
         graphqlOperation(createVerification, {
@@ -161,23 +168,19 @@ export default function PostulantFilesInfoCard(props) {
 
     const newFile = e.target.files[0];
 
-    const getFilePathRegex = /\/public\/(.+)$/;
+    const getFilePathRegex = /\/projects\/(.+)$/;
 
     const verificationId = file.verification.id;
 
     if (newFile) {
-      const fileToDeleteName = decodeURIComponent(
+      let fileToDeleteName = decodeURIComponent(
         file.url.match(getFilePathRegex)[1]
       );
-
+      fileToDeleteName = "projects/" + fileToDeleteName
+      console.log(fileToDeleteName, 'fileToDeleteName')
       try {
-        const uploadImageResult = await Storage.put(fileToDeleteName, newFile, {
-          level: "public",
-          contentType: "*/*",
-        });
-
+        await uploadFile(s3Client, bucketName, fileToDeleteName, file)
         console.log("Archivo seleccionado:", newFile);
-        console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
         notify({
           msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
@@ -231,7 +234,7 @@ export default function PostulantFilesInfoCard(props) {
     fileInputRef.current.click();
   };
 
-  const getValidationRender = (file, fileIndex) => {
+  const getValidationRender = (file, fileIndex, type) => {
     const statusMap = {
       pending: "Pendiente",
       accepted: "Aceptado",
@@ -244,7 +247,7 @@ export default function PostulantFilesInfoCard(props) {
             <button
               className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
               onClick={() =>
-                handleUpdateDocumentStatus(fileIndex, file.id, true)
+                handleUpdateDocumentStatus(fileIndex, file.id, true, type)
               }
             >
               <CheckIcon />
@@ -252,7 +255,7 @@ export default function PostulantFilesInfoCard(props) {
             <button
               className="px-2 py-1 text-white rounded-md bg-red-500"
               onClick={() =>
-                handleUpdateDocumentStatus(fileIndex, file.id, false)
+                handleUpdateDocumentStatus(fileIndex, file.id, false, type)
               }
             >
               <XIcon />
@@ -275,13 +278,85 @@ export default function PostulantFilesInfoCard(props) {
   };
 
   return (
-    <Card className={className}>
-      <Card.Header title="Documentos del postulante" sep="true" />
-      <Card.Body>
-        {projectFiles && projectFiles.length > 0 ? (
+    <div>
+      {/* <Card className={`${className} mb-4`}>
+        <Card.Header title="Documentos del postulante" sep="true" />
+        <Card.Body>
+          {projectFiles && projectFiles.length > 0 ? (
+            <table className="w-full text-center">
+              <thead>
+                <tr>
+                  <th>Tipo</th>
+                  <th>Ultima actualización</th>
+                  <th>Estado Validación</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody className="align-middle">
+                {projectFiles?.map((file, fileIndex) => {
+                  return (
+                    <tr
+                      key={file.id}
+                      className="border-b-2"
+                      style={{ height: "4rem" }}
+                    >
+                      <td>{file.title}</td>
+                      <td>{file.updatedAt}</td>
+                      <td>{getValidationRender(file, fileIndex, 'productFeature')}</td>
+                      <td className="text-end flex justify-end items-center h-[4rem] gap-x-2">
+                        {isPostulant && file.status === "denied" && (
+                          <>
+                            <input
+                              type="file"
+                              style={{ display: "none" }}
+                              ref={fileInputRef}
+                              onChange={(e) =>
+                                handleUpdateDocumentFile(e, fileIndex, file)
+                              }
+                            />
+                            <button
+                              className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
+                              onClick={() => handleUploadDocumentButtonClick()}
+                            >
+                              {isLoadingDoc ? (
+                                <Spinner size="sm" className="p-2"></Spinner>
+                              ) : (
+                                "Actualizar documentación"
+                              )}
+                            </button>
+                          </>
+                        )}
+                          <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white" onClick={() => handleOpenObject(s3Client, bucketName, file.url)}>
+                            <DownloadIcon />
+                          </button>
+                        {file.verification && (
+                          <button
+                            className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
+                            onClick={() => handleMessageButtonClick(fileIndex, 'productFeature')}
+                          >
+                            <MessagesIcon />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          ) : (
+            "No se han subido archivos para validación"
+          )}
+
+        </Card.Body>
+      </Card> */}
+      <Card className={className}>
+        <Card.Header title="Documentos de los predios" sep="true" />
+        <Card.Body>
+        {propertyFiles && propertyFiles.length > 0 ? (
           <table className="w-full text-center">
             <thead>
               <tr>
+                <th>Predio</th>
                 <th>Tipo</th>
                 <th>Ultima actualización</th>
                 <th>Estado Validación</th>
@@ -289,16 +364,17 @@ export default function PostulantFilesInfoCard(props) {
               </tr>
             </thead>
             <tbody className="align-middle">
-              {projectFiles?.map((file, fileIndex) => {
+              {propertyFiles?.map((file, fileIndex) => {
                 return (
                   <tr
                     key={file.id}
                     className="border-b-2"
                     style={{ height: "4rem" }}
                   >
+                    <td>{file.property.name}</td>
                     <td>{file.title}</td>
                     <td>{file.updatedAt}</td>
-                    <td>{getValidationRender(file, fileIndex)}</td>
+                    <td>{getValidationRender(file, fileIndex, 'propertyFeature')}</td>
                     <td className="text-end flex justify-end items-center h-[4rem] gap-x-2">
                       {isPostulant && file.status === "denied" && (
                         <>
@@ -322,15 +398,13 @@ export default function PostulantFilesInfoCard(props) {
                           </button>
                         </>
                       )}
-                      <a href={file.url} target="_blank" rel="noreferrer">
-                        <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white">
+                        <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white" onClick={() => handleOpenObject(s3Client, bucketName, file.url)}>
                           <DownloadIcon />
                         </button>
-                      </a>
                       {file.verification && (
                         <button
                           className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-                          onClick={() => handleMessageButtonClick(fileIndex)}
+                          onClick={() => handleMessageButtonClick(fileIndex, 'propertyFeature')}
                         >
                           <MessagesIcon />
                         </button>
@@ -344,7 +418,9 @@ export default function PostulantFilesInfoCard(props) {
         ) : (
           "No se han subido archivos para validación"
         )}
-      </Card.Body>
-    </Card>
+
+        </Card.Body>
+      </Card>
+    </div>
   );
 }
