@@ -64,11 +64,12 @@ export default function NewCampaign() {
         graphqlOperation(createCampaign, { input: timestampData })
       );
       const campaignId = result.data.createCampaign.id;
+      const campaignName = formData.name;
 
       const result2 = await API.graphql(
         graphqlOperation(createProduct, {
           input: {
-            name: `product-campaign-${campaignId}`,
+            name: `projecto - ${campaignName}`,
             description: "",
             isActive: false,
             categoryID: "MIXTO",

@@ -312,6 +312,7 @@ export default class ListProducts extends Component {
       selectedProductFeatureToDeleteHasVerifications,
       selectedProductFeatureToDeleteHasVerificationComments,
     } = this.state;
+    console.log("que trae",selectedProductToShow)
     // Render Products
     let productsData = products.map((product) => {
       product.toCertified = false;
@@ -742,7 +743,7 @@ export default class ListProducts extends Component {
               <Modal.Title>Confirmar eliminación</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {`¿Estás seguro que quieres borrar el proyectoa?`}
+              {`¿Estás seguro que quieres borrar el proyecto?`}
             </Modal.Body>
             <Modal.Footer>
               <Button
@@ -753,9 +754,16 @@ export default class ListProducts extends Component {
               </Button>
               <Button
                 variant="danger"
-                onClick={() =>
-                  deleteAllInfoProduct(this.state.selectedProductToShow)
-                }
+                onClick={async () => {
+                  try {
+                    await deleteAllInfoProduct(this.state.selectedProductToShow);
+                    this.setState({ showModalDeleteProduct: false });
+                    this.notify("Producto eliminado exitosamente.");
+                  } catch (error) {
+                    console.error("Error al eliminar el producto:", error);
+                    this.notifyError("Error al eliminar el producto. Intente nuevamente.");
+                  }
+                }}
               >
                 Delete
               </Button>
