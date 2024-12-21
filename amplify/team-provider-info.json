@@ -35,12 +35,8 @@
     "categories": {
       "auth": {
         "platform": {}
-        "platform": {}
       },
       "storage": {
-        "platform": {}
-      },
-      "api": {
         "platform": {}
       }
     }
@@ -59,9 +55,6 @@
     },
     "categories": {
       "auth": {
-        "platformauth": {}
-      },
-      "api": {
         "platform": {}
       },
       "storage": {
