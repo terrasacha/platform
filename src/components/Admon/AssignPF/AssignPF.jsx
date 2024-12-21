@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 //Bootstrap
 import {
+  Alert,
   Button,
   Col,
   Container,
@@ -25,7 +26,7 @@ import {
   onCreateVerification,
   onDeleteUserProduct,
 } from "../../../graphql/subscriptions";
-import { listUsers } from "../../../graphql/queries";
+import { listProducts, listUserProducts, listUsers } from "../../../graphql/queries";
 import { graphql } from "graphql";
 import { XIcon } from "components/common/icons/XIcon";
 import { notify } from "utilities/notify";
@@ -179,342 +180,242 @@ export default class AssignPF extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
-      usersCopy: [],
+      validators: [],
       products: [],
-      showModalRole: false,
-      userSelected: null,
-      productselected: null,
+      userProducts: [],
+      selectedValidator: "",
+      selectedProduct: "",
+      showSuccess: false,
+      showError: false,
+      showDeleteSuccess: false,
     };
-    this.loadUsers = this.loadUsers.bind(this);
-    this.loadProducts = this.loadProducts.bind(this);
-    this.handleSelectUser = this.handleSelectUser.bind(this);
-    this.handleSelectProduct = this.handleSelectProduct.bind(this);
-    this.handleAssignProduct = this.handleAssignProduct.bind(this);
   }
-  componentDidMount = async () => {
-    Promise.all([this.loadUsers(), this.loadProducts()]);
 
-    this.createUserProductListener = API.graphql(
-      graphqlOperation(onCreateUserProduct)
-    ).subscribe({
-      next: () => {
-        this.loadProducts();
-      },
-    });
-    this.deleteUserProductListener = API.graphql(
-      graphqlOperation(onDeleteUserProduct)
-    ).subscribe({
-      next: () => {
-        this.loadProducts();
-      },
-    });
-  };
-  async loadUsers() {
-    let filter = {
-      role: {
-        eq: "validator",
-      },
-    };
-    const listUsersResults = await API.graphql({
-      query: listUserValidators,
-      variables: { filter: filter },
-    });
-    this.setState({
-      users: listUsersResults.data.listUsers.items,
-      usersCopy: listUsersResults.data.listUsers.items,
-    });
-  }
-  async loadProducts() {
-    const listproductsResults = await API.graphql({
-      query: listProductsAssign,
-    });
-    let productTemplates = listproductsResults.data.listProducts.items.sort(
-      (a, b) => {
-        let nameA = a.name.toUpperCase();
-        let nameB = b.name.toUpperCase();
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-        return 0;
-      }
-    );
-    this.setState({ products: productTemplates });
-  }
-  handleSelectUser(user) {
-    this.setState({ userSelected: user });
-  }
-  handleSelectProduct(product) {
-    this.setState({ productselected: product });
-  }
-  assignRole(user) {
-    this.handleSelectUser(user);
-    this.setState({ showModalRole: true });
-  }
-  async handleAssignProduct() {
-    const isSelectedValidatorAlreadyAssignedInProject =
-      this.state.productselected.userProducts.items.some(
-        (up) => up.user.id === this.state.userSelected.id
-      );
-    console.log(
-      "isSelectedValidatorAlreadyAssignedInProject",
-      isSelectedValidatorAlreadyAssignedInProject
-    );
-    if (!isSelectedValidatorAlreadyAssignedInProject) {
-      let tempUserProduct = {
-        productID: this.state.productselected.id,
-        userID: this.state.userSelected.id,
-      };
-      await API.graphql(
-        graphqlOperation(createUserProduct, { input: tempUserProduct })
-      );
-      notify({ msg: "Validador asignado", type: "success" });
-    } else {
-      notify({
-        msg: "El validador ya se encuentra asignado al proyecto",
-        type: "error",
-      });
+  async componentDidMount() {
+    try {
+      await Promise.all([
+        this.loadValidators(),
+        this.loadProducts(),
+        this.loadUserProducts(),
+      ]);
+    } catch (error) {
+      console.error("Error cargando datos:", error);
     }
-    this.cleanState();
   }
-  async handleRemoveValidatorFromProject(userProductId) {
-    let tempDeleteUserProduct = {
-      id: userProductId,
+
+  async loadValidators() {
+    const filter = {
+      or: [
+        { role: { eq: "validator" } },
+        { role: { eq: "validator_financial" } },
+      ],
     };
-    await API.graphql(
-      graphqlOperation(deleteUserProduct, { input: tempDeleteUserProduct })
-    );
+    try {
+      const result = await API.graphql(graphqlOperation(listUsers, { filter }));
+      this.setState({ validators: result.data.listUsers.items });
+    } catch (error) {
+      console.error("Error al cargar validadores:", error);
+    }
   }
-  cleanState() {
-    this.setState({
-      showModalRole: false,
-      userSelected: null,
-      productselected: null,
-    });
+
+  async loadProducts() {
+    try {
+      const result = await API.graphql(graphqlOperation(listProducts));
+      this.setState({ products: result.data.listProducts.items });
+    } catch (error) {
+      console.error("Error al cargar productos:", error);
+    }
   }
+
+  async loadUserProducts() {
+    try {
+      const result = await API.graphql(graphqlOperation(listUserProducts));
+      const validUserProducts = result.data.listUserProducts.items.filter(
+        (up) =>
+          up.product !== null &&
+          up.user !== null &&
+          ["validator", "validator_financial"].includes(up.user.role)
+      );
+      this.setState({ userProducts: validUserProducts });
+    } catch (error) {
+      console.error("Error al cargar asignaciones:", error);
+    }
+  }
+
+  handleAssignProduct = async () => {
+    const { selectedValidator, selectedProduct } = this.state;
+
+    if (!selectedValidator || !selectedProduct) {
+      this.setState({ showError: true });
+      return;
+    }
+
+    const payload = {
+      userID: selectedValidator,
+      productID: selectedProduct,
+    };
+
+    try {
+      await API.graphql(graphqlOperation(createUserProduct, { input: payload }));
+      this.setState({
+        selectedValidator: "",
+        selectedProduct: "",
+        showSuccess: true,
+        showError: false,
+      });
+      await this.loadUserProducts();
+    } catch (error) {
+      console.error("Error al asignar Consultor:", error);
+    }
+  };
+
+  handleDeleteAssignment = async (assignmentId) => {
+    try {
+      await API.graphql(
+        graphqlOperation(deleteUserProduct, { input: { id: assignmentId } })
+      );
+      this.setState({ showDeleteSuccess: true });
+      await this.loadUserProducts();
+    } catch (error) {
+      console.error("Error al eliminar asignación:", error);
+    }
+  };
+
   render() {
-    let { usersCopy, products, userSelected, productselected } = this.state;
-
-    const renderUsers = () => {
-      if (usersCopy.length > 0) {
-        return (
-          <div className="mx-auto mt-8">
-            <h2 className="text-xl font-semibold mb-4">Users</h2>
-            <table className="w-full border-collapse border border-gray-300 hover:border-blue-500">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="px-4 py-2">Name</th>
-                  <th className="px-4 py-2">Subrole</th>
-                </tr>
-              </thead>
-              <tbody>
-                {usersCopy?.map((user) => {
-                  return (
-                    <tr
-                      key={user.id}
-                      onClick={() => this.handleSelectUser(user)}
-                      className="cursor-pointer hover:bg-gray-100"
-                    >
-                      <td className="border px-4 py-2">{user.name}</td>
-                      <td className="border px-4 py-2">{user.subrole}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        );
-      }
-    };
-
-    const renderProducts = () => {
-      console.log(products);
-      if (products.length > 0) {
-        return (
-          <div className="mx-auto mt-8 ml-2">
-            <h2 className="text-xl font-semibold mb-4">Products</h2>
-            <table className="w-full border-collapse border border-gray-300 hover:border-blue-500">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="px-4 py-2">Proyecto</th>
-                  <th className="px-4 py-2">Categoría</th>
-                  <th className="px-4 py-2">Verificadores</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products?.map((product) => {
-                  let verificadores = product.userProducts.items.filter(
-                    (up) => up.user?.role === "validator"
-                  );
-                  return (
-                    <tr
-                      key={product.id}
-                      onClick={() => this.handleSelectProduct(product)}
-                      className="cursor-pointer hover:bg-gray-100"
-                    >
-                      <td className="border px-4 py-2">{product.name}</td>
-                      <td className="border px-4 py-2">{product.categoryID}</td>
-                      <td className="border px-4 py-2">
-                        <ul className="list-none p-0">
-                          {verificadores.length > 0 ? (
-                            verificadores.map((v) => (
-                              <li key={v.id} className="mb-2">
-                                <div className="flex items-center">
-                                  {v.user.name}
-                                  <button
-                                    className="ml-2 text-white bg-red-500 border border-red-600 rounded-sm w-6 h-6 flex items-center justify-center"
-                                    onClick={() =>
-                                      this.handleRemoveValidatorFromProject(
-                                        v.id
-                                      )
-                                    }
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 20 20"
-                                      fill="currentColor"
-                                      className="w-4 h-4"
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        d="M14.293 5.293a1 1 0 011.414 1.414L11.414 12l4.293 4.293a1 1 0 11-1.414 1.414L10 13.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 12 4.293 7.707a1 1 0 111.414-1.414L10 10.586l4.293-4.293a1 1 0 011.414 0z"
-                                        clipRule="evenodd"
-                                      />
-                                    </svg>
-                                  </button>
-                                </div>
-                              </li>
-                            ))
-                          ) : (
-                            <li>Sin asignar</li>
-                          )}
-                        </ul>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        );
-      }
-    };
-
-    const renderUserProducts = () => {
-      if (products.length > 0) {
-        return (
-          <div className="mx-auto mt-8">
-            <h2 className="text-xl font-semibold mb-4">Products</h2>
-            <table className="w-full border-collapse border border-gray-300 hover:border-blue-500">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="px-4 py-2">Proyecto</th>
-                  <th className="px-4 py-2">Categoría</th>
-                  <th className="px-4 py-2">Verificadores</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products?.map((product) => {
-                  let verificadores = product.userProducts.items.filter(
-                    (up) => up.user?.role === "validator"
-                  );
-                  return (
-                    <tr
-                      key={product.id}
-                      onClick={() => this.handleSelectProduct(product)}
-                      className="cursor-pointer hover:bg-gray-100"
-                    >
-                      <td className="border px-4 py-2">{product.name}</td>
-                      <td className="border px-4 py-2">{product.categoryID}</td>
-                      <td className="border px-4 py-2">
-                        <ul className="list-none p-0">
-                          {verificadores.length > 0 ? (
-                            verificadores.map((v) => (
-                              <li key={v.id}>{v.user.name}</li>
-                            ))
-                          ) : (
-                            <li>Sin asignar</li>
-                          )}
-                        </ul>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        );
-      }
-    };
+    const {
+      validators,
+      products,
+      userProducts,
+      selectedValidator,
+      selectedProduct,
+      showSuccess,
+      showError,
+      showDeleteSuccess,
+    } = this.state;
+    
 
     return (
-      <div className="container mx-auto">
-        <div className="container bg-white p-4 rounded-lg shadow-sm mb-4">
-          <h2 className="text-2xl font-semibold">Assign Product</h2>
-          <form>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="col-span-1">
-                <label htmlFor="user" className="block mb-1">
-                  User
-                </label>
-                <input
-                  id="user"
-                  type="text"
-                  placeholder="Seleccionar un usuario"
-                  value={userSelected ? userSelected.name : ""}
-                  onChange={() => ""}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label htmlFor="project" className="block mb-1">
-                  Proyecto
-                </label>
-                <input
-                  id="project"
-                  type="text"
-                  placeholder="Seleccionar un proyecto"
-                  value={productselected ? productselected.name : ""}
-                  onChange={() => ""}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                  readOnly
-                />
-              </div>
-            </div>
+      <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
+        <Container className="bg-white p-4 rounded-lg shadow-sm">
+          <h2 className="text-center mb-4">Asignar Consultor</h2>
 
-            <div className="mt-4">
-              <button
-                type="button"
-                className={`px-4 py-2 bg-blue-500 text-white rounded-md ${
-                  userSelected && productselected
-                    ? ""
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-                disabled={!userSelected || !productselected}
-                onClick={() => this.handleAssignProduct()}
+          {/* Mensajes de alerta */}
+          {showSuccess && (
+            <Alert
+              variant="success"
+              onClose={() => this.setState({ showSuccess: false })}
+              dismissible
+            >
+              Consultor asignado correctamente.
+            </Alert>
+          )}
+          {showError && (
+            <Alert
+              variant="danger"
+              onClose={() => this.setState({ showError: false })}
+              dismissible
+            >
+              Por favor, seleccione un consultor y un producto antes de continuar.
+            </Alert>
+          )}
+          {showDeleteSuccess && (
+            <Alert
+              variant="warning"
+              onClose={() => this.setState({ showDeleteSuccess: false })}
+              dismissible
+            >
+              Asignación eliminada correctamente.
+            </Alert>
+          )}
+
+          {/* Formulario de selección */}
+          <Form>
+            <Form.Group controlId="selectValidator" className="mb-3">
+              <Form.Label>Seleccionar consultor</Form.Label>
+              <Form.Select
+                value={selectedValidator}
+                onChange={(e) =>
+                  this.setState({ selectedValidator: e.target.value })
+                }
               >
-                ASIGNAR VERIFICADOR
-              </button>
+                <option value="">-- Seleccione un consultor --</option>
+                {validators.map((validator) => (
+                  <option key={validator.id} value={validator.id}>
+                    {validator.name}
+                    {validator.role === "validator_financial" ? " (Financiero)" : ""}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group controlId="selectProduct" className="mb-3">
+  <Form.Label>Seleccionar Producto</Form.Label>
+  <Form.Select
+    value={selectedProduct}
+    onChange={(e) => this.setState({ selectedProduct: e.target.value })}
+  >
+    <option value="">-- Seleccione un producto --</option>
+    {products.map((product) => (
+      <option key={product.id} value={product.id}>
+        {product.name} {product.campaign ? `(${product.campaign.name})` : ""}
+      </option>
+    ))}
+  </Form.Select>
+</Form.Group>
+
+
+            <div className="text-center">
+              <Button
+                variant="primary"
+                onClick={this.handleAssignProduct}
+                disabled={!selectedValidator || !selectedProduct}
+              >
+                Asignar Consultor
+              </Button>
             </div>
-          </form>
-        </div>
+          </Form>
+        </Container>
 
-        <div className="flex flex-col md:flex-row mt-4 h-96 overflow-auto">
-          <div className="md:w-2/5 overflow-auto bg-white p-4 rounded-lg shadow-sm mb-4">
-            {renderUsers()}
-          </div>
-          <div className="md:w-3/5 overflow-auto bg-white p-4 rounded-lg shadow-sm mb-4 ml-2">
-            {renderProducts()}
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
-          {renderUserProducts()}
-        </div>
+        <Container className="bg-white mt-4 p-4 rounded-lg shadow-sm">
+          <h4 className="text-center mb-4">Validadores Asignados</h4>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Consultor</th>
+                <th>Producto</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userProducts.length > 0 ? (
+                userProducts.map((up) => (
+                  <tr key={up.id}>
+                    <td>
+                      {up.user.name}
+                      {up.user.role === "validator" ? " (Consultor)" : " (Financiero)"}
+                    </td>
+                    <td>{up.product.name}</td>
+                    <td>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => this.handleDeleteAssignment(up.id)}
+                      >
+                        Eliminar
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" className="text-center">
+                    No hay validadores asignados.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </Container>
       </div>
     );
   }

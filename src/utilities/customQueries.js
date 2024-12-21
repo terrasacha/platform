@@ -6,9 +6,78 @@ export const getProduct = /* GraphQL */ `
       name
       description
       isActive
+      marketplaceID
       order
       status
       showOn
+      properties {
+        items {
+          id
+          name
+          productID
+          status
+          userID
+          cadastralNumber
+          campaignID
+          campaign {
+            id
+            name
+          }
+          propertyFeatures {
+            items {
+              id
+              value
+              verifications {
+                items {
+                  userVerifierID
+                  userVerifiedID
+                  verificationComments {
+                    items {
+                      comment
+                      createdAt
+                      id
+                      isCommentByVerifier
+                    }
+                  }
+                  userVerified {
+                    name
+                  }
+                  userVerifier {
+                    name
+                  }
+                  id
+                }
+              }
+              documents {
+                items {
+                  id
+                  url
+                  isApproved
+                  docHash
+                  data
+                  isUploadedToBlockChain
+                  productFeatureID
+                  signed
+                  signedHash
+                  status
+                  timeStamp
+                  userID
+                }
+              }
+              feature {
+                name
+                isVerifable
+              }
+              featureID
+              createdAt
+              updatedAt
+            }
+            nextToken
+          }
+        }
+        nextToken
+        __typename
+      }
       marketplace {
         id
         name
@@ -106,6 +175,12 @@ export const listProducts = /* GraphQL */ `
         isActive
         isActiveOnPlatform
         order
+        campaignID
+        campaign {
+          name
+          description
+          available
+        }
         status
         timeOnVerification
         projectReadiness
@@ -221,6 +296,13 @@ export const getUserProjects = /* GraphQL */ `
             id
             categoryID
             createdAt
+            campaign {
+              id
+              name
+              description
+              createdAt
+              available
+            }
             description
             isActive
             isActiveOnPlatform
@@ -306,6 +388,214 @@ export const getProductItem = /* GraphQL */ `
       id
       name
       type
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+
+export const listCampaigns = /* GraphQL */ `
+  query ListCampaigns(
+    $filter: ModelCampaignFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCampaigns(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        user {
+          id
+          name
+          role
+          subrole
+          email
+        }
+        products {
+          items {
+            id
+            name
+            categoryID
+            createdAt
+          }
+        }
+        name
+        description
+        initialDate
+        endDate
+        available
+        images
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+
+export const listProperties = `
+query ListProperties(
+    $filter: ModelPropertyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProperties(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        userID
+        productID
+        product {
+          categoryID
+        }
+        campaignID
+        campaign {
+          id
+          userID
+          name
+          description
+        }
+        propertyFeatures {
+          items {
+            id
+            featureID
+            value
+            feature {
+              name
+              isVerifable
+            }
+            documents {
+              items {
+                id
+                status
+                signed
+                signedHash
+                isUploadedToBlockChain
+                isApproved
+              }
+            }
+            verifications {
+              items {
+                id
+                userVerifierID
+                userVerifier {
+                  name
+                }
+                userVerifiedID
+                userVerified {
+                  name
+                }
+                verificationComments {
+                  items {
+                    isCommentByVerifier
+                    verificationID
+                    comment
+                    createdAt
+                    updatedAt
+                  }
+                }
+              }
+            }
+          }
+        }
+        status
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+  `
+
+  export const getCampaign = /* GraphQL */ `
+  query GetCampaign($id: ID!) {
+    getCampaign(id: $id) {
+      id
+      userID
+      products {
+        items {
+          id
+          name
+          userProducts {
+            items {
+              user {
+                id
+                name
+                role
+              }
+            }
+          }
+        }
+      }
+      name
+      description
+      initialDate
+      endDate
+      available
+      images
+      properties {
+        items {
+          id
+          name
+          propertyFeatures {
+            items {
+              id
+              featureID
+              value
+              feature {
+                name
+                isVerifable
+              }
+              documents {
+                items {
+                  id
+                  status
+                  signed
+                  signedHash
+                  isUploadedToBlockChain
+                  isApproved
+                }
+              }
+              verifications {
+                items {
+                  id
+                  userVerifierID
+                  userVerifier {
+                    name
+                  }
+                  userVerifiedID
+                  userVerified {
+                    name
+                  }
+                  verificationComments {
+                    items {
+                      isCommentByVerifier
+                      verificationID
+                      comment
+                      createdAt
+                      updatedAt
+                    }
+                  }
+                }
+              }
+            }
+          }
+          cadastralNumber
+          productID
+          campaignID
+          userID
+          status
+          reason
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       createdAt
       updatedAt
       __typename

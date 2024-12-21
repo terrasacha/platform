@@ -4,6 +4,7 @@ import { useAuth } from "context/AuthContext";
 import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
+import { marketplaceURLMapper } from "./mappers";
 
 export default function AlertMessage({ visible }) {
   const { projectData } = useProjectData();
@@ -74,9 +75,9 @@ export default function AlertMessage({ visible }) {
         <div className="col-12 col-xl-12">
           <div className="p-4 bg-[#fff3cd] rounded">
             <h3 className="text-2xl">
-              Estado de requerimientos para la publicación del proyecto en{" "}
+              Estado de requerimientos para la publicación del proyecto{" "}
               <a
-                href={'https://test-marketplace-cauca.suan.global'} // remove href={process.env.REACT_APP_URL_MARKETPLACE}
+                href={marketplaceURLMapper[projectData.projectInfo.marketplaceID || 'suan'][process.env.REACT_APP_ENV]} // remove href={process.env.REACT_APP_URL_MARKETPLACE}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -225,6 +226,15 @@ export default function AlertMessage({ visible }) {
                         <HourGlassIcon className="text-danger" />
                       )}
                       ) Distribución de tokens del proyecto
+                    </li>
+                    <li className="font-bold flex">
+                      (
+                      {progressObj.sectionsStatus.projectOnMarketplace ? (
+                        <CheckIcon className="text-success" />
+                      ) : (
+                        <HourGlassIcon className="text-danger" />
+                      )}
+                      ) Proyecto visible en Marketplace
                     </li>
                   </ul>
                 </div>

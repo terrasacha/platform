@@ -17,12 +17,25 @@ import TokenDistributionInputTable from "./SettingCards/TokenDistributionInputTa
 export default function ProjectSettings({ visible }) {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
+  const [finInfoPfID, setFinInfoPfID] = useState(null);
+  const [tecInfoPfID, setTecInfoPfID] = useState(null);
   const { projectData, handleUpdateContextProjectData, fetchProjectData } =
     useProjectData();
   const { projectItems } = useProjectItems();
 
-  console.log(projectData, "projectData");
   useEffect(() => {
+    const financialInfoPfID =
+      projectData.projectFeatures.filter((item) => {
+        return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
+      })[0]?.id || null;
+    setFinInfoPfID(financialInfoPfID);
+
+    const technicalInfoPfID =
+      projectData.projectFeatures.filter((item) => {
+        return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
+      })[0]?.id || null;
+    setTecInfoPfID(technicalInfoPfID);
+
     Auth.currentAuthenticatedUser()
       .then((data) => {
         if (data.attributes["custom:subrole"]) {
@@ -34,12 +47,18 @@ export default function ProjectSettings({ visible }) {
       })
       .catch((error) => setValidatorSubRole(undefined));
   }, []);
-
+  const checkStakeHolders = (item) => {
+    const neededSH = ['BIOC', 'PROPIETARIO', 'BUFFER', 'INVERSIONISTA'];
+    const itemConcepts = item.map(i => i.CONCEPTO);
+    const allPresent = neededSH.every(sh => itemConcepts.includes(sh));
+    return allPresent;
+};
   const handleSetValidatorDataComplete = async (item) => {
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
     );
-    console.log(updatedProjectData, "updatedProjectData");
+    console.log(updatedProjectData, 'updatedProjectData')
+    const neededStakeHolders = checkStakeHolders(updatedProjectData.projectFinancialInfo.tokenAmountDistribution.tokenAmountDistribution)
     if (item === "technicalInfo") {
       if (!updatedProjectData.isTechnicalComplete) {
         let toFixMessage = "";
@@ -48,16 +67,16 @@ export default function ProjectSettings({ visible }) {
           toFixMessage = "No se ha agregado una descripción del proyecto";
         }
 
-        if (!updatedProjectData.technicalProgress.revenuesByProduct) {
+        else if(!updatedProjectData.technicalProgress.revenuesByProduct) {
           toFixMessage = "Aún no se han definido los ingresos por producto";
         }
 
-        if (!updatedProjectData.technicalProgress.productsOfCycleProject) {
+        else if(!updatedProjectData.technicalProgress.productsOfCycleProject) {
           toFixMessage =
             "Aún no se han definido los productos del ciclo del proyecto";
         }
 
-        if (!updatedProjectData.technicalProgress.verifierDescription) {
+        else if(!updatedProjectData.technicalProgress.financialIndicators) {
           toFixMessage =
             "Aún no se han definido los indicadores financieros del proyecto";
         }
@@ -69,21 +88,31 @@ export default function ProjectSettings({ visible }) {
       }
       // handleUpdateContextProjectData({ isTechnicalFreeze: true });
 
-      const technicalInfoPfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS";
-        })[0]?.id || null;
+      if (tecInfoPfID) {
+        const updatedProductFeature = {
+          id: tecInfoPfID,
+          value: "true",
+        };
 
-      const updatedProductFeature = {
-        id: technicalInfoPfID,
-        value: "true",
-      };
+        await API.graphql(
+          graphqlOperation(updateProductFeature, {
+            input: updatedProductFeature,
+          })
+        );
+      } else {
+        const newProductFeature = {
+          productID: projectData.projectInfo.id,
+          featureID: "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS",
+          value: true,
+        };
 
-      await API.graphql(
-        graphqlOperation(updateProductFeature, {
-          input: updatedProductFeature,
-        })
-      );
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, {
+            input: newProductFeature,
+          })
+        );
+        setTecInfoPfID(response.data.createProductFeature.id);
+      }
 
       await fetchProjectData();
 
@@ -93,6 +122,13 @@ export default function ProjectSettings({ visible }) {
       });
     }
     if (item === "financialInfo") {
+      if (!neededStakeHolders) {
+        notify({
+          msg: "Es obligatorio distribuir tokens a los siguientes stake holders: BIOC, PROPIETARIO, BUFFER e INVERSIONISTA.",
+          type: "error",
+        });
+        return;
+      }
       if (!updatedProjectData.isFinancialComplete) {
         let toFixMessage = "";
         if (!updatedProjectData.financialProgress.tokenHistoricalData) {
@@ -128,21 +164,32 @@ export default function ProjectSettings({ visible }) {
       }
       handleUpdateContextProjectData({ isFinancialFreeze: true });
 
-      const financialInfoPfID =
-        projectData.projectFeatures.filter((item) => {
-          return item.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS";
-        })[0]?.id || null;
+      if (finInfoPfID) {
+        const updatedProductFeature = {
+          id: finInfoPfID,
+          value: "true",
+        };
 
-      const updatedProductFeature = {
-        id: financialInfoPfID,
-        value: "true",
-      };
+        await API.graphql(
+          graphqlOperation(updateProductFeature, {
+            input: updatedProductFeature,
+          })
+        );
+      } else {
+        const newProductFeature = {
+          productID: projectData.projectInfo.id,
+          featureID: "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS",
+          value: true,
+        };
 
-      await API.graphql(
-        graphqlOperation(updateProductFeature, {
-          input: updatedProductFeature,
-        })
-      );
+        const response = await API.graphql(
+          graphqlOperation(createProductFeature, {
+            input: newProductFeature,
+          })
+        );
+
+        setFinInfoPfID(response.data.createProductFeature.id);
+      }
 
       await fetchProjectData();
 

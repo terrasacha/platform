@@ -79,12 +79,13 @@ export default function ConsultOraculo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(formData, "formData")
+
     const url = `https://oraculo.terrasacha.com/api/v1/consulta-proyecto?projectID=${formData.projectID}&cedula_catastral=${formData.cedula_catastral}&img_anterior.satellite=${formData.img_anterior.satellite}
-    &img_anterior.year_selected=${formData.img_anterior.year_selected}&&img_anterior.month_initial=${formData.img_anterior.month_initial}&img_anterior.month_final=${formData.img_anterior.month_final}
+    &img_anterior.year_selected=${formData.img_anterior.year_selected}&img_anterior.month_initial=${formData.img_anterior.month_initial}&img_anterior.month_final=${formData.img_anterior.month_final}
     &img_anterior.nubosidad_maxima=${formData.img_anterior.nubosidad_maxima}&img_posterior.satellite=${formData.img_posterior.satellite}&img_posterior.year_selected=${formData.img_posterior.year_selected}
-    &img_posterior.month_initial=${formData.img_posterior.month_initial}&img_posterior.month_final=${formData.img_posterior.month_final.month_final}&img_posterior.nubosidad_maxima=${formData.img_posterior.nubosidad_maxima}`
-    console.log(url,'url')
+    &img_posterior.month_initial=${formData.img_posterior.month_initial}&img_posterior.month_final=${formData.img_posterior.month_final}&img_posterior.nubosidad_maxima=${formData.img_posterior.nubosidad_maxima}`;
+
+
     try {
       const response = await fetch(url, {
           method: 'POST',
@@ -92,7 +93,7 @@ export default function ConsultOraculo() {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
           },
-          body: JSON.stringify({}) 
+          body: JSON.stringify({})
       });
 
       if (!response.ok) {
@@ -100,14 +101,17 @@ export default function ConsultOraculo() {
       }
 
       const result = await response.json();
-      notify('fetch successfully', 'success')
+      notify('Enviado con exito', 'success');
   } catch (error) {
       console.error('Error:', error);
-      notify('fail to fetch', 'error')
+      notify('Fallo el envio de la informacion', 'error');
   } finally {
       setLoading(false);
   }
   };
+
+  console.log("Sending cedula_catastral:", formData.cedula_catastral);
+
 
   return (
     <Card>

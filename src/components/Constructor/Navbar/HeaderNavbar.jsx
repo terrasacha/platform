@@ -78,11 +78,11 @@ export default class HeaderNavbar extends Component {
                   </Nav.Link>
                   {/* <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documentos</Nav.Link> */}
                   {/* <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link> */}
-                  <Nav.Link
+                  {/* <Nav.Link
                     onClick={() => (window.location.href = "/new_project")}
                   >
                     Nuevo Proyecto
-                  </Nav.Link>
+                  </Nav.Link> */}
                   <Nav.Link
                     onClick={() => (window.location.href = "/creating_wallet")}
                   >

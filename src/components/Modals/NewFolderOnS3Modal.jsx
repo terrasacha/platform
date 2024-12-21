@@ -6,9 +6,11 @@ import { Storage } from "aws-amplify";
 import { AddFolderIcon } from "components/common/icons/AddFolderIcon";
 import FormGroup from "components/common/FormGroup";
 import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
-
+import { useS3Client } from "context/s3ClientContext";
+import { notify } from "utilities/notify";
 export default function NewFolderOnS3Modal(props) {
   const { uploadRoute } = props;
+  const { s3Client, bucketName } = useS3Client();
   const [showModal, setShowModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
 
@@ -25,9 +27,17 @@ export default function NewFolderOnS3Modal(props) {
   };
 
   const handleCreateFolderOnS3 = async (folderName) => {
-    const folderPath = `${uploadRoute}/${folderName}/`;
-
-    await makeFolderOnS3(folderPath);
+    const folderPath = `projects/${uploadRoute}/${folderName}/`;
+    console.log(folderPath)
+    let result;
+    try {
+      result = await makeFolderOnS3(s3Client, bucketName, folderPath);
+      
+    } catch (error) {
+      console.log(error)
+    } finally{
+      notify({type: result.status, msg: result.msg})
+    }
 
     refresh();
     closeModal();

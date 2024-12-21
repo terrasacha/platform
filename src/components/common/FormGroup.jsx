@@ -111,7 +111,7 @@ export default class FormGroup extends Component {
               <GoogleMapReact
                 // key={new Date().getTime()}
                 bootstrapURLKeys={{
-                  key: "AIzaSyCzXTla3o3V7o72HS_mvJfpVaIcglon38U",
+                  key: process.env['REACT_APP_GMAPS_API_KEY'] || '',
                 }}
                 defaultCenter={defaultData.coords}
                 defaultZoom={defaultData.zoom}

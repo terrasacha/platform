@@ -31,8 +31,8 @@ export default function ProjectFiles({ visible }) {
     }
   }, [user, projectData]);
 
-  const handleMessageButtonClick = async (fileIndex) => {
-    const file = projectData.projectFiles[fileIndex];
+  const handleMessageButtonClick = async (fileIndex, type) => {
+    const file = type === 'productFeature'? projectData.projectFiles[fileIndex] :  projectData.projectPropertyFiles[fileIndex]
     setIsMessageCardActive(!isMessageCardActive);
     setSelectedVerificationId(file.verification.id);
     setIsDocApproved(file.isApproved);
@@ -99,6 +99,7 @@ export default function ProjectFiles({ visible }) {
           <div className={isMessageCardActive ? "col" : "col-12 col-xl-12"}>
             <PostulantFilesInfoCard
               projectFiles={projectData.projectFiles}
+              propertyFiles={projectData.projectPropertyFiles}
               handleMessageButtonClick={handleMessageButtonClick}
               setIsDocApproved={setIsDocApproved}
               isVerifier={isVerifier}

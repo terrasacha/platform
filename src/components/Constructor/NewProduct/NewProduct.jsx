@@ -1082,7 +1082,7 @@ class NewProduct extends Component {
                             handleButtonClick={this.handleButtonClick}
                         />
                     </div>
-                    {this.state.activeButton === 'PROYECTO_PLANTACIONES'?
+                    {this.state.activeButton === 'FORMULARIO POSTULACION PREDIOS'?
                     <FromPlantaciones 
                         selectImage={this.selectImage}
                         cleanDragArea={this.cleanDragArea}
