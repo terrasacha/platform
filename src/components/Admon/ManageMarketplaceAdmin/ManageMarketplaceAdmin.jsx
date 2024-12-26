@@ -143,8 +143,7 @@ export default function ManageMarketplaceAdmin() {
 
   const confirmCreateUser = async () => {
     setLoadingCreate(true);
-    const endpoint =
-      "https://vhal4tf7id.execute-api.us-east-1.amazonaws.com/create-admin-marketplace";
+    const endpoint = process.env.REACT_APP_CREATE_MARKETPLACE_ADMIN_ENDPOINT;
       
     const marketplaceName = listMarketplaces.find((marketplace) => marketplace.id === newAdmin.marketplace).name
     const data = {
@@ -385,7 +384,7 @@ export default function ManageMarketplaceAdmin() {
             <button
               type="button"
               onClick={() => confirmCreateUser()}
-              className="bg-green-700 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-[#6e6c35] border-1 border-dark hover:bg-[#6e6c35] border-1 border-dark text-white font-bold py-2 px-4 rounded"
             >
               {loadingCreate && (
                 <Spinner
