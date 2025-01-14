@@ -132,7 +132,7 @@ export default function NewHeaderNavbar() {
                       {user.username}
                       <p className="role_btn">
                       {user.attributes["custom:role"] === "validator"
-                        ? "Validador"
+                        ? "Consultor"
                         : user.attributes["custom:role"] === "constructor"
                         ? "Propietario"
                         : user.attributes["custom:role"] === "analyst"

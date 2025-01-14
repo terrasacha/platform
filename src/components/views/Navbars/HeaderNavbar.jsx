@@ -64,7 +64,7 @@ export default class HeaderNavbar extends Component {
 
     const roleDisplayNames = {
       admon: "Administrador",
-      validator: "Validador",
+      validator: "Consultor",
       analyst: "Analista",
       constructor: "Propietario"
     };
