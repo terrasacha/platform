@@ -208,9 +208,9 @@ class Items extends Component {
             <table className="w-full border-collapse border rounded-lg">
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="px-4 py-2">Name</th>
-                  <th className="px-4 py-2">Type</th>
-                  <th className="px-4 py-2">Action</th>
+                  <th className="px-4 py-2">Nombre</th>
+                  <th className="px-4 py-2">Tipo</th>
+                  <th className="px-4 py-2">Acción</th>
                 </tr>
               </thead>
               <tbody>

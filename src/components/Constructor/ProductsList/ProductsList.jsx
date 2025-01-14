@@ -78,7 +78,7 @@ const PropertyCard = ({ property }) => (
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
       <div className="p-4">
         <h3 className="text-lg font-bold mb-2">{property?.name}</h3>
-        <p className="text-gray-600 text-sm mb-2">{property?.campaign.name}</p>
+        <p className="text-gray-600 text-sm mb-2">{property?.campaign?.name}</p>
         <div className="flex flex-wrap gap-2 mb-6">
           <span className="bg-blue-400 text-white text-xs font-medium px-2 py-1 rounded w-fit">
             {getYearFromAWSDatetime(property?.createdAt)}
@@ -183,18 +183,20 @@ export default function ProductsList() {
       </section>
 
       {userProperties.length > 0 && (
-        <section>
-          <h2 className="text-xl font-bold mt-8 mb-4">Tus Predios Postulados</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {userProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
-        </section>
-      )}
+  <section>
+    <h2 className="text-xl font-bold mt-8 mb-4">Tus Predios Postulados</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {userProperties.map((property) => {
+        console.log("Property:", property); // Agregado para inspeccionar cada propiedad
+        return <PropertyCard key={property.id} property={property} />;
+      })}
+    </div>
+  </section>
+)}
+
 
       <section>
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Tus Proyectos</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center"></h2>
         {userProjectsFiltered.length === 0 ? (
           <div></div>
           /* <div className="py-12 text-center">

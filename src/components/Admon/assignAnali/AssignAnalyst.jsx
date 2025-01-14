@@ -59,10 +59,7 @@ export default class AssignAnalyst extends Component {
     try {
       const result = await API.graphql(graphqlOperation(listProducts));
       // Filtrar productos que no tienen campañas
-      const filteredProducts = result.data.listProducts.items.filter(
-        (product) => product.campaign === null
-      );
-      this.setState({ products: filteredProducts });
+      this.setState({ products: result.data.listProducts.items });
     } catch (error) {
       console.error("Error al cargar productos:", error);
     }

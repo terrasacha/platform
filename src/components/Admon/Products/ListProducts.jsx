@@ -341,19 +341,19 @@ export default class ListProducts extends Component {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>Delete</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Description</th>
-                <th>Images</th>
-                <th>Product Features</th>
-                <th>Verifications</th>
+                <th>Eliminar</th>
+                <th>Nombre</th>
+                <th>Categoria</th>
+                <th>Estadp</th>
+                <th>Descripción</th>
+                <th>Imagen</th>
+                <th>Características</th>
+                <th>Verificaciones</th>
                 <th>Oficialización Técnica</th>
                 <th>Oficialización Financiera</th>
-                <th>Is Active</th>
-                <th>Action</th>
-                <th>Certify</th>
+                <th>¿Está activo?</th>
+                <th>Acción</th>
+                <th>Certificado</th>
               </tr>
             </thead>
             <tbody>
@@ -371,7 +371,7 @@ export default class ListProducts extends Component {
                           })
                         }
                       >
-                        Delete
+                        Eliminar
                       </Button>
                     ) : (
                       ""
@@ -430,7 +430,7 @@ export default class ListProducts extends Component {
                         )
                       }
                     >
-                      Description
+                      Descripción
                     </Button>
                     {/* {product.description} */}
                   </td>
@@ -446,7 +446,7 @@ export default class ListProducts extends Component {
                         )
                       }
                     >
-                      Images
+                      Imagen
                     </Button>
                   </td>
                   <td>
@@ -461,7 +461,7 @@ export default class ListProducts extends Component {
                         )
                       }
                     >
-                      Product Features
+                      Características del producto
                     </Button>
                   </td>
                   <td>
@@ -476,7 +476,7 @@ export default class ListProducts extends Component {
                         )
                       }
                     >
-                      Verifications
+                      Verification
                     </Button>
                   </td>
                   <td>
@@ -528,8 +528,8 @@ export default class ListProducts extends Component {
                       onClick={(e) => this.handleLoadEditProduct(product, e)}
                     >
                       {product.status === "on_block_chain"
-                        ? "Can not Edit"
-                        : "Edit"}
+                        ? "No se puede editar"
+                        : "Editar"}
                     </Button>
                   </td>
                   <td>
@@ -751,7 +751,7 @@ export default class ListProducts extends Component {
                 variant="secondary"
                 onClick={() => this.setState({ showModalDeleteProduct: false })}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button
                 variant="danger"
@@ -766,7 +766,7 @@ export default class ListProducts extends Component {
                   }
                 }}
               >
-                Delete
+                Confirmar
               </Button>
             </Modal.Footer>
           </Modal>
@@ -958,7 +958,7 @@ export default class ListProducts extends Component {
     };
     return (
       <>
-        <h1>Product List</h1>
+        <h1>Lista de proyectos</h1>
         {renderProducts()}
         {modalProductImages()}
         {modalProductFeatures()}

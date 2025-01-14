@@ -68,7 +68,7 @@ function App() {
             exact
           />
           <Route path="/products" element={<Products />} />
-          <Route path="/PQR" element={<PQRForm />} />
+          <Route path="/PQRS" element={<PQRForm />} />
           <Route
             path="/products/:id"
             element={

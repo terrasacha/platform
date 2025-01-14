@@ -7,6 +7,7 @@ import {
   deleteDocument,
   deleteVerification,
   deleteCampaign,
+  deleteProperty,
 } from "../../../graphql/mutations";
 
 import { Storage } from "aws-amplify";
@@ -25,19 +26,32 @@ export async function deleteAllInfoProduct(product) {
     const { data } = await API.graphql(
       graphqlOperation(getProduct, { id: product.id })
     );
-    const campaignID = data?.getProduct?.campaignID;
+    const campaign = data?.getProduct?.campaign;
 
-    // Si existe campaignID, eliminar la campaña
-    if (campaignID) {
-      console.log("Deleting campaign associated with product:", campaignID);
+    // Si existe una campaña asociada, eliminar propiedades y luego la campaña
+    if (campaign) {
+      console.log("Deleting campaign and associated properties:", campaign.id);
+
+      const propertyPromises = campaign.properties.items?.map((property) => {
+        console.log("Deleting property:", property.id, property.cadastralNumber);
+        return API.graphql(
+          graphqlOperation(deleteProperty, { input: { id: property.id } })
+        );
+      });
+
+      if (propertyPromises) {
+        promises.push(...propertyPromises);
+      }
+
+      // Eliminar la campaña
       promises.push(
         API.graphql(
-          graphqlOperation(deleteCampaign, { input: { id: campaignID } })
+          graphqlOperation(deleteCampaign, { input: { id: campaign.id } })
         )
       );
     }
   } catch (error) {
-    console.error("Error fetching campaignID for product:", product.id, error);
+    console.error("Error fetching campaign or properties for product:", product.id, error);
   }
 
   // Eliminar el producto
@@ -51,21 +65,23 @@ export async function deleteAllInfoProduct(product) {
     console.log("Deleting image:", image.id, image.url);
     return API.graphql(graphqlOperation(deleteImage, { input: { id: image.id } }));
   });
-  promises.push(...imagePromises);
+  if (imagePromises) {
+    promises.push(...imagePromises);
+  }
 
   // Eliminar características del producto
   const productFeaturePromises = product.productFeatures.items?.map((pf) => {
     console.log("Deleting product feature:", pf.id, pf.name);
 
     // Eliminar documentos asociados a las características
-    pf.documents?.items?.map((doc) => {
+    pf.documents?.items?.forEach((doc) => {
       console.log("Deleting document:", doc.id, doc.url);
       API.graphql(graphqlOperation(deleteDocument, { input: { id: doc.id } }));
       moveObjectS3(doc.url, product.id);
     });
 
     // Eliminar verificaciones asociadas
-    pf.verifications?.items?.map((verification) => {
+    pf.verifications?.items?.forEach((verification) => {
       console.log("Deleting verification:", verification.id);
       API.graphql(
         graphqlOperation(deleteVerification, { input: { id: verification.id } })
@@ -76,14 +92,18 @@ export async function deleteAllInfoProduct(product) {
       graphqlOperation(deleteProductFeature, { input: { id: pf.id } })
     );
   });
-  promises.push(...productFeaturePromises);
+  if (productFeaturePromises) {
+    promises.push(...productFeaturePromises);
+  }
 
   // Eliminar asociaciones de usuarios con el producto
   const userProductPromises = product.userProducts.items?.map((up) => {
     console.log("Deleting user product association:", up.id, up.userId);
     return API.graphql(graphqlOperation(deleteUserProduct, { input: { id: up.id } }));
   });
-  promises.push(...userProductPromises);
+  if (userProductPromises) {
+    promises.push(...userProductPromises);
+  }
 
   // Ejecutar todas las promesas
   try {

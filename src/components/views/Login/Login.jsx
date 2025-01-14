@@ -9,6 +9,7 @@ import s from "./Login.module.css";
 import LOGO from "../../common/_images/suan_logo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const initialFormState = {
   username: "",
@@ -29,6 +30,8 @@ export default function LogIn() {
   const [formState, updateFormState] = useState(initialFormState);
   const[signInUserData,setSignInUserData] = useState(null)
   const [user, updateUser] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [inputError, setInputError] = useState({ username: "" });
@@ -217,7 +220,7 @@ export default function LogIn() {
         localStorage.setItem("role", currentUser);
       }
     } catch (error) {
-      setError("Combination of account name and user name does not exist.");
+      setError("La combinación de nombre de cuenta y nombre de usuario no existe.");
     }
     setLoading(false);
   }
@@ -363,25 +366,72 @@ export default function LogIn() {
                     className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
-                <fieldset>
-                  <input
-                    name="password"
-                    type="password"
-                    onChange={onChange}
-                    placeholder="contraseña"
-                    className="border-[1px] border-gray-300 rounded-md"
-                  />
-                </fieldset>
-                <p style={{ color: "#797979", fontSize: ".6em", margin: 0}}>La contraseña debe constar de más de 8 caracteres y contener por lo menos un valor numérico</p>
-                <fieldset>
-                  <input
-                    name="confirmPassword"
-                    type="password"
-                    onChange={onChange}
-                    placeholder="Confirmar Contraseña"
-                    className="border-[1px] border-gray-300 rounded-md"
-                  />
-                </fieldset>
+                <fieldset style={{ position: "relative" }}>
+        <input
+          type={showPassword ? "text" : "password"}
+          name="password"
+          onChange={onChange}
+          placeholder="Contraseña"
+          className="border-[1px] border-gray-300 rounded-md w-full"
+          style={{
+            paddingRight: "2.5rem", // Espacio para el ícono
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          style={{
+            position: "absolute",
+            left: "86%",
+            top: "10%",
+            transform: "translateY(-50%)",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "black", // Color negro para el ícono
+          }}
+          aria-label={
+            showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+          }
+        >
+          {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+        </button>
+      </fieldset>
+      <p style={{ color: "#797979", fontSize: ".6em", margin: 0 }}>
+        La contraseña debe constar de más de 8 caracteres y contener por lo
+        menos un valor numérico
+      </p>
+      <fieldset style={{ position: "relative"}}>
+        <input
+          type={showConfirmPassword ? "text" : "password"}
+          name="confirmPassword"
+          onChange={onChange}
+          placeholder="Confirmar Contraseña"
+          className="border-[1px] border-gray-300 rounded-md w-full"
+          style={{
+            paddingRight: "2.5rem", // Espacio para el ícono
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          style={{
+            position: "absolute",
+            left: "86%",
+            top: "10%",
+            transform: "translateY(-50%)",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "black", // Color negro para el ícono
+          }}
+          aria-label={
+            showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+          }
+        >
+          {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+        </button>
+      </fieldset>
                 <fieldset>
                   <legend>Rol</legend>
                   <select
@@ -492,7 +542,7 @@ export default function LogIn() {
                   onClick={(e) => confirmSignUp(e)}
                   disabled={loading}
                 >
-                  {loading ? "Loading" : "Confirm Sign Up"}
+                  {loading ? "Cargando" : "Confirmar registro"}
                 </button>
               </form>
             </div>
@@ -515,15 +565,33 @@ export default function LogIn() {
                     className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
-                <fieldset>
-                  <legend>Contraseña</legend>
-                  <input
-                    type="password"
-                    name="password"
-                    onChange={onChange}
-                    className="border-[1px] border-gray-300 rounded-md"
-                  />
-                </fieldset>
+                <fieldset style={{ position: "relative" }}>
+               <legend>Contraseña</legend>
+              <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              onChange={onChange}
+              className="border-[1px] border-gray-300 rounded-md"
+              style={{ paddingRight: "2.5rem" }} // Espacio para el ícono
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                left: "86%",
+                top: "40%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "black", // Color negro
+              }}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            >
+              {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+            </button>
+          </fieldset>
                 <span
                   style={{
                     cursor: "pointer",
@@ -547,7 +615,7 @@ export default function LogIn() {
                   onClick={(e) => signIn(e)}
                   className="btn-login"
                 >
-                  {loading ? "Loading" : "Ingresar"}
+                  {loading ? "Cargando" : "Ingresar"}
                 </button>
               </form>
               <div className={s.needAccount}>
@@ -616,28 +684,36 @@ export default function LogIn() {
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
                 <img src={LOGO} style={{ width: "60px" }} alt="logo" />
-                <h2 className="text-center mb-4">Forgot Password</h2>
+                <h2 className="text-center mb-4"> Recuperar contraseña  </h2>
                 {error && <Alert variant="danger">{error}</Alert>}
               </div>
               <form className={s.inputContainer}>
                 <fieldset>
-                  <legend>User Name</legend>
-                  <input name="username" onChange={onChange} />
+                  <legend>Usuario</legend>
+                  <input 
+                  name="username" 
+                  onChange={onChange}
+                  style={{
+                    border: "1px solid black", 
+                    borderRadius: "4px", 
+                    padding: "0.5rem", 
+                    width: "100%", 
+                  }}
+                   />
                 </fieldset>
                 <span className={s.forgotPasswordSpan}>
-                  The password will be sent to the email address associated with
-                  the user
+                La contraseña se enviará a la dirección de correo electrónico asociada al usuario
                 </span>
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => forgotPassword(e)}
                 >
-                  {loading ? "Sending" : "Send new code"}
+                  {loading ? "Enviando" : "Enviar nuevo código"}
                 </button>
               </form>
               <div className={s.needAccount}>
-                Need an account?{" "}
+              ¿Necesita una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
                   onClick={() =>
@@ -647,7 +723,7 @@ export default function LogIn() {
                     }))
                   }
                 >
-                  Sign Up
+                  Registrarse
                 </span>
               </div>
             </div>
@@ -658,28 +734,76 @@ export default function LogIn() {
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
                 <img src={LOGO} style={{ width: "60px" }} alt="logo" />
-                <h2 className="text-center mb-4">Confirm code</h2>
+                <h2 className="text-center mb-4">Confirmar código</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
               </div>
               <form className={s.inputContainer}>
                 <fieldset>
-                  <legend>User Name</legend>
-                  <input name="username" onChange={onChange} />
+                  <legend>Usuario</legend>
+                  <input 
+                  name="username" 
+                  onChange={onChange}
+                  style={{
+                    border: "1px solid black", 
+                    borderRadius: "4px", 
+                    padding: "0.5rem", 
+                    width: "100%", 
+                  }}
+                  />
                 </fieldset>
                 <fieldset>
-                  <legend>Code</legend>
-                  <input name="code" onChange={onChange} />
+                  <legend>Código</legend>
+                  <input 
+                  name="code" 
+                  onChange={onChange}
+                  style={{
+                    border: "1px solid black", 
+                    borderRadius: "4px", 
+                    padding: "0.5rem", 
+                    width: "100%", 
+                  }} 
+                   />
                 </fieldset>
                 <fieldset>
-                  <legend>New Password</legend>
-                  <input type="password" name="password" onChange={onChange} />
+                  <legend>Nueva contraseña</legend>
+                  <input 
+                  type={showPassword ? "text" : "password"}
+                  name="password" 
+                  onChange={onChange} 
+                  style={{
+                    border: "1px solid black", 
+                    borderRadius: "4px", 
+                    padding: "0.5rem", 
+                    width: "100%", 
+                    paddingRight: "2.5rem", 
+                  }}
+                  />
+                  <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              position: "absolute",
+              left: "73%",
+              top: "61%",
+              transform: "translateY(-50%)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "black",
+            }}
+            aria-label={
+              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+            }
+          >
+            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+          </button>
                 </fieldset>
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => confirmNewPassword(e)}
                 >
-                  {loading ? "Loading" : "Confirm new password"}
+                  {loading ? "Cargando" : "Confirmar nueva contraseña"}
                 </button>
               </form>
             </div>
@@ -701,20 +825,58 @@ export default function LogIn() {
                 <fieldset>
                   <legend>Nueva Contraseña</legend>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="newPassword"
                     onChange={onChange}
                     className="border-[1px] border-gray-300 rounded-md"
                   />
+                  <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              position: "absolute",
+              left: "73%",
+              top: "38%",
+              transform: "translateY(-50%)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "black",
+            }}
+            aria-label={
+              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+            }
+          >
+            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+          </button>
                 </fieldset>
                 <fieldset>
                   <legend>Confirmar Contraseña</legend>
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     name="confirmNewPassword"
                     onChange={onChange}
                     className="border-[1px] border-gray-300 rounded-md"
                   />
+                  <button
+          type="button"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          style={{
+            position: "absolute",
+            left: "73%",
+            top: "51%",
+            transform: "translateY(-50%)",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "black", // Color negro para el ícono
+          }}
+          aria-label={
+            showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+          }
+        >
+          {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+        </button>
                 </fieldset>
                 <button
                   type="submit"

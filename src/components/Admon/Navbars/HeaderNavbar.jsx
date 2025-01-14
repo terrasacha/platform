@@ -105,7 +105,7 @@ export default class HeaderNavbar extends Component {
                       this.changeHeaderNavBarRequest("features", e)
                     }
                   >
-                    Features
+                    Características
                   </Nav.Link>
 
                   <Nav.Link
@@ -175,11 +175,11 @@ export default class HeaderNavbar extends Component {
                           this.changeHeaderNavBarRequest("apps_status", e)
                         }
                       >
-                        Apps status
+                         Estado de las aplicaciones
                       </Dropdown.Item>
                       <Dropdown.Divider />
                       <Dropdown.Item onClick={(e) => this.handleChangeObjectElement()}>
-                        Sign Out
+                      Cerrar sesión
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>

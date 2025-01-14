@@ -146,8 +146,8 @@ class Categorys extends Component {
               <thead className="bg-gray-100">
                 <tr>
                   <th className="border border-gray-300 px-4 py-2">ID</th>
-                  <th className="border border-gray-300 px-4 py-2">Name</th>
-                  <th className="border border-gray-300 px-4 py-2">Action</th>
+                  <th className="border border-gray-300 px-4 py-2">Nombre</th>
+                  <th className="border border-gray-300 px-4 py-2">Acción</th>
                 </tr>
               </thead>
               <tbody>

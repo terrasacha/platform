@@ -180,12 +180,12 @@ export default class CRUDProductFeatures extends Component {
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th>Feature</th>
-                    <th>Value</th>
-                    <th>Order</th>
-                    <th>Is on Main Card</th>
-                    <th>Is to BlockChain</th>
-                    <th>Is verifable</th>
+                    <th>Característica</th>
+                    <th>Valor</th>
+                    <th>Orden</th>
+                    <th>¿Está en la tarjeta principal?</th>
+                    <th>¿Es a BlockChain?</th>
+                    <th>¿Es verificable?</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -227,10 +227,10 @@ export default class CRUDProductFeatures extends Component {
                                     <Form.Select  name='isOnMainCardProductFeature' onChange={(e) => this.handleCreateProductFeature(e)} >
                                         <option>-</option>
                                         <option value='no'>No</option>
-                                        <option value='yes'>Yes</option>
+                                        <option value='yes'>Si</option>
                                     </Form.Select>
                                     <Alert key="idx_key_1" variant='success'>
-                                            {this.state.newProductFeature.isOnMainCard? 'Yes' : 'No'}
+                                            {this.state.newProductFeature.isOnMainCard? 'Si' : 'No'}
                                         </Alert>
                                 </Form.Group>
                         </td>
@@ -239,10 +239,10 @@ export default class CRUDProductFeatures extends Component {
                                     <Form.Select  name='isToBlockChain' onChange={(e) => this.handleCreateProductFeature(e)} >
                                         <option>-</option>
                                         <option value='no'>No</option>
-                                        <option value='yes'>Yes</option>
+                                        <option value='yes'>Si</option>
                                     </Form.Select>
                                     <Alert key="idx_key_1" variant='success'>
-                                            {this.state.newProductFeature.isToBlockChain? 'Yes' : 'No'}
+                                            {this.state.newProductFeature.isToBlockChain? 'Si' : 'No'}
                                         </Alert>
                                 </Form.Group>
                         </td>
@@ -251,10 +251,10 @@ export default class CRUDProductFeatures extends Component {
                                     <Form.Select  name='isVerifable' onChange={(e) => this.handleCreateProductFeature(e)} >
                                         <option>-</option>
                                         <option value='no' >No</option>
-                                        <option value='yes'>Yes</option>
+                                        <option value='yes'>Si</option>
                                     </Form.Select>
                                     <Alert key="idx_key_1" variant='success'>
-                                            {this.state.newProductFeature.isVerifable? 'Yes' : 'No'}
+                                            {this.state.newProductFeature.isVerifable? 'Si' : 'No'}
                                         </Alert>
                                 </Form.Group>
                         </td>

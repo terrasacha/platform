@@ -417,7 +417,7 @@ export default class LandingPage extends Component {
               <div className="col-12 sm:col-6">
                 <a
                   className="m-auto d-block btn-landing text-center mb-2 sm:mb-0"
-                  href="https://suan-1.gitbook.io/documentacion-suan-sandbox/"
+                  href="https://suans-organization.gitbook.io/suan/guia-de-usuario-marketplace/publish-your-docs"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -427,7 +427,7 @@ export default class LandingPage extends Component {
               <div className="col-12 sm:col-6">
                 <a
                   className="m-auto d-block btn-landing text-center sm:ml-2"
-                  href="https://suan-1.gitbook.io/documentacion-suan/"
+                  href="https://suans-organization.gitbook.io/suan"
                   target="_blank"
                   rel="noreferrer"
                 >
