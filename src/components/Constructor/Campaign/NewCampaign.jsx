@@ -31,7 +31,10 @@ export default function NewCampaign() {
   useEffect(() => {
     Auth.currentAuthenticatedUser().then((data) => {
       userID.current = data.attributes.sub;
+    }).catch((error) => {
+      navigate('/')
     });
+
   }, []);
 
   const validateForm = () => {
