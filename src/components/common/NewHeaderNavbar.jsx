@@ -37,7 +37,7 @@ export default function NewHeaderNavbar() {
   const userRoleMapper = {
     admon: "Administrador",
     constructor: "Propietario",
-    validator: "Validador",
+    validator: "Consultor",
     analyst: "Analista",
   };
 
