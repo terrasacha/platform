@@ -17,9 +17,9 @@ import { useLocation } from "react-router-dom";
 import DropDownProjects from "./DropDownProjects";
 
 export default function NewHeaderNavbar() {
-  const [user, setUser] = useState(null)
-  const navigate = useNavigate()
-  useEffect(() =>{
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((data) => setUser(data))
       .catch((err) => console.log(err));
@@ -92,44 +92,15 @@ export default function NewHeaderNavbar() {
                       >
                         Mis proyectos
                       </div>
-                      {/* <div
+                      <div
                         className="cursor-pointer"
-                        onClick={() => (window.location.href = "/new_project")}
+                        onClick={() => (window.location.href = "/new_campaign")}
                       >
-                        Postular proyecto
-                      </div> */}
-                      {/* <Nav.Link
-                      onClick={() =>
-                        (window.location.href = "/creating_wallet")
-                      }
-                    >
-                      ¿Cómo crear tu billetera?
-                    </Nav.Link> */}
-                    <Dropdown >
-                      <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ paddingLeft: '.7rem'}}>
-                        Campañas
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-                          onClick={(e) =>
-                            navigate('/new_campaign')
-                          }
-                        >
-                          Crear campaña
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={(e) =>
-                            navigate('/campaigns')
-                          }
-                        >
-                          Mis campañas
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </>
-                )}
-                {user.attributes['custom:role'] === "validator" && (
+                        Crear campaña
+                      </div>
+                    </>
+                  )}
+                {user && user.attributes["custom:role"] === "validator" && (
                   <>
                     <div
                       className="cursor-pointer"
@@ -160,7 +131,7 @@ export default function NewHeaderNavbar() {
                         </div>
                         <hr className="border-2 m-1" />
                         <div class="text-xs text-white ">
-                          {userRoleMapper[user.attributes["custom:role"]]}
+                          {userRoleMapper[user.attributes["custom:role"]] || ''}
                         </div>
                       </div>
                       <button
@@ -173,7 +144,10 @@ export default function NewHeaderNavbar() {
                   </>
                 ) : (
                   <>
-                    <a className="cursor-pointer text-[#6e6c35]" href="#tecnologia" >
+                    <a
+                      className="cursor-pointer text-[#6e6c35]"
+                      href="#tecnologia"
+                    >
                       Tecnología
                     </a>
                     <a className="cursor-pointer text-[#6e6c35]" href="#porque">
@@ -181,13 +155,21 @@ export default function NewHeaderNavbar() {
                     </a>
                     {/* <DropDownProjects variant={"secondary"} /> */}
                     <a
-                      className={"bg-white p-2 rounded-md text-[#6e6c35] border-2 border-[#6e6c35]"}
-                      href={process.env.REACT_APP_ENV === 'INTERNAL' ? 'https://internal-marketplace.terrasacha.com/' : 'https://marketplace.terrasacha.com/'}
+                      className={
+                        "bg-white p-2 rounded-md text-[#6e6c35] border-2 border-[#6e6c35]"
+                      }
+                      href={
+                        process.env.REACT_APP_ENV === "INTERNAL"
+                          ? "https://internal-marketplace.terrasacha.com/"
+                          : "https://marketplace.terrasacha.com/"
+                      }
                     >
                       Ver proyectos
                     </a>
                     <button
-                      className={"bg-[#6e6c35] p-2 rounded-md text-white border-2 border-dark"}
+                      className={
+                        "bg-[#6e6c35] p-2 rounded-md text-white border-2 border-dark"
+                      }
                       onClick={() => (window.location.href = "/login")}
                     >
                       Ingresar

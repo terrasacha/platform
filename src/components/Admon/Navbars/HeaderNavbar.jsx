@@ -162,7 +162,7 @@ export default class HeaderNavbar extends Component {
                           this.changeHeaderNavBarRequest("validators", e)
                         }
                       >
-                        Validadores
+                        Consultores
                       </Dropdown.Item>
                       {/* Nueva entrada para Analistas */}
                       <Dropdown.Item
@@ -179,10 +179,6 @@ export default class HeaderNavbar extends Component {
                           this.changeHeaderNavBarRequest("marketplace_admin", e)
                         }
                       >
-                        Crear marketplace admin
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        href="#apps_status"
                         Crear marketplace admin
                       </Dropdown.Item>
                       <Dropdown.Item
