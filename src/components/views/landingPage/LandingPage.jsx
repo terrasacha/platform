@@ -19,6 +19,7 @@ import plataforma from "../_images/diseno-de-respuesta.png";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DropDownProjects from "components/common/DropDownProjects";
+import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 export default class LandingPage extends Component {
   constructor(props) {
@@ -167,7 +168,24 @@ export default class LandingPage extends Component {
     const urlS3Image = WebAppConfig.url_s3_public_images;
     return (
       <div style={{ minHeight: "100vh" }}>
-        <HeaderNavbar logOut={this.logOut}></HeaderNavbar>
+
+        {/* <HeaderNavbar logOut={this.logOut}></HeaderNavbar> */}
+        <NewHeaderNavbar/>
+        {/*         <Carousel>
+        {this.state.productsImagesIsOnCarousel.map((image, idx) => (
+            <Carousel.Item key={idx}>
+                <img
+                className="d-block w-100"
+                src={urlS3Image+image.imageURL}
+                alt="First slide"
+                />
+                <Carousel.Caption>
+                <h3>{image.carouselLabel}</h3>
+                <p>{image.carouselDescription}</p>
+                </Carousel.Caption>
+                </Carousel.Item>
+        ))}
+        </Carousel> */}
         <div className={s.container}>
           <h1 className='fade-in fade-in-title p-2 mx-2'>
             Aceleramos la transición hacia un<br></br>

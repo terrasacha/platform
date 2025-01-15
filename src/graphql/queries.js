@@ -33,6 +33,22 @@ export const getUser = /* GraphQL */ `
           updatedAt
           __typename
         }
+        items {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
@@ -107,6 +123,16 @@ export const getUser = /* GraphQL */ `
         __typename
       }
       companies {
+        items {
+          id
+          name
+          description
+          userID
+          productID
+          createdAt
+          updatedAt
+          __typename
+        }
         items {
           id
           name

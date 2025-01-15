@@ -1018,7 +1018,7 @@ class Products extends Component {
                 <button
                   className={`inline-block px-3 py-1 rounded-full ${
                     CRUD_Product.isActive
-                      ? "bg-green-700 text-white"
+                      ? "bg-[#6e6c35] border-1 border-dark text-white"
                       : "bg-red-500 text-white"
                   }`}
                   onClick={(e) =>

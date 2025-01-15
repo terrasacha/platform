@@ -6,9 +6,10 @@ import { API, graphqlOperation } from "aws-amplify";
 import { createUser } from "../../../graphql/mutations";
 import { useNavigate } from "react-router";
 import s from "./Login.module.css";
-import LOGO from "../../common/_images/suan_logo.png";
+/* import LOGO from "../../common/_images/suan_logo.png"; */
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TerrasachaLogo from "components/common/TerrasachaLogo";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const initialFormState = {
@@ -22,13 +23,13 @@ const initialFormState = {
   privacy_policy: false,
   role: "constructor",
   code: "",
-  totpCode: ""
+  totpCode: "",
 };
 
 export default function LogIn() {
   const navigate = useNavigate()
   const [formState, updateFormState] = useState(initialFormState);
-  const[signInUserData,setSignInUserData] = useState(null)
+  const [signInUserData, setSignInUserData] = useState(null);
   const [user, updateUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -159,9 +160,7 @@ export default function LogIn() {
         setExplain(
           "Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente"
         );
-        setError(
-          "El nombre de usuario ya existe. Por favor, escoja otro."
-        );
+        setError("El nombre de usuario ya existe. Por favor, escoja otro.");
       }
     } else {
       setError(
@@ -195,14 +194,14 @@ export default function LogIn() {
   async function signIn(e) {
     e.preventDefault();
     const { username, password } = formState;
-  
+
     try {
       setError("");
       setLoading(true);
-  
+
       const response = await Auth.signIn(username, password);
-      console.log(response, 'response');
-  
+      console.log(response, "response");
+
       if (response.challengeName === "NEW_PASSWORD_REQUIRED") {
         setLoading(false);
         updateUser(response);
@@ -211,7 +210,7 @@ export default function LogIn() {
         // El usuario tiene activado MFA con TOTP
         setLoading(false);
         updateFormState(() => ({ ...formState, formType: "confirmTOTP" }));
-        setSignInUserData(response)
+        setSignInUserData(response);
         // Aquí debes mostrar un formulario donde el usuario ingrese el código TOTP
       } else {
         updateFormState(() => ({ ...formState, formType: "signedIn" }));
@@ -224,30 +223,34 @@ export default function LogIn() {
     }
     setLoading(false);
   }
-  
+
   async function confirmTOTP(e) {
     e.preventDefault();
     const { totpCode } = formState; // Asegúrate de tener un campo para capturar el código TOTP
     const { username } = formState;
-    console.log(signInUserData)
+    console.log(signInUserData);
     try {
       setError("");
       setLoading(true);
-  
-      const response = await Auth.confirmSignIn(signInUserData, totpCode, "SOFTWARE_TOKEN_MFA");
-      console.log(response, 'response');
-      
+
+      const response = await Auth.confirmSignIn(
+        signInUserData,
+        totpCode,
+        "SOFTWARE_TOKEN_MFA"
+      );
+      console.log(response, "response");
+
       updateFormState(() => ({ ...formState, formType: "signedIn" }));
       let currentUser = await Auth.currentAuthenticatedUser();
       currentUser = currentUser.attributes["custom:role"];
       localStorage.setItem("role", currentUser);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setError("Invalid TOTP code. Please try again.");
     }
     setLoading(false);
   }
-  
+
   async function forgotPassword(e) {
     e.preventDefault();
     const { username } = formState;
@@ -338,7 +341,7 @@ export default function LogIn() {
           <div className={s.containerLogin}>
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
-                <img src={LOGO} style={{ width: "30px" }} alt="logo" />
+                <TerrasachaLogo className={"w-48 h-auto"} />
                 <h2 className="text-center mb-4">Registro</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
               </div>
@@ -356,13 +359,22 @@ export default function LogIn() {
                     </span>
                   )}
                 </fieldset>
-                <p style={{ color: "#797979", fontSize: ".6em", margin: 0, width:"100%"}}>El nombre de usuario no debe contener espacios</p>
+                <p
+                  style={{
+                    color: "#797979",
+                    fontSize: ".6em",
+                    margin: 0,
+                    width: "100%",
+                  }}
+                >
+                  El nombre de usuario no debe contener espacios
+                </p>
                 <fieldset>
                   <input
                     type="email"
                     name="email"
                     onChange={onChange}
-                    placeholder="example@example.com"
+                    placeholder="Example@example.com"
                     className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
@@ -498,6 +510,7 @@ export default function LogIn() {
                 ¿Ya tienes una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -515,7 +528,7 @@ export default function LogIn() {
           <div className={s.containerLogin}>
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
-                <img src={LOGO} style={{ width: "60px" }} alt="logo" />
+                <TerrasachaLogo className={"w-48 h-auto"} />
                 <h2 className="text-center mb-4">Confirmación</h2>
               </div>
               <Alert>Codigo de verificación enviado a {formState.email}</Alert>
@@ -523,7 +536,11 @@ export default function LogIn() {
               <form className={s.inputContainer}>
                 <fieldset>
                   <legend>Codigo de verificación</legend>
-                  <input name="authCode" onChange={onChange} className="border-[1px] border-gray-300 rounded-md"/>
+                  <input
+                    name="authCode"
+                    onChange={onChange}
+                    className="border-[1px] border-gray-300 rounded-md"
+                  />
                 </fieldset>
                 <span
                   style={{
@@ -552,7 +569,7 @@ export default function LogIn() {
           <div className={s.containerLogin}>
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
-                <img src={LOGO} style={{ width: "30px" }} alt="logo" />
+                <TerrasachaLogo className={"w-48 h-auto"} />
                 <h2 className="text-center mb-4">Inicio de sesión</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
               </div>
@@ -600,6 +617,7 @@ export default function LogIn() {
                     color: "rgba(77,188,94,1)",
                     textAlign: "end",
                   }}
+                  className="text-[#6e6c35] text-sm font-bold"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -622,6 +640,7 @@ export default function LogIn() {
                 ¿Necesitas una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -636,55 +655,56 @@ export default function LogIn() {
           </div>
         )}
         {formType === "confirmTOTP" && (
-  <div className={s.containerLogin}>
-    <div className={s.containerCard}>
-      <div className={s.containerTitle}>
-        <img src={LOGO} style={{ width: "30px" }} alt="logo" />
-        <h2 className="text-center mb-4">Verificación TOTP</h2>
-        {error && <Alert variant="danger">{error}</Alert>}
-      </div>
-      <form className={s.inputContainer}>
-        <fieldset>
-          <legend>Código TOTP</legend>
-          <input
-            name="totpCode"
-            onChange={onChange} // Asegúrate de tener la función onChange definida para actualizar el estado
-            className="border-[1px] border-gray-300 rounded-md"
-            placeholder="Introduce el código TOTP"
-          />
-        </fieldset>
-        <button
-          type="submit"
-          disabled={loading}
-          onClick={(e) => confirmTOTP(e)} // Llama al método confirmTOTP cuando se haga submit
-          className="btn-login"
-        >
-          {loading ? "Verificando..." : "Verificar"}
-        </button>
-      </form>
-      <div className={s.needAccount}>
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={() =>
-            updateFormState(() => ({
-              ...formState,
-              formType: "signIn", // Regresa al formulario de inicio de sesión si el usuario desea cancelar
-            }))
-          }
-        >
-          Regresar a inicio de sesión
-        </span>
-      </div>
-    </div>
-  </div>
-)}
+          <div className={s.containerLogin}>
+            <div className={s.containerCard}>
+              <div className={s.containerTitle}>
+                <TerrasachaLogo className={"w-48 h-auto"} />
+                <h2 className="text-center mb-4">Verificación TOTP</h2>
+                {error && <Alert variant="danger">{error}</Alert>}
+              </div>
+              <form className={s.inputContainer}>
+                <fieldset>
+                  <legend>Código TOTP</legend>
+                  <input
+                    name="totpCode"
+                    onChange={onChange} // Asegúrate de tener la función onChange definida para actualizar el estado
+                    className="border-[1px] border-gray-300 rounded-md"
+                    placeholder="Introduce el código TOTP"
+                  />
+                </fieldset>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  onClick={(e) => confirmTOTP(e)} // Llama al método confirmTOTP cuando se haga submit
+                  className="btn-login"
+                >
+                  {loading ? "Verificando..." : "Verificar"}
+                </button>
+              </form>
+              <div className={s.needAccount}>
+                <span
+                  style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold"
+                  onClick={() =>
+                    updateFormState(() => ({
+                      ...formState,
+                      formType: "signIn", // Regresa al formulario de inicio de sesión si el usuario desea cancelar
+                    }))
+                  }
+                >
+                  Regresar a inicio de sesión
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {formType === "ForgotPassword" && (
           <div>
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
-                <img src={LOGO} style={{ width: "60px" }} alt="logo" />
-                <h2 className="text-center mb-4"> Recuperar contraseña  </h2>
+                <TerrasachaLogo className={"w-48 h-auto"} />
+                <h2 className="text-center mb-4">Recuperar contraseña</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
               </div>
               <form className={s.inputContainer}>
@@ -716,6 +736,7 @@ export default function LogIn() {
               ¿Necesita una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -733,7 +754,7 @@ export default function LogIn() {
           <div>
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
-                <img src={LOGO} style={{ width: "60px" }} alt="logo" />
+                <TerrasachaLogo className={"w-48 h-auto"} />
                 <h2 className="text-center mb-4">Confirmar código</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
               </div>
@@ -814,7 +835,7 @@ export default function LogIn() {
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
                 <h2 className="text-center mb-4">
-                  Cambio de Contraseña requerido
+                  Cambio de contraseña requerido
                 </h2>
               </div>
               {error && <Alert variant="danger">{error}</Alert>}
@@ -823,7 +844,7 @@ export default function LogIn() {
                   style={{ color: "#797979", fontSize: ".8em" }}
                 >{`Para poder ingresar a la plataforma como ${formState.username} primero debe cambiar la contraseña`}</p>
                 <fieldset>
-                  <legend>Nueva Contraseña</legend>
+                  <legend>Nueva contraseña</legend>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="newPassword"
@@ -851,7 +872,7 @@ export default function LogIn() {
           </button>
                 </fieldset>
                 <fieldset>
-                  <legend>Confirmar Contraseña</legend>
+                  <legend>Confirmar contraseña</legend>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmNewPassword"

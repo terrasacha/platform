@@ -33,6 +33,22 @@ export const onCreateUser = /* GraphQL */ `
           updatedAt
           __typename
         }
+        items {
+          id
+          name
+          status
+          password
+          seed
+          address
+          stake_address
+          isSelected
+          claimed_token
+          isAdmin
+          userID
+          createdAt
+          updatedAt
+          __typename
+        }
         nextToken
         __typename
       }
