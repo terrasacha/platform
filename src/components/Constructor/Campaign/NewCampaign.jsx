@@ -66,16 +66,24 @@ export default function NewCampaign() {
 
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-
-    // Validación en tiempo real: Eliminar el error del campo si se corrige
+    const { name, value, type, checked, files } = e.target;
+  
+    // Manejo especial para el campo 'images'
+    if (name === "images") {
+      setImages(Array.from(files)); // Guardar los archivos seleccionados en un estado independiente
+    } else {
+      // Actualizar el estado del formulario para otros campos
+      setFormData({
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      });
+    }
+  
+    // Validación en tiempo real: Eliminar errores del campo si se corrige
     if (showErrors) {
       setErrors((prevErrors) => {
         const updatedErrors = { ...prevErrors };
+  
         if (name === "name" && value.trim()) {
           if (value.length < 3) {
             updatedErrors.name = "El nombre debe tener al menos 3 caracteres.";
@@ -83,6 +91,7 @@ export default function NewCampaign() {
             delete updatedErrors.name;
           }
         }
+  
         if (name === "description" && value.trim()) {
           if (value.length < 10) {
             updatedErrors.description =
@@ -91,9 +100,11 @@ export default function NewCampaign() {
             delete updatedErrors.description;
           }
         }
+  
         if (name === "initialDate" && value) {
           delete updatedErrors.initialDate;
         }
+  
         if (name === "endDate" && value) {
           if (formData.initialDate && value < formData.initialDate) {
             updatedErrors.endDate =
@@ -102,10 +113,12 @@ export default function NewCampaign() {
             delete updatedErrors.endDate;
           }
         }
+  
         return updatedErrors;
       });
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

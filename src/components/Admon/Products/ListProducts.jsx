@@ -67,7 +67,10 @@ export default class ListProducts extends Component {
       this.handleHideModalProductImages.bind(this);
     this.handleDeleteProductFeature =
       this.handleDeleteProductFeature.bind(this);
+    this.checkRequirementsCompleted = this.checkRequirementsCompleted.bind(this);
+    this.ProductAction = this.ProductAction.bind(this);
   }
+  
   componentDidMount = async () => {
     await this.loadProductFeatureResults();
   };
@@ -297,6 +300,84 @@ export default class ListProducts extends Component {
       theme: "light",
     });
   };
+
+  checkRequirementsCompleted = (product) => {
+    const features = product.productFeatures.items;
+  
+    // Validar información del postulante
+    const hasApplicantInfo = ["A_postulante_name", "A_postulante_email", "A_postulante_id"].every((id) =>
+      features.some((feature) => feature.featureID === id && feature.value)
+    );
+  
+    // Validar aceptación de condiciones financieras
+    const ownerAcceptsConditions = features.some(
+      (feature) => feature.featureID === "GLOBAL_OWNER_ACCEPTS_CONDITIONS" && feature.value === "true"
+    );
+  
+    // Validar verificación de documentos
+    const hasValidatedDocuments = features.some(
+      (feature) =>
+        feature.featureID === "GLOBAL_PROJECT_VALIDATOR_FILES" &&
+        feature.documents.items.some((doc) => doc.isApproved)
+    );
+  
+    // Validar oficialización de información técnica
+    const hasTechnicalApproval = features.some(
+      (feature) =>
+        feature.featureID === "GLOBAL_VALIDATOR_SET_TECHNICAL_CONDITIONS" &&
+        feature.value === "true"
+    );
+  
+    // Validar oficialización de información financiera
+    const hasFinancialApproval = features.some(
+      (feature) =>
+        feature.featureID === "GLOBAL_VALIDATOR_SET_FINANCIAL_CONDITIONS" &&
+        feature.value === "true"
+    );
+  
+    // Validar distribución de tokens
+    const hasTokenDistribution = features.some(
+      (feature) => feature.featureID === "GLOBAL_TOKEN_AMOUNT_DISTRIBUTION" && feature.value
+    );
+  
+    // Validar publicación en el Marketplace
+    const isVisibleOnMarketplace = product.isActive ;
+  
+    // Evaluar todos los requisitos
+    return (
+      hasApplicantInfo &&
+      ownerAcceptsConditions &&
+      hasValidatedDocuments &&
+      hasTechnicalApproval &&
+      hasFinancialApproval &&
+      hasTokenDistribution &&
+      isVisibleOnMarketplace
+    );
+  };
+  
+  
+  // Mostrar o no el botón
+  ProductAction = ({ product }) => {
+    const canBeDeleted = !this.checkRequirementsCompleted(product);
+  
+    return canBeDeleted ? (
+      <Button
+        variant="danger"
+        size="sm"
+        onClick={() =>
+          this.setState({
+            showModalDeleteProduct: true,
+            selectedProductToShow: product,
+          })
+        }
+      >
+        Eliminar
+      </Button>
+    ) : null;
+  };
+  
+  
+  
   // RENDER
   render() {
     let { products, urlS3Image, listPF } = this.props;
@@ -313,7 +394,7 @@ export default class ListProducts extends Component {
       selectedProductFeatureToDeleteHasVerifications,
       selectedProductFeatureToDeleteHasVerificationComments,
     } = this.state;
-    console.log("que trae",selectedProductToShow)
+    console.log("que trae",products)
     // Render Products
     let productsData = products.map((product) => {
       product.toCertified = false;
@@ -360,22 +441,7 @@ export default class ListProducts extends Component {
               {products.map((product) => (
                 <tr key={product.id}>
                   <td>
-                    {product.unverified ? (
-                      <Button
-                        variant={"danger"}
-                        size="sm"
-                        onClick={(e) =>
-                          this.setState({
-                            showModalDeleteProduct: true,
-                            selectedProductToShow: product,
-                          })
-                        }
-                      >
-                        Eliminar
-                      </Button>
-                    ) : (
-                      ""
-                    )}
+                  {this.ProductAction({ product })}
                   </td>
                   <td>
                     <a
@@ -754,20 +820,28 @@ export default class ListProducts extends Component {
                 Cancelar
               </Button>
               <Button
-                variant="danger"
-                onClick={async () => {
-                  try {
-                    await deleteAllInfoProduct(this.state.selectedProductToShow);
-                    this.setState({ showModalDeleteProduct: false });
-                    this.notify("Producto eliminado exitosamente.");
-                  } catch (error) {
-                    console.error("Error al eliminar el producto:", error);
-                    this.notifyError("Error al eliminar el producto. Intente nuevamente.");
-                  }
-                }}
-              >
-                Confirmar
-              </Button>
+            variant="danger"
+            disabled={this.state.isLoading} // Deshabilitar durante la carga
+            onClick={async () => {
+              this.setState({ isLoading: true }); // Iniciar carga
+              try {
+                await deleteAllInfoProduct(this.state.selectedProductToShow);
+                this.setState({
+                  showModalDeleteProduct: false,
+                  isLoading: false, // Finalizar carga
+                });
+                this.notify("Producto eliminado exitosamente.");
+              } catch (error) {
+                console.error("Error al eliminar el producto:", error);
+                this.setState({ isLoading: false }); // Finalizar carga en caso de error
+                this.notifyError(
+                  "Error al eliminar el producto. Intente nuevamente."
+                );
+              }
+            }}
+          >
+            {this.state.isLoading ? "Confirmando..." : "Confirmar"}
+          </Button>
             </Modal.Footer>
           </Modal>
         );

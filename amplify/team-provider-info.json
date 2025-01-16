@@ -10,6 +10,14 @@
       "StackName": "amplify-platform-internal-6c75a",
       "StackId": "arn:aws:cloudformation:us-east-1:036134507423:stack/amplify-platform-internal-6c75a/39323730-7b7f-11ef-bd14-0afff1e6c27f",
       "AmplifyAppId": "d2p2m0o7qufcng"
+    },
+    "categories": {
+      "auth": {
+        "platformauth": {}
+      },
+      "storage": {
+        "platformstorage": {}
+      }
     }
   }
 }
