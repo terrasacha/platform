@@ -3,6 +3,7 @@
     background-image: url('../_images/0162_cesar_david_martinez.jpg');
     display: flex;
     align-items: center;
+    overflow: hidden;
 }
 .firstContainer{
     width: 60%;

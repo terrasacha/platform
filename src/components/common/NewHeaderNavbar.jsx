@@ -18,7 +18,12 @@ import DropDownProjects from "./DropDownProjects";
 
 export default function NewHeaderNavbar() {
   const [user, setUser] = useState(null);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
   const navigate = useNavigate();
+
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((data) => setUser(data))
@@ -61,8 +66,10 @@ export default function NewHeaderNavbar() {
         <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
           <TerrasachaLogo className={"w-48 h-auto"} />
         </Navbar.Brand>
-        <Navbar.Toggle className="border-2 p-2" />
+        <Navbar.Toggle className="border-2 p-2" onClick={handleOpenOffcanvas} />
         <Navbar.Offcanvas
+          show={showOffcanvas}
+          onHide={handleCloseOffcanvas}
           id={`offcanvasNavbar-expand-$'sm'`}
           aria-labelledby={`offcanvasNavbarLabel-expand-$'sm'`}
           placement="end"
@@ -147,10 +154,11 @@ export default function NewHeaderNavbar() {
                     <a
                       className="cursor-pointer text-[#6e6c35]"
                       href="#tecnologia"
+                      onClick={handleCloseOffcanvas}
                     >
                       Tecnología
                     </a>
-                    <a className="cursor-pointer text-[#6e6c35]" href="#porque">
+                    <a className="cursor-pointer text-[#6e6c35]" href="#porque" onClick={handleCloseOffcanvas}>
                       ¿Por qué Suan?
                     </a>
                     {/* <DropDownProjects variant={"secondary"} /> */}

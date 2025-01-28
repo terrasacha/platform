@@ -254,29 +254,78 @@ export default function LogIn() {
   async function forgotPassword(e) {
     e.preventDefault();
     const { username } = formState;
+  
+    if (!username) {
+      setError("Por favor, ingrese su nombre de usuario.");
+      return;
+    }
+  
     try {
       setError("");
       setLoading(true);
       await Auth.forgotPassword(username);
       updateFormState(() => ({ ...formState, formType: "confirmFPcode" }));
+      setError("Hemos enviado un código de recuperación a su correo electrónico.");
     } catch (error) {
-      setError("User name does not exist.");
+      setLoading(false);
+  
+      // Manejo de errores comunes
+      if (error.code === "UserNotFoundException") {
+        setError("El usuario ingresado no existe. Por favor, verifique e intente nuevamente.");
+      } else if (error.code === "LimitExceededException") {
+        setError("Se ha excedido el límite de intentos. Por favor, espere un momento antes de intentarlo nuevamente.");
+      } else {
+        setError("Ocurrió un error al intentar recuperar la contraseña. Por favor, intente nuevamente.");
+      }
     }
     setLoading(false);
   }
+  
   async function confirmNewPassword(e) {
     e.preventDefault();
     const { username, code, password } = formState;
+  
+    // Validación de requisitos de contraseña
+    if (password.length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+  
+    if (!/\d/.test(password)) {
+      setError("La contraseña debe contener al menos un número.");
+      return;
+    }
+  
+    if (!/[A-Z]/.test(password)) {
+      setError("La contraseña debe contener al menos una letra mayúscula.");
+      return;
+    }
+  
+    if (!/[a-z]/.test(password)) {
+      setError("La contraseña debe contener al menos una letra minúscula.");
+      return;
+    }
+  
+    // Intentar confirmar la nueva contraseña
     try {
       setError("");
       setLoading(true);
       await Auth.forgotPasswordSubmit(username, code, password);
       updateFormState(() => ({ ...formState, formType: "signIn" }));
     } catch (error) {
-      setError("El código no es válido.");
+      setLoading(false);
+  
+      // Manejo de errores de código inválido
+      if (error.code === "CodeMismatchException") {
+        setError("El código de verificación no es válido. Inténtalo de nuevo.");
+      } else if (error.code === "ExpiredCodeException") {
+        setError("El código ha expirado. Por favor, solicita uno nuevo.");
+      } else {
+        setError("Hubo un error al confirmar la nueva contraseña.");
+      }
     }
-    setLoading(false);
   }
+  
   async function changePassword(e) {
     e.preventDefault();
     const { newPassword, confirmNewPassword } = formState;
@@ -495,6 +544,11 @@ export default function LogIn() {
                     </a>
                   </label>
                 </fieldset>
+                {(!formState.terms || !formState.privacy_policy) && (
+  <p style={{ color: "red", fontSize: "0.8em", marginTop: "0.5rem" }}>
+    Debe aceptar los términos de uso y la política de privacidad para continuar.
+  </p>
+)}
                 <button
                   type="submit"
                   onClick={(e) => signUp(e)}
@@ -722,14 +776,14 @@ export default function LogIn() {
                    />
                 </fieldset>
                 <span className={s.forgotPasswordSpan}>
-                La contraseña se enviará a la dirección de correo electrónico asociada al usuario
+                El código se enviará a la dirección de correo electrónico asociada al usuario
                 </span>
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => forgotPassword(e)}
                 >
-                  {loading ? "Enviando" : "Enviar nuevo código"}
+                  {loading ? "Enviando" : "Enviar código"}
                 </button>
               </form>
               <div className={s.needAccount}>

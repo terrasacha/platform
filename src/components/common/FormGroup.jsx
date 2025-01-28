@@ -158,7 +158,7 @@ export default class FormGroup extends Component {
       }
       if (inputType === "radio" || inputType === "checkbox") {
         return (
-          <>
+          <>  
             {optionList.map(({ label, value }) => (
               <div key={`opt-${label}`}>
                 <input

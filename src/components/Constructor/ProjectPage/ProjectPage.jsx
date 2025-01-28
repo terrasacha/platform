@@ -367,11 +367,11 @@ export default function ProjectPage() {
                   {projectData.projectVerifierNames.length > 0 && (
                     <section>
                       <p className="fs-6 mb-0 fw-bold">Validadores:</p>
-                      <div className="flex gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                         {projectData.projectVerifierNames.map((pvn, index) => {
                           return (
                             <div
-                              className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap "
+                              className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md"
                               key={index}
                             >
                               Consultor {index + 1}: {pvn}
@@ -382,7 +382,7 @@ export default function ProjectPage() {
                     </section>
                   )}
                 </div>
-                <ul className="font-medium flex mt-4 pl-0 ">
+                <ul className="font-medium flex flex-wrap gap-2 mt-4 pl-0 justify-center md:justify-start">
                   <li>
                     <a
                       href="#details"

@@ -201,7 +201,7 @@ export default class LandingPage extends Component {
               <Button className="" onClick={this.handleShow}>
                 Tengo un proyecto
               </Button>
-              <DropDownProjects/>
+              <DropDownProjects style={{width:"100vw"}}/>
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
                   <div className="row">
