@@ -33,6 +33,7 @@ import PQRForm from "components/views/landingPage/PQRForm";
 import Property from "components/Property/Property";
 import { PropertyDataProvider } from "context/PropertyDataContext";
 import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
+import './App.css';
 
 function App() {
   return (

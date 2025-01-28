@@ -274,7 +274,7 @@ export default function ModalNewProperty({
     <p className="text-muted">
       ¿No sabes cómo sacar tu número catastral?{" "}
       <a
-        href="https://suans-organization.gitbook.io/suan/guia-de-usuario-plataforma/rol-propietario/como-realizo-la-consulta-catastral"
+        href="https://terrasacha.gitbook.io/terrasacha/guia-de-usuario-plataforma/rol-propietario/como-obtener-el-numero-catastral-de-un-predio"
         target="_blank"
         rel="noopener noreferrer"
         className="text-primary"

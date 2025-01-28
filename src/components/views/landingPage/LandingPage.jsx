@@ -435,7 +435,7 @@ export default class LandingPage extends Component {
               <div className="col-12 sm:col-6">
                 <a
                   className="m-auto d-block btn-landing text-center mb-2 sm:mb-0"
-                  href="https://suans-organization.gitbook.io/suan/readme/guia-de-usuario"
+                  href="https://terrasacha.gitbook.io/terrasacha/readme/guia-de-usuario"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -445,7 +445,7 @@ export default class LandingPage extends Component {
               <div className="col-12 sm:col-6">
                 <a
                   className="m-auto d-block btn-landing text-center sm:ml-2"
-                  href="https://suans-organization.gitbook.io/suan"
+                  href="https://terrasacha.gitbook.io/terrasacha"
                   target="_blank"
                   rel="noreferrer"
                 >

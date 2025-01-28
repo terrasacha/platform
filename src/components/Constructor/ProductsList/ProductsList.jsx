@@ -42,10 +42,10 @@ const CampaignCard = ({ campaign }) => {
     />
     <div className="p-4">
       <div className="flex space-x-2 mb-2">
-        <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+        <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded" style={{backgroundColor:"#74742c"}}>
           {getYearFromAWSDatetime(campaign?.products?.items?.[0]?.createdAt)}
         </span>
-        <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+        <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded" style={{backgroundColor:"#74742c"}}>
           {campaign?.products?.items?.[0]?.categoryID}
         </span>
       </div>
@@ -55,6 +55,7 @@ const CampaignCard = ({ campaign }) => {
         <a
           href={`campaign/${campaign?.id}`}
           className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+          style={{backgroundColor:"#74742c"}}
         >
           Ver Campaña
         </a>
@@ -169,6 +170,7 @@ export default function ProductsList() {
             <a
               href="/new_campaign"
               className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+              style={{backgroundColor:"#74742c"}}
             >
               Crear Campaña
             </a>

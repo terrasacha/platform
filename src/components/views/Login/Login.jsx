@@ -438,13 +438,13 @@ export default function LogIn() {
             paddingRight: "2.5rem", // Espacio para el ícono
           }}
         />
-        <button
+        <span
           type="button"
           onClick={() => setShowPassword(!showPassword)}
           style={{
             position: "absolute",
-            left: "86%",
-            top: "10%",
+            left: "89%",
+            top: "47%",
             transform: "translateY(-50%)",
             background: "none",
             border: "none",
@@ -456,7 +456,7 @@ export default function LogIn() {
           }
         >
           {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-        </button>
+        </span>
       </fieldset>
       <p style={{ color: "#797979", fontSize: ".6em", margin: 0 }}>
         La contraseña debe constar de más de 8 caracteres y contener por lo
@@ -473,13 +473,13 @@ export default function LogIn() {
             paddingRight: "2.5rem", // Espacio para el ícono
           }}
         />
-        <button
+        <span
           type="button"
           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           style={{
             position: "absolute",
-            left: "86%",
-            top: "10%",
+            left: "89%",
+            top: "47%",
             transform: "translateY(-50%)",
             background: "none",
             border: "none",
@@ -491,7 +491,7 @@ export default function LogIn() {
           }
         >
           {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-        </button>
+        </span>
       </fieldset>
                 <fieldset>
                   <legend>Rol</legend>
@@ -555,7 +555,6 @@ export default function LogIn() {
                   disabled={
                     loading || !formState.terms || !formState.privacy_policy
                   }
-                  className="btn-login"
                 >
                   {loading ? "Loading" : "Registrarse"}
                 </button>
@@ -564,7 +563,7 @@ export default function LogIn() {
                 ¿Ya tienes una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
-                  className="text-[#6e6c35] text-sm font-bold"
+                  className="text-[#6e6c35] text-sm font-bold" 
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -645,13 +644,13 @@ export default function LogIn() {
               className="border-[1px] border-gray-300 rounded-md"
               style={{ paddingRight: "2.5rem" }} // Espacio para el ícono
             />
-            <button
-              type="button"
+            <span
+              type="button" 
               onClick={() => setShowPassword(!showPassword)}
               style={{
                 position: "absolute",
-                left: "86%",
-                top: "40%",
+                left: "90%",
+                top: "68%",
                 transform: "translateY(-50%)",
                 background: "none",
                 border: "none",
@@ -661,7 +660,7 @@ export default function LogIn() {
               aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             >
               {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-            </button>
+            </span>
           </fieldset>
                 <span
                   style={{
@@ -685,7 +684,6 @@ export default function LogIn() {
                   type="submit"
                   disabled={loading}
                   onClick={(e) => signIn(e)}
-                  className="btn-login"
                 >
                   {loading ? "Cargando" : "Ingresar"}
                 </button>
@@ -853,13 +851,13 @@ export default function LogIn() {
                     paddingRight: "2.5rem", 
                   }}
                   />
-                  <button
+                  <span
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             style={{
               position: "absolute",
-              left: "73%",
-              top: "61%",
+              left: "79%",
+              top: "79%",
               transform: "translateY(-50%)",
               background: "none",
               border: "none",
@@ -871,7 +869,7 @@ export default function LogIn() {
             }
           >
             {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </button>
+          </span>
                 </fieldset>
                 <button
                   type="submit"

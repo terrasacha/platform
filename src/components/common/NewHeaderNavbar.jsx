@@ -105,6 +105,9 @@ export default function NewHeaderNavbar() {
                       >
                         Crear campaña
                       </div>
+                      <div>
+                      <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
+                      </div>
                     </>
                   )}
                 {user && user.attributes["custom:role"] === "validator" && (
@@ -117,6 +120,24 @@ export default function NewHeaderNavbar() {
                     >
                       Proyectos asignados
                     </div>
+                    <div>
+                      <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
+                      </div>
+                  </>
+                )}
+                {user && user.attributes["custom:role"] === "analyst" && (
+                  <>
+                    <div
+                      className="cursor-pointer"
+                      onClick={() =>
+                        (window.location.href = "/project_analyst")
+                      }
+                    >
+                      Proyectos asignados
+                    </div>
+                    <div>
+                      <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
+                      </div>
                   </>
                 )}
                 {user && user.attributes["custom:role"] === "admon" && (

@@ -197,3 +197,15 @@
   @media (min-width: 1500px) {
     /* Estilos CSS aquí */
   }
+
+.togglePasswordButton {
+    position: absolute;
+    left: 86%;
+    top: 10%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: black; /* Color negro para el ícono */
+  }
+  
