@@ -49,14 +49,14 @@ export default class HeaderNavbar extends Component {
         <Navbar key="sm" bg="light" expand="lg" fixed="top">
           <Container>
             <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
-              <img src={TerrasachaLogo} className="w-8 h-auto" alt="ATP" />
+              <TerrasachaLogo className={"w-48 h-auto"} />
             </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Offcanvas placement="end">
               <Offcanvas.Header closeButton>
                 <Offcanvas.Title>
                   <a href="/">
-                    <img src={TerrasachaLogo} className="w-8 h-auto" alt="ATP" />
+                    <TerrasachaLogo className={"w-48 h-auto"} />
                   </a>
                 </Offcanvas.Title>
               </Offcanvas.Header>
