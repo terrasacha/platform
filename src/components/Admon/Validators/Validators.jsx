@@ -392,7 +392,7 @@ class Validators extends Component {
               </label>
               <select
                 id="formGridValidatorType"
-                name="newUser.subRole"
+                name="subRole"
                 value={newUser.subRole}
                 onChange={(e) => this.handleOnChangeInputForm(e)}
                 className="block w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"

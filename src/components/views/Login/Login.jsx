@@ -182,7 +182,7 @@ export default function LogIn() {
     } catch (error) {
       setLoading(false);
       updateFormState({ ...formState, authCode: "" });
-      setError("code does not match");
+      setError("el código no coincide");
     }
   }
 
@@ -243,7 +243,7 @@ export default function LogIn() {
       localStorage.setItem("role", currentUser);
     } catch (error) {
       console.log(error)
-      setError("Invalid TOTP code. Please try again.");
+      setError("Código TOTP no válido. Por favor, inténtelo de nuevo.");
     }
     setLoading(false);
   }
@@ -257,7 +257,7 @@ export default function LogIn() {
       await Auth.forgotPassword(username);
       updateFormState(() => ({ ...formState, formType: "confirmFPcode" }));
     } catch (error) {
-      setError("User name does not exist.");
+      setError("El nombre de usuario no existe.");
     }
     setLoading(false);
   }
@@ -432,16 +432,17 @@ export default function LogIn() {
           {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
         </button>
       </fieldset>
-                <fieldset>
-                  <legend>Rol</legend>
-                  <select
-                    name="role"
-                    onChange={onChange}
-                    className="border-[1px] border-gray-300 rounded-md"
-                  >
-                    <option value="constructor">Propietario</option>
-                  </select>
-                </fieldset>
+      <fieldset>
+  <legend>Rol</legend>
+  <input
+    type="text"
+    name="role"
+    value="Propietario"
+    readOnly
+    className="border-[1px] border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+  />
+</fieldset>
+
                 {
                   <p style={{ color: "#797979", fontSize: ".6em" }}>
                     {explain}

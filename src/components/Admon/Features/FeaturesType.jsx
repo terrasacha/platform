@@ -17,7 +17,7 @@ class FeaturesType extends Component {
     super(props);
     this.state = {
       date: new Date(),
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       featureTypes: [],
       newFeatureType: {
@@ -62,7 +62,7 @@ class FeaturesType extends Component {
   async handleCRUDFeatureType() {
     let tempNewFeatureType = this.state.newFeatureType;
 
-    if (this.state.CRUDButtonName === "CREATE") {
+    if (this.state.CRUDButtonName === "CREAR") {
       const newFeatureTypeId = this.state.newFeatureType.name;
       tempNewFeatureType.id = newFeatureTypeId;
       await API.graphql(
@@ -94,7 +94,7 @@ class FeaturesType extends Component {
 
   async cleanFeatureTypeOnCreate() {
     this.setState({
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       newFeatureType: {
         id: "",

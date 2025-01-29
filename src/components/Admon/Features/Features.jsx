@@ -28,7 +28,7 @@ class Features extends Component {
     super(props);
     this.state = {
       date: new Date(),
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       features: [],
       featureTypes: [],
@@ -233,7 +233,7 @@ class Features extends Component {
     let tempNewFeature = this.state.newFeature;
     if (tempNewFeature.unitOfMeasureID === "")
       return this.notifyError("Asegurese de Seleccionar una unidad de medida");
-    if (this.state.CRUDButtonName === "CREATE") {
+    if (this.state.CRUDButtonName === "CREAR") {
       let numberType = this.state.UnitOfMeasures.filter(
         (uom) => uom.id === tempNewFeature.unitOfMeasureID
       );
@@ -310,7 +310,7 @@ class Features extends Component {
   };
   async cleanFeatureOnCreate() {
     this.setState({
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       newFeature: {
         id: "",

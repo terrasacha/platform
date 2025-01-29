@@ -20,7 +20,7 @@ class UOM extends Component {
     super(props);
     this.state = {
       unitOfMeasures: [],
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       newUnitOfMeasure: {
         id: "",
@@ -121,7 +121,7 @@ class UOM extends Component {
   async handleCRUDUnitOfMeasure() {
     let tempNewUnitOfMeasure = this.state.newUnitOfMeasure;
 
-    if (this.state.CRUDButtonName === "CREATE") {
+    if (this.state.CRUDButtonName === "CREAR") {
       await API.graphql(
         graphqlOperation(createUnitOfMeasure, { input: tempNewUnitOfMeasure })
       );
@@ -151,7 +151,7 @@ class UOM extends Component {
 
   async cleanUnitOfMeasureOnCreate() {
     this.setState({
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       newUnitOfMeasure: {
         id: "",

@@ -13,7 +13,7 @@ export default class CRUDProductFeatures extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            CRUDButtonName: 'ADD',
+            CRUDButtonName: 'AGREGAR',
             isCRUDButtonDisable: true,
             newProductFeature: {
                 id: '',
@@ -85,7 +85,7 @@ export default class CRUDProductFeatures extends Component {
     async handleCRUDProductFeature() {
         let tempNewProductFeature = this.state.newProductFeature
 
-        if (this.state.CRUDButtonName === 'ADD') {
+        if (this.state.CRUDButtonName === 'AGREGAR') {
             if(tempNewProductFeature.order === '') tempNewProductFeature.order = 0
             tempNewProductFeature.id = uuidv4().replaceAll('-','_')
             tempNewProductFeature.productID = this.props.CRUD_Product.id
@@ -134,7 +134,7 @@ export default class CRUDProductFeatures extends Component {
 
     async cleanProductFeatureCreate() {
         this.setState({
-            CRUDButtonName: 'ADD',
+            CRUDButtonName: 'AGREGAR',
             isCRUDButtonDisable: true,
             newProductFeature: {
                 id: '',
@@ -323,7 +323,7 @@ export default class CRUDProductFeatures extends Component {
     }
     return (
       <>
-        <h2>Product Features</h2>
+        <h2>Características del producto</h2>
         {renderCRUDProductFeatures()}
         {renderProductFeatures()}
       </>
