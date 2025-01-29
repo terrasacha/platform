@@ -127,8 +127,8 @@ export default class HeaderNavbar extends Component {
                   <div class="font-bold text-[#FE4849] border-4 border-[#FE4849] px-4 py-1 mr-4">
                     {process.env.REACT_APP_ENV}
                   </div>
-                  <div class="font-bold text-[#FE4849] px-2 py-1">
-                    {role ? role : ""}
+                  <div style={{ fontWeight: "700", color: "#FE4849", padding: '.2rem 2rem' }}>
+                  {role === "admon" ? "Administrador" : role || ""}
                   </div>
                   <Dropdown align={"end"}>
                     <Dropdown.Toggle

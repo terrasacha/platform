@@ -69,7 +69,7 @@ class Products extends Component {
       },
       productFeatures: [],
       listPF: [],
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       isImageUploadingFile: false,
       products: [],
@@ -379,7 +379,7 @@ class Products extends Component {
   async handleCRUDProduct() {
     const tempCRUD_Product = this.state.CRUD_Product;
     tempCRUD_Product.id = await checkIfUserExists(tempCRUD_Product.id);
-    if (this.state.CRUDButtonName === "CREATE") {
+    if (this.state.CRUDButtonName === "CREAR") {
       const payLoadNewProduct = {
         id: tempCRUD_Product.id,
         name: tempCRUD_Product.name,
@@ -747,7 +747,7 @@ class Products extends Component {
         images: [],
       },
       productFeatures: [],
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       isImageUploadingFile: false, //se borraban los features y categorys
       selectedCategory: null,

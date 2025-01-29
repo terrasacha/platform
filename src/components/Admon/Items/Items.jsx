@@ -23,7 +23,7 @@ class Items extends Component {
     super(props);
     this.state = {
       categorys: [],
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       newCategory: { name: "", type: "" },
     };
@@ -113,7 +113,7 @@ class Items extends Component {
   async handleCRUDCategory() {
     let tempNewCategory = this.state.newCategory;
 
-    if (this.state.CRUDButtonName === "CREATE") {
+    if (this.state.CRUDButtonName === "CREAR") {
       const response = await API.graphql(
         graphqlOperation(createProductItem, { input: tempNewCategory })
       );
@@ -190,7 +190,7 @@ class Items extends Component {
 
   async cleanCategoryOnCreate() {
     this.setState({
-      CRUDButtonName: "CREATE",
+      CRUDButtonName: "CREAR",
       isCRUDButtonDisable: true,
       newCategory: { name: "", type: "" },
     });
