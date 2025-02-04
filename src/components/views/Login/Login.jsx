@@ -557,7 +557,7 @@ export default function LogIn() {
                     loading || !formState.terms || !formState.privacy_policy
                   }
                 >
-                  {loading ? "Loading" : "Registrarse"}
+                  {loading ? "Cargando" : "Registrarse"}
                 </button>
               </form>
               <div className={s.needAccount}>

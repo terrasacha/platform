@@ -69,8 +69,6 @@ a{
     cursor: pointer;    
     border: none;
     color: white;
-    background: rgb(77,188,94);
-    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
     transition: .2s;
 }
 .container button:hover{
@@ -125,8 +123,6 @@ a{
     border: none;
     font-size: 1.1em;
     color: white;
-    background: rgb(77,188,94);
-    background: linear-gradient(45deg, rgba(77,188,94,1) 0%, rgba(3,102,103,1) 100%);
 }
 @keyframes appear {
   from {

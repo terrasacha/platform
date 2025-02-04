@@ -198,7 +198,10 @@ export default class LandingPage extends Component {
           </p>
           <div className='fade-in fade-in-row row'>
             <div className='col p-2 mx-3'>
-              <Button className="" onClick={this.handleShow}>
+            <Button 
+  style={{ backgroundColor: "#6B8E0F", color: "white", border: "none" }} 
+  onClick={this.handleShow}
+>
                 Tengo un proyecto
               </Button>
               <DropDownProjects style={{width:"100vw"}}/>
