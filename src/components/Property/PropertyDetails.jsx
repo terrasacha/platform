@@ -13,7 +13,7 @@ import Relations from "./Relations";
 import CadastralRecords from "./CadastralRecords";
 import AdditionalFiles from "./AdditionalFiles";
 
-export default function PropertyDetails({ visible }) {
+export default function PropertyDetails({ visible, setHasUnsavedChanges , handleFieldChange}) {
   const { propertyData } = usePropertyData();
   const [autorizedUser, setAutorizedUser] = useState(false);
   const [isPostulant, setIsPostulant] = useState(false);
@@ -50,6 +50,8 @@ export default function PropertyDetails({ visible }) {
               totalArea={totalArea}
               latLngCentroid={latLngCentroid}
               setTotalArea={setTotalArea}
+              setHasUnsavedChanges={setHasUnsavedChanges}
+              handleFieldChange={handleFieldChange}
             />
           </div>
           <div
@@ -60,7 +62,7 @@ export default function PropertyDetails({ visible }) {
                 : "col-12"
             }
           >
-            <ActualUseAndPotential autorizedUser={autorizedUser} />
+            <ActualUseAndPotential autorizedUser={autorizedUser}  setHasUnsavedChanges={setHasUnsavedChanges} handleFieldChange={handleFieldChange}/>
           </div>
           <div
             className={
@@ -70,19 +72,19 @@ export default function PropertyDetails({ visible }) {
                 : "col-12"
             }
           >
-            <UseRestrictions autorizedUser={autorizedUser} />
+            <UseRestrictions autorizedUser={autorizedUser}  setHasUnsavedChanges={setHasUnsavedChanges} handleFieldChange={handleFieldChange}/>
           </div>
           <div className="col-12 col-lg-12">
-            <Ecosystem autorizedUser={autorizedUser} />
+            <Ecosystem autorizedUser={autorizedUser}  setHasUnsavedChanges={setHasUnsavedChanges} handleFieldChange={handleFieldChange}/>
           </div>
           <div className="col">
-            <GeneralAspects autorizedUser={autorizedUser} />
+            <GeneralAspects autorizedUser={autorizedUser}  setHasUnsavedChanges={setHasUnsavedChanges} handleFieldChange={handleFieldChange}/>
           </div>
           <div className="col">
-            <Relations autorizedUser={autorizedUser} />
+            <Relations autorizedUser={autorizedUser}  setHasUnsavedChanges={setHasUnsavedChanges} handleFieldChange={handleFieldChange}/>
           </div>
           <div className="col">
-            <AdditionalFiles autorizedUser={autorizedUser} basePath={`projects/${propertyData.propertyInfo?.projectID}/other/`} />
+            <AdditionalFiles autorizedUser={autorizedUser} basePath={`projects/${propertyData.propertyInfo?.projectID}/other/`}  setHasUnsavedChanges={setHasUnsavedChanges} handleFieldChange={handleFieldChange}/>
           </div>
         </div>
       )}

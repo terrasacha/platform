@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+/* Contenedor principal de la aplicación */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Hace que el contenedor ocupe toda la altura de la pantalla */
+}
+
+/* Contenedor del contenido principal */
+.main-content {
+  flex: 1; /* Expande el contenido para empujar el footer hacia abajo */
+}
+
+/* Estilo del footer */
+.footer {
+  padding: 1rem;
+  background-color: #282c34;
+  color: white;
+  text-align: center;
+}
+

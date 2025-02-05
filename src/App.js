@@ -39,6 +39,8 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <div className="app-container">
+      <div className="main-content">
         <Routes>
           <Route path="/" element={<LandingPage />} exact />
           <Route
@@ -161,7 +163,9 @@ function App() {
           {/* <Route path="/lists3" element={<ListS3 />} /> */}
           <Route path="/*" element={<Error />} />
         </Routes>
+        </div>
         <Footer />
+        </div>
       </BrowserRouter>
     </AuthProvider>
   );
