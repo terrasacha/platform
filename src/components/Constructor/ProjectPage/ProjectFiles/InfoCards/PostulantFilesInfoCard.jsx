@@ -401,14 +401,12 @@ export default function PostulantFilesInfoCard(props) {
                         <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white" onClick={() => handleOpenObject(s3Client, bucketName, file.url)}>
                           <DownloadIcon />
                         </button>
-                      {file.verification && (
                         <button
                           className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
                           onClick={() => handleMessageButtonClick(fileIndex, 'propertyFeature')}
                         >
                           <MessagesIcon />
                         </button>
-                      )}
                     </td>
                   </tr>
                 );

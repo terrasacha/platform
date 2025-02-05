@@ -1,337 +1,92 @@
-import React, { Component } from "react";
+import React from "react";
+import useUserCampaigns from "hooks/useUserCampaigns";
+import vacio from "../../views/_images/caja-vacia-gris.png";
+import { getImagesCategories, getYearFromAWSDatetime  } from "components/Constructor/ProjectPage/utils";
 
-//Bootstrap
-import { Button, Card, Container, Stack, Badge } from "react-bootstrap";
-import HeaderNavbar from "../../Investor/Navbars/HeaderNavbar";
-// GraphQL
-import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { listProducts } from "../../../utilities/customQueries";
-import {
-  getImagesCategories,
-  getYearFromAWSDatetime,
-} from "../../Constructor/ProjectPage/utils";
 
-export const listDocuments = /* GraphQL */ `
-  query ListDocuments(
-    $filter: ModelDocumentFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listDocuments(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        data
-        timeStamp
-        docHash
-        signedHash
-        signed
-        url
-        signed
-        signedHash
-        isApproved
-        status
-        isUploadedToBlockChain
-        productFeatureID
-        productFeature {
-          id
-          value
-          isToBlockChain
-          order
-          isOnMainCard
-          productID
-          featureID
-          createdAt
-          updatedAt
-          feature {
-            name
-            id
-            isVerifable
-            description
-            featureType {
-              id
-              name
-            }
-          }
-          product {
-            id
-            name
-            transactions {
-              items {
-                id
-              }
-            }
-            category {
-              name
-            }
-            productFeatures {
-              items {
-                id
-                featureID
-                value
-              }
-            }
-          }
-          verifications {
-            items {
-              id
-              userVerifierID
-              userVerifier {
-                name
-              }
-              userVerifiedID
-              userVerified {
-                name
-              }
-              updatedOn
-              sign
-              createdOn
-              verificationComments {
-                items {
-                  comment
-                  createdAt
-                  id
-                  isCommentByVerifier
-                  verificationID
-                }
-              }
-            }
-          }
-        }
-        userID
-        user {
-          id
-          name
-          dateOfBirth
-          isProfileUpdated
-          addresss
-          cellphone
-          role
-          status
-          email
-          createdAt
-          updatedAt
-        }
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-class ValidatorAdmon extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      products: [],
-      actualUser: "",
-      documents: [],
-      tokenPrices: {},
-      tokenNames: {},
-      amountTokens: {},
-      documentsPending: [],
-      otherDocuments: [],
-      featuresVerifables: [],
-      showPending: true,
-      showOther: false,
-      isShowProductDocuments: true,
-      isShowUsers: false,
-      showModalDocument: false,
-      showModalComments: false,
-      showModalValidate: false,
-      showModalDetailsValidation: false,
-      selectedDocument: null,
-      selectedDocumentID: null,
-      selectedProductValidation: null,
-      selectedProductVerificationID: null,
-      creatingVerification: false,
-      users: [],
-      verification: {
-        id: "",
-        createdOn: "",
-        updatedOn: "",
-        sign: "",
-        userVerifierID: "",
-        userVerifiedID: "",
-        productFeatureID: "",
-        documentStatus: "",
-      },
-      newVerificationComment: {
-        verificationID: "",
-        isCommentByVerifier: true,
-        comment: "",
-      },
-    };
-    this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this);
-    this.logOut = this.logOut.bind(this);
+// Componente para representar una campaña individual
+const CampaignCard = ({ campaign }) => {
+  let campaignImages = [];
+  try {
+    campaignImages = campaign?.images ? JSON.parse(campaign.images) : [];
+  } catch (error) {
+    console.error("Error al parsear las imágenes de la campaña:", error);
   }
 
-  componentDidMount = async () => {
-    let actualUser = await Auth.currentAuthenticatedUser();
-    actualUser = actualUser.attributes.sub;
-    this.setState({ actualUser: actualUser });
+  const campaignImage =
+    campaignImages.length > 0
+      ? campaignImages[0]
+      : getImagesCategories(campaign?.products?.items?.[0]?.categoryID);
 
-    await this.loadVerifierProducts();
-  };
+  return (
+    <div className="p-4">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <img
+          className="h-40 w-full object-cover"
+          src={campaignImage}
+          alt="Imagen de la campaña"
+        />
+        <div className="p-4">
+          <div className="flex space-x-2 mb-2">
+            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+              {getYearFromAWSDatetime(campaign?.products?.items?.[0]?.createdAt)}
+            </span>
+            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
+              {campaign?.products?.items?.[0]?.categoryID}
+            </span>
+          </div>
+          <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
+          <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>
+          <div className="flex justify-between items-center mt-3 space-x-4">
+            <a
+              href={`campaign/${campaign?.id}`}
+              className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Ver Campaña
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-  async loadVerifierProducts() {
-    const response = await API.graphql(graphqlOperation(listProducts));
-    const verifierAssignedProducts = response.data.listProducts.items.filter(
-      (product) => {
-        const isProjectVerifier = product.userProducts?.items.some(
-          (up) => up.user?.id === this.state.actualUser
-        );
-        const isVisible = product.isActiveOnPlatform;
-        return isProjectVerifier && isVisible;
-      }
-    );
+// Componente principal que muestra la lista de campañas
+export default function ValidatorAdmon() {
+  const { userCampaigns } = useUserCampaigns();
 
-    this.setState({ products: verifierAssignedProducts });
-  }
-  async changeHeaderNavBarRequest(pRequest) {
-    if (pRequest === "product_documents") {
-      this.setState({
-        isShowProductDocuments: true,
-        isShowUsers: false,
-      });
-    }
-    if (pRequest === "users") {
-      this.setState({
-        isShowProductDocuments: false,
-        isShowUsers: true,
-      });
-    }
-  }
-  async logOut() {
-    await Auth.signOut();
-    window.location.href = "/";
-    localStorage.removeItem("role");
-  }
+  return (
+    <>
+      <section>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+          Tus Campañas
+        </h2>
 
-  render() {
-    const { products } = this.state;
-    const renderValidatingProjects = () => {
-      console.log("products", products);
-      if (products) {
-        return (
-          <>
-            <h2 className="mt-5">Tus Campañas asignadas</h2>
-            <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
-              {products.length > 0 &&
-                products
-                  .filter((prod) => !(prod.campaignID === null))
-                  .map((product, index) => {
-                    return (
-                      <div key={index} className="p-3">
-                        <Card key={product.id} className="p-0">
-                          <img
-                            variant="top"
-                            src={getImagesCategories(product.categoryID)}
-                            style={{ height: "150px" }}
-                            alt="Hola"
-                          />
-                          <Card.Body>
-                            <div className="d-flex">
-                              <Stack direction="horizontal" gap={2}>
-                                <Badge bg="primary">
-                                  {getYearFromAWSDatetime(product.createdAt)}
-                                </Badge>
-                                <Badge bg="primary">{product.categoryID}</Badge>
-                                {product.isActive && (
-                                  <Badge bg="success">Publicado</Badge>
-                                )}
-                                {product.showOn && (
-                                  <Badge bg="secondary">
-                                    Marketplace {product.showOn}
-                                  </Badge>
-                                )}
-                              </Stack>
-                            </div>
-                            <p className="fs-5 my-2">{product.campaign.name}</p>
-                            <hr className="mb-2" />
-                            <p className="fs-6 my-2 text-h">
-                              {product.campaign.description}
-                            </p>
-                          </Card.Body>
-                          <Card.Footer>
-                            <div className="d-flex justify-content-center align-items-center">
-                              <a href={"campaign/" + product.campaignID}>
-                                <Button>Ver Campaña</Button>
-                              </a>
-                            </div>
-                          </Card.Footer>
-                        </Card>
-                      </div>
-                    );
-                  })}
-            </div>
-            <h2 className="mt-5">Tus Proyectos Asignados</h2>
-            <div className="row row-cols-1 row-cols-sm-3 g-2 m-4">
-              {products.length > 0 &&
-                products
-                  .filter((prod) => prod.campaign?.available === false || prod.campaignID === null)
-                  .map((product, index) => {
-                    return (
-                      <div key={index} className="p-3">
-                        <Card key={product.id} className="p-0">
-                          <img
-                            variant="top"
-                            src={getImagesCategories(product.categoryID)}
-                            style={{ height: "150px" }}
-                            alt="Hola"
-                          />
-                          <Card.Body>
-                            <div className="d-flex">
-                              <Stack direction="horizontal" gap={2}>
-                                <Badge bg="primary">
-                                  {getYearFromAWSDatetime(product.createdAt)}
-                                </Badge>
-                                <Badge bg="primary">{product.categoryID}</Badge>
-                                {product.isActive && (
-                                  <Badge bg="success">Publicado</Badge>
-                                )}
-                                {product.showOn && (
-                                  <Badge bg="secondary">
-                                    Marketplace {product.showOn}
-                                  </Badge>
-                                )}
-                              </Stack>
-                            </div>
-                            <p className="fs-5 my-2">{product.name}</p>
-                            <hr className="mb-2" />
-                            <p className="fs-6 my-2 text-h">
-                              {product.description}
-                            </p>
-                          </Card.Body>
-                          <Card.Footer>
-                            <div className="d-flex justify-content-center align-items-center">
-                              <a href={"project/" + product.id}>
-                                <Button>Ver más</Button>
-                              </a>
-                            </div>
-                          </Card.Footer>
-                        </Card>
-                      </div>
-                    );
-                  })}
-            </div>
-          </>
-        );
-      } else {
-        return <div>is loading ...</div>;
-      }
-    };
-    return (
-      <Container style={{ paddingTop: 70, minHeight: "100vh" }}>
-        <HeaderNavbar
-          logOut={this.logOut}
-          changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-        ></HeaderNavbar>
-        <ToastContainer />
-        {renderValidatingProjects()}
-      </Container>
-    );
-  }
+        {userCampaigns.length === 0 ? (
+          <div className="py-12 text-center">
+            <img
+              src={vacio}
+              className="w-32 h-32 mx-auto mb-4"
+              alt="Sin campañas"
+            />
+            <p className="text-gray-500 mb-4">
+              No tienes campañas aún. Para crear la primera, da click en Crear Campaña.
+            </p>
+            <a
+              href="/new_campaign"
+              className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Crear Campaña
+            </a>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {userCampaigns.map((campaign) => (
+              <CampaignCard key={campaign.id} campaign={campaign} />
+            ))}
+          </div>
+        )}
+      </section>
+    </>
+  );
 }
-export default ValidatorAdmon;

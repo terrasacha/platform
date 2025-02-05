@@ -32,13 +32,22 @@ export default function ProjectFiles({ visible }) {
   }, [user, projectData]);
 
   const handleMessageButtonClick = async (fileIndex, type) => {
-    const file = type === 'productFeature'? projectData.projectFiles[fileIndex] :  projectData.projectPropertyFiles[fileIndex]
-    setIsMessageCardActive(!isMessageCardActive);
-    setSelectedVerificationId(file.verification.id);
-    setIsDocApproved(file.isApproved);
-    setIsFileVerifier(file.verification.verifierID === user?.id ? true : false);
-    setMessages(file.verification.messages);
+    const file = type === 'productFeature'
+      ? projectData.projectFiles[fileIndex]
+      : projectData.projectPropertyFiles[fileIndex];
+  
+    setIsMessageCardActive(true);
+    setSelectedVerificationId(file.verification?.id || null); // Manejo seguro
+    setIsDocApproved(file.isApproved || false);
+    setIsFileVerifier(isVerifier);
+    setMessages(file.verification?.messages || []);
+  
+    // Si no hay verificación, crear una nueva automáticamente
+    if (!file.verification) {
+      console.log("No hay verificación, se debe crear una nueva si es necesario");
+    }
   };
+  
 
   const handleSendMessageButtonClick = async () => {
     const localMessage = {
