@@ -20,6 +20,7 @@ export default function AdditionalFiles(props) {
   const [files, setFiles] = useState([]); // Archivos locales seleccionados
   const [s3Files, setS3Files] = useState([]); // Archivos listados de S3
   const [loading, setLoading] = useState(false);
+  const [changedFields, setChangedFields] = useState({});
 
   const postulantId = propertyData?.projectPostulant?.id; // ID del postulante
   const campaignOwnerId = propertyData?.propertyCampaign?.userId; // ID del dueño de la campaña
