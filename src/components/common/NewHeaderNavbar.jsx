@@ -88,53 +88,23 @@ export default function NewHeaderNavbar() {
               navbarScroll
             ></Nav>
             <Nav>
-              <Nav className={s.navGroup}>
-                {(user.attributes['custom:role'] === "constructor" || user.attributes['custom:role'] === "investor") && (
-                  <>
-                  <button
-      onClick={() => navigate("/constructor")}
-      className="bg-[#3B82F6] text-white font-semibold px-4 py-2 text-sm rounded-md shadow-md hover:bg-[#2563EB] transition duration-300 flex items-center justify-center"
-      style={{
-        border: "none",
-        boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.1)",
-        minWidth: "120px",
-      }}
-    >
-      Mis Predios
-    </button>
-
-                    {/* <Nav.Link
-                      onClick={() => (window.location.href = "/new_project")}
-                    >
-                      Postular proyecto
-                    </Nav.Link> */}
-                     {/*
-                    <Dropdown >
-                      <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ paddingLeft: '.7rem'}}>
-                        Campañas
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-                          onClick={(e) =>
-                            navigate('/new_campaign')
-                          }
-                        >
-                          Crear campaña
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={(e) =>
-                            navigate('/campaigns')
-                          }
-                        >
-                          Mis campañas
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                    */}
-                  </>
-                )}
-                {user.attributes['custom:role'] === "validator" && (
+              <Nav className="items-center space-x-0 md:space-x-5 space-y-5 md:space-y-0 text-[#6e6c35] font-bold">
+                {user &&
+                  (user.attributes["custom:role"] === "constructor" ||
+                    user.attributes["custom:role"] === "investor") && (
+                    <>
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => (window.location.href = "/constructor")}
+                      >
+                        Mis Predios
+                      </div>
+                      <div>
+                      <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
+                      </div>
+                    </>
+                  )}
+                {user && user.attributes["custom:role"] === "validator" && (
                   <>
                     <div
                       className="cursor-pointer"
@@ -142,7 +112,7 @@ export default function NewHeaderNavbar() {
                         (window.location.href = "/validator_admon")
                       }
                     >
-                      Proyectos asignados
+                     Mis campañas
                     </div>
                     <div>
                       <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>

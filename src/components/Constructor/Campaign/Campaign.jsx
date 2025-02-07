@@ -280,14 +280,15 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
 
           {projectVerifiers.length > 0 && (
             <section className="mt-8">
-              <h3 className="text-md font-semibold text-gray-700 mb-4">
-                Validador de la campaña
-              </h3>
+              <h3 className="text-md font-semibold text-[#74742c] mb-4">
+  Validador de la campaña
+</h3>
+
               <div className="flex flex-wrap gap-3">
                 {projectVerifiers.map((pvn, index) => (
                   <div
                     key={index}
-                    className="bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-md shadow"
+                      className="bg-[#74742c] text-white text-sm font-medium px-4 py-2 rounded-md shadow"
                   >
                     Consultor {index + 1}: {pvn.name}
                   </div>

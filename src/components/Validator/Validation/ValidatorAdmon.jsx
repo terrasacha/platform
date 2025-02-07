@@ -4,6 +4,7 @@ import vacio from "../../views/_images/caja-vacia-gris.png";
 import { getImagesCategories, getYearFromAWSDatetime  } from "components/Constructor/ProjectPage/utils";
 import HeaderNavbar from "components/Investor/Navbars/HeaderNavbar";
 import {  Auth } from "aws-amplify";
+import { useNavigate } from "react-router-dom";
 
 
 // Componente para representar una campaña individual
@@ -40,12 +41,13 @@ const CampaignCard = ({ campaign }) => {
           <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
           <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>
           <div className="flex justify-between items-center mt-3 space-x-4">
-            <a
-              href={`campaign/${campaign?.id}`}
-              className="flex-1 inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600 text-center"
-            >
-              📢 Ver Campaña
-            </a>
+          <a
+  href={`campaign/${campaign?.id}`}
+  className="flex-1 inline-block bg-[#74742c] text-white text-sm px-4 py-2 rounded hover:bg-[#5f5f23] text-center"
+>
+  📢 Ver Campaña
+</a>
+
             <a
               href={`project/${campaign?.products?.items?.[0]?.id}`}
               className="flex-1 inline-block bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600 text-center"
@@ -64,6 +66,7 @@ export default function ValidatorAdmon() {
   const { userCampaigns } = useUserCampaigns();
   const [isShowProductDocuments, setIsShowProductDocuments] = useState(true);
   const [isShowUsers, setIsShowUsers] = useState(false);
+  const navigate = useNavigate(); 
 
   async function logOut() {
     await Auth.signOut();
@@ -100,12 +103,12 @@ export default function ValidatorAdmon() {
             <p className="text-gray-600 text-lg mb-6">
               😔 No tienes campañas aún. ¡Crea la primera ahora!
             </p>
-            <a
-              href="/new_campaign"
+            <button
+              onClick={() => navigate("/new_campaign")}
               className="bg-blue-500 text-white text-lg px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition"
             >
-              ➕ Crear Campaña
-            </a>
+               Crear Campaña
+            </button>
           </div>
         ) : (
           <div className="max-w-7xl mx-auto py-10 px-4">

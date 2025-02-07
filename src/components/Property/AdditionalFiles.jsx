@@ -196,7 +196,7 @@ export default function AdditionalFiles(props) {
              {canUpload && (
             <label
               htmlFor="file-upload"
-              className="mt-3 inline-block px-6 py-3 bg-blue-500 text-white rounded-md text-sm font-semibold hover:bg-blue-600 shadow cursor-pointer transition-all duration-200"
+              className="mt-3 inline-block px-6 py-3 bg-[#74742c] text-white rounded-md text-sm font-semibold hover:bg-[#5f5f23] shadow cursor-pointer transition-all duration-200"
             >
               Seleccionar archivos
             </label>
@@ -261,21 +261,37 @@ export default function AdditionalFiles(props) {
             </span>
             
             <div className="flex gap-3">
-              {/* Botón para Ver archivo 👁 */}
-              <button onClick={async () => window.open(await getSignedFileUrl(file.key), "_blank")} className="text-blue-500 hover:text-blue-700 transition" title="Ver archivo">👁</button>
+  {/* Botón para Ver archivo 👁 */}
+  <button 
+    onClick={async () => window.open(await getSignedFileUrl(file.key), "_blank")} 
+    className="text-blue-500 hover:text-blue-700 transition !bg-transparent !border-none !shadow-none !p-0 !m-0"
+    title="Ver archivo"
+  >
+    👁
+  </button>
 
-              <a href={file.key} download={file.name} className="text-green-500 hover:text-green-700 transition" title="Descargar archivo">⬇</a>
+  {/* Botón para Descargar archivo ⬇ */}
+  <a 
+    href={file.key} 
+    download={file.name} 
+    className="text-green-500 hover:text-green-700 transition !bg-transparent !border-none !shadow-none !p-0 !m-0"
+    title="Descargar archivo"
+  >
+    ⬇
+  </a>
 
-              {user?.id === file.uploaderId && (
-                        <button
-                          onClick={() => deleteS3File(file.key)}
-                          className="text-red-600 hover:text-red-800 transition"
-                          title="Eliminar archivo"
-                        >
-                          🗑
-                        </button>
-                      )}
-            </div>
+  {/* Botón para Eliminar archivo 🗑 */}
+  {user?.id === file.uploaderId && (
+    <button
+      onClick={() => deleteS3File(file.key)}
+      className="text-red-600 hover:text-red-800 transition !bg-transparent !border-none !shadow-none !p-0 !m-0"
+      title="Eliminar archivo"
+    >
+      🗑
+    </button>
+  )}
+</div>
+
           </li>
         );
       })}
