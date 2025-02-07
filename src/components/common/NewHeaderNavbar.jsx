@@ -75,16 +75,24 @@ export default function NewHeaderNavbar() {
               <Nav className={s.navGroup}>
                 {(user.attributes['custom:role'] === "constructor" || user.attributes['custom:role'] === "investor") && (
                   <>
-                    <Nav.Link
-                      onClick={() => (window.location.href = "/constructor")}
-                    >
-                      Mis Proyectos
-                    </Nav.Link>
+                  <button
+      onClick={() => navigate("/constructor")}
+      className="bg-[#3B82F6] text-white font-semibold px-4 py-2 text-sm rounded-md shadow-md hover:bg-[#2563EB] transition duration-300 flex items-center justify-center"
+      style={{
+        border: "none",
+        boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.1)",
+        minWidth: "120px",
+      }}
+    >
+      Mis Predios
+    </button>
+
                     {/* <Nav.Link
                       onClick={() => (window.location.href = "/new_project")}
                     >
                       Postular proyecto
                     </Nav.Link> */}
+                     {/*
                     <Dropdown >
                       <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ paddingLeft: '.7rem'}}>
                         Campañas
@@ -107,6 +115,7 @@ export default function NewHeaderNavbar() {
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
+                    */}
                   </>
                 )}
                 {user.attributes['custom:role'] === "validator" && (
