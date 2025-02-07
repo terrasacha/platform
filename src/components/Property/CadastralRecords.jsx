@@ -6,6 +6,8 @@ import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { API, Storage, graphqlOperation } from "aws-amplify";
 import { handleOpenObject } from "utilities/s3clientcommands";
+import { v4 as uuidv4 } from 'uuid';
+
 // s3Client
 import { useS3Client } from "context/s3ClientContext";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
@@ -18,6 +20,7 @@ import {
   deleteProductFeature,
   deleteDocument,
   updatePropertyFeature,
+  createVerificationComment,
 } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
@@ -28,6 +31,9 @@ import { usePropertyData } from "context/PropertyDataContext";
 import { notify } from "utilities/notify";
 import { fetchPropertyDataByPropertyID } from "components/Constructor/ProjectPage/api";
 import Card from "components/common/Card";
+import { CloudUpload, Eye } from "react-bootstrap-icons";
+import { MessagesIcon } from "components/common/icons/MessagesIcon";
+import MessagesHistoryCard from "components/Constructor/ProjectPage/ProjectFiles/InfoCards/MessagesHistoryCard";
 
 export default function CadastralRecords(props) {
   const { className, autorizedUser, tooltip, setTotalArea, totalArea,setHasUnsavedChanges, handleFieldChange   } = props;
@@ -42,6 +48,12 @@ export default function CadastralRecords(props) {
   const [areaDataPfID, setAreaDataPfID] = useState(null);
   const [predialFetchedData, setPredialFetchedData] = useState({});
   const [changedFields, setChangedFields] = useState({});
+  const [isMessageCardActive, setIsMessageCardActive] = useState(false);
+  const [selectedVerificationId, setSelectedVerificationId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [isFileVerifier, setIsFileVerifier] = useState(false);
+  const [isDocApproved, setIsDocApproved] = useState(false);
 
 
   useEffect(() => {
@@ -106,6 +118,48 @@ export default function CadastralRecords(props) {
     }
   }, [multipleData]);
 
+  const handleMessageButtonClick = async (fileIndex, type) => {
+    const file = propertyData.projectFiles.find((doc) => doc.id === multipleData[fileIndex].documentID);
+  
+    if (!file || !file.verification) {
+      notify({ msg: "Este archivo no tiene verificación asociada.", type: "warning" });
+      return;
+    }
+  
+    setIsMessageCardActive(true);
+    setSelectedVerificationId(file.verification.id);
+    setIsDocApproved(file.isApproved || false);
+    setIsFileVerifier(user.role === "validator");
+    setMessages(file.verification.messages || []);
+  };
+
+  const handleSendMessageButtonClick = async () => {
+    const localMessage = {
+      id: uuidv4(),
+      comment: newMessage,
+      createdAt: new Date().toISOString(),
+      isCommentByVerifier: user.role === "validator",
+      userName: user.name,
+      elapsedTime: "Hace un momento",
+    };
+  
+    const updatedMessages = [...messages, localMessage];
+    setMessages(updatedMessages);
+  
+    const newVerificationComment = {
+      verificationID: selectedVerificationId,
+      comment: newMessage,
+      isCommentByVerifier: user.role === "validator",
+    };
+  
+    await API.graphql(
+      graphqlOperation(createVerificationComment, { input: newVerificationComment })
+    );
+  
+    setNewMessage("");
+  };
+  
+
   const handleFileChange = (e, indexToSaveFile) => {
     setMultipleData((prevState) =>
       prevState.map((item, index) =>
@@ -119,7 +173,6 @@ export default function CadastralRecords(props) {
       ...prev,
       [`certificate_${indexToSaveFile}`]: true,
     }));
-    notify({ msg: "Archivo cargado con éxito", type: "success" });
   };
 
   const handleUploadButton = (index) => {
@@ -652,22 +705,26 @@ export default function CadastralRecords(props) {
   };
   
 
-  const renderFileLinkByDocumentID = (documentID) => {
-    if (documentID) {
-      const document = propertyData.projectFiles.find(
-        (item) => item.id === documentID
-      );
-      return (
-        <button
-          onClick={() => handleOpenObject(s3Client, bucketName, document?.url)}
-        >
-          Archivo
-        </button>
-      );
-    } else {
+const renderFileLinkByDocumentID = (documentID) => {
+  if (documentID) {
+    const document = propertyData.projectFiles.find(
+      (item) => item.id === documentID
+    );
+
+    return (
+      <button
+        onClick={() => handleOpenObject(s3Client, bucketName, document?.url)}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
+      >
+        📄 Ver Archivo
+      </button>
+    );
+  }  else {
       return "Sin archivo";
     }
   };
+
+
 
   const renderAreaByCadastralNumber = (cadastralNumber) => {
     const cadNum = cadastralNumber.trim();
@@ -710,7 +767,9 @@ export default function CadastralRecords(props) {
                 <th className="px-4 py-2 border border-gray-300 min-w-[120px]">
                   Área
                 </th>
-                <th className="px-4 py-2 border border-gray-300 min-w-[100px]"></th>
+                <th className="px-4 py-2 border border-gray-300 min-w-[100px]">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody className="text-gray-800 text-xs md:text-sm lg:text-base">
@@ -778,6 +837,14 @@ export default function CadastralRecords(props) {
                           onClick={() => handleDeleteHistoricalData(index)}>
                           <TrashIcon />
                         </button>
+                        <button
+  disabled={!autorizedUser}
+  className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
+  onClick={() => handleMessageButtonClick(index, 'propertyFeature')}
+>
+  <MessagesIcon />
+</button>
+
                       </td>
                     </>
                   )}
@@ -798,6 +865,20 @@ export default function CadastralRecords(props) {
           </table>
         </div>
       </Card.Body>
+      {isMessageCardActive && (
+  <div className="col">
+    <MessagesHistoryCard
+      className="scale-up-ver-top"
+      messages={messages}
+      newMessage={newMessage}
+      setNewMessage={setNewMessage}
+      handleSendMessageButtonClick={handleSendMessageButtonClick}
+      isFileVerifier={isFileVerifier}
+      isDocApproved={isDocApproved}
+    />
+  </div>
+)}
+
     </Card>
   );
   

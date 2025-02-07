@@ -35,11 +35,17 @@ export default function ProjectFiles({ visible }) {
     const file = type === 'productFeature'
       ? projectData.projectFiles[fileIndex]
       : projectData.projectPropertyFiles[fileIndex];
-  
+
+      let verifierID = projectData.projectVerifiers.length > 0 
+      ? projectData.projectVerifiers[0] 
+      : null;
+
+      console.log("📂 projectData:", verifierID);
+
     setIsMessageCardActive(true);
-    setSelectedVerificationId(file.verification?.id || null); // Manejo seguro
+    setSelectedVerificationId(file?.verification?.id);
     setIsDocApproved(file.isApproved || false);
-    setIsFileVerifier(isVerifier);
+    setIsFileVerifier(user.role === "validator");
     setMessages(file.verification?.messages || []);
   
     // Si no hay verificación, crear una nueva automáticamente
@@ -50,32 +56,38 @@ export default function ProjectFiles({ visible }) {
   
 
   const handleSendMessageButtonClick = async () => {
-    const localMessage = {
-      id: uuidv4(),
-      comment: newMessage,
-      createdAt: await convertAWSDatetimeToDate(Date.now()),
-      isCommentByVerifier: user.role === "validator" ? true : false,
-      userName: await capitalizeWords(user.name),
-      elapsedTime: "Hace un momento",
-    };
-    const updateMessages = [...messages, localMessage];
-    setMessages(updateMessages);
-
-    const newVerificationComment = {
-      verificationID: selectedVerificationId,
-      comment: newMessage,
-      isCommentByVerifier: user.role === "validator" ? true : false,
-    };
-
-    await API.graphql(
-      graphqlOperation(createVerificationComment, {
-        input: newVerificationComment,
-      })
-    );
-
-    setNewMessage("");
+    try {
+      const localMessage = {
+        id: uuidv4(),
+        comment: newMessage,
+        createdAt: await convertAWSDatetimeToDate(Date.now()),
+        isCommentByVerifier: user.role === "validator" ? true : false,
+        userName: await capitalizeWords(user.name),
+        elapsedTime: "Hace un momento",
+      };
+  
+      const updateMessages = [...messages, localMessage];
+      setMessages(updateMessages);
+  
+      const newVerificationComment = {
+        verificationID: selectedVerificationId,
+        comment: newMessage,
+        isCommentByVerifier: user.role === "validator" ? true : false,
+      };
+  
+      const response = await API.graphql(
+        graphqlOperation(createVerificationComment, {
+          input: newVerificationComment,
+        })
+      );
+  
+      console.log("📩 Mensaje guardado con éxito:", response);
+      setNewMessage("");
+    } catch (error) {
+      console.error("❌ Error al guardar el mensaje:", error);
+    }
   };
-
+  
   const handleSendMessage = async (message, verificationID) => {
     const localMessage = {
       id: uuidv4(),

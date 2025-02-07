@@ -163,8 +163,7 @@ export default function AdditionalFiles(props) {
       return;
     }
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-    setHasUnsavedChanges(true);
-    handleFieldChange("filesDropped", true);
+    setHasUnsavedChanges(false);
   };
 
   return (
@@ -172,6 +171,7 @@ export default function AdditionalFiles(props) {
       <Card.Header title="Subir documentación adicional" sep={true} />
       <Card.Body>
         <div className="max-w-xl mx-auto bg-white">
+        {canUpload && (
           <div
             className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
               ${files.length > 0 ? "border-red-500 bg-red-100" : "border-gray-300 bg-gray-50 hover:bg-gray-100"}
@@ -201,8 +201,9 @@ export default function AdditionalFiles(props) {
             </label>
             )}
           </div>
+           )}
 
-          {files.length > 0 && (
+{canUpload && files.length > 0 && (
             <>
               <h3 className="text-lg font-semibold text-gray-700 mt-6 mb-4">
                 Archivos seleccionados:
@@ -236,12 +237,12 @@ export default function AdditionalFiles(props) {
                   
               </div>
             </>
-          )}
+              )}
 
 {s3Files.length > 0 && (
   <>
     <h3 className="text-lg font-semibold text-gray-700 mt-10 mb-4">
-      Archivos en S3:
+      Archivos 
     </h3>
     <ul className="space-y-3 m-0 p-0">
       {s3Files.map((file, index) => {

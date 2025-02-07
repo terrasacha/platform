@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import useUserCampaigns from "hooks/useUserCampaigns";
 import vacio from "../../views/_images/caja-vacia-gris.png";
 import { getImagesCategories, getYearFromAWSDatetime  } from "components/Constructor/ProjectPage/utils";
+import HeaderNavbar from "components/Investor/Navbars/HeaderNavbar";
+import {  Auth } from "aws-amplify";
 
 
 // Componente para representar una campaña individual
@@ -40,9 +42,15 @@ const CampaignCard = ({ campaign }) => {
           <div className="flex justify-between items-center mt-3 space-x-4">
             <a
               href={`campaign/${campaign?.id}`}
-              className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+              className="flex-1 inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600 text-center"
             >
-              Ver Campaña
+              📢 Ver Campaña
+            </a>
+            <a
+              href={`project/${campaign?.products?.items?.[0]?.id}`}
+              className="flex-1 inline-block bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600 text-center"
+            >
+              📂 Ver Proyecto
             </a>
           </div>
         </div>
@@ -54,37 +62,68 @@ const CampaignCard = ({ campaign }) => {
 // Componente principal que muestra la lista de campañas
 export default function ValidatorAdmon() {
   const { userCampaigns } = useUserCampaigns();
+  const [isShowProductDocuments, setIsShowProductDocuments] = useState(true);
+  const [isShowUsers, setIsShowUsers] = useState(false);
+
+  async function logOut() {
+    await Auth.signOut();
+    localStorage.removeItem("role"); // Eliminar el rol del localStorage
+    window.location.href = "/"; // Redirigir a la página principal
+  }
+
+  // 🔹 Función para cambiar la vista en el Navbar
+  function changeHeaderNavBarRequest(pRequest) {
+    if (pRequest === "product_documents") {
+      setIsShowProductDocuments(true);
+      setIsShowUsers(false);
+    }
+    if (pRequest === "users") {
+      setIsShowProductDocuments(false);
+      setIsShowUsers(true);
+    }
+  }
+
 
   return (
     <>
-      <section>
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-          Tus Campañas
+      <HeaderNavbar logOut={logOut} changeHeaderNavBarRequest={changeHeaderNavBarRequest} />
+
+      {/* 📌 Sección principal */}
+      <section className="max-w-6xl mx-auto py-10">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+          📌 Mis Campañas
         </h2>
 
         {userCampaigns.length === 0 ? (
-          <div className="py-12 text-center">
-            <img
-              src={vacio}
-              className="w-32 h-32 mx-auto mb-4"
-              alt="Sin campañas"
-            />
-            <p className="text-gray-500 mb-4">
-              No tienes campañas aún. Para crear la primera, da click en Crear Campaña.
+          <div className="flex flex-col items-center justify-center py-12 bg-gray-100 rounded-lg shadow-md">
+            <img src={vacio} className="w-40 h-40 mb-4" alt="Sin campañas" />
+            <p className="text-gray-600 text-lg mb-6">
+              😔 No tienes campañas aún. ¡Crea la primera ahora!
             </p>
             <a
               href="/new_campaign"
-              className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
+              className="bg-blue-500 text-white text-lg px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition"
             >
-              Crear Campaña
+              ➕ Crear Campaña
             </a>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {userCampaigns.map((campaign) => (
-              <CampaignCard key={campaign.id} campaign={campaign} />
-            ))}
+          <div className="max-w-7xl mx-auto py-10 px-4">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
+           Mis Campañas
+          </h2>
+
+          <div className="bg-white shadow-lg rounded-xl p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {userCampaigns.map((campaign) => (
+        <div key={campaign.id} className="transform transition-transform hover:scale-105">
+          <CampaignCard campaign={campaign} />
+        </div>
+      ))}
+    </div>
+  </div>
           </div>
+
         )}
       </section>
     </>

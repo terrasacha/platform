@@ -154,6 +154,7 @@ export default function ProductsList() {
 
   return (
     <>
+     {/*
       <section>
         <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Tus Campañas</h2>
         {userCampaigns.length === 0 ? (
@@ -181,15 +182,24 @@ export default function ProductsList() {
           </div>
         )}
       </section>
+      */}
 
-      {userProperties.length > 0 && (
-  <section>
-    <h2 className="text-xl font-bold mt-8 mb-4">Tus Predios Postulados</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {userProperties.map((property) => {
-        console.log("Property:", property); // Agregado para inspeccionar cada propiedad
-        return <PropertyCard key={property.id} property={property} />;
-      })}
+ {userProperties.length > 0 && (
+  <section className="mt-8">
+    {/* Contenedor estilizado */}
+    <div className="bg-white shadow-lg rounded-lg p-6">
+      {/* Título con mayor peso y espaciado */}
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+         Tus Predios Postulados
+      </h2>
+
+      {/* Contenedor con efecto "tarjeta" para mayor estética */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {userProperties.map((property) => {
+          console.log("Property:", property); // Depuración de la propiedad
+          return <PropertyCard key={property.id} property={property} />;
+        })}
+      </div>
     </div>
   </section>
 )}
