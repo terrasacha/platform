@@ -81,22 +81,24 @@ const PropertyCard = ({ property }) => (
         <h3 className="text-lg font-bold mb-2">{property?.name}</h3>
         <p className="text-gray-600 text-sm mb-2">{property?.campaign?.name}</p>
         <div className="flex flex-wrap gap-2 mb-6">
-          <span className="bg-blue-400 text-white text-xs font-medium px-2 py-1 rounded w-fit">
-            {getYearFromAWSDatetime(property?.createdAt)}
-          </span>
-          <span className="bg-blue-400 text-white text-xs font-medium px-2 py-1 rounded w-fit">
-            Vinculado a campaña
-          </span>
+        <span className="bg-[#9a9a56] text-white text-xs font-medium px-2 py-1 rounded w-fit">
+  {getYearFromAWSDatetime(property?.createdAt)}
+</span>
+<span className="bg-[#9a9a56] text-white text-xs font-medium px-2 py-1 rounded w-fit">
+  Vinculado a campaña
+</span>
+
           <span className={`${statusColor[property.status]} text-white text-xs font-medium px-2 py-1 rounded w-fit`}>
             {statusEs[property.status]}
           </span>
         </div>
         <a
-          href={`property/${property?.id}`}
-          className="w-full inline-flex bg-blue-500 text-white text-sm justify-center font-bold px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Ver más
-        </a>
+  href={`property/${property?.id}`}
+  className="w-full inline-flex bg-[#74742c] text-white text-sm justify-center font-bold px-4 py-2 rounded hover:bg-[#5f5f23]"
+>
+  Ver más
+</a>
+
       </div>
     </div>
   </div>

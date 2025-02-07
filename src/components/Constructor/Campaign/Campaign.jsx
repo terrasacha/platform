@@ -18,6 +18,7 @@ import { WindowFullscreen } from "react-bootstrap-icons";
 import ModalEditImage from "./ModalEditImage";
 import Imagen from "../../common/_images/Campaña.png";
 
+
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
   const [editable, setEditable] = useState(false);

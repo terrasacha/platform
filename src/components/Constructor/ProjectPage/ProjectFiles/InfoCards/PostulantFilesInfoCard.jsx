@@ -29,6 +29,7 @@ export default function PostulantFilesInfoCard(props) {
   } = props;
   const [isValidating, setIsValidating] = useState(false);
   const [isLoadingDoc, setIsLoadingDoc] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const {
     handleUpdateContextDocumentStatus,
     handleUpdateContextFileVerification,
@@ -235,7 +236,7 @@ export default function PostulantFilesInfoCard(props) {
   };
 
 const getValidationRender = (file, fileIndex, type) => {
-  const [showApprovalModal, setShowApprovalModal] = useState(false);
+
 
   const statusMap = {
     pending: "Pendiente",

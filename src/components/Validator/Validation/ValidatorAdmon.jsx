@@ -31,12 +31,13 @@ const CampaignCard = ({ campaign }) => {
         />
         <div className="p-4">
           <div className="flex space-x-2 mb-2">
-            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
-              {getYearFromAWSDatetime(campaign?.products?.items?.[0]?.createdAt)}
-            </span>
-            <span className="bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
-              {campaign?.products?.items?.[0]?.categoryID}
-            </span>
+          <span className="bg-[#74742c] text-white text-xs font-medium px-2 py-1 rounded">
+  {getYearFromAWSDatetime(campaign?.products?.items?.[0]?.createdAt)}
+</span>
+<span className="bg-[#74742c] text-white text-xs font-medium px-2 py-1 rounded">
+  {campaign?.products?.items?.[0]?.categoryID}
+</span>
+
           </div>
           <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
           <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>

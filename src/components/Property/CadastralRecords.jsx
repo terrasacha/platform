@@ -55,7 +55,6 @@ export default function CadastralRecords(props) {
   const [isFileVerifier, setIsFileVerifier] = useState(false);
   const [isDocApproved, setIsDocApproved] = useState(false);
 
-
   useEffect(() => {
     if (propertyData && propertyData.projectCadastralRecords) {
       let ownersData =
@@ -129,7 +128,7 @@ export default function CadastralRecords(props) {
     setIsMessageCardActive(true);
     setSelectedVerificationId(file.verification.id);
     setIsDocApproved(file.isApproved || false);
-    setIsFileVerifier(user.role === "validator");
+    setIsFileVerifier(user.role === "validator" || user.role === "constructor");
     setMessages(file.verification.messages || []);
   };
 
@@ -138,7 +137,7 @@ export default function CadastralRecords(props) {
       id: uuidv4(),
       comment: newMessage,
       createdAt: new Date().toISOString(),
-      isCommentByVerifier: user.role === "validator",
+      isCommentByVerifier: user.role === "validator" || user.role === "constructor",
       userName: user.name,
       elapsedTime: "Hace un momento",
     };
@@ -149,7 +148,7 @@ export default function CadastralRecords(props) {
     const newVerificationComment = {
       verificationID: selectedVerificationId,
       comment: newMessage,
-      isCommentByVerifier: user.role === "validator",
+      isCommentByVerifier: user.role === "validator" || user.role === "constructor",
     };
   
     await API.graphql(
