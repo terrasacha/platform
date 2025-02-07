@@ -89,6 +89,15 @@ export default function ModalNewProperty({
       return;
     }
 
+    if (
+      formData.cadastralNumbers.length === 0 ||
+      formData.cadastralNumbers.some(num => num.trim() === "")
+    ) {
+      showError("Debe ingresar al menos un número catastral válido.");
+      setLoading(false);
+      return;
+    }
+
     const isDuplicate = await isPropertyNameDuplicate(formData.name.trim());
     if (isDuplicate) {
       showError("El nombre del predio ya existe en esta campaña.");

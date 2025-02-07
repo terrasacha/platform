@@ -281,7 +281,7 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
           {projectVerifiers.length > 0 && (
             <section className="mt-8">
               <h3 className="text-md font-semibold text-gray-700 mb-4">
-                Validadores asignados:
+                Validador de la campaña
               </h3>
               <div className="flex flex-wrap gap-3">
                 {projectVerifiers.map((pvn, index) => (

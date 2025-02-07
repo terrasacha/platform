@@ -17,6 +17,8 @@ export default function MessagesHistoryCard(props) {
     isDocApproved,
   } = props;
 
+  console.log("📩 Mensajes recibidos:", messages);
+
   return (
     <Card className={className}>
       <Card.Header title="Comentarios" sep={true} />
