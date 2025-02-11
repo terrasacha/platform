@@ -128,7 +128,7 @@ export default function NewHeaderNavbar() {
                       }
                     >
                       Mis campañas
-                    </Nav.Link>
+                    </div>
                   </>
                 )}
                 {user ? (
@@ -161,7 +161,7 @@ export default function NewHeaderNavbar() {
                       Tecnología
                     </a>
                     <a className="cursor-pointer text-[#6e6c35]" href="#porque" onClick={handleCloseOffcanvas}>
-                      ¿Por qué Suan?
+                      ¿Por qué Terrasacha?
                     </a>
                     {/* <DropDownProjects variant={"secondary"} /> */}
                     <a

@@ -12,7 +12,7 @@ import HeaderNavbar from "../Navbars/HeaderNavbar";
 import Products from "../Products";
 import s from "./LandingPage.module.css";
 import ProductCard from "../../productCard/ProductCard";
-import marketImage from "../_images/market.jpg";
+import marketImage from "../_images/projecto.png";
 import drones from "../_images/drone-con-camara.png";
 import blockchain from "../_images/cadena-de-bloques.png";
 import plataforma from "../_images/diseno-de-respuesta.png";
@@ -256,19 +256,21 @@ export default class LandingPage extends Component {
                   proyecto específico de eliminación de carbono.</p>
               </div>
             </div>
-            <div className="col-sm-6 mb-8">
-              <img
-                src={marketImage}
-                alt="imagen plataforma"
-                className="img-market"
-              />
-            </div>
+            <div className="col-12 col-md-6 mb-4">
+  <img
+    src={marketImage}
+    alt="imagen plataforma"
+    className="img-fluid rounded img-market"
+    style={{ width: "100%", height: "auto", objectFit: "cover", borderRadius: "8px" }}
+  />
+</div>
+
           </div>
         </div>
         <div className={`container-fluid bg-porque p-5`} id="porque">
           <div className={`${s.block}`}>
             <div className="row m-4 p-2">
-              <h2 className="text-center">¿POR QUÉ SUAN?</h2>
+              <h2 className="text-center">¿POR QUÉ TERRASACHA?</h2>
             </div>
             <div className="row">
               <div className="col-12 col-md-6">
@@ -404,7 +406,7 @@ export default class LandingPage extends Component {
                   />
                 </div>
                 <div className="col">
-                  <h4 className="">PLATAFORMA SUAN</h4>
+                  <h4 className="">PLATAFORMA TERRASACHA</h4>
                   <p>
                     Ten control total de tus proyectos y de tus inversiones
                     desde nuestra plataforma, conecta facilmente tu wallet con

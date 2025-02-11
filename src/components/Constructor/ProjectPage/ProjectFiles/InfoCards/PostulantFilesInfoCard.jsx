@@ -31,7 +31,6 @@ export default function PostulantFilesInfoCard(props) {
   const [isValidating, setIsValidating] = useState(false);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isLoadingDoc, setIsLoadingDoc] = useState(false);
-  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const {
     handleUpdateContextDocumentStatus,
     handleUpdateContextFileVerification,

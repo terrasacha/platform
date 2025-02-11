@@ -109,7 +109,7 @@ export default class HeaderNavbar extends Component {
                 ) : (
                   <div className="flex flex-col sm:flex-row sm:items-center gap-x-4">
                   <a className="item-menu block " href="#tecnologia">Tecnología</a>
-                  <a className="item-menu" href="#porque">¿Por qué Suan?</a>
+                  <a className="item-menu" href="#porque">¿Por qué Terrasacha?</a>
                   <DropDownProjects variant="secondary" />
                   <button className="text-green-700 font-bold w-fit" onClick={() => window.location.href = "/login"}>Ingresar</button>
                 </div>
