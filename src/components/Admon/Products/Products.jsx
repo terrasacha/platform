@@ -168,7 +168,6 @@ class Products extends Component {
       graphqlOperation(onUpdateDocument)
     ).subscribe({
       next: (updatedDocumentData) => {
-        console.log(updatedDocumentData);
         let tempProductFeatures = this.state.listPF.map((mapPF) => {
           if (
             updatedDocumentData.value.data.onUpdateDocument.productFeatureID ===
@@ -192,7 +191,6 @@ class Products extends Component {
       graphqlOperation(onUpdateProductFeature)
     ).subscribe({
       next: (updatedProductFeatureData) => {
-        console.log("entro el sub");
         let tempProductFeatures = this.state.listPF.map((mapPF) => {
           if (
             updatedProductFeatureData.value.data.onUpdateProductFeature.id ===
@@ -603,11 +601,9 @@ class Products extends Component {
       id: documentID,
       status: status,
     };
-    console.log(tempDocument);
     let result = await API.graphql(
       graphqlOperation(updateDocument, { input: tempDocument })
     );
-    console.log(result);
   };
 
   handleDeleteImageProduct = async (pProduct, pImage, event) => {

@@ -113,7 +113,6 @@ export default function Ecosystem(props) {
           id: nacimientoPfID,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newPropertyFeature:", updatedPropertyFeature);
         await API.graphql(
           graphqlOperation(updatePropertyFeature, {
             input: updatedPropertyFeature,
@@ -125,7 +124,6 @@ export default function Ecosystem(props) {
           propertyID: propertyData.propertyInfo.id,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newPropertyFeature:", newPropertyFeature);
         const response = await API.graphql(
           graphqlOperation(createPropertyFeature, { input: newPropertyFeature })
         );

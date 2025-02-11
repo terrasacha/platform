@@ -34,7 +34,6 @@ const s3Client = new S3Client({
 
 export async function deleteAllInfoProduct(product) {
   if (!product) {
-    console.log("No product provided for deletion.");
     return;
   }
 
@@ -43,7 +42,6 @@ export async function deleteAllInfoProduct(product) {
   try {
     // 1. Eliminar la carpeta del proyecto en S3
     if (product.id) {
-      console.log(`Deleting project folder: projects/${product.id}/`);
       await deleteFolderFromS3(`projects/${product.id}/`);
     }
 
@@ -52,14 +50,11 @@ export async function deleteAllInfoProduct(product) {
       graphqlOperation(getProduct, { id: product.id })
     );
     const productData = data?.getProduct;
-    console.log("Contenido de productData:", productData);
     // 3. Manejar campañas
     const campaign = productData?.campaign;
     if (campaign) {
-      console.log("Deleting campaign and associated properties:", campaign.id);
 
       const propertyPromises = campaign.properties.items?.map((property) => {
-        console.log("Deleting property:", property.id, property.cadastralNumber);
         return API.graphql(
           graphqlOperation(deleteProperty, { input: { id: property.id } })
         );
@@ -69,8 +64,6 @@ export async function deleteAllInfoProduct(product) {
         promises.push(...propertyPromises);
       }
 
-      // Eliminar la carpeta de la campaña en S3
-      console.log(`Deleting campaign folder: public/campaigns/${campaign.id}/`);
       await deleteFolderFromS3(`public/campaign/${campaign.id}-campaign/`);
 
       promises.push(
@@ -81,7 +74,6 @@ export async function deleteAllInfoProduct(product) {
     }
 
     const propertyPromises = productData?.properties?.items?.map((property) => {
-      console.log("Deleting property from product:", property.id);
       return API.graphql(
         graphqlOperation(deleteProperty, { input: { id: property.id } })
       );
@@ -94,7 +86,6 @@ export async function deleteAllInfoProduct(product) {
     // 4. Eliminar órdenes asociadas
     if (productData?.orders?.items) {
       productData.orders.items.forEach((order) => {
-        console.log("Deleting order:", order.id);
         promises.push(API.graphql(graphqlOperation(deleteOrder, { input: { id: order.id } })));
       });
     }
@@ -102,7 +93,6 @@ export async function deleteAllInfoProduct(product) {
     // 5. Eliminar pagos asociados
     if (productData?.payments?.items) {
       productData.payments.items.forEach((payment) => {
-        console.log("Deleting payment:", payment.id);
         promises.push(API.graphql(graphqlOperation(deletePayment, { input: { id: payment.id } })));
       });
     }
@@ -110,7 +100,6 @@ export async function deleteAllInfoProduct(product) {
     // 6. Eliminar transacciones asociadas
     if (productData?.transactions?.items) {
       productData.transactions.items.forEach((transaction) => {
-        console.log("Deleting transaction:", transaction.id);
         promises.push(API.graphql(graphqlOperation(deleteTransactions, { input: { id: transaction.id } })));
       });
     }
@@ -118,14 +107,12 @@ export async function deleteAllInfoProduct(product) {
     // 7. Eliminar tokens asociados
     if (productData?.tokens?.items) {
       productData.tokens.items.forEach((token) => {
-        console.log("Deleting token:", token.id);
         promises.push(API.graphql(graphqlOperation(deleteToken, { input: { id: token.id } })));
       });
     }
 
     // 8. Eliminar imágenes asociadas
     const imagePromises = productData?.images?.items?.map((image) => {
-      console.log("Deleting image:", image.id, image.url);
       return API.graphql(graphqlOperation(deleteImage, { input: { id: image.id } }));
     });
     if (imagePromises) {
@@ -134,17 +121,14 @@ export async function deleteAllInfoProduct(product) {
 
     // 9. Eliminar características del producto
     const productFeaturePromises = productData?.productFeatures?.items?.map((pf) => {
-      console.log("Deleting product feature:", pf.id);
 
       // Eliminar documentos asociados a las características
       pf.documents?.items?.forEach((doc) => {
-        console.log("Deleting document:", doc.id, doc.url);
         API.graphql(graphqlOperation(deleteDocument, { input: { id: doc.id } }));
       });
 
       // Eliminar verificaciones asociadas
       pf.verifications?.items?.forEach((verification) => {
-        console.log("Deleting verification:", verification.id);
         API.graphql(
           graphqlOperation(deleteVerification, { input: { id: verification.id } })
         );
@@ -160,7 +144,6 @@ export async function deleteAllInfoProduct(product) {
 
     // 10. Eliminar asociaciones de usuarios con el producto
     const userProductPromises = productData?.userProducts?.items?.map((up) => {
-      console.log("Deleting user product association:", up.id, up.userId);
       return API.graphql(graphqlOperation(deleteUserProduct, { input: { id: up.id } }));
     });
     if (userProductPromises) {
@@ -168,14 +151,12 @@ export async function deleteAllInfoProduct(product) {
     }
 
     // 11. Eliminar el producto de la base de datos
-    console.log("Deleting product:", product.id, product.name);
     promises.push(
       API.graphql(graphqlOperation(deleteProduct, { input: { id: product.id } }))
     );
 
     // Ejecutar todas las promesas
     await Promise.all(promises);
-    console.log("Todas las operaciones de eliminación se han completado.");
   } catch (error) {
     console.error("Error al eliminar la información del producto:", error);
   }

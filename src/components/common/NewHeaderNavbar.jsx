@@ -125,7 +125,7 @@ export default function NewHeaderNavbar() {
                         (window.location.href = "/validator_admon")
                       }
                     >
-                      Proyectos asignados
+                      Mis campañas
                     </Nav.Link>
                   </>
                 )}

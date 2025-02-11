@@ -104,7 +104,6 @@ export default function EcosystemInfoCard(props) {
           id: nacimientoPfID,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", updatedProductFeature);
         await API.graphql(
           graphqlOperation(updateProductFeature, {
             input: updatedProductFeature,
@@ -116,7 +115,6 @@ export default function EcosystemInfoCard(props) {
           productID: projectData.projectInfo.id,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", newProductFeature);
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );

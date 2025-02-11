@@ -109,7 +109,6 @@ export default function ProjectInfoCard(props) {
         });
 
       setPlanosPredio(planosPredioFiles);
-      console.log(projectData);
 
       setFormData((prevState) => ({
         ...prevState,
@@ -184,7 +183,6 @@ export default function ProjectInfoCard(props) {
   };
 
   const handleDeleteFile = async (file) => {
-    console.log(file, "file");
     // Eliminar S3
     const getFilePathRegex = /\/projects\/(.+)$/;
     let fileToDeleteName = decodeURIComponent(
@@ -201,7 +199,6 @@ export default function ProjectInfoCard(props) {
     const productFeatureToDelete = {
       id: file.pfId,
     };
-    console.log("productFeatureToDelete:", productFeatureToDelete);
     await API.graphql(
       graphqlOperation(deleteProductFeature, { input: productFeatureToDelete })
     );
@@ -210,7 +207,6 @@ export default function ProjectInfoCard(props) {
     const documentToDelete = {
       id: file.id,
     };
-    console.log("documentToDelete:", documentToDelete);
     await API.graphql(
       graphqlOperation(deleteDocument, { input: documentToDelete })
     );
@@ -220,7 +216,6 @@ export default function ProjectInfoCard(props) {
 
     const updatedProjectDataFiles = updatedProjectData.projectFiles;
     await handleSetContextProjectFile(updatedProjectDataFiles);
-    console.log(updatedProjectDataFiles);
     const planosPredios = await getPlanosPredios(updatedProjectData);
     setPlanosPredio(planosPredios);
   };
@@ -249,7 +244,6 @@ export default function ProjectInfoCard(props) {
         productID: projectData.projectInfo.id,
         value: filesToSave[i].name,
       };
-      console.log("newProductFeature:", newProductFeature);
       const createProductFeatureResponse = await API.graphql(
         graphqlOperation(createProductFeature, { input: newProductFeature })
       );

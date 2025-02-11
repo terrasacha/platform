@@ -223,7 +223,6 @@ class AnalitycsAdmon extends Component {
     };
 
     const renderValidatingProjects = () => {
-      console.log("products", products);
       if (products) {
         return (
           <>

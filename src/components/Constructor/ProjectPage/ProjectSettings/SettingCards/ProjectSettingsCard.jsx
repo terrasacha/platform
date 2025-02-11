@@ -42,7 +42,6 @@ export default function ProjectSettingsCard(props) {
       API.graphql(graphqlOperation(listMarketplacess)).then((data) => {
         const marketplaces = data.data.listMarketplaces.items;
         setListMarketplaces(marketplaces);
-        console.log(marketplaces);
       });
     };
 

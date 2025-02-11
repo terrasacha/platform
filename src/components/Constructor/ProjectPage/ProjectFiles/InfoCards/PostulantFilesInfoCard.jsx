@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import Card from "../../../../common/Card";
@@ -16,6 +16,7 @@ import { useAuth } from "../../../../../context/AuthContext";
 import { notify } from "../../../../../utilities/notify";
 import { handleOpenObject, uploadFile } from "utilities/s3clientcommands";
 import { useS3Client } from "context/s3ClientContext";
+import { getDocument } from "graphql/queries";
 export default function PostulantFilesInfoCard(props) {
   const {
     className,
@@ -28,6 +29,7 @@ export default function PostulantFilesInfoCard(props) {
     handleSendMessage,
   } = props;
   const [isValidating, setIsValidating] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isLoadingDoc, setIsLoadingDoc] = useState(false);
   const {
     handleUpdateContextDocumentStatus,
@@ -36,8 +38,43 @@ export default function PostulantFilesInfoCard(props) {
   } = useProjectData();
   const { s3Client, bucketName } = useS3Client();
   const { user } = useAuth();
+  const [updatedPropertyFiles, setUpdatedPropertyFiles] = useState([]);
 
   const fileInputRef = React.createRef();
+
+  useEffect(() => {
+    if (propertyFiles && propertyFiles.length > 0) {
+      const fetchDocumentsVisibility = async () => {
+        try {
+          const updatedFiles = await Promise.all(
+            propertyFiles.map(async (file) => {
+              try {
+                const response = await API.graphql(
+                  graphqlOperation(getDocument, { id: file.id })
+                );
+                const documentData = response.data.getDocument;
+  
+                return {
+                  ...file,
+                  visible: documentData?.visible ?? false, // Si no tiene `visible`, se asume `false`
+                };
+              } catch (error) {
+                console.error(`❌ Error obteniendo documento ${file.id}:`, error);
+                return { ...file, visible: false };
+              }
+            })
+          );
+  
+          setUpdatedPropertyFiles(updatedFiles);
+        } catch (error) {
+          console.error("❌ Error general en fetchDocumentsVisibility:", error);
+        }
+      };
+  
+      fetchDocumentsVisibility();
+    }
+  }, [propertyFiles]);
+  
 
   const handleUpdateDocumentStatus = async (fileIndex, docId, status, type) => {
     const typeVerification = {
@@ -46,7 +83,6 @@ export default function PostulantFilesInfoCard(props) {
     }
     const file = typeVerification[type] === 'productFeatureID' ? projectData.projectFiles[fileIndex] : projectData.projectPropertyFiles[fileIndex]
     let verificationId;
-    console.log(file, 'file verification')
     if (!file.verification) {
       const newVerification = {
         [typeVerification[type]]: file.pfID,
@@ -54,7 +90,6 @@ export default function PostulantFilesInfoCard(props) {
         userVerifiedID: type=== 'productFeature'?  projectData.projectPostulant.id: file.userID,
       };
 
-      console.log(newVerification, 'newVerification');
 
       const createVerificationResult = await API.graphql(
         graphqlOperation(createVerification, {
@@ -177,10 +212,8 @@ export default function PostulantFilesInfoCard(props) {
         file.url.match(getFilePathRegex)[1]
       );
       fileToDeleteName = "projects/" + fileToDeleteName
-      console.log(fileToDeleteName, 'fileToDeleteName')
       try {
         await uploadFile(s3Client, bucketName, fileToDeleteName, file)
-        console.log("Archivo seleccionado:", newFile);
       } catch (error) {
         notify({
           msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
@@ -235,7 +268,7 @@ export default function PostulantFilesInfoCard(props) {
   };
 
 const getValidationRender = (file, fileIndex, type) => {
-  const [showApprovalModal, setShowApprovalModal] = useState(false);
+
 
   const statusMap = {
     pending: "Pendiente",
@@ -409,54 +442,55 @@ const getValidationRender = (file, fileIndex, type) => {
               </tr>
             </thead>
             <tbody className="align-middle">
-              {propertyFiles?.map((file, fileIndex) => {
-                return (
-                  <tr
-                    key={file.id}
-                    className="border-b-2"
-                    style={{ height: "4rem" }}
-                  >
-                    <td>{file.property.name}</td>
-                    <td>{file.title}</td>
-                    <td>{file.updatedAt}</td>
-                    <td>{getValidationRender(file, fileIndex, 'propertyFeature')}</td>
-                    <td className="text-end flex justify-end items-center h-[4rem] gap-x-2">
-                      {isPostulant && file.status === "denied" && (
-                        <>
-                          <input
-                            type="file"
-                            style={{ display: "none" }}
-                            ref={fileInputRef}
-                            onChange={(e) =>
-                              handleUpdateDocumentFile(e, fileIndex, file)
-                            }
-                          />
-                          <button
-                            className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-                            onClick={() => handleUploadDocumentButtonClick()}
-                          >
-                            {isLoadingDoc ? (
-                              <Spinner size="sm" className="p-2"></Spinner>
-                            ) : (
-                              "Actualizar documentación"
-                            )}
-                          </button>
-                        </>
-                      )}
-                        <button className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white" onClick={() => handleOpenObject(s3Client, bucketName, file.url)}>
-                          <DownloadIcon />
-                        </button>
-                        <button
-                          className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-                          onClick={() => handleMessageButtonClick(fileIndex, 'propertyFeature')}
-                        >
-                          <MessagesIcon />
-                        </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+  {updatedPropertyFiles
+    ?.filter(file => file.visible || isPostulant) // 🔴 Solo mostrar si es visible o si el usuario es el propietario
+    .map((file, fileIndex) => {
+      return (
+        <tr key={file.id} className="border-b-2" style={{ height: "4rem" }}>
+          <td>{file.property.name}</td>
+          <td>{file.title}</td>
+          <td>{file.updatedAt}</td>
+          <td>{getValidationRender(file, fileIndex, "propertyFeature")}</td>
+          <td className="text-end flex justify-end items-center h-[4rem] gap-x-2">
+            {isPostulant && file.status === "denied" && (
+              <>
+                <input
+                  type="file"
+                  style={{ display: "none" }}
+                  ref={fileInputRef}
+                  onChange={(e) =>
+                    handleUpdateDocumentFile(e, fileIndex, file)
+                  }
+                />
+                <button
+                  className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
+                  onClick={() => handleUploadDocumentButtonClick()}
+                >
+                  {isLoadingDoc ? (
+                    <Spinner size="sm" className="p-2"></Spinner>
+                  ) : (
+                    "Actualizar documentación"
+                  )}
+                </button>
+              </>
+            )}
+            <button
+              className="px-2 py-1 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
+              onClick={() => handleOpenObject(s3Client, bucketName, file.url)}
+            >
+              <DownloadIcon />
+            </button>
+            <button
+              className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
+              onClick={() => handleMessageButtonClick(fileIndex, "propertyFeature")}
+            >
+              <MessagesIcon />
+            </button>
+          </td>
+        </tr>
+      );
+    })}
+</tbody>
           </table>
         ) : (
           "No se han subido archivos para validación"

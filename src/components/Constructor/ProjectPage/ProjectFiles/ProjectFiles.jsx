@@ -40,7 +40,6 @@ export default function ProjectFiles({ visible }) {
       ? projectData.projectVerifiers[0] 
       : null;
 
-      console.log("📂 projectData:", verifierID);
 
     setIsMessageCardActive(true);
     setSelectedVerificationId(file?.verification?.id);
@@ -81,7 +80,6 @@ export default function ProjectFiles({ visible }) {
         })
       );
   
-      console.log("📩 Mensaje guardado con éxito:", response);
       setNewMessage("");
     } catch (error) {
       console.error("❌ Error al guardar el mensaje:", error);

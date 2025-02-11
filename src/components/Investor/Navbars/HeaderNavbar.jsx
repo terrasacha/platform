@@ -20,7 +20,6 @@ export default class HeaderNavbar extends Component {
     Auth.currentAuthenticatedUser().then(data => this.setState({user: data})).catch(err => console.log(err))
   }
   async handleChangeNavBar(pRequest) {
-    console.log("handleChangeNavBar: ", pRequest);
     this.props.changeHeaderNavBarRequest(pRequest);
   }
 

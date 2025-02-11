@@ -155,7 +155,6 @@ export default function NewProject() {
       productID: productID,
       value: `SUAN-${productID.split("-")[4].toUpperCase()}`,
     };
-    console.log("newProductFeature:", newProductFeatureTokenName);
     promises.push(
       API.graphql(
         graphqlOperation(createProductFeature, {
@@ -170,10 +169,6 @@ export default function NewProject() {
       productID: productID,
       value: "",
     };
-    console.log(
-      "newProductFeature:",
-      newProductFeatureGlobalProjectValidatorFiles
-    );
     promises.push(
       API.graphql(
         graphqlOperation(createProductFeature, {
@@ -188,10 +183,6 @@ export default function NewProject() {
       productID: productID,
       value: "false",
     };
-    console.log(
-      "newProductFeature:",
-      newProductFeatureGlobalOwnerAcceptsConditions
-    );
     promises.push(
       API.graphql(
         graphqlOperation(createProductFeature, {
@@ -206,10 +197,7 @@ export default function NewProject() {
       productID: productID,
       value: "false",
     };
-    console.log(
-      "newProductFeature:",
-      newProductFeatureGlobalValidatorSetFinantialConditions
-    );
+    
     promises.push(
       API.graphql(
         graphqlOperation(createProductFeature, {
@@ -224,10 +212,7 @@ export default function NewProject() {
       productID: productID,
       value: "false",
     };
-    console.log(
-      "newProductFeature:",
-      newProductFeatureGlobalValidatorSetThecnicalConditions
-    );
+    
     promises.push(
       API.graphql(
         graphqlOperation(createProductFeature, {
@@ -275,7 +260,6 @@ export default function NewProject() {
           productID: productID,
           value: value,
         };
-        console.log("newProductFeature:", newProductFeature);
         promises.push(
           API.graphql(
             graphqlOperation(createProductFeature, {
@@ -305,7 +289,6 @@ export default function NewProject() {
         productID: productID,
         value: `[${values.join(", ")}]`,
       };
-      console.log("newProductFeature:", newProductFeature);
       promises.push(
         API.graphql(
           graphqlOperation(createProductFeature, {
@@ -332,7 +315,6 @@ export default function NewProject() {
         productID: productID,
         value: `[${values.join(", ")}]`,
       };
-      console.log("newProductFeature:", newProductFeature);
       promises.push(
         API.graphql(
           graphqlOperation(createProductFeature, {
@@ -359,7 +341,6 @@ export default function NewProject() {
         productID: productID,
         value: `[${values.join(", ")}]`,
       };
-      console.log("newProductFeature:", newProductFeature);
       promises.push(
         API.graphql(
           graphqlOperation(createProductFeature, {
@@ -397,8 +378,6 @@ export default function NewProject() {
             contentType: "*/*",
           });
 
-          console.log("Archivo seleccionado:", file);
-          console.log("Archivo subido:", uploadImageResult);
         } catch (error) {
           console.log("Error al subir el archivo:", error);
         }
@@ -408,7 +387,6 @@ export default function NewProject() {
           productID: productID,
           value: file.name,
         };
-        console.log("newProductFeature:", newProductFeature);
         const createProductFeatureResponse = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );
@@ -450,7 +428,6 @@ export default function NewProject() {
       categoryID: formData["A_category"],
       order: 0,
     };
-    console.log("newProduct:", newProduct);
     await API.graphql(graphqlOperation(createProduct, { input: newProduct }));
 
     const newUserProduct = {

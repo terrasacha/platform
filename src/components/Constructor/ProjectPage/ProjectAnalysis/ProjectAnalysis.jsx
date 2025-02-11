@@ -77,7 +77,6 @@ export default function ProjectAnalysis({ visible }) {
   const handleDownloadGeoJsonButton = async () => {
     const geoJsonPolygonsObject = await getPolygonGeoJson();
     if (geoJsonPolygonsObject) {
-      console.log("geoJsonPolygonsObject", geoJsonPolygonsObject);
 
       // const modifiedObject = {
       //   type: "string",
@@ -102,7 +101,6 @@ export default function ProjectAnalysis({ visible }) {
       const response = await request.json();
 
       if (response) {
-        console.log("JSON enviado exitosamente");
       } else {
         console.error("Error al enviar JSON:");
       }
@@ -136,7 +134,6 @@ export default function ProjectAnalysis({ visible }) {
     const url =
       "https://3x52k6rtsg.execute-api.us-east-1.amazonaws.com/v4/upload";
     const apiKey = "ZDkguG9HwA5bAwAMQISGy1lukLsB9xA72vuzBFFB";
-    console.log(formData);
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -174,12 +171,10 @@ export default function ProjectAnalysis({ visible }) {
 
   const handleComparativeAreaAnalysis = async () => {
     try {
-      console.log(projectData.projectInfo.id, "projectData.projectInfo.id");
       const response = await fetch(
         `${process.env.REACT_APP_URL_BUCKET}/public/${projectData.projectInfo.id}/data/area_analysis.json`
       );
       const data = await response.json();
-      console.log(data, "handleComparativeAreaAnalysis");
       return setComparativeAnalysis(data);
     } catch (error) {
       console.log(error);

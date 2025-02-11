@@ -63,7 +63,6 @@ export default function Relations(props) {
   
     setChangedFields((prev) => {
       const newChangedFields = { ...prev, [name]: true };
-      console.log("🔴 Campos modificados:", newChangedFields); // 👀 Verificar actualización
       return newChangedFields;
     });
   

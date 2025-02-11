@@ -116,7 +116,6 @@ export default function Property() {
     try {
       const data = await API.graphql(graphqlOperation(getProperty, { id }));
 
-      console.log(data.data.getProperty, "data.data.getProperty");
       setProperty(data.data.getProperty);
       const isAuthorResult = await isAuthor(data.data.getProperty.userID);
 
@@ -133,7 +132,7 @@ export default function Property() {
 
   if (!property) return null;
   if (!propertyData) return null;
-  console.log("propertyData", propertyData);
+
 
   return (
     <S3ClientProvider>

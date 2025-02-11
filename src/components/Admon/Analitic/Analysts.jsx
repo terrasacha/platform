@@ -271,7 +271,6 @@ class Analysts extends Component {
           role: `${role}`,
         };
        const response = await API.graphql(graphqlOperation(createUser, { input: userPayload }));
-       console.log(response);
        this.setState({ message: "Usuario creado exitosamente!" });
         this.handleHideModalCreate();
         this.cleanUserOnCreate();
@@ -304,7 +303,6 @@ class Analysts extends Component {
                 </thead>
                 <tbody>
   {analysts.map((analyst) => {
-    console.log("Analyst Profile Update Status:", analyst.isProfileUpdated);  // Aquí se hace el log
     return (
       <tr key={analyst.id}>
         <td className="border px-4 py-2">{analyst.name}</td>

@@ -19,7 +19,6 @@ export default class HeaderNavbar extends Component {
   }
 
   async handleChangeObjectElement() {
-    console.log("handleChangeObjectElement: ");
     this.props.handleSignOut();
   }
 
@@ -135,7 +134,7 @@ export default class HeaderNavbar extends Component {
                           this.changeHeaderNavBarRequest("assign_pf", e)
                         }
                       >
-                        Asignar Validadores
+                        Asignar Consultores
                       </Dropdown.Item>
                       <Dropdown.Item
                       href="#assign_analyst"
@@ -150,7 +149,7 @@ export default class HeaderNavbar extends Component {
                           this.changeHeaderNavBarRequest("validators", e)
                         }
                       >
-                        Validadores
+                        Consultores
                       </Dropdown.Item>
                       {/* Nueva entrada para Analistas */}
                       <Dropdown.Item

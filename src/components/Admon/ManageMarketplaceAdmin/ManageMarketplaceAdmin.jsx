@@ -96,7 +96,7 @@ export default function ManageMarketplaceAdmin() {
         (item) => item.marketplaceID
       );
       setListUserItems(admins);
-      console.log(admins);
+     
     });
   };
 
@@ -104,7 +104,7 @@ export default function ManageMarketplaceAdmin() {
     API.graphql(graphqlOperation(listMarketplacess)).then((data) => {
       const marketplaces = data.data.listMarketplaces.items;
       setListMarketplaces(marketplaces);
-      console.log(marketplaces);
+  
     });
   };
 
@@ -232,7 +232,7 @@ export default function ManageMarketplaceAdmin() {
     })
       .then((response) => {
         if (!response.ok) {
-          console.log(response);
+         
           notifyError(
             "Ya existe administrador para ese marketplace o el nombre de usuario ya está en uso"
           );

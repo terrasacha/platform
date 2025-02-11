@@ -117,8 +117,6 @@ class Items extends Component {
       const response = await API.graphql(
         graphqlOperation(createProductItem, { input: tempNewCategory })
       );
-      console.log(tempNewCategory);
-      console.log(response);
       await this.cleanCategoryOnCreate();
     }
 
@@ -173,9 +171,6 @@ class Items extends Component {
           })
         );
       });
-      console.log("oldName", oldName);
-      console.log("productFeatures", productFeatures);
-      console.log("productFeaturesFiltered", productFeaturesFiltered);
     }
   }
 

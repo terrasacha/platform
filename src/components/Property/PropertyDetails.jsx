@@ -31,8 +31,6 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
 
   useEffect(() => {
     if (user && propertyData) {
-      console.log("🔍 Usuario autenticado:", user);
-      console.log("🔍 Datos de la propiedad:", propertyData);
   
       const postulant = propertyData?.projectPostulant?.id;
       const authorizedUsers = [...propertyData.projectVerifiers, postulant];
@@ -46,10 +44,6 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
       );
   
       setIsPostulant(postulant === user.id);
-  
-      // ✅ Agregar log para verificar si el usuario es verificador
-      console.log("🔍 Lista de verificadores:", propertyData.projectVerifiers);
-      console.log("🔍 El usuario es verificador:", propertyData.projectVerifiers.includes(user.id));
   
       setIsVerifier(propertyData.projectVerifiers.includes(user.id));
     }
@@ -188,14 +182,11 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
     </div>
   )}
 
-  {/* Debug para ver si se cumplen las condiciones */}
-  {console.log("🎯 Estado del predio:", status)}
-  {console.log("🎯 Usuario es verificador:", isVerifier)}
+ 
 
   {/* Mostrar el botón solo si el usuario es verificador y el estado es PENDING */}
   {status === "PENDING" && isVerifier && (
     <>
-      {console.log("✅ Renderizando botón para verificador")}
       <button
         className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
         onClick={handleVerifyClick}

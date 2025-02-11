@@ -61,7 +61,6 @@ class ConstructorAdmon extends Component {
   }
 
   async componentDidMount() {
-    console.log("componentDidMount");
     const actualUser = await Auth.currentAuthenticatedUser();
     let userResult = await API.graphql({
       query: getUser,
@@ -124,7 +123,6 @@ class ConstructorAdmon extends Component {
   }
 
   async changeHeaderNavBarRequest(pRequest) {
-    console.log("changeHeaderNavBarRequest: ", pRequest);
 
     if (pRequest === "perfil") {
       this.setState({

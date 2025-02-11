@@ -11,7 +11,6 @@ export default function useFetchPropertiesProject() {
 
     const fetchProperties = async () => {
         setLoading(true);
-        console.log(projectData.projectInfo.id, 'projectData.projectInfo.id')
         try {
             const result = await API.graphql(graphqlOperation(listProperties, {
                 filter: {
@@ -20,7 +19,6 @@ export default function useFetchPropertiesProject() {
                 }
               }));
               
-            console.log(result.data.listProperties.items, 'useFetchProperties')
             setProperties(result.data.listProperties.items); 
             setError(null);
         } catch (error) {

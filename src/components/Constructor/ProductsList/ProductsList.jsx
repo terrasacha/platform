@@ -146,12 +146,6 @@ export default function ProductsList() {
     (project) => project.product?.isActiveOnPlatform
   );
 
-  
-
-  console.log("userCampaigns",userCampaigns)
-  console.log("userProjects",userProjects)
-  console.log("userProperties",userProperties)
-
   return (
     <>
      {/*
@@ -184,25 +178,35 @@ export default function ProductsList() {
       </section>
       */}
 
- {userProperties.length > 0 && (
+{userProperties.length > 0 ? (
   <section className="mt-8">
     {/* Contenedor estilizado */}
     <div className="bg-white shadow-lg rounded-lg p-6">
       {/* Título con mayor peso y espaciado */}
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-         Tus Predios Postulados
+        Tus Predios Postulados
       </h2>
 
       {/* Contenedor con efecto "tarjeta" para mayor estética */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {userProperties.map((property) => {
-          console.log("Property:", property); // Depuración de la propiedad
-          return <PropertyCard key={property.id} property={property} />;
-        })}
+        {userProperties.map((property) => (
+          <PropertyCard key={property.id} property={property} />
+        ))}
       </div>
     </div>
   </section>
+) : (
+  // 📌 Si no hay predios, mostrar el mensaje con la imagen
+  <section className="mt-8 text-center">
+    <div className="flex flex-col items-center justify-center bg-white shadow-lg rounded-lg p-6">
+      <img src={vacio} className="w-32 h-32 mb-4" alt="Sin predios" />
+      <p className="text-gray-500 text-lg font-medium">
+        No tienes predios postulados.
+      </p>
+    </div>
+  </section>
 )}
+
 
 
       <section>

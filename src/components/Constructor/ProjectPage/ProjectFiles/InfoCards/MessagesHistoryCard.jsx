@@ -4,6 +4,7 @@ import Card from "../../../../common/Card";
 import MessageSection from "../../../../common/chat/MessageSection";
 import { UserSearchIcon } from "../../../../common/icons/UserSearchIcon";
 import { UserSquareIcon } from "../../../../common/icons/UserSquareIcon";
+import { useAuth } from "context/AuthContext";
 
 export default function MessagesHistoryCard(props) {
   const {
@@ -17,7 +18,8 @@ export default function MessagesHistoryCard(props) {
     isDocApproved,
   } = props;
 
-  console.log("📩 Mensajes recibidos:", messages);
+  const { user } = useAuth();
+
 
   return (
     <Card className={className}>
@@ -41,7 +43,7 @@ export default function MessagesHistoryCard(props) {
             />
           );
         })}
-        {(isPostulant || isFileVerifier) && !isDocApproved && (
+       {(user.role === "constructor" || isFileVerifier) && (
           <div className="d-flex">
             <input
               type="text"

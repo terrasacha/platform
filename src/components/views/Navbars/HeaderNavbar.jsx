@@ -91,7 +91,6 @@ export default class HeaderNavbar extends Component {
             <Offcanvas.Body>
               <Nav className="me-auto my-2 my-lg-0" style={{ maxHeight: "100px" }} navbarScroll />
               <Nav>
-              {console.log("Rol del usuario:", role)}
                 {this.getNavLinksByRole(role)}
                 {localStorage.getItem("role") ? (
                   <div className="sm:flex sm:ml-5 gap-x-3">

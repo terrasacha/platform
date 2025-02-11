@@ -53,7 +53,6 @@ export default function ProjectDetails({ visible }) {
             projectData?.projectInfo.id,
             user.subrole
           );
-          console.log(obj, "progress");
           setProgressObj(obj);
         } catch (error) {
           console.error("Error al obtener datos:", error);
