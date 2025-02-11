@@ -92,7 +92,6 @@ export default class CRUDProductFeatures extends Component {
             tempNewProductFeature.featureID = this.props.selectedFeature.id
             
             const pF = await API.graphql(graphqlOperation(createProductFeature, { input: tempNewProductFeature }) )
-            console.log(pF, "pf")
             let constructorID = ''
             pF.data.createProductFeature.product.userProducts.items.map( uP => {
                 if (uP.user.role === 'constructor') {

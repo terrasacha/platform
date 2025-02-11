@@ -110,8 +110,6 @@ export default function ConsultOraculo() {
   }
   };
 
-  console.log("Sending cedula_catastral:", formData.cedula_catastral);
-
 
   return (
     <Card>

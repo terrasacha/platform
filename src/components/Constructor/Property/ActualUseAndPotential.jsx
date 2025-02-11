@@ -170,7 +170,6 @@ export default function ActualUseAndPotential(props) {
           id: usesPfID,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", updatedPropertyFeature);
         await API.graphql(
           graphqlOperation(updatePropertyFeature, {
             input: updatedPropertyFeature,
@@ -182,7 +181,6 @@ export default function ActualUseAndPotential(props) {
           propertyID: propertyData.propertyInfo.id,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", newProductFeature);
         const response = await API.graphql(
           graphqlOperation(createPropertyFeature, { input: newProductFeature })
         );

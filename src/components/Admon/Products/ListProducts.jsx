@@ -250,7 +250,6 @@ export default class ListProducts extends Component {
         // Check if the product is associated with a campaign
         const campaign = productFeature.product.campaign;
         if (campaign) {
-          console.log("Deleting campaign:", campaign.id, campaign.name);
   
           // Delete the campaign
           const inputCampaignToDelete = {
@@ -262,7 +261,6 @@ export default class ListProducts extends Component {
             })
           );
   
-          console.log("Campaign deleted successfully:", campaign.name);
         }
   
         this.handleHideModalDeleteProductFeatureConfirmation();
@@ -394,7 +392,6 @@ export default class ListProducts extends Component {
       selectedProductFeatureToDeleteHasVerifications,
       selectedProductFeatureToDeleteHasVerificationComments,
     } = this.state;
-    console.log("que trae",products)
     // Render Products
     let productsData = products.map((product) => {
       product.toCertified = false;
@@ -700,7 +697,6 @@ export default class ListProducts extends Component {
           }
         }
         if (productFeaturesCopy.length > 0) {
-          console.log(productFeaturesCopy, "productFeaturesCopy");
           return (
             <Modal
               show={isRenderModalProductFeatures}
@@ -872,7 +868,6 @@ export default class ListProducts extends Component {
           }
         }
         if (productFeaturesCopy.length > 0) {
-          console.log(productFeaturesCopy);
           return (
             <Modal
               show={isRenderModalVerifications}

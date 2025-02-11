@@ -17,9 +17,9 @@ export default function MessagesHistoryCard(props) {
     isFileVerifier,
     isDocApproved,
   } = props;
-   const { user } = useAuth();
 
-  console.log("📩 Mensajes recibidos:", messages);
+  const { user } = useAuth();
+
 
   return (
     <Card className={className}>
@@ -43,7 +43,7 @@ export default function MessagesHistoryCard(props) {
             />
           );
         })}
-      {(user.role === "constructor" || isFileVerifier) && (
+       {(user.role === "constructor" || isFileVerifier) && (
           <div className="d-flex">
             <input
               type="text"

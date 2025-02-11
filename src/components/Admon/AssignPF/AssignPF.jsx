@@ -405,7 +405,7 @@ export default class AssignPF extends Component {
         </Container>
 
         <Container className="bg-white mt-4 p-4 rounded-lg shadow-sm">
-          <h4 className="text-center mb-4">Validadores Asignados</h4>
+          <h4 className="text-center mb-4">Consultores Asignados</h4>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -437,7 +437,7 @@ export default class AssignPF extends Component {
               ) : (
                 <tr>
                   <td colSpan="3" className="text-center">
-                    No hay validadores asignados.
+                    No hay Consultores asignados.
                   </td>
                 </tr>
               )}

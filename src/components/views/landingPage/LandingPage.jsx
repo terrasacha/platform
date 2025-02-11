@@ -135,7 +135,6 @@ export default class LandingPage extends Component {
     }`;
 
     const listProductsResult = await API.graphql(graphqlOperation(query));
-    console.log(listProductsResult, "listProductsResult");
     /* let tempProductsImagesIsOnCarousel = this.state.productsImagesIsOnCarousel */
     let tempListProductsResult = listProductsResult.data.listProducts.items.map(
       (product) => {
@@ -225,7 +224,7 @@ export default class LandingPage extends Component {
                     <li>Completa la información de tu proyecto</li>
                     <li>
                       Tu proyecto será revisado y complementado por nuestros
-                      validadores
+                      Consultores
                     </li>
                     <li>
                       Revisa la información adicional y aceptala, para que quede

@@ -127,21 +127,8 @@ export default function NewHeaderNavbar() {
                         (window.location.href = "/project_analyst")
                       }
                     >
-                      Proyectos asignados
-                    </div>
-                    <div>
-                      <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
-                      </div>
-                  </>
-                )}
-                {user && user.attributes["custom:role"] === "admon" && (
-                  <>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => (window.location.href = "/admon")}
-                    >
-                      Panel de control
-                    </div>
+                      Mis campañas
+                    </Nav.Link>
                   </>
                 )}
                 {user ? (

@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import { useAuth } from "context/AuthContext";
 
 export default function AdditionalFiles(props) {
-  const { basePath, className, setHasUnsavedChanges, handleFieldChange } = props;
+  const { basePath, className, setHasUnsavedChanges, handleFieldChange,autorizedUser } = props;
   const { propertyData } = usePropertyData();
   const { s3Client, bucketName } = useS3Client();
   const { user } = useAuth();
@@ -167,7 +167,7 @@ export default function AdditionalFiles(props) {
     setHasUnsavedChanges(false);
   };
 
-  return (
+  return autorizedUser ? (
     <Card className={className}>
       <Card.Header title="Subir documentación adicional" sep={true} />
       <Card.Body>
@@ -306,5 +306,5 @@ export default function AdditionalFiles(props) {
         </div>
       </Card.Body>
     </Card>
-  );
+ ) : null; //
 }

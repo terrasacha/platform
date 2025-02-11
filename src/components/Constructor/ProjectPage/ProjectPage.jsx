@@ -116,7 +116,6 @@ export default function ProjectPage() {
           graphqlOperation(GET_PRODUCT_QUERY, { id })
         );
         const campaignData = result?.data?.getProduct?.campaign;
-        console.log("campaignData", campaignData);
         setCampaign(campaignData); // Actualiza el estado con la campaña asociada
       } catch (error) {
         console.error("Error fetching campaign data: ", error);
@@ -168,7 +167,6 @@ export default function ProjectPage() {
       const response = await API.graphql(
         graphqlOperation(mutation, { input })
       );
-      console.log("Producto actualizado:", response);
       return response;
     } catch (error) {
       console.error("Error actualizando el producto:", error);
@@ -366,8 +364,8 @@ export default function ProjectPage() {
                   </section>
                   {projectData.projectVerifierNames.length > 0 && (
                     <section>
-                      <p className="fs-6 mb-0 fw-bold">Validadores:</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                      <p className="fs-6 mb-0 fw-bold">Consultores:</p>
+                      <div className="flex gap-2">
                         {projectData.projectVerifierNames.map((pvn, index) => {
                           return (
                             <div

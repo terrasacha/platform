@@ -144,7 +144,6 @@ export default function LogIn() {
             "custom:role": role,
           },
         });
-        console.log(response, "response");
         const userPayload = {
           id: response.userSub,
           name: username,
@@ -188,7 +187,6 @@ export default function LogIn() {
   const handleResendCode = async (e, username) => {
     e.preventDefault();
     const { CodeDeliveryDetails } = await Auth.resendSignUp(username);
-    console.log(CodeDeliveryDetails);
     if (CodeDeliveryDetails) notify(`Código enviado a ${formState.email}`);
   };
   async function signIn(e) {
@@ -200,8 +198,7 @@ export default function LogIn() {
       setLoading(true);
 
       const response = await Auth.signIn(username, password);
-      console.log(response, "response");
-
+  
       if (response.challengeName === "NEW_PASSWORD_REQUIRED") {
         setLoading(false);
         updateUser(response);
@@ -228,24 +225,17 @@ export default function LogIn() {
     e.preventDefault();
     const { totpCode } = formState; // Asegúrate de tener un campo para capturar el código TOTP
     const { username } = formState;
-    console.log(signInUserData);
     try {
       setError("");
       setLoading(true);
-
-      const response = await Auth.confirmSignIn(
-        signInUserData,
-        totpCode,
-        "SOFTWARE_TOKEN_MFA"
-      );
-      console.log(response, "response");
-
+  
+      const response = await Auth.confirmSignIn(signInUserData, totpCode, "SOFTWARE_TOKEN_MFA");
+      
       updateFormState(() => ({ ...formState, formType: "signedIn" }));
       let currentUser = await Auth.currentAuthenticatedUser();
       currentUser = currentUser.attributes["custom:role"];
       localStorage.setItem("role", currentUser);
     } catch (error) {
-      console.log(error)
       setError("Código TOTP no válido. Por favor, inténtelo de nuevo.");
     }
     setLoading(false);
@@ -345,7 +335,6 @@ export default function LogIn() {
     try {
       setError("");
       setLoading(true);
-      console.log(newPassword, confirmNewPassword);
       if (newPassword === confirmNewPassword) {
         await Auth.completeNewPassword(user, newPassword);
         updateFormState(() => ({ ...formState, formType: "signedIn" }));

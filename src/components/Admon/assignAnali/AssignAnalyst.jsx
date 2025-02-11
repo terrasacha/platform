@@ -42,7 +42,6 @@ export default class AssignAnalyst extends Component {
         this.loadProducts(),
         this.loadUserProducts(),
       ]);
-      console.log("Datos cargados correctamente");
     } catch (error) {
       console.error("Error cargando los datos:", error);
     }

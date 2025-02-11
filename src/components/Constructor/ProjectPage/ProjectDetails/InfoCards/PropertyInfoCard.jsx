@@ -111,7 +111,6 @@ export default function PropertyInfoCard(props) {
           id: habitaPfID,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", updatedProductFeature);
         await API.graphql(
           graphqlOperation(updateProductFeature, {
             input: updatedProductFeature,
@@ -123,7 +122,6 @@ export default function PropertyInfoCard(props) {
           productID: projectData.projectInfo.id,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", newProductFeature);
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );

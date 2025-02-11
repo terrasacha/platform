@@ -34,6 +34,7 @@ import Card from "components/common/Card";
 import { CloudUpload, Eye } from "react-bootstrap-icons";
 import { MessagesIcon } from "components/common/icons/MessagesIcon";
 import MessagesHistoryCard from "components/Constructor/ProjectPage/ProjectFiles/InfoCards/MessagesHistoryCard";
+import { getDocument } from "graphql/queries";
 
 export default function CadastralRecords(props) {
   const { className, autorizedUser, tooltip, setTotalArea, totalArea,setHasUnsavedChanges, handleFieldChange   } = props;
@@ -54,27 +55,52 @@ export default function CadastralRecords(props) {
   const [newMessage, setNewMessage] = useState("");
   const [isFileVerifier, setIsFileVerifier] = useState(false);
   const [isDocApproved, setIsDocApproved] = useState(false);
+  const isOwner = propertyData.projectPostulant.id === user.id;
 
   useEffect(() => {
     if (propertyData && propertyData.projectCadastralRecords) {
-      let ownersData =
-        [...propertyData.projectCadastralRecords.cadastralRecords].map(
-          (cadastralData) => {
-            return {
-              ...cadastralData,
-              editing: false,
-            };
-          }
-        ) || [];
-
-      setCadastralDataPfID(
-        propertyData.projectCadastralRecords.cadastralDataPfID
-      );
-      setAreaDataPfID(propertyData.projectCadastralRecords.totalAreaPfID);
-
-      setMultipleData(ownersData);
+      const fetchDocumentsVisibility = async () => {
+        try {
+          // Mapeamos los datos y consultamos la API para obtener la visibilidad correcta
+          const updatedRecords = await Promise.all(
+            propertyData.projectCadastralRecords.cadastralRecords.map(async (cadastralData) => {
+              if (!cadastralData.documentID) {
+                return { ...cadastralData, visible: false, editing: false }; // Si no tiene documento, ocultarlo por defecto
+              }
+  
+              try {
+                const response = await API.graphql(
+                  graphqlOperation(getDocument, { id: cadastralData.documentID })
+                );
+                const documentData = response.data.getDocument;
+  
+                return {
+                  ...cadastralData,
+                  visible: documentData?.visible ?? false, // Si `visible` no existe, usar `false`
+                  editing: false,
+                };
+              } catch (error) {
+                console.error(`❌ Error obteniendo documento ${cadastralData.documentID}:`, error);
+                return { ...cadastralData, visible: false, editing: false };
+              }
+            })
+          );
+  
+          // ✅ Se actualizan los estados necesarios
+          setMultipleData(updatedRecords);
+          setCadastralDataPfID(propertyData.projectCadastralRecords.cadastralDataPfID);
+          setAreaDataPfID(propertyData.projectCadastralRecords.totalAreaPfID);
+  
+        } catch (error) {
+          console.error("❌ Error general en fetchDocumentsVisibility:", error);
+        }
+      };
+  
+      fetchDocumentsVisibility();
     }
   }, [propertyData]);
+  
+  
 
   useEffect(() => {
     async function updatePredialData() {
@@ -85,7 +111,7 @@ export default function CadastralRecords(props) {
       const predialData = await getPredialDataByCadastralNumber(
         cadastralNumbersArray
       ); // Llamada a la función getData
-      console.log("predialData", predialData);
+     
       setPredialFetchedData(predialData);
 
       // Área total del predio
@@ -106,7 +132,6 @@ export default function CadastralRecords(props) {
     }
     if (multipleData.length > 0 && executedOnce) {
       const obj = multipleData.filter((data) => data.editing === true)[0];
-      console.log(obj);
 
       if (obj) {
         let cadastralNumberLength = obj.cadastralNumber.length;
@@ -310,8 +335,6 @@ export default function CadastralRecords(props) {
           contentType: "*/*",
         });
 
-        console.log("Archivo seleccionado:", fileToSave);
-        console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
         notify({
           msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
@@ -325,7 +348,6 @@ export default function CadastralRecords(props) {
         id: oldDocument.pfID,
         value: fileToSave.name,
       };
-      console.log("updatedProductFeature:", updatedProductFeature);
       await API.graphql(
         graphqlOperation(updatePropertyFeature, {
           input: updatedProductFeature,
@@ -345,10 +367,6 @@ export default function CadastralRecords(props) {
         graphqlOperation(updateDocument, { input: updatedDocument })
       );
     } else {
-      // Crear pf y document
-      console.log(s3Client, "s3client 284");
-      console.log(urlPath, "urlPath cadastral 284");
-      console.log(fileToSave, "fileToSave cadastral 285");
 
       const command = new PutObjectCommand({
         Bucket: bucketName,
@@ -360,12 +378,6 @@ export default function CadastralRecords(props) {
 
       try {
         const uploadImageResult = await s3Client.send(command);
-        console.log(uploadImageResult, "uploadImageResult");
-        /* const uploadImageResult = await Storage.put(urlPath, fileToSave, {
-        }); */
-
-        console.log("Archivo seleccionado:", fileToSave);
-        console.log("Archivo subido:", uploadImageResult);
       } catch (error) {
         console.error(error);
         notify({
@@ -380,7 +392,6 @@ export default function CadastralRecords(props) {
         propertyID: propertyData.propertyInfo.id,
         value: fileToSave.name,
       };
-      console.log("newPropertyFeature:", newPropertyFeature);
       const createPropertyFeatureResponse = await API.graphql(
         graphqlOperation(createPropertyFeature, { input: newPropertyFeature })
       );
@@ -624,7 +635,6 @@ export default function CadastralRecords(props) {
         (item) => item.id === multipleData[indexToDelete]?.documentID
       );
   
-      console.log("documentToDelete", documentToDelete);
   
       if (documentToDelete) {
         // Extraer nombre del archivo de la URL
@@ -704,24 +714,39 @@ export default function CadastralRecords(props) {
   };
   
 
-const renderFileLinkByDocumentID = (documentID) => {
-  if (documentID) {
-    const document = propertyData.projectFiles.find(
-      (item) => item.id === documentID
-    );
-
+  const renderFileLinkByDocumentID = (documentID) => {
+    const isOwner = propertyData.projectPostulant.id === user.id;
+  
+  
+    if (!documentID) {
+      return <span className="text-gray-500">Sin archivo</span>;
+    }
+  
+    // Buscar el documento en `multipleData`, que ya tiene `visible` actualizado desde la API
+    const cadastralRecord = multipleData.find((item) => item.documentID === documentID);
+  
+    if (!cadastralRecord) {
+      return <span className="text-gray-500">Documento no encontrado</span>;
+    }
+  
+    const isVisible = cadastralRecord.visible ?? false; // Si `visible` es `undefined`, asignar `false`
+  
+    if (!isVisible && !isOwner) {
+      return <span className="text-gray-500">🔒 Documento no disponible</span>;
+    }
+  
     return (
       <button
-        onClick={() => handleOpenObject(s3Client, bucketName, document?.url)}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
+        onClick={() => handleOpenObject(s3Client, bucketName, cadastralRecord?.url)}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+        disabled={!autorizedUser}
       >
         📄 Ver Archivo
       </button>
     );
-  }  else {
-      return "Sin archivo";
-    }
   };
+  
+  
 
 
 
@@ -745,6 +770,39 @@ const renderFileLinkByDocumentID = (documentID) => {
       return "...";
     }
   };
+
+  
+
+
+  const toggleVisibility = async (documentID, currentVisibility) => {
+    try {
+      
+  
+      const updatedDocument = {
+        id: documentID,
+        visible: !currentVisibility,
+      };
+  
+      const response = await API.graphql(graphqlOperation(updateDocument, { input: updatedDocument }));
+  
+      if (response.data?.updateDocument) {
+        setMultipleData((prevData) =>
+          prevData.map((item) =>
+            item.documentID === documentID ? { ...item, visible: !currentVisibility } : item
+          )
+        );
+  
+        notify({ msg: `El documento ahora es ${!currentVisibility ? "visible" : "no visible"}`, type: "success" });
+      } else {
+        console.error("⚠️ No se pudo actualizar la visibilidad en la API.");
+      }
+    } catch (error) {
+      notify({ msg: "Hubo un error al cambiar la visibilidad del documento.", type: "error" });
+    }
+  };
+  
+
+  
 
   return (
     <Card className={className}>
@@ -822,29 +880,40 @@ const renderFileLinkByDocumentID = (documentID) => {
                   ) : (
                     <>
                       <td className="p-2 border border-gray-300">{data.cadastralNumber}</td>
-                      <td className="p-2 border border-gray-300">{renderFileLinkByDocumentID(data.documentID)}</td>
+                      <td className="p-2 border border-gray-300">{renderFileLinkByDocumentID(data.documentID, data.visible ?? true)}</td>
                       <td className="p-2 border border-gray-300">{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
                       <td className="p-2 border border-gray-300">{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
-                      <td className="p-2 border border-gray-300 flex justify-end gap-2">
-                        <button className="p-2 text-white rounded bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                          disabled={!autorizedUser}
-                          onClick={() => handleEditHistoricalData(index)}>
-                          <EditIcon />
-                        </button>
-                        <button className="p-2 text-white rounded bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                          disabled={!autorizedUser}
-                          onClick={() => handleDeleteHistoricalData(index)}>
-                          <TrashIcon />
-                        </button>
-                        <button
-  disabled={!autorizedUser}
-  className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-  onClick={() => handleMessageButtonClick(index, 'propertyFeature')}
->
-  <MessagesIcon />
-</button>
+                        <td className="p-2 border border-gray-300 flex justify-end gap-2">
+                          <button className="p-2 text-white rounded bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={!autorizedUser}
+                            onClick={() => handleEditHistoricalData(index)}>
+                            <EditIcon />
+                          </button>
+                          <button className="p-2 text-white rounded bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={!autorizedUser}
+                            onClick={() => handleDeleteHistoricalData(index)}>
+                            <TrashIcon />
+                          </button>
+                          <button
+    disabled={!autorizedUser}
+    className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white disabled:opacity-50 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+    onClick={() => handleMessageButtonClick(index, 'propertyFeature')}
+  >
+    <MessagesIcon />
+  </button>
+  {isOwner && (
+  <button
+    onClick={() => toggleVisibility(data.documentID, data.visible)}
+    className={`p-2 rounded text-white ${
+      data.visible ? "bg-gray-500 hover:bg-gray-700" : "bg-green-500 hover:bg-green-700"
+    }`}
+    title={data.visible ? "Ocultar Documento" : "Hacer Visible"}
+  >
+    {data.visible ? "👁️" : "🙈"}
+  </button>
+)}
 
-                      </td>
+                        </td>
                     </>
                   )}
                 </tr>

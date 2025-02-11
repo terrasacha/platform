@@ -161,7 +161,6 @@ export default function ActualUseAndPotentialInfoCard(props) {
           id: usesPfID,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", updatedProductFeature);
         await API.graphql(
           graphqlOperation(updateProductFeature, {
             input: updatedProductFeature,
@@ -173,7 +172,6 @@ export default function ActualUseAndPotentialInfoCard(props) {
           productID: projectData.projectInfo.id,
           value: `[${values.join(", ")}]`,
         };
-        console.log("newProductFeature:", newProductFeature);
         const response = await API.graphql(
           graphqlOperation(createProductFeature, { input: newProductFeature })
         );

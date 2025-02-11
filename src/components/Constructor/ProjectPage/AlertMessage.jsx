@@ -39,7 +39,6 @@ export default function AlertMessage({ visible }) {
             projectData?.projectInfo.id,
             user.subrole
           );
-          console.log(obj, "progress");
           setProgressObj(obj);
         } catch (error) {
           console.error("Error al obtener datos:", error);
@@ -161,7 +160,7 @@ export default function AlertMessage({ visible }) {
                 <div>
                   <p className="mb-0">
                     Estado de verificación del proyecto por parte del equipo de
-                    validadores SUAN.
+                    Consultores SUAN.
                   </p>
                   <ul className="pl-0">
                     <li className="font-bold flex">

@@ -61,7 +61,6 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
     try {
       const data = await API.graphql(graphqlOperation(getCampaign, { id }));
 
-      console.log(data.data.getCampaign);
       setCampaign(data.data.getCampaign);
       const campaign = data.data.getCampaign;
       const product = campaign.products.items[0];
@@ -71,7 +70,6 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
         .map((userProduct) => {
           return { id: userProduct.user.id, name: userProduct.user.name };
         });
-      console.log("campaign", campaign);
       setRegisteredProperties(campaign.properties.items.length);
       setChosenProperties(
         campaign.properties.items.filter((camp) => camp.status === "APPROVED")
@@ -281,10 +279,9 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
 
           {projectVerifiers.length > 0 && (
             <section className="mt-8">
-              <h3 className="text-md font-semibold text-[#74742c] mb-4">
-  Validador de la campaña
-</h3>
-
+              <h3 className="text-md font-semibold text-gray-700 mb-4">
+              Consultor de la campaña
+              </h3>
               <div className="flex flex-wrap gap-3">
                 {projectVerifiers.map((pvn, index) => (
                   <div
