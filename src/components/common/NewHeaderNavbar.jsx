@@ -109,7 +109,7 @@ export default function NewHeaderNavbar() {
                     <div
                       className="cursor-pointer"
                       onClick={() =>
-                        (window.location.href = "/validator_admon")
+                        (window.location.href = "/consultor_admon")
                       }
                     >
                      Mis campañas
@@ -119,6 +119,11 @@ export default function NewHeaderNavbar() {
                       </div>
                   </>
                 )}
+                {user && user.attributes["custom:role"] === "admon" && (
+  <div>
+    <Nav.Link onClick={() => navigate("/admon")}>Panel Administrador</Nav.Link>
+  </div>
+)}
                 {user && user.attributes["custom:role"] === "analyst" && (
                   <>
                     <div

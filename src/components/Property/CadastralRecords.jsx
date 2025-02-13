@@ -21,6 +21,7 @@ import {
   deleteDocument,
   updatePropertyFeature,
   createVerificationComment,
+  createVerification,
 } from "graphql/mutations";
 import { useAuth } from "context/AuthContext";
 import WebAppConfig from "components/common/_conf/WebAppConfig";
@@ -31,10 +32,11 @@ import { usePropertyData } from "context/PropertyDataContext";
 import { notify } from "utilities/notify";
 import { fetchPropertyDataByPropertyID } from "components/Constructor/ProjectPage/api";
 import Card from "components/common/Card";
-import { CloudUpload, Eye } from "react-bootstrap-icons";
+import { CloudUpload, Eye, EyeSlash } from "react-bootstrap-icons";
 import { MessagesIcon } from "components/common/icons/MessagesIcon";
 import MessagesHistoryCard from "components/Constructor/ProjectPage/ProjectFiles/InfoCards/MessagesHistoryCard";
 import { getDocument } from "graphql/queries";
+import { useProjectData } from "context/ProjectDataContext";
 
 export default function CadastralRecords(props) {
   const { className, autorizedUser, tooltip, setTotalArea, totalArea,setHasUnsavedChanges, handleFieldChange   } = props;
@@ -55,7 +57,10 @@ export default function CadastralRecords(props) {
   const [newMessage, setNewMessage] = useState("");
   const [isFileVerifier, setIsFileVerifier] = useState(false);
   const [isDocApproved, setIsDocApproved] = useState(false);
-  const isOwner = propertyData.projectPostulant.id === user.id;
+  const isOwner = propertyData.propertyCampaign.userId === user.id;
+  const { handleUpdateContextFileVerification } = useProjectData();
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     if (propertyData && propertyData.projectCadastralRecords) {
@@ -199,6 +204,56 @@ export default function CadastralRecords(props) {
     }));
   };
 
+ const deleteFileFromS3AndDB = async (documentID) => {
+    if (!documentID) {
+        console.warn("⚠️ No se proporcionó documentID para eliminar.");
+        return;
+    }
+
+    console.log("🗑️ Eliminando archivo y referencias para documentID:", documentID);
+
+    const documentToDelete = propertyData.projectFiles.find(item => item.id === documentID);
+
+    if (!documentToDelete) {
+        console.warn("⚠️ Documento no encontrado en projectFiles.");
+        return;
+    }
+
+    // Extraer nombre del archivo de la URL
+    const getFilePathRegex = /\/public\/(.+)$/;
+    const fileToDeleteName = decodeURIComponent(documentToDelete.url.match(getFilePathRegex)?.[1] || "");
+
+    if (fileToDeleteName) {
+        try {
+            await Storage.remove(fileToDeleteName);
+            console.log("✅ Archivo eliminado de S3:", fileToDeleteName);
+        } catch (error) {
+            console.error("❌ Error eliminando el archivo en S3:", error);
+        }
+    }
+
+    // 🟢 Eliminar el Product Feature asociado al documento
+    if (documentToDelete.pfID) {
+        try {
+            const pfToDelete = { id: documentToDelete.pfID };
+            await API.graphql(graphqlOperation(deleteProductFeature, { input: pfToDelete }));
+            console.log("✅ Product Feature eliminado correctamente:", documentToDelete.pfID);
+        } catch (error) {
+            console.error("❌ Error eliminando Product Feature:", error);
+        }
+    }
+
+    // 🟢 Eliminar el documento de la base de datos
+    try {
+        const docToDelete = { id: documentToDelete.id };
+        await API.graphql(graphqlOperation(deleteDocument, { input: docToDelete }));
+        console.log("🗑️ Documento eliminado correctamente de la base de datos:", documentID);
+    } catch (error) {
+        console.error("❌ Error eliminando el documento de la base de datos:", error);
+    }
+};
+
+
   const handleUploadButton = (index) => {
     Swal.fire({
       title: "Estas seguro?",
@@ -312,109 +367,115 @@ export default function CadastralRecords(props) {
     )}`;
 
     if (documentID) {
-      const oldDocument = propertyData.projectFiles.find(
-        (item) => item.id === documentID
-      );
-      // Si toca actualizar
-      const getFilePathRegex = /\/public\/(.+)$/;
+        const oldDocument = propertyData.projectFiles.find(
+            (item) => item.id === documentID
+        );
 
-      // Eliminar archivo viejo de S3
-      const fileToDeleteName = decodeURIComponent(
-        oldDocument.url.match(getFilePathRegex)[1]
-      );
-      try {
-        await Storage.remove(fileToDeleteName);
-      } catch (error) {
-        console.error("Error removing the file:", error);
+        if (oldDocument) {
+            try {
+                await deleteFileFromS3AndDB(documentID);
+            } catch (error) {
+                console.error("❌ Error eliminando el archivo anterior:", error);
+            }
+
+            const command = new PutObjectCommand({
+              Bucket: bucketName,
+              Key: urlPath,
+              Body: fileToSave,
+              ContentType: fileToSave.type,
+          });
+  
+          try {
+              await s3Client.send(command);
+          } catch (error) {
+              console.error(error);
+              notify({
+                  msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
+                  type: "error",
+              });
+              return;
+          }
+
+          const newPropertyFeature = {
+            featureID: "B_owner_certificado",
+            propertyID: propertyData.propertyInfo.id,
+            value: fileToSave.name,
+        };
+        const createPropertyFeatureResponse = await API.graphql(
+            graphqlOperation(createPropertyFeature, { input: newPropertyFeature })
+        );
+
+            // 📌 Crear un nuevo documento en la base de datos, ya que el anterior fue eliminado
+            const newDocument = {
+              propertyFeatureID:
+              createPropertyFeatureResponse.data.createPropertyFeature.id,
+              userID: user.id,
+              timeStamp: Date.now(),
+              status: "pending",
+              isApproved: false,
+              isUploadedToBlockChain: false,
+              url: WebAppConfig.url_s3_images + urlPath,
+          };
+  
+          const createDocumentResponse = await API.graphql(
+              graphqlOperation(createDocument, { input: newDocument })
+          );
+  
+          docID = createDocumentResponse.data.createDocument.id;
       }
+      return docID;
 
-      //  Cargar archivo nuevo a S3
-      try {
-        const uploadImageResult = await Storage.put(urlPath, fileToSave, {
-          level: "public",
-          contentType: "*/*",
-        });
-
-      } catch (error) {
-        notify({
-          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
-          type: "error",
-        });
-        return;
-      }
-
-      // Actualizar base de datos (Product Feature y Documento)
-      const updatedProductFeature = {
-        id: oldDocument.pfID,
-        value: fileToSave.name,
-      };
-      await API.graphql(
-        graphqlOperation(updatePropertyFeature, {
-          input: updatedProductFeature,
-        })
-      );
-
-      const updatedDocument = {
-        id: oldDocument.id,
-        timeStamp: Date.now(),
-        status: "pending",
-        isApproved: false,
-        isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_public_images + urlPath,
-      };
-
-      await API.graphql(
-        graphqlOperation(updateDocument, { input: updatedDocument })
-      );
     } else {
-
-      const command = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: urlPath,
-        Body: fileToSave,
-        ContentType: fileToSave.type,
-      });
-      
-
-      try {
-        const uploadImageResult = await s3Client.send(command);
-      } catch (error) {
-        console.error(error);
-        notify({
-          msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
-          type: "error",
+        // 🚀 Subir archivo a S3 para un nuevo documento
+        const command = new PutObjectCommand({
+            Bucket: bucketName,
+            Key: urlPath,
+            Body: fileToSave,
+            ContentType: fileToSave.type,
         });
-        return;
-      }
 
-      const newPropertyFeature = {
-        featureID: "B_owner_certificado",
-        propertyID: propertyData.propertyInfo.id,
-        value: fileToSave.name,
-      };
-      const createPropertyFeatureResponse = await API.graphql(
-        graphqlOperation(createPropertyFeature, { input: newPropertyFeature })
-      );
+        try {
+            await s3Client.send(command);
+        } catch (error) {
+            console.error(error);
+            notify({
+                msg: "Ups!, parece que algo ha fallado al intentar subir el archivo",
+                type: "error",
+            });
+            return;
+        }
 
-      const newDocument = {
-        propertyFeatureID:
-          createPropertyFeatureResponse.data.createPropertyFeature.id,
-        userID: user.id,
-        timeStamp: Date.now(),
-        status: "pending",
-        isApproved: false,
-        isUploadedToBlockChain: false,
-        url: WebAppConfig.url_s3_images + urlPath,
-      };
+        // 📌 Crear un nuevo Property Feature
+        const newPropertyFeature = {
+            featureID: "B_owner_certificado",
+            propertyID: propertyData.propertyInfo.id,
+            value: fileToSave.name,
+        };
+        const createPropertyFeatureResponse = await API.graphql(
+            graphqlOperation(createPropertyFeature, { input: newPropertyFeature })
+        );
 
-      const createDocumentResponse = await API.graphql(
-        graphqlOperation(createDocument, { input: newDocument })
-      );
+        // 📌 Crear un nuevo documento en la base de datos
+        const newDocument = {
+            propertyFeatureID:
+            createPropertyFeatureResponse.data.createPropertyFeature.id,
+            userID: user.id,
+            timeStamp: Date.now(),
+            status: "pending",
+            isApproved: false,
+            isUploadedToBlockChain: false,
+            url: WebAppConfig.url_s3_images + urlPath,
+        };
 
-      docID = createDocumentResponse.data.createDocument.id;
+        const createDocumentResponse = await API.graphql(
+            graphqlOperation(createDocument, { input: newDocument })
+        );
+
+        docID = createDocumentResponse.data.createDocument.id;
     }
     return docID;
-  };
+};
+
 
   // Crear una función que actualice el area
 
@@ -426,6 +487,7 @@ export default function CadastralRecords(props) {
       });
       return;
     }
+    setIsLoading(true);
     let error = false;
     const newCadastralNumber = multipleData[indexToSave].cadastralNumber;
     const certificate = multipleData[indexToSave].certificate;
@@ -617,6 +679,7 @@ export default function CadastralRecords(props) {
         type: "success",
       });
     }
+    setIsLoading(false);
   };
 
   const handleDeleteHistoricalData = async (indexToDelete) => {
@@ -715,39 +778,43 @@ export default function CadastralRecords(props) {
   
 
   const renderFileLinkByDocumentID = (documentID) => {
-    const isOwner = propertyData.projectPostulant.id === user.id;
-  
-  
     if (!documentID) {
       return <span className="text-gray-500">Sin archivo</span>;
     }
   
-    // Buscar el documento en `multipleData`, que ya tiene `visible` actualizado desde la API
-    const cadastralRecord = multipleData.find((item) => item.documentID === documentID);
+    // Verificar si `projectFiles` está disponible
+    const document = propertyData?.projectFiles?.find(
+      (item) => item.id === documentID
+    );
   
-    if (!cadastralRecord) {
+    if (!document) {
       return <span className="text-gray-500">Documento no encontrado</span>;
     }
+
+    const cadastralRecord = multipleData.find((item) => item.documentID === documentID);
   
-    const isVisible = cadastralRecord.visible ?? false; // Si `visible` es `undefined`, asignar `false`
-  
-    if (!isVisible && !isOwner) {
-      return <span className="text-gray-500">🔒 Documento no disponible</span>;
-    }
+    // Determinar visibilidad y permisos
+    const isOwner = propertyData?.projectPostulant?.id === user?.id;
+    const isCampaignOwner = propertyData?.propertyCampaign?.userId === user?.id;
+    const hasFullAccess = isOwner || isCampaignOwner; // Solo dueños pueden verlo siempre
+    const isVisible = cadastralRecord.visible ?? false; // Si `visible` es `undefined`, se asume `false`
+    const isDisabled = !hasFullAccess && !isVisible; // Si no es dueño y el documento está oculto, se deshabilita
   
     return (
       <button
-        onClick={() => handleOpenObject(s3Client, bucketName, cadastralRecord?.url)}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-        disabled={!autorizedUser}
+        onClick={() => handleOpenObject(s3Client, bucketName, document?.url)}
+        disabled={isDisabled } // Se desactiva si no está autorizado o el documento está oculto
+        className={`px-4 py-2 rounded-md transition duration-200 ${
+          isDisabled 
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-blue-500 text-white hover:bg-blue-600"
+        }`}
       >
-        📄 Ver Archivo
+        {isDisabled ? "🔒 No Disponible" : "📄 Ver Archivo"}
       </button>
     );
   };
   
-  
-
 
 
   const renderAreaByCadastralNumber = (cadastralNumber) => {
@@ -801,6 +868,78 @@ export default function CadastralRecords(props) {
     }
   };
   
+  const checkAndCreateVerification = async (index, type) => {
+    const typeVerification = {
+      productFeature: "productFeatureID",
+      propertyFeature: "propertyFeatureID",
+    };
+  
+    // Obtener el archivo según el tipo
+    const file = typeVerification[type] === "propertyFeatureID" 
+      ? propertyData.projectFiles[index] 
+      : propertyData.projectPropertyFiles[index];
+
+      if (!file) {
+        console.log("No se encontró el archivo, mostrando la notificación...");
+        notify({
+          msg: "No hay documentos que comentar.",
+          type: "error",
+        });
+        return; // Salir de la función si no se encuentra el archivo
+      }
+  
+    // Si el archivo no tiene verificación, creamos una nueva
+    if (!file.verification) {
+      const newVerification = {
+        [typeVerification[type]]: file.pfID,
+        userVerifierID: user.id,
+        userVerifiedID: type === "productFeature" 
+          ? propertyData.projectPostulant.id 
+          : file.userID,
+      };
+  
+      try {
+        // Crear la verificación en la base de datos
+        const createVerificationResult = await API.graphql(
+          graphqlOperation(createVerification, { input: newVerification })
+        );
+  
+        const verification = createVerificationResult.data.createVerification;
+  
+        // Asignamos la verificación creada al archivo
+        file.verification = verification;
+  
+        // Creamos el objeto de verificación para el contexto
+        const localVerification = {
+          id: verification.id,
+          messages: [],
+          postulantID: propertyData.projectPostulant.id,
+          postulantName: propertyData.projectPostulant.name,
+          verifierID: user.id,
+          verifierName: user.name,
+        };
+  
+        // Actualizar el archivo en el contexto global
+        await handleUpdateContextFileVerification(index, localVerification);
+  
+      } catch (error) {
+        console.error("❌ Error al crear la verificación:", error);
+      }
+    } else {
+      console.log("📌 Verificación ya existe:", file.verification);
+    }
+  };
+  
+  const handleButtonClick = async (index, type) => {
+    // Primero, llama a la función para verificar y crear la verificación si no existe
+    await checkAndCreateVerification(index, type);
+  
+    // Luego, llama a la función para mostrar los mensajes
+    handleMessageButtonClick(index, type);
+  };
+
+  
+
 
   
 
@@ -869,7 +1008,7 @@ export default function CadastralRecords(props) {
                       <td className="p-2 border border-gray-300">{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
                       <td className="p-2 border border-gray-300">{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
                       <td className="p-2 border border-gray-300 flex justify-end gap-2">
-                        <button className="p-2 text-white rounded bg-green-600" onClick={() => handleSaveHistoricalData(index)}>
+                        <button className="p-2 text-white rounded bg-green-600"  disabled={isLoading} onClick={() => handleSaveHistoricalData(index)}>
                           <SaveDiskIcon />
                         </button>
                         <button className="p-2 text-white rounded bg-red-500" onClick={() => handleDeleteHistoricalData(index)}>
@@ -897,19 +1036,24 @@ export default function CadastralRecords(props) {
                           <button
     disabled={!autorizedUser}
     className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white disabled:opacity-50 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-    onClick={() => handleMessageButtonClick(index, 'propertyFeature')}
+    onClick={() => handleButtonClick(index, "propertyFeature")} 
   >
     <MessagesIcon />
   </button>
   {isOwner && (
   <button
     onClick={() => toggleVisibility(data.documentID, data.visible)}
-    className={`p-2 rounded text-white ${
-      data.visible ? "bg-gray-500 hover:bg-gray-700" : "bg-green-500 hover:bg-green-700"
+    disabled={!autorizedUser}
+    className={`p-2 rounded text-white transition duration-200 ${
+      !autorizedUser
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed" // 🔒 Estilo gris cuando está deshabilitado
+        : data.visible
+        ? "bg-gray-500 hover:bg-gray-700"
+        : "bg-green-500 hover:bg-green-700"
     }`}
     title={data.visible ? "Ocultar Documento" : "Hacer Visible"}
   >
-    {data.visible ? "👁️" : "🙈"}
+   {data.visible ? <Eye size={20} /> : <EyeSlash size={20} />}
   </button>
 )}
 

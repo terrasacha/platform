@@ -54,7 +54,7 @@ function App() {
                 <ProjectPage />
               </ProjectDataProvider>
               </RoleMiddleware>
-            }
+            } 
             exact
           />
           <Route path="/admindash" element={<Dashboard />} exact />
@@ -121,7 +121,7 @@ function App() {
             }
           />
           <Route
-            path="/validator_admon"
+            path="/consultor_admon"
             element={
               <RoleMiddleware allowedRoles={["validator"]} redirectPath="/">
                 <ValidatorAdmon />
@@ -145,9 +145,11 @@ function App() {
                 allowedRoles={["constructor", "admon", "investor", "validator"]}
                 redirectPath="/"
               >
+                <ProjectDataProvider>
                 <PropertyDataProvider>
                   <Property/>
                 </PropertyDataProvider>
+                </ProjectDataProvider>
               </RoleMiddleware>
             }
             exact

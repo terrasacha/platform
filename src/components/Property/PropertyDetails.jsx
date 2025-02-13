@@ -69,6 +69,9 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
         },
       }));
       toast.success(`Predio ${status === "APPROVED" ? "aprobado" : "rechazado"} exitosamente`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error("Error al actualizar el estado del predio:", error);
       toast.error("Error al actualizar el estado del predio");

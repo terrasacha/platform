@@ -76,12 +76,17 @@ export default function AlertMessage({ visible }) {
             <h3 className="text-2xl">
               Estado de requerimientos para la publicación del proyecto{" "}
               <a
-                href={marketplaceURLMapper[projectData.projectInfo.marketplaceID || 'suan'][process.env.REACT_APP_ENV]} // remove href={process.env.REACT_APP_URL_MARKETPLACE}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Marketplace
-              </a>
+  href={
+    marketplaceURLMapper?.[projectData?.projectInfo?.marketplaceID]?.[process.env.REACT_APP_ENV] ||
+    process.env.REACT_APP_URL_MARKETPLACE || 
+    "#"
+  }
+  target="_blank"
+  rel="noreferrer"
+>
+  Marketplace
+</a>
+
             </h3>
             <p>
               Para garantizar la transparencia, confiabilidad y calidad de los

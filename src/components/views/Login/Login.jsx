@@ -893,13 +893,13 @@ export default function LogIn() {
                     onChange={onChange}
                     className="border-[1px] border-gray-300 rounded-md"
                   />
-                  <button
+                  <span
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             style={{
               position: "absolute",
-              left: "73%",
-              top: "38%",
+              left: "87%",
+              top: "51%",
               transform: "translateY(-50%)",
               background: "none",
               border: "none",
@@ -911,7 +911,7 @@ export default function LogIn() {
             }
           >
             {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </button>
+          </span>
                 </fieldset>
                 <fieldset>
                   <legend>Confirmar contraseña</legend>
@@ -921,13 +921,13 @@ export default function LogIn() {
                     onChange={onChange}
                     className="border-[1px] border-gray-300 rounded-md"
                   />
-                  <button
+                  <span
           type="button"
           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           style={{
             position: "absolute",
-            left: "73%",
-            top: "51%",
+            left: "87%",
+            top: "63%",
             transform: "translateY(-50%)",
             background: "none",
             border: "none",
@@ -939,7 +939,7 @@ export default function LogIn() {
           }
         >
           {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-        </button>
+        </span>
                 </fieldset>
                 <button
                   type="submit"

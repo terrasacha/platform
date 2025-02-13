@@ -19,6 +19,11 @@ export const marketplaceURLMapper = {
     TEST: "https://test-marketplace-cauca.suan.global/",
     PROD: "https://marketplace-cauca.suan.global/",
   },
+  terrasacha: {
+    INTERNAL: "https://internal-platform.terrasacha.com/",
+    TEST: "https://test-platform.terrasacha.com/",
+    PROD: "https://platform.terrasacha.com/",
+  }
 };
 
 export const mapGeoData = (validatorDocuments) => {

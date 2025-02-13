@@ -496,7 +496,7 @@ export default function ProjectPage() {
                         </a>
                       </li>
                     )}
-                  {(isVerifier || isAdmon || isAnalyst) && (
+                  {(isAdmon || isAnalyst) && (
                     <li>
                       <a
                         href="#analysis"

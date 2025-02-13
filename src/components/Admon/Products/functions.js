@@ -163,7 +163,7 @@ export async function deleteAllInfoProduct(product) {
 }
 
 async function deleteFolderFromS3(folderPath) {
-  const bucketName = "platformde0a42c18c744a9cae17f9d001d263e96c75a-internal"; // Tu bucket
+  const bucketName = "platformd9531187bef34a10abb664f2878180ae00db6-internal"; // Tu bucket
 
   try {
     let continuationToken = null; // Token para manejar múltiples iteraciones

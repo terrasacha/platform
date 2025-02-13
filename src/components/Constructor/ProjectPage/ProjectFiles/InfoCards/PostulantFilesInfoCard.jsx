@@ -355,6 +355,62 @@ const getValidationRender = (file, fileIndex, type) => {
   return <span className="text-gray-600 font-medium">{statusMap[file.status]}</span>;
 };
 
+const checkAndCreateVerification = async (fileIndex, type) => {
+  const typeVerification = {
+    productFeature: 'productFeatureID',
+    propertyFeature: 'propertyFeatureID'
+  };
+
+  const file = typeVerification[type] === 'productFeatureID' ? projectData.projectFiles[fileIndex] : projectData.projectPropertyFiles[fileIndex];
+
+  // Si no tiene verificación, crear una nueva
+  if (!file.verification) {
+    const newVerification = {
+      [typeVerification[type]]: file.pfID,
+      userVerifierID: user.id,
+      userVerifiedID: type === 'productFeature' ? projectData.projectPostulant.id : file.userID,
+    };
+
+    try {
+      const createVerificationResult = await API.graphql(
+        graphqlOperation(createVerification, { input: newVerification })
+      );
+
+      const verification = createVerificationResult.data.createVerification;
+
+      // Asignar la verificación creada al archivo
+      file.verification = verification;
+
+      // Crear el objeto local de verificación para el contexto
+      const localVerification = {
+        id: verification.id,
+        messages: [],
+        postulantID: projectData.projectPostulant.id,
+        postulantName: projectData.projectPostulant.name,
+        verifierID: user.id,
+        verifierName: user.name,
+      };
+
+      // Actualizar el archivo en el contexto global
+      await handleUpdateContextFileVerification(fileIndex, localVerification);
+
+    } catch (error) {
+      console.error("❌ Error al crear la verificación:", error);
+    }
+  } else {
+  }
+};
+
+const handleButtonClick = async (fileIndex, type) => {
+  // Llama a la función de creación de verificación
+  await checkAndCreateVerification(fileIndex, type);
+
+  // Luego, llama a la función de mostrar los mensajes
+  handleMessageButtonClick(fileIndex, type);
+};
+
+
+
   return (
     <div>
       {/* <Card className={`${className} mb-4`}>
@@ -482,7 +538,7 @@ const getValidationRender = (file, fileIndex, type) => {
             </button>
             <button
               className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white"
-              onClick={() => handleMessageButtonClick(fileIndex, "propertyFeature")}
+              onClick={() => handleButtonClick(fileIndex, "propertyFeature")}
             >
               <MessagesIcon />
             </button>
