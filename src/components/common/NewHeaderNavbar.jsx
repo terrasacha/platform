@@ -15,20 +15,79 @@ import s from "components/Constructor/Navbar/HeaderNavbar.module.css";
 import { LogoutIcon } from "./icons/LogoutIcon";
 import { useLocation } from "react-router-dom";
 import DropDownProjects from "./DropDownProjects";
+import { BellFill } from "react-bootstrap-icons";
+import { listVerificationComments, verificationsByUserVerifiedID, verificationsByUserVerifierID } from "graphql/queries";
+import { API, graphqlOperation } from "aws-amplify";
+import NotificationsModal from "./NotificationsModal";
+
 
 export default function NewHeaderNavbar() {
   const [user, setUser] = useState(null);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const navigate = useNavigate();
-
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [messages, setMessages] = useState([]);
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
-      .then((data) => setUser(data))
-      .catch((err) => console.log(err));
+      .then((data) => {
+        setUser(data);
+        const userId = data.attributes.sub; // Obtener `sub` en lugar de `username`
+        const role = data.attributes["custom:role"];
+  
+        if (["validator", "constructor"].includes(role)) {
+          fetchPendingMessages(userId, role);
+        }
+      })
+      .catch((err) => console.log("Error obteniendo usuario:", err));
   }, []);
+
+
+  const fetchPendingMessages = async (userId, role) => {
+    if (!userId || !role) return;
+  
+    try {
+      let messages = [];
+  
+      if (role === "constructor") {
+        const ownerResponse = await API.graphql(
+          graphqlOperation(verificationsByUserVerifiedID, { userVerifiedID: userId })
+        );
+  
+        messages = ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
+          (verification) =>
+            verification.verificationComments?.items?.map((comment) => ({
+              ...comment,
+              senderName: verification.userVerifier?.name || "Desconocido",
+              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
+            })) || []
+        ) || [];
+  
+      } else if (role === "validator") {
+        const verifierResponse = await API.graphql(
+          graphqlOperation(verificationsByUserVerifierID, { userVerifierID: userId })
+        );
+  
+        messages = verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
+          (verification) =>
+            verification.verificationComments?.items?.map((comment) => ({
+              ...comment,
+              senderName: verification.userVerified?.name || "Desconocido",
+              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
+            })) || []
+        ) || [];
+      }
+  
+      // Eliminar duplicados
+      const uniqueMessages = Array.from(new Map(messages.map((msg) => [msg.id, msg])).values());
+      setMessages(uniqueMessages);
+    } catch (error) {
+      console.error("❌ Error cargando mensajes pendientes:", error);
+    }
+  };
+  
   const handleSignOut = async () => {
     try {
       await Auth.signOut();
@@ -60,6 +119,18 @@ export default function NewHeaderNavbar() {
   };
 
   let userlog = findLastAuthUserKey();
+
+  const handleShowNotifications = () => {
+    const role = user?.attributes?.["custom:role"];
+    if (role === "validator" || role === "constructor") {
+      const userId = user.attributes.sub;
+      fetchPendingMessages(userId, role);
+    }
+    setShowNotifications(true);
+  };
+  
+  const handleCloseNotifications = () => setShowNotifications(false);
+
   return (
     <Navbar key="sm" expand="lg" fixed="top" className="bg-[#ecd798]">
       <Container fluid>
@@ -89,34 +160,34 @@ export default function NewHeaderNavbar() {
             ></Nav>
             <Nav>
               <Nav className="items-center space-x-0 md:space-x-5 space-y-5 md:space-y-0 text-[#6e6c35] font-bold">
-                {user &&
-                  (user.attributes["custom:role"] === "constructor" ||
-                    user.attributes["custom:role"] === "investor") && (
-                    <>
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => (window.location.href = "/constructor")}
-                      >
-                        Mis Predios
-                      </div>
-                      <div>
-                      <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
-                      </div>
-                    </>
-                  )}
-                {user && user.attributes["custom:role"] === "validator" && (
+               {user && ["constructor", "investor"].includes(user.attributes["custom:role"]) && (
+  <>
+    <Nav.Link onClick={() => navigate("/constructor")}>Mis Predios</Nav.Link>
+    <Nav.Link onClick={() => navigate("/PQRS")}>PQRS</Nav.Link>
+
+    {/* Ícono de Notificaciones para Constructores */}
+    <div className="relative cursor-pointer" onClick={handleShowNotifications}>
+      <BellFill className="w-6 h-6 text-gray-800" />
+      {messages.length > 0 && (
+        <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+          {messages.length}
+        </span>
+      )}
+    </div>
+  </>
+)}
+
+                {user?.attributes["custom:role"] === "validator" && (
                   <>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() =>
-                        (window.location.href = "/consultor_admon")
-                      }
-                    >
-                     Mis campañas
+                    <Nav.Link onClick={() => navigate("/consultor_admon")}>Mis campañas</Nav.Link>
+                    <div className="relative cursor-pointer" onClick={handleShowNotifications}>
+                      <BellFill className="w-6 h-6 text-gray-800" />
+                          {messages.length > 0 && (
+                        <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                          {messages.length}
+                        </span>
+                      )}
                     </div>
-                    <div>
-                      <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
-                      </div>
                   </>
                 )}
                 {user && user.attributes["custom:role"] === "admon" && (
@@ -195,6 +266,11 @@ export default function NewHeaderNavbar() {
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
+        <NotificationsModal
+  show={showNotifications}
+  onClose={handleCloseNotifications}
+  messages={messages}
+/>
       </Container>
     </Navbar>
   );

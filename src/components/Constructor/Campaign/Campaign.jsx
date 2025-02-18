@@ -17,6 +17,7 @@ import { onUpdateProperty } from "graphql/subscriptions";
 import { WindowFullscreen } from "react-bootstrap-icons";
 import ModalEditImage from "./ModalEditImage";
 import Imagen from "../../common/_images/Campaña.png";
+import ModalAssignProperty from "./ModalAssignProperty";
 
 
 export default function Campaign() {
@@ -32,6 +33,8 @@ export default function Campaign() {
   const [registeredProperties, setRegisteredProperties] = useState(0);
   const [chosenProperties, setChosenProperties] = useState(0);
   const [totalChosenProperties, setTotalChosenProperties] = useState(0);
+  const [showModalAssignProperty, setShowModalAssignProperty] = useState(false);
+
 
   const handleCloseNewProperty = () => setShowModalNewProperty(false);
   const handleShowNewProperty = () => setShowModalNewProperty(true);
@@ -240,40 +243,55 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
                 ))}
               </div>
 
-              <div className="mt-6">
-                {campaign.available ? (
-                  <button
-                    onClick={() => 
-                      editable
-                        ? handleShowEndCampaign()
-                        : userLogged
-                        ? handleShowNewProperty()
-                        : redirectToLoginPage(campaign.id)
-                    }
-                    className={`w-full lg:w-3/6 py-3 font-semibold rounded-md text-white shadow-md transition-all duration-300 ${
-                      editable
-                        ? "bg-red-500 hover:bg-red-600"
-                        : "bg-green-500 hover:bg-green-600"
-                    }`}
-                  >
-                    {editable ? "Cerrar convocatoria ahora" : "Postular predio"}
-                  </button>
-                ) : (
-                  <>
-                    <div className="bg-gray-400 py-3 font-semibold text-white text-center rounded-md shadow-md">
-                      Convocatoria cerrada
-                    </div>
-                    <button
-                      onClick={() =>
-                        handleClickSeeProject(campaign.products.items[0].id)
-                      }
-                      className="w-full lg:w-3/6 mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
-                    >
-                      Ver proyecto
-                    </button>
-                  </>
-                )}
-              </div>
+              <div className="mt-6 flex flex-col lg:flex-row gap-4">
+  {campaign.available ? (
+    <>
+      {/* Botón de Cerrar Convocatoria */}
+      <button
+        onClick={() => 
+          editable
+            ? handleShowEndCampaign()
+            : userLogged
+            ? handleShowNewProperty()
+            : redirectToLoginPage(campaign.id)
+        }
+        className={`w-full lg:w-3/6 py-3 font-semibold rounded-md text-white shadow-md transition-all duration-300 ${
+          editable
+            ? "bg-red-500 hover:bg-red-600"
+            : "bg-green-500 hover:bg-green-600"
+        }`}
+      >
+        {editable ? "Cerrar convocatoria ahora" : "Postular predio"}
+      </button>
+
+      {/* 🔹 Botón de Asignar Predio (Solo si el usuario es el dueño de la campaña) */}
+      {editable && (
+        <button
+          onClick={() => setShowModalAssignProperty(true)}
+          className="w-full lg:w-3/6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
+        >
+          Asignar Predio
+        </button>
+      )}
+    </>
+  ) : (
+    <>
+      {/* Estado cuando la convocatoria está cerrada */}
+      <div className="bg-gray-400 py-3 font-semibold text-white text-center rounded-md shadow-md">
+        Convocatoria cerrada
+      </div>
+      <button
+        onClick={() =>
+          handleClickSeeProject(campaign.products.items[0].id)
+        }
+        className="w-full lg:w-3/6 mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
+      >
+        Ver proyecto
+      </button>
+    </>
+  )}
+</div>
+
             </section>
           </article>
 
@@ -337,6 +355,13 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
 />
 
       <ToastContainer />
+      <ModalAssignProperty
+  showModal={showModalAssignProperty}
+  handleClose={() => setShowModalAssignProperty(false)}
+  campaignId={campaign.id}
+  fetchCampaign={fetchCampaign}
+/>
+
     </div>
   );
 }
