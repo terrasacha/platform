@@ -41,7 +41,7 @@ export default class HeaderNavbar extends Component {
         <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
       ],
       validator: [
-        <Nav.Link onClick={() => window.location.href = "/validator_admon"}>Perfil</Nav.Link>,
+        <Nav.Link onClick={() => window.location.href = "/consultor_admon"}>Perfil</Nav.Link>,
         <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
       ],
       analyst: [

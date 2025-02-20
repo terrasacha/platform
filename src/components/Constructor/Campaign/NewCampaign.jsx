@@ -31,7 +31,10 @@ export default function NewCampaign() {
   useEffect(() => {
     Auth.currentAuthenticatedUser().then((data) => {
       userID.current = data.attributes.sub;
+    }).catch((error) => {
+      navigate('/')
     });
+
   }, []);
 
   const validateForm = () => {
@@ -70,7 +73,29 @@ export default function NewCampaign() {
   
     // Manejo especial para el campo 'images'
     if (name === "images") {
-      setImages(Array.from(files)); // Guardar los archivos seleccionados en un estado independiente
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+      const selectedFiles = Array.from(files);
+  
+      // Filtrar solo imágenes permitidas
+      const validImages = selectedFiles.filter(file => allowedTypes.includes(file.type));
+      const invalidFiles = selectedFiles.filter(file => !allowedTypes.includes(file.type));
+  
+      // Si hay archivos no válidos, mostrar error
+      if (invalidFiles.length > 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          images: "Solo se permiten imágenes en formato JPG, PNG o GIF.",
+        }));
+      } else {
+        setErrors((prevErrors) => {
+          const updatedErrors = { ...prevErrors };
+          delete updatedErrors.images; // Eliminar error si los archivos son válidos
+          return updatedErrors;
+        });
+      }
+  
+      // Guardar solo imágenes válidas
+      setImages(validImages);
     } else {
       // Actualizar el estado del formulario para otros campos
       setFormData({
@@ -78,6 +103,7 @@ export default function NewCampaign() {
         [name]: type === "checkbox" ? checked : value,
       });
     }
+  
   
     // Validación en tiempo real: Eliminar errores del campo si se corrige
     if (showErrors) {
@@ -315,14 +341,20 @@ export default function NewCampaign() {
                 </Form.Group>
 
                 <Form.Group className="pb-4" controlId="images">
-                  <Form.Label>Imágenes</Form.Label>
-                  <Form.Control
-                    type="file"
-                    name="images"
-                    multiple
-                    onChange={handleChange}
-                  />
-                </Form.Group>
+  <Form.Label>Imágenes</Form.Label>
+  <Form.Control
+    type="file"
+    name="images"
+    multiple
+    accept="image/jpeg, image/png, image/gif" // Restringe a formatos específicos
+    onChange={handleChange}
+    isInvalid={!!errors.images}
+  />
+  <Form.Control.Feedback type="invalid">
+    {errors.images}
+  </Form.Control.Feedback>
+  <small className="text-muted">Formatos aceptados: JPG, PNG, GIF</small>
+</Form.Group>
 
                 <Button variant="success" type="submit" className="w-100 mt-3">
                   {loading ? <Spinner animation="border" size="sm" /> : "Crear"}

@@ -58,23 +58,25 @@ export default function ModalNewProperty({
       const result = await API.graphql(
         graphqlOperation(
           `
-          query CheckPropertyName($name: String!, $campaignID: ID!) {
-            listProperties(filter: { name: { eq: $name }, campaignID: { eq: $campaignID } }) {
+          query CheckPropertyName($name: String!, $userID: ID!) {
+            listProperties(filter: { name: { eq: $name }, userID: { eq: $userID } }) {
               items {
                 id
               }
             }
           }
           `,
-          { name, campaignID: campaignId }
+          { name, userID: userID.current }
         )
       );
+  
       return result.data.listProperties.items.length > 0;
     } catch (error) {
       console.error("Error verifying property name:", error);
       return false;
     }
   };
+  
 
   const showError = (message) => {
     setErrorModal({ show: true, message }); // Mostrar el popup de error
@@ -82,13 +84,15 @@ export default function ModalNewProperty({
 
   const handleSave = async () => {
     setLoading(true);
-
+  
+    // Validación del nombre del predio
     if (formData.name.trim() === "") {
       showError("El nombre del predio es obligatorio.");
       setLoading(false);
       return;
     }
-
+  
+    // Validación de identificadores catastrales
     if (
       formData.cadastralNumbers.length === 0 ||
       formData.cadastralNumbers.some(num => num.trim() === "")
@@ -97,38 +101,41 @@ export default function ModalNewProperty({
       setLoading(false);
       return;
     }
-
-    const isDuplicate = await isPropertyNameDuplicate(formData.name.trim());
-    if (isDuplicate) {
-      showError("El nombre del predio ya existe en esta campaña.");
-      setLoading(false);
-      return;
+  
+    // Validar duplicado solo si hay una campaña asociada
+    if (campaignId) {
+      const isDuplicate = await isPropertyNameDuplicate(formData.name.trim());
+      if (isDuplicate) {
+        showError("El nombre del predio ya existe en esta campaña.");
+        setLoading(false);
+        return;
+      }
     }
-
-    const duplicatedCadastralNumbers = findFirstDuplicate(
-      formData.cadastralNumbers
-    );
+  
+    // Validar identificadores catastrales duplicados
+    const duplicatedCadastralNumbers = findFirstDuplicate(formData.cadastralNumbers);
     if (duplicatedCadastralNumbers) {
-      showError(`Número cadastral repetido. Nro: ${duplicatedCadastralNumbers}`);
+      showError(`Número catastral repetido. Nro: ${duplicatedCadastralNumbers}`);
       setLoading(false);
       return;
     }
-
+  
     try {
+      // Crear objeto de predio sin incluir campaignID o productID si no existen
       const newProperty = {
         name: formData.name,
         cadastralNumber: JSON.stringify(formData.cadastralNumbers),
-        campaignID: campaignId,
-        productID: productId,
         userID: userID.current,
         status: formData.status,
       };
-
-      const predialData = await getPredialDataByCadastralNumber(
-        formData.cadastralNumbers
-      );
+  
+      if (campaignId) newProperty.campaignID = campaignId;
+      if (productId) newProperty.productID = productId;
+  
+      // Obtener datos prediales
+      const predialData = await getPredialDataByCadastralNumber(formData.cadastralNumbers);
       setPredialFetchedData(predialData);
-
+  
       let totalArea = 0;
       const allGood = formData.cadastralNumbers.every((cadNum) => {
         if (predialData.hasOwnProperty(cadNum)) {
@@ -137,21 +144,23 @@ export default function ModalNewProperty({
         }
         return false;
       });
-
+  
       if (!allGood) {
         showError("Identificador catastral no encontrado.");
         return;
       }
-
+  
+      // Crear predio en la base de datos
       const result = await API.graphql(
         graphqlOperation(createProperty, { input: newProperty })
       );
       const propertyId = result.data.createProperty.id;
-
+  
+      // Guardar identificadores catastrales como feature
       const cadastralNumbers = formData.cadastralNumbers.map((cadNum) => ({
         cadastralNumber: cadNum,
       }));
-
+  
       const tempPropertyFeature = {
         value: JSON.stringify(cadastralNumbers),
         isToBlockChain: false,
@@ -159,10 +168,9 @@ export default function ModalNewProperty({
         propertyID: propertyId,
         featureID: "A_predio_ficha_catastral",
       };
-      await API.graphql(
-        graphqlOperation(createPropertyFeature, { input: tempPropertyFeature })
-      );
-
+      await API.graphql(graphqlOperation(createPropertyFeature, { input: tempPropertyFeature }));
+  
+      // Guardar área total como feature
       const tempPropertyFeature2 = {
         value: totalArea,
         isToBlockChain: false,
@@ -170,15 +178,17 @@ export default function ModalNewProperty({
         propertyID: propertyId,
         featureID: "D_area",
       };
-      await API.graphql(
-        graphqlOperation(createPropertyFeature, { input: tempPropertyFeature2 })
-      );
-
-      await fetchCampaign();
+      await API.graphql(graphqlOperation(createPropertyFeature, { input: tempPropertyFeature2 }));
+  
+      // Si se postuló dentro de una campaña, actualizar datos
+      if (campaignId) {
+        await fetchCampaign();
+      }
+  
       setPredialFetchedData(null);
       setFormData(initialForm);
       handleClose();
-
+  
       setTimeout(() => {
         navigate(`/property/${propertyId}`);
       }, 3000);
@@ -188,7 +198,7 @@ export default function ModalNewProperty({
       setLoading(false);
     }
   };
-
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -283,7 +293,7 @@ export default function ModalNewProperty({
     <p className="text-muted">
       ¿No sabes cómo sacar tu número catastral?{" "}
       <a
-        href="https://suans-organization.gitbook.io/suan/guia-de-usuario-plataforma/rol-propietario/como-realizo-la-consulta-catastral"
+        href="https://terrasacha.gitbook.io/terrasacha/guia-de-usuario-plataforma/rol-propietario/como-obtener-el-numero-catastral-de-un-predio"
         target="_blank"
         rel="noopener noreferrer"
         className="text-primary"
@@ -338,3 +348,4 @@ export default function ModalNewProperty({
     </>
   );
 }
+

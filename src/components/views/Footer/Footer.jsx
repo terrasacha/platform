@@ -5,12 +5,7 @@ const Footer = () => {
   
   return (
     <footer className="footer pt-8 flex flex-col items-center justify-center text-center">
-      <img 
-        src={LOGO} 
-        style={{ width: '20px', height: 'auto' }} 
-        alt="logo" 
-      />
-      <p className='pt-1'>Suan {year}</p>
+      <p className='pt-1'>Copyright © Suan {year}</p>
     </footer>
   );
 };

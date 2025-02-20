@@ -143,12 +143,23 @@ export default function Property() {
           </div>
           <div className="my-2">-</div>
           <div className="mt-4">
-           <a
-  onClick={() => handleNavigation(property.campaign.available ? `/campaign/${property.campaign.id}` : `/project/${property.productID}`)}
-  className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
->
-  {property.campaign.available ? "Regresar a la campaña" : "Regresar al proyecto"}
-</a>
+          {property.campaign ? (
+  <a
+    onClick={() => handleNavigation(`/campaign/${property.campaign.id}`)}
+    className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+  >
+    Regresar a la campaña
+  </a>
+) : (
+  <a
+    onClick={() => handleNavigation(`/constructor`)}
+    className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+  >
+    Ir a mis predios
+  </a>
+)}
+
+
             <div className="relative pt-3 px-4 mb-4 mt-4 border rounded shadow">
               <div className="row gy-2">
                 <header className="d-flex justify-content-between">

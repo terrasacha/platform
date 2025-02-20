@@ -19,6 +19,11 @@ export const marketplaceURLMapper = {
     TEST: "https://test-marketplace-cauca.suan.global/",
     PROD: "https://marketplace-cauca.suan.global/",
   },
+  terrasacha: {
+    INTERNAL: "https://internal-platform.terrasacha.com/",
+    TEST: "https://test-platform.terrasacha.com/",
+    PROD: "https://platform.terrasacha.com/",
+  }
 };
 
 export const mapGeoData = (validatorDocuments) => {
@@ -1035,25 +1040,26 @@ export const mapPropertyData = async (data) => {
     cadastralData.map((cadObj) => cadObj.cadastralNumber) || []
   ).join(", ");
 
-  const projectVerifiers = data.product.userProducts?.items
-    .filter((up) => up.user?.role === "validator")
-    .map((userProduct) => {
-      return userProduct.user.id;
-    });
+  const projectVerifiers = data.product?.userProducts?.items
+  ?.filter((up) => up.user?.role === "validator")
+  ?.map((userProduct) => userProduct.user.id) || [];
 
   return {
     propertyInfo: {
       id: data.id,
       projectID: data.productID,
-      campaignID: data.campaign.id,
+      campaignID: data.campaign?.id || null,
       projectAge: getElapsedDays(data.createdAt),
       name: data.name,
       status: data.status,
     },
-    propertyCampaign: {
+    propertyCampaign: data.campaign
+  ? {
       id: data.campaign.id,
       userId: data.campaign.userID,
-    },
+    }
+  : { id: null, userId: null }, // Asignamos `null` si no hay campaña
+
     projectPostulant: {
       id: data.userID,
     },

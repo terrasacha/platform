@@ -14,8 +14,7 @@ export default function useFetchPropertiesProject() {
         try {
             const result = await API.graphql(graphqlOperation(listProperties, {
                 filter: {
-                  productID: { eq: projectData.projectInfo.id },
-                  status: { eq: 'APPROVED' }
+                  productID: { eq: projectData.projectInfo.id }
                 }
               }));
               

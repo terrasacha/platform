@@ -22,18 +22,27 @@ const initialFormState = {
   privacy_policy: false,
   role: "constructor",
   code: "",
-  totpCode: ""
+  totpCode: "",
 };
 
 export default function LogIn() {
   const navigate = useNavigate()
   const [formState, updateFormState] = useState(initialFormState);
-  const[signInUserData,setSignInUserData] = useState(null)
+  const [signInUserData, setSignInUserData] = useState(null);
   const [user, updateUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [focusPassword, setFocusPassword] = useState(false);
+  const [passwordValidations, setPasswordValidations] = useState({
+    length: false,
+    number: false,
+    specialChar: false,
+    uppercase: false,
+    lowercase: false,
+  });
+  const [showPopover, setShowPopover] = useState(false);
   const [inputError, setInputError] = useState({ username: "" });
   const [explain, setExplain] = useState(
     "Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente"
@@ -80,9 +89,36 @@ export default function LogIn() {
     }
   }
 
+  function validatePassword(password) {
+    const validations = {
+      length: password.length >= 8,
+      number: /\d/.test(password),
+    };
+  
+    setPasswordValidations(validations); // Sigue actualizando el estado
+    return validations; // 📌 Devuelve el objeto para que pueda ser usado en otras funciones
+  }
+  
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    updateFormState((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "newPassword") {
+      validatePassword(value);
+      setShowPopover(true);
+    }
+  }
+
+  
+
   function onChange(e) {
     e.persist();
     updateFormState(() => ({ ...formState, [e.target.name]: e.target.value }));
+    if (e.target.name  === "password") {
+      const validations = validatePassword(e.target.value);
+      setShowPopover(true); // Mostrar popover con los requisitos
+    }
     if (e.target.name === "username")
       setInputError((prevState) => ({
         ...prevState,
@@ -113,13 +149,10 @@ export default function LogIn() {
       privacy_policy,
     } = formState;
 
-    if (password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres");
-      return;
-    }
+    const validations = validatePassword(password);
 
-    if (!/\d/.test(password)) {
-      setError("La contraseña debe contener al menos un valor numérico");
+    if (!validations.length || !validations.number || !validations.specialChar || !validations.uppercase || !validations.lowercase) {
+      setError("La contraseña no cumple con los requisitos mínimos.");
       return;
     }
 
@@ -127,11 +160,8 @@ export default function LogIn() {
     if (!privacy_policy) setError("Debe aceptar la politica de privacidad");
     if (username.length < 1) setError("Debe ingresar un nombre de usuario");
     if (email.length < 1) setError("Debe ingresar un email");
-    if (
-      password === confirmPassword &&
-      password.length > 8 &&
-      confirmPassword.length > 8
-    ) {
+    if (password !== confirmPassword) setError("Las contraseñas no coinciden.");
+    {
       try {
         setError("");
         setLoading(true);
@@ -158,14 +188,8 @@ export default function LogIn() {
         setExplain(
           "Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente"
         );
-        setError(
-          "El nombre de usuario ya existe. Por favor, escoja otro."
-        );
+        setError("El nombre de usuario ya existe. Por favor, escoja otro.");
       }
-    } else {
-      setError(
-        "Las contraseñas no coinciden o no cumplen con los requisitos mínimos"
-      );
     }
   }
 
@@ -193,11 +217,11 @@ export default function LogIn() {
   async function signIn(e) {
     e.preventDefault();
     const { username, password } = formState;
-  
+
     try {
       setError("");
       setLoading(true);
-  
+
       const response = await Auth.signIn(username, password);
   
       if (response.challengeName === "NEW_PASSWORD_REQUIRED") {
@@ -208,7 +232,7 @@ export default function LogIn() {
         // El usuario tiene activado MFA con TOTP
         setLoading(false);
         updateFormState(() => ({ ...formState, formType: "confirmTOTP" }));
-        setSignInUserData(response)
+        setSignInUserData(response);
         // Aquí debes mostrar un formulario donde el usuario ingrese el código TOTP
       } else {
         updateFormState(() => ({ ...formState, formType: "signedIn" }));
@@ -221,7 +245,7 @@ export default function LogIn() {
     }
     setLoading(false);
   }
-  
+
   async function confirmTOTP(e) {
     e.preventDefault();
     const { totpCode } = formState; // Asegúrate de tener un campo para capturar el código TOTP
@@ -241,46 +265,83 @@ export default function LogIn() {
     }
     setLoading(false);
   }
-  
+
   async function forgotPassword(e) {
     e.preventDefault();
     const { username } = formState;
+  
+    if (!username) {
+      setError("Por favor, ingrese su nombre de usuario.");
+      return;
+    }
+  
     try {
       setError("");
       setLoading(true);
       await Auth.forgotPassword(username);
       updateFormState(() => ({ ...formState, formType: "confirmFPcode" }));
+      setError("Hemos enviado un código de recuperación a su correo electrónico.");
     } catch (error) {
-      setError("El nombre de usuario no existe.");
+      setLoading(false);
+  
+      // Manejo de errores comunes
+      if (error.code === "UserNotFoundException") {
+        setError("El usuario ingresado no existe. Por favor, verifique e intente nuevamente.");
+      } else if (error.code === "LimitExceededException") {
+        setError("Se ha excedido el límite de intentos. Por favor, espere un momento antes de intentarlo nuevamente.");
+      } else {
+        setError("Ocurrió un error al intentar recuperar la contraseña. Por favor, intente nuevamente.");
+      }
     }
     setLoading(false);
   }
+  
   async function confirmNewPassword(e) {
     e.preventDefault();
     const { username, code, password } = formState;
+  
+    const validations = validatePassword(password);
+
+    // 📌 Verificar si alguna validación no se cumple
+    if (!validations.length || !validations.number || !validations.specialChar || !validations.uppercase || !validations.lowercase) {
+        setError("La contraseña no cumple con los requisitos mínimos.");
+        return;
+    }
+  
+    // Intentar confirmar la nueva contraseña
     try {
       setError("");
       setLoading(true);
       await Auth.forgotPasswordSubmit(username, code, password);
       updateFormState(() => ({ ...formState, formType: "signIn" }));
     } catch (error) {
-      setError("El código no es válido.");
+      setLoading(false);
+  
+      // Manejo de errores de código inválido
+      if (error.code === "CodeMismatchException") {
+        setError("El código de verificación no es válido. Inténtalo de nuevo.");
+      } else if (error.code === "ExpiredCodeException") {
+        setError("El código ha expirado. Por favor, solicita uno nuevo.");
+      } else {
+        setError("Hubo un error al confirmar la nueva contraseña.");
+      }
     }
-    setLoading(false);
   }
+  
   async function changePassword(e) {
     e.preventDefault();
     const { newPassword, confirmNewPassword } = formState;
 
-    if (newPassword.length < 8) {
-      setError("La nueva contraseña debe tener al menos 8 caracteres");
-      setLoading(false);
+
+    const validations = validatePassword(newPassword);
+
+    if (!validations.length || !validations.number || !validations.specialChar || !validations.uppercase || !validations.lowercase) {
+      setError("La contraseña no cumple con los requisitos mínimos.");
       return;
     }
-
-    if (!/\d/.test(newPassword)) {
-      setError("La nueva contraseña debe contener al menos un valor numérico");
-      setLoading(false);
+  
+    if (newPassword !== confirmNewPassword) {
+      setError("Las contraseñas no coinciden.");
       return;
     }
 
@@ -349,13 +410,22 @@ export default function LogIn() {
                     </span>
                   )}
                 </fieldset>
-                <p style={{ color: "#797979", fontSize: ".6em", margin: 0, width:"100%"}}>El nombre de usuario no debe contener espacios</p>
+                <p
+                  style={{
+                    color: "#797979",
+                    fontSize: ".6em",
+                    margin: 0,
+                    width: "100%",
+                  }}
+                >
+                  El nombre de usuario no debe contener espacios
+                </p>
                 <fieldset>
                   <input
                     type="email"
                     name="email"
                     onChange={onChange}
-                    placeholder="example@example.com"
+                    placeholder="Example@example.com"
                     className="border-[1px] border-gray-300 rounded-md"
                   />
                 </fieldset>
@@ -364,19 +434,21 @@ export default function LogIn() {
           type={showPassword ? "text" : "password"}
           name="password"
           onChange={onChange}
+          onFocus={() => setFocusPassword(true)} // Mostrar popover al hacer clic
+          onBlur={() => setFocusPassword(false)} // Ocultar popover cuando pierde el foco
           placeholder="Contraseña"
           className="border-[1px] border-gray-300 rounded-md w-full"
           style={{
             paddingRight: "2.5rem", // Espacio para el ícono
           }}
         />
-        <button
+        <span
           type="button"
           onClick={() => setShowPassword(!showPassword)}
           style={{
             position: "absolute",
-            left: "86%",
-            top: "10%",
+            left: "89%",
+            top: "47%",
             transform: "translateY(-50%)",
             background: "none",
             border: "none",
@@ -388,12 +460,20 @@ export default function LogIn() {
           }
         >
           {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-        </button>
+        </span>
       </fieldset>
-      <p style={{ color: "#797979", fontSize: ".6em", margin: 0 }}>
-        La contraseña debe constar de más de 8 caracteres y contener por lo
-        menos un valor numérico
-      </p>
+      {focusPassword && (
+  <div className={s.popover}>
+    <ul>
+      <li style={{ color: passwordValidations.length ? "green" : "red" }}>
+        ✅ Al menos 8 caracteres
+      </li>
+      <li style={{ color: passwordValidations.number ? "green" : "red" }}>
+        ✅ Al menos 1 número
+      </li>
+    </ul>
+  </div>
+)}
       <fieldset style={{ position: "relative"}}>
         <input
           type={showConfirmPassword ? "text" : "password"}
@@ -405,13 +485,13 @@ export default function LogIn() {
             paddingRight: "2.5rem", // Espacio para el ícono
           }}
         />
-        <button
+        <span
           type="button"
           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           style={{
             position: "absolute",
-            left: "86%",
-            top: "10%",
+            left: "89%",
+            top: "47%",
             transform: "translateY(-50%)",
             background: "none",
             border: "none",
@@ -423,7 +503,7 @@ export default function LogIn() {
           }
         >
           {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-        </button>
+        </span>
       </fieldset>
       <fieldset>
   <legend>Rol</legend>
@@ -478,20 +558,24 @@ export default function LogIn() {
                   </label>
                 </fieldset>
                 <button
-                  type="submit"
-                  onClick={(e) => signUp(e)}
-                  disabled={
-                    loading || !formState.terms || !formState.privacy_policy
-                  }
-                  className="btn-login"
-                >
-                  {loading ? "Loading" : "Registrarse"}
-                </button>
+  type="submit"
+  onClick={(e) => signUp(e)}
+  disabled={loading || !formState.terms || !formState.privacy_policy}
+  className={`w-full px-4 py-2 rounded-md text-white font-semibold ${
+    loading || !formState.terms || !formState.privacy_policy
+      ? "bg-gray-400 cursor-not-allowed opacity-50" // Estado deshabilitado
+      : "bg-green-600 hover:bg-green-700 cursor-pointer" // Estado activo
+  }`}
+>
+  {loading ? "Cargando" : "Registrarse"}
+</button>
+
               </form>
               <div className={s.needAccount}>
                 ¿Ya tienes una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold" 
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -517,7 +601,11 @@ export default function LogIn() {
               <form className={s.inputContainer}>
                 <fieldset>
                   <legend>Codigo de verificación</legend>
-                  <input name="authCode" onChange={onChange} className="border-[1px] border-gray-300 rounded-md"/>
+                  <input
+                    name="authCode"
+                    onChange={onChange}
+                    className="border-[1px] border-gray-300 rounded-md"
+                  />
                 </fieldset>
                 <span
                   style={{
@@ -568,13 +656,13 @@ export default function LogIn() {
               className="border-[1px] border-gray-300 rounded-md"
               style={{ paddingRight: "2.5rem" }} // Espacio para el ícono
             />
-            <button
-              type="button"
+            <span
+              type="button" 
               onClick={() => setShowPassword(!showPassword)}
               style={{
                 position: "absolute",
-                left: "86%",
-                top: "40%",
+                left: "90%",
+                top: "68%",
                 transform: "translateY(-50%)",
                 background: "none",
                 border: "none",
@@ -584,7 +672,7 @@ export default function LogIn() {
               aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             >
               {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-            </button>
+            </span>
           </fieldset>
                 <span
                   style={{
@@ -594,6 +682,7 @@ export default function LogIn() {
                     color: "rgba(77,188,94,1)",
                     textAlign: "end",
                   }}
+                  className="text-[#6e6c35] text-sm font-bold"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -607,7 +696,6 @@ export default function LogIn() {
                   type="submit"
                   disabled={loading}
                   onClick={(e) => signIn(e)}
-                  className="btn-login"
                 >
                   {loading ? "Cargando" : "Ingresar"}
                 </button>
@@ -616,6 +704,7 @@ export default function LogIn() {
                 ¿Necesitas una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -630,48 +719,49 @@ export default function LogIn() {
           </div>
         )}
         {formType === "confirmTOTP" && (
-  <div className={s.containerLogin}>
-    <div className={s.containerCard}>
-      <div className={s.containerTitle}>
-        <img src={LOGO} style={{ width: "30px" }} alt="logo" />
-        <h2 className="text-center mb-4">Verificación TOTP</h2>
-        {error && <Alert variant="danger">{error}</Alert>}
-      </div>
-      <form className={s.inputContainer}>
-        <fieldset>
-          <legend>Código TOTP</legend>
-          <input
-            name="totpCode"
-            onChange={onChange} // Asegúrate de tener la función onChange definida para actualizar el estado
-            className="border-[1px] border-gray-300 rounded-md"
-            placeholder="Introduce el código TOTP"
-          />
-        </fieldset>
-        <button
-          type="submit"
-          disabled={loading}
-          onClick={(e) => confirmTOTP(e)} // Llama al método confirmTOTP cuando se haga submit
-          className="btn-login"
-        >
-          {loading ? "Verificando..." : "Verificar"}
-        </button>
-      </form>
-      <div className={s.needAccount}>
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={() =>
-            updateFormState(() => ({
-              ...formState,
-              formType: "signIn", // Regresa al formulario de inicio de sesión si el usuario desea cancelar
-            }))
-          }
-        >
-          Regresar a inicio de sesión
-        </span>
-      </div>
-    </div>
-  </div>
-)}
+          <div className={s.containerLogin}>
+            <div className={s.containerCard}>
+              <div className={s.containerTitle}>
+              <img src={LOGO} style={{ width: "30px" }} alt="logo" />
+                <h2 className="text-center mb-4">Verificación TOTP</h2>
+                {error && <Alert variant="danger">{error}</Alert>}
+              </div>
+              <form className={s.inputContainer}>
+                <fieldset>
+                  <legend>Código TOTP</legend>
+                  <input
+                    name="totpCode"
+                    onChange={onChange} // Asegúrate de tener la función onChange definida para actualizar el estado
+                    className="border-[1px] border-gray-300 rounded-md"
+                    placeholder="Introduce el código TOTP"
+                  />
+                </fieldset>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  onClick={(e) => confirmTOTP(e)} // Llama al método confirmTOTP cuando se haga submit
+                  className="btn-login"
+                >
+                  {loading ? "Verificando..." : "Verificar"}
+                </button>
+              </form>
+              <div className={s.needAccount}>
+                <span
+                  style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold"
+                  onClick={() =>
+                    updateFormState(() => ({
+                      ...formState,
+                      formType: "signIn", // Regresa al formulario de inicio de sesión si el usuario desea cancelar
+                    }))
+                  }
+                >
+                  Regresar a inicio de sesión
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {formType === "ForgotPassword" && (
           <div>
@@ -696,20 +786,21 @@ export default function LogIn() {
                    />
                 </fieldset>
                 <span className={s.forgotPasswordSpan}>
-                La contraseña se enviará a la dirección de correo electrónico asociada al usuario
+                El código se enviará a la dirección de correo electrónico asociada al usuario
                 </span>
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => forgotPassword(e)}
                 >
-                  {loading ? "Enviando" : "Enviar nuevo código"}
+                  {loading ? "Enviando" : "Enviar código"}
                 </button>
               </form>
               <div className={s.needAccount}>
               ¿Necesita una cuenta?{" "}
                 <span
                   style={{ cursor: "pointer" }}
+                  className="text-[#6e6c35] text-sm font-bold"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
@@ -760,37 +851,68 @@ export default function LogIn() {
                 </fieldset>
                 <fieldset>
                   <legend>Nueva contraseña</legend>
-                  <input 
-                  type={showPassword ? "text" : "password"}
-                  name="password" 
-                  onChange={onChange} 
-                  style={{
-                    border: "1px solid black", 
-                    borderRadius: "4px", 
-                    padding: "0.5rem", 
-                    width: "100%", 
-                    paddingRight: "2.5rem", 
-                  }}
-                  />
-                  <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              left: "73%",
-              top: "61%",
-              transform: "translateY(-50%)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "black",
-            }}
-            aria-label={
-              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-            }
-          >
-            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </button>
+                  <div style={{ position: "relative" }}>
+  <input 
+    type={showPassword ? "text" : "password"}
+    name="password"
+    onFocus={() => setShowPopover(true)}
+    onBlur={() => setTimeout(() => setShowPopover(false), 200)} // 📌 Esconde el popover con un delay
+    onChange={onChange}    // 📌 Valida la contraseña en tiempo real
+    style={{
+      border: "1px solid black",
+      borderRadius: "4px",
+      padding: "0.5rem",
+      width: "100%",
+      paddingRight: "2.5rem",
+    }}
+  />
+  <span
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      position: "absolute",
+      left: "90%",
+      top: "50%",
+      transform: "translateY(-50%)",
+      background: "none",
+      border: "none",
+      cursor: "pointer",
+      color: "black",
+    }}
+    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+  >
+    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+  </span>
+
+  {showPopover && (
+    <div
+      style={{
+        position: "absolute",
+        top: "100%",
+        left: "0",
+        background: "#fff",
+        border: "1px solid #ccc",
+        borderRadius: "5px",
+        padding: "10px",
+        boxShadow: "0 0 5px rgba(0,0,0,0.2)",
+        fontSize: "0.9em",
+        width: "250px",
+        zIndex: 10,
+      }}
+    >
+      <strong>Requisitos de contraseña:</strong>
+      <ul style={{ paddingLeft: "20px", margin: "5px 0" }}>
+        <li style={{ color: passwordValidations.length ? "green" : "red" }}>
+          {passwordValidations.length ? "✔" : "✖"} Mínimo 8 caracteres
+        </li>
+        <li style={{ color: passwordValidations.number ? "green" : "red" }}>
+          {passwordValidations.number ? "✔" : "✖"} Al menos 1 número
+        </li>
+      </ul>
+    </div>
+  )}
+</div>
+
                 </fieldset>
                 <button
                   type="submit"
@@ -804,85 +926,114 @@ export default function LogIn() {
           </div>
         )}
         {formType === "changePassword" && (
-          <div>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-                <h2 className="text-center mb-4">
-                  Cambio de Contraseña requerido
-                </h2>
-              </div>
-              {error && <Alert variant="danger">{error}</Alert>}
-              <form className={s.inputContainer}>
-                <p
-                  style={{ color: "#797979", fontSize: ".8em" }}
-                >{`Para poder ingresar a la plataforma como ${formState.username} primero debe cambiar la contraseña`}</p>
-                <fieldset>
-                  <legend>Nueva Contraseña</legend>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="newPassword"
-                    onChange={onChange}
-                    className="border-[1px] border-gray-300 rounded-md"
-                  />
-                  <button
+  <div>
+    <div className={s.containerCard}>
+      <div className={s.containerTitle}>
+        <h2 className="text-center mb-4">Cambio de contraseña requerido</h2>
+      </div>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <form className={s.inputContainer}>
+        <p style={{ color: "#797979", fontSize: ".8em" }}>
+          {`Para poder ingresar a la plataforma como ${formState.username} primero debe cambiar la contraseña`}
+        </p>
+
+        {/* 📌 Campo de Nueva Contraseña con Popover */}
+        <fieldset style={{ position: "relative", marginBottom: "15px" }}>
+          <legend>Nueva contraseña</legend>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="newPassword"
+            onChange={handleChange}
+            onFocus={() => setShowPopover(true)}
+            onBlur={() => setTimeout(() => setShowPopover(false), 200)}
+            className="border-[1px] border-gray-300 rounded-md w-full"
+            style={{ paddingRight: "2.5rem" }}
+          />
+          <span
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             style={{
               position: "absolute",
-              left: "73%",
-              top: "38%",
+              left: "90%",
+              top: "65%",
               transform: "translateY(-50%)",
-              background: "none",
-              border: "none",
               cursor: "pointer",
               color: "black",
             }}
-            aria-label={
-              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-            }
+            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
           >
             {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-          </button>
-                </fieldset>
-                <fieldset>
-                  <legend>Confirmar Contraseña</legend>
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmNewPassword"
-                    onChange={onChange}
-                    className="border-[1px] border-gray-300 rounded-md"
-                  />
-                  <button
-          type="button"
-          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          style={{
-            position: "absolute",
-            left: "73%",
-            top: "51%",
-            transform: "translateY(-50%)",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "black", // Color negro para el ícono
-          }}
-          aria-label={
-            showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-          }
-        >
-          {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-        </button>
-                </fieldset>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  onClick={(e) => changePassword(e)}
-                >
-                  {loading ? "Cargando" : "Cambiar Contraseña"}
-                </button>
-              </form>
+          </span>
+
+          {/* 📌 Popover de Validación */}
+          {showPopover && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: "0",
+                background: "#fff",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                padding: "10px",
+                boxShadow: "0 0 5px rgba(0,0,0,0.2)",
+                fontSize: "0.9em",
+                width: "250px",
+                zIndex: 10,
+              }}
+            >
+              <strong>Requisitos de contraseña:</strong>
+              <ul style={{ paddingLeft: "20px", margin: "5px 0" }}>
+                <li style={{ color: passwordValidations.length ? "green" : "red" }}>
+                  {passwordValidations.length ? "✔" : "✖"} Mínimo 8 caracteres
+                </li>
+                <li style={{ color: passwordValidations.number ? "green" : "red" }}>
+                  {passwordValidations.number ? "✔" : "✖"} Al menos 1 número
+                </li>
+              </ul>
             </div>
-          </div>
-        )}
+          )}
+        </fieldset>
+
+        {/* 📌 Campo de Confirmar Contraseña */}
+        <fieldset style={{ position: "relative", marginBottom: "15px" }}>
+          <legend>Confirmar contraseña</legend>
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            name="confirmNewPassword"
+            onChange={handleChange}
+            className="border-[1px] border-gray-300 rounded-md w-full"
+            style={{ paddingRight: "2.5rem" }}
+          />
+          <span
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            style={{
+              position: "absolute",
+              left: "90%",
+              top: "65%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              color: "black",
+            }}
+            aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+          >
+            {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+          </span>
+        </fieldset>
+
+        <button
+          type="submit"
+          disabled={loading}
+          onClick={(e) => changePassword(e)}
+        >
+          {loading ? "Cargando" : "Cambiar Contraseña"}
+        </button>
+      </form>
+    </div>
+  </div>
+)}
+
 
         {/* {formType === "signedIn" && (() => {
           if(window.sessionStorage.getItem('redirect_after_login')){
