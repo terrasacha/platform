@@ -264,7 +264,7 @@ class Legales extends Component {
     if (username !== "" && email !== "") {
       try {
         const userPayload = {
-          id: uuidv4().split("-")[4],
+          id: uuidv4(),  
           name: username,
           email: email,
           isProfileUpdated: false,

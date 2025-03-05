@@ -3,13 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 // GraphQL
 import { API, graphqlOperation } from "aws-amplify";
-import { createUser } from "../../../graphql/mutations";
+import { createUser, updateUser } from "../../../graphql/mutations";
 import { useNavigate } from "react-router";
 import s from "./Login.module.css";
 import LOGO from "../../common/_images/suan_logo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { notify } from "utilities/notify";
+
 
 const initialFormState = {
   username: "",
@@ -29,7 +31,7 @@ export default function LogIn() {
   const navigate = useNavigate()
   const [formState, updateFormState] = useState(initialFormState);
   const [signInUserData, setSignInUserData] = useState(null);
-  const [user, updateUser] = useState(null);
+  const [user, setUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -151,7 +153,7 @@ export default function LogIn() {
 
     const validations = validatePassword(password);
 
-    if (!validations.length || !validations.number || !validations.specialChar || !validations.uppercase || !validations.lowercase) {
+    if (!validations.length || !validations.number) {
       setError("La contraseña no cumple con los requisitos mínimos.");
       return;
     }
@@ -214,6 +216,7 @@ export default function LogIn() {
     const { CodeDeliveryDetails } = await Auth.resendSignUp(username);
     if (CodeDeliveryDetails) notify(`Código enviado a ${formState.email}`);
   };
+  
   async function signIn(e) {
     e.preventDefault();
     const { username, password } = formState;
@@ -226,7 +229,7 @@ export default function LogIn() {
   
       if (response.challengeName === "NEW_PASSWORD_REQUIRED") {
         setLoading(false);
-        updateUser(response);
+        setUser(response);
         updateFormState(() => ({ ...formState, formType: "changePassword" }));
       } else if (response.challengeName === "SOFTWARE_TOKEN_MFA") {
         // El usuario tiene activado MFA con TOTP
@@ -328,51 +331,72 @@ export default function LogIn() {
     }
   }
   
-  async function changePassword(e) {
+  async function changePassword(e) { 
     e.preventDefault();
+    console.log("🔹 Iniciando proceso de cambio de contraseña...");
+
     const { newPassword, confirmNewPassword } = formState;
+    console.log("📌 Nueva contraseña ingresada:", newPassword);
+    console.log("📌 Confirmación de contraseña:", confirmNewPassword);
 
-
+    // Validación de la contraseña
     const validations = validatePassword(newPassword);
+    console.log("🔍 Validaciones de contraseña:", validations);
 
-    if (!validations.length || !validations.number || !validations.specialChar || !validations.uppercase || !validations.lowercase) {
-      setError("La contraseña no cumple con los requisitos mínimos.");
-      return;
+    if (!validations.length || !validations.number) {
+        console.log("❌ Error: La contraseña no cumple con los requisitos mínimos.");
+        setError("La contraseña no cumple con los requisitos mínimos.");
+        return;
     }
-  
+
     if (newPassword !== confirmNewPassword) {
-      setError("Las contraseñas no coinciden.");
-      return;
+        console.log("❌ Error: Las contraseñas no coinciden.");
+        setError("Las contraseñas no coinciden.");
+        return;
     }
 
     try {
-      setError("");
-      setLoading(true);
-      if (newPassword === confirmNewPassword) {
-        await Auth.completeNewPassword(user, newPassword);
-        updateFormState(() => ({ ...formState, formType: "signedIn" }));
-      } else {
-        setError("Las contraseñas no coinciden.");
-      }
+        setError("");
+        setLoading(true);
+        console.log("🔄 Enviando nueva contraseña a Cognito...");
+
+        if (newPassword === confirmNewPassword) {
+            await Auth.completeNewPassword(user, newPassword);
+            console.log("✅ Contraseña cambiada en Cognito exitosamente.");
+
+            // Obtener el usuario autenticado desde Cognito
+            const currentUser = await Auth.currentAuthenticatedUser();
+            console.log("👤 Usuario autenticado:", currentUser);
+
+            const userId = currentUser.attributes.sub;
+            console.log("📌 ID del usuario (Cognito Sub):", userId);
+
+            // Construcción del payload para la actualización en la base de datos
+            const updateUserPayload = {
+                id: userId, 
+                isProfileUpdated: true 
+            };
+            console.log("📡 Enviando mutación GraphQL `updateUser` con payload:", updateUserPayload);
+
+            // Actualización del perfil en DynamoDB
+            const response = await API.graphql(graphqlOperation(updateUser, { input: updateUserPayload }));
+            console.log("✅ Respuesta de GraphQL `updateUser`:", response);
+
+            notify("Contraseña cambiada con éxito y perfil actualizado.");
+            updateFormState(() => ({ ...formState, formType: "signedIn" }));
+            console.log("✅ Estado actualizado a `signedIn`.");
+        } else {
+            console.log("❌ Error: Las contraseñas no coinciden.");
+            setError("Las contraseñas no coinciden.");
+        }
     } catch (error) {
-      console.log(error);
-      setError("Error al cambiar la contraseña.");
+        console.log("🚨 Error capturado:", error);
+        setError("Error al cambiar la contraseña.");
     }
     setLoading(false);
-  }
+    console.log("🔚 Finalizando proceso de cambio de contraseña.");
+}
 
-  const notify = (text) => {
-    toast.success(text, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  };
 
   return (
     <div className={s.container}>

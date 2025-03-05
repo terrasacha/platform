@@ -8,7 +8,7 @@ import { notify } from "utilities/notify";
 import FormGroup from "components/common/FormGroup";
 
 export default function UseRestrictions(props) {
-  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange } = props;
+  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange, updateFormCompletion } = props;
   const { propertyData, refresh } = usePropertyData();
   const { user } = useAuth();
 
@@ -17,6 +17,28 @@ export default function UseRestrictions(props) {
   const [resDescPfID, setResDescPfID] = useState(null);
   const [resOtherPfID, setResOtherPfID] = useState(null);
   const [changedFields, setChangedFields] = useState({});
+  
+  const checkFormCompletion = () => {
+    if (!executedOnce) return; // ✅ Evita que se ejecute antes de que `formData` esté listo
+  
+    const isComplete =
+      formData.projectRestrictionsDesc?.trim() !== "" &&
+      formData.projectRestrictionsOther?.trim() !== "";
+  
+    console.log("🔍 Estado de UseRestrictions:", formData);
+    console.log("✅ ¿Formulario completo?", isComplete);
+  
+    updateFormCompletion(isComplete); // ✅ Asegura que siempre sea `true` o `false`
+  };
+  
+  
+  
+  useEffect(() => {
+    if (executedOnce && Object.keys(formData).length > 0) {
+      checkFormCompletion();
+    }
+  }, [formData, executedOnce]); // ✅ Asegurar que se ejecuta cuando `formData` está listo y el efecto no corre antes de tiempo
+  
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -40,6 +62,7 @@ export default function UseRestrictions(props) {
     }
   }, [propertyData, user]);
 
+
   const handleChangeInputValue = (e) => {
     const { name, value } = e.target;
 
@@ -56,6 +79,7 @@ export default function UseRestrictions(props) {
 
     handleFieldChange(name, true);
     setHasUnsavedChanges(true);
+    checkFormCompletion();
   };
 
   const handleSaveBtn = async () => {
@@ -126,6 +150,7 @@ export default function UseRestrictions(props) {
       notify({ msg: "Información actualizada", type: "success" });
       setHasUnsavedChanges(false);
       refresh();
+      checkFormCompletion();
     } catch (error) {
       console.error("Error al guardar:", error);
       notify({ msg: "Error al guardar la información", type: "error" });

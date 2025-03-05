@@ -9,7 +9,7 @@ import FormGroup from "components/common/FormGroup";
 import { notify } from "utilities/notify";
 
 export default function Ecosystem(props) {
-  const { className, autorizedUser, setHasUnsavedChanges , handleFieldChange} = props;
+  const { className, autorizedUser, setHasUnsavedChanges , handleFieldChange, updateFormCompletion} = props;
   const { propertyData } = usePropertyData();
   const { user } = useAuth();
 
@@ -31,6 +31,13 @@ export default function Ecosystem(props) {
     "F_especies_aves",
     "F_especies_flora",
   ];
+
+  const checkFormCompletion = () => {
+    const isComplete = productFeaturesGroup.every(
+      (feature) => formData[feature] !== undefined && formData[feature] !== ""
+    );
+    updateFormCompletion(isComplete);
+  };
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -58,6 +65,10 @@ export default function Ecosystem(props) {
       setExecutedOnce(true);
     }
   }, [propertyData, user]);
+
+  useEffect(() => {
+    checkFormCompletion();
+  }, [formData]);
 
   const handleChangeInputValue = async (e) => {
     const { name, type, value, checked } = e.target;
@@ -92,6 +103,7 @@ export default function Ecosystem(props) {
     }));
     handleFieldChange(name, true);
     setHasUnsavedChanges(true); 
+    checkFormCompletion();
   };
 
   const handleSaveBtn = async () => {
@@ -134,6 +146,7 @@ export default function Ecosystem(props) {
     Object.keys(changedFields).forEach((key) => handleFieldChange(key, false));
     setHasUnsavedChanges(false);
     notify({ msg: "Información actualizada", type: "success" });
+    checkFormCompletion();
   };
 
   return (

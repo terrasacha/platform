@@ -90,7 +90,7 @@ const PropertyCard = ({ property }) => (
   {getYearFromAWSDatetime(property?.createdAt)}
 </span>
 <span className="bg-[#9a9a56] text-white text-xs font-medium px-2 py-1 rounded w-fit">
-  Vinculado a campaña
+{property?.department}
 </span>
 
           <span className={`${statusColor[property.status]} text-white text-xs font-medium px-2 py-1 rounded w-fit`}>

@@ -9,7 +9,7 @@ import Card from "components/common/Card";
 import FormGroup from "components/common/FormGroup";
 
 export default function GeneralAspects(props) {
-  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange  } = props;
+  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange,updateFormCompletion  } = props;
   const { propertyData } = usePropertyData();
   const { user } = useAuth();
 
@@ -31,6 +31,13 @@ export default function GeneralAspects(props) {
     "G_caminos_existence",
     "G_risks_erosion_derrumbe",
   ];
+
+  const checkFormCompletion = () => {
+    const isComplete = productFeaturesGroup.every(
+      (feature) => formData[feature] !== undefined && formData[feature] !== ""
+    );
+    updateFormCompletion("generalAspects", isComplete);
+  };
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -65,6 +72,10 @@ export default function GeneralAspects(props) {
     }
   }, [propertyData, user]);
 
+  useEffect(() => {
+    checkFormCompletion();
+  }, [formData]);
+
   const handleChangeInputValue = async (e) => {
     const { name, type, value, checked } = e.target;
 
@@ -98,6 +109,7 @@ export default function GeneralAspects(props) {
   
     handleFieldChange(name, true);
     setHasUnsavedChanges(true);
+    checkFormCompletion();
   };
 
   const handleSaveBtn = async () => {
@@ -140,6 +152,7 @@ export default function GeneralAspects(props) {
     Object.keys(changedFields).forEach((key) => handleFieldChange(key, false));
     setHasUnsavedChanges(false);
     notify({ msg: "Información actualizada", type: "success" });
+    checkFormCompletion();
   };
 
   return (

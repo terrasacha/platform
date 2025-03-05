@@ -9,7 +9,7 @@ import Card from "components/common/Card";
 import FormGroup from "components/common/FormGroup";
 
 export default function Relations(props) {
-  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange  } = props;
+  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange , updateFormCompletion } = props;
   const { propertyData, refresh } = usePropertyData();
   const { user } = useAuth();
 
@@ -19,6 +19,32 @@ export default function Relations(props) {
   const [aliadosPfID, setAliadosPfID] = useState(null);
   const [grupoPfID, setGrupoPfID] = useState(null);
    const [changedFields, setChangedFields] = useState({});
+
+   const productFeaturesGroup = [
+    "projectRelationsTechnicalAssitance",
+    "projectRelationsStrategicAllies",
+    "projectRelationsCommunityGroups",
+  ];
+
+  /** ✅ Verifica si todos los campos están completos */
+  const checkFormCompletion = () => {
+    if (!executedOnce) return;
+
+    const isComplete = productFeaturesGroup.every(
+      (feature) => formData[feature]?.trim() !== "" // ✅ Verifica que no esté vacío
+    );
+
+    console.log("📌 Estado actualizado de Relations:", formData);
+    console.log("✅ ¿Formulario completo?", isComplete);
+
+    updateFormCompletion(isComplete); // ✅ Asegura que siempre sea `true` o `false`
+  };
+
+  useEffect(() => {
+      if (executedOnce && Object.keys(formData).length > 0) {
+        checkFormCompletion();
+      }
+    }, [formData, executedOnce]);
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -68,6 +94,7 @@ export default function Relations(props) {
   
     setHasUnsavedChanges(true);
     handleFieldChange(name, true);
+    checkFormCompletion();
   };
   
 
@@ -122,6 +149,7 @@ export default function Relations(props) {
     setHasUnsavedChanges(false);
     notify({ msg: "Información actualizada", type: "success" });
     refresh();
+    checkFormCompletion();
   } catch (error) {
     console.error("Error al guardar:", error);
     notify({ msg: "Error al guardar la información", type: "error" });

@@ -39,7 +39,7 @@ import { getDocument } from "graphql/queries";
 import { useProjectData } from "context/ProjectDataContext";
 
 export default function CadastralRecords(props) {
-  const { className, autorizedUser, tooltip, setTotalArea, totalArea,setHasUnsavedChanges, handleFieldChange   } = props;
+  const { className, autorizedUser, tooltip, setTotalArea, totalArea,setHasUnsavedChanges, handleFieldChange, updateFormCompletion   } = props;
   const { propertyData, refresh } = usePropertyData();
   const { user } = useAuth();
   const { s3Client, bucketName } = useS3Client();
@@ -60,6 +60,14 @@ export default function CadastralRecords(props) {
   const isOwner = propertyData.propertyCampaign.userId === user.id;
   const { handleUpdateContextFileVerification } = useProjectData();
   const [isLoading, setIsLoading] = useState(false);
+
+  const checkFormCompletion = () => {
+    const isComplete = multipleData.every(
+      (data) => data.cadastralNumber.trim() !== "" && data.documentID !== undefined
+    );
+  
+    updateFormCompletion(isComplete); // 🔹 Se notifica a PropertyDetails
+  };
 
 
   useEffect(() => {
@@ -105,6 +113,11 @@ export default function CadastralRecords(props) {
     }
   }, [propertyData]);
   
+  useEffect(() => {
+    if (multipleData.length > 0) {
+      checkFormCompletion();
+    }
+  }, [multipleData]);
   
 
   useEffect(() => {
@@ -198,6 +211,7 @@ export default function CadastralRecords(props) {
       )
     );
     setHasUnsavedChanges(true);
+    checkFormCompletion();
     setChangedFields((prev) => ({
       ...prev,
       [`certificate_${indexToSaveFile}`]: true,
@@ -302,6 +316,7 @@ export default function CadastralRecords(props) {
       );
       setHasUnsavedChanges(true);
       handleFieldChange(name, value);
+      checkFormCompletion();
        // ✅ Marcar el campo como modificado
     setChangedFields((prev) => ({
       ...prev,
@@ -940,7 +955,8 @@ export default function CadastralRecords(props) {
 
   
 
-
+ 
+  
   
 
   return (

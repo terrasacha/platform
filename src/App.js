@@ -34,6 +34,7 @@ import Property from "components/Property/Property";
 import { PropertyDataProvider } from "context/PropertyDataContext";
 import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
 import './App.css';
+import { S3ClientProvider } from "context/s3ClientContext";
 
 function App() {
   return (
@@ -145,9 +146,12 @@ function App() {
                 allowedRoles={["constructor", "admon", "investor", "validator"]}
                 redirectPath="/"
               >
+                
                 <ProjectDataProvider>
                 <PropertyDataProvider>
+                <S3ClientProvider>
                   <Property/>
+                </S3ClientProvider>
                 </PropertyDataProvider>
                 </ProjectDataProvider>
               </RoleMiddleware>

@@ -446,6 +446,8 @@ query ListProperties(
       items {
         id
         name
+        description
+        department
         userID
         productID
         product {
@@ -508,7 +510,7 @@ query ListProperties(
       nextToken
     }
   }
-  `
+`;
 
   export const getCampaign = /* GraphQL */ `
   query GetCampaign($id: ID!) {

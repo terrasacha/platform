@@ -9,7 +9,7 @@ import Card from "components/common/Card";
 import FormGroup from "components/common/FormGroup";
 
 export default function ActualUseAndPotential(props) {
-  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange  } = props;
+  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange ,updateFormCompletion } = props;
   const { propertyData } = usePropertyData();
   const { user } = useAuth();
 
@@ -50,6 +50,21 @@ export default function ActualUseAndPotential(props) {
     "D_replace_otros_use",
     "D_replace_ha_otros_use",
   ];
+  
+  const checkFormCompletion = () => {
+    if (!executedOnce) return; // Evita ejecutarse antes de inicialización
+
+    const isComplete = productFeaturesGroup.every((feature) =>
+        Boolean(formData[feature] && formData[feature] !== "")
+    );
+
+    console.log("📌 Estado de ActualUseAndPotential:", formData);
+    console.log("✅ ¿Formulario completo?", isComplete);
+    console.log("📤 Enviando al padre → actualUseAndPotential:", Boolean(isComplete));
+
+    updateFormCompletion(isComplete); // ✅ Forzar booleano
+};
+
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -115,6 +130,13 @@ export default function ActualUseAndPotential(props) {
     }
   }, [propertyData, user]);
 
+  useEffect(() => {
+    if (executedOnce && Object.keys(formData).length > 0) {
+      checkFormCompletion();
+    }
+  }, [formData, executedOnce]);
+  
+
   const handleChangeInputValue = async (e) => {
     const { name, type, value, checked } = e.target;
 
@@ -144,6 +166,7 @@ export default function ActualUseAndPotential(props) {
       }));
       handleFieldChange(name, true);
       setHasUnsavedChanges(true);
+      checkFormCompletion();
       return updatedFormData;
     });
   };
