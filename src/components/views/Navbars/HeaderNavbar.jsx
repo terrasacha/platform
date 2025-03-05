@@ -44,6 +44,10 @@ export default class HeaderNavbar extends Component {
         <Nav.Link onClick={() => window.location.href = "/consultor_admon"}>Perfil</Nav.Link>,
         <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
       ],
+      legal: [
+        <Nav.Link onClick={() => window.location.href = "/legal_admon"}>Perfil</Nav.Link>,
+        <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>
+      ],
       analyst: [
         <Nav.Link onClick={() => window.location.href = "/PQRS"}>PQRS</Nav.Link>,
         <Nav.Link onClick={() => window.location.href = "/project_analyst"}>Ver Proyectos</Nav.Link>
@@ -66,7 +70,8 @@ export default class HeaderNavbar extends Component {
       admon: "Administrador",
       validator: "Consultor",
       analyst: "Analista",
-      constructor: "Propietario"
+      constructor: "Propietario",
+      legal: "Legal"
     };
 
     const displayRole = roleDisplayNames[role] || "Sin Rol";

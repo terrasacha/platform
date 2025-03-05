@@ -335,7 +335,7 @@ export default function LogIn() {
 
     const validations = validatePassword(newPassword);
 
-    if (!validations.length || !validations.number || !validations.specialChar || !validations.uppercase || !validations.lowercase) {
+    if (!validations.length || !validations.number) {
       setError("La contraseña no cumple con los requisitos mínimos.");
       return;
     }

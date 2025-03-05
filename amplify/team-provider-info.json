@@ -17,6 +17,9 @@
       },
       "storage": {
         "platformstorage": {}
+      },
+      "api": {
+        "platform": {}
       }
     }
   }

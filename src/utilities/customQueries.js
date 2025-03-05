@@ -446,6 +446,13 @@ query ListProperties(
       items {
         id
         name
+        description
+        userLegalID
+        userLegal {
+          id
+          name
+        }
+        department
         userID
         productID
         product {

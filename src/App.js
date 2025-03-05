@@ -34,6 +34,7 @@ import Property from "components/Property/Property";
 import { PropertyDataProvider } from "context/PropertyDataContext";
 import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
 import './App.css';
+import LegalAdmon from "components/Legal/LegalAdmon";
 
 function App() {
   return (
@@ -129,6 +130,14 @@ function App() {
             }
           />
           <Route
+            path="/legal_admon"
+            element={
+              <RoleMiddleware allowedRoles={["legal"]} redirectPath="/">
+                <LegalAdmon />
+              </RoleMiddleware>
+            }
+          />
+          <Route
             path="/success_order"
             element={
               <RoleMiddleware allowedRoles={["investor"]} redirectPath="/">
@@ -142,7 +151,7 @@ function App() {
             path="/property/:id"
             element={
               <RoleMiddleware
-                allowedRoles={["constructor", "admon", "investor", "validator"]}
+                allowedRoles={["constructor", "admon", "investor", "validator", "legal"]}
                 redirectPath="/"
               >
                 <ProjectDataProvider>

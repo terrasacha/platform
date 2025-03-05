@@ -5,7 +5,6 @@ import { API, Auth, graphqlOperation } from "aws-amplify";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-
 // Contexts
 import { S3ClientProvider } from "context/s3ClientContext";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
@@ -13,6 +12,7 @@ import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import { getProperty } from "graphql/queries";
 import PropertyDetails from "./PropertyDetails";
 import { usePropertyData } from "context/PropertyDataContext";
+import Card from "components/common/Card";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 const statusColor = {
@@ -34,6 +34,7 @@ export default function Property() {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("details");
   const [changedFields, setChangedFields] = useState({});
+  const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
     /* const fetchUserGroups = async () => {
@@ -59,17 +60,18 @@ export default function Property() {
     const handleBeforeUnload = (event) => {
       if (hasUnsavedChanges) {
         event.preventDefault();
-        event.returnValue = "Tienes cambios sin guardar. ¿Seguro que deseas salir?";
+        event.returnValue =
+          "Tienes cambios sin guardar. ¿Seguro que deseas salir?";
       }
     };
-  
+
     window.addEventListener("beforeunload", handleBeforeUnload);
-    
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [hasUnsavedChanges]);
-  
+
   const handleNavigation = (path) => {
     if (hasUnsavedChanges) {
       Swal.fire({
@@ -124,6 +126,14 @@ export default function Property() {
       console.error("Error fetching campaign:", error);
     }
   };
+
+  const steps = [
+    "Inscripción de predio",
+    "Documentos Subidos",
+    "Revisión Legal",
+    "Revisión Consultor",
+  ];
+
   useEffect(() => {
     if (propertyData) {
       fetchProperty();
@@ -132,7 +142,6 @@ export default function Property() {
 
   if (!property) return null;
   if (!propertyData) return null;
-
 
   return (
     <S3ClientProvider>
@@ -143,22 +152,23 @@ export default function Property() {
           </div>
           <div className="my-2">-</div>
           <div className="mt-4">
-          {property.campaign ? (
-  <a
-    onClick={() => handleNavigation(`/campaign/${property.campaign.id}`)}
-    className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
-  >
-    Regresar a la campaña
-  </a>
-) : (
-  <a
-    onClick={() => handleNavigation(`/constructor`)}
-    className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
-  >
-    Ir a mis predios
-  </a>
-)}
-
+            {property.campaign ? (
+              <a
+                onClick={() =>
+                  handleNavigation(`/campaign/${property.campaign.id}`)
+                }
+                className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+              >
+                Regresar a la campaña
+              </a>
+            ) : (
+              <a
+                onClick={() => handleNavigation(`/constructor`)}
+                className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+              >
+                Ir a mis predios
+              </a>
+            )}
 
             <div className="relative pt-3 px-4 mb-4 mt-4 border rounded shadow">
               <div className="row gy-2">
@@ -211,11 +221,40 @@ export default function Property() {
                 </li>
               </ul>
             </div>
+
+            <Card className="mb-4">
+              <Card.Header title="Estado de postulación" sep={true} />
+              <Card.Body>
+                <div className="flex flex-col md:flex-row justify-between">
+                  {steps.map((step, index) => (
+                    <div key={index} className="flex flex-col items-center relative mb-4 md:mb-0">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          index < currentStep
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-300 text-gray-700"
+                        }`}
+                      >
+                        {index < currentStep ? "✓" : index + 1}
+                      </div>
+                      <span
+                        className={`mt-2 ${
+                          index <= currentStep - 1 ? "text-black" : "text-gray-500"
+                        }`}
+                      >
+                        {step}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </Card.Body>
+            </Card>
+
             <PropertyDetails
-  visible={activeSection === "details"}
-  setHasUnsavedChanges={setHasUnsavedChanges}
-  handleFieldChange={handleFieldChange}
-/>
+              visible={activeSection === "details"}
+              setHasUnsavedChanges={setHasUnsavedChanges}
+              handleFieldChange={handleFieldChange}
+            />
           </div>
           <ToastContainer></ToastContainer>
         </div>
