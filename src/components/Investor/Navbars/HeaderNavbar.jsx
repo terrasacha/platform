@@ -43,6 +43,18 @@ export default class HeaderNavbar extends Component {
   render() {
     let role = this.state.user?.attributes['custom:role'] || ''
     let userlog = this.state.user?.username || ''
+
+    
+    const roleDisplayNames = {
+      admon: "Administrador",
+      validator: "Consultor",
+      analyst: "Analista",
+      constructor: "Propietario",
+      legal: "Legal"
+    };
+
+    const displayRole = roleDisplayNames[role] || "Sin Rol";
+
     return (
       <>
         <Navbar key="sm" bg="light" expand="lg" fixed="top">
@@ -67,6 +79,7 @@ export default class HeaderNavbar extends Component {
                 ></Nav>
                 <Nav>
                   <Nav className={s.navGroup}>
+                  {localStorage.getItem("role") === "validator" && (
                     <Nav.Link
                       href="#profile"
                       onClick={(e) =>
@@ -95,6 +108,18 @@ export default class HeaderNavbar extends Component {
                       </a>
 
                     </Nav.Link>
+                )}
+                {localStorage.getItem("role") === "legal" && (
+                  <>
+                    <Nav.Link
+                      onClick={() =>
+                        (window.location.href = "/legal_admon")
+                      }
+                    >
+                      Listado de predios
+                    </Nav.Link>
+                  </>
+                )}
                     {localStorage.getItem("role") ? (
                       <div className="flex">
                         <button
@@ -103,7 +128,7 @@ export default class HeaderNavbar extends Component {
                         >
                           Desconectar
                         </button>
-                        <button className="role flex flex-col">
+                        <button className="role flex flex-col items-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="24"
@@ -116,13 +141,7 @@ export default class HeaderNavbar extends Component {
                           {userlog}
                           <br></br>
                           <p className="role_btn">
-                            {role === "validator"
-                              ? "Consultor"
-                              : role === "constructor"
-                              ? "Propietario"
-                              : role === "analyst"
-                              ? "Analista"
-                              : role}
+                            {displayRole}
                           </p>
                         </button>
                       </div>

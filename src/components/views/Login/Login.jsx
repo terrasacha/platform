@@ -344,9 +344,8 @@ export default function LogIn() {
     console.log("🔍 Validaciones de contraseña:", validations);
 
     if (!validations.length || !validations.number) {
-        console.log("❌ Error: La contraseña no cumple con los requisitos mínimos.");
-        setError("La contraseña no cumple con los requisitos mínimos.");
-        return;
+      setError("La contraseña no cumple con los requisitos mínimos.");
+      return;
     }
 
     if (newPassword !== confirmNewPassword) {

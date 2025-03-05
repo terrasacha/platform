@@ -265,14 +265,14 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
       </button>
 
       {/* 🔹 Botón de Asignar Predio (Solo si el usuario es el dueño de la campaña) */}
-      {editable && (
+      {/* {editable && (
         <button
           onClick={() => setShowModalAssignProperty(true)}
           className="w-full lg:w-3/6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
         >
           Asignar Predio
         </button>
-      )}
+      )} */}
     </>
   ) : (
     <>

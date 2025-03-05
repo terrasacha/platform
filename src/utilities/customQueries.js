@@ -447,6 +447,11 @@ query ListProperties(
         id
         name
         description
+        userLegalID
+        userLegal {
+          id
+          name
+        }
         department
         userID
         productID
