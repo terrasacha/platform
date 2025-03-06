@@ -62,12 +62,11 @@ export default function CadastralRecords(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const checkFormCompletion = () => {
-    const isComplete = multipleData.every(
-      (data) => data.cadastralNumber.trim() !== "" && data.documentID !== undefined
-    );
-  
-    updateFormCompletion(isComplete); // 🔹 Se notifica a PropertyDetails
+    if (multipleData.length > 0) {
+      updateFormCompletion(true); // 🔹 Se marca como completado si hay al menos un registro
+    }
   };
+  
 
 
   useEffect(() => {
@@ -111,7 +110,7 @@ export default function CadastralRecords(props) {
   
       fetchDocumentsVisibility();
     }
-  }, [propertyData]);
+    }, [propertyData]);
   
   useEffect(() => {
     if (multipleData.length > 0) {
@@ -680,6 +679,7 @@ export default function CadastralRecords(props) {
         setHasUnsavedChanges(false);
 
       refresh();
+      updateFormCompletion(true);
     } else {
       notify({
         msg: "Completa todos los campos antes de guardar",
@@ -970,9 +970,11 @@ export default function CadastralRecords(props) {
                 <th className="px-4 py-2 border border-gray-300 min-w-[200px]">
                   Identificador catastral
                 </th>
+                   {/*
                 <th className="px-4 py-2 border border-gray-300 min-w-[180px]">
                   Certificado de tradición
                 </th>
+                */}
                 <th className="px-4 py-2 border border-gray-300 min-w-[200px]">
                   Nombre de predio
                 </th>
@@ -1001,6 +1003,7 @@ export default function CadastralRecords(props) {
                           name={`cadastraldata_cadastralNumber_${index}`}
                         />
                       </td>
+                      {/*
                       <td className={`p-2 border border-gray-300 ${changedFields[`certificate_${index}`] ? "border-red-500 bg-red-100" : ""}`}>
   <div className="relative">
     <input
@@ -1019,7 +1022,7 @@ export default function CadastralRecords(props) {
     </button>
   </div>
 </td>
-
+                      */}
 
                       <td className="p-2 border border-gray-300">{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
                       <td className="p-2 border border-gray-300">{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
@@ -1035,7 +1038,7 @@ export default function CadastralRecords(props) {
                   ) : (
                     <>
                       <td className="p-2 border border-gray-300">{data.cadastralNumber}</td>
-                      <td className="p-2 border border-gray-300">{renderFileLinkByDocumentID(data.documentID, data.visible ?? true)}</td>
+                     {/* <td className="p-2 border border-gray-300">{renderFileLinkByDocumentID(data.documentID, data.visible ?? true)}</td>*/}
                       <td className="p-2 border border-gray-300">{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
                       <td className="p-2 border border-gray-300">{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
                         <td className="p-2 border border-gray-300 flex justify-end gap-2">
@@ -1049,6 +1052,7 @@ export default function CadastralRecords(props) {
                             onClick={() => handleDeleteHistoricalData(index)}>
                             <TrashIcon />
                           </button>
+                          {/* 
                           <button
     disabled={!autorizedUser}
     className="px-2 py-1 text-blue-500 rounded-md border-[1px] border-blue-500 hover:bg-blue-500 hover:text-white disabled:opacity-50 disabled:bg-gray-300 disabled:border-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
@@ -1056,6 +1060,7 @@ export default function CadastralRecords(props) {
   >
     <MessagesIcon />
   </button>
+  */}
   {isOwner && (
   <button
     onClick={() => toggleVisibility(data.documentID, data.visible)}

@@ -95,24 +95,16 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
   };
 
   const updateFormCompletion = (formName, isComplete) => {
-    console.log(`📩 Recibido desde hijo: ${formName} →`, isComplete); // Verifica qué recibe el padre
-    
+    console.log(`📩 Recibido desde hijo: ${formName} →`, isComplete);
+  
     setFormCompletion((prev) => {
       const newCompletion = { ...prev, [formName]: Boolean(isComplete) };
-  
-      console.log("📌 Estado actualizado en el padre:", newCompletion);
-  
-      // Verifica si todos los formularios están completos
-      const allComplete = Object.values(newCompletion).every(value => value === true);
-      setIsFormComplete(allComplete);  
+      const anyComplete = Object.values(newCompletion).some(value => value === true);
+      setIsFormComplete(anyComplete);
   
       return newCompletion;
     });
   };
-  
-  
-  
-  
   
 
   // Función para mostrar el modal con las opciones de validación

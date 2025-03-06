@@ -19,17 +19,17 @@ export default function UseRestrictions(props) {
   const [changedFields, setChangedFields] = useState({});
   
   const checkFormCompletion = () => {
-    if (!executedOnce) return; // ✅ Evita que se ejecute antes de que `formData` esté listo
+    if (!executedOnce) return; // ✅ Evita ejecución antes de inicialización
   
-    const isComplete =
-      formData.projectRestrictionsDesc?.trim() !== "" &&
-      formData.projectRestrictionsOther?.trim() !== "";
+    // ✅ Se considera completado si al menos un campo tiene datos
+    const hasAnyData = Object.values(formData).some((value) => value.trim() !== "");
   
     console.log("🔍 Estado de UseRestrictions:", formData);
-    console.log("✅ ¿Formulario completo?", isComplete);
+    console.log("✅ ¿Formulario completado?", hasAnyData);
   
-    updateFormCompletion(isComplete); // ✅ Asegura que siempre sea `true` o `false`
+    updateFormCompletion(hasAnyData); // ✅ Se marca como completado si hay cualquier dato
   };
+  
   
   
   
@@ -143,6 +143,7 @@ export default function UseRestrictions(props) {
       await Promise.all(updates);
 
       // Limpiar los cambios después de guardar
+      updateFormCompletion(true);
       setChangedFields({});
       handleFieldChange("projectRestrictionsDesc", false);
       handleFieldChange("projectRestrictionsOther", false);

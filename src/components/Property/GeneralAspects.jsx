@@ -33,11 +33,11 @@ export default function GeneralAspects(props) {
   ];
 
   const checkFormCompletion = () => {
-    const isComplete = productFeaturesGroup.every(
-      (feature) => formData[feature] !== undefined && formData[feature] !== ""
-    );
-    updateFormCompletion("generalAspects", isComplete);
+    // ✅ Se considera completado si al menos un campo tiene datos
+    const hasAnyData = Object.values(formData).some((value) => value !== "" && value !== undefined);
+    updateFormCompletion("generalAspects", hasAnyData);
   };
+  
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -72,9 +72,6 @@ export default function GeneralAspects(props) {
     }
   }, [propertyData, user]);
 
-  useEffect(() => {
-    checkFormCompletion();
-  }, [formData]);
 
   const handleChangeInputValue = async (e) => {
     const { name, type, value, checked } = e.target;
@@ -148,6 +145,7 @@ export default function GeneralAspects(props) {
         setHabitaPfID(response.data.createPropertyFeature.id);
       }
     }
+    updateFormCompletion("generalAspects", true);
     setChangedFields({});
     Object.keys(changedFields).forEach((key) => handleFieldChange(key, false));
     setHasUnsavedChanges(false);

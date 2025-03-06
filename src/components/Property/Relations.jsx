@@ -29,16 +29,10 @@ export default function Relations(props) {
   /** ✅ Verifica si todos los campos están completos */
   const checkFormCompletion = () => {
     if (!executedOnce) return;
-
-    const isComplete = productFeaturesGroup.every(
-      (feature) => formData[feature]?.trim() !== "" // ✅ Verifica que no esté vacío
-    );
-
-    console.log("📌 Estado actualizado de Relations:", formData);
-    console.log("✅ ¿Formulario completo?", isComplete);
-
-    updateFormCompletion(isComplete); // ✅ Asegura que siempre sea `true` o `false`
+    const hasAnyData = productFeaturesGroup.some((feature) => formData[feature]?.trim() !== "");
+    updateFormCompletion(hasAnyData); // ✅ Se envía `true` si hay datos, sino `false`
   };
+  
 
   useEffect(() => {
       if (executedOnce && Object.keys(formData).length > 0) {
@@ -144,6 +138,7 @@ export default function Relations(props) {
         }
       }
     }
+    updateFormCompletion(true);
     setChangedFields({});
     Object.keys(changedFields).forEach((key) => handleFieldChange(key, false));
     setHasUnsavedChanges(false);

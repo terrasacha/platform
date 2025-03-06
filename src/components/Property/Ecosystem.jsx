@@ -33,11 +33,11 @@ export default function Ecosystem(props) {
   ];
 
   const checkFormCompletion = () => {
-    const isComplete = productFeaturesGroup.every(
-      (feature) => formData[feature] !== undefined && formData[feature] !== ""
-    );
-    updateFormCompletion(isComplete);
+    // ✅ Se considera completado si al menos un campo tiene datos
+    const hasAnyData = Object.values(formData).some((value) => value !== "" && value !== undefined);
+    updateFormCompletion(hasAnyData); // ✅ Se marca como completado si hay cualquier dato
   };
+  
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -66,9 +66,6 @@ export default function Ecosystem(props) {
     }
   }, [propertyData, user]);
 
-  useEffect(() => {
-    checkFormCompletion();
-  }, [formData]);
 
   const handleChangeInputValue = async (e) => {
     const { name, type, value, checked } = e.target;
@@ -142,11 +139,11 @@ export default function Ecosystem(props) {
         setNacimientoPfID(response.data.createPropertyFeature.id);
       }
     }
+    updateFormCompletion(true); 
     setChangedFields({});
     Object.keys(changedFields).forEach((key) => handleFieldChange(key, false));
     setHasUnsavedChanges(false);
     notify({ msg: "Información actualizada", type: "success" });
-    checkFormCompletion();
   };
 
   return (

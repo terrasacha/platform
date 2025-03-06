@@ -55,25 +55,33 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
       const status = propertyData?.propertyInfo?.status;
     
       if (status === "APPROVED" || status === "REJECTED") {
-        setCurrentStep(4);
-      } else if (filesAreComplete) {
-        setCurrentStep(3);
+        setCurrentStep(5);  // ✅ Ahora el paso final es el 5
+      } else if (status === "SELECTABLE") {
+        setCurrentStep(4);  // ✅ Ahora el estudio se activa solo si es "ELEGIBLE"
+      }  else if (status === "DOC_UPLOADED") {
+        setCurrentStep(3);  // ✅ Si los archivos están completos, pasa a Validación Legal
       } else if (isFormComplete) {
-        setCurrentStep(2);
+        setCurrentStep(2);  // ✅ Si el formulario está completo, pasa a Subir Documentación
       } else {
-        setCurrentStep(1);
+        setCurrentStep(1);  // ✅ Estado inicial
       }
     
       console.log("📌 Nuevo currentStep:", currentStep);
-    
     }, [isFormComplete, propertyData, filesAreComplete, s3Loading]);
+    
     
             
     
     
     const handleValidationComplete = () => {
       console.log("📌 ¡Los archivos están completos! Pasando al paso 3.");
-      handleStepChange(3); // ✅ Ahora actualiza el paso directamente
+      handleStepChange(3); 
+      
+      if (propertyData?.propertyInfo?.status === "ELEGIBLE") {
+        console.log("📌 Predio es elegible. Pasando al paso 4...");
+        setCurrentStep(4);
+      }
+
     };
     
     
