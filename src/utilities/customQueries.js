@@ -477,6 +477,7 @@ query ListProperties(
             documents {
               items {
                 id
+                data
                 status
                 signed
                 signedHash
