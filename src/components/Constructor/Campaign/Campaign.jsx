@@ -19,7 +19,6 @@ import ModalEditImage from "./ModalEditImage";
 import Imagen from "../../common/_images/Campaña.png";
 import ModalAssignProperty from "./ModalAssignProperty";
 
-import ModalAssignProperty from "./ModalAssignProperty";
 
 
 export default function Campaign() {

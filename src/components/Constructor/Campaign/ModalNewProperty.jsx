@@ -78,7 +78,6 @@ export default function ModalNewProperty({
           }
           `,
           { name, userID: userID.current }
-          { name, userID: userID.current }
         )
       );
   
