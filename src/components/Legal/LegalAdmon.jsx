@@ -8,7 +8,14 @@ import { formatArea } from "components/Constructor/ProjectPage/mappers";
 import { stateMapper } from "utilities/propertyStateMapper";
 import { useAuth } from "context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
-import { updateProperty } from "graphql/mutations";
+import { updateProperty, updateVerification } from "graphql/mutations";
+import PropertyChat from "components/Legal/PropertyChat";
+
+const documentTypeMapper = {
+  CERTIFICADO_TRADICION: "Certificado de Tradición",
+  ESCRITURA_PUBLICA: "Escritura Pública",
+  PLANO_CATASTRAL: "Plano Catastral",
+};
 
 const getPropertyArea = (property) => {
   const areaFeature = property.propertyFeatures?.items.find(
@@ -19,7 +26,20 @@ const getPropertyArea = (property) => {
 };
 
 const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
-  const [reason, setReason] = useState(""); // Estado para manejar el comentario
+  console.log("property", property);
+
+  const propertyFiles = property?.propertyFeatures?.items
+    .find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
+    .documents.items.map((document) => {
+      const documentData = JSON.parse(document.data);
+      return {
+        name: documentData.name,
+        type: documentTypeMapper[documentData.type] || "Tipo de documento desconocido",
+        url: documentData.url,
+      };
+    });
+
+  console.log(propertyFiles);
 
   const handleEligible = async (option) => {
     // Lógica para manejar la elegibilidad
@@ -29,7 +49,7 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
           input: {
             id: property.id,
             status: option ? "SELECTABLE" : "NOT_SELECTABLE", // Desasignar el usuario legal
-            reason: option ? null : reason, // Agregar razón si no es elegible
+            reason: option ? null : "", // Agregar razón si no es elegible
           },
         })
       );
@@ -52,43 +72,45 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
         <h2 className="text-xl font-bold mb-4">Documentación del predio</h2>
         {/* Aquí se puede agregar el contenido del documento */}
         <div className="mb-4">
-          <p>Listado de documentos aquí...</p>
-        </div>
-        {(property.status === "PENDING" ||
-          property.status === "DOC_UPLOADED") && (
-          <div className="mb-4">
-            <label htmlFor="reason" className="block mb-2">
-              Razón (si no es elegible):
-            </label>
-            <textarea
-              id="reason"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              rows="3"
-              placeholder="Escribe la razón aquí..."
-              aria-label="Razón para no elegir el predio"
-            />
-          </div>
-        )}
-        <div className="flex justify-end">
-          {(property.status === "PENDING" ||
-            property.status === "DOC_UPLOADED") && (
-            <>
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-                onClick={() => handleEligible(true)}
-              >
-                Elegible
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-                onClick={() => handleEligible(false)}
-              >
-                No elegible
-              </button>
-            </>
+          {propertyFiles.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {propertyFiles.map((file, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-4 border border-gray-300 rounded-md shadow-md hover:shadow-lg transition-shadow duration-200 bg-white"
+                >
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline text-sm font-semibold"
+                  >
+                    {file.name}
+                  </a>
+                  <span className="text-gray-500 text-sm">{file.type}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600 italic text-center">
+              No hay documentos subidos para este predio.
+            </p>
           )}
+        </div>
+        <PropertyChat propertyId={property.id} />
+        <div className="flex justify-end mt-4">
+          <button
+            className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+            onClick={() => handleEligible(true)}
+          >
+            Elegible
+          </button>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+            onClick={() => handleEligible(false)}
+          >
+            No elegible
+          </button>
           <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
             Cancelar
           </button>
@@ -121,6 +143,10 @@ export default function LegalAdmon() {
   };
 
   const handleToggleAssign = async (property) => {
+    const propertyVerificationID = property?.propertyFeatures?.items.find(
+      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+    ).verifications.items[0].id;
+
     if (property.userLegal !== null) {
       if (property.userLegalID === user.id) {
         // Si el usuario legal es el mismo que el usuario logueado, desasignar
@@ -156,6 +182,16 @@ export default function LegalAdmon() {
           },
         })
       );
+
+      await API.graphql(
+        graphqlOperation(updateVerification, {
+          input: {
+            id: propertyVerificationID,
+            userVerifierID: user.id,
+          },
+        })
+      );
+
       toast.success(`Predio asignado`);
       fetchProperties();
     } catch (error) {
@@ -249,7 +285,8 @@ export default function LegalAdmon() {
                     </td>
                     <td className="px-4 py-2 flex gap-2">
                       {property.userLegalID === null &&
-                        (property.status !== "REJECTED" && property.status !== "APPROVED") && (
+                        property.status !== "REJECTED" &&
+                        property.status !== "APPROVED" && (
                           <button
                             className="border border-green-500 bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-600"
                             onClick={() => handleToggleAssign(property)}
@@ -258,7 +295,8 @@ export default function LegalAdmon() {
                           </button>
                         )}
                       {property.userLegalID === user.id &&
-                        (property.status !== "REJECTED" && property.status !== "APPROVED") && (
+                        property.status !== "REJECTED" &&
+                        property.status !== "APPROVED" && (
                           <button
                             className="border border-red-500 bg-red-500 text-white rounded-md px-4 py-2 hover:bg-red-600"
                             onClick={() => handleToggleAssign(property)}
