@@ -400,7 +400,7 @@
             {uploadedFiles[fileType] || pendingFiles[fileType] ? (
                 <>
                     {/* ✅ Mostrar Icono de Precarga */}
-                    {pendingFiles[fileType] && <Spinner size="sm" animation="border" />}
+                  
 
                     <button
                     onClick={async () => window.open(await getSignedFileUrl(uploadedFiles[fileType]), "_blank")}

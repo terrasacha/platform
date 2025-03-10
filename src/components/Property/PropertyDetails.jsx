@@ -233,9 +233,9 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
     </button>
 
     {/* 🔴 Mensaje de advertencia si el usuario intenta verificar antes del paso 3 */}
-    {currentStep < 3 && (
+    {currentStep < 4 && (
       <p className="text-red-500 text-sm mt-2">
-        ⚠ Debes completar los pasos anteriores antes llegar al paso 3.
+        ⚠ Debes completar los pasos anteriores antes llegar al paso 4.
       </p>
     )}
   </>
