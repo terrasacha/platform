@@ -341,7 +341,7 @@ class Analysts extends Component {
     };
 
     return (
-      <div className="container mx-auto ">
+      <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
         <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
           <h4 className="text-lg">Crea un nuevo analista</h4>
           <form className="mt-4">

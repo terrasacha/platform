@@ -9,7 +9,7 @@ import Card from "components/common/Card";
 import FormGroup from "components/common/FormGroup";
 
 export default function ActualUseAndPotential(props) {
-  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange  } = props;
+  const { className, autorizedUser, setHasUnsavedChanges, handleFieldChange ,updateFormCompletion } = props;
   const { propertyData } = usePropertyData();
   const { user } = useAuth();
 
@@ -50,6 +50,21 @@ export default function ActualUseAndPotential(props) {
     "D_replace_otros_use",
     "D_replace_ha_otros_use",
   ];
+  
+  const checkFormCompletion = () => {
+    if (!executedOnce) return; // Evita ejecutarse antes de inicialización
+  
+    // ✅ Ahora solo verificamos si se ha guardado algún dato
+    const hasAnyData = Object.values(formData).some((value) => value !== "" && value !== null);
+  
+    console.log("📌 Estado de ActualUseAndPotential:", formData);
+    console.log("✅ ¿Formulario completado?", hasAnyData);
+    console.log("📤 Enviando al padre → actualUseAndPotential:", Boolean(hasAnyData));
+  
+    updateFormCompletion(hasAnyData); // ✅ Marcar como completado si hay algún dato guardado
+  };
+  
+
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -144,6 +159,7 @@ export default function ActualUseAndPotential(props) {
       }));
       handleFieldChange(name, true);
       setHasUnsavedChanges(true);
+      checkFormCompletion();
       return updatedFormData;
     });
   };
@@ -191,6 +207,7 @@ export default function ActualUseAndPotential(props) {
     notify({ msg: "Información actualizada", type: "success" });
     setHasUnsavedChanges(false);
     setChangedFields({});
+    updateFormCompletion(true);
   };
 
   return (

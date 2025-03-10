@@ -43,6 +43,18 @@ export default class HeaderNavbar extends Component {
   render() {
     let role = this.state.user?.attributes['custom:role'] || ''
     let userlog = this.state.user?.username || ''
+
+    
+    const roleDisplayNames = {
+      admon: "Administrador",
+      validator: "Consultor",
+      analyst: "Analista",
+      constructor: "Propietario",
+      legal: "Legal"
+    };
+
+    const displayRole = roleDisplayNames[role] || "Sin Rol";
+
     return (
       <>
         <Navbar key="sm" bg="light" expand="lg" fixed="top">
@@ -67,31 +79,47 @@ export default class HeaderNavbar extends Component {
                 ></Nav>
                 <Nav>
                   <Nav className={s.navGroup}>
-                  <Nav.Link
-    href="#profile"
-    onClick={(e) =>
-      this.props.changeHeaderNavBarRequest("product_documents")
-    }
-  >
-    <a
-      href="/new_campaign"
-      className="bg-[#74742c] text-white text-sm px-4 py-2 rounded-lg shadow-md hover:bg-[#5f5f23] transition flex items-center justify-center space-x-2"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="white"
-        className="w-5 h-5"
-      >
-        <path
-          fillRule="evenodd"
-          d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"
-          clipRule="evenodd"
-        />
-      </svg>
-      <button style={{ color: "#FFFFFF" }}>Crear Campaña</button>
-    </a>
-  </Nav.Link>
+                  {localStorage.getItem("role") === "validator" && (
+                    <Nav.Link
+                      href="#profile"
+                      onClick={(e) =>
+                        this.props.changeHeaderNavBarRequest(
+                          "product_documents"
+                        )
+                      }
+                    >
+                    <a
+                      href="/new_campaign"
+                      className="bg-[#4DBC5E] text-white text-sm px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition flex items-center justify-center space-x-2"
+                    >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                      className="w-5 h-5"
+                    >
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span style={{color:"#FFFFFF"}}>Crear Campaña</span>
+                      </a>
+
+                    </Nav.Link>
+                )}
+                {localStorage.getItem("role") === "legal" && (
+                  <>
+                    <Nav.Link
+                      onClick={() =>
+                        (window.location.href = "/legal_admon")
+                      }
+                    >
+                      Listado de predios
+                    </Nav.Link>
+                  </>
+                )}
                     {localStorage.getItem("role") ? (
                       <div className="flex">
                         <button
@@ -100,7 +128,7 @@ export default class HeaderNavbar extends Component {
                         >
                           Desconectar
                         </button>
-                        <button className="role flex flex-col">
+                        <button className="role flex flex-col items-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="24"
@@ -113,13 +141,7 @@ export default class HeaderNavbar extends Component {
                           {userlog}
                           <br></br>
                           <p className="role_btn">
-                            {role === "validator"
-                              ? "Consultor"
-                              : role === "constructor"
-                              ? "Propietario"
-                              : role === "analyst"
-                              ? "Analista"
-                              : role}
+                            {displayRole}
                           </p>
                         </button>
                       </div>

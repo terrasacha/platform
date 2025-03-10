@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import React, { useState } from "react";
 // Import hooks
 import useUserProjects from "hooks/useUserProjects";
 import useUserProperties from "hooks/useUserProperties";
@@ -7,6 +8,7 @@ import useUserCampaigns from "hooks/useUserCampaigns";
 import { getImagesCategories, getYearFromAWSDatetime } from "../ProjectPage/utils";
 // Import placeholder image
 import vacio from "../../views/_images/caja-vacia-gris.png";
+import ModalNewProperty from "../Campaign/ModalNewProperty";
 import ModalNewProperty from "../Campaign/ModalNewProperty";
 
 // Status color mapping
@@ -19,6 +21,11 @@ const statusEs = {
   PENDING: "Pendiente",
   APPROVED: "Aprobado",
   REJECTED: "Rechazado",
+
+}
+
+
+
 
 }
 
@@ -61,6 +68,7 @@ const CampaignCard = ({ campaign }) => {
           href={`campaign/${campaign?.id}`}
           className="inline-block bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600"
           style={{backgroundColor:"#74742c"}}
+          style={{backgroundColor:"#74742c"}}
         >
           Ver Campaña
         </a>
@@ -90,7 +98,7 @@ const PropertyCard = ({ property }) => (
   {getYearFromAWSDatetime(property?.createdAt)}
 </span>
 <span className="bg-[#9a9a56] text-white text-xs font-medium px-2 py-1 rounded w-fit">
-  Vinculado a campaña
+{property?.department}
 </span>
 
           <span className={`${statusColor[property.status]} text-white text-xs font-medium px-2 py-1 rounded w-fit`}>

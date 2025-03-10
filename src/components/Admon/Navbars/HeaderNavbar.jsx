@@ -155,6 +155,13 @@ export default class HeaderNavbar extends Component {
                       Asignar Analista
                         </Dropdown.Item>
 
+                        <Dropdown.Item
+                      href="#assign_Legales"
+                      onClick={(e) => this.changeHeaderNavBarRequest("assign_Legales", e)}
+                      >
+                      Asignar Legales
+                        </Dropdown.Item>
+
                       <Dropdown.Item
                         href="#validators"
                         onClick={(e) =>
@@ -171,6 +178,14 @@ export default class HeaderNavbar extends Component {
                         }
                       >
                         Analistas
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        href="#legales"
+                        onClick={(e) =>
+                          this.changeHeaderNavBarRequest("legales", e)
+                        }
+                      >
+                        Legales
                       </Dropdown.Item>
                       <Dropdown.Item
                         href="#marketplace_admin"

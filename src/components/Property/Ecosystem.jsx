@@ -9,7 +9,7 @@ import FormGroup from "components/common/FormGroup";
 import { notify } from "utilities/notify";
 
 export default function Ecosystem(props) {
-  const { className, autorizedUser, setHasUnsavedChanges , handleFieldChange} = props;
+  const { className, autorizedUser, setHasUnsavedChanges , handleFieldChange, updateFormCompletion} = props;
   const { propertyData } = usePropertyData();
   const { user } = useAuth();
 
@@ -31,6 +31,13 @@ export default function Ecosystem(props) {
     "F_especies_aves",
     "F_especies_flora",
   ];
+
+  const checkFormCompletion = () => {
+    // ✅ Se considera completado si al menos un campo tiene datos
+    const hasAnyData = Object.values(formData).some((value) => value !== "" && value !== undefined);
+    updateFormCompletion(hasAnyData); // ✅ Se marca como completado si hay cualquier dato
+  };
+  
 
   useEffect(() => {
     if (propertyData && propertyData.propertyFeatures && user && !executedOnce) {
@@ -58,6 +65,7 @@ export default function Ecosystem(props) {
       setExecutedOnce(true);
     }
   }, [propertyData, user]);
+
 
   const handleChangeInputValue = async (e) => {
     const { name, type, value, checked } = e.target;
@@ -92,6 +100,7 @@ export default function Ecosystem(props) {
     }));
     handleFieldChange(name, true);
     setHasUnsavedChanges(true); 
+    checkFormCompletion();
   };
 
   const handleSaveBtn = async () => {
@@ -130,6 +139,7 @@ export default function Ecosystem(props) {
         setNacimientoPfID(response.data.createPropertyFeature.id);
       }
     }
+    updateFormCompletion(true); 
     setChangedFields({});
     Object.keys(changedFields).forEach((key) => handleFieldChange(key, false));
     setHasUnsavedChanges(false);

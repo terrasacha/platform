@@ -17,7 +17,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { toast } from "react-toastify";
 import { updateProperty } from "graphql/mutations";
 
-export default function PropertyDetails({ visible, setHasUnsavedChanges , handleFieldChange}) {
+export default function PropertyDetails({ visible, setHasUnsavedChanges , handleFieldChange,setIsFormComplete,  currentStep}) {
   const { propertyData } = usePropertyData();
   const [autorizedUser, setAutorizedUser] = useState(false);
   const [isPostulant, setIsPostulant] = useState(false);
@@ -28,6 +28,21 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
   const [latLngCentroid, setLatLngCentroid] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [status, setStatus] = useState("");
+  const [formCompletion, setFormCompletion] = useState({
+    cadastralRecords: false,
+    actualUseAndPotential: false,
+    useRestrictions: false,
+    ecosystem: false,
+    generalAspects: false,
+    relations: false,
+  });
+
+  useEffect(() => {
+    console.log("📌 Valor actual de currentStep en PropertyDetails:", currentStep);
+  }, [currentStep]); // ✅ Se ejecuta cuando cambia currentStep
+  
+  
+  
 
   useEffect(() => {
     if (user && propertyData) {
@@ -79,6 +94,19 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
     setIsLoading(false);
   };
 
+  const updateFormCompletion = (formName, isComplete) => {
+    console.log(`📩 Recibido desde hijo: ${formName} →`, isComplete);
+  
+    setFormCompletion((prev) => {
+      const newCompletion = { ...prev, [formName]: Boolean(isComplete) };
+      const anyComplete = Object.values(newCompletion).some(value => value === true);
+      setIsFormComplete(anyComplete);
+  
+      return newCompletion;
+    });
+  };
+  
+
   // Función para mostrar el modal con las opciones de validación
   const handleVerifyClick = () => {
     Swal.fire({
@@ -117,6 +145,7 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
               setTotalArea={setTotalArea}
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
+              updateFormCompletion={(isComplete) => updateFormCompletion("cadastralRecords", isComplete)}
             />
           </div>
   
@@ -125,6 +154,7 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
               autorizedUser={autorizedUser}
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
+              updateFormCompletion={(isComplete) => updateFormCompletion("actualUseAndPotential", isComplete)}
             />
           </div>
   
@@ -133,6 +163,7 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
               autorizedUser={autorizedUser}
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
+              updateFormCompletion={(isComplete) => updateFormCompletion("useRestrictions", isComplete)}
             />
           </div>
   
@@ -141,6 +172,7 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
               autorizedUser={autorizedUser}
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
+              updateFormCompletion={(isComplete) => updateFormCompletion("ecosystem", isComplete)}
             />
           </div>
   
@@ -149,6 +181,7 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
               autorizedUser={autorizedUser}
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
+              updateFormCompletion={(isComplete) => updateFormCompletion("generalAspects", isComplete)}
             />
           </div>
   
@@ -157,6 +190,7 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
               autorizedUser={autorizedUser}
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
+              updateFormCompletion={(isComplete) => updateFormCompletion("relations", isComplete)}
             />
           </div>
   
@@ -189,23 +223,29 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
 
   {/* Mostrar el botón solo si el usuario es verificador y el estado es PENDING */}
   {status === "PENDING" && isVerifier && (
-    <>
-      <button
-        className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
-        onClick={handleVerifyClick}
-        disabled={isLoading}
-      >
-        {isLoading ? "Procesando..." : "Verificar"}
-      </button>
-    </>
-  )}
+  <>
+    <button
+      className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
+      onClick={handleVerifyClick}
+      disabled={isLoading || currentStep < 3} // ✅ Bloqueado si no estamos en el paso 3
+    >
+      {isLoading ? "Procesando..." : "Verificar"}
+    </button>
+
+    {/* 🔴 Mensaje de advertencia si el usuario intenta verificar antes del paso 3 */}
+    {currentStep < 4 && (
+      <p className="text-red-500 text-sm mt-2">
+        ⚠ Debes completar los pasos anteriores antes llegar al paso 4.
+      </p>
+    )}
+  </>
+)}
+
 </div>
 
           </div>
     </>
   )}
 </>
-);
-
-  
+);  
 }
