@@ -40,18 +40,11 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
     const [currentStep, setCurrentStep] = useState(1);
     const [s3Files, setS3Files] = useState([]);  
     const [filesAreComplete, setFilesAreComplete] = useState(false);
-    const [s3Loading, setS3Loading] = useState(true); // ✅ Nuevo estado para verificar si listS3Files ha terminado
-    const { s3Client, bucketName } = useS3Client();
+    const [s3Loading, setS3Loading] = useState(true); // ✅ Nuevo estado para verificar si listS3Files ha terminad
 
 
 
     useEffect(() => {
-      if (s3Loading) {
-        console.log("⌛ Esperando carga de archivos S3...");
-        setCurrentStep(1);
-        return;
-      }
-    
       const status = propertyData?.propertyInfo?.status;
     
       if (status === "APPROVED" || status === "REJECTED") {
@@ -126,52 +119,6 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
       setCurrentStep(step);
     };
 
-    useEffect(() => {
-      if (propertyData?.propertyInfo?.id) {
-        listS3Files();
-      }
-    }, [propertyData?.propertyInfo?.id]);
-    
-
-    const listS3Files = async () => {
-      setS3Loading(true); // ✅ Iniciar la carga
-      try {
-        const command = new ListObjectsV2Command({
-          Bucket: bucketName,
-          Prefix: `projects/${propertyData.propertyInfo?.id}/other/`,
-        });
-    
-        const response = await s3Client.send(command);
-        const allFiles = response.Contents || [];
-    
-        const formattedFiles = allFiles.map((file) => ({
-          key: file.Key,
-          name: file.Key.split("/").pop(),
-        }));
-    
-        setS3Files(formattedFiles);
-    
-        // 🔴 Verificar si están todos los documentos requeridos
-        const uploaded = {};
-        formattedFiles.forEach((file) => {
-          const fileType = file.name.split("_")[0]; 
-          uploaded[fileType] = file.key;
-        });
-    
-        // ✅ Si todos los archivos requeridos están subidos, actualizar `filesAreComplete`
-        if (["certificado", "escrituras", "planos"].every((fileType) => fileType in uploaded)) {
-          setFilesAreComplete(true);
-        } else {
-          setFilesAreComplete(false);
-        }
-      } catch (error) {
-        console.error("Error al listar archivos en S3:", error);
-        setFilesAreComplete(false);
-      } finally {
-        setS3Loading(false); // ✅ Finalizar la carga
-      }
-    };
-    
     
     const handleNavigation = (path) => {
       if (hasUnsavedChanges) {

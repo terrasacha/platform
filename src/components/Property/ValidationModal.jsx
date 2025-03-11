@@ -31,7 +31,9 @@
     const [propertyFeatureID, setPropertyFeatureID] = useState(null);
     const [verificationCreated, setVerificationCreated] = useState(false);
     const [pendingFiles, setPendingFiles] = useState({}); // Archivos seleccionados pero no guardados
-  
+    const isUploadDisabled = !["PENDING", "NOT_SELECTABLE", "DOC_UPLOADED"].includes(propertyData?.propertyInfo?.status) 
+    || !!propertyData?.propertyInfo?.userLegalID;
+
 
 
 
@@ -76,7 +78,6 @@
           });
 
           setUploadedFiles(uploaded);
-          checkIfAllFilesUploaded(uploaded);  // ✅ Verifica si están todos los documentos
       } catch (error) {
           console.error("Error al listar archivos en S3:", error);
       } finally {
@@ -140,6 +141,7 @@
         await createPropertyFeatureEntry(uploadedDocuments);
 
         toast.success("Los archivos fueron actualizados con éxito");
+        checkIfAllFilesUploaded(uploadedFiles);
 
     } catch (error) {
         console.error("❌ Error al subir archivos a S3:", error);
@@ -340,8 +342,19 @@
       if (selectedFile) {
           setSelectedFiles((prev) => ({ ...prev, [fileType]: selectedFile }));
           setPendingFiles((prev) => ({ ...prev, [fileType]: true })); // ✅ Marcar como en precarga
+  
+          // 🔹 Simular que el archivo ya está "cargado" para cambiar de "Subir" a "Editar"
+          setUploadedFiles((prev) => ({
+              ...prev,
+              [fileType]: `pending-${selectedFile.name}`, // Simulamos un archivo subido con un prefijo temporal
+          }));
+  
+          // 🔹 LIMPIAR el input para permitir seleccionar otro archivo con el mismo nombre
+          event.target.value = "";
       }
   };
+  
+  
   
     const updatePropertyStatus = async () => {
       try {
@@ -369,11 +382,17 @@
     };
 
     const checkIfAllFilesUploaded = (files) => {
-      if (["certificado", "escrituras", "planos"].every((fileType) => fileType in files)) {
-        console.log("✅ Todos los archivos requeridos han sido subidos. Actualizando estado...");
-        updatePropertyStatus(); // ✅ Llamamos a updatePropertyStatus cuando los archivos están listos
+      const requiredFiles = ["certificado", "escrituras", "planos"];
+      const allFilesUploaded = requiredFiles.every((fileType) => fileType in files);
+  
+      if (allFilesUploaded) {
+          console.log("✅ Todos los archivos requeridos han sido subidos. Actualizando estado...");
+          updatePropertyStatus();  // ✅ Ahora SOLO se llama si el usuario subió archivos nuevos
+      } else {
+          console.log("⚠️ Aún faltan archivos por subir. No se actualizará el estado.");
       }
-    };
+  };
+  
 
     return (
       <Modal show={isOpen} onHide={onClose} centered>
@@ -397,38 +416,38 @@
         </span>
 
         <div className="flex items-center gap-2">
-            {uploadedFiles[fileType] || pendingFiles[fileType] ? (
-                <>
-                    {/* ✅ Mostrar Icono de Precarga */}
-                  
-
-                    <button
+            {/* 🔹 Botón "Ver" solo si el archivo ya está en S3 */}
+            {uploadedFiles[fileType] && !uploadedFiles[fileType].startsWith("pending-") && (
+                <button
                     onClick={async () => window.open(await getSignedFileUrl(uploadedFiles[fileType]), "_blank")}
                     className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
-                  >
+                >
                     <FaEye size={14} />
                     Ver
-                  </button>
+                </button>
+            )}
 
-                    {/* ✅ Botón de Editar cuando el archivo ha sido seleccionado */}
+            {/* 🔹 Botón "Editar" si el archivo está seleccionado (incluso antes de guardar cambios) */}
+            {!isUploadDisabled && (uploadedFiles[fileType] || pendingFiles[fileType]) && (
+                <>
                     <input
                         type="file"
                         className="hidden"
                         id={`file-upload-${fileType}`}
                         onChange={(e) => handleFileSelection(e, fileType)}
-                        disabled={pendingFiles[fileType]} // 🔹 Deshabilitar mientras se precarga
                     />
                     <label
                         htmlFor={`file-upload-${fileType}`}
-                        className={`cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2 ${
-                            pendingFiles[fileType] ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2"
                     >
                         <FaEdit size={14} />
                         Editar
                     </label>
                 </>
-            ) : (
+            )}
+
+            {/* 🔹 Botón "Subir" solo si no hay un archivo seleccionado todavía */}
+            {!isUploadDisabled && !uploadedFiles[fileType] && !pendingFiles[fileType] && (
                 <>
                     <input
                         type="file"
@@ -448,6 +467,7 @@
         </div>
     </div>
 ))}
+
 
 
           <Button variant="primary" className="mt-3" onClick={uploadFiles} disabled={loading || Object.keys(selectedFiles).length === 0}>

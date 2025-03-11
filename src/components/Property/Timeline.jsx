@@ -13,10 +13,7 @@ export default function Timeline({ currentStep = 1, isFormComplete, onStepChange
   console.log("📌 propertyStatus recibido:", propertyStatus);
 
   const openModal = () => {
-    if (currentStep === 2) { // ✅ Solo abrir el modal en el paso 2
-      console.log("🟢 Abriendo el modal...");
       setModalIsOpen(true);
-    }
   };
 
   const closeModal = () => {
@@ -90,9 +87,7 @@ export default function Timeline({ currentStep = 1, isFormComplete, onStepChange
                       className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-500 cursor-pointer shadow-md mb-2 ${stepClass} ${glowEffect}`}
                       data-tooltip-id={`tooltip-${step.id}`}
                       onClick={() => {
-                        if (step.id === 2) {
                           openModal(); // ✅ Solo permite abrir en el paso 2
-                        }
                       }}    
                     >
                       {step.icon}
