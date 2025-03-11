@@ -17,7 +17,13 @@ import { API, graphqlOperation } from "aws-amplify";
 import { toast } from "react-toastify";
 import { updateProperty } from "graphql/mutations";
 
-export default function PropertyDetails({ visible, setHasUnsavedChanges , handleFieldChange,setIsFormComplete,  currentStep}) {
+export default function PropertyDetails({
+  visible,
+  setHasUnsavedChanges,
+  handleFieldChange,
+  setIsFormComplete,
+  currentStep,
+}) {
   const { propertyData } = usePropertyData();
   const [autorizedUser, setAutorizedUser] = useState(false);
   const [isPostulant, setIsPostulant] = useState(false);
@@ -38,18 +44,17 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
   });
 
   useEffect(() => {
-    console.log("📌 Valor actual de currentStep en PropertyDetails:", currentStep);
+    console.log(
+      "📌 Valor actual de currentStep en PropertyDetails:",
+      currentStep
+    );
   }, [currentStep]); // ✅ Se ejecuta cuando cambia currentStep
-  
-  
-  
 
   useEffect(() => {
     if (user && propertyData) {
-  
       const postulant = propertyData?.projectPostulant?.id;
       const authorizedUsers = [...propertyData.projectVerifiers, postulant];
-  
+
       setAutorizedUser(
         (authorizedUsers.includes(user.id) &&
           (propertyData.propertyInfo.status === null ||
@@ -57,13 +62,12 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
           user.role === "admon" ||
           propertyData.projectVerifiers.includes(user.id)
       );
-  
+
       setIsPostulant(postulant === user.id);
-  
+
       setIsVerifier(propertyData.projectVerifiers.includes(user.id));
     }
   }, [user, propertyData]);
-  
 
   useEffect(() => {
     if (user && propertyData) {
@@ -71,19 +75,24 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
     }
   }, [user, propertyData, setHasUnsavedChanges]);
 
-
   const handleValidateProperty = async (status) => {
     if (!propertyData?.propertyInfo?.id) return;
 
     setIsLoading(true);
     try {
-      await API.graphql(graphqlOperation(updateProperty, {
-        input: {
-          id: propertyData.propertyInfo.id,
-          status,
-        },
-      }));
-      toast.success(`Predio ${status === "APPROVED" ? "aprobado" : "rechazado"} exitosamente`);
+      await API.graphql(
+        graphqlOperation(updateProperty, {
+          input: {
+            id: propertyData.propertyInfo.id,
+            status,
+          },
+        })
+      );
+      toast.success(
+        `Predio ${
+          status === "APPROVED" ? "aprobado" : "rechazado"
+        } exitosamente`
+      );
       setTimeout(() => {
         window.location.reload();
       }, 1500);
@@ -96,16 +105,17 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
 
   const updateFormCompletion = (formName, isComplete) => {
     console.log(`📩 Recibido desde hijo: ${formName} →`, isComplete);
-  
+
     setFormCompletion((prev) => {
       const newCompletion = { ...prev, [formName]: Boolean(isComplete) };
-      const anyComplete = Object.values(newCompletion).some(value => value === true);
+      const anyComplete = Object.values(newCompletion).some(
+        (value) => value === true
+      );
       setIsFormComplete(anyComplete);
-  
+
       return newCompletion;
     });
   };
-  
 
   // Función para mostrar el modal con las opciones de validación
   const handleVerifyClick = () => {
@@ -131,121 +141,128 @@ export default function PropertyDetails({ visible, setHasUnsavedChanges , handle
     });
   };
 
-
   return (
     <>
       {visible && propertyData && (
-           <>
-        <div className="row row-cols-1 row-cols-xl-2 g-4">
-          <div className="col-12 col-xl-12">
-            <CadastralRecords
-              autorizedUser={autorizedUser}
-              totalArea={totalArea}
-              latLngCentroid={latLngCentroid}
-              setTotalArea={setTotalArea}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-              handleFieldChange={handleFieldChange}
-              updateFormCompletion={(isComplete) => updateFormCompletion("cadastralRecords", isComplete)}
-            />
-          </div>
-  
-          <div className="col-12">
-            <ActualUseAndPotential
-              autorizedUser={autorizedUser}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-              handleFieldChange={handleFieldChange}
-              updateFormCompletion={(isComplete) => updateFormCompletion("actualUseAndPotential", isComplete)}
-            />
-          </div>
-  
-          <div className="col-12">
-            <UseRestrictions
-              autorizedUser={autorizedUser}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-              handleFieldChange={handleFieldChange}
-              updateFormCompletion={(isComplete) => updateFormCompletion("useRestrictions", isComplete)}
-            />
-          </div>
-  
-          <div className="col-12">
-            <Ecosystem
-              autorizedUser={autorizedUser}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-              handleFieldChange={handleFieldChange}
-              updateFormCompletion={(isComplete) => updateFormCompletion("ecosystem", isComplete)}
-            />
-          </div>
-  
-          <div className="col">
-            <GeneralAspects
-              autorizedUser={autorizedUser}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-              handleFieldChange={handleFieldChange}
-              updateFormCompletion={(isComplete) => updateFormCompletion("generalAspects", isComplete)}
-            />
-          </div>
-  
-          <div className="col">
-            <Relations
-              autorizedUser={autorizedUser}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-              handleFieldChange={handleFieldChange}
-              updateFormCompletion={(isComplete) => updateFormCompletion("relations", isComplete)}
-            />
-          </div>
-  
-          <div className="col">
-            <AdditionalFiles
-              autorizedUser={autorizedUser}
-              basePath={`projects/${propertyData.propertyInfo?.projectID}/other/`}
-              setHasUnsavedChanges={setHasUnsavedChanges}
-              handleFieldChange={handleFieldChange}
-            />
-          </div>
-        </div>
-        <div className="w-full mt-12 mb-16">
-        <div className="bg-white shadow-xl rounded-lg p-6 w-full text-center border border-gray-300">
-  
-  {/* Mostrar estado del predio */}
-  {status === "APPROVED" && (
-    <div className="mb-4 px-4 py-2 text-white bg-green-500 rounded-md font-semibold">
-      ✅ Predio Aprobado
-    </div>
-  )}
+        <>
+          <div className="row row-cols-1 row-cols-xl-2 g-4">
+            <div className="col-12 col-xl-12">
+              <CadastralRecords
+                autorizedUser={autorizedUser}
+                totalArea={totalArea}
+                latLngCentroid={latLngCentroid}
+                setTotalArea={setTotalArea}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+                handleFieldChange={handleFieldChange}
+                updateFormCompletion={(isComplete) =>
+                  updateFormCompletion("cadastralRecords", isComplete)
+                }
+              />
+            </div>
 
-  {status === "REJECTED" && (
-    <div className="mb-4 px-4 py-2 text-white bg-red-500 rounded-md font-semibold">
-      ❌ Predio Rechazado
-    </div>
-  )}
+            <div className="col-12">
+              <ActualUseAndPotential
+                autorizedUser={autorizedUser}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+                handleFieldChange={handleFieldChange}
+                updateFormCompletion={(isComplete) =>
+                  updateFormCompletion("actualUseAndPotential", isComplete)
+                }
+              />
+            </div>
 
- 
+            <div className="col-12">
+              <UseRestrictions
+                autorizedUser={autorizedUser}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+                handleFieldChange={handleFieldChange}
+                updateFormCompletion={(isComplete) =>
+                  updateFormCompletion("useRestrictions", isComplete)
+                }
+              />
+            </div>
 
-  {/* Mostrar el botón solo si el usuario es verificador y el estado es PENDING */}
-  {status === "PENDING" && isVerifier && (
-  <>
-    <button
-      className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
-      onClick={handleVerifyClick}
-      disabled={isLoading || currentStep < 3} // ✅ Bloqueado si no estamos en el paso 3
-    >
-      {isLoading ? "Procesando..." : "Verificar"}
-    </button>
+            <div className="col-12">
+              <Ecosystem
+                autorizedUser={autorizedUser}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+                handleFieldChange={handleFieldChange}
+                updateFormCompletion={(isComplete) =>
+                  updateFormCompletion("ecosystem", isComplete)
+                }
+              />
+            </div>
 
-    {/* 🔴 Mensaje de advertencia si el usuario intenta verificar antes del paso 3 */}
-    {currentStep < 4 && (
-      <p className="text-red-500 text-sm mt-2">
-        ⚠ Debes completar los pasos anteriores antes llegar al paso 4.
-      </p>
-    )}
-  </>
-)}
+            <div className="col">
+              <GeneralAspects
+                autorizedUser={autorizedUser}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+                handleFieldChange={handleFieldChange}
+                updateFormCompletion={(isComplete) =>
+                  updateFormCompletion("generalAspects", isComplete)
+                }
+              />
+            </div>
 
-</div>
+            <div className="col">
+              <Relations
+                autorizedUser={autorizedUser}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+                handleFieldChange={handleFieldChange}
+                updateFormCompletion={(isComplete) =>
+                  updateFormCompletion("relations", isComplete)
+                }
+              />
+            </div>
 
+            <div className="col">
+              <AdditionalFiles
+                autorizedUser={autorizedUser}
+                basePath={`projects/${propertyData.propertyInfo?.projectID}/other/`}
+                setHasUnsavedChanges={setHasUnsavedChanges}
+                handleFieldChange={handleFieldChange}
+              />
+            </div>
           </div>
+          <div className="w-full mt-12 mb-16">
+            <div className="bg-white shadow-xl rounded-lg p-6 w-full text-center border border-gray-300">
+              {/* Mostrar estado del predio */}
+              {status === "APPROVED" && (
+                <div className="mb-4 px-4 py-2 text-white bg-green-500 rounded-md font-semibold">
+                  ✅ Predio Aprobado
+                </div>
+              )}
+
+              {status === "REJECTED" && (
+                <div className="mb-4 px-4 py-2 text-white bg-red-500 rounded-md font-semibold">
+                  ❌ Predio Rechazado
+                </div>
+              )}
+
+              {/* Mostrar el botón solo si el usuario es verificador y el estado es PENDING */}
+              {status === "PENDING" && isVerifier && (
+                <>
+                  <button
+                    className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
+                    onClick={handleVerifyClick}
+                    disabled={isLoading || currentStep < 3} // ✅ Bloqueado si no estamos en el paso 3
+                  >
+                    {isLoading ? "Procesando..." : "Verificar"}
+                  </button>
+
+                  {/* 🔴 Mensaje de advertencia si el usuario intenta verificar antes del paso 3 */}
+                  {currentStep < 4 && (
+                    <p className="text-red-500 text-sm mt-2">
+                      ⚠ Debes completar los pasos anteriores antes llegar al
+                      paso 4.
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </>
-  )}
-</>
-);  
+  );
 }
