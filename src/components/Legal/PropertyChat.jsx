@@ -2,7 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { useAuth } from "context/AuthContext";
 import { notify } from "utilities/notify";
-import { createVerificationComment } from "graphql/mutations";
+import {
+  createNotification,
+  createVerificationComment,
+} from "graphql/mutations";
 import { getProperty } from "utilities/customQueries";
 
 export default function PropertyChat({ propertyId, featureChat }) {
@@ -13,6 +16,8 @@ export default function PropertyChat({ propertyId, featureChat }) {
   const [loading, setLoading] = useState(true);
   const [availableChatUsers, setAvailableChatUsers] = useState([]);
   const [verifierRole, setVerifierRole] = useState(null);
+  const [propertyID, setPropertyID] = useState(null);
+  const [propertyName, setPropertyName] = useState("");
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -22,6 +27,8 @@ export default function PropertyChat({ propertyId, featureChat }) {
           graphqlOperation(getProperty, { id: propertyId })
         );
         const property = response.data.getProperty;
+        setPropertyID(property.id)
+        setPropertyName(property.name);
         console.log("property", property);
         const verificationComments = property.propertyFeatures.items.flatMap(
           (feature) =>
@@ -75,10 +82,27 @@ export default function PropertyChat({ propertyId, featureChat }) {
       isCommentByVerifier: user.role === "legal" || user.role === "validator", // Asumiendo que el usuario Legal está enviando el mensaje
     };
 
+    const notificationData = {
+      userOriginID: user.id,
+      userID:
+        user.id === availableChatUsers[1]
+          ? availableChatUsers[0]
+          : availableChatUsers[1], // ID del usuario que debe recibir la notificación
+      message: `Tienes un nuevo mensaje en el predio: ${propertyName}`,
+      type: "MESSAGE",
+      resourceID: propertyID,
+      isRead: false,
+    };
+
     try {
       await API.graphql(
         graphqlOperation(createVerificationComment, { input: commentData })
       );
+
+      await API.graphql(
+        graphqlOperation(createNotification, { input: notificationData })
+      );
+      
       setMessages((prevMessages) => [
         ...prevMessages,
         {

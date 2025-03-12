@@ -11,6 +11,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { updateProperty, updateVerification } from "graphql/mutations";
 import PropertyChat from "components/Legal/PropertyChat";
 import { FaEye } from "react-icons/fa";
+import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 const documentTypeMapper = {
   CERTIFICADO_TRADICION: "Certificado de Tradición",
@@ -221,7 +222,8 @@ export default function LegalAdmon() {
   console.log(filteredProperties);
   return (
     <>
-      <HeaderNavbar logOut={logOut} />
+      {/* <HeaderNavbar logOut={logOut} /> */}
+      <NewHeaderNavbar />
 
       {/* 📌 Listado de predios */}
       <section className="max-w-6xl mx-auto py-10 mt-10">

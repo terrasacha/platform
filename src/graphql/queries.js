@@ -1,6 +1,218 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getNotification = /* GraphQL */ `
+  query GetNotification($id: ID!) {
+    getNotification(id: $id) {
+      id
+      userOriginID
+      userOrigin {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      message
+      type
+      resourceID
+      isRead
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listNotifications = /* GraphQL */ `
+  query ListNotifications(
+    $filter: ModelNotificationFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listNotifications(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userOriginID
+        userOrigin {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        message
+        type
+        resourceID
+        isRead
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
@@ -76,6 +288,22 @@ export const getUser = /* GraphQL */ `
           isFavorite
           userID
           productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      notifications {
+        items {
+          id
+          userOriginID
+          userID
+          message
+          type
+          resourceID
+          isRead
           createdAt
           updatedAt
           __typename
@@ -284,6 +512,10 @@ export const listUsers = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -364,6 +596,10 @@ export const getWallet = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -585,6 +821,10 @@ export const getVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -647,6 +887,10 @@ export const getVerification = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -1221,6 +1465,10 @@ export const getDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -1728,6 +1976,10 @@ export const getCampaign = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -2053,6 +2305,10 @@ export const getProperty = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -2115,6 +2371,10 @@ export const getProperty = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -4801,6 +5061,10 @@ export const getUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -5523,6 +5787,10 @@ export const getPayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -5849,6 +6117,10 @@ export const getCompany = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -6700,6 +6972,142 @@ export const listClaimedTokens = /* GraphQL */ `
     }
   }
 `;
+export const notificationsByUserOriginID = /* GraphQL */ `
+  query NotificationsByUserOriginID(
+    $userOriginID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelNotificationFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    notificationsByUserOriginID(
+      userOriginID: $userOriginID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userOriginID
+        userOrigin {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        message
+        type
+        resourceID
+        isRead
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const notificationsByUserID = /* GraphQL */ `
+  query NotificationsByUserID(
+    $userID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelNotificationFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    notificationsByUserID(
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userOriginID
+        userOrigin {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        userID
+        user {
+          id
+          name
+          dateOfBirth
+          isProfileUpdated
+          isValidatedStep1
+          isValidatedStep2
+          addresss
+          cellphone
+          role
+          subrole
+          status
+          email
+          marketplaceID
+          createdAt
+          updatedAt
+          __typename
+        }
+        message
+        type
+        resourceID
+        isRead
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const usersByMarketplaceID = /* GraphQL */ `
   query UsersByMarketplaceID(
     $marketplaceID: ID!
@@ -6741,6 +7149,10 @@ export const usersByMarketplaceID = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }

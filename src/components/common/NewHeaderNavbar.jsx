@@ -226,26 +226,11 @@ export default function NewHeaderNavbar() {
                   </>
                 )}
                 {user.attributes["custom:role"] === "validator" && (
-                  <>
-                    <Nav.Link
-                      onClick={() =>
-                        (window.location.href = "/consultor_admon")
-                      }
-                    >
-                      Mis campañas
-                    </Nav.Link>
-                    <div
-                      className="relative cursor-pointer"
-                      onClick={handleShowNotifications}
-                    >
-                      <BellFill className="w-6 h-6 text-gray-800" />
-                      {messages.length > 0 && (
-                        <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-                          {messages.length}
-                        </span>
-                      )}
-                    </div>
-                  </>
+                  <Nav.Link
+                    onClick={() => (window.location.href = "/consultor_admon")}
+                  >
+                    Mis campañas
+                  </Nav.Link>
                 )}
                 {user.attributes["custom:role"] === "legal" && (
                   <>
@@ -255,6 +240,20 @@ export default function NewHeaderNavbar() {
                       Listado de predios
                     </Nav.Link>
                   </>
+                )}
+                {(user.attributes["custom:role"] === "validator" ||
+                  user.attributes["custom:role"] === "legal") && (
+                  <div
+                    className="relative cursor-pointer"
+                    onClick={handleShowNotifications}
+                  >
+                    <BellFill className="w-6 h-6 text-gray-800" />
+                    {messages.length > 0 && (
+                      <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                        {messages.length}
+                      </span>
+                    )}
+                  </div>
                 )}
                 {user ? (
                   <div className="flex">
