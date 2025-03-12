@@ -1,0 +1,18 @@
+{
+  "resourceName": "platform",
+  "policyUUID": "d23a229d",
+  "bucketName": "platformd9531187bef34a10abb664f2878180ae",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
