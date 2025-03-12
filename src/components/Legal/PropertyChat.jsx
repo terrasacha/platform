@@ -59,7 +59,7 @@ export default function PropertyChat({ propertyId, featureChat }) {
         setLoading(false);
   
         // 🔍 Asignar usuarios disponibles en el chat
-        const userVerifierId = propertyVerification.userVerifierID;
+        const userVerifierId = propertyVerification?.userVerifierID;
         const userVerifiedId = propertyVerification.userVerifiedID;
         setAvailableChatUsers([userVerifierId, userVerifiedId]);
         setVerifierRole(propertyVerification?.userVerifier?.role);
@@ -97,7 +97,7 @@ export default function PropertyChat({ propertyId, featureChat }) {
       userOriginID: user.id,
       userID:
         user.id === availableChatUsers[1]
-          ? availableChatUsers[0]
+          ? (availableChatUsers[0] || '')
           : availableChatUsers[1], // ID del usuario que debe recibir la notificación
       message: `Tienes un nuevo mensaje en el predio: ${propertyName}`,
       type: "MESSAGE",
@@ -110,9 +110,11 @@ export default function PropertyChat({ propertyId, featureChat }) {
         graphqlOperation(createVerificationComment, { input: commentData })
       );
 
-      await API.graphql(
-        graphqlOperation(createNotification, { input: notificationData })
-      );
+      if(availableChatUsers[0]) {
+        await API.graphql(
+          graphqlOperation(createNotification, { input: notificationData })
+        );
+      }
       
       setMessages((prevMessages) => [
         ...prevMessages,
