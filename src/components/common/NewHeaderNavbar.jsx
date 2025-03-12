@@ -16,11 +16,7 @@ import { LogoutIcon } from "./icons/LogoutIcon";
 import { useLocation } from "react-router-dom";
 import DropDownProjects from "./DropDownProjects";
 import { BellFill } from "react-bootstrap-icons";
-import {
-  listVerificationComments,
-  verificationsByUserVerifiedID,
-  verificationsByUserVerifierID,
-} from "graphql/queries";
+import { listVerificationComments, verificationsByUserVerifiedID, verificationsByUserVerifierID } from "graphql/queries";
 import { API, graphqlOperation } from "aws-amplify";
 import NotificationsModal from "./NotificationsModal";
 
@@ -47,7 +43,6 @@ export default function NewHeaderNavbar() {
       })
       .catch((err) => console.log("Error obteniendo usuario:", err));
   }, []);
-
 
   const fetchPendingMessages = async (userId, role) => {
     if (!userId || !role) return;
@@ -98,7 +93,7 @@ export default function NewHeaderNavbar() {
       console.error("❌ Error cargando mensajes pendientes:", error);
     }
   };
-  
+
   const handleSignOut = async () => {
     try {
       await Auth.signOut();
@@ -141,7 +136,7 @@ export default function NewHeaderNavbar() {
   };
   
   const handleCloseNotifications = () => setShowNotifications(false);
-
+  if (!user) return <HeaderNavbar />;
   return (
     <Navbar key="sm" expand="lg" fixed="top" className="bg-[#ecd798]">
       <Container fluid>
@@ -220,17 +215,25 @@ export default function NewHeaderNavbar() {
                 )}
                 {(user.attributes["custom:role"] === "validator" ||
                   user.attributes["custom:role"] === "legal") && (
-                  <div
+                    <>
+                     <div
                     className="relative cursor-pointer"
                     onClick={handleShowNotifications}
                   >
                     <BellFill className="w-6 h-6 text-gray-800" />
-                    {messages.length > 0 && (
+                    {messages?.length > 0 && (
                       <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
                         {messages.length}
                       </span>
                     )}
                   </div>
+                    <Nav.Link
+                      onClick={() => (window.location.href = "/legal_admon")}
+                    >
+                      Listado de predios
+                    </Nav.Link>
+                  </>
+                 
                 )}
                 {user ? (
                   <>
