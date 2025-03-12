@@ -16,7 +16,7 @@ import PropertyChat from "components/Legal/PropertyChat";
 import { API, graphqlOperation } from "aws-amplify";
 import { Modal } from "react-bootstrap";
 import { createPropertyFeature, createVerification, updateVerification } from "graphql/mutations";
-import { listPropertyFeatures } from "graphql/queries";
+import { listPropertyFeatures, listVerifications } from "graphql/queries";
 
 export default function Timeline({
   currentStep = 1,

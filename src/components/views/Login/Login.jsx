@@ -746,7 +746,7 @@ export default function LogIn() {
           <div className={s.containerLogin}>
             <div className={s.containerCard}>
               <div className={s.containerTitle}>
-              <img src={LOGO} style={{ width: "30px" }} alt="logo" />
+              <img src={TerrasachaLogo} style={{ width: "30px" }} alt="logo" />
                 <h2 className="text-center mb-4">Verificación TOTP</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
               </div>
