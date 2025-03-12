@@ -45,6 +45,7 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 
     useEffect(() => {
       const status = propertyData?.propertyInfo?.status;
+      console.log("📌 propertyData actualizado:", propertyData);
     
       if (status === "APPROVED" || status === "REJECTED") {
         setCurrentStep(5);  // ✅ Ahora el paso final es el 5
@@ -60,10 +61,6 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
     
       console.log("📌 Nuevo currentStep:", currentStep);
     }, [isFormComplete, propertyData, filesAreComplete, s3Loading]);
-    
-    
-            
-    
     
     const handleValidationComplete = () => {
       console.log("📌 ¡Los archivos están completos! Pasando al paso 3.");
@@ -245,6 +242,9 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
                   onStepChange={handleStepChange}
                   propertyStatus={propertyData?.propertyInfo?.status}
                   filesAreComplete={filesAreComplete}
+                  propertyId={propertyData?.propertyInfo?.id}  
+                  userId={propertyData?.projectPostulant?.id}
+                  campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
                 />
               </div>
 

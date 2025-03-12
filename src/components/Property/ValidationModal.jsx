@@ -29,6 +29,7 @@ import {
   updateProperty,
 } from "graphql/mutations";
 import PropertyChat from "components/Legal/PropertyChat";
+import { getProperty } from "utilities/customQueries";
 
 export default function ValidationModal({
   isOpen,
@@ -45,7 +46,11 @@ export default function ValidationModal({
   const [uploadProgress, setUploadProgress] = useState({});
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [verificationCreated, setVerificationCreated] = useState(false);
-  const [pendingFiles, setPendingFiles] = useState({}); // Archivos seleccionados pero no guardados
+  const [pendingFiles, setPendingFiles] = useState({}); 
+  const [property, setPropertyData] = useState(null);
+  const [propertyDetails, setPropertyDetails] = useState(null);
+  const propertyID = propertyData.propertyInfo?.id;
+
 
   // ✅ Verifica si el predio ya tiene archivos subidos o es nuevo
   const isNewProperty =
@@ -61,7 +66,33 @@ export default function ValidationModal({
     if (isOpen) {
       listS3Files();
     }
-  }, [isOpen, propertyData?.propertyInfo?.id]); // Se ejecuta cuando cambia el predio
+  }, [isOpen, propertyData?.propertyInfo?.id]); 
+  
+  useEffect(() => {
+    if (isOpen && propertyID) {
+      fetchPropertyData(propertyID);
+    }
+  }, [isOpen, propertyID]);
+
+  // Función para obtener los datos de la propiedad desde la API
+  const fetchPropertyData = async (propertyID) => {
+    try {
+      const response = await API.graphql(
+        graphqlOperation(getProperty, { id: propertyID })
+      );
+      setPropertyDetails(response.data.getProperty);
+    } catch (error) {
+      console.error("❌ Error al obtener los datos de la propiedad:", error);
+    }
+  };
+
+  // 📌 Verifica si la carga debe estar deshabilitada
+  const isUploadDisabled = propertyDetails
+    ? (propertyDetails.status === "DOC_UPLOADED" && propertyDetails.userLegalID) ||
+      ["SELECTABLE", "REJECTED"].includes(propertyDetails.status)
+    : true; // Si no hay datos, deshabilitamos por defecto
+
+  
 
   const listS3Files = async () => {
     setLoading(true);
@@ -89,7 +120,6 @@ export default function ValidationModal({
       });
 
       setUploadedFiles(uploaded);
-      checkIfAllFilesUploaded(uploaded); // ✅ Verifica si están todos los documentos
     } catch (error) {
       console.error("Error al listar archivos en S3:", error);
     } finally {
@@ -154,6 +184,7 @@ export default function ValidationModal({
       await createPropertyFeatureEntry(uploadedDocuments);
 
       toast.success("Los archivos fueron actualizados con éxito");
+      checkIfAllFilesUploaded(uploadedFiles);
     } catch (error) {
       console.error("❌ Error al subir archivos a S3:", error);
       toast.error("Error al subir los archivos. Inténtalo de nuevo.");
@@ -353,10 +384,20 @@ export default function ValidationModal({
   const handleFileSelection = (event, fileType) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      setSelectedFiles((prev) => ({ ...prev, [fileType]: selectedFile }));
-      setPendingFiles((prev) => ({ ...prev, [fileType]: true })); // ✅ Marcar como en precarga
+        setSelectedFiles((prev) => ({ ...prev, [fileType]: selectedFile }));
+        setPendingFiles((prev) => ({ ...prev, [fileType]: true })); // ✅ Marcar como en precarga
+
+        // 🔹 Simular que el archivo ya está "cargado" para cambiar de "Subir" a "Editar"
+        setUploadedFiles((prev) => ({
+            ...prev,
+            [fileType]: `pending-${selectedFile.name}`, // Simulamos un archivo subido con un prefijo temporal
+        }));
+
+        // 🔹 LIMPIAR el input para permitir seleccionar otro archivo con el mismo nombre
+        event.target.value = "";
     }
-  };
+};
+
 
   const updatePropertyStatus = async () => {
     try {
@@ -389,17 +430,17 @@ export default function ValidationModal({
   };
 
   const checkIfAllFilesUploaded = (files) => {
-    if (
-      ["certificado", "escrituras", "planos"].every(
-        (fileType) => fileType in files
-      )
-    ) {
-      console.log(
-        "✅ Todos los archivos requeridos han sido subidos. Actualizando estado..."
-      );
-      updatePropertyStatus(); // ✅ Llamamos a updatePropertyStatus cuando los archivos están listos
+    const requiredFiles = ["certificado", "escrituras", "planos"];
+    const allFilesUploaded = requiredFiles.every((fileType) => fileType in files);
+
+    if (allFilesUploaded) {
+        console.log("✅ Todos los archivos requeridos han sido subidos. Actualizando estado...");
+        updatePropertyStatus();  // ✅ Ahora SOLO se llama si el usuario subió archivos nuevos
+    } else {
+        console.log("⚠️ Aún faltan archivos por subir. No se actualizará el estado.");
     }
-  };
+};
+
 
   return (
     <Modal size="lg" show={isOpen} onHide={onClose} centered>
@@ -415,82 +456,78 @@ export default function ValidationModal({
             </p>
 
             {["certificado", "escrituras", "planos"].map((fileType) => (
-              <div
-                key={fileType}
-                className="flex items-center justify-between border p-3 rounded-md shadow-sm mb-3"
-              >
-                <span className="text-gray-700 text-sm capitalize">
-                  {fileType === "certificado"
-                    ? "Certificado de Libertad"
-                    : fileType === "escrituras"
-                    ? "Escrituras Públicas"
-                    : "Planos Catastrales"}
-                </span>
+    <div key={fileType} className="flex items-center justify-between border p-3 rounded-md shadow-sm mb-3">
+        <span className="text-gray-700 text-sm capitalize">
+            {fileType === "certificado"
+                ? "Certificado de Libertad"
+                : fileType === "escrituras"
+                ? "Escrituras Públicas"
+                : "Planos Catastrales"}
+        </span>
 
-                <div className="flex items-center gap-2">
-                  {uploadedFiles[fileType] || pendingFiles[fileType] ? (
-                    <>
-                      {/* ✅ Mostrar Icono de Precarga */}
+        <div className="flex items-center gap-2">
+            {/* 🔹 Botón "Ver" solo si el archivo ya está en S3 */}
+            {uploadedFiles[fileType] && !uploadedFiles[fileType].startsWith("pending-") && (
+                <button
+                    onClick={async () => window.open(await getSignedFileUrl(uploadedFiles[fileType]), "_blank")}
+                    className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
+                >
+                    <FaEye size={14} />
+                    Ver
+                </button>
+            )}
 
-                      <button
-                        onClick={async () =>
-                          window.open(
-                            await getSignedFileUrl(uploadedFiles[fileType]),
-                            "_blank"
-                          )
-                        }
-                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
-                      >
-                        <FaEye size={14} />
-                        Ver
-                      </button>
+{!isUploadDisabled ? (
+    (uploadedFiles[fileType] || pendingFiles[fileType]) && (
+        <>
+            <input
+                type="file"
+                className="hidden"
+                id={`file-upload-${fileType}`}
+                onChange={(e) => handleFileSelection(e, fileType)}
+            />
+            <label
+                htmlFor={`file-upload-${fileType}`}
+                className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2"
+            >
+                <FaEdit size={14} />
+                Editar
+            </label>
+        </>
+    )
+) : (
+    <span className="text-gray-500 text-sm italic">No editable</span> 
+)}
 
-                      {/* ✅ Botón de Editar cuando el archivo ha sido seleccionado */}
-                      <input
+
+            {/* 🔹 Botón "Subir" solo si no hay un archivo seleccionado todavía */}
+            {!isUploadDisabled && !uploadedFiles[fileType] && !pendingFiles[fileType] && (
+                <>
+                    <input
                         type="file"
                         className="hidden"
                         id={`file-upload-${fileType}`}
                         onChange={(e) => handleFileSelection(e, fileType)}
-                        disabled={pendingFiles[fileType]} // 🔹 Deshabilitar mientras se precarga
-                      />
-                      <label
-                        htmlFor={`file-upload-${fileType}`}
-                        className={`cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2 ${
-                          pendingFiles[fileType]
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                        }`}
-                      >
-                        <FaEdit size={14} />
-                        Editar
-                      </label>
-                    </>
-                  ) : (
-                    <>
-                      <input
-                        type="file"
-                        className="hidden"
-                        id={`file-upload-${fileType}`}
-                        onChange={(e) => handleFileSelection(e, fileType)}
-                      />
-                      <label
+                    />
+                    <label
                         htmlFor={`file-upload-${fileType}`}
                         className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-2"
-                      >
+                    >
                         <FaFileUpload size={14} />
                         Subir
-                      </label>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
+                    </label>
+                </>
+            )}
+        </div>
+    </div>
+))}
+
           </div>
           <div>
-            <PropertyChat
-              propertyId={propertyData.propertyInfo?.id}
-              featureChat={"GLOBAL_PROPERTY_FILES"}
-            />
+              <PropertyChat
+                propertyId={propertyData.propertyInfo?.id}
+                featureChat={"GLOBAL_PROPERTY_FILES"}
+              />
           </div>
         </div>
 

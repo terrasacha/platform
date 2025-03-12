@@ -245,6 +245,7 @@ export default function NewHeaderNavbar() {
                         </span>
                       )}
                     </div>
+
                   </>
                 )}
                 {user.attributes["custom:role"] === "legal" && (
