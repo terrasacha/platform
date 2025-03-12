@@ -10,6 +10,8 @@ import { useAuth } from "context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import { updateProperty, updateVerification } from "graphql/mutations";
 import PropertyChat from "components/Legal/PropertyChat";
+import { FaEye } from "react-icons/fa";
+import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 const documentTypeMapper = {
   CERTIFICADO_TRADICION: "Certificado de Tradición",
@@ -34,7 +36,9 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
       const documentData = JSON.parse(document.data);
       return {
         name: documentData.name,
-        type: documentTypeMapper[documentData.type] || "Tipo de documento desconocido",
+        type:
+          documentTypeMapper[documentData.type] ||
+          "Tipo de documento desconocido",
         url: documentData.url,
       };
     });
@@ -68,36 +72,42 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-lg h-auto">
+      <div className="bg-white rounded-lg p-6 w-full max-w-3xl h-auto">
         <h2 className="text-xl font-bold mb-4">Documentación del predio</h2>
-        {/* Aquí se puede agregar el contenido del documento */}
-        <div className="mb-4">
-          {propertyFiles.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {propertyFiles.map((file, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 border border-gray-300 rounded-md shadow-md hover:shadow-lg transition-shadow duration-200 bg-white"
-                >
-                  <a
-                    href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-sm font-semibold"
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div>
+            {propertyFiles.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {propertyFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 border rounded-md shadow-sm"
                   >
-                    {file.name}
-                  </a>
-                  <span className="text-gray-500 text-sm">{file.type}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-600 italic text-center">
-              No hay documentos subidos para este predio.
-            </p>
-          )}
+                    <span className="text-gray-500 text-sm">{file.type}</span>
+                    <a
+                      href={file.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
+                    >
+                      <FaEye size={14} />
+                      Ver
+                    </a>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 italic text-center">
+                No hay documentos subidos para este predio.
+              </p>
+            )}
+          </div>
+          <PropertyChat
+            propertyId={property.id}
+            featureChat={"GLOBAL_PROPERTY_FILES"}
+          />
         </div>
-        <PropertyChat propertyId={property.id} />
+        {/* Aquí se puede agregar el contenido del documento */}
         <div className="flex justify-end mt-4">
           <button
             className="bg-green-500 text-white px-4 py-2 rounded mr-2"
@@ -212,7 +222,8 @@ export default function LegalAdmon() {
   console.log(filteredProperties);
   return (
     <>
-      <HeaderNavbar logOut={logOut} />
+      {/* <HeaderNavbar logOut={logOut} /> */}
+      <NewHeaderNavbar />
 
       {/* 📌 Listado de predios */}
       <section className="max-w-6xl mx-auto py-10 mt-10">

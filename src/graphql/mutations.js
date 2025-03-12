@@ -1,6 +1,471 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createNotification = /* GraphQL */ `
+  mutation CreateNotification(
+    $input: CreateNotificationInput!
+    $condition: ModelNotificationConditionInput
+  ) {
+    createNotification(input: $input, condition: $condition) {
+      id
+      userOriginID
+      userOrigin {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      message
+      type
+      resourceID
+      isRead
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateNotification = /* GraphQL */ `
+  mutation UpdateNotification(
+    $input: UpdateNotificationInput!
+    $condition: ModelNotificationConditionInput
+  ) {
+    updateNotification(input: $input, condition: $condition) {
+      id
+      userOriginID
+      userOrigin {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      message
+      type
+      resourceID
+      isRead
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteNotification = /* GraphQL */ `
+  mutation DeleteNotification(
+    $input: DeleteNotificationInput!
+    $condition: ModelNotificationConditionInput
+  ) {
+    deleteNotification(input: $input, condition: $condition) {
+      id
+      userOriginID
+      userOrigin {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      userID
+      user {
+        id
+        name
+        dateOfBirth
+        isProfileUpdated
+        isValidatedStep1
+        isValidatedStep2
+        addresss
+        cellphone
+        role
+        subrole
+        status
+        email
+        wallets {
+          nextToken
+          __typename
+        }
+        verifierVerifications {
+          nextToken
+          __typename
+        }
+        verifiedVerifications {
+          nextToken
+          __typename
+        }
+        userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
+          nextToken
+          __typename
+        }
+        documents {
+          nextToken
+          __typename
+        }
+        companies {
+          nextToken
+          __typename
+        }
+        payments {
+          nextToken
+          __typename
+        }
+        marketplaceID
+        marketplace {
+          id
+          name
+          oracleTokenName
+          oracleWalletID
+          adminWalletID
+          createdAt
+          updatedAt
+          __typename
+        }
+        campaigns {
+          nextToken
+          __typename
+        }
+        properties {
+          nextToken
+          __typename
+        }
+        createdAt
+        updatedAt
+        __typename
+      }
+      message
+      type
+      resourceID
+      isRead
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!
@@ -79,6 +544,22 @@ export const createUser = /* GraphQL */ `
           isFavorite
           userID
           productID
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
+      notifications {
+        items {
+          id
+          userOriginID
+          userID
+          message
+          type
+          resourceID
+          isRead
           createdAt
           updatedAt
           __typename
@@ -336,6 +817,22 @@ export const updateUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      notifications {
+        items {
+          id
+          userOriginID
+          userID
+          message
+          type
+          resourceID
+          isRead
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       documents {
         items {
           id
@@ -586,6 +1083,22 @@ export const deleteUser = /* GraphQL */ `
         nextToken
         __typename
       }
+      notifications {
+        items {
+          id
+          userOriginID
+          userID
+          message
+          type
+          resourceID
+          isRead
+          createdAt
+          updatedAt
+          __typename
+        }
+        nextToken
+        __typename
+      }
       documents {
         items {
           id
@@ -797,6 +1310,10 @@ export const createWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -959,6 +1476,10 @@ export const updateWallet = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -1127,6 +1648,10 @@ export const deleteWallet = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -1286,6 +1811,10 @@ export const createVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -1348,6 +1877,10 @@ export const createVerification = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -1571,6 +2104,10 @@ export const updateVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -1633,6 +2170,10 @@ export const updateVerification = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -1856,6 +2397,10 @@ export const deleteVerification = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -1918,6 +2463,10 @@ export const deleteVerification = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -2559,6 +3108,10 @@ export const createDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -2773,6 +3326,10 @@ export const updateDocument = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -2984,6 +3541,10 @@ export const deleteDocument = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -3821,6 +4382,10 @@ export const createCampaign = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -3949,6 +4514,10 @@ export const updateCampaign = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -4074,6 +4643,10 @@ export const deleteCampaign = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -4349,6 +4922,10 @@ export const createProperty = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -4411,6 +4988,10 @@ export const createProperty = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -4655,6 +5236,10 @@ export const updateProperty = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -4717,6 +5302,10 @@ export const updateProperty = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -4961,6 +5550,10 @@ export const deleteProperty = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -5023,6 +5616,10 @@ export const deleteProperty = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -10377,6 +10974,10 @@ export const createUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -10556,6 +11157,10 @@ export const updateUserProduct = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -10732,6 +11337,10 @@ export const deleteUserProduct = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -11863,6 +12472,10 @@ export const createPayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -12055,6 +12668,10 @@ export const updatePayment = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -12244,6 +12861,10 @@ export const deletePayment = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }
@@ -12712,6 +13333,10 @@ export const createCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -12892,6 +13517,10 @@ export const updateCompany = /* GraphQL */ `
           nextToken
           __typename
         }
+        notifications {
+          nextToken
+          __typename
+        }
         documents {
           nextToken
           __typename
@@ -13069,6 +13698,10 @@ export const deleteCompany = /* GraphQL */ `
           __typename
         }
         userProducts {
+          nextToken
+          __typename
+        }
+        notifications {
           nextToken
           __typename
         }

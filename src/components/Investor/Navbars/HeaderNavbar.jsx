@@ -1,24 +1,35 @@
 import React, { Component } from "react";
 // Bootstrap
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Container, Nav, Navbar, Modal, Button } from "react-bootstrap";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import s from "./HeaderNavbar.module.css";
 // Import images
 import TerrasachaLogo from "../../common/TerrasachaLogo";
 import { Auth } from "aws-amplify";
+import { BellFill } from "react-bootstrap-icons";
 
 export default class HeaderNavbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null
+      user: null,
+      messages: [], // Inicializar las notificaciones
+      showNotifications: false // Estado para mostrar el modal
     };
     this.handleChangeNavBar = this.handleChangeNavBar.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
+    this.handleShowNotifications = this.handleShowNotifications.bind(this);
+    this.handleCloseNotifications = this.handleCloseNotifications.bind(this);
   }
-  componentDidMount(){
-    Auth.currentAuthenticatedUser().then(data => this.setState({user: data})).catch(err => console.log(err))
+
+  componentDidMount() {
+    Auth.currentAuthenticatedUser()
+      .then((data) => {
+        this.setState({ user: data });
+      })
+      .catch((err) => console.log(err));
   }
+
   async handleChangeNavBar(pRequest) {
     this.props.changeHeaderNavBarRequest(pRequest);
   }
@@ -27,24 +38,38 @@ export default class HeaderNavbar extends Component {
     this.props.logOut();
   }
 
-  findLastAuthUserKey() {
-    for (let key in localStorage) {
-      if (
-        key.includes("CognitoIdentityServiceProvider") &&
-        key.includes(".LastAuthUser")
-      ) {
-        const userlog = localStorage[key];
-        return userlog;
-      }
+  handleShowNotifications() {
+    const { user } = this.state;
+    if (!user) return;
+
+    const role = user.attributes["custom:role"];
+    const userId = user.attributes.sub;
+
+    if (role === "validator" || role === "constructor") {
+      this.fetchPendingMessages(userId, role);
     }
-    return null;
+    this.setState({ showNotifications: true });
+  }
+
+  handleCloseNotifications() {
+    this.setState({ showNotifications: false });
+  }
+
+  async fetchPendingMessages(userId, role) {
+    // Aquí puedes incluir la lógica para obtener notificaciones desde la API
+    // Por ahora, dejo mensajes de prueba
+    const sampleMessages = [
+      { id: 1, text: "Nueva verificación pendiente" },
+      { id: 2, text: "Comentario agregado a un predio" }
+    ];
+    this.setState({ messages: sampleMessages });
   }
 
   render() {
-    let role = this.state.user?.attributes['custom:role'] || ''
-    let userlog = this.state.user?.username || ''
+    const { user, messages, showNotifications } = this.state;
+    const role = user?.attributes?.["custom:role"] || "";
+    const userlog = user?.username || "";
 
-    
     const roleDisplayNames = {
       admon: "Administrador",
       validator: "Consultor",
@@ -72,84 +97,77 @@ export default class HeaderNavbar extends Component {
                 </Offcanvas.Title>
               </Offcanvas.Header>
               <Offcanvas.Body>
-                <Nav
-                  className="me-auto my-2 my-lg-0"
-                  style={{ maxHeight: "100px" }}
-                  navbarScroll
-                ></Nav>
+                <Nav className="me-auto my-2 my-lg-0" navbarScroll></Nav>
                 <Nav>
                   <Nav className={s.navGroup}>
-                  {localStorage.getItem("role") === "validator" && (
-                    <Nav.Link
-                      href="#profile"
-                      onClick={(e) =>
-                        this.props.changeHeaderNavBarRequest(
-                          "product_documents"
-                        )
-                      }
-                    >
-                    <a
-                      href="/new_campaign"
-                      className="bg-[#4DBC5E] text-white text-sm px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition flex items-center justify-center space-x-2"
-                    >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                      className="w-5 h-5"
-                    >
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span style={{color:"#FFFFFF"}}>Crear Campaña</span>
-                      </a>
-
-                    </Nav.Link>
-                )}
-                {localStorage.getItem("role") === "legal" && (
-                  <>
-                    <Nav.Link
-                      onClick={() =>
-                        (window.location.href = "/legal_admon")
-                      }
-                    >
-                      Listado de predios
-                    </Nav.Link>
-                  </>
-                )}
-                    {localStorage.getItem("role") ? (
-                      <div className="flex">
-                        <button
-                          className={s.signing}
-                          onClick={() => this.handleSignOut()}
+                    {role === "validator" && (
+                      <Nav.Link
+                        href="#profile"
+                        onClick={(e) =>
+                          this.props.changeHeaderNavBarRequest("product_documents")
+                        }
+                        className="flex items-center space-x-4"
+                      >
+                        {/* Botón Crear Campaña */}
+                        <a
+                          href="/new_campaign"
+                          className="bg-[#4DBC5E] text-white text-sm px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition flex items-center justify-center space-x-2"
+                          style={{ display: "flex", alignItems: "center", gap: "10px" }}
                         >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="white"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span style={{ color: "#FFFFFF" }}>Crear Campaña</span>
+                        </a>
+
+                        {/* Ícono de Notificaciones */}
+                        <div
+                          className="relative cursor-pointer flex items-center"
+                          onClick={this.handleShowNotifications}
+                          style={{ position: "relative", marginLeft: "10px" }}
+                        >
+                          <BellFill className="w-6 h-6 text-gray-800" />
+                          {messages.length > 0 && (
+                            <span
+                              className="absolute top-[-8px] right-[-8px] bg-red-500 text-white text-xs rounded-full px-2"
+                              style={{
+                                position: "absolute",
+                                top: "-5px",
+                                right: "-10px",
+                                background: "red",
+                                color: "white",
+                                fontSize: "12px",
+                                borderRadius: "50%",
+                                padding: "2px 6px",
+                              }}
+                            >
+                              {messages.length}
+                            </span>
+                          )}
+                        </div>
+                      </Nav.Link>
+                    )}
+
+                    {role ? (
+                      <div className="flex">
+                        <button className={s.signing} onClick={() => this.handleSignOut()}>
                           Desconectar
                         </button>
                         <button className="role flex flex-col items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            height="24"
-                            viewBox="0 -960 960 960"
-                            width="24"
-                            fill="#fff"
-                          >
-                            <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
-                          </svg>
-                          {userlog}
-                          <br></br>
-                          <p className="role_btn">
-                            {displayRole}
-                          </p>
+                          <p className="role_btn">{displayRole}</p>
                         </button>
                       </div>
                     ) : (
-                      <button
-                        className={s.signing}
-                        onClick={() => (window.location.href = "/login")}
-                      >
+                      <button className={s.signing} onClick={() => (window.location.href = "/login")}>
                         Ingresar
                       </button>
                     )}
@@ -159,6 +177,29 @@ export default class HeaderNavbar extends Component {
             </Navbar.Offcanvas>
           </Container>
         </Navbar>
+
+        {/* MODAL DE NOTIFICACIONES */}
+        <Modal show={showNotifications} onHide={this.handleCloseNotifications} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Notificaciones</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {messages.length > 0 ? (
+              <ul>
+                {messages.map((msg) => (
+                  <li key={msg.id}>{msg.text}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>No tienes notificaciones pendientes.</p>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleCloseNotifications}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
   }

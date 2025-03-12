@@ -16,7 +16,11 @@ import { LogoutIcon } from "./icons/LogoutIcon";
 import { useLocation } from "react-router-dom";
 import DropDownProjects from "./DropDownProjects";
 import { BellFill } from "react-bootstrap-icons";
-import { listVerificationComments, verificationsByUserVerifiedID, verificationsByUserVerifierID } from "graphql/queries";
+import {
+  listVerificationComments,
+  verificationsByUserVerifiedID,
+  verificationsByUserVerifierID,
+} from "graphql/queries";
 import { API, graphqlOperation } from "aws-amplify";
 import NotificationsModal from "./NotificationsModal";
 
@@ -36,7 +40,7 @@ export default function NewHeaderNavbar() {
         setUser(data);
         const userId = data.attributes.sub; // Obtener `sub` en lugar de `username`
         const role = data.attributes["custom:role"];
-  
+
         if (["validator", "constructor"].includes(role)) {
           fetchPendingMessages(userId, role);
         }
@@ -47,41 +51,48 @@ export default function NewHeaderNavbar() {
 
   const fetchPendingMessages = async (userId, role) => {
     if (!userId || !role) return;
-  
+
     try {
       let messages = [];
-  
+
       if (role === "constructor") {
         const ownerResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifiedID, { userVerifiedID: userId })
+          graphqlOperation(verificationsByUserVerifiedID, {
+            userVerifiedID: userId,
+          })
         );
-  
-        messages = ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
-          (verification) =>
-            verification.verificationComments?.items?.map((comment) => ({
-              ...comment,
-              senderName: verification.userVerifier?.name || "Desconocido",
-              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
-            })) || []
-        ) || [];
-  
+
+        messages =
+          ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
+            (verification) =>
+              verification.verificationComments?.items?.map((comment) => ({
+                ...comment,
+                senderName: verification.userVerifier?.name || "Desconocido",
+                propertyID: verification.propertyFeature?.propertyID || null, // Agregar nombre del verificador
+              })) || []
+          ) || [];
       } else if (role === "validator") {
         const verifierResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifierID, { userVerifierID: userId })
+          graphqlOperation(verificationsByUserVerifierID, {
+            userVerifierID: userId,
+          })
         );
-  
-        messages = verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
-          (verification) =>
-            verification.verificationComments?.items?.map((comment) => ({
-              ...comment,
-              senderName: verification.userVerified?.name || "Desconocido",
-              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
-            })) || []
-        ) || [];
+
+        messages =
+          verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
+            (verification) =>
+              verification.verificationComments?.items?.map((comment) => ({
+                ...comment,
+                senderName: verification.userVerified?.name || "Desconocido",
+                propertyID: verification.propertyFeature?.propertyID || null, // Agregar nombre del verificador
+              })) || []
+          ) || [];
       }
-  
+
       // Eliminar duplicados
-      const uniqueMessages = Array.from(new Map(messages.map((msg) => [msg.id, msg])).values());
+      const uniqueMessages = Array.from(
+        new Map(messages.map((msg) => [msg.id, msg])).values()
+      );
       setMessages(uniqueMessages);
     } catch (error) {
       console.error("❌ Error cargando mensajes pendientes:", error);
@@ -206,6 +217,20 @@ export default function NewHeaderNavbar() {
                       Mis campañas
                     </div>
                   </>
+                )}
+                {(user.attributes["custom:role"] === "validator" ||
+                  user.attributes["custom:role"] === "legal") && (
+                  <div
+                    className="relative cursor-pointer"
+                    onClick={handleShowNotifications}
+                  >
+                    <BellFill className="w-6 h-6 text-gray-800" />
+                    {messages.length > 0 && (
+                      <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                        {messages.length}
+                      </span>
+                    )}
+                  </div>
                 )}
                 {user ? (
                   <>

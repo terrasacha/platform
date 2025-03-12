@@ -8,11 +8,12 @@ import {
 import HeaderNavbar from "components/Investor/Navbars/HeaderNavbar";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import useFetchProperties from "hooks/useFetchProperties";
-import { updateProperty } from "graphql/mutations";
+import { createUserProduct, updateProperty } from "graphql/mutations";
 import { formatArea } from "components/Constructor/ProjectPage/mappers";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import { stateMapper } from "utilities/propertyStateMapper";
+import { useAuth } from "context/AuthContext";
 
 // Componente para representar una campaña individual
 const CampaignCard = ({ campaign }) => {
@@ -133,6 +134,7 @@ export default function ValidatorAdmon() {
   const [isShowUsers, setIsShowUsers] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const { user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -161,6 +163,10 @@ export default function ValidatorAdmon() {
   console.log("filteredProperties", filteredProperties);
 
   const handleAssignCampaign = async (campaignId) => {
+
+    const productID = userCampaigns.find(campaign => campaign.id === campaignId).products.items[0].id
+
+    /* const productID = userCampaigns. */
     if (selectedProperty.status !== "SELECTABLE") {
       toast.error("El predio aún no es elegible");
       return;
@@ -171,9 +177,11 @@ export default function ValidatorAdmon() {
           input: {
             id: selectedProperty.id,
             campaignID: campaignId,
+            productID: productID
           },
         })
       );
+
       toast.success(`Predio asignado a campaña exitosamente`);
       fetchProperties();
     } catch (error) {
@@ -188,6 +196,8 @@ export default function ValidatorAdmon() {
     // Aquí puedes agregar la lógica para asignar la propiedad a la campaña
   };
 
+  console.log("selectedProperty", selectedProperty)
+  console.log("userCampaigns", userCampaigns)
   return (
     <>
       <HeaderNavbar
