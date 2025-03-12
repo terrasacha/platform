@@ -49,7 +49,6 @@ export default function ValidationModal({
   const [pendingFiles, setPendingFiles] = useState({});
   const [property, setPropertyData] = useState(null);
   const [propertyDetails, setPropertyDetails] = useState(null);
-  const [alreadyHasVerification, setAlreadyHasVerification] = useState(false);
   const propertyID = propertyData.propertyInfo?.id;
 
   // ✅ Verifica si el predio ya tiene archivos subidos o es nuevo
@@ -66,10 +65,6 @@ export default function ValidationModal({
     if (isOpen) {
       listS3Files();
     }
-    const hasVerification = propertyData?.propertyFeatures?.find(
-      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
-    )?.verifications?.items[0];
-    setAlreadyHasVerification(Boolean(hasVerification));
 
   }, [isOpen, propertyData?.propertyInfo?.id]);
 
@@ -450,7 +445,6 @@ export default function ValidationModal({
     }
   };
 
-  console.log('alreadyHasVerification', alreadyHasVerification)
 
   return (
     <Modal size="lg" show={isOpen} onHide={onClose} centered>
@@ -460,7 +454,7 @@ export default function ValidationModal({
 
       <Modal.Body>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className={`${!alreadyHasVerification && 'col-span-2'}`}>
+          <div>
             <p className="text-gray-600 mb-4">
               Para completar este paso, debes subir los siguientes documentos:
             </p>
@@ -544,16 +538,12 @@ export default function ValidationModal({
               </div>
             ))}
           </div>
-          {
-            alreadyHasVerification && (
-              <div>
-                <PropertyChat
-                  propertyId={propertyData.propertyInfo?.id}
-                  featureChat={"GLOBAL_PROPERTY_FILES"}
-                />
-              </div>
-            )
-          }
+          <div>
+            <PropertyChat
+              propertyId={propertyData.propertyInfo?.id}
+              featureChat={"GLOBAL_PROPERTY_FILES"}
+            />
+          </div>
         </div>
 
         <div className="flex justify-center mt-4">
