@@ -55,6 +55,10 @@ export default function PropertyDetails({
       const postulant = propertyData?.projectPostulant?.id;
       const authorizedUsers = [...propertyData.projectVerifiers, postulant];
 
+      console.log('propertyData', propertyData)
+      console.log('propertyData.projectVerifiers', propertyData.projectVerifiers)
+      console.log('user.id', user.id)
+
       setAutorizedUser(
         (authorizedUsers.includes(user.id) &&
           (propertyData.propertyInfo.status === null ||
