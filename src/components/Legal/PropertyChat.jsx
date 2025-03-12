@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { useAuth } from "context/AuthContext";
 import { notify } from "utilities/notify";
-import { getProperty } from "graphql/queries"; // Asegúrate de tener esta consulta
 import { createVerificationComment } from "graphql/mutations";
+import { getProperty } from "utilities/customQueries";
 
-export default function PropertyChat({ propertyId }) {
+export default function PropertyChat({ propertyId, featureChat }) {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [verificationID, setVerificationID] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [availableChatUsers, setAvailableChatUsers] = useState([]);
+  const [verifierRole, setVerifierRole] = useState(null);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -19,16 +22,31 @@ export default function PropertyChat({ propertyId }) {
           graphqlOperation(getProperty, { id: propertyId })
         );
         const property = response.data.getProperty;
+        console.log("property", property);
         const verificationComments = property.propertyFeatures.items.flatMap(
-          (feature) => feature.verifications.items.flatMap((verification) => verification.verificationComments.items)
+          (feature) =>
+            feature.verifications?.items.flatMap(
+              (verification) => verification.verificationComments.items
+            )
         );
-            
-        const propertyVerificationID = property?.propertyFeatures?.items.find(
-          (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
-        ).verifications.items[0].id;
-        setVerificationID(propertyVerificationID)
-        
-        setMessages(verificationComments);
+
+        const propertyVerification = property?.propertyFeatures?.items.find(
+          (feature) => feature.featureID === featureChat
+        )?.verifications?.items[0];
+        setVerificationID(propertyVerification.id);
+
+        const userVerifierId = propertyVerification.userVerifierID;
+        const userVerifierRole = propertyVerification.userVerifier.role;
+        const userVerifiedId = propertyVerification.userVerifiedID;
+        setVerifierRole(userVerifierRole);
+        setAvailableChatUsers([userVerifierId, userVerifiedId]);
+
+        console.log("propertyVerificationID", propertyVerification.id);
+
+        const sortedMessages = verificationComments.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
+        setMessages(sortedMessages);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -40,18 +58,36 @@ export default function PropertyChat({ propertyId }) {
     fetchMessages();
   }, [propertyId]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  console.log("availableChatUsers", availableChatUsers);
+
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     const commentData = {
       verificationID: verificationID, // O el ID de la verificación correspondiente
       comment: newMessage,
-      isCommentByVerifier: true, // Asumiendo que el usuario Legal está enviando el mensaje
+      isCommentByVerifier: user.role === "legal" || user.role === "validator", // Asumiendo que el usuario Legal está enviando el mensaje
     };
 
     try {
-      await API.graphql(graphqlOperation(createVerificationComment, { input: commentData }));
-      setMessages((prevMessages) => [...prevMessages, { comment: newMessage, createdAt: new Date().toISOString(), isCommentByVerifier: true }]);
+      await API.graphql(
+        graphqlOperation(createVerificationComment, { input: commentData })
+      );
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          comment: newMessage,
+          createdAt: new Date().toISOString(),
+          isCommentByVerifier:
+            user.role === "legal" || user.role === "validator",
+        },
+      ]);
       setNewMessage("");
       notify({ msg: "Mensaje enviado", type: "success" });
     } catch (error) {
@@ -60,37 +96,64 @@ export default function PropertyChat({ propertyId }) {
     }
   };
 
+  const roleMapper = {
+    admon: "Administrador",
+    analyst: "Analista",
+    legal: "Legal",
+    constructor: "Propietario",
+    validator: "Validador",
+  };
+
   return (
-    <div className="bg-white p-4 rounded-md shadow-md">
-      <h2 className="text-lg font-bold mb-2">Mensajeria</h2>
-      {loading ? (
-        <p>Cargando mensajes...</p>
-      ) : (
-        <div className="max-h-60 overflow-y-auto mb-4">
-          {messages.map((message, index) => (
-            <div key={index} className={`p-2 mb-2 rounded-md ${message.isCommentByVerifier ? "bg-blue-100" : "bg-gray-100"}`}>
-              <p className="font-semibold">{message.isCommentByVerifier ? "Legal" : "Propietario"}:</p>
-              <p>{message.comment}</p>
-              <p className="text-sm text-gray-500">{new Date(message.createdAt).toLocaleString()}</p>
-            </div>
-          ))}
+    <>
+      {verificationID && (
+        <div className="bg-white p-3 border rounded-md shadow-sm h-96 flex flex-col">
+          <h2 className="text-lg font-bold mb-2">Mensajería</h2>
+          <div className="flex-grow max-h-96 overflow-y-auto">
+            {loading ? (
+              <p>Cargando mensajes...</p>
+            ) : (
+              messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`p-2 mb-2 rounded-md ${
+                    message.isCommentByVerifier ? "bg-blue-100" : "bg-gray-100"
+                  }`}
+                >
+                  <p className="font-semibold mb-0">
+                    {message.isCommentByVerifier
+                      ? roleMapper[verifierRole]
+                      : "Propietario"}
+                    :
+                  </p>
+                  <p className="mb-0">{message.comment}</p>
+                  <p className="text-sm text-gray-500 mb-0 text-right">
+                    {new Date(message.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+          <div className="flex">
+            <input
+              type="text"
+              placeholder="Escribe tu mensaje..."
+              className="border border-gray-300 rounded-md p-2 flex-grow"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              disabled={!availableChatUsers.includes(user.id)}
+            />
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2"
+              onClick={handleSendMessage}
+              disabled={!availableChatUsers.includes(user.id)}
+            >
+              Enviar
+            </button>
+          </div>
         </div>
       )}
-      <div className="flex">
-        <input
-          type="text"
-          placeholder="Escribe tu mensaje..."
-          className="border border-gray-300 rounded-md p-2 flex-grow"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2"
-          onClick={handleSendMessage}
-        >
-          Enviar
-        </button>
-      </div>
-    </div>
+    </>
   );
-} 
+}

@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import HeaderNavbar from "components/views/Navbars/HeaderNavbar"
+import HeaderNavbar from "components/views/Navbars/HeaderNavbar";
 import { Dropdown } from "react-bootstrap";
 import { useNavigate, Link } from "react-router";
 // Import images
@@ -12,13 +12,17 @@ import LOGO from "components/common/_images/suan_logo.png";
 import { Auth } from "aws-amplify";
 import s from "components/Constructor/Navbar/HeaderNavbar.module.css";
 import { BellFill } from "react-bootstrap-icons";
-import { listVerificationComments, verificationsByUserVerifiedID, verificationsByUserVerifierID } from "graphql/queries";
+import {
+  listVerificationComments,
+  verificationsByUserVerifiedID,
+  verificationsByUserVerifierID,
+} from "graphql/queries";
 import { API, graphqlOperation } from "aws-amplify";
 import NotificationsModal from "./NotificationsModal";
 
 export default function NewHeaderNavbar() {
-  const [user, setUser] = useState(null)
-  const navigate = useNavigate()
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [messages, setMessages] = useState([]);
 
@@ -28,7 +32,7 @@ export default function NewHeaderNavbar() {
         setUser(data);
         const userId = data.attributes.sub; // Obtener `sub` en lugar de `username`
         const role = data.attributes["custom:role"];
-  
+
         if (["validator", "constructor"].includes(role)) {
           fetchPendingMessages(userId, role);
         }
@@ -38,41 +42,48 @@ export default function NewHeaderNavbar() {
 
   const fetchPendingMessages = async (userId, role) => {
     if (!userId || !role) return;
-  
+
     try {
       let messages = [];
-  
+
       if (role === "constructor") {
         const ownerResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifiedID, { userVerifiedID: userId })
+          graphqlOperation(verificationsByUserVerifiedID, {
+            userVerifiedID: userId,
+          })
         );
-  
-        messages = ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
-          (verification) =>
-            verification.verificationComments?.items?.map((comment) => ({
-              ...comment,
-              senderName: verification.userVerifier?.name || "Desconocido",
-              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
-            })) || []
-        ) || [];
-  
+
+        messages =
+          ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
+            (verification) =>
+              verification.verificationComments?.items?.map((comment) => ({
+                ...comment,
+                senderName: verification.userVerifier?.name || "Desconocido",
+                propertyID: verification.propertyFeature?.propertyID || null, // Agregar nombre del verificador
+              })) || []
+          ) || [];
       } else if (role === "validator") {
         const verifierResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifierID, { userVerifierID: userId })
+          graphqlOperation(verificationsByUserVerifierID, {
+            userVerifierID: userId,
+          })
         );
-  
-        messages = verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
-          (verification) =>
-            verification.verificationComments?.items?.map((comment) => ({
-              ...comment,
-              senderName: verification.userVerified?.name || "Desconocido",
-              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
-            })) || []
-        ) || [];
+
+        messages =
+          verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
+            (verification) =>
+              verification.verificationComments?.items?.map((comment) => ({
+                ...comment,
+                senderName: verification.userVerified?.name || "Desconocido",
+                propertyID: verification.propertyFeature?.propertyID || null, // Agregar nombre del verificador
+              })) || []
+          ) || [];
       }
-  
+
       // Eliminar duplicados
-      const uniqueMessages = Array.from(new Map(messages.map((msg) => [msg.id, msg])).values());
+      const uniqueMessages = Array.from(
+        new Map(messages.map((msg) => [msg.id, msg])).values()
+      );
       setMessages(uniqueMessages);
     } catch (error) {
       console.error("❌ Error cargando mensajes pendientes:", error);
@@ -120,13 +131,13 @@ export default function NewHeaderNavbar() {
     validator: "Consultor",
     analyst: "Analista",
     constructor: "Propietario",
-    legal: "Legal"
+    legal: "Legal",
   };
 
   const displayRole = roleDisplayNames[role] || "Sin Rol";
-  
+
   const handleCloseNotifications = () => setShowNotifications(false);
-  if(!user)return <HeaderNavbar />
+  if (!user) return <HeaderNavbar />;
   return (
     <Navbar key="sm" bg="light" expand="lg" fixed="top">
       <Container fluid>
@@ -154,37 +165,41 @@ export default function NewHeaderNavbar() {
             ></Nav>
             <Nav>
               <Nav className={s.navGroup}>
-                {(user.attributes['custom:role'] === "constructor" || user.attributes['custom:role'] === "investor") && (
+                {(user.attributes["custom:role"] === "constructor" ||
+                  user.attributes["custom:role"] === "investor") && (
                   <>
-                  <button
-      onClick={() => navigate("/constructor")}
-      className="bg-[#3B82F6] text-white font-semibold px-4 py-2 text-sm rounded-md shadow-md hover:bg-[#2563EB] transition duration-300 flex items-center justify-center"
-      style={{
-        border: "none",
-        boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.1)",
-        minWidth: "120px",
-      }}
-    >
-      Mis Predios
-    </button>
-    <Nav.Link onClick={() => navigate("/PQRS")}>PQRS</Nav.Link>
+                    <button
+                      onClick={() => navigate("/constructor")}
+                      className="bg-[#3B82F6] text-white font-semibold px-4 py-2 text-sm rounded-md shadow-md hover:bg-[#2563EB] transition duration-300 flex items-center justify-center"
+                      style={{
+                        border: "none",
+                        boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.1)",
+                        minWidth: "120px",
+                      }}
+                    >
+                      Mis Predios
+                    </button>
+                    <Nav.Link onClick={() => navigate("/PQRS")}>PQRS</Nav.Link>
 
-{/* Ícono de Notificaciones para Constructores */}
-<div className="relative cursor-pointer" onClick={handleShowNotifications}>
-  <BellFill className="w-6 h-6 text-gray-800" />
-  {messages.length > 0 && (
-    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-      {messages.length}
-    </span>
-  )}
-</div>
+                    {/* Ícono de Notificaciones para Constructores */}
+                    <div
+                      className="relative cursor-pointer"
+                      onClick={handleShowNotifications}
+                    >
+                      <BellFill className="w-6 h-6 text-gray-800" />
+                      {messages.length > 0 && (
+                        <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                          {messages.length}
+                        </span>
+                      )}
+                    </div>
 
                     {/* <Nav.Link
                       onClick={() => (window.location.href = "/new_project")}
                     >
                       Postular proyecto
                     </Nav.Link> */}
-                     {/*
+                    {/*
                     <Dropdown >
                       <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ paddingLeft: '.7rem'}}>
                         Campañas
@@ -210,7 +225,7 @@ export default function NewHeaderNavbar() {
                     */}
                   </>
                 )}
-                {user.attributes['custom:role'] === "validator" && (
+                {user.attributes["custom:role"] === "validator" && (
                   <>
                     <Nav.Link
                       onClick={() =>
@@ -219,9 +234,12 @@ export default function NewHeaderNavbar() {
                     >
                       Mis campañas
                     </Nav.Link>
-                    <div className="relative cursor-pointer" onClick={handleShowNotifications}>
+                    <div
+                      className="relative cursor-pointer"
+                      onClick={handleShowNotifications}
+                    >
                       <BellFill className="w-6 h-6 text-gray-800" />
-                          {messages.length > 0 && (
+                      {messages.length > 0 && (
                         <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
                           {messages.length}
                         </span>
@@ -229,12 +247,10 @@ export default function NewHeaderNavbar() {
                     </div>
                   </>
                 )}
-                {user.attributes['custom:role'] === "legal" && (
+                {user.attributes["custom:role"] === "legal" && (
                   <>
                     <Nav.Link
-                      onClick={() =>
-                        (window.location.href = "/legal_admon")
-                      }
+                      onClick={() => (window.location.href = "/legal_admon")}
                     >
                       Listado de predios
                     </Nav.Link>
@@ -259,9 +275,7 @@ export default function NewHeaderNavbar() {
                         <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
                       </svg>
                       {user.username}
-                      <p className="role_btn">
-                      {displayRole}
-                    </p>
+                      <p className="role_btn">{displayRole}</p>
                     </button>
                   </div>
                 ) : (
@@ -278,10 +292,10 @@ export default function NewHeaderNavbar() {
         </Navbar.Offcanvas>
       </Container>
       <NotificationsModal
-  show={showNotifications}
-  onClose={handleCloseNotifications}
-  messages={messages}
-/>
+        show={showNotifications}
+        onClose={handleCloseNotifications}
+        messages={messages}
+      />
     </Navbar>
   );
 }
