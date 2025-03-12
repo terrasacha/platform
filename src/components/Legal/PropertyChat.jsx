@@ -23,47 +23,58 @@ export default function PropertyChat({ propertyId, featureChat }) {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
+        setLoading(true);
+  
         const response = await API.graphql(
           graphqlOperation(getProperty, { id: propertyId })
         );
+  
         const property = response.data.getProperty;
         setPropertyID(property.id)
         setPropertyName(property.name);
-        console.log("property", property);
-        const verificationComments = property.propertyFeatures.items.flatMap(
-          (feature) =>
-            feature.verifications?.items.flatMap(
-              (verification) => verification.verificationComments.items
-            )
-        );
-
+  
         const propertyVerification = property?.propertyFeatures?.items.find(
           (feature) => feature.featureID === featureChat
         )?.verifications?.items[0];
+  
+        if (!propertyVerification) {
+          console.warn(`⚠️ No se encontró Verification para featureChat: ${featureChat}`);
+          setVerificationID(null);
+          setMessages([]);
+          setLoading(false);
+          return;
+        }
+  
         setVerificationID(propertyVerification.id);
-
-        const userVerifierId = propertyVerification.userVerifierID;
-        const userVerifierRole = propertyVerification.userVerifier.role;
-        const userVerifiedId = propertyVerification.userVerifiedID;
-        setVerifierRole(userVerifierRole);
-        setAvailableChatUsers([userVerifierId, userVerifiedId]);
-
-        console.log("propertyVerificationID", propertyVerification.id);
-
-        const sortedMessages = verificationComments.sort(
+  
+        // 🔍 Filtrar mensajes solo de la Verification correspondiente al featureChat
+        const filteredMessages = propertyVerification.verificationComments?.items || [];
+  
+        // 🔍 Ordenar mensajes por fecha de creación
+        const sortedMessages = filteredMessages.sort(
           (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
         );
+  
         setMessages(sortedMessages);
         setLoading(false);
+  
+        // 🔍 Asignar usuarios disponibles en el chat
+        const userVerifierId = propertyVerification.userVerifierID;
+        const userVerifiedId = propertyVerification.userVerifiedID;
+        setAvailableChatUsers([userVerifierId, userVerifiedId]);
+        setVerifierRole(propertyVerification?.userVerifier?.role);
+  
+        console.log("✅ propertyVerificationID:", propertyVerification.id);
       } catch (error) {
-        console.error("Error fetching messages:", error);
+        console.error("❌ Error fetching messages:", error);
         notify({ msg: "Error al cargar los mensajes", type: "error" });
         setLoading(false);
       }
     };
-
+  
     fetchMessages();
-  }, [propertyId]);
+  }, [propertyId, featureChat]);
+  
 
   useEffect(() => {
     if (messagesEndRef.current) {

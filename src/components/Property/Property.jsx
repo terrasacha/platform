@@ -14,67 +14,66 @@ import PropertyDetails from "./PropertyDetails";
 import { usePropertyData } from "context/PropertyDataContext";
 import Timeline from "./Timeline";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
-// Mostrar si tiene asignado validador
-// Tiempo restante para verificar
-const statusColor = {
-  PENDING: "bg-gray-600",
-  APPROVED: "bg-green-600",
-  REJECTED: "bg-red-600",
-};
-const statusEs = {
-  PENDING: "Pendiente",
-  APPROVED: "Aprobado",
-  REJECTED: "Rechazado",
-};
-export default function Property() {
-  const { id } = useParams();
-  const { propertyData, handlePropertyData } = usePropertyData();
-  const [property, setProperty] = useState(null);
-  const [editable, setEditable] = useState(false);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("details");
-  const [changedFields, setChangedFields] = useState({});
-  const [isFormComplete, setIsFormComplete] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [s3Files, setS3Files] = useState([]);
-  const [filesAreComplete, setFilesAreComplete] = useState(false);
-  const [s3Loading, setS3Loading] = useState(true); // ✅ Nuevo estado para verificar si listS3Files ha terminado
-  const { s3Client, bucketName } = useS3Client();
-
-  useEffect(() => {
-    if (s3Loading) {
-      console.log("⌛ Esperando carga de archivos S3...");
-      setCurrentStep(1);
-      return;
-    }
-
-    const status = propertyData?.propertyInfo?.status;
-
-    if (status === "APPROVED" || status === "REJECTED") {
-      setCurrentStep(5); // ✅ Ahora el paso final es el 5
-    } else if (status === "SELECTABLE") {
-      setCurrentStep(4); // ✅ Ahora el estudio se activa solo si es "ELEGIBLE"
-    } else if (status === "DOC_UPLOADED") {
-      setCurrentStep(3); // ✅ Si los archivos están completos, pasa a Validación Legal
-    } else if (isFormComplete) {
-      setCurrentStep(2); // ✅ Si el formulario está completo, pasa a Subir Documentación
-    } else {
-      setCurrentStep(1); // ✅ Estado inicial
-    }
-
-    console.log("📌 Nuevo currentStep:", currentStep);
-  }, [isFormComplete, propertyData, filesAreComplete, s3Loading]);
-
-  const handleValidationComplete = () => {
-    console.log("📌 ¡Los archivos están completos! Pasando al paso 3.");
-    handleStepChange(3);
-
-    if (propertyData?.propertyInfo?.status === "ELEGIBLE") {
-      console.log("📌 Predio es elegible. Pasando al paso 4...");
-      setCurrentStep(4);
-    }
+  // Mostrar si tiene asignado validador
+  // Tiempo restante para verificar
+  const statusColor = {
+    PENDING: "bg-gray-600",
+    APPROVED: "bg-green-600",
+    REJECTED: "bg-red-600",
   };
+  const statusEs = {
+    PENDING: "Pendiente",
+    APPROVED: "Aprobado",
+    REJECTED: "Rechazado",
+  };
+  export default function Property() {
+    const { id } = useParams();
+    const { propertyData, handlePropertyData } = usePropertyData();
+    const [property, setProperty] = useState(null);
+    const [editable, setEditable] = useState(false);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const navigate = useNavigate();
+    const [activeSection, setActiveSection] = useState("details");
+    const [changedFields, setChangedFields] = useState({});
+    const [isFormComplete, setIsFormComplete] = useState(false);
+    const [currentStep, setCurrentStep] = useState(1);
+    const [s3Files, setS3Files] = useState([]);  
+    const [filesAreComplete, setFilesAreComplete] = useState(false);
+    const [s3Loading, setS3Loading] = useState(true); // ✅ Nuevo estado para verificar si listS3Files ha terminad
+
+
+
+    useEffect(() => {
+      const status = propertyData?.propertyInfo?.status;
+      console.log("📌 propertyData actualizado:", propertyData);
+    
+      if (status === "APPROVED" || status === "REJECTED") {
+        setCurrentStep(5);  // ✅ Ahora el paso final es el 5
+      } else if (status === "SELECTABLE") {
+        setCurrentStep(4);  // ✅ Ahora el estudio se activa solo si es "ELEGIBLE"
+      }  else if (status === "DOC_UPLOADED") {
+        setCurrentStep(3);  // ✅ Si los archivos están completos, pasa a Validación Legal
+      } else if (isFormComplete) {
+        setCurrentStep(2);  // ✅ Si el formulario está completo, pasa a Subir Documentación
+      } else {
+        setCurrentStep(1);  // ✅ Estado inicial
+      }
+    
+      console.log("📌 Nuevo currentStep:", currentStep);
+    }, [isFormComplete, propertyData, filesAreComplete, s3Loading]);
+    
+    const handleValidationComplete = () => {
+      console.log("📌 ¡Los archivos están completos! Pasando al paso 3.");
+      handleStepChange(3); 
+      
+      if (propertyData?.propertyInfo?.status === "ELEGIBLE") {
+        console.log("📌 Predio es elegible. Pasando al paso 4...");
+        setCurrentStep(4);
+      }
+
+    };
+    
+    
 
   useEffect(() => {
     /* const fetchUserGroups = async () => {
@@ -96,94 +95,45 @@ export default function Property() {
     }
   }, [id]);
 
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      if (hasUnsavedChanges) {
-        event.preventDefault();
-        event.returnValue =
-          "Tienes cambios sin guardar. ¿Seguro que deseas salir?";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [hasUnsavedChanges]);
-
-  const handleStepChange = (step) => {
-    console.log(`📌 Cambiando al paso ${step}`);
-    setCurrentStep(step);
-  };
-
-  useEffect(() => {
-    if (propertyData?.propertyInfo?.id) {
-      listS3Files();
-    }
-  }, [propertyData?.propertyInfo?.id]);
-
-  const listS3Files = async () => {
-    setS3Loading(true); // ✅ Iniciar la carga
-    try {
-      const command = new ListObjectsV2Command({
-        Bucket: bucketName,
-        Prefix: `projects/${propertyData.propertyInfo?.id}/other/`,
-      });
-
-      const response = await s3Client.send(command);
-      const allFiles = response.Contents || [];
-
-      const formattedFiles = allFiles.map((file) => ({
-        key: file.Key,
-        name: file.Key.split("/").pop(),
-      }));
-
-      setS3Files(formattedFiles);
-
-      // 🔴 Verificar si están todos los documentos requeridos
-      const uploaded = {};
-      formattedFiles.forEach((file) => {
-        const fileType = file.name.split("_")[0];
-        uploaded[fileType] = file.key;
-      });
-
-      // ✅ Si todos los archivos requeridos están subidos, actualizar `filesAreComplete`
-      if (
-        ["certificado", "escrituras", "planos"].every(
-          (fileType) => fileType in uploaded
-        )
-      ) {
-        setFilesAreComplete(true);
-      } else {
-        setFilesAreComplete(false);
-      }
-    } catch (error) {
-      console.error("Error al listar archivos en S3:", error);
-      setFilesAreComplete(false);
-    } finally {
-      setS3Loading(false); // ✅ Finalizar la carga
-    }
-  };
-
-  const handleNavigation = (path) => {
-    if (hasUnsavedChanges) {
-      Swal.fire({
-        title: "Cambios sin guardar",
-        text: "Tienes cambios sin guardar. ¿Seguro que deseas salir?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, salir",
-        cancelButtonText: "Cancelar",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate(path);
+    useEffect(() => {
+      const handleBeforeUnload = (event) => {
+        if (hasUnsavedChanges) {
+          event.preventDefault();
+          event.returnValue = "Tienes cambios sin guardar. ¿Seguro que deseas salir?";
         }
-      });
-    } else {
-      navigate(path);
-    }
-  };
+      };
+    
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }, [hasUnsavedChanges]);
+    
+    const handleStepChange = (step) => {
+      console.log(`📌 Cambiando al paso ${step}`);
+      setCurrentStep(step);
+    };
+
+    
+    const handleNavigation = (path) => {
+      if (hasUnsavedChanges) {
+        Swal.fire({
+          title: "Cambios sin guardar",
+          text: "Tienes cambios sin guardar. ¿Seguro que deseas salir?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, salir",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(path);
+          }
+        });
+      } else {
+        navigate(path);
+      }
+    };
 
   const handleFieldChange = (field, value) => {
     setChangedFields((prev) => ({
@@ -292,6 +242,9 @@ export default function Property() {
                   onStepChange={handleStepChange}
                   propertyStatus={propertyData?.propertyInfo?.status}
                   filesAreComplete={filesAreComplete}
+                  propertyId={propertyData?.propertyInfo?.id}  
+                  userId={propertyData?.projectPostulant?.id}
+                  campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
                 />
               </div>
 
