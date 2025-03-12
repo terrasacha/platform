@@ -46,11 +46,11 @@ export default function ValidationModal({
   const [uploadProgress, setUploadProgress] = useState({});
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [verificationCreated, setVerificationCreated] = useState(false);
-  const [pendingFiles, setPendingFiles] = useState({}); 
+  const [pendingFiles, setPendingFiles] = useState({});
   const [property, setPropertyData] = useState(null);
   const [propertyDetails, setPropertyDetails] = useState(null);
+  const [alreadyHasVerification, setAlreadyHasVerification] = useState(false);
   const propertyID = propertyData.propertyInfo?.id;
-
 
   // ✅ Verifica si el predio ya tiene archivos subidos o es nuevo
   const isNewProperty =
@@ -66,8 +66,13 @@ export default function ValidationModal({
     if (isOpen) {
       listS3Files();
     }
-  }, [isOpen, propertyData?.propertyInfo?.id]); 
-  
+    const hasVerification = propertyData?.propertyFeatures?.find(
+      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+    )?.verifications?.items[0];
+    setAlreadyHasVerification(Boolean(hasVerification));
+
+  }, [isOpen, propertyData?.propertyInfo?.id]);
+
   useEffect(() => {
     if (isOpen && propertyID) {
       fetchPropertyData(propertyID);
@@ -88,11 +93,10 @@ export default function ValidationModal({
 
   // 📌 Verifica si la carga debe estar deshabilitada
   const isUploadDisabled = propertyDetails
-    ? (propertyDetails.status === "DOC_UPLOADED" && propertyDetails.userLegalID) ||
+    ? (propertyDetails.status === "DOC_UPLOADED" &&
+        propertyDetails.userLegalID) ||
       ["SELECTABLE", "REJECTED"].includes(propertyDetails.status)
     : true; // Si no hay datos, deshabilitamos por defecto
-
-  
 
   const listS3Files = async () => {
     setLoading(true);
@@ -384,20 +388,19 @@ export default function ValidationModal({
   const handleFileSelection = (event, fileType) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-        setSelectedFiles((prev) => ({ ...prev, [fileType]: selectedFile }));
-        setPendingFiles((prev) => ({ ...prev, [fileType]: true })); // ✅ Marcar como en precarga
+      setSelectedFiles((prev) => ({ ...prev, [fileType]: selectedFile }));
+      setPendingFiles((prev) => ({ ...prev, [fileType]: true })); // ✅ Marcar como en precarga
 
-        // 🔹 Simular que el archivo ya está "cargado" para cambiar de "Subir" a "Editar"
-        setUploadedFiles((prev) => ({
-            ...prev,
-            [fileType]: `pending-${selectedFile.name}`, // Simulamos un archivo subido con un prefijo temporal
-        }));
+      // 🔹 Simular que el archivo ya está "cargado" para cambiar de "Subir" a "Editar"
+      setUploadedFiles((prev) => ({
+        ...prev,
+        [fileType]: `pending-${selectedFile.name}`, // Simulamos un archivo subido con un prefijo temporal
+      }));
 
-        // 🔹 LIMPIAR el input para permitir seleccionar otro archivo con el mismo nombre
-        event.target.value = "";
+      // 🔹 LIMPIAR el input para permitir seleccionar otro archivo con el mismo nombre
+      event.target.value = "";
     }
-};
-
+  };
 
   const updatePropertyStatus = async () => {
     try {
@@ -431,16 +434,23 @@ export default function ValidationModal({
 
   const checkIfAllFilesUploaded = (files) => {
     const requiredFiles = ["certificado", "escrituras", "planos"];
-    const allFilesUploaded = requiredFiles.every((fileType) => fileType in files);
+    const allFilesUploaded = requiredFiles.every(
+      (fileType) => fileType in files
+    );
 
     if (allFilesUploaded) {
-        console.log("✅ Todos los archivos requeridos han sido subidos. Actualizando estado...");
-        updatePropertyStatus();  // ✅ Ahora SOLO se llama si el usuario subió archivos nuevos
+      console.log(
+        "✅ Todos los archivos requeridos han sido subidos. Actualizando estado..."
+      );
+      updatePropertyStatus(); // ✅ Ahora SOLO se llama si el usuario subió archivos nuevos
     } else {
-        console.log("⚠️ Aún faltan archivos por subir. No se actualizará el estado.");
+      console.log(
+        "⚠️ Aún faltan archivos por subir. No se actualizará el estado."
+      );
     }
-};
+  };
 
+  console.log('alreadyHasVerification', alreadyHasVerification)
 
   return (
     <Modal size="lg" show={isOpen} onHide={onClose} centered>
@@ -450,85 +460,100 @@ export default function ValidationModal({
 
       <Modal.Body>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div>
+          <div className={`${!alreadyHasVerification && 'col-span-2'}`}>
             <p className="text-gray-600 mb-4">
               Para completar este paso, debes subir los siguientes documentos:
             </p>
 
             {["certificado", "escrituras", "planos"].map((fileType) => (
-    <div key={fileType} className="flex items-center justify-between border p-3 rounded-md shadow-sm mb-3">
-        <span className="text-gray-700 text-sm capitalize">
-            {fileType === "certificado"
-                ? "Certificado de Libertad"
-                : fileType === "escrituras"
-                ? "Escrituras Públicas"
-                : "Planos Catastrales"}
-        </span>
+              <div
+                key={fileType}
+                className="flex items-center justify-between border p-3 rounded-md shadow-sm mb-3"
+              >
+                <span className="text-gray-700 text-sm capitalize">
+                  {fileType === "certificado"
+                    ? "Certificado de Libertad"
+                    : fileType === "escrituras"
+                    ? "Escrituras Públicas"
+                    : "Planos Catastrales"}
+                </span>
 
-        <div className="flex items-center gap-2">
-            {/* 🔹 Botón "Ver" solo si el archivo ya está en S3 */}
-            {uploadedFiles[fileType] && !uploadedFiles[fileType].startsWith("pending-") && (
-                <button
-                    onClick={async () => window.open(await getSignedFileUrl(uploadedFiles[fileType]), "_blank")}
-                    className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
-                >
-                    <FaEye size={14} />
-                    Ver
-                </button>
-            )}
+                <div className="flex items-center gap-2">
+                  {/* 🔹 Botón "Ver" solo si el archivo ya está en S3 */}
+                  {uploadedFiles[fileType] &&
+                    !uploadedFiles[fileType].startsWith("pending-") && (
+                      <button
+                        onClick={async () =>
+                          window.open(
+                            await getSignedFileUrl(uploadedFiles[fileType]),
+                            "_blank"
+                          )
+                        }
+                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
+                      >
+                        <FaEye size={14} />
+                        Ver
+                      </button>
+                    )}
 
-{!isUploadDisabled ? (
-    (uploadedFiles[fileType] || pendingFiles[fileType]) && (
-        <>
-            <input
-                type="file"
-                className="hidden"
-                id={`file-upload-${fileType}`}
-                onChange={(e) => handleFileSelection(e, fileType)}
-            />
-            <label
-                htmlFor={`file-upload-${fileType}`}
-                className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2"
-            >
-                <FaEdit size={14} />
-                Editar
-            </label>
-        </>
-    )
-) : (
-    <span className="text-gray-500 text-sm italic">No editable</span> 
-)}
+                  {!isUploadDisabled ? (
+                    (uploadedFiles[fileType] || pendingFiles[fileType]) && (
+                      <>
+                        <input
+                          type="file"
+                          className="hidden"
+                          id={`file-upload-${fileType}`}
+                          onChange={(e) => handleFileSelection(e, fileType)}
+                        />
+                        <label
+                          htmlFor={`file-upload-${fileType}`}
+                          className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2"
+                        >
+                          <FaEdit size={14} />
+                          Editar
+                        </label>
+                      </>
+                    )
+                  ) : (
+                    <span className="text-gray-500 text-sm italic">
+                      No editable
+                    </span>
+                  )}
 
-
-            {/* 🔹 Botón "Subir" solo si no hay un archivo seleccionado todavía */}
-            {!isUploadDisabled && !uploadedFiles[fileType] && !pendingFiles[fileType] && (
-                <>
-                    <input
-                        type="file"
-                        className="hidden"
-                        id={`file-upload-${fileType}`}
-                        onChange={(e) => handleFileSelection(e, fileType)}
-                    />
-                    <label
-                        htmlFor={`file-upload-${fileType}`}
-                        className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-2"
-                    >
-                        <FaFileUpload size={14} />
-                        Subir
-                    </label>
-                </>
-            )}
-        </div>
-    </div>
-))}
-
+                  {/* 🔹 Botón "Subir" solo si no hay un archivo seleccionado todavía */}
+                  {!isUploadDisabled &&
+                    !uploadedFiles[fileType] &&
+                    !pendingFiles[fileType] && (
+                      <>
+                        <input
+                          type="file"
+                          className="hidden"
+                          id={`file-upload-${fileType}`}
+                          onChange={(e) => handleFileSelection(e, fileType)}
+                        />
+                        <label
+                          htmlFor={`file-upload-${fileType}`}
+                          className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-2"
+                        >
+                          <FaFileUpload size={14} />
+                          Subir
+                        </label>
+                      </>
+                    )}
+                </div>
+              </div>
+            ))}
           </div>
-          <div>
-              <PropertyChat
-                propertyId={propertyData.propertyInfo?.id}
-                featureChat={"GLOBAL_PROPERTY_FILES"}
-              />
-          </div>
+          {
+            alreadyHasVerification && (
+              <div>
+                <PropertyChat
+                  propertyId={propertyData.propertyInfo?.id}
+                  featureChat={"GLOBAL_PROPERTY_FILES"}
+                />
+              </div>
+            )
+          }
         </div>
 
         <div className="flex justify-center mt-4">
