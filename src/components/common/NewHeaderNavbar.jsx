@@ -272,11 +272,6 @@ export default function NewHeaderNavbar() {
   messages={messages}
 />
       </Container>
-      <NotificationsModal
-  show={showNotifications}
-  onClose={handleCloseNotifications}
-  messages={messages}
-/>
     </Navbar>
   );
 }
