@@ -1,206 +1,150 @@
-import React, { Component } from "react";
-// Bootstrap
-import { Container, Nav, Navbar, Modal, Button } from "react-bootstrap";
-import Offcanvas from "react-bootstrap/Offcanvas";
-import s from "./HeaderNavbar.module.css";
-// Import images
-import TerrasachaLogo from "../../common/TerrasachaLogo";
-import { Auth } from "aws-amplify";
+import React, { useState, useEffect } from "react";
+import { Container, Nav, Navbar, Modal, Button, Offcanvas } from "react-bootstrap";
 import { BellFill } from "react-bootstrap-icons";
+import { Auth } from "aws-amplify";
+import { useNavigate } from "react-router-dom"; // Para redirección sin recargar la página
+import TerrasachaLogo from "../../common/TerrasachaLogo";
 
-export default class HeaderNavbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: null,
-      messages: [], // Inicializar las notificaciones
-      showNotifications: false // Estado para mostrar el modal
-    };
-    this.handleChangeNavBar = this.handleChangeNavBar.bind(this);
-    this.handleSignOut = this.handleSignOut.bind(this);
-    this.handleShowNotifications = this.handleShowNotifications.bind(this);
-    this.handleCloseNotifications = this.handleCloseNotifications.bind(this);
-  }
+const HeaderNavbar = ({ logOut, changeHeaderNavBarRequest }) => {
+  const [user, setUser] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const navigate = useNavigate();
 
-  componentDidMount() {
+  useEffect(() => {
     Auth.currentAuthenticatedUser()
-      .then((data) => {
-        this.setState({ user: data });
-      })
+      .then((data) => setUser(data))
       .catch((err) => console.log(err));
-  }
+  }, []);
 
-  async handleChangeNavBar(pRequest) {
-    this.props.changeHeaderNavBarRequest(pRequest);
-  }
+  const handleSignOut = () => {
+    logOut();
+  };
 
-  async handleSignOut() {
-    this.props.logOut();
-  }
-
-  handleShowNotifications() {
-    const { user } = this.state;
+  const handleShowNotifications = () => {
     if (!user) return;
 
     const role = user.attributes["custom:role"];
     const userId = user.attributes.sub;
 
     if (role === "validator" || role === "constructor") {
-      this.fetchPendingMessages(userId, role);
+      fetchPendingMessages(userId, role);
     }
-    this.setState({ showNotifications: true });
-  }
+    setShowNotifications(true);
+  };
 
-  handleCloseNotifications() {
-    this.setState({ showNotifications: false });
-  }
-
-  async fetchPendingMessages(userId, role) {
-    // Aquí puedes incluir la lógica para obtener notificaciones desde la API
-    // Por ahora, dejo mensajes de prueba
-    const sampleMessages = [
+  const fetchPendingMessages = async (userId, role) => {
+    setMessages([
       { id: 1, text: "Nueva verificación pendiente" },
-      { id: 2, text: "Comentario agregado a un predio" }
-    ];
-    this.setState({ messages: sampleMessages });
-  }
+      { id: 2, text: "Comentario agregado a un predio" },
+    ]);
+  };
 
-  render() {
-    const { user, messages, showNotifications } = this.state;
-    const role = user?.attributes?.["custom:role"] || "";
-    const userlog = user?.username || "";
+  const roleDisplayNames = {
+    admon: "Administrador",
+    validator: "Consultor",
+    analyst: "Analista",
+    constructor: "Propietario",
+    legal: "Legal",
+  };
 
-    const roleDisplayNames = {
-      admon: "Administrador",
-      validator: "Consultor",
-      analyst: "Analista",
-      constructor: "Propietario",
-      legal: "Legal"
-    };
+  const role = user?.attributes?.["custom:role"] || "";
+  const displayRole = roleDisplayNames[role] || "Sin Rol";
 
-    const displayRole = roleDisplayNames[role] || "Sin Rol";
+  return (
+    <>
+      <Navbar expand="lg" bg="light" fixed="top" className="shadow-md py-2">
+        <Container className="flex justify-between items-center">
+          {/* Logo */}
+          <Navbar.Brand href="/" className="flex items-center">
+            <TerrasachaLogo className="w-48 h-auto" />
+          </Navbar.Brand>
 
-    return (
-      <>
-        <Navbar key="sm" bg="light" expand="lg" fixed="top">
-          <Container>
-            <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
-              <TerrasachaLogo className={"w-48 h-auto"} />
-            </Navbar.Brand>
-            <Navbar.Toggle />
-            <Navbar.Offcanvas placement="end">
-              <Offcanvas.Header closeButton>
-                <Offcanvas.Title>
-                  <a href="/">
-                    <TerrasachaLogo className={"w-48 h-auto"} />
-                  </a>
-                </Offcanvas.Title>
-              </Offcanvas.Header>
-              <Offcanvas.Body>
-                <Nav className="me-auto my-2 my-lg-0" navbarScroll></Nav>
-                <Nav>
-                  <Nav className={s.navGroup}>
-                    {role === "validator" && (
-                      <Nav.Link
-                        href="#profile"
-                        onClick={(e) =>
-                          this.props.changeHeaderNavBarRequest("product_documents")
-                        }
-                        className="flex items-center space-x-4"
-                      >
-                        {/* Botón Crear Campaña */}
-                        <a
-                          href="/new_campaign"
-                          className="bg-[#4DBC5E] text-white text-sm px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition flex items-center justify-center space-x-2"
-                          style={{ display: "flex", alignItems: "center", gap: "10px" }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="white"
-                            className="w-5 h-5"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          <span style={{ color: "#FFFFFF" }}>Crear Campaña</span>
-                        </a>
+          {/* Botón de menú en móviles */}
+          <Navbar.Toggle aria-controls="offcanvasNavbar" />
 
-                        {/* Ícono de Notificaciones */}
-                        <div
-                          className="relative cursor-pointer flex items-center"
-                          onClick={this.handleShowNotifications}
-                          style={{ position: "relative", marginLeft: "10px" }}
-                        >
-                          <BellFill className="w-6 h-6 text-gray-800" />
-                          {messages.length > 0 && (
-                            <span
-                              className="absolute top-[-8px] right-[-8px] bg-red-500 text-white text-xs rounded-full px-2"
-                              style={{
-                                position: "absolute",
-                                top: "-5px",
-                                right: "-10px",
-                                background: "red",
-                                color: "white",
-                                fontSize: "12px",
-                                borderRadius: "50%",
-                                padding: "2px 6px",
-                              }}
-                            >
-                              {messages.length}
-                            </span>
-                          )}
-                        </div>
-                      </Nav.Link>
-                    )}
+          {/* Menú Offcanvas */}
+          <Navbar.Offcanvas id="offcanvasNavbar" placement="end">
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>
+                <a href="/">
+                  <TerrasachaLogo className="w-48 h-auto" />
+                </a>
+              </Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="ms-auto flex items-center gap-6">
+                {role === "validator" && (
+                  <div className="flex items-center gap-4">
+                    {/* Botón Crear Campaña */}
+                    <a
+                      hre f="/new_campaign"
+                      className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition flex items-center"
+                    >
+                      Crear Campaña
+                    </a>
 
-                    {role ? (
-                      <div className="flex">
-                        <button className={s.signing} onClick={() => this.handleSignOut()}>
-                          Desconectar
-                        </button>
-                        <button className="role flex flex-col items-center">
-                          <p className="role_btn">{displayRole}</p>
-                        </button>
-                      </div>
-                    ) : (
-                      <button className={s.signing} onClick={() => (window.location.href = "/login")}>
-                        Ingresar
-                      </button>
-                    )}
-                  </Nav>
-                </Nav>
-              </Offcanvas.Body>
-            </Navbar.Offcanvas>
-          </Container>
-        </Navbar>
+                    {/* Notificaciones */}
+                    <div className="relative cursor-pointer" onClick={handleShowNotifications}>
+                      <BellFill className="w-6 h-6 text-gray-800" />
+                      {messages.length > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2">
+                          {messages.length}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
 
-        {/* MODAL DE NOTIFICACIONES */}
-        <Modal show={showNotifications} onHide={this.handleCloseNotifications} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Notificaciones</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {messages.length > 0 ? (
-              <ul>
-                {messages.map((msg) => (
-                  <li key={msg.id}>{msg.text}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>No tienes notificaciones pendientes.</p>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleCloseNotifications}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </>
-    );
-  }
-}
+                {/* Botón de sesión */}
+                {role ? (
+                  <div className="flex items-center gap-4">
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+                      onClick={handleSignOut}
+                    >
+                      Desconectar
+                    </button>
+                    <span className="text-gray-800 font-semibold">{displayRole}</span>
+                  </div>
+                ) : (
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition"
+                    onClick={() => navigate("/login")}
+                  >
+                    Ingresar
+                  </button>
+                )}
+              </Nav>
+            </Offcanvas.Body>
+          </Navbar.Offcanvas>
+        </Container>
+      </Navbar>
+
+      {/* Modal de Notificaciones */}
+      <Modal show={showNotifications} onHide={() => setShowNotifications(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Notificaciones</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {messages.length > 0 ? (
+            <ul className="list-disc pl-4">
+              {messages.map((msg) => (
+                <li key={msg.id}>{msg.text}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>No tienes notificaciones pendientes.</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowNotifications(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
+
+export default HeaderNavbar;

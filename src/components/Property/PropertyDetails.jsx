@@ -244,7 +244,7 @@ export default function PropertyDetails({
               )}
 
               {/* Mostrar el botón solo si el usuario es verificador y el estado es PENDING */}
-              {status === "PENDING" && isVerifier && (
+              { isVerifier && (
                 <>
                   <button
                     className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"

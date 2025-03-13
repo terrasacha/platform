@@ -36,7 +36,7 @@ export default function NewHeaderNavbar() {
         setUser(data);
         const userId = data.attributes.sub; // Obtener `sub` en lugar de `username`
         const role = data.attributes["custom:role"];
-
+  
         if (["validator", "constructor"].includes(role)) {
           fetchPendingMessages(userId, role);
         }
@@ -44,56 +44,50 @@ export default function NewHeaderNavbar() {
       .catch((err) => console.log("Error obteniendo usuario:", err));
   }, []);
 
+
   const fetchPendingMessages = async (userId, role) => {
     if (!userId || !role) return;
-
+  
     try {
       let messages = [];
-
+  
       if (role === "constructor") {
         const ownerResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifiedID, {
-            userVerifiedID: userId,
-          })
+          graphqlOperation(verificationsByUserVerifiedID, { userVerifiedID: userId })
         );
-
-        messages =
-          ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
-            (verification) =>
-              verification.verificationComments?.items?.map((comment) => ({
-                ...comment,
-                senderName: verification.userVerifier?.name || "Desconocido",
-                propertyID: verification.propertyFeature?.propertyID || null, // Agregar nombre del verificador
-              })) || []
-          ) || [];
+  
+        messages = ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
+          (verification) =>
+            verification.verificationComments?.items?.map((comment) => ({
+              ...comment,
+              senderName: verification.userVerifier?.name || "Desconocido",
+              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
+            })) || []
+        ) || [];
+  
       } else if (role === "validator") {
         const verifierResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifierID, {
-            userVerifierID: userId,
-          })
+          graphqlOperation(verificationsByUserVerifierID, { userVerifierID: userId })
         );
-
-        messages =
-          verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
-            (verification) =>
-              verification.verificationComments?.items?.map((comment) => ({
-                ...comment,
-                senderName: verification.userVerified?.name || "Desconocido",
-                propertyID: verification.propertyFeature?.propertyID || null, // Agregar nombre del verificador
-              })) || []
-          ) || [];
+  
+        messages = verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
+          (verification) =>
+            verification.verificationComments?.items?.map((comment) => ({
+              ...comment,
+              senderName: verification.userVerified?.name || "Desconocido",
+              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
+            })) || []
+        ) || [];
       }
-
+  
       // Eliminar duplicados
-      const uniqueMessages = Array.from(
-        new Map(messages.map((msg) => [msg.id, msg])).values()
-      );
+      const uniqueMessages = Array.from(new Map(messages.map((msg) => [msg.id, msg])).values());
       setMessages(uniqueMessages);
     } catch (error) {
       console.error("❌ Error cargando mensajes pendientes:", error);
     }
   };
-
+  
   const handleSignOut = async () => {
     try {
       await Auth.signOut();
@@ -136,7 +130,7 @@ export default function NewHeaderNavbar() {
   };
   
   const handleCloseNotifications = () => setShowNotifications(false);
-  if (!user) return <HeaderNavbar />;
+
   return (
     <Navbar key="sm" expand="lg" fixed="top" className="bg-[#ecd798]">
       <Container fluid>
@@ -213,8 +207,7 @@ export default function NewHeaderNavbar() {
                     </div>
                   </>
                 )}
-                {(user.attributes["custom:role"] === "validator" ||
-                  user.attributes["custom:role"] === "legal") && (
+                {(user && user.attributes["custom:role"] === "legal") && (
                     <>
                      <div
                     className="relative cursor-pointer"

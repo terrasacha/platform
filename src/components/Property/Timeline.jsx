@@ -123,7 +123,7 @@ export default function Timeline({
         ? "Predio Aprobado"
         : isRejected
         ? "Predio Rechazado"
-        : "Proyecto Elegido",
+        : "Predio Elegido",
       description: isApproved
         ? "El predio ha sido aprobado."
         : isRejected
@@ -252,10 +252,10 @@ export default function Timeline({
                   "bg-gray-300 text-gray-500 border-gray-400 opacity-50";
 
                 // 🔥 Si es el paso actual, se pone amarillo
-                if (step.id === currentStep) {
-                  stepClass =
-                    "bg-yellow-500 text-white border-yellow-600 animate-pulse shadow-xl";
-                } else if (accomplished) {
+                if (step.id === currentStep && step.id !== steps.length) {
+                  stepClass = "bg-yellow-500 text-white border-yellow-600 animate-pulse shadow-xl";
+                }
+                 else if (accomplished) {
                   stepClass =
                     "bg-green-500 text-white border-green-600 shadow-lg hover:shadow-xl";
                 }
