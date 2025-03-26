@@ -8,7 +8,7 @@ import { formatArea } from "components/Constructor/ProjectPage/mappers";
 import { stateMapper } from "utilities/propertyStateMapper";
 import { useAuth } from "context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
-import { updateProperty, updateVerification } from "graphql/mutations";
+import { createNotification, createVerificationComment, updateProperty, updateVerification } from "graphql/mutations";
 import PropertyChat from "components/Legal/PropertyChat";
 import { FaEye } from "react-icons/fa";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
@@ -27,8 +27,10 @@ const getPropertyArea = (property) => {
   return formatArea(areaFeature?.value) || "No disponible";
 };
 
-const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
-  console.log("property", property);
+
+const DocumentationModal = ({ isOpen, onClose, property, fetchProperties , user }) => {
+  const [showRejectionReasonModal, setShowRejectionReasonModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   const propertyFiles = property?.propertyFeatures?.items
     .find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
@@ -45,21 +47,49 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
 
   console.log(propertyFiles);
 
-  const handleEligible = async (option) => {
-    // Lógica para manejar la elegibilidad
+  const handleEligible = async (option, reason = "") => {
     try {
       await API.graphql(
         graphqlOperation(updateProperty, {
           input: {
             id: property.id,
-            status: option ? "SELECTABLE" : "NOT_SELECTABLE", // Desasignar el usuario legal
-            reason: option ? null : "", // Agregar razón si no es elegible
+            status: option ? "SELECTABLE" : "NOT_SELECTABLE",
+            reason: option ? null : reason,
           },
         })
       );
-      toast.success(
-        `El estado del predio ahora es: ${option ? "Elegible" : "No elegible"}`
-      );
+  
+      // Si se rechaza, también deja un mensaje en el chat del predio
+      if (!option && reason.trim()) {
+        await API.graphql(
+          graphqlOperation(createVerificationComment, {
+            input: {
+              verificationID: property.propertyFeatures.items.find(
+                (f) => f.featureID === "GLOBAL_PROPERTY_FILES"
+              ).verifications.items[0].id,
+              comment: `Predio marcado como No Elegible. Razón: ${reason}`,
+              isCommentByVerifier: true,
+            },
+          })
+        );
+      }
+  
+      const notificationMessage = option
+        ? `Tu predio '${property.name}' ha sido aprobado como 'Elegible'.`
+        : `Tu predio '${property.name}' ha sido marcado como 'No Elegible'.`;
+  
+      const notificationData = {
+        userOriginID: user.id,
+        userID: property.userID,
+        message: notificationMessage,
+        type: "PROPERTY",
+        resourceID: property.id,
+        isRead: false,
+      };
+  
+      await API.graphql(graphqlOperation(createNotification, { input: notificationData }));
+  
+      toast.success(`El estado del predio ahora es: ${option ? "Elegible" : "No elegible"}`);
       fetchProperties();
     } catch (error) {
       toast.error("Error al actualizar el estado del predio");
@@ -67,6 +97,7 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
     }
     onClose();
   };
+  
 
   if (!isOpen) return null;
 
@@ -116,16 +147,53 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties }) => {
             Elegible
           </button>
           <button
-            className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-            onClick={() => handleEligible(false)}
-          >
-            No elegible
-          </button>
+  className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+  onClick={() => setShowRejectionReasonModal(true)}
+>
+  No elegible
+</button>
+
           <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
             Cancelar
           </button>
         </div>
       </div>
+      {showRejectionReasonModal && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white rounded-lg p-6 w-full max-w-lg">
+      <h3 className="text-lg font-semibold mb-4">Motivo de No Elegibilidad</h3>
+      <textarea
+        className="w-full p-2 border border-gray-300 rounded-md"
+        placeholder="Escribe el motivo por el cual el predio no es elegible..."
+        value={rejectionReason}
+        onChange={(e) => setRejectionReason(e.target.value)}
+        rows={5}
+      />
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          className="bg-gray-300 px-4 py-2 rounded"
+          onClick={() => setShowRejectionReasonModal(false)}
+        >
+          Cancelar
+        </button>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded"
+          onClick={() => {
+            if (!rejectionReason.trim()) {
+              toast.error("Debes ingresar una razón");
+              return;
+            }
+            handleEligible(false, rejectionReason);
+            setShowRejectionReasonModal(false);
+          }}
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
@@ -138,6 +206,8 @@ export default function LegalAdmon() {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [filterStatus, setFilterStatus] = useState("");
   const { user } = useAuth();
+
+
 
   const navigate = useNavigate();
 
@@ -169,6 +239,18 @@ export default function LegalAdmon() {
               },
             })
           );
+
+          const notificationData = {
+            userOriginID: user.id, // Usuario que hace la asignación
+            userID: property.userID, // Dueño del predio
+            message: `El revisor legal ya no está asignado a tu predio '${property.name}'.`,
+            type: "PROPERTY",
+            resourceID: property.id, // ID del predio
+            isRead: false,
+          };
+  
+          await API.graphql(graphqlOperation(createNotification, { input: notificationData }));
+  
           toast.success(`Predio desasignado`);
           fetchProperties();
         } catch (error) {
@@ -202,6 +284,17 @@ export default function LegalAdmon() {
         })
       );
 
+      const notificationData = {
+        userOriginID: user.id, // Usuario que hace la asignación
+        userID: property.userID, // Dueño del predio
+        message: `Se ha asignado un revisor legal a tu predio '${property.name}' para revisar la documentación.`,
+        type: "PROPERTY",
+        resourceID: property.id, // ID del predio
+        isRead: false,
+      };
+  
+      await API.graphql(graphqlOperation(createNotification, { input: notificationData }));
+
       toast.success(`Predio asignado`);
       fetchProperties();
     } catch (error) {
@@ -219,7 +312,7 @@ export default function LegalAdmon() {
       (property) => property.status === filterStatus
     );
   }
-  console.log(filteredProperties);
+  console.log("properties",properties);
   return (
     <>
       {/* <HeaderNavbar logOut={logOut} /> */}
@@ -342,6 +435,7 @@ export default function LegalAdmon() {
         onClose={() => setIsModalOpen(false)}
         property={selectedProperty}
         fetchProperties={fetchProperties}
+        user={user} 
       />
       <ToastContainer position="bottom-right" />
     </>

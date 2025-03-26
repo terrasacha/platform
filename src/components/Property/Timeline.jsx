@@ -17,6 +17,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { Modal } from "react-bootstrap";
 import { createPropertyFeature, createVerification, updateVerification } from "graphql/mutations";
 import { listPropertyFeatures } from "graphql/queries";
+import { useAuth } from "context/AuthContext";
 
 export default function Timeline({
   currentStep = 1,
@@ -25,13 +26,34 @@ export default function Timeline({
   propertyStatus,
   propertyId,
   userId, 
-  campaignOwnerId, x  
+  campaignOwnerId,
+  openChatOnLoad=false,
+  chatTarget
 }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [chatModalIsOpen, setChatModalIsOpen] = useState(false);
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [propertyVerificationID, setPropertyVerificationID] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!openChatOnLoad || !chatTarget) return;
+    console.log("🔁 openChatOnLoad:", openChatOnLoad);
+    console.log("📌 chatTarget:", chatTarget);
+    console.log("📌 currentStep:", currentStep);
+  
+    if (chatTarget === "legal" ) {
+      setModalIsOpen(true); // Abrir ValidationModal
+    }
+  
+    if (chatTarget === "validator" ) {
+      handleChatFeature(); // Abrir PropertyChat
+    }
+  }, [openChatOnLoad, currentStep, chatTarget]);
+  
+  
+  
 
   useEffect(() => {
     if (propertyId) {
@@ -82,7 +104,7 @@ export default function Timeline({
   const closeModal = () => {
     console.log("🔴 Cerrando el modal...");
     setModalIsOpen(false);
-  };
+  };1
 
   const handleValidationComplete = () => {
     console.log("📌 Documentos subidos correctamente. Pasando al paso 3...");
@@ -141,6 +163,12 @@ export default function Timeline({
 
   const handleChatFeature = async () => {
     try {
+
+      if (currentStep !== 4) {
+        console.warn("⚠️ El chat solo puede abrirse en el paso 4.");
+        return;
+      }
+      
       if (!propertyId || !userId) {
         console.error("❌ propertyId o userId no están definidos.");
         return;
@@ -334,6 +362,7 @@ export default function Timeline({
           ))}
         </ProgressBar>
       </div>
+      
 
       <ValidationModal
         isOpen={modalIsOpen}

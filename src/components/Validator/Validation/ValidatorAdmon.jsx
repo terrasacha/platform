@@ -8,12 +8,13 @@ import {
 import HeaderNavbar from "components/Investor/Navbars/HeaderNavbar";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import useFetchProperties from "hooks/useFetchProperties";
-import { createUserProduct, updateProperty } from "graphql/mutations";
+import { createNotification, createUserProduct, updateProperty } from "graphql/mutations";
 import { formatArea } from "components/Constructor/ProjectPage/mappers";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import { stateMapper } from "utilities/propertyStateMapper";
 import { useAuth } from "context/AuthContext";
+import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 // Componente para representar una campaña individual
 const CampaignCard = ({ campaign }) => {
@@ -159,17 +160,37 @@ export default function ValidatorAdmon() {
     (property) => property.campaign === null
   );
   console.log("properties", properties);
-  console.log("filteredProperties", filteredProperties);
+  console.log("userCampaigns", userCampaigns);
 
   const handleAssignCampaign = async (campaignId) => {
 
-    const productID = userCampaigns.find(campaign => campaign.id === campaignId).products.items[0].id
-
-    /* const productID = userCampaigns. */
-    if (selectedProperty.status !== "SELECTABLE") {
-      toast.error("El predio aún no es elegible");
+    const selectedCampaign = userCampaigns.find(campaign => campaign.id === campaignId);
+    if (!selectedCampaign) {
+      toast.error("No se encontró la campaña seleccionada.");
       return;
     }
+
+    const productID = selectedCampaign.products?.items?.[0]?.id || null;
+    if (!productID) {
+      toast.error("No se encontró un producto asociado a la campaña.");
+      return;
+    }
+
+    if (!productID) {
+      toast.error("No se encontró un producto asociado a la campaña.");
+      return;
+    }
+
+    if (!selectedProperty) {
+      toast.error("No se ha seleccionado ningún predio.");
+      return;
+    }
+
+    if (selectedProperty.status !== "SELECTABLE") {
+      toast.error("El predio aún no es elegible.");
+      return;
+    }
+
     try {
       await API.graphql(
         graphqlOperation(updateProperty, {
@@ -180,6 +201,16 @@ export default function ValidatorAdmon() {
           },
         })
       );
+
+      const notificationData = {
+        userOriginID: user.id,  // Usuario que asigna la campaña
+        userID: selectedProperty.userID,  // Dueño del predio
+        message: `Tu predio ha sido asignado a la campaña: ${selectedCampaign.name}`, 
+        type: "CAMPAING",
+        resourceID: campaignId,  // ID de la campaña
+        isRead: false,
+      };
+      await API.graphql(graphqlOperation(createNotification, { input: notificationData }));
 
       toast.success(`Predio asignado a campaña exitosamente`);
       fetchProperties();
@@ -199,7 +230,7 @@ export default function ValidatorAdmon() {
   console.log("userCampaigns", userCampaigns)
   return (
     <>
-      <HeaderNavbar
+      <NewHeaderNavbar
         logOut={logOut}
         changeHeaderNavBarRequest={changeHeaderNavBarRequest}
       />

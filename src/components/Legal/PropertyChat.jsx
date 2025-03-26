@@ -5,8 +5,10 @@ import { notify } from "utilities/notify";
 import {
   createNotification,
   createVerificationComment,
+  updateNotification,
 } from "graphql/mutations";
 import { getProperty } from "utilities/customQueries";
+import { listNotifications } from "graphql/queries";
 
 export default function PropertyChat({ propertyId, featureChat }) {
   const { user } = useAuth();
@@ -19,6 +21,8 @@ export default function PropertyChat({ propertyId, featureChat }) {
   const [propertyID, setPropertyID] = useState(null);
   const [propertyName, setPropertyName] = useState("");
   const messagesEndRef = useRef(null);
+  const [userVerifiedName, setUserVerifiedName] = useState("");
+
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -32,10 +36,10 @@ export default function PropertyChat({ propertyId, featureChat }) {
         const property = response.data.getProperty;
         setPropertyID(property.id)
         setPropertyName(property.name);
-  
         const propertyVerification = property?.propertyFeatures?.items.find(
           (feature) => feature.featureID === featureChat
         )?.verifications?.items[0];
+        setUserVerifiedName(propertyVerification?.userVerified?.name || "");
   
         if (!propertyVerification) {
           console.warn(`⚠️ No se encontró Verification para featureChat: ${featureChat}`);
@@ -82,6 +86,13 @@ export default function PropertyChat({ propertyId, featureChat }) {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (propertyID) {
+      notificationsRead();
+    }
+  }, [propertyID]);
+  
+
   console.log("availableChatUsers", availableChatUsers);
 
   const handleSendMessage = async () => {
@@ -100,7 +111,12 @@ export default function PropertyChat({ propertyId, featureChat }) {
           ? (availableChatUsers[0] || '')
           : availableChatUsers[1], // ID del usuario que debe recibir la notificación
       message: `Tienes un nuevo mensaje en el predio: ${propertyName}`,
-      type: "MESSAGE",
+      type:
+      verifierRole === "legal"
+        ? "MESSAGE_LEGAL"
+        : verifierRole === "validator"
+        ? "MESSAGE_VALIDATOR"
+        : "MESSAGE",    
       resourceID: propertyID,
       isRead: false,
     };
@@ -141,6 +157,39 @@ export default function PropertyChat({ propertyId, featureChat }) {
     validator: "Validador",
   };
 
+  const notificationsRead = async () => {
+    if (!propertyID || !user?.id) return;
+  
+    try {
+      // Obtener las notificaciones del usuario relacionadas con el propertyID
+      const response = await API.graphql(
+        graphqlOperation(listNotifications, {
+          filter: {
+            userID: { eq: user.id },
+            resourceID: { eq: propertyID }, // Solo notificaciones de este predio
+            isRead: { eq: false }, // Solo las no leídas
+          },
+        })
+      );
+  
+      const notifications = response?.data?.listNotifications?.items || [];
+  
+      // Actualizar cada notificación a isRead: true
+      for (let notification of notifications) {
+        await API.graphql(
+          graphqlOperation(updateNotification, {
+            input: { id: notification.id, isRead: true },
+          })
+        );
+      }
+  
+      console.log("✅ Notificaciones marcadas como leídas para propertyID:", propertyID);
+    } catch (error) {
+      console.error("❌ Error marcando notificaciones como leídas:", error);
+    }
+  };
+  
+
   return (
     <>
       {verificationID && (
@@ -160,7 +209,7 @@ export default function PropertyChat({ propertyId, featureChat }) {
                   <p className="font-semibold mb-0">
                     {message.isCommentByVerifier
                       ? roleMapper[verifierRole]
-                      : "Propietario"}
+                      : userVerifiedName}
                     :
                   </p>
                   <p className="mb-0">{message.comment}</p>
