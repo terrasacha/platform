@@ -18,6 +18,7 @@ import { Modal } from "react-bootstrap";
 import { createPropertyFeature, createVerification, updateVerification } from "graphql/mutations";
 import { listPropertyFeatures } from "graphql/queries";
 import { useAuth } from "context/AuthContext";
+import ConstructorWorkflow from "./ConstructorWorkflow";
 
 export default function Timeline({
   currentStep = 1,
@@ -371,14 +372,15 @@ export default function Timeline({
         checkDocuments={true}
       />
 
-<Modal show={chatModalIsOpen} onHide={() => setChatModalIsOpen(false)} centered>
+<Modal show={chatModalIsOpen} onHide={() => setChatModalIsOpen(false)} size="xl" centered>
   <Modal.Header closeButton>
-    <Modal.Title>Chat del Predio</Modal.Title>
+    <Modal.Title>Proceso del Predio</Modal.Title>
   </Modal.Header>
   <Modal.Body>
-    <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
+    <ConstructorWorkflow propertyId={propertyId} />
   </Modal.Body>
 </Modal>
+
 
     </div>
   );

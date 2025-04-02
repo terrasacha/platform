@@ -16,6 +16,7 @@ import AdditionalFiles from "./AdditionalFiles";
 import { API, graphqlOperation } from "aws-amplify";
 import { toast } from "react-toastify";
 import { createNotification, updateProperty } from "graphql/mutations";
+import { listPropertyFeatures } from "graphql/queries";
 
 export default function PropertyDetails({
   visible,
@@ -161,8 +162,54 @@ export default function PropertyDetails({
     });
   };
 
+  const checkAllStepsCompleted = async () => {
+    try {
+      const response = await API.graphql(
+        graphqlOperation(listPropertyFeatures, {
+          filter: {
+            propertyID: { eq: propertyData?.propertyInfo?.id },
+            featureID: { eq: "GLOBAL_PROPERTY_STATUS" },
+          },
+        })
+      );
+  
+      const items = response?.data?.listPropertyFeatures?.items || [];
+      if (items.length === 0) return false;
+  
+      const value = JSON.parse(items[0].value);
+  
+      const booleanFieldsValid =
+        value.analisis === true &&
+        value.monitoreos === true &&
+        value.revision_memorando === true &&
+        value.validacion_inicial === true;
+  
+      const memorandoValid =
+        value.memorando &&
+        !!value.memorando.uploadDate &&
+        !!value.memorando.url;
+  
+      return booleanFieldsValid && memorandoValid;
+    } catch (error) {
+      console.error("❌ Error verificando pasos del propertyFeature:", error);
+      return false;
+    }
+  };
+  
+
   // Función para mostrar el modal con las opciones de validación
-  const handleVerifyClick = () => {
+  const handleVerifyClick = async () => {
+    const allStepsReady = await checkAllStepsCompleted();
+  
+    if (!allStepsReady) {
+      Swal.fire({
+        icon: "warning",
+        title: "Pasos pendientes",
+        text: "Aún hay pasos del constructor sin completar. Por favor, completa todos antes de validar.",
+      });
+      return;
+    }
+  
     Swal.fire({
       title: "Verificación del predio",
       text: "Selecciona si deseas aprobar o rechazar el predio.",
@@ -184,6 +231,7 @@ export default function PropertyDetails({
       }
     });
   };
+  
 
   return (
     <>
