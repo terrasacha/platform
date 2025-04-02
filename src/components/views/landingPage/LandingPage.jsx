@@ -179,9 +179,11 @@ export default class LandingPage extends Component {
           </p>
           <div className='fade-in fade-in-row row'>
             <div className='col p-2 mx-3'>
+            {!this.state.userLogged && (
               <Button className="" onClick={this.handleShow}>
                 Tengo un proyecto
               </Button>
+              )}
               <DropDownProjects/>
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header closeButton>
@@ -402,9 +404,11 @@ export default class LandingPage extends Component {
             <div className='col'>
               <div className="flex flex-col sm:flex-row">
                 <DropDownProjects className="btn-cta mb-2 sm:mb-0" variant={'transparent'}/>
+                {!this.state.userLogged && (
                 <button className="btn-cta sm:ml-2" onClick={this.handleShow}>
                   Tengo un proyecto
                 </button>
+                )}
               </div>
             </div>
           </div>

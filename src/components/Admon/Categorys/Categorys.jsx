@@ -185,7 +185,7 @@ class Categorys extends Component {
               <input
                 type="text"
                 id="formGridNewCategoryName"
-                placeholder="Ex. NUEVA CATERORIA"
+                placeholder="NUEVA CATEGORIA"
                 name="category.name"
                 value={newCategory.name}
                 onChange={(e) => this.handleOnChangeInputForm(e)}

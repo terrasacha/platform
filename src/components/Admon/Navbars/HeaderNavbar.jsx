@@ -53,7 +53,7 @@ const HeaderNavbar = ({ isActualUserLogged, changeHeaderNavBarRequest, handleSig
                 <a href="#categorys" onClick={(e) => handleMenuItemClick(e, "categorys")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Categorías</a>
                 <a href="#items" onClick={(e) => handleMenuItemClick(e, "items")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Items de proyectos</a>
                 <a href="#features" onClick={(e) => handleMenuItemClick(e, "features")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Características</a>
-                <a href="#uom" onClick={(e) => handleMenuItemClick(e, "uom")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">UOM</a>
+                <a href="#uom" onClick={(e) => handleMenuItemClick(e, "uom")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Unidad de medida</a>
                 
                 <div className="border-t my-2"></div>
                 
