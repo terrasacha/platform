@@ -16,7 +16,7 @@ import PropertyChat from "components/Legal/PropertyChat";
 import { API, graphqlOperation } from "aws-amplify";
 import { Modal } from "react-bootstrap";
 import { createPropertyFeature, createVerification, updateVerification } from "graphql/mutations";
-import { listPropertyFeatures } from "graphql/queries";
+import { listPropertyFeatures, listVerifications } from "graphql/queries";
 import { useAuth } from "context/AuthContext";
 
 export default function Timeline({
@@ -104,7 +104,7 @@ export default function Timeline({
   const closeModal = () => {
     console.log("🔴 Cerrando el modal...");
     setModalIsOpen(false);
-  };1
+  };
 
   const handleValidationComplete = () => {
     console.log("📌 Documentos subidos correctamente. Pasando al paso 3...");

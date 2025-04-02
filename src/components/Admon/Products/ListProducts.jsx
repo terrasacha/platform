@@ -416,7 +416,7 @@ export default class ListProducts extends Component {
     const renderProducts = () => {
       if (listCleanProducts.length > 0) {
         return (
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive>
             <thead>
               <tr>
                 <th>Eliminar</th>

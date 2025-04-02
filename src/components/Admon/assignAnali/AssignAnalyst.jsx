@@ -3,20 +3,20 @@ import { Container, Table, Form, Button, Alert } from "react-bootstrap";
 import { API, graphqlOperation } from "aws-amplify";
 import { v4 as uuidv4 } from "uuid";
 
-import { listProducts, listUserProducts } from "graphql/queries"; 
+import { listProducts, listUserProducts } from "graphql/queries";
 import { createUserProduct, deleteUserProduct } from "graphql/mutations";
 
 const listAnalysts = /* GraphQL */ `
-query ListUsers($filter: ModelUserFilterInput) {
-  listUsers(filter: $filter) {
-    items {
-      id
-      name
-      email
-      role
+  query ListUsers($filter: ModelUserFilterInput) {
+    listUsers(filter: $filter) {
+      items {
+        id
+        name
+        email
+        role
+      }
     }
   }
-}
 `;
 
 export default class AssignAnalyst extends Component {
@@ -24,8 +24,8 @@ export default class AssignAnalyst extends Component {
     super(props);
     this.state = {
       analysts: [],
-      products: [], 
-      availableProducts: [], 
+      products: [],
+      availableProducts: [],
       userProducts: [],
       selectedAnalyst: "",
       selectedProduct: "",
@@ -49,10 +49,11 @@ export default class AssignAnalyst extends Component {
 
   async loadAnalysts() {
     const filter = { role: { eq: "analyst" } };
-    return API.graphql(graphqlOperation(listAnalysts, { filter }))
-      .then((result) => {
+    return API.graphql(graphqlOperation(listAnalysts, { filter })).then(
+      (result) => {
         this.setState({ analysts: result.data.listUsers.items });
-      });
+      }
+    );
   }
 
   async loadProducts() {
@@ -63,7 +64,7 @@ export default class AssignAnalyst extends Component {
       console.error("Error al cargar productos:", error);
     }
   }
-  
+
   async loadUserProducts() {
     try {
       const result = await API.graphql(graphqlOperation(listUserProducts));
@@ -75,27 +76,26 @@ export default class AssignAnalyst extends Component {
       console.error("Error al cargar productos asignados:", error);
     }
   }
-  
+
   handleSelectAnalyst = (analystId) => {
     const { userProducts, products } = this.state;
-  
+
     // Obtener los IDs de los productos asignados al analista seleccionado
     const assignedProductIds = userProducts
       .filter((up) => up.userID === analystId)
       .map((up) => up.productID);
-  
+
     // Filtrar productos disponibles para este analista
     const availableProducts = products.filter(
       (product) => !assignedProductIds.includes(product.id)
     );
-  
+
     this.setState({
       selectedAnalyst: analystId,
       availableProducts, // Actualizar productos disponibles para este analista
       selectedProduct: "", // Reiniciar la selección del producto
     });
   };
-  
 
   handleAssignAnalyst = async () => {
     const { selectedAnalyst, selectedProduct } = this.state;
@@ -124,11 +124,13 @@ export default class AssignAnalyst extends Component {
 
   handleDeleteAssignment = async (userProductId) => {
     try {
-      await API.graphql(graphqlOperation(deleteUserProduct, { input: { id: userProductId } }));
+      await API.graphql(
+        graphqlOperation(deleteUserProduct, { input: { id: userProductId } })
+      );
       await this.loadUserProducts(); // Refresh the user-products table
-       if (this.state.selectedAnalyst) {
-      this.handleSelectAnalyst(this.state.selectedAnalyst); // Actualizar productos disponibles
-    }
+      if (this.state.selectedAnalyst) {
+        this.handleSelectAnalyst(this.state.selectedAnalyst); // Actualizar productos disponibles
+      }
       this.setState({ showDeleteSuccess: true }); // Mostrar mensaje de éxito
     } catch (error) {
       console.error("Error al eliminar asignación:", error);
@@ -149,8 +151,8 @@ export default class AssignAnalyst extends Component {
     } = this.state;
 
     return (
-      <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
-        <Container className="mt-5 p-4 bg-light shadow rounded">
+      <div className="container mx-auto mt-20">
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h2 className="text-center mb-4">Asignar Analista</h2>
 
           {/* Mensajes de alerta */}
@@ -169,7 +171,8 @@ export default class AssignAnalyst extends Component {
               onClose={() => this.setState({ showError: false })}
               dismissible
             >
-              Por favor, seleccione un analista y un producto antes de continuar.
+              Por favor, seleccione un analista y un producto antes de
+              continuar.
             </Alert>
           )}
           {showDeleteSuccess && (
@@ -185,37 +188,37 @@ export default class AssignAnalyst extends Component {
           {/* Formulario de selección */}
           <Form className="mb-4">
             <Form.Group controlId="selectAnalyst" className="mb-3">
-  <Form.Label>Seleccionar Analista</Form.Label>
-  <Form.Select
-    value={selectedAnalyst}
-    onChange={(e) => this.handleSelectAnalyst(e.target.value)}
-  >
-    <option value="">-- Seleccione un analista --</option>
-    {analysts.map((analyst) => (
-      <option key={analyst.id} value={analyst.id}>
-        {analyst.name} ({analyst.email})
-      </option>
-    ))}
-  </Form.Select>
-</Form.Group>
-
+              <Form.Label>Seleccionar Analista</Form.Label>
+              <Form.Select
+                value={selectedAnalyst}
+                onChange={(e) => this.handleSelectAnalyst(e.target.value)}
+              >
+                <option value="">-- Seleccione un analista --</option>
+                {analysts.map((analyst) => (
+                  <option key={analyst.id} value={analyst.id}>
+                    {analyst.name} ({analyst.email})
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
 
             <Form.Group controlId="selectProduct" className="mb-3">
-  <Form.Label>Seleccionar Producto</Form.Label>
-  <Form.Select
-    value={selectedProduct}
-    onChange={(e) => this.setState({ selectedProduct: e.target.value })}
-    disabled={!selectedAnalyst}
-  >
-    <option value="">-- Seleccione un Producto --</option>
-    {this.state.availableProducts.map((product) => (
-      <option key={product.id} value={product.id}>
-        {product.name} ({product.categoryID})
-      </option>
-    ))}
-  </Form.Select>
-</Form.Group>
-
+              <Form.Label>Seleccionar Producto</Form.Label>
+              <Form.Select
+                value={selectedProduct}
+                onChange={(e) =>
+                  this.setState({ selectedProduct: e.target.value })
+                }
+                disabled={!selectedAnalyst}
+              >
+                <option value="">-- Seleccione un Producto --</option>
+                {this.state.availableProducts.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name} ({product.categoryID})
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
 
             <div className="text-center">
               <Button
@@ -228,9 +231,11 @@ export default class AssignAnalyst extends Component {
             </div>
           </Form>
 
-          {/* Tabla de asignaciones */}
+        </div>
+
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h4 className="text-center mb-4">Analistas Asignados</h4>
-          <Table striped bordered hover className="mt-4">
+          <Table striped bordered hover responsive>
             <thead>
               <tr>
                 <th>Nombre del Analista</th>
@@ -264,7 +269,7 @@ export default class AssignAnalyst extends Component {
               )}
             </tbody>
           </Table>
-        </Container>
+        </div>
       </div>
     );
   }

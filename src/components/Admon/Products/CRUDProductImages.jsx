@@ -15,7 +15,7 @@ export default class CRUDProductImages extends Component {
 
     const renderCRUDProductImages = () => {
         return (
-            <Table striped bordered hover>
+            <Table striped bordered hover responsive>
                 <thead>
                 <tr>
                     <th>Cargar</th>
