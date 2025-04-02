@@ -199,67 +199,65 @@ class Items extends Component {
     const renderCategorys = () => {
       if (categorys.length > 0) {
         return (
-          <div className="container">
-            <table className="w-full border-collapse border rounded-lg">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="px-4 py-2">Nombre</th>
-                  <th className="px-4 py-2">Tipo</th>
-                  <th className="px-4 py-2">Acción</th>
+          <Table striped bordered hover responsive>
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="px-4 py-2 text-left">Nombre</th>
+                <th className="px-4 py-2 text-left">Tipo</th>
+                <th className="px-4 py-2 text-left">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {categorys.map((category) => (
+                <tr key={category.id} className="bg-white border-b">
+                  <td className="px-4 py-2">{category.name}</td>
+                  <td className="px-4 py-2">{category.type}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={(e) => this.handleLoadEditCategory(category, e)}
+                    >
+                      Editar
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {categorys.map((category) => (
-                  <tr key={category.id} className="bg-white border-b">
-                    <td className="px-4 py-2">{category.name}</td>
-                    <td className="px-4 py-2">{category.type}</td>
-                    <td className="px-4 py-2">
-                      <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={(e) =>
-                          this.handleLoadEditCategory(category, e)
-                        }
-                      >
-                        Editar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </Table>
         );
       }
     };
 
     return (
-      <div className="container mx-auto mt-8">
-        <div className="container mb-8 p-4 bg-white rounded-md">
+      <div className="container mx-auto mt-20">
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h2 className="text-2xl mb-4">
             {CRUDButtonName} Items de proyecto: {newCategory.name}
           </h2>
           <form className="space-y-4">
             <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
               <div className="w-full md:w-1/2">
-                <label className="block">Nombre</label>
+                <label className="block text-sm font-medium">Nombre</label>
                 <input
                   type="text"
                   id="formGridNewCategoryName"
-                  className="form-input"
+                  className="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                   placeholder="Ex. NUEVO CONCEPTO"
                   name="category.name"
                   value={newCategory.name}
                   onChange={(e) => this.handleOnChangeInputForm(e)}
+                  aria-label="Nombre de la categoría"
                 />
               </div>
               <div className="w-full md:w-1/2">
-                <label className="block">Categoría</label>
+                <label className="block text-sm font-medium">Categoría</label>
                 <select
                   id="formGridNewCategoryType"
-                  className="form-select"
+                  className="form-select mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                   name="category.type"
                   value={newCategory.type}
                   onChange={(e) => this.handleOnChangeInputForm(e)}
+                  aria-label="Tipo de categoría"
                 >
                   <option disabled value="">
                     Selecciona una opción
@@ -287,13 +285,13 @@ class Items extends Component {
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={this.handleCRUDCategory}
                 disabled={this.state.isCRUDButtonDisable}
+                aria-label={CRUDButtonName}
               >
                 {CRUDButtonName}
               </button>
             </div>
           </form>
         </div>
-        <br />
         {renderCategorys()}
       </div>
     );

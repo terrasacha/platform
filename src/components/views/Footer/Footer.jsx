@@ -4,8 +4,8 @@ const Footer = () => {
   const year = new Date().getFullYear();
   
   return (
-    <footer className="footer pt-8 flex flex-col items-center justify-center text-center">
-      <p className='pt-1'>Copyright © Suan {year}</p>
+    <footer className="flex flex-col bg-[#282c34] text-white items-center justify-center text-center py-3">
+      <p className='mb-0'>Copyright © Suan {year}</p>
     </footer>
   );
 };

@@ -54,7 +54,7 @@ class Analysts extends Component {
         id: "",
         username: "",
         email: "",
-        role: "analyst"
+        role: "analyst",
       },
       errors: {},
       showErrors: false,
@@ -159,7 +159,7 @@ class Analysts extends Component {
         showModal: false,
       });
     }
-}
+  }
 
   async loadAnalystUsers() {
     let filter = {
@@ -181,7 +181,8 @@ class Analysts extends Component {
     if (!username.trim()) {
       errors.username = "El nombre de usuario es obligatorio.";
     } else if (username.length < 3) {
-      errors.username = "El nombre de usuario debe tener al menos 3 caracteres.";
+      errors.username =
+        "El nombre de usuario debe tener al menos 3 caracteres.";
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -195,7 +196,7 @@ class Analysts extends Component {
     return Object.keys(errors).length === 0; // True si no hay errores
   };
 
-   handleOnChangeInputForm = (e) => {
+  handleOnChangeInputForm = (e) => {
     const { name, value } = e.target;
     this.setState((prevState) => {
       const updatedUser = { ...prevState.newUser, [name]: value };
@@ -207,7 +208,8 @@ class Analysts extends Component {
           if (!value.trim()) {
             updatedErrors.username = "El nombre de usuario es obligatorio.";
           } else if (value.length < 3) {
-            updatedErrors.username = "El nombre de usuario debe tener al menos 3 caracteres.";
+            updatedErrors.username =
+              "El nombre de usuario debe tener al menos 3 caracteres.";
           } else {
             delete updatedErrors.username;
           }
@@ -270,8 +272,10 @@ class Analysts extends Component {
           isProfileUpdated: false,
           role: `${role}`,
         };
-       const response = await API.graphql(graphqlOperation(createUser, { input: userPayload }));
-       this.setState({ message: "Usuario creado exitosamente!" });
+        const response = await API.graphql(
+          graphqlOperation(createUser, { input: userPayload })
+        );
+        this.setState({ message: "Usuario creado exitosamente!" });
         this.handleHideModalCreate();
         this.cleanUserOnCreate();
       } catch (error) {
@@ -283,57 +287,56 @@ class Analysts extends Component {
   }
 
   render() {
-    let { analysts, newUser, errors  } = this.state;
+    let { analysts, newUser, errors } = this.state;
 
     const renderAnalysts = () => {
       if (analysts.length > 0) {
         return (
-          <div className="container mx-auto mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
+          <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
             <h4 className="text-lg font-semibold mb-4">Lista de analista</h4>
             <div className="overflow-x-auto">
-              <table className="table-auto w-full">
+              <Table striped bordered hover responsive>
                 <thead>
                   <tr>
-                    <th className="border px-4 py-2">Nombre</th>
-                    <th className="border px-4 py-2">Email</th>
-                    <th className="border px-4 py-2">Creado :</th>
-                    <th className="border px-4 py-2">Confirmacion</th>
-                    <th className="border px-4 py-2"></th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Creado :</th>
+                    <th>Confirmacion</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
-  {analysts.map((analyst) => {
-    return (
-      <tr key={analyst.id}>
-        <td className="border px-4 py-2">{analyst.name}</td>
-        <td className="border px-4 py-2">{analyst.email}</td>
-        <td className="border px-4 py-2">
-          {`${analyst.createdAt.split("T")[0].split("-")[2]}-${
-            analyst.createdAt.split("T")[0].split("-")[1]
-          }-${analyst.createdAt.split("T")[0].split("-")[0]}`}
-        </td>
-        <td className="border px-4 py-2">
-          {analyst.isProfileUpdated ? "Confirmado" : "Pendiente"}
-        </td>
-        <td className="border px-4 py-2">
-          <button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() =>
-              this.showModalDelete({
-                id: analyst.id,
-                username: analyst.name,
-              })
-            }
-          >
-            Eliminar
-          </button>
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
-
-              </table>
+                  {analysts.map((analyst) => {
+                    return (
+                      <tr key={analyst.id}>
+                        <td>{analyst.name}</td>
+                        <td>{analyst.email}</td>
+                        <td>
+                          {`${analyst.createdAt.split("T")[0].split("-")[2]}-${
+                            analyst.createdAt.split("T")[0].split("-")[1]
+                          }-${analyst.createdAt.split("T")[0].split("-")[0]}`}
+                        </td>
+                        <td>
+                          {analyst.isProfileUpdated ? "Confirmado" : "Pendiente"}
+                        </td>
+                        <td>
+                          <button
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() =>
+                              this.showModalDelete({
+                                id: analyst.id,
+                                username: analyst.name,
+                              })
+                            }
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
             </div>
           </div>
         );
@@ -341,15 +344,12 @@ class Analysts extends Component {
     };
 
     return (
-      <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
-        <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
+      <div className="container mx-auto mt-20">
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h4 className="text-lg">Crea un nuevo analista</h4>
           <form className="mt-4">
             <div className="mb-4">
-              <label
-                htmlFor="formGridUsername"
-                className="block font-semibold"
-              >
+              <label htmlFor="formGridUsername" className="block font-semibold">
                 Nombre de usuario
               </label>
               <input
@@ -425,7 +425,12 @@ class Analysts extends Component {
           show={this.state.showModalCreate}
           onHide={() => this.setState({ showModalCreate: false })}
           size="lg"
-          style={{ maxWidth: "fit-content", margin: "auto", position:"absolute", left:"25%" }} 
+          style={{
+            maxWidth: "fit-content",
+            margin: "auto",
+            position: "absolute",
+            left: "25%",
+          }}
         >
           <Modal.Header closeButton>
             <Modal.Title>Confirmar datos de nuevo usuario</Modal.Title>

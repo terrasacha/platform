@@ -176,7 +176,7 @@ export default class CRUDProductFeatures extends Component {
     const renderCRUDProductFeatures = () => {
         return (
             <>
-            <Table striped bordered hover>
+            <Table striped bordered hover responsive>
                 <thead>
                 <tr>
                     <th>Característica</th>
@@ -193,6 +193,7 @@ export default class CRUDProductFeatures extends Component {
                             <Form.Group as={Col} controlId='formGridCRUD_ProductFeature'>
                                     <Select 
                                         options={featuresSelectList}
+                                        placeholder="Seleccionar ..."
                                         onChange={this.handleOnSelectFeature} />
                                         {this.state.CRUDButtonName === 'UPDATE'?
                                             <Alert key="idx_key_1" variant='success' size='sm'>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { Modal, Spinner } from "react-bootstrap";
+import { Modal, Spinner, Table } from "react-bootstrap";
 import {
   onCreateUser,
   onUpdateUser,
@@ -96,7 +96,6 @@ export default function ManageMarketplaceAdmin() {
         (item) => item.marketplaceID
       );
       setListUserItems(admins);
-     
     });
   };
 
@@ -104,7 +103,6 @@ export default function ManageMarketplaceAdmin() {
     API.graphql(graphqlOperation(listMarketplacess)).then((data) => {
       const marketplaces = data.data.listMarketplaces.items;
       setListMarketplaces(marketplaces);
-  
     });
   };
 
@@ -115,7 +113,8 @@ export default function ManageMarketplaceAdmin() {
     if (!username.trim()) {
       errors.username = "El nombre de usuario es obligatorio.";
     } else if (username.length < 3) {
-      errors.username = "El nombre de usuario debe tener al menos 3 caracteres.";
+      errors.username =
+        "El nombre de usuario debe tener al menos 3 caracteres.";
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -145,7 +144,8 @@ export default function ManageMarketplaceAdmin() {
           if (!value.trim()) {
             updatedErrors.username = "El nombre de usuario es obligatorio.";
           } else if (value.length < 3) {
-            updatedErrors.username = "El nombre de usuario debe tener al menos 3 caracteres.";
+            updatedErrors.username =
+              "El nombre de usuario debe tener al menos 3 caracteres.";
           } else {
             delete updatedErrors.username;
           }
@@ -202,7 +202,6 @@ export default function ManageMarketplaceAdmin() {
     );
     return marketplace ? marketplace.name : "Marketplace no encontrado";
   };
-  
 
   const confirmCreateUser = async () => {
     setShowErrors(true);
@@ -213,8 +212,10 @@ export default function ManageMarketplaceAdmin() {
     setLoadingCreate(true);
     const endpoint =
       "https://vhal4tf7id.execute-api.us-east-1.amazonaws.com/create-admin-marketplace";
-      
-    const marketplaceName = listMarketplaces.find((marketplace) => marketplace.id === newAdmin.marketplace).name
+
+    const marketplaceName = listMarketplaces.find(
+      (marketplace) => marketplace.id === newAdmin.marketplace
+    ).name;
     const data = {
       username: newAdmin.username,
       "marketplace-id": newAdmin.marketplace,
@@ -232,7 +233,6 @@ export default function ManageMarketplaceAdmin() {
     })
       .then((response) => {
         if (!response.ok) {
-         
           notifyError(
             "Ya existe administrador para ese marketplace o el nombre de usuario ya está en uso"
           );
@@ -279,8 +279,8 @@ export default function ManageMarketplaceAdmin() {
     this.setState({ loading: false });
   };
   return (
-    <div className="container mx-auto ">
-      <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
+    <div className="container mx-auto mt-20">
+      <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
         <h4 className="text-lg">Crear administrador de marketplace</h4>
         <form className="mt-4">
           <div className="mb-4">
@@ -332,9 +332,13 @@ export default function ManageMarketplaceAdmin() {
                 errors.marketplace ? "border-red-500" : "border-gray-300"
               } rounded px-3 py-2 mt-1 focus:outline-none`}
             >
-              <option value="" disabled selected>Seleccionar Marketplace</option>
+              <option value="" disabled selected>
+                Seleccionar Marketplace
+              </option>
               {listMarketplaces.map((marketplace, idx) => (
-                <option key={idx} value={marketplace.id}>{marketplace.name}</option>
+                <option key={idx} value={marketplace.id}>
+                  {marketplace.name}
+                </option>
               ))}
             </select>
           </div>
@@ -348,12 +352,12 @@ export default function ManageMarketplaceAdmin() {
         </form>
       </div>
       {listUsersAdmin.length > 0 && (
-        <div className="container mx-auto mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h4 className="text-lg font-semibold mb-4">
             Listado de administradores
           </h4>
           <div className="overflow-x-auto">
-            <table className="table-auto w-full">
+            <Table striped bordered hover responsive>
               <thead>
                 <tr>
                   <th className="border px-4 py-2">Nombre de usuario</th>
@@ -390,7 +394,7 @@ export default function ManageMarketplaceAdmin() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </div>
         </div>
       )}
@@ -449,7 +453,9 @@ export default function ManageMarketplaceAdmin() {
                 <tr>
                   <td className="border px-4 py-2">{newAdmin.username}</td>
                   <td className="border px-4 py-2">{newAdmin.email}</td>
-                  <td className="border px-4 py-2">{getMarketplaceNameById(newAdmin.marketplace)}</td>
+                  <td className="border px-4 py-2">
+                    {getMarketplaceNameById(newAdmin.marketplace)}
+                  </td>
                 </tr>
               </tbody>
             </table>

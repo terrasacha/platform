@@ -334,58 +334,55 @@ class Features extends Component {
     const renderFeatures = () => {
       if (features.length > 0) {
         return (
-          <div className="container mx-auto max-h-screen overflow-y-scroll ">
-            <h2 className="text-xl font-semibold">Características</h2>
-            <table className="w-full border-collapse border mt-4">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border p-2">ID</th>
-                  <th className="border p-2">Nombre</th>
-                  <th className="border p-2">Descripción</th>
-                  <th className="border p-2">Valor por defecto</th>
-                  <th className="border p-2">Tipo</th>
-                  <th className="border p-2">Unidad de medida</th>
-                  <th className="border p-2">¿Es plantilla?</th>
-                  <th className="border p-2">¿Es verificable?</th>
-                  <th className="border p-2">Editar</th>
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-2">ID</th>
+                <th className="border p-2">Nombre</th>
+                <th className="border p-2">Descripción</th>
+                <th className="border p-2">Valor por defecto</th>
+                <th className="border p-2">Tipo</th>
+                <th className="border p-2">Unidad de medida</th>
+                <th className="border p-2">¿Es plantilla?</th>
+                <th className="border p-2">¿Es verificable?</th>
+                <th className="border p-2">Editar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {features.map((feature) => (
+                <tr key={feature.id} className="bg-white">
+                  <td className="border p-2">{feature.id}</td>
+                  <td className="border p-2">{feature.name}</td>
+                  <td className="border p-2">{feature.description}</td>
+                  <td className="border p-2">{feature.defaultValue}</td>
+                  <td className="border p-2">{feature.featureTypeID}</td>
+                  <td className="border p-2">{feature.unitOfMeasureID}</td>
+                  <td className="border p-2">
+                    {feature.isTemplate ? "Si" : "No"}
+                  </td>
+                  <td className="border p-2">
+                    {feature.isVerifiable ? "Si" : "No"}
+                  </td>
+                  <td className="border p-2">
+                    <button
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                      onClick={(e) => this.handleLoadEditFeature(feature, e)}
+                    >
+                      Editar
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {features.map((feature) => (
-                  <tr key={feature.id} className="bg-white">
-                    <td className="border p-2">{feature.id}</td>
-                    <td className="border p-2">{feature.name}</td>
-                    <td className="border p-2">{feature.description}</td>
-                    <td className="border p-2">{feature.defaultValue}</td>
-                    <td className="border p-2">{feature.featureTypeID}</td>
-                    <td className="border p-2">{feature.unitOfMeasureID}</td>
-                    <td className="border p-2">
-                      {feature.isTemplate ? "Si" : "No"}
-                    </td>
-                    <td className="border p-2">
-                      {feature.isVerifiable ? "Si" : "No"}
-                    </td>
-                    <td className="border p-2">
-                      <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                        onClick={(e) => this.handleLoadEditFeature(feature, e)}
-                      >
-                        Editar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </Table>
         );
       }
     };
 
     return (
-      <div className="container mx-auto">
+      <div className="container mx-auto mt-20">
         <ToastContainer />
-        <div className="mt-8 bg-white p-4 rounded-lg shadow-sm mb-4">
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h2 className="text-2xl">
             {CRUDButtonName} Característica: {newFeature.id}
           </h2>
@@ -492,7 +489,7 @@ class Features extends Component {
           </div>
         </div>
         {renderFeatures()}
-        {renderFeaturesType()}
+        <div className="mt-8">{renderFeaturesType()}</div>
       </div>
     );
   }
