@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +39,12 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
     const [currentStep, setCurrentStep] = useState(1);
     const [s3Files, setS3Files] = useState([]);  
     const [filesAreComplete, setFilesAreComplete] = useState(false);
-    const [s3Loading, setS3Loading] = useState(true); // ✅ Nuevo estado para verificar si listS3Files ha terminad
+    const [s3Loading, setS3Loading] = useState(true); 
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const openChatOnLoad = queryParams.get("openChat") === "true";
+    const chatTarget = queryParams.get("chatTarget"); // legal | validator
+    
 
 
 
@@ -245,6 +250,8 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
                   propertyId={propertyData?.propertyInfo?.id}  
                   userId={propertyData?.projectPostulant?.id}
                   campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
+                  openChatOnLoad={openChatOnLoad}
+                  chatTarget={chatTarget}
                 />
               </div>
 

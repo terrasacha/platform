@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // Bootstrap
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -16,7 +16,12 @@ import { LogoutIcon } from "./icons/LogoutIcon";
 import { useLocation } from "react-router-dom";
 import DropDownProjects from "./DropDownProjects";
 import { BellFill } from "react-bootstrap-icons";
-import { listVerificationComments, verificationsByUserVerifiedID, verificationsByUserVerifierID } from "graphql/queries";
+import {
+  listNotifications,
+  listVerificationComments,
+  verificationsByUserVerifiedID,
+  verificationsByUserVerifierID,
+} from "graphql/queries";
 import { API, graphqlOperation } from "aws-amplify";
 import NotificationsModal from "./NotificationsModal";
 
@@ -27,8 +32,8 @@ export default function NewHeaderNavbar() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [messages, setMessages] = useState([]);
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const profileMenuRef = useRef(null);
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
@@ -36,58 +41,71 @@ export default function NewHeaderNavbar() {
         setUser(data);
         const userId = data.attributes.sub; // Obtener `sub` en lugar de `username`
         const role = data.attributes["custom:role"];
-  
-        if (["validator", "constructor"].includes(role)) {
-          fetchPendingMessages(userId, role);
+
+        if (["validator", "constructor", "legal"].includes(role)) {
+          fetchPendingMessages(userId); // Eliminar `role` del llamado
         }
       })
       .catch((err) => console.log("Error obteniendo usuario:", err));
-  }, []);
+}, []);
 
-
-  const fetchPendingMessages = async (userId, role) => {
-    if (!userId || !role) return;
-  
-    try {
-      let messages = [];
-  
-      if (role === "constructor") {
-        const ownerResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifiedID, { userVerifiedID: userId })
-        );
-  
-        messages = ownerResponse?.data?.verificationsByUserVerifiedID?.items?.flatMap(
-          (verification) =>
-            verification.verificationComments?.items?.map((comment) => ({
-              ...comment,
-              senderName: verification.userVerifier?.name || "Desconocido",
-              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
-            })) || []
-        ) || [];
-  
-      } else if (role === "validator") {
-        const verifierResponse = await API.graphql(
-          graphqlOperation(verificationsByUserVerifierID, { userVerifierID: userId })
-        );
-  
-        messages = verifierResponse?.data?.verificationsByUserVerifierID?.items?.flatMap(
-          (verification) =>
-            verification.verificationComments?.items?.map((comment) => ({
-              ...comment,
-              senderName: verification.userVerified?.name || "Desconocido",
-              propertyID: verification.propertyFeature?.propertyID || null,  // Agregar nombre del verificador
-            })) || []
-        ) || [];
-      }
-  
-      // Eliminar duplicados
-      const uniqueMessages = Array.from(new Map(messages.map((msg) => [msg.id, msg])).values());
-      setMessages(uniqueMessages);
-    } catch (error) {
-      console.error("❌ Error cargando mensajes pendientes:", error);
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+      setShowProfileMenu(false);
     }
   };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+const fetchPendingMessages = async (userId) => { // Eliminar `role` de los parámetros
+    if (!userId) return;
+
+    try {
+        // Consultar notificaciones no leídas del usuario autenticado
+        const response = await API.graphql(
+            graphqlOperation(listNotifications, {
+                filter: {
+                    userID: { eq: userId },  // Notificaciones dirigidas al usuario
+                    isRead: { eq: false },   // Solo las no leídas
+                },
+            })
+        );
+
+        const notifications = response?.data?.listNotifications?.items || [];
+
+        // Mapear las notificaciones con los datos necesarios
+        const formattedMessages = notifications.map((notification) => ({
+            id: notification.id,
+            message: notification.message,
+            senderName: notification.userOrigin?.name || "Desconocido",
+            senderRole: notification.userOrigin?.role || "Desconocido",
+            propertyID: notification.resourceID || null,
+            type: notification.type, 
+            createdAt: notification.createdAt,
+            isRead: notification.isRead,
+        }));
+
+        // Ordenar por fecha de creación (más recientes primero)
+        formattedMessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        // Eliminar duplicados por ID
+        const uniqueMessages = Array.from(
+            new Map(formattedMessages.map((msg) => [msg.id, msg])).values()
+        );
+
+        setMessages(uniqueMessages);
+    } catch (error) {
+        console.error("❌ Error cargando notificaciones pendientes:", error);
+    }
+};
+
   
+
   const handleSignOut = async () => {
     try {
       await Auth.signOut();
@@ -131,6 +149,11 @@ export default function NewHeaderNavbar() {
   
   const handleCloseNotifications = () => setShowNotifications(false);
 
+  const toggleProfileMenu = () => {
+    setShowProfileMenu(!showProfileMenu);
+  };
+
+  if (!user) return <HeaderNavbar />;
   return (
     <Navbar key="sm" expand="lg" fixed="top" className="bg-[#ecd798]">
       <Container fluid>
@@ -153,146 +176,147 @@ export default function NewHeaderNavbar() {
             </Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <Nav
-              className="me-auto my-2 my-lg-0"
-              style={{ maxHeight: "100px" }}
-              navbarScroll
-            ></Nav>
+            <Nav className="me-auto my-2 my-lg-0" style={{ maxHeight: "100px" }} navbarScroll></Nav>
             <Nav>
-              <Nav className="items-center space-x-0 md:space-x-5 space-y-5 md:space-y-0 text-[#6e6c35] font-bold">
-               {user && ["constructor", "investor"].includes(user.attributes["custom:role"]) && (
-  <>
-    <Nav.Link onClick={() => navigate("/constructor")}>Mis Predios</Nav.Link>
-    <Nav.Link onClick={() => navigate("/PQRS")}>PQRS</Nav.Link>
-
-    {/* Ícono de Notificaciones para Constructores */}
-    <div className="relative cursor-pointer" onClick={handleShowNotifications}>
-      <BellFill className="w-6 h-6 text-gray-800" />
-      {messages.length > 0 && (
-        <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-          {messages.length}
-        </span>
-      )}
-    </div>
-  </>
-)}
-
-                {user?.attributes["custom:role"] === "validator" && (
-                  <>
-                    <Nav.Link onClick={() => navigate("/consultor_admon")}>Mis campañas</Nav.Link>
-                    <div className="relative cursor-pointer" onClick={handleShowNotifications}>
-                      <BellFill className="w-6 h-6 text-gray-800" />
+              <Nav className={s.navGroup}>
+                <div className="flex items-center gap-3 px-2">
+                  {/* Botón "Mis Predios" */}
+                  {(user.attributes["custom:role"] === "constructor" ||
+                    user.attributes["custom:role"] === "investor") && (
+                    <>
+                      <button
+                        onClick={() => navigate("/constructor")}
+                        className="bg-[#3B82F6] text-white font-semibold px-2 py-1 text-xs rounded-md shadow-md hover:bg-[#2563EB] transition duration-300 flex items-center justify-center"
+                        style={{
+                          border: "none",
+                          boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.1)",
+                          minWidth: "90px",
+                        }}
+                      >
+                        Mis Predios
+                      </button>
+                      <Nav.Link className="text-gray-800 text-sm hover:text-gray-600 transition duration-300" onClick={() => navigate("/PQRS")}>
+                        PQRS
+                      </Nav.Link>
+                      
+                      {/* Ícono de Notificaciones para Constructores */}
+                      <div className="relative cursor-pointer flex items-center justify-center" onClick={handleShowNotifications}>
+                        <div className="relative">
                           {messages.length > 0 && (
-                        <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-                          {messages.length}
-                        </span>
-                      )}
-                    </div>
-                  </>
-                )}
-                {user && user.attributes["custom:role"] === "admon" && (
-  <div>
-    <Nav.Link onClick={() => navigate("/admon")}>Panel Administrador</Nav.Link>
-  </div>
-)}
-                {user && user.attributes["custom:role"] === "analyst" && (
-                  <>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() =>
-                        (window.location.href = "/project_analyst")
-                      }
+                            <>
+                              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                            </>
+                          )}
+                          <BellFill className={`w-5 h-5 ${messages.length > 0 ? "text-red-500" : "text-gray-800"}`} />
+                        </div>
+                      </div>
+                    </>
+                  )}
+  
+                  {/* Enlace "Mis Campañas" para Validators */}
+                  {user.attributes["custom:role"] === "validator" && (
+                    <>
+                    <Nav.Link
+                      className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
+                      onClick={() => (window.location.href = "/consultor_admon")}
                     >
                       Mis campañas
-                    </div>
-                  </>
-                )}
-                {(user && user.attributes["custom:role"] === "legal") && (
-                    <>
-                     <div
-                    className="relative cursor-pointer"
-                    onClick={handleShowNotifications}
-                  >
-                    <BellFill className="w-6 h-6 text-gray-800" />
-                    {messages?.length > 0 && (
-                      <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-                        {messages.length}
-                      </span>
-                    )}
-                  </div>
+                    </Nav.Link>
+                    <Nav.Link className="text-gray-800 text-sm hover:text-gray-600 transition duration-300" onClick={() => navigate("/PQRS")}>
+                        PQRS
+                      </Nav.Link>
+                    </>
+                  )}
+  
+                  {/* Enlace "Listado de predios" para Legales */}
+                  {user.attributes["custom:role"] === "legal" && (
                     <Nav.Link
+                      className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
                       onClick={() => (window.location.href = "/legal_admon")}
                     >
                       Listado de predios
                     </Nav.Link>
-                  </>
-                 
-                )}
-                {user ? (
-                  <>
-                    <div class="flex items-center font-medium dark:text-white rtl:text-right bg-[#6e6c35] p-2 rounded-md text-center shadow-md">
-                      <div className="mr-2">
-                        <div class="text-sm text-white">
-                          {user.username.toUpperCase()}
-                        </div>
-                        <hr className="border-2 m-1" />
-                        <div class="text-xs text-white ">
-                          {userRoleMapper[user.attributes["custom:role"]] || ''}
-                        </div>
+                  )}
+  
+                  {/* Ícono de Notificaciones para Validators y Legales */}
+                  {(user.attributes["custom:role"] === "validator" ||
+                    user.attributes["custom:role"] === "legal") && (
+                    <div
+                      className="relative cursor-pointer flex items-center justify-center"
+                      onClick={handleShowNotifications}
+                    >
+                      <div className="relative">
+                        {messages.length > 0 && (
+                          <>
+                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                          </>
+                        )}
+                        <BellFill className={`w-5 h-5 ${messages.length > 0 ? "text-red-500" : "text-gray-800"}`} />
                       </div>
-                      <button
-                        className="bg-white p-2 rounded-md"
-                        onClick={() => handleSignOut()}
-                      >
-                        <LogoutIcon className="text-[#6e6c35]" />
-                      </button>
                     </div>
-                  </>
-                ) : (
-                  <>
-                    <a
-                      className="cursor-pointer text-[#6e6c35]"
-                      href="#tecnologia"
-                      onClick={handleCloseOffcanvas}
-                    >
-                      Tecnología
-                    </a>
-                    <a className="cursor-pointer text-[#6e6c35]" href="#porque" onClick={handleCloseOffcanvas}>
-                      ¿Por qué Terrasacha?
-                    </a>
-                    {/* <DropDownProjects variant={"secondary"} /> */}
-                    <a
-                      className={
-                        "bg-white p-2 rounded-md text-[#6e6c35] border-2 border-[#6e6c35]"
-                      }
-                      href={
-                        process.env.REACT_APP_ENV === "INTERNAL"
-                          ? "https://internal-marketplace.terrasacha.com/"
-                          : "https://marketplace.terrasacha.com/"
-                      }
-                    >
-                      Ver proyectos
-                    </a>
-                    <button
-                      className={
-                        "bg-[#6e6c35] p-2 rounded-md text-white border-2 border-dark"
-                      }
-                      onClick={() => (window.location.href = "/login")}
-                    >
-                      Ingresar
-                    </button>
-                  </>
-                )}
+                  )}
+  
+                 
+  
+                  {/* Contenedor del usuario MÁS PEQUEÑO Y COMPACTO */}
+                  {user && (
+  <div className="relative" ref={profileMenuRef}>
+    {/* Contenedor del Usuario (hace clic para abrir el menú) */}
+    <div
+      className="flex items-center bg-gray-800 text-white px-3 py-1 rounded-md shadow-md text-xs cursor-pointer"
+      onClick={toggleProfileMenu}
+    >
+      {/* Ícono de Usuario */}
+      <div className="bg-gray-700 p-1.5 rounded-full flex items-center justify-center w-6 h-6">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="14"
+          viewBox="0 -960 960 960"
+          width="14"
+          fill="#fff"
+        >
+          <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z" />
+        </svg>
+      </div>
+
+      {/* Nombre del Usuario */}
+      <p className="text-white font-semibold text-xs ml-2 truncate mb-0">{user.username}</p>
+    </div>
+
+    {/* Menú desplegable (solo visible cuando showProfileMenu es true) */}
+    {showProfileMenu && (
+      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg p-3">
+        <p className="text-gray-600 text-sm font-medium mb-2 text-center">{displayRole}</p>
+        <button
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 text-sm rounded-md shadow-md transition duration-300"
+          onClick={handleSignOut}
+        >
+          Desconectar
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
+
+                </div>
               </Nav>
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
-        <NotificationsModal
-  show={showNotifications}
-  onClose={handleCloseNotifications}
-  messages={messages}
-/>
       </Container>
+  
+      {/* Modal de Notificaciones */}
+      <NotificationsModal
+        show={showNotifications}
+        onClose={handleCloseNotifications}
+        messages={messages}
+        fetchPendingMessages={fetchPendingMessages}
+        userId={user?.attributes?.sub}
+      />
     </Navbar>
   );
+  
 }

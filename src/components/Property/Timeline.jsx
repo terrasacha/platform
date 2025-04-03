@@ -17,6 +17,8 @@ import { API, graphqlOperation } from "aws-amplify";
 import { Modal } from "react-bootstrap";
 import { createPropertyFeature, createVerification, updateVerification } from "graphql/mutations";
 import { listPropertyFeatures, listVerifications } from "graphql/queries";
+import { useAuth } from "context/AuthContext";
+import ConstructorWorkflow from "./ConstructorWorkflow";
 
 export default function Timeline({
   currentStep = 1,
@@ -25,13 +27,34 @@ export default function Timeline({
   propertyStatus,
   propertyId,
   userId, 
-  campaignOwnerId, x  
+  campaignOwnerId,
+  openChatOnLoad=false,
+  chatTarget
 }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [chatModalIsOpen, setChatModalIsOpen] = useState(false);
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [propertyVerificationID, setPropertyVerificationID] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!openChatOnLoad || !chatTarget) return;
+    console.log("🔁 openChatOnLoad:", openChatOnLoad);
+    console.log("📌 chatTarget:", chatTarget);
+    console.log("📌 currentStep:", currentStep);
+  
+    if (chatTarget === "legal" ) {
+      setModalIsOpen(true); // Abrir ValidationModal
+    }
+  
+    if (chatTarget === "validator" ) {
+      handleChatFeature(); // Abrir PropertyChat
+    }
+  }, [openChatOnLoad, currentStep, chatTarget]);
+  
+  
+  
 
   useEffect(() => {
     if (propertyId) {
@@ -141,6 +164,12 @@ export default function Timeline({
 
   const handleChatFeature = async () => {
     try {
+
+      if (currentStep !== 4) {
+        console.warn("⚠️ El chat solo puede abrirse en el paso 4.");
+        return;
+      }
+      
       if (!propertyId || !userId) {
         console.error("❌ propertyId o userId no están definidos.");
         return;
@@ -334,6 +363,7 @@ export default function Timeline({
           ))}
         </ProgressBar>
       </div>
+      
 
       <ValidationModal
         isOpen={modalIsOpen}
@@ -342,14 +372,15 @@ export default function Timeline({
         checkDocuments={true}
       />
 
-<Modal show={chatModalIsOpen} onHide={() => setChatModalIsOpen(false)} centered>
+<Modal show={chatModalIsOpen} onHide={() => setChatModalIsOpen(false)} size="xl" centered>
   <Modal.Header closeButton>
-    <Modal.Title>Chat del Predio</Modal.Title>
+    <Modal.Title>Proceso del Predio</Modal.Title>
   </Modal.Header>
   <Modal.Body>
-    <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
+    <ConstructorWorkflow propertyId={propertyId} />
   </Modal.Body>
 </Modal>
+
 
     </div>
   );

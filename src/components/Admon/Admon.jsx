@@ -15,7 +15,7 @@ import Formulas from "./Formulas/Formulas";
 import HeaderNavbar from "./Navbars/HeaderNavbar";
 import Validators from "./Validators/Validators";
 import ManageMarketplaceAdmin from "./ManageMarketplaceAdmin/ManageMarketplaceAdmin";
-import CheckAppStatus from "./CheckAppStatus"
+import CheckAppStatus from "./CheckAppStatus";
 import Products from "./Products/Products";
 import Results from "./Results/Results";
 import UOM from "./UOM/UOM";
@@ -28,7 +28,6 @@ import Analysts from "./Analitic/Analysts";
 import AssignAnalyst from "./assignAnali/AssignAnalyst";
 import Legales from "./Legal/Legales";
 import AssignLegal from "./assign_Legales/Assign_Legales";
-
 
 export default class Admon extends Component {
   constructor(props) {
@@ -63,8 +62,8 @@ export default class Admon extends Component {
       isShowAnalysts: false,
       isShowAppStatus: false,
       isShowAssign_analyst: false,
-      isShowLegal:false,
-      isShowAssign_legales:false
+      isShowLegal: false,
+      isShowAssign_legales: false,
     };
     this.changeHeaderNavBarRequest = this.changeHeaderNavBarRequest.bind(this);
     this.setUserGraphQLUser = this.setUserGraphQLUser.bind(this);
@@ -76,7 +75,6 @@ export default class Admon extends Component {
   }
 
   async componentDidMount() {
-   
     // const tempActualUser =  await Auth.currentAuthenticatedUser()
     // await this.setState({actualUser: tempActualUser})
     // if (this.state.user.id === '') { // Is not logged
@@ -87,11 +85,10 @@ export default class Admon extends Component {
   async componentDidUpdate(prevProps, prevState) {
     // if (this.state.actualUser !== prevProps.actualUser) {
     //     // this.fetchData(this.props.userID);
-    //    
+    //
     //     await this.setState({isActualUserLogged: true})
     // }
     // if (prevState.actualUser === null) {
-
     //     await this.setState({isActualUserLogged: true})
     // }
   }
@@ -112,7 +109,6 @@ export default class Admon extends Component {
   }
 
   async changeHeaderNavBarRequest(pRequest) {
-
     if (pRequest === "admon_profile") {
       this.setState({
         isShowProducts: false,
@@ -128,12 +124,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAppStatus: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
-        isShowLegal:false,
-        isShowAssign_legales:false,
+        isShowAssign_analyst: false,
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
 
@@ -155,10 +151,10 @@ export default class Admon extends Component {
         isShowAPF: false,
         isShowMarketplaceAdmin: false,
         isShowAppStatus: false,
-        isShowAnalysts: true,  
-        isShowAssign_analyst:false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowAnalysts: true,
+        isShowAssign_analyst: false,
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
 
@@ -180,13 +176,12 @@ export default class Admon extends Component {
         isShowAPF: false,
         isShowMarketplaceAdmin: false,
         isShowAppStatus: false,
-        isShowAnalysts: false,  // Mostrar analistas
-        isShowAssign_analyst:true,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowAnalysts: false, // Mostrar analistas
+        isShowAssign_analyst: true,
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
-    
 
     if (pRequest === "user_not_authorize") {
       this.setState({
@@ -204,12 +199,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
         isShowAppStatus: false,
-        isShowAssign_analyst:false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowAssign_analyst: false,
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
 
@@ -229,12 +224,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
         isShowAppStatus: false,
-        isShowAssign_analyst:false,
-        isShowLegal:false,
-        isShowAssign_legales:false,
+        isShowAssign_analyst: false,
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
 
@@ -254,9 +249,9 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
       });
     }
@@ -277,12 +272,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false,
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "features") {
@@ -301,12 +296,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false,
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "uom") {
@@ -325,12 +320,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "formulas") {
@@ -349,12 +344,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "results") {
@@ -373,10 +368,10 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "documents") {
@@ -395,12 +390,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "assign_products") {
@@ -419,12 +414,12 @@ export default class Admon extends Component {
         isShowAProducts: true,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
 
@@ -444,12 +439,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "settings") {
@@ -468,12 +463,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: true,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "validators") {
@@ -492,12 +487,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "assign_pf") {
@@ -516,12 +511,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: true,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "marketplace_admin") {
@@ -540,12 +535,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:true,
+        isShowMarketplaceAdmin: true,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "apps_status") {
@@ -564,12 +559,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: true,
-        isShowLegal:false,
-        isShowAssign_legales:false
+        isShowLegal: false,
+        isShowAssign_legales: false,
       });
     }
     if (pRequest === "legales") {
@@ -588,12 +583,12 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:true,
-        isShowAssign_legales:false
+        isShowLegal: true,
+        isShowAssign_legales: false,
       });
     }
 
@@ -613,17 +608,15 @@ export default class Admon extends Component {
         isShowAProducts: false,
         isShowConfigure: false,
         isShowAPF: false,
-        isShowMarketplaceAdmin:false,
+        isShowMarketplaceAdmin: false,
         isShowAnalysts: false,
-        isShowAssign_analyst:false,
+        isShowAssign_analyst: false,
         isShowAppStatus: false,
-        isShowLegal:false,
-        isShowAssign_legales:true
+        isShowLegal: false,
+        isShowAssign_legales: true,
       });
-    }    
-  
+    }
   }
-
 
   async handleCUUser(pIsNewUser) {
     let tempUser = this.state.user;
@@ -686,11 +679,10 @@ export default class Admon extends Component {
       isShowAnalysts,
       isShowAssign_analyst,
       isShowLegal,
-      isShowAssign_legales
-
+      isShowAssign_legales,
     } = this.state;
     return (
-      <div className="min-h-screen bg-gray-100 pt-20">
+      <div className="pt-20">
         <div className="flex">
           <HeaderNavbar
             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
@@ -769,33 +761,33 @@ export default class Admon extends Component {
             />
           )}
           {isShowAnalysts && (
-  <Analysts
-    user={this.state.user}
-    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-    handleCUUser={this.handleCUUser}
-  />
-)}
-{isShowAssign_analyst && (
-  <AssignAnalyst
-    user={this.state.user}
-    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-    handleCUUser={this.handleCUUser}
-  />
-)}
- {isShowLegal && (
-  <Legales
-    user={this.state.user}
-    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-    handleCUUser={this.handleCUUser}
-  />
-)}
- {isShowAssign_legales && (
-  <AssignLegal
-    user={this.state.user}
-    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-    handleCUUser={this.handleCUUser}
-  />
-)}
+            <Analysts
+              user={this.state.user}
+              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+              handleCUUser={this.handleCUUser}
+            />
+          )}
+          {isShowAssign_analyst && (
+            <AssignAnalyst
+              user={this.state.user}
+              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+              handleCUUser={this.handleCUUser}
+            />
+          )}
+          {isShowLegal && (
+            <Legales
+              user={this.state.user}
+              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+              handleCUUser={this.handleCUUser}
+            />
+          )}
+          {isShowAssign_legales && (
+            <AssignLegal
+              user={this.state.user}
+              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+              handleCUUser={this.handleCUUser}
+            />
+          )}
           {isShowNotAuthorize && (
             <Alert key="key_warning" variant="warning">
               Perfil no autorizado
@@ -804,8 +796,8 @@ export default class Admon extends Component {
           {isShowAProducts && <UserProducts />}
           {isShowAPF && <AssignPF />}
           {isShowValidators && <Validators />}
-          {isShowMarketplaceAdmin && <ManageMarketplaceAdmin/>}
-          {isShowAppStatus && <CheckAppStatus/>}
+          {isShowMarketplaceAdmin && <ManageMarketplaceAdmin />}
+          {isShowAppStatus && <CheckAppStatus />}
           {isShowConfigure && (
             <Configure
               user={this.state.user}

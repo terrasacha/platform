@@ -416,13 +416,13 @@ export default class ListProducts extends Component {
     const renderProducts = () => {
       if (listCleanProducts.length > 0) {
         return (
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive>
             <thead>
               <tr>
                 <th>Eliminar</th>
                 <th>Nombre</th>
                 <th>Categoria</th>
-                <th>Estadp</th>
+                <th>Estado</th>
                 <th>Descripción</th>
                 <th>Imagen</th>
                 <th>Características</th>
@@ -712,7 +712,7 @@ export default class ListProducts extends Component {
               </Modal.Header>
               <Modal.Body>
                 <ToastContainer />
-                <Table striped hover size="sm" borderless>
+                <Table striped bordered hover responsive borderless>
                   <thead>
                     <tr>
                       <th>Feature ID</th>
@@ -758,7 +758,7 @@ export default class ListProducts extends Component {
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={(e) => this.handleHideModalProductFeatures(e)}>
-                  Close
+                  Cerrar
                 </Button>
               </Modal.Footer>
             </Modal>

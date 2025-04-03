@@ -15,7 +15,8 @@ import CadastralRecords from "./CadastralRecords";
 import AdditionalFiles from "./AdditionalFiles";
 import { API, graphqlOperation } from "aws-amplify";
 import { toast } from "react-toastify";
-import { updateProperty } from "graphql/mutations";
+import { createNotification, updateProperty } from "graphql/mutations";
+import { listPropertyFeatures } from "graphql/queries";
 
 export default function PropertyDetails({
   visible,
@@ -80,10 +81,15 @@ export default function PropertyDetails({
   }, [user, propertyData, setHasUnsavedChanges]);
 
   const handleValidateProperty = async (status) => {
-    if (!propertyData?.propertyInfo?.id) return;
-
+    if (!propertyData?.propertyInfo?.id) {
+      console.error("❌ Error: El predio no tiene un ID válido.");
+      toast.error("Error en la información del predio.");
+      return;
+    }
+  
     setIsLoading(true);
     try {
+      // 🔹 Actualizar estado del predio en la API
       await API.graphql(
         graphqlOperation(updateProperty, {
           input: {
@@ -92,20 +98,55 @@ export default function PropertyDetails({
           },
         })
       );
+  
+      // 🔹 Obtener el ID del dueño del predio
+      const propertyOwnerID = propertyData.projectPostulant?.id || null;
+  
+      if (!propertyOwnerID) {
+        console.warn("⚠️ No se encontró un dueño del predio en propertyData.");
+      }
+  
+      // 🔹 Crear mensaje de notificación según estado
+      const notificationMessage =
+        status === "APPROVED"
+          ? `✅ Tu predio '${propertyData.propertyInfo.name}' ha sido aprobado. 🎉`
+          : `❌ Tu predio '${propertyData.propertyInfo.name}' ha sido rechazado.`;
+  
+      const notificationData = {
+        userOriginID: user.id, // Usuario que realiza la validación
+        userID: propertyOwnerID, // Dueño del predio
+        message: notificationMessage,
+        type: "PROPERTY",
+        resourceID: propertyData.propertyInfo.id, // ID del predio
+        isRead: false,
+      };
+  
+      console.log("📩 Enviando notificación:", notificationData);
+  
+      // 🔹 Enviar la notificación si hay un propietario identificado
+      if (propertyOwnerID) {
+        await API.graphql(graphqlOperation(createNotification, { input: notificationData }));
+      } else {
+        console.warn("⚠️ No se envió la notificación porque no hay dueño asignado al predio.");
+      }
+  
       toast.success(
         `Predio ${
           status === "APPROVED" ? "aprobado" : "rechazado"
         } exitosamente`
       );
+  
       setTimeout(() => {
         window.location.reload();
       }, 1500);
     } catch (error) {
-      console.error("Error al actualizar el estado del predio:", error);
-      toast.error("Error al actualizar el estado del predio");
+      console.error("❌ Error al actualizar el estado del predio o enviar la notificación:", error);
+      toast.error("Error en la validación del predio.");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
+  
 
   const updateFormCompletion = (formName, isComplete) => {
     console.log(`📩 Recibido desde hijo: ${formName} →`, isComplete);
@@ -121,8 +162,54 @@ export default function PropertyDetails({
     });
   };
 
+  const checkAllStepsCompleted = async () => {
+    try {
+      const response = await API.graphql(
+        graphqlOperation(listPropertyFeatures, {
+          filter: {
+            propertyID: { eq: propertyData?.propertyInfo?.id },
+            featureID: { eq: "GLOBAL_PROPERTY_STATUS" },
+          },
+        })
+      );
+  
+      const items = response?.data?.listPropertyFeatures?.items || [];
+      if (items.length === 0) return false;
+  
+      const value = JSON.parse(items[0].value);
+  
+      const booleanFieldsValid =
+        value.analisis === true &&
+        value.monitoreos === true &&
+        value.revision_memorando === true &&
+        value.validacion_inicial === true;
+  
+      const memorandoValid =
+        value.memorando &&
+        !!value.memorando.uploadDate &&
+        !!value.memorando.url;
+  
+      return booleanFieldsValid && memorandoValid;
+    } catch (error) {
+      console.error("❌ Error verificando pasos del propertyFeature:", error);
+      return false;
+    }
+  };
+  
+
   // Función para mostrar el modal con las opciones de validación
-  const handleVerifyClick = () => {
+  const handleVerifyClick = async () => {
+    const allStepsReady = await checkAllStepsCompleted();
+  
+    if (!allStepsReady) {
+      Swal.fire({
+        icon: "warning",
+        title: "Pasos pendientes",
+        text: "Aún hay pasos del constructor sin completar. Por favor, completa todos antes de validar.",
+      });
+      return;
+    }
+  
     Swal.fire({
       title: "Verificación del predio",
       text: "Selecciona si deseas aprobar o rechazar el predio.",
@@ -144,6 +231,7 @@ export default function PropertyDetails({
       }
     });
   };
+  
 
   return (
     <>
@@ -249,7 +337,7 @@ export default function PropertyDetails({
                   <button
                     className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
                     onClick={handleVerifyClick}
-                    disabled={isLoading || currentStep < 3} // ✅ Bloqueado si no estamos en el paso 3
+                    disabled={isLoading || currentStep < 4} // ✅ Bloqueado si no estamos en el paso 3
                   >
                     {isLoading ? "Procesando..." : "Verificar"}
                   </button>

@@ -938,6 +938,7 @@ class Products extends Component {
               options={this.state.categorySelectList}
               onChange={this.handleOnSelectCategory}
               className="w-full px-3 py-2 border rounded-md"
+              placeholder="Seleccionar ..."
             />
             <div className="mt-2">
               <Alert key="idx_key_1" variant="success">
@@ -958,7 +959,7 @@ class Products extends Component {
               </label>
               <input
                 type="text"
-                placeholder="Ex. Proyecto B"
+                placeholder="Ejemplo: Proyecto B"
                 name="CRUD_ProductName"
                 value={CRUD_Product.name}
                 onChange={(e) => this.handleOnChangeInputForm(e)}
@@ -975,7 +976,7 @@ class Products extends Component {
               </label>
               <input
                 type="text"
-                placeholder="Ex. Amazing Project B"
+                placeholder="Ejemplo: Descripción del Proyecto B"
                 name="CRUD_ProductDescription"
                 value={CRUD_Product.description}
                 onChange={(e) => this.handleOnChangeInputForm(e)}
@@ -994,11 +995,11 @@ class Products extends Component {
               </label>
               <select
                 name="CRUD_ProductStatus"
-                value={CRUD_Product.status}
+                value={CRUD_Product.status || ""}
                 onChange={(e) => this.handleOnChangeInputForm(e)}
                 className="w-full px-3 py-2 border rounded-md"
               >
-                {["draft", "verified", "in_blockchain", "in_equilibrium"].map(
+                {["", "Prefactibilidad", "Factibilidad", "Documento de diseño del proyecto", "Validación externa", "Registro del proyecto"].map(
                   (op) => (
                     <option value={op} key={op}>
                       {op}
@@ -1036,7 +1037,7 @@ class Products extends Component {
             </label>
             <input
               type="number"
-              placeholder="Ex. 1"
+              placeholder="Ejemplo: 1"
               name="CRUD_ProductOrder"
               value={CRUD_Product.order}
               onChange={(e) => this.handleOnChangeInputForm(e)}

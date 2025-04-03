@@ -4,6 +4,8 @@ import { API, graphqlOperation } from "aws-amplify";
 import { updateProperty } from "graphql/customMutations";
 import { toast } from "react-toastify";
 import useFetchPropertiesCampaign from "hooks/useFetchPropertiesCampaign";
+import { createNotification } from "graphql/mutations";
+import { useAuth } from "context/AuthContext";
 const status = {
   REJECTED: "REJECTED",
   ACCEPTED: "APPROVED",
@@ -18,6 +20,7 @@ export default function ModalAcceptProperty({
   const [loading, setLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
+    const { user } = useAuth();
 
   const handleReject = () => {
     setSelection(status.REJECTED);
@@ -51,6 +54,22 @@ export default function ModalAcceptProperty({
           },
         })
       );
+      const notificationMessage =
+      selection === status.ACCEPTED
+        ? `Tu predio '${selectedProperty.propertyInfo.name}' ha sido aprobado. 🎉`
+        : `Tu predio '${selectedProperty.propertyInfo.name}' ha sido rechazado. Razón: ${confirmationText}`;
+
+    const notificationData = {
+      userOriginID: user.id, // Usuario que realiza la validación
+      userID: selectedProperty.propertyInfo.userID, // Dueño del predio
+      message: notificationMessage,
+      type: "PROPERTY",
+      resourceID: selectedProperty.propertyInfo.id, // ID del predio
+      isRead: false,
+    };
+
+    await API.graphql(graphqlOperation(createNotification, { input: notificationData }));
+
       toast.success("Validación completada");
       handleCloseModalAcceptProperty();
     } catch (error) {
@@ -67,7 +86,7 @@ export default function ModalAcceptProperty({
     setShowConfirmation(false);
     setConfirmationText("");
   };
-
+ 
   return (
     <Modal
       aria-labelledby="contained-modal-title-vcenter"
@@ -130,7 +149,7 @@ export default function ModalAcceptProperty({
               Rechazar
             </Button>
             <Button variant="success" onClick={handleAccept}>
-              Aceptar
+              Aceptarr
             </Button>
           </>
         )}

@@ -34,10 +34,7 @@ export default class AssignLegal extends Component {
 
   componentDidMount = async () => {
     try {
-      await Promise.all([
-        this.loadLegales(),
-        this.loadProperties(),
-      ]);
+      await Promise.all([this.loadLegales(), this.loadProperties()]);
     } catch (error) {
       console.error("Error cargando los datos:", error);
     }
@@ -45,10 +42,11 @@ export default class AssignLegal extends Component {
 
   async loadLegales() {
     const filter = { role: { eq: "legal" } };
-    return API.graphql(graphqlOperation(listLegales, { filter }))
-      .then((result) => {
+    return API.graphql(graphqlOperation(listLegales, { filter })).then(
+      (result) => {
         this.setState({ legales: result.data.listUsers.items });
-      });
+      }
+    );
   }
 
   async loadProperties() {
@@ -135,20 +133,48 @@ export default class AssignLegal extends Component {
   };
 
   renderAlert(type, message, onClose) {
-    return <Alert variant={type} onClose={onClose} dismissible>{message}</Alert>;
+    return (
+      <Alert variant={type} onClose={onClose} dismissible>
+        {message}
+      </Alert>
+    );
   }
 
   render() {
-    const { legales, availableProperties, properties, selectedLegal, selectedProperty, showSuccess, showError, showDeleteSuccess } = this.state;
+    const {
+      legales,
+      availableProperties,
+      properties,
+      selectedLegal,
+      selectedProperty,
+      showSuccess,
+      showError,
+      showDeleteSuccess,
+    } = this.state;
 
     return (
-      <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
-        <Container className="mt-5 p-4 bg-light shadow rounded">
+      <div className="container mx-auto mt-20">
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h2 className="text-center mb-4">Asignar Usuario Legal</h2>
 
-          {showSuccess && this.renderAlert("success", "Usuario legal asignado correctamente.", () => this.setState({ showSuccess: false }))}
-          {showError && this.renderAlert("danger", "Seleccione un usuario legal y una propiedad antes de continuar.", () => this.setState({ showError: false }))}
-          {showDeleteSuccess && this.renderAlert("warning", "Asignación eliminada correctamente.", () => this.setState({ showDeleteSuccess: false }))}
+          {showSuccess &&
+            this.renderAlert(
+              "success",
+              "Usuario legal asignado correctamente.",
+              () => this.setState({ showSuccess: false })
+            )}
+          {showError &&
+            this.renderAlert(
+              "danger",
+              "Seleccione un usuario legal y una propiedad antes de continuar.",
+              () => this.setState({ showError: false })
+            )}
+          {showDeleteSuccess &&
+            this.renderAlert(
+              "warning",
+              "Asignación eliminada correctamente.",
+              () => this.setState({ showDeleteSuccess: false })
+            )}
 
           {/* Formulario */}
           <Form className="mb-4">
@@ -171,13 +197,17 @@ export default class AssignLegal extends Component {
               <Form.Label>Seleccionar Propiedad</Form.Label>
               <Form.Select
                 value={selectedProperty}
-                onChange={(e) => this.setState({ selectedProperty: e.target.value })}
+                onChange={(e) =>
+                  this.setState({ selectedProperty: e.target.value })
+                }
                 disabled={!selectedLegal}
               >
                 <option value="">-- Seleccione una Propiedad --</option>
                 {availableProperties.map((property) => (
                   <option key={property.id} value={property.id}>
-                    {property.name} ({property.campaign ? property.campaign.name : "Sin campaña"})
+                    {property.name} (
+                    {property.campaign ? property.campaign.name : "Sin campaña"}
+                    )
                   </option>
                 ))}
               </Form.Select>
@@ -193,10 +223,11 @@ export default class AssignLegal extends Component {
               </Button>
             </div>
           </Form>
+        </div>
 
-          {/* Tabla de asignaciones */}
+        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
           <h4 className="text-center mb-4">Usuarios Legales Asignados</h4>
-          <Table striped bordered hover className="mt-4">
+          <Table striped bordered hover responsive>
             <thead>
               <tr>
                 <th>Nombre del Usuario Legal</th>
@@ -210,12 +241,16 @@ export default class AssignLegal extends Component {
                 properties
                   .filter((prop) => prop.userLegalID) // Solo muestra propiedades con un usuario legal asignado
                   .map((prop) => {
-                    const legalUser = legales.find((l) => l.id === prop.userLegalID);
+                    const legalUser = legales.find(
+                      (l) => l.id === prop.userLegalID
+                    );
                     return (
                       <tr key={prop.id}>
                         <td>{legalUser ? legalUser.name : "Desconocido"}</td>
                         <td>{prop.name || "Sin nombre"}</td>
-                        <td>{prop.campaign ? prop.campaign.name : "Sin campaña"}</td>
+                        <td>
+                          {prop.campaign ? prop.campaign.name : "Sin campaña"}
+                        </td>
                         <td>
                           <Button
                             variant="danger"
@@ -237,7 +272,7 @@ export default class AssignLegal extends Component {
               )}
             </tbody>
           </Table>
-        </Container>
+        </div>
       </div>
     );
   }

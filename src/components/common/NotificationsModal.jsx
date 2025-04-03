@@ -1,15 +1,39 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { API, graphqlOperation } from "aws-amplify";
+import { updateNotification } from "graphql/mutations";
 
-export default function NotificationsModal({ show, onClose, messages }) {
-  const navigate = useNavigate(); // Hook para navegar a otra página
+export default function NotificationsModal({ show, onClose, messages, fetchPendingMessages, userId }) {
+  const navigate = useNavigate();
+
+  // Función para marcar la notificación como leída antes de redirigir
+  const markAsRead = async (notificationId) => {
+    try {
+      const response = await API.graphql(
+        graphqlOperation(updateNotification, {
+          input: {
+            id: notificationId,
+            isRead: true, // Marcar como leído
+          },
+        })
+      );
+
+      // Solo refrescar si la actualización fue exitosa
+      if (response?.data?.updateNotification) {
+        await fetchPendingMessages(userId);
+      }
+    } catch (error) {
+      console.error("❌ Error al actualizar la notificación:", error);
+    }
+  };
 
   return (
     <Modal show={show} onHide={onClose} centered dialogClassName="custom-modal">
-      <Modal.Header closeButton>
+      <Modal.Header closeButton className="header-custom">
         <Modal.Title>📩 Mensajes Pendientes</Modal.Title>
       </Modal.Header>
+
       <Modal.Body className="modal-body-custom">
         {messages.length > 0 ? (
           <div className="messages-container">
@@ -18,32 +42,55 @@ export default function NotificationsModal({ show, onClose, messages }) {
                 <p className="sender-name">
                   <strong>De:</strong> {msg.senderName || "Desconocido"}
                 </p>
-                <p className="message-text">{msg.comment}</p>
+                <p className="message-text">{msg.message}</p>
                 <p className="message-date">
                   {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : "Fecha desconocida"}
                 </p>
-                {/* Validación para evitar redirección si no hay propertyID */}
                 {msg.propertyID ? (
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="reply-button"
-                    onClick={() => navigate(`/property/${msg.propertyID}`)}
-                  >
-                    Responder
-                  </Button>
+                 <Button
+                 variant="primary"
+                 size="sm"
+                 className="reply-button"
+                 onClick={async () => {
+                   await markAsRead(msg.id);
+                   let chatTargetParam = "";
+                   if (msg.type === "MESSAGE_LEGAL") {
+                    chatTargetParam = "legal";
+                  } else if (msg.type === "MESSAGE_VALIDATOR") {
+                    chatTargetParam = "validator";
+                  }
+                   if (msg.type === "CAMPAING") {
+                     navigate(`/campaign/${msg.propertyID}`); // 📌 Redirigir a campaña
+                   } else if (msg.type === "PROPERTY") {
+                     navigate(`/property/${msg.propertyID}`); // 📌 Redirigir a predio
+                   } else {
+                    navigate(
+                      `/property/${msg.propertyID}?openChat=true&chatTarget=${chatTargetParam}`
+                    );
+                   }
+                 }}
+               >
+                 {msg.type === "CAMPAING"
+                   ? "Ir a campaña"
+                   : msg.type === "PROPERTY"
+                   ? "Ir al predio"
+                   : "Responder"}
+               </Button>
+               
+                
                 ) : (
-                  <p className="text-sm text-gray-500 mt-2">No se puede responder a este mensaje.</p>
+                  <p className="no-reply-text">No se puede responder a este mensaje.</p>
                 )}
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500">No tienes mensajes pendientes.</p>
+          <p className="text-center text-muted">No tienes mensajes pendientes.</p>
         )}
       </Modal.Body>
+
       <Modal.Footer className="footer-custom">
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="secondary" onClick={onClose} className="close-button">
           Cerrar
         </Button>
       </Modal.Footer>
@@ -51,44 +98,62 @@ export default function NotificationsModal({ show, onClose, messages }) {
       {/* Estilos mejorados */}
       <style jsx>{`
         .custom-modal .modal-content {
-          max-width: 500px;
-          border-radius: 12px;
+          max-width: 520px;
+          border-radius: 15px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-custom {
+          background: #6e6c35;
+          color: white;
+          border-top-left-radius: 15px;
+          border-top-right-radius: 15px;
+          padding: 15px;
         }
 
         .modal-body-custom {
-          max-height: 400px;
+          max-height: 450px;
           overflow-y: auto;
-          padding: 15px;
+          padding: 20px;
+          background: #f5f5f5;
         }
 
         .messages-container {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 15px;
         }
 
         .message-box {
-          background: #f9f9f9;
-          padding: 12px;
-          border-radius: 8px;
+          background: white;
+          padding: 15px;
+          border-radius: 10px;
           border-left: 5px solid #6e6c35;
-          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          transition: transform 0.2s ease-in-out;
+        }
+
+        .message-box:hover {
+          transform: scale(1.02);
         }
 
         .sender-name {
           font-weight: bold;
           color: #333;
+          font-size: 14px;
         }
 
         .message-text {
           color: #555;
-          font-size: 14px;
+          font-size: 15px;
           margin: 5px 0;
+          line-height: 1.4;
         }
 
         .message-date {
           font-size: 12px;
           color: gray;
+          margin-top: 5px;
         }
 
         .reply-button {
@@ -98,16 +163,38 @@ export default function NotificationsModal({ show, onClose, messages }) {
           padding: 6px 12px;
           font-size: 14px;
           cursor: pointer;
-          transition: 0.3s;
+          transition: 0.3s ease-in-out;
+          border-radius: 5px;
         }
 
         .reply-button:hover {
           background: #56542a;
         }
 
+        .no-reply-text {
+          font-size: 13px;
+          color: #888;
+          margin-top: 5px;
+        }
+
         .footer-custom {
           display: flex;
           justify-content: center;
+          background: #f8f9fa;
+          border-bottom-left-radius: 15px;
+          border-bottom-right-radius: 15px;
+          padding: 12px;
+        }
+
+        .close-button {
+          background: #888;
+          border: none;
+          color: white;
+          transition: 0.3s;
+        }
+
+        .close-button:hover {
+          background: #666;
         }
       `}</style>
     </Modal>

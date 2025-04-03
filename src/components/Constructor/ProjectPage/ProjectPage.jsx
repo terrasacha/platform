@@ -25,6 +25,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 import AlertMessage from "./AlertMessage";
 import { FiEdit3 } from "react-icons/fi";
+import TimelineProject from "./TimeLineProject";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -36,6 +37,7 @@ const GET_PRODUCT_QUERY = `
       campaign {
         name
         id
+        available
       }
       campaignID
     }
@@ -70,6 +72,50 @@ export default function ProjectPage() {
     "Validación externa": "En validación externa",
     "Registro del proyecto": "Registrado",
   };
+
+  const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    if (!projectData || !progressObj) return;
+
+    const {
+        projectInfo,
+        geodataInfo,
+        technicalInfo,
+        financialInfo,
+        ownerAcceptsConditions,
+        projectOnMarketplace,
+    } = progressObj.sectionsStatus || {};
+
+    // ⚪ Paso 1: Proyecto creado (estado inicial)
+    setCurrentStep(1);
+
+    // 🔵 Paso 2: En espera de cierre de convocatoria
+    if (campaign?.available === true) {
+        setCurrentStep(2);
+    }
+
+    // 🟠 Paso 3: Completar información general técnica y financiera
+    if (projectInfo && geodataInfo && technicalInfo && financialInfo) {
+        setCurrentStep(3);
+    }
+
+    // 🟡 Paso 4: En espera de condiciones financieras (congelado pero sin aceptar)
+    if (
+        projectData.isTechnicalFreeze &&
+        projectData.isFinancialFreeze &&
+        !ownerAcceptsConditions
+    ) {
+        setCurrentStep(4);
+    }
+
+    // 🟢 Paso 5: Proyecto subido al marketplace
+    if (projectOnMarketplace) {
+        setCurrentStep(5);
+    }
+}, [projectData, progressObj, campaign]);
+
+
 
   useEffect(() => {
     const fetchUserGroups = async () => {
@@ -289,6 +335,7 @@ export default function ProjectPage() {
                       </div>
                     </div>
                   </header>
+                  
                   <section>
                     <p className="fs-6 mb-0 fw-bold">Fecha de creación:</p>
                     <p className="fs-6 mb-0">
@@ -302,13 +349,21 @@ export default function ProjectPage() {
                     </p>
                   </section>
                   {campaign && (
-                  <section>
-                    <p className="fs-6 mb-0 fw-bold">Pertenece a la campaña:</p>
-                    <p className="fs-6 mb-0">
-                      {campaign.name}
-                    </p>
-                  </section>
-                  )}
+  <div className="d-flex align-items-center justify-content-between w-100">
+    <div>
+      <p className="fs-6 mb-0 fw-bold">Pertenece a la campaña:</p>
+      <p className="fs-6 mb-0">{campaign.name}</p>
+    </div>
+    <div className="w-75">
+      <TimelineProject
+        currentStep={currentStep}
+        onStepChange={(step) => setCurrentStep(step)}
+      />
+    </div>
+  </div>
+)}
+
+                   
                   {projectData.projectInfo.token.actualPeriodTokenAmount &&
                     projectData.projectInfo.token.actualPeriodTokenPrice && (
                       <section>
@@ -380,6 +435,8 @@ export default function ProjectPage() {
                     </section>
                   )}
                 </div>
+              
+
                 <ul className="font-medium flex flex-wrap gap-2 mt-4 pl-0 justify-center md:justify-start">
                   <li>
                     <a
