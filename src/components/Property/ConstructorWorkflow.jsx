@@ -8,6 +8,7 @@
   import { useS3Client } from "context/s3ClientContext";
 import { listPropertyFeatures } from "graphql/queries";
 import { usePropertyData } from "context/PropertyDataContext";
+import { useAuth } from "context/AuthContext";
 
   const STEPS = [
     "Visita técnica",
@@ -40,6 +41,9 @@ import { usePropertyData } from "context/PropertyDataContext";
     const [expirationConfirmed, setExpirationConfirmed] = useState(false);
     const { propertyData } = usePropertyData();
     const basePath = `public/property/${propertyData.propertyInfo?.id}/other/`
+    const { user } = useAuth(); // O ajusta según tu estructura
+    const isConstructor = user?.role === "constructor";
+
 
 
     useEffect(() => {
@@ -333,107 +337,117 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
                   <span className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${completed[i] ? 'bg-green-500 text-white' : 'border-gray-300 text-gray-400'}`}>{completed[i] ? <FaCheckCircle /> : i + 1}</span>
                   <p className={`${completed[i] ? 'line-through text-gray-400' : 'text-gray-800'} font-medium`}>{step}</p>
                 </div>
-                <button disabled={isStepDisabled(i)} onClick={() => toggleStep(i)} className="focus:outline-none">
+                <button
+  disabled={isStepDisabled(i) || !isConstructor}
+  onClick={() => isConstructor && toggleStep(i)}
+  className={`focus:outline-none ${!isConstructor ? 'cursor-not-allowed opacity-60' : ''}`}
+>
+
                   {completed[i] ? <FaCheckCircle className="text-green-600 text-xl" /> : <FaRegCheckCircle className="text-gray-300 hover:text-green-500 text-xl" />}
                 </button>
                 {i === 1 && (
-                  <div className="flex items-center space-x-4 ml-6">
-                   {memoFile && featureValue.memorando.url ? (
-  <div className="flex items-center gap-3">
-    <a
-      href={featureValue.memorando.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center text-green-600 hover:text-green-800 text-sm"
-      title="Ver documento"
-    >
-      <FaEye className="mr-1" size={20}/>
-    </a>
+              <div className="flex items-center space-x-4 ml-6">
+                {memoFile && featureValue.memorando.url ? (
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={featureValue.memorando.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center text-green-600 hover:text-green-800 text-sm"
+                      title="Ver documento"
+                    >
+                      <FaEye className="mr-1" size={20} />
+                    </a>
 
-    <label className="flex items-center text-blue-600 hover:underline cursor-pointer text-sm" title="Reemplazar archivo">
-      <FaEdit className="mr-1" size={20}/>
-      <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" />
-    </label>
-  </div>
-) : (
-  <label className="flex items-center gap-2 text-sm cursor-pointer">
-    <FaFilePdf className="text-red-500" />
-    <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" />
-    <span className="text-blue-600 hover:underline">Subir PDF</span>
-  </label>
-)}
-
-                    <div className="flex flex-col">
-  <label className="text-xs font-medium text-gray-600">Fecha y hora de vencimiento</label>
-  {!expirationConfirmed ? (
-  <input
-  type="datetime-local"
-  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-gray-700"
-  value={expirationInput}
-  onChange={(e) => {
-    const value = e.target.value;
-    setExpirationInput(value);
-  
-    const selected = new Date(value);
-    const now = new Date();
-  
-    if (selected <= now) {
-      setExpirationConfirmed(false);
-      setTimeLeft("Fecha ya vencida");
-      return;
-    }
-  
-    setExpirationDateTime(selected);
-    setExpirationConfirmed(true); // <-- importante
-  
-    const updated = {
-      ...featureValue,
-      memorando: {
-        ...featureValue.memorando,
-        expirationDateTime: selected.toISOString(),
-      },
-    };
-    setFeatureValue(updated);
-    updateFeature(updated);
-  }}  
-/>
-) : (
-  <div className="flex items-center justify-between mt-2 bg-green-100 text-green-800 px-4 py-2 rounded-md text-sm font-medium">
-  <div className="flex items-center gap-2">
-    <FaRegClock className="text-green-600" />
-    {timeLeft}
-  </div>
-  <button
-    className="text-blue-600 hover:underline text-xs ml-4"
-    onClick={() => {
-      setExpirationConfirmed(false);
-      setExpirationInput(""); // limpiar para nuevo input
-    }}
-  >
-    Cambiar fecha
-  </button>
-</div>
-)}
-</div>
-
-
+                    {isConstructor && (
+                      <label className="flex items-center text-blue-600 hover:underline cursor-pointer text-sm" title="Reemplazar archivo">
+                        <FaEdit className="mr-1" size={20} />
+                        <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" disabled={!isConstructor} />
+                      </label>
+                    )}
                   </div>
+                ) : (
+                  isConstructor && (
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <FaFilePdf className="text-red-500" />
+                      <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" disabled={!isConstructor} />
+                      <span className="text-blue-600 hover:underline">Subir PDF</span>
+                    </label>
+                  )
                 )}
-              </li>
-            ))}
-          </ul>
-        </div>
 
-        {/* Divider */}
-        <div className="w-px bg-gray-300" />
+                <div className="flex flex-col">
+                  <label className="text-xs font-medium text-gray-600">Fecha y hora de vencimiento</label>
+                  {!expirationConfirmed ? (
+                    <input
+                      type="datetime-local"
+                      disabled={!isConstructor}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-gray-700"
+                      value={expirationInput}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setExpirationInput(value);
 
-        {/* Right Panel */}
-        <div className="w-2/5 p-8 bg-white rounded-r-lg shadow-inner flex flex-col">
-          <h3 className="text-2xl font-bold mb-6">Mensajería del Predio</h3>
-          <div className="flex-1 overflow-auto border rounded p-4 bg-gray-50">
-            <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
-          </div>
-        </div>
+                        const selected = new Date(value);
+                        const now = new Date();
+
+                        if (selected <= now) {
+                          setExpirationConfirmed(false);
+                          setTimeLeft("Fecha ya vencida");
+                          return;
+                        }
+
+                        setExpirationDateTime(selected);
+                        setExpirationConfirmed(true);
+
+                        const updated = {
+                          ...featureValue,
+                          memorando: {
+                            ...featureValue.memorando,
+                            expirationDateTime: selected.toISOString(),
+                          },
+                        };
+                        setFeatureValue(updated);
+                        updateFeature(updated);
+                      }}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-between mt-2 bg-green-100 text-green-800 px-4 py-2 rounded-md text-sm font-medium">
+                      <div className="flex items-center gap-2">
+                        <FaRegClock className="text-green-600" />
+                        {timeLeft}
+                      </div>
+                      {isConstructor && (
+                        <button
+                          className="text-blue-600 hover:underline text-xs ml-4"
+                          onClick={() => {
+                            setExpirationConfirmed(false);
+                            setExpirationInput("");
+                          }}
+                        >
+                          Cambiar fecha
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {/* Divider */}
+    <div className="w-px bg-gray-300" />
+
+    {/* Right Panel */}
+    <div className="w-2/5 p-8 bg-white rounded-r-lg shadow-inner flex flex-col">
+      <h3 className="text-2xl font-bold mb-6">Mensajería del Predio</h3>
+      <div className="flex-1 overflow-auto border rounded p-4 bg-gray-50">
+        <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
       </div>
-    );
+    </div>
+  </div>
+);
   }

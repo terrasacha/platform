@@ -4,6 +4,7 @@ import { Auth } from "aws-amplify";
 import LOGO from "../../common/_images/suan_logo.png";
 import s from "./HeaderNavbar.module.css";
 import DropDownProjects from "components/common/DropDownProjects";
+import TerrasachaLogo from "components/common/TerrasachaLogo";
 
 export default class HeaderNavbar extends Component {
   constructor(props) {
@@ -78,19 +79,18 @@ export default class HeaderNavbar extends Component {
   
 
     return (
-      <Navbar bg="light" expand="lg" fixed="top">
+        <Navbar key="sm" expand="lg" fixed="top" className="bg-[#ecd798]">
         <Container fluid>
-          <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
-            <img src={LOGO} className="w-8 h-auto" alt="ATP" />
-          </Navbar.Brand>
-          <h1><strong>suan</strong></h1>
+           <Navbar.Brand href="/" style={{ marginLeft: "2%" }}>
+                    <TerrasachaLogo className={"w-48 h-auto"} />
+                  </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Offcanvas placement="end">
             <Offcanvas.Header closeButton>
-              <Offcanvas.Title>
-                <a href="/">
-                  <img src={LOGO} className="w-8 h-auto" alt="ATP" />
-                </a>
+             <Offcanvas.Title id={`offcanvasNavbarLabel-expand-$'sm'`}>
+                           <a href="/">
+                             <TerrasachaLogo className={"w-48 h-auto"} />
+                           </a>
               </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>

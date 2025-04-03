@@ -36,6 +36,9 @@ import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
 import "./App.css";
 import { S3ClientProvider } from "context/s3ClientContext";
 import LegalAdmon from "components/Legal/LegalAdmon";
+import TradicionLibertad from "components/views/Footer/TradicionLibertad";
+import Escrituras from "components/views/Footer/Escrituras";
+import PlanosCatastrales from "components/views/Footer/PlanosCatastrales";
 
 function App() {
   return (
@@ -186,6 +189,9 @@ function App() {
                 }
                 exact
               />
+              <Route path="/tradicion-libertad" element={<TradicionLibertad />} />
+              <Route path="/escrituras" element={<Escrituras/>} />
+              <Route path="/planos-catastrales" element={<PlanosCatastrales />} />
               <Route path="/campaigns" element={<CampaignList />} />
               <Route path="/campaign/:id" element={<Campaign />} exact />
               {/* <Route path="/lists3" element={<ListS3 />} /> */}

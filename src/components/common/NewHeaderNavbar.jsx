@@ -34,6 +34,8 @@ export default function NewHeaderNavbar() {
   const [messages, setMessages] = useState([]);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null);
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
@@ -146,6 +148,18 @@ const fetchPendingMessages = async (userId) => { // Eliminar `role` de los pará
     }
     setShowNotifications(true);
   };
+
+  const role = user?.attributes?.["custom:role"];
+
+  const roleDisplayNames = {
+    admon: "Administrador",
+    validator: "Consultor",
+    analyst: "Analista",
+    constructor: "Propietario",
+    legal: "Legal",
+  };
+
+  const displayRole = roleDisplayNames[role] || "Sin Rol";
   
   const handleCloseNotifications = () => setShowNotifications(false);
 
