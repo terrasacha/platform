@@ -254,7 +254,7 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
               <text x="18" y="20" className="text-sm font-semibold fill-current text-green-600" textAnchor="middle">{progress}%</text>
             </svg>
           </div>
-          <h3 className="text-2xl font-bold mb-6">Pasos del Constructor</h3>
+          <h3 className="text-2xl font-bold mb-6">Pasos del Consultor</h3>
           <ul className="space-y-4">
             {STEPS.map((step, i) => (
               <li key={i} className={`flex items-center justify-between p-4 rounded-lg ${completed[i] ? 'bg-green-50' : 'bg-gray-50'} ${isStepDisabled(i) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}>              
