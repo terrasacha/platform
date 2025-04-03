@@ -230,18 +230,38 @@ const fetchPendingMessages = async (userId) => { // Eliminar `role` de los pará
   
                   {/* Enlace "Mis Campañas" para Validators */}
                   {user.attributes["custom:role"] === "validator" && (
-                    <>
-                    <Nav.Link
-                      className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
-                      onClick={() => (window.location.href = "/consultor_admon")}
-                    >
-                      Mis campañas
-                    </Nav.Link>
-                    <Nav.Link className="text-gray-800 text-sm hover:text-gray-600 transition duration-300" onClick={() => navigate("/PQRS")}>
-                        PQRS
-                      </Nav.Link>
-                    </>
-                  )}
+  <>
+    <Nav.Link
+      className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
+      onClick={() => navigate("/consultor_admon")}
+    >
+      Mis campañas
+    </Nav.Link>
+    <Nav.Link
+      className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
+      onClick={() => navigate("/new_campaign")}
+    >
+      Crear campaña
+    </Nav.Link>
+    <Nav.Link
+      className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
+      onClick={() => navigate("/PQRS")}
+    >
+      PQRS
+    </Nav.Link>
+  </>
+)}
+
+{user.attributes["custom:role"] === "admon" && (
+  <Nav.Link
+    className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
+    onClick={() => navigate("/admon")}
+  >
+    Perfil
+  </Nav.Link>
+)}
+
+
   
                   {/* Enlace "Listado de predios" para Legales */}
                   {user.attributes["custom:role"] === "legal" && (

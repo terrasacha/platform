@@ -21,9 +21,6 @@ import { useAuth } from "context/AuthContext";
   export default function ConstructorWorkflow({ propertyId }) {
     const [completed, setCompleted] = useState(Array(STEPS.length).fill(false));
     const [memoFile, setMemoFile] = useState(null);
-    const [expirationDays, setExpirationDays] = useState(0);
-    const [expirationDate, setExpirationDate] = useState(null);
-    const [daysLeft, setDaysLeft] = useState(null);
     const { s3Client, bucketName } = useS3Client();
     const [featureValue, setFeatureValue] = useState({
       analisis: false,
@@ -35,41 +32,12 @@ import { useAuth } from "context/AuthContext";
     const [featureRecordId, setFeatureRecordId] = useState(null); // el ID real del propertyFeature creado  
     const completedCount = completed.filter(Boolean).length;
     const progress = Math.round((completedCount / STEPS.length) * 100);
-    const [expirationDateTime, setExpirationDateTime] = useState(null);
-    const [timeLeft, setTimeLeft] = useState(""); // ejemplo: "2 días 4 horas 15 minutos"
-    const [expirationInput, setExpirationInput] = useState("");
-    const [expirationConfirmed, setExpirationConfirmed] = useState(false);
     const { propertyData } = usePropertyData();
     const basePath = `public/property/${propertyData.propertyInfo?.id}/other/`
     const { user } = useAuth(); // O ajusta según tu estructura
-    const isConstructor = user?.role === "constructor";
+    const isConstructor = user?.role === "validator";
 
-
-
-    useEffect(() => {
-      if (!expirationDateTime) return;
-    
-      const timer = setInterval(() => {
-        const now = new Date();
-        const diff = expirationDateTime - now;
-    
-        if (diff <= 0) {
-          setTimeLeft("Vencido");
-          clearInterval(timer);
-          return;
-        }
-    
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    
-        setTimeLeft(`${days}d ${hours}h ${minutes}min`);
-      }, 1000 * 60); // actualiza cada minuto
-    
-      return () => clearInterval(timer);
-    }, [expirationDateTime]);    
-    
-    
+  
     useEffect(() => {
       const fetchFeature = async () => {
         console.log("📦 Ejecutando fetchFeature para propertyId:", propertyId);
@@ -114,37 +82,6 @@ import { useAuth } from "context/AuthContext";
               setMemoFile({ name: "Archivo existente (ver S3)", url: parsedValue.memorando.url });
               console.log("📎 MemoFile detectado y seteado.");
             }
-    
-           // Si viene expirationDateTime, se usa como prioridad
-           if (parsedValue.memorando?.expirationDateTime) {
-            const formatDateTimeLocal = (date) => {
-              const pad = (n) => n.toString().padStart(2, "0");
-              const year = date.getFullYear();
-              const month = pad(date.getMonth() + 1);
-              const day = pad(date.getDate());
-              const hours = pad(date.getHours());
-              const minutes = pad(date.getMinutes());
-              return `${year}-${month}-${day}T${hours}:${minutes}`;
-            };
-          
-            const date = new Date(parsedValue.memorando.expirationDateTime);
-            setExpirationDateTime(date);
-            setExpirationInput(formatDateTimeLocal(date));
-            setExpirationConfirmed(true);
-          
-            // 🔥 Cálculo inmediato del tiempo restante
-            const now = new Date();
-            const diff = date - now;
-          
-            if (diff <= 0) {
-              setTimeLeft("Vencido");
-            } else {
-              const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-              const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-              const minutes = Math.floor((diff / (1000 * 60)) % 60);
-              setTimeLeft(`${days}d ${hours}h ${minutes}min`);
-            }
-          }
           
 // Si no hay expirationDateTime, usar fallback con expirationDays
 else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationDays) {
@@ -241,7 +178,6 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
           memorando: {
             uploadDate: Date.now(),
             url: signedUrl,
-            expirationDateTime: featureValue.memorando?.expirationDateTime || null,
           },
         };
     
@@ -270,15 +206,6 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
           return null;
         }
       };
-    
-    
-
-    const handleExpirationChange = (e) => {
-      const days = parseInt(e.target.value, 10) || 0;
-      setExpirationDays(days);
-      const expiry = new Date(); expiry.setDate(expiry.getDate() + days);
-      setExpirationDate(expiry);
-    };
 
     const createFeatureOnStep1 = async (newValue) => {
       try {
@@ -346,93 +273,38 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
                   {completed[i] ? <FaCheckCircle className="text-green-600 text-xl" /> : <FaRegCheckCircle className="text-gray-300 hover:text-green-500 text-xl" />}
                 </button>
                 {i === 1 && (
-              <div className="flex items-center space-x-4 ml-6">
-                {memoFile && featureValue.memorando.url ? (
-                  <div className="flex items-center gap-3">
-                    <a
-                      href={featureValue.memorando.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-green-600 hover:text-green-800 text-sm"
-                      title="Ver documento"
-                    >
-                      <FaEye className="mr-1" size={20} />
-                    </a>
+  <div className="flex items-center space-x-4 ml-6">
+    {memoFile && featureValue.memorando.url ? (
+      <div className="flex items-center gap-3">
+        <a
+          href={featureValue.memorando.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center text-green-600 hover:text-green-800 text-sm"
+          title="Ver documento"
+        >
+          <FaEye className="mr-1" size={20} />
+        </a>
 
-                    {isConstructor && (
-                      <label className="flex items-center text-blue-600 hover:underline cursor-pointer text-sm" title="Reemplazar archivo">
-                        <FaEdit className="mr-1" size={20} />
-                        <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" disabled={!isConstructor} />
-                      </label>
-                    )}
-                  </div>
-                ) : (
-                  isConstructor && (
-                    <label className="flex items-center gap-2 text-sm cursor-pointer">
-                      <FaFilePdf className="text-red-500" />
-                      <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" disabled={!isConstructor} />
-                      <span className="text-blue-600 hover:underline">Subir PDF</span>
-                    </label>
-                  )
-                )}
+        {isConstructor && (
+          <label className="flex items-center text-blue-600 hover:underline cursor-pointer text-sm" title="Reemplazar archivo">
+            <FaEdit className="mr-1" size={20} />
+            <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" disabled={!isConstructor} />
+          </label>
+        )}
+      </div>
+    ) : (
+      isConstructor && (
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <FaFilePdf className="text-red-500" />
+          <input type="file" accept=".pdf" onChange={handleFileUpload} className="hidden" disabled={!isConstructor} />
+          <span className="text-blue-600 hover:underline">Subir PDF</span>
+        </label>
+      )
+    )}
+  </div>
+)}
 
-                <div className="flex flex-col">
-                  <label className="text-xs font-medium text-gray-600">Fecha y hora de vencimiento</label>
-                  {!expirationConfirmed ? (
-                    <input
-                      type="datetime-local"
-                      disabled={!isConstructor}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-gray-700"
-                      value={expirationInput}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setExpirationInput(value);
-
-                        const selected = new Date(value);
-                        const now = new Date();
-
-                        if (selected <= now) {
-                          setExpirationConfirmed(false);
-                          setTimeLeft("Fecha ya vencida");
-                          return;
-                        }
-
-                        setExpirationDateTime(selected);
-                        setExpirationConfirmed(true);
-
-                        const updated = {
-                          ...featureValue,
-                          memorando: {
-                            ...featureValue.memorando,
-                            expirationDateTime: selected.toISOString(),
-                          },
-                        };
-                        setFeatureValue(updated);
-                        updateFeature(updated);
-                      }}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-between mt-2 bg-green-100 text-green-800 px-4 py-2 rounded-md text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        <FaRegClock className="text-green-600" />
-                        {timeLeft}
-                      </div>
-                      {isConstructor && (
-                        <button
-                          className="text-blue-600 hover:underline text-xs ml-4"
-                          onClick={() => {
-                            setExpirationConfirmed(false);
-                            setExpirationInput("");
-                          }}
-                        >
-                          Cambiar fecha
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </li>
         ))}
       </ul>

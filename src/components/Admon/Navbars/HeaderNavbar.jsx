@@ -3,6 +3,7 @@ import LOGO from "../../common/_images/suan_logo.png";
 import TerrasachaLogo from "components/common/TerrasachaLogo";
 
 
+
 const HeaderNavbar = ({ isActualUserLogged, changeHeaderNavBarRequest, handleSignOut }) => {
   const [desiredSubscriptionTopic, setDesiredSubscriptionTopic] = useState("");
   const [desiredPublishTopic, setDesiredPublishTopic] = useState("");
@@ -38,7 +39,7 @@ const HeaderNavbar = ({ isActualUserLogged, changeHeaderNavBarRequest, handleSig
     <nav className="bg-white fixed top-0 w-full shadow-md z-10">
       <div className="mx-auto flex justify-between items-center p-4">
         <a href="/" className="flex items-center flex-none">
-          <img src={TerrasachaLogo} className="w-8 h-auto" alt="ATP" />
+      <TerrasachaLogo className={"w-48 h-auto"} />
         </a>
         <div className="flex items-center space-x-4">
           <div className="hidden md:block font-bold text-red-500 border-2 border-red-500 px-4 py-1">{process.env.REACT_APP_ENV}</div>
