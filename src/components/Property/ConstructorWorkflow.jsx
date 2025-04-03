@@ -87,8 +87,6 @@ import { useAuth } from "context/AuthContext";
 else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationDays) {
   const uploadDate = new Date(parsedValue.memorando.uploadDate);
   uploadDate.setDate(uploadDate.getDate() + parsedValue.memorando.expirationDays);
-  setExpirationDate(uploadDate);
-  setExpirationDays(parsedValue.memorando.expirationDays);
   console.log("📆 Fecha de expiración calculada desde días:", uploadDate);
 }
 
