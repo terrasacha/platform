@@ -466,7 +466,7 @@ export default function ValidationModal({
               >
                 <span className="text-gray-700 text-sm capitalize">
                   {fileType === "certificado"
-                    ? "Certificado de Libertad(vigenvia min.30 dias)"
+                    ? "Certificado de Libertad(vigencia 30 dias)"
                     : fileType === "escrituras"
                     ? "Escrituras Públicas"
                     : "Planos Catastrales"}
