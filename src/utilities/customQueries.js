@@ -808,6 +808,10 @@ query ListProperties(
         }
         department
         userID
+        user {
+          id
+          name
+        }
         productID
         product {
           categoryID

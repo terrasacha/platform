@@ -64,7 +64,7 @@ export default function PropertyDetails({
         (authorizedUsers.includes(user.id) &&
           (propertyData.propertyInfo.status === null ||
             propertyData.propertyInfo.status === "PENDING")) ||
-          user.role === "admon" ||
+          user.role === "admon" || user.role === "analyst" ||
           propertyData.projectVerifiers.includes(user.id)
       );
 
