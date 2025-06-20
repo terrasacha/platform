@@ -281,7 +281,7 @@ export default function Campaign() {
 
                     <button
                       onClick={handleShare}
-                      className="w-full lg:w-1/6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all duration-300 flex items-center justify-center gap-2"
+                      className="w-full lg:w-[150px] py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all duration-300 flex items-center justify-center gap-2"
                       aria-label="Compartir campaña"
                     >
                       <FiShare2 size={20} />
@@ -299,31 +299,29 @@ export default function Campaign() {
                   </>
                 ) : (
                   <>
-                    <div className="mt-6 flex flex-col lg:flex-row gap-4">
-                      <button
-                        disabled
-                        className="w-full lg:w-[300px] py-3 px-8 bg-gray-400 text-white font-semibold rounded-md shadow-md text-center cursor-not-allowed"
-                      >
-                        Convocatoria cerrada
-                      </button>
+                    <button
+                      disabled
+                      className="w-full lg:w-[300px] py-3 px-8 bg-gray-400 text-white font-semibold rounded-md shadow-md text-center cursor-not-allowed"
+                    >
+                      Convocatoria cerrada
+                    </button>
 
-                      <button
-                        onClick={() =>
-                          handleClickSeeProject(campaign.products.items[0].id)
-                        }
-                        className="w-full lg:w-[300px] py-3 px-8 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
-                      >
-                        Ver proyecto
-                      </button>
+                    <button
+                      onClick={() =>
+                        handleClickSeeProject(campaign.products.items[0].id)
+                      }
+                      className="w-full lg:w-[300px] py-3 px-8 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
+                    >
+                      Ver proyecto
+                    </button>
 
-                      <button
-                        onClick={handleShare}
-                        className="w-full lg:w-1/6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all duration-300 flex items-center justify-center gap-2"
-                        aria-label="Compartir campaña"
-                      >
-                        <FiShare2 size={20} />
-                      </button>
-                    </div>
+                    <button
+                      onClick={handleShare}
+                      className="w-full lg:w-[150px] py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all duration-300 flex items-center justify-center gap-2"
+                      aria-label="Compartir campaña"
+                    >
+                      <FiShare2 size={20} />
+                    </button>
                   </>
                 )}
               </div>
