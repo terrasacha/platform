@@ -144,12 +144,13 @@ const ProjectCard = ({ project }) => (
 export default function ProductsList() {
   const { userProjects } = useUserProjects();
   const { userProperties } = useUserProperties();
+  const sortedProperties = [...userProperties].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const { userCampaigns } = useUserCampaigns();
   const [showModal, setShowModal] = useState(false);
 
    // Filtrar predios asignados y no asignados
-   const assignedProperties = userProperties.filter((property) => property.campaignID);
-   const unassignedProperties = userProperties.filter((property) => !property.campaignID);
+   const assignedProperties = sortedProperties .filter((property) => property.campaignID);
+   const unassignedProperties = sortedProperties .filter((property) => !property.campaignID);
  
   
   const projectsWithoutCampaigns = userProjects.filter(

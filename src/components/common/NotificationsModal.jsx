@@ -96,107 +96,110 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
       </Modal.Footer>
 
       {/* Estilos mejorados */}
-      <style jsx>{`
-        .custom-modal .modal-content {
-          max-width: 520px;
-          border-radius: 15px;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
+     <style jsx>{`
+  .custom-modal .modal-content {
+    max-width: 520px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    border: 2px solid #ccc;
+  }
 
-        .header-custom {
-          background: #6e6c35;
-          color: white;
-          border-top-left-radius: 15px;
-          border-top-right-radius: 15px;
-          padding: 15px;
-        }
+  .header-custom {
+    background: #3b3b3b;
+    color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 15px;
+    font-weight: bold;
+  }
 
-        .modal-body-custom {
-          max-height: 450px;
-          overflow-y: auto;
-          padding: 20px;
-          background: #f5f5f5;
-        }
+  .modal-body-custom {
+    max-height: 450px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f2f2f2;
+  }
 
-        .messages-container {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
+  .messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 
-        .message-box {
-          background: white;
-          padding: 15px;
-          border-radius: 10px;
-          border-left: 5px solid #6e6c35;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          transition: transform 0.2s ease-in-out;
-        }
+  .message-box {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 5px solid #6e6e6e;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
 
-        .message-box:hover {
-          transform: scale(1.02);
-        }
+  .message-box:hover {
+    transform: scale(1.02);
+  }
 
-        .sender-name {
-          font-weight: bold;
-          color: #333;
-          font-size: 14px;
-        }
+  .sender-name {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+  }
 
-        .message-text {
-          color: #555;
-          font-size: 15px;
-          margin: 5px 0;
-          line-height: 1.4;
-        }
+  .message-text {
+    color: #555;
+    font-size: 15px;
+    margin: 5px 0;
+    line-height: 1.4;
+  }
 
-        .message-date {
-          font-size: 12px;
-          color: gray;
-          margin-top: 5px;
-        }
+  .message-date {
+    font-size: 12px;
+    color: gray;
+    margin-top: 5px;
+  }
 
-        .reply-button {
-          background: #6e6c35;
-          border: none;
-          color: white;
-          padding: 6px 12px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: 0.3s ease-in-out;
-          border-radius: 5px;
-        }
+  .reply-button {
+    background: #666666;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    border-radius: 5px;
+  }
 
-        .reply-button:hover {
-          background: #56542a;
-        }
+  .reply-button:hover {
+    background: #4d4d4d;
+  }
 
-        .no-reply-text {
-          font-size: 13px;
-          color: #888;
-          margin-top: 5px;
-        }
+  .no-reply-text {
+    font-size: 13px;
+    color: #888;
+    margin-top: 5px;
+  }
 
-        .footer-custom {
-          display: flex;
-          justify-content: center;
-          background: #f8f9fa;
-          border-bottom-left-radius: 15px;
-          border-bottom-right-radius: 15px;
-          padding: 12px;
-        }
+  .footer-custom {
+    display: flex;
+    justify-content: center;
+    background: #f2f2f2;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding: 12px;
+  }
 
-        .close-button {
-          background: #888;
-          border: none;
-          color: white;
-          transition: 0.3s;
-        }
+  .close-button {
+    background: #666666;
+    border: none;
+    color: white;
+    transition: 0.3s;
+  }
 
-        .close-button:hover {
-          background: #666;
-        }
-      `}</style>
+  .close-button:hover {
+    background: #4d4d4d;
+  }
+`}</style>
+
     </Modal>
   );
 }

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import Card from "components/common/Card";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import { getCampaign } from "utilities/customQueries";
-import { FiEdit3 } from "react-icons/fi";
+import { FiEdit3, FiHelpCircle } from "react-icons/fi";
 import PropertiesTable from "./PropertiesTable";
 import ModalEditCampaign from "./ModalEditCampaign";
 import ModalEndCampaign from "./ModalEndCampaign";
@@ -17,6 +17,8 @@ import { onUpdateProperty } from "graphql/subscriptions";
 import { WindowFullscreen } from "react-bootstrap-icons";
 import ModalEditImage from "./ModalEditImage";
 import Imagen from "../../common/_images/Campaña.png";
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 import ModalAssignProperty from "./ModalAssignProperty";
 
 
@@ -276,18 +278,22 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
     </>
   ) : (
     <>
-      {/* Estado cuando la convocatoria está cerrada */}
-      <div className="bg-gray-400 py-3 font-semibold text-white text-center rounded-md shadow-md">
-        Convocatoria cerrada
-      </div>
-      <button
-        onClick={() =>
-          handleClickSeeProject(campaign.products.items[0].id)
-        }
-        className="w-full lg:w-3/6 mt-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
-      >
-        Ver proyecto
-      </button>
+    <div className="mt-6 flex flex-col lg:flex-row gap-4">
+  <button
+    disabled
+    className="w-full lg:w-[300px] py-3 px-8 bg-gray-400 text-white font-semibold rounded-md shadow-md text-center cursor-not-allowed"
+  >
+    Convocatoria cerrada
+  </button>
+
+  <button
+    onClick={() => handleClickSeeProject(campaign.products.items[0].id)}
+    className="w-full lg:w-[300px] py-3 px-8 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
+  >
+    Ver proyecto
+  </button>
+</div>
+
     </>
   )}
 </div>
@@ -315,10 +321,21 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
 
           {campaign.properties.items.length > 0 && userLogged && (
             <>
-              <h2 className="text-2xl text-gray-700 font-semibold mt-10 mb-6">
-                Predios postulados
-              </h2>
-              <PropertiesTable editable={editable} />
+<h2 className="text-2xl text-gray-700 font-semibold mt-10 mb-6 flex items-center gap-2">
+  Predios postulados
+  <FiHelpCircle
+    data-tooltip-id="tooltipDuplicados"
+    data-tooltip-content="Los números prediales que aparecen en rojo son aquellos que están duplicados y ya han sido colocados más de una vez."
+    className="text-blue-500 cursor-pointer"
+    size={20}
+  />
+  <Tooltip
+    id="tooltipDuplicados"
+    place="top"
+    style={{ maxWidth: '240px', fontSize: '0.85rem' }}
+  />
+</h2>
+<PropertiesTable editable={editable} />
             </>
           )}
         </Card.Body>

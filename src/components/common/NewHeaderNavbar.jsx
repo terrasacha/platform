@@ -214,7 +214,26 @@ const fetchPendingMessages = async (userId) => { // Eliminar `role` de los pará
                   {/* Enlace "Mis Campañas" para Validators */}
                   {user.attributes["custom:role"] === "validator" && (
                     <>
-                    <Nav.Link
+                      <a
+                          href="/new_campaign"
+                          className="bg-[#4DBC5E] text-white text-sm px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition flex items-center justify-center space-x-2"
+                          style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="white"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span style={{ color: "#FFFFFF" }}>Crear Campaña</span>
+                        </a>
+                         <Nav.Link
                       className="text-gray-800 text-sm hover:text-gray-600 transition duration-300"
                       onClick={() => (window.location.href = "/consultor_admon")}
                     >

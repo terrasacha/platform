@@ -412,8 +412,8 @@ export default function LogIn() {
 
         // Construcción del payload para la actualización en la base de datos
         const updateUserPayload = {
-          id: userId,
-          isProfileUpdated: true,
+          id: userId, 
+          status: "confirmed",
         };
         console.log(
           "📡 Enviando mutación GraphQL `updateUser` con payload:",

@@ -317,7 +317,7 @@ class Validators extends Component {
                         }-${validator.createdAt.split("T")[0].split("-")[0]}`}
                       </td>
                       <td className="border px-4 py-2">
-                        {validator.isProfileUpdated ? "Confirmado" : "Pendiente"}
+                        {validator.status=== "confirmed" ? "Confirmado" : "Pendiente"}
                       </td>
                       <td className="border px-4 py-2">
                         <button

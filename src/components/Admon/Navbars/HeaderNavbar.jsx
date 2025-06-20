@@ -60,7 +60,7 @@ const HeaderNavbar = ({ isActualUserLogged, changeHeaderNavBarRequest, handleSig
                 <div className="px-4 py-2 font-bold text-gray-800">Acciones</div>
                 <a href="#assign_pf" onClick={(e) => handleMenuItemClick(e, "assign_pf")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Asignar Consultores</a>
                 <a href="#assign_analyst" onClick={(e) => handleMenuItemClick(e, "assign_analyst")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Asignar Analista</a>
-                <a href="#assign_Legales" onClick={(e) => handleMenuItemClick(e, "assign_Legales")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Asignar Legales</a>
+              {/*  <a href="#assign_Legales" onClick={(e) => handleMenuItemClick(e, "assign_Legales")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Asignar Legales</a>*/  }
                 <a href="#validators" onClick={(e) => handleMenuItemClick(e, "validators")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Consultores</a>
                 <a href="#analysts" onClick={(e) => handleMenuItemClick(e, "analysts")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Analistas</a>
                 <a href="#legales" onClick={(e) => handleMenuItemClick(e, "legales")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Legales</a>
