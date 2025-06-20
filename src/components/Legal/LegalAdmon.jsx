@@ -369,7 +369,7 @@ export default function LegalAdmon() {
                 {filteredProperties.map((property) => (
                   <tr key={property.id} className="border-b hover:bg-gray-100">
                     <td className="px-4 py-2">{property.name}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 max-w-xs truncate" title={property.description || "Sin descripción"}>
                       {property.description || "Sin descripción"}
                     </td>
                     <td className="px-4 py-2">

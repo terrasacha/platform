@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import Card from "components/common/Card";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import { getCampaign } from "utilities/customQueries";
-import { FiEdit3, FiHelpCircle } from "react-icons/fi";
+import { FiEdit3, FiShare2, FiHelpCircle } from "react-icons/fi";
 import PropertiesTable from "./PropertiesTable";
 import ModalEditCampaign from "./ModalEditCampaign";
 import ModalEndCampaign from "./ModalEndCampaign";
@@ -17,10 +17,9 @@ import { onUpdateProperty } from "graphql/subscriptions";
 import { WindowFullscreen } from "react-bootstrap-icons";
 import ModalEditImage from "./ModalEditImage";
 import Imagen from "../../common/_images/Campaña.png";
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import ModalAssignProperty from "./ModalAssignProperty";
-
 
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
@@ -29,14 +28,13 @@ export default function Campaign() {
   const [userLogged, setUserLogged] = useState(false);
   const [showModalNewProperty, setShowModalNewProperty] = useState(false);
   const [showModalEndCampaign, setShowModalEndCampaign] = useState(false);
-  const [showModalLogin, setShowModalLogin] = useState(false)
+  const [showModalLogin, setShowModalLogin] = useState(false);
   const [projectVerifiers, setProjectVerifiers] = useState([]);
   const [showModalEditImage, setShowModalEditImage] = useState(false);
   const [registeredProperties, setRegisteredProperties] = useState(0);
   const [chosenProperties, setChosenProperties] = useState(0);
   const [totalChosenProperties, setTotalChosenProperties] = useState(0);
   const [showModalAssignProperty, setShowModalAssignProperty] = useState(false);
-
 
   const handleCloseNewProperty = () => setShowModalNewProperty(false);
   const handleShowNewProperty = () => setShowModalNewProperty(true);
@@ -45,7 +43,7 @@ export default function Campaign() {
   const handleShow = () => setShowModal(true);
 
   const handleShowEditImage = () => setShowModalEditImage(true);
-const handleCloseEditImage = () => setShowModalEditImage(false);
+  const handleCloseEditImage = () => setShowModalEditImage(false);
 
   const handleCloseEndCampaign = () => setShowModalEndCampaign(false);
   const handleShowEndCampaign = () => setShowModalEndCampaign(true);
@@ -54,14 +52,14 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const handleClickSeeProject = async (id) =>{
+  const handleClickSeeProject = async (id) => {
     try {
-      await Auth.currentAuthenticatedUser()
-      navigate(`/project/${id}`)
+      await Auth.currentAuthenticatedUser();
+      navigate(`/project/${id}`);
     } catch (error) {
-      setShowModalLogin(true)
+      setShowModalLogin(true);
     }
-  }
+  };
   const fetchCampaign = async () => {
     try {
       const data = await API.graphql(graphqlOperation(getCampaign, { id }));
@@ -160,9 +158,23 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
   };
   const redirectToLoginPage = (id) => {
     const redirectArray = ["campaign", id];
-    window.sessionStorage.setItem("redirect_after_login", JSON.stringify(redirectArray));
+    window.sessionStorage.setItem(
+      "redirect_after_login",
+      JSON.stringify(redirectArray)
+    );
     navigate("/login");
-  };  
+  };
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("¡Enlace copiado al portapapeles!");
+    } catch (error) {
+      console.error("Error al copiar:", error);
+      toast.error("No se pudo copiar el enlace");
+    }
+  };
+
   return (
     <div className="container mx-auto px-4">
       <div className="mb-24">
@@ -171,26 +183,25 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
       <Card className="shadow-lg rounded-lg overflow-hidden">
         <Card.Body className="p-6">
           <article className="flex flex-col lg:flex-row gap-8">
-          <div className="relative w-full lg:w-1/2 flex justify-center items-center">
-  <img
-    src={
-      campaign.images && JSON.parse(campaign.images).length > 0
-        ? JSON.parse(campaign.images)[0] 
-        : Imagen 
-    }
-    alt="Imagen de la campaña"
-    className="object-cover w-full h-auto rounded-lg shadow-md"
-  />
-  {editable && (
-    <button
-      onClick={handleShowEditImage}
-      className="absolute top-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 hover:shadow-xl transition"
-    >
-      <FiEdit3 size={28} /> {/* Ícono más grande */}
-    </button>
-  )}
-</div>
-
+            <div className="relative w-full lg:w-1/2 flex justify-center items-center">
+              <img
+                src={
+                  campaign.images && JSON.parse(campaign.images).length > 0
+                    ? JSON.parse(campaign.images)[0]
+                    : Imagen
+                }
+                alt="Imagen de la campaña"
+                className="object-cover w-full h-auto rounded-lg shadow-md"
+              />
+              {editable && (
+                <button
+                  onClick={handleShowEditImage}
+                  className="absolute top-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 hover:shadow-xl transition"
+                >
+                  <FiEdit3 size={28} /> {/* Ícono más grande */}
+                </button>
+              )}
+            </div>
 
             <section className="w-full lg:w-1/2 flex flex-col justify-between">
               <div>
@@ -246,28 +257,38 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
               </div>
 
               <div className="mt-6 flex flex-col lg:flex-row gap-4">
-  {campaign.available ? (
-    <>
-      {/* Botón de Cerrar Convocatoria */}
-      <button
-        onClick={() => 
-          editable
-            ? handleShowEndCampaign()
-            : userLogged
-            ? handleShowNewProperty()
-            : redirectToLoginPage(campaign.id)
-        }
-        className={`w-full lg:w-3/6 py-3 font-semibold rounded-md text-white shadow-md transition-all duration-300 ${
-          editable
-            ? "bg-red-500 hover:bg-red-600"
-            : "bg-green-500 hover:bg-green-600"
-        }`}
-      >
-        {editable ? "Cerrar convocatoria ahora" : "Postular predio"}
-      </button>
+                {campaign.available ? (
+                  <>
+                    {/* Botón de Cerrar Convocatoria */}
+                    <button
+                      onClick={() =>
+                        editable
+                          ? handleShowEndCampaign()
+                          : userLogged
+                          ? handleShowNewProperty()
+                          : redirectToLoginPage(campaign.id)
+                      }
+                      className={`w-full lg:w-3/6 py-3 font-semibold rounded-md text-white shadow-md transition-all duration-300 ${
+                        editable
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-green-500 hover:bg-green-600"
+                      }`}
+                    >
+                      {editable
+                        ? "Cerrar convocatoria ahora"
+                        : "Postular predio"}
+                    </button>
 
-      {/* 🔹 Botón de Asignar Predio (Solo si el usuario es el dueño de la campaña) */}
-      {/* {editable && (
+                    <button
+                      onClick={handleShare}
+                      className="w-full lg:w-1/6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all duration-300 flex items-center justify-center gap-2"
+                      aria-label="Compartir campaña"
+                    >
+                      <FiShare2 size={20} />
+                    </button>
+
+                    {/* 🔹 Botón de Asignar Predio (Solo si el usuario es el dueño de la campaña) */}
+                    {/* {editable && (
         <button
           onClick={() => setShowModalAssignProperty(true)}
           className="w-full lg:w-3/6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
@@ -275,42 +296,50 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
           Asignar Predio
         </button>
       )} */}
-    </>
-  ) : (
-    <>
-    <div className="mt-6 flex flex-col lg:flex-row gap-4">
-  <button
-    disabled
-    className="w-full lg:w-[300px] py-3 px-8 bg-gray-400 text-white font-semibold rounded-md shadow-md text-center cursor-not-allowed"
-  >
-    Convocatoria cerrada
-  </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="mt-6 flex flex-col lg:flex-row gap-4">
+                      <button
+                        disabled
+                        className="w-full lg:w-[300px] py-3 px-8 bg-gray-400 text-white font-semibold rounded-md shadow-md text-center cursor-not-allowed"
+                      >
+                        Convocatoria cerrada
+                      </button>
 
-  <button
-    onClick={() => handleClickSeeProject(campaign.products.items[0].id)}
-    className="w-full lg:w-[300px] py-3 px-8 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
-  >
-    Ver proyecto
-  </button>
-</div>
+                      <button
+                        onClick={() =>
+                          handleClickSeeProject(campaign.products.items[0].id)
+                        }
+                        className="w-full lg:w-[300px] py-3 px-8 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all"
+                      >
+                        Ver proyecto
+                      </button>
 
-    </>
-  )}
-</div>
-
+                      <button
+                        onClick={handleShare}
+                        className="w-full lg:w-1/6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-all duration-300 flex items-center justify-center gap-2"
+                        aria-label="Compartir campaña"
+                      >
+                        <FiShare2 size={20} />
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </section>
           </article>
 
           {projectVerifiers.length > 0 && (
             <section className="mt-8">
               <h3 className="text-md font-semibold text-gray-700 mb-4">
-              Consultor de la campaña
+                Consultor de la campaña
               </h3>
               <div className="flex flex-wrap gap-3">
                 {projectVerifiers.map((pvn, index) => (
                   <div
                     key={index}
-                      className="bg-[#74742c] text-white text-sm font-medium px-4 py-2 rounded-md shadow"
+                    className="bg-[#74742c] text-white text-sm font-medium px-4 py-2 rounded-md shadow"
                   >
                     Consultor {index + 1}: {pvn.name}
                   </div>
@@ -321,21 +350,21 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
 
           {campaign.properties.items.length > 0 && userLogged && (
             <>
-<h2 className="text-2xl text-gray-700 font-semibold mt-10 mb-6 flex items-center gap-2">
-  Predios postulados
-  <FiHelpCircle
-    data-tooltip-id="tooltipDuplicados"
-    data-tooltip-content="Los números prediales que aparecen en rojo son aquellos que están duplicados y ya han sido colocados más de una vez."
-    className="text-blue-500 cursor-pointer"
-    size={20}
-  />
-  <Tooltip
-    id="tooltipDuplicados"
-    place="top"
-    style={{ maxWidth: '240px', fontSize: '0.85rem' }}
-  />
-</h2>
-<PropertiesTable editable={editable} />
+              <h2 className="text-2xl text-gray-700 font-semibold mt-10 mb-6 flex items-center gap-2">
+                Predios postulados
+                <FiHelpCircle
+                  data-tooltip-id="tooltipDuplicados"
+                  data-tooltip-content="Los números prediales que aparecen en rojo son aquellos que están duplicados y ya han sido colocados más de una vez."
+                  className="text-blue-500 cursor-pointer"
+                  size={20}
+                />
+                <Tooltip
+                  id="tooltipDuplicados"
+                  place="top"
+                  style={{ maxWidth: "240px", fontSize: "0.85rem" }}
+                />
+              </h2>
+              <PropertiesTable editable={editable} />
             </>
           )}
         </Card.Body>
@@ -360,25 +389,21 @@ const handleCloseEditImage = () => setShowModalEditImage(false);
         productId={campaign.products.items[0].id}
         fetchCampaign={fetchCampaign}
       />
-      <ModalLogin
-        showModal={showModalLogin} 
-        handleClose={handleCloseLogin}
-      />
+      <ModalLogin showModal={showModalLogin} handleClose={handleCloseLogin} />
       <ModalEditImage
-  show={showModalEditImage}
-  handleClose={handleCloseEditImage}
-  campaignId={campaign.id}
-  fetchCampaign={fetchCampaign}
-/>
+        show={showModalEditImage}
+        handleClose={handleCloseEditImage}
+        campaignId={campaign.id}
+        fetchCampaign={fetchCampaign}
+      />
 
       <ToastContainer />
       <ModalAssignProperty
-  showModal={showModalAssignProperty}
-  handleClose={() => setShowModalAssignProperty(false)}
-  campaignId={campaign.id}
-  fetchCampaign={fetchCampaign}
-/>
-
+        showModal={showModalAssignProperty}
+        handleClose={() => setShowModalAssignProperty(false)}
+        campaignId={campaign.id}
+        fetchCampaign={fetchCampaign}
+      />
     </div>
   );
 }
