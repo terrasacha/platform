@@ -2430,6 +2430,7 @@ export const getProperty = /* GraphQL */ `
             items {
               id
               status
+              data
               url
               signed
               signedHash

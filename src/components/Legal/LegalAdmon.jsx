@@ -32,10 +32,12 @@ const DocumentationModal = ({ isOpen, onClose, property, fetchProperties , user 
   const [showRejectionReasonModal, setShowRejectionReasonModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
+  console.log('property', property)
+
   const propertyFiles = property?.propertyFeatures?.items
     .find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
     .documents.items.map((document) => {
-      const documentData = JSON.parse(document.data);
+      const documentData = JSON.parse(document.data || '');
       return {
         name: documentData.name,
         type:
@@ -441,3 +443,5 @@ export default function LegalAdmon() {
     </>
   );
 }
+
+export { DocumentationModal };
