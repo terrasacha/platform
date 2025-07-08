@@ -168,7 +168,7 @@ export default function AlertMessage({ visible }) {
                     Consultores SUAN.
                   </p>
                   <ul className="pl-0">
-                    <li className="font-bold flex">
+                    {/*  <li className="font-bold flex">
                       <p className="mb-0 flex">
                         (
                         {progressObj.sectionsStatus.validationsComplete ? (
@@ -178,7 +178,7 @@ export default function AlertMessage({ visible }) {
                         )}
                         ) Validación de documentos
                       </p>
-                    </li>
+                    </li>*/}
                     <li className="font-bold flex">
                       <p className="mb-0 flex">
                         (
