@@ -368,42 +368,51 @@ export default function Property() {
               </ul>
             </div>
             {/* Acciones legales: Ver Documentación y Asignar/Desasignar predio */}
-            {user?.role === "legal" && (
-              <div
-                className="flex flex-wrap gap-2 mb-4"
-                role="group"
-                aria-label="Acciones legales"
-              >
-                {user?.id === property.userLegalID && (
-                  <button
-                    className="w-full bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 text-white px-4 py-2 rounded transition-colors duration-150"
-                    aria-label="Ver Documentación"
-                    tabIndex={0}
-                    onClick={() => setShowDocumentationModal(true)}
-                  >
-                    Validar Predio
-                  </button>
-                )}
-                <button
-                  className={`w-full ${
-                    property.userLegalID === user.id
-                      ? "bg-red-500 hover:bg-red-600 focus:ring-red-300"
-                      : "bg-green-500 hover:bg-green-600 focus:ring-green-300"
-                  } focus:outline-none focus:ring-2 text-white px-4 py-2 rounded transition-colors duration-150`}
-                  aria-label={
-                    property.userLegalID === user.id
-                      ? "Desasignar predio"
-                      : "Asignar predio"
-                  }
-                  tabIndex={0}
-                  onClick={() => handleToggleAssign(property)}
+            {user?.role === "legal" && (() => {
+              const canAssign = property.userLegalID === null && property.status !== "REJECTED" && property.status !== "APPROVED";
+              const canUnassign = property.userLegalID === user.id && property.status !== "REJECTED" && property.status !== "APPROVED";
+              const canValidate = property.userLegalID === user.id && property.status !== "APPROVED";
+              const showActions = canAssign || canUnassign || canValidate;
+
+              return showActions ? (
+                <div
+                  className="flex flex-wrap gap-2 mb-4"
+                  role="group"
+                  aria-label="Acciones legales"
                 >
-                  {property.userLegalID === user.id
-                    ? "Desasignar predio"
-                    : "Asignar predio"}
-                </button>
-              </div>
-            )}
+                  {canAssign && (
+                    <button
+                      className="w-full bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 text-white px-4 py-2 rounded transition-colors duration-150"
+                      aria-label="Asignar predio"
+                      tabIndex={0}
+                      onClick={() => handleToggleAssign(property)}
+                    >
+                      Asignar predio
+                    </button>
+                  )}
+                  {canUnassign && (
+                    <button
+                      className="w-full bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 text-white px-4 py-2 rounded transition-colors duration-150"
+                      aria-label="Desasignar predio"
+                      tabIndex={0}
+                      onClick={() => handleToggleAssign(property)}
+                    >
+                      Desasignar predio
+                    </button>
+                  )}
+                  {canValidate && (
+                    <button
+                      className="w-full bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 text-white px-4 py-2 rounded transition-colors duration-150"
+                      aria-label="Ver Documentación"
+                      tabIndex={0}
+                      onClick={() => setShowDocumentationModal(true)}
+                    >
+                      Validar Predio
+                    </button>
+                  )}
+                </div>
+              ) : null;
+            })()}
 
             <PropertyDetails
               visible={activeSection === "details"}
