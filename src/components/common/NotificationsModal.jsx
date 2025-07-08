@@ -38,50 +38,59 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
         {messages.length > 0 ? (
           <div className="messages-container">
             {messages.map((msg) => (
-              <div key={msg.id} className="message-box">
-                <p className="sender-name">
-                  <strong>De:</strong> {msg.senderName || "Desconocido"}
-                </p>
-                <p className="message-text">{msg.message}</p>
-                <p className="message-date">
-                  {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : "Fecha desconocida"}
-                </p>
-                {msg.propertyID ? (
-                 <Button
-                 variant="primary"
-                 size="sm"
-                 className="reply-button"
-                 onClick={async () => {
-                   await markAsRead(msg.id);
-                   let chatTargetParam = "";
-                   if (msg.type === "MESSAGE_LEGAL") {
-                    chatTargetParam = "legal";
-                  } else if (msg.type === "MESSAGE_VALIDATOR") {
-                    chatTargetParam = "validator";
-                  }
-                   if (msg.type === "CAMPAING") {
-                     navigate(`/campaign/${msg.propertyID}`); // 📌 Redirigir a campaña
-                   } else if (msg.type === "PROPERTY") {
-                     navigate(`/property/${msg.propertyID}`); // 📌 Redirigir a predio
-                   } else {
-                    navigate(
-                      `/property/${msg.propertyID}?openChat=true&chatTarget=${chatTargetParam}`
-                    );
-                   }
-                 }}
-               >
-                 {msg.type === "CAMPAING"
-                   ? "Ir a campaña"
-                   : msg.type === "PROPERTY"
-                   ? "Ir al predio"
-                   : "Responder"}
-               </Button>
-               
-                
-                ) : (
-                  <p className="no-reply-text">No se puede responder a este mensaje.</p>
-                )}
-              </div>
+             <div key={msg.id} className="message-box">
+  <p className="sender-name">
+    <strong>De:</strong> {msg.senderName || "Desconocido"}
+  </p>
+  <p className="message-text">{msg.message}</p>
+  <p className="message-date">
+    {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : "Fecha desconocida"}
+  </p>
+
+  <div className="flex gap-2 mt-2">
+    {/* ✅ Nuevo botón: Marcar como leído */}
+    <Button
+      variant="outline-success"
+      size="sm"
+      className="mark-read-button"
+      onClick={() => markAsRead(msg.id)}
+    >
+      Marcar como leído
+    </Button>
+
+    {/* 🧭 Botón existente para redirigir */}
+    {msg.propertyID ? (
+      <Button
+        variant="primary"
+        size="sm"
+        className="reply-button"
+        onClick={async () => {
+          await markAsRead(msg.id);
+          let chatTargetParam = "";
+          if (msg.type === "MESSAGE_LEGAL") chatTargetParam = "legal";
+          else if (msg.type === "MESSAGE_VALIDATOR") chatTargetParam = "validator";
+
+          if (msg.type === "CAMPAING") {
+            navigate(`/campaign/${msg.propertyID}`);
+          } else if (msg.type === "PROPERTY") {
+            navigate(`/property/${msg.propertyID}`);
+          } else {
+            navigate(`/property/${msg.propertyID}?openChat=true&chatTarget=${chatTargetParam}`);
+          }
+        }}
+      >
+        {msg.type === "CAMPAING"
+          ? "Ir a campaña"
+          : msg.type === "PROPERTY"
+          ? "Ir al predio"
+          : "Responder"}
+      </Button>
+    ) : (
+      <p className="no-reply-text">No se puede responder a este mensaje.</p>
+    )}
+  </div>
+</div>
+  
             ))}
           </div>
         ) : (

@@ -205,7 +205,7 @@ export default function PropertyDetails({
       Swal.fire({
         icon: "warning",
         title: "Pasos pendientes",
-        text: "Aún hay pasos del constructor sin completar. Por favor, completa todos antes de validar.",
+        text: "Aún hay pasos del propietario sin completar. Por favor, completa todos antes de validar.",
       });
       return;
     }
