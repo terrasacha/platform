@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ProgressBar, Step } from "react-step-progress-bar";
 import "react-step-progress-bar/styles.css";
 import {
@@ -7,48 +7,61 @@ import {
   FaFileSignature,
   FaHandHoldingUsd,
   FaStore,
+  FaQuestionCircle,
 } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { Modal, Button } from "react-bootstrap";
 
-export default function TimelineProject({ currentStep = 1, onStepChange }) {
+export default function TimelineProject({ currentStep = 1 }) {
+  const [helpStep, setHelpStep] = useState(null);
+
   const steps = [
     {
       id: 1,
       title: "Proyecto creado",
       description: "El proyecto ha sido creado correctamente.",
-      icon: <FaClipboardCheck size={18} />, 
+      helpText:
+        "En este paso se ha completado el registro inicial del proyecto. No requiere más acciones.",
+      icon: <FaClipboardCheck size={18} />,
     },
     {
       id: 2,
       title: "Cierre de convocatoria",
       description: "Esperando el cierre de la convocatoria de predios.",
-      icon: <FaClock size={18} />, 
+      helpText:
+        "Aquí el proyecto permanece mientras la campaña de inscripción de predios está abierta.",
+      icon: <FaClock size={18} />,
     },
     {
       id: 3,
       title: "Completar información",
       description: "Debes completar toda la información del proyecto.",
-      icon: <FaFileSignature size={18} />, 
+      helpText:
+        "Incluye datos técnicos, financieros, geográficos y generales del proyecto.",
+      icon: <FaFileSignature size={18} />,
     },
     {
       id: 4,
       title: "Condiciones financieras",
-      description:
-        "Esperando aceptación de condiciones financieras. Si se rechazan, vuelve al paso anterior.",
-      icon: <FaHandHoldingUsd size={18} />, 
+      description: "Esperando aceptación de condiciones financieras.",
+      helpText:
+        "Debes aceptar las condiciones financieras ofrecidas para continuar.",
+      icon: <FaHandHoldingUsd size={18} />,
     },
     {
       id: 5,
       title: "Proyecto subido a marketplace",
       description: "¡Tu proyecto ahora es visible en el marketplace!",
-      icon: <FaStore size={18} />, 
+      helpText:
+        "El proyecto cumple todos los requisitos y ha sido publicado en el marketplace.",
+      icon: <FaStore size={18} />,
     },
   ];
 
   return (
-<div className="w-full flex flex-col items-start mt-6 px-4">
-  <div className="w-full max-w-3xl ml-[-40px]">
+    <div className="w-full flex flex-col items-start mt-6 px-4">
+      <div className="w-full max-w-3xl ml-[-40px]">
         <ProgressBar
           percent={((currentStep - 1) / (steps.length - 1)) * 100}
           filledBackground="linear-gradient(to right, #34d399, #059669)"
@@ -71,16 +84,25 @@ export default function TimelineProject({ currentStep = 1, onStepChange }) {
 
                 return (
                   <div className="flex flex-col items-center w-24 text-center relative">
-                    <div
-                      className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-500 cursor-pointer shadow-md mb-2 ${stepClass}`}
-                      data-tooltip-id={`tooltip-${step.id}`}
-                      onClick={() =>
-                        typeof onStepChange === "function"
-                          ? onStepChange(step.id)
-                          : null
-                      }
-                    >
-                      {step.icon}
+                    <div className="relative flex flex-col items-center">
+                      <div
+                        className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-500 cursor-pointer shadow-md mb-2 ${stepClass}`}
+                        data-tooltip-id={`tooltip-${step.id}`}
+                      >
+                        {step.icon}
+                      </div>
+
+                      <button
+                        onClick={() => setHelpStep(step)}
+                        className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 border border-gray-300 shadow hover:text-blue-600 hover:scale-110 transition"
+                        data-tooltip-id={`help-tooltip-${step.id}`}
+                        data-tooltip-content="Ver explicación del paso"
+                        aria-label="Ayuda del paso"
+                      >
+                        <FaQuestionCircle size={12} />
+                      </button>
+
+                      <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
                     </div>
 
                     <div className="w-1 h-6 bg-gray-400 mx-auto mt-1"></div>
@@ -89,19 +111,19 @@ export default function TimelineProject({ currentStep = 1, onStepChange }) {
                       id={`tooltip-${step.id}`}
                       effect="solid"
                       place="bottom"
-                      className="text-xs p-3 bg-black text-white rounded-md shadow-md flex items-center gap-2 animate-fade-in"
+                      className="text-xs p-3 bg-black text-white rounded-md shadow-md"
                     >
                       {step.description}
                     </Tooltip>
 
                     <p
-                      className={`mt-2 text-xs font-semibold transition-colors duration-500 ${
+                      className={`mt-2 text-xs font-semibold ${
                         step.id === currentStep
                           ? "text-yellow-600 font-bold"
                           : accomplished
                           ? "text-green-600"
                           : "text-gray-500"
-                      } hover:text-green-500`}
+                      }`}
                     >
                       {step.title}
                     </p>
@@ -112,6 +134,23 @@ export default function TimelineProject({ currentStep = 1, onStepChange }) {
           ))}
         </ProgressBar>
       </div>
+
+      {/* Modal de ayuda */}
+      <Modal
+        show={!!helpStep}
+        onHide={() => setHelpStep(null)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{helpStep?.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{helpStep?.helpText}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setHelpStep(null)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

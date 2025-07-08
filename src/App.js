@@ -175,6 +175,7 @@ function App() {
                       "investor",
                       "validator",
                       "legal",
+                      "analyst",
                     ]}
                     redirectPath="/"
                   >

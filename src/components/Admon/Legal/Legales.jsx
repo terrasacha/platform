@@ -316,11 +316,9 @@ class Legales extends Component {
                             legales.createdAt.split("T")[0].split("-")[1]
                           }-${legales.createdAt.split("T")[0].split("-")[0]}`}
                         </td>
-                        <td className="border px-4 py-2">
-                          {legales.isProfileUpdated
-                            ? "Confirmado"
-                            : "Pendiente"}
-                        </td>
+                       <td className="border px-4 py-2">
+                      {legales.status === "confirmed" ? "Confirmado" : "Pendiente"}
+                          </td>
                         <td className="border px-4 py-2">
                           <button
                             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

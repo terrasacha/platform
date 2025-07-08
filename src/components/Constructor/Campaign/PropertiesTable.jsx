@@ -146,8 +146,8 @@ export default function PropertiesTable({ editable }) {
   }
 
   return (
-    <div className="row">
-      <table className="w-full border-collapse">
+    <div className="w-full overflow-x-auto">
+    <table className="min-w-[800px] w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">
             <th className="text-left px-4 py-2 w-44">Nombre del conjunto</th>
@@ -173,9 +173,14 @@ export default function PropertiesTable({ editable }) {
                 className={`border-b ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
               >
                 <td className="px-4 py-2">{property.propertyInfo.name}</td>
-                <td
-                  className={`px-4 py-2 ${isDuplicate ? "bg-yellow-100 text-red-600" : "bg-white text-black"}`}
-                >
+               <td
+  className={`px-4 py-2 ${isDuplicate ? "bg-yellow-100 text-red-600" : "bg-white text-black"}`}
+  {...(isDuplicate && {
+    'data-tooltip-id': 'tooltipDuplicados',
+    'data-tooltip-content': 'Los números prediales que aparecen en rojo son aquellos que están duplicados y ya han sido colocados más de una vez.'
+  })}
+>
+
                   {canViewCadastralNumbers(property, userId, userRole)
                     ? cadastralNumbers.join(", ")
                     : hideData(cadastralNumbers.join(", "))}

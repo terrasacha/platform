@@ -14,7 +14,7 @@ import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import useProjectItems from "hooks/useProjectItems";
 import TokenDistributionInputTable from "./SettingCards/TokenDistributionInputTable";
 
-export default function ProjectSettings({ visible }) {
+export default function ProjectSettings({ visible, campaign }) {
   const [activeSection, setActiveSection] = useState("technical");
   const [validatorSubRole, setValidatorSubRole] = useState("");
   const [finInfoPfID, setFinInfoPfID] = useState(null);
@@ -299,7 +299,7 @@ export default function ProjectSettings({ visible }) {
                       ? "bg-blue-400 p-2 text-white  rounded-md"
                       : "bg-blue-600 p-2 text-white rounded-md"
                   } `}
-                  disabled={projectData.isTechnicalFreeze}
+                  disabled={projectData.isTechnicalFreeze || campaign?.available} 
                   onClick={() =>
                     handleSetValidatorDataComplete("technicalInfo")
                   }
@@ -353,7 +353,7 @@ export default function ProjectSettings({ visible }) {
                       ? "bg-blue-400 p-2 text-white  rounded-md"
                       : "bg-blue-600 p-2 text-white rounded-md"
                   } `}
-                  disabled={projectData.isFinancialFreeze}
+                  disabled={projectData.isTechnicalFreeze || campaign?.available}
                   onClick={() =>
                     handleSetValidatorDataComplete("financialInfo")
                   }

@@ -477,11 +477,12 @@ export default function ValidationModal({
                   {uploadedFiles[fileType] &&
                     !uploadedFiles[fileType].startsWith("pending-") && (
                       <button
-                        onClick={async () =>
+                        onClick={async () =>{
+                          console.log('uploadedFiles[fileType]', uploadedFiles[fileType])
                           window.open(
                             await getSignedFileUrl(uploadedFiles[fileType]),
                             "_blank"
-                          )
+                          )}
                         }
                         className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
                       >

@@ -265,12 +265,20 @@ export default function LogIn() {
         localStorage.setItem("role", currentUser);
       }
     } catch (error) {
-      setError(
-        "La combinación de nombre de cuenta y nombre de usuario no existe."
-      );
-    }
+    console.error("🔴 Error al iniciar sesión:", error);
+
+    const errorMessages = {
+      UserNotFoundException: "El nombre de usuario ingresado no está registrado.",
+      NotAuthorizedException: "La contraseña es incorrecta. Por favor, vuelve a intentarlo.",
+      UserNotConfirmedException: "Tu cuenta no ha sido confirmada. Revisa tu correo electrónico.",
+      PasswordResetRequiredException: "Debes restablecer tu contraseña para iniciar sesión.",
+    };
+
+    setError(errorMessages[error.code] || "Ocurrió un error inesperado. Intenta nuevamente más tarde.");
+  } finally {
     setLoading(false);
   }
+}
 
   async function confirmTOTP(e) {
     e.preventDefault();
@@ -413,8 +421,8 @@ export default function LogIn() {
 
         // Construcción del payload para la actualización en la base de datos
         const updateUserPayload = {
-          id: userId,
-          isProfileUpdated: true,
+          id: userId, 
+          status: "confirmed",
         };
         console.log(
           "📡 Enviando mutación GraphQL `updateUser` con payload:",

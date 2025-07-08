@@ -76,45 +76,55 @@ export default function ProjectPage() {
   const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
-    if (!projectData || !progressObj) return;
+  if (!projectData || !progressObj) return;
 
-    const {
-        projectInfo,
-        geodataInfo,
-        technicalInfo,
-        financialInfo,
-        ownerAcceptsConditions,
-        projectOnMarketplace,
-    } = progressObj.sectionsStatus || {};
+  const {
+    projectInfo,
+    geodataInfo,
+    technicalInfo,
+    financialInfo,
+    ownerAcceptsConditions,
+    projectOnMarketplace,
+  } = progressObj.sectionsStatus || {};
 
-    // ⚪ Paso 1: Proyecto creado (estado inicial)
-    setCurrentStep(1);
+  console.log("🧠 Evaluando paso actual según reglas nuevas:", {
+    campaignAvailable: campaign?.available,
+    projectInfo,
+    geodataInfo,
+    technicalInfo,
+    financialInfo,
+    technicalFreeze: projectData.isTechnicalFreeze,
+    financialFreeze: projectData.isFinancialFreeze,
+    ownerAcceptsConditions,
+    projectOnMarketplace,
+  });
 
-    // 🔵 Paso 2: En espera de cierre de convocatoria
-    if (campaign?.available === true) {
-        setCurrentStep(2);
-    }
+  let step = 2; // 🔵 Paso 2 por defecto: esperando cierre de campaña
 
-    // 🟠 Paso 3: Completar información general técnica y financiera
-    if (projectInfo && geodataInfo && technicalInfo && financialInfo) {
-        setCurrentStep(3);
-    }
+  // 🟠 Paso 3: Campaña cerrada pero falta info
+  if (
+    campaign?.available === false &&
+    (!projectInfo || !geodataInfo || !technicalInfo || !financialInfo)
+  ) {
+    step = 3;
+  }
 
-    // 🟡 Paso 4: En espera de condiciones financieras (congelado pero sin aceptar)
-    if (
-        projectData.isTechnicalFreeze &&
-        projectData.isFinancialFreeze &&
-        !ownerAcceptsConditions
-    ) {
-        setCurrentStep(4);
-    }
+  // 🟡 Paso 4: Datos congelados, pero condiciones no aceptadas
+  if (
+    projectData.isTechnicalFreeze &&
+    projectData.isFinancialFreeze &&
+    !ownerAcceptsConditions
+  ) {
+    step = 4;
+  }
 
-    // 🟢 Paso 5: Proyecto subido al marketplace
-    if (projectOnMarketplace) {
-        setCurrentStep(5);
-    }
-}, [projectData, progressObj, campaign]);
+  // 🟢 Paso 5: Proyecto publicado
+  if (projectOnMarketplace) {
+    step = 5;
+  }
 
+  setCurrentStep(step);
+}, [projectData, progressObj, campaign?.available]);
 
 
   useEffect(() => {
@@ -195,7 +205,7 @@ export default function ProjectPage() {
       setEditableTitle(projectData.projectInfo.title);
     }
   }, [projectData]);
-  
+
   const updateProduct = async (productId, newName) => {
     try {
       const mutation = `
@@ -210,16 +220,14 @@ export default function ProjectPage() {
         id: productId,
         name: newName,
       };
-      const response = await API.graphql(
-        graphqlOperation(mutation, { input })
-      );
+      const response = await API.graphql(graphqlOperation(mutation, { input }));
       return response;
     } catch (error) {
       console.error("Error actualizando el producto:", error);
       throw error;
     }
   };
-  
+
   const checkDuplicateProjectName = async (name) => {
     try {
       const query = `
@@ -239,7 +247,7 @@ export default function ProjectPage() {
       throw error;
     }
   };
-  
+
   return (
     <S3ClientProvider>
       <div>
@@ -253,68 +261,93 @@ export default function ProjectPage() {
               <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">
                 <div className="row gy-2">
                   <header className="d-flex justify-content-between">
-                  <div className="d-flex align-items-center gap-2">
-  {isEditingTitle ? (
-    <div className="d-flex align-items-center gap-2">
-      <input
-        type="text"
-        className="form-control fs-3"
-        value={editableTitle}
-        onChange={(e) => setEditableTitle(e.target.value)}
-      />
-      <button
-        className="btn btn-success"
-        onClick={async () => {
-          try {
-            if (editableTitle.trim() === "") {
-              toast.error("El título no puede estar vacío.");
-              return;
-            }
-            const duplicates = await checkDuplicateProjectName(editableTitle);
-            if (duplicates.length > 0 && duplicates[0].id !== projectData.projectInfo.id) {
-              toast.error("El nombre del proyecto ya existe. Elige otro.");
-              setEditableTitle(projectData.projectInfo.title);
-              return;
-            }
-            
-            await updateProduct(projectData.projectInfo.id, editableTitle);
-            await handleProjectData({ pID: projectData.projectInfo.id });
-            toast.success("Título actualizado exitosamente");
-          } catch (error) {
-            console.error("Error actualizando el título:", error);
-            toast.error("Error al actualizar el título. Intenta nuevamente.");
-          } finally {
-            setIsEditingTitle(false);
-          }
-        }}
-      >
-        Confirmar
-      </button>
-      <button
-        className="btn btn-danger"
-        onClick={() => {
-          setEditableTitle(projectData.projectInfo.title);
-          setIsEditingTitle(false);
-        }}
-      >
-        Cancelar
-      </button>
-    </div>
-  ) : (
-    <>
-      <p className="fs-3 mb-0">{editableTitle}</p>
-      {isPostulant && (
-        <button
-          className="bg-transparent border-0 p-0"
-          onClick={() => setIsEditingTitle(true)}
-          title="Editar título"
-        >
-          <FiEdit3 size={20} color="gray" />
-        </button>
-      )}
-    </>
-  )}
-</div>
+                    <div className="d-flex align-items-center gap-2">
+                      {isEditingTitle ? (
+                        <div className="d-flex align-items-center gap-2">
+                          <input
+                            type="text"
+                            className="form-control fs-3"
+                            value={editableTitle}
+                            onChange={(e) => setEditableTitle(e.target.value)}
+                          />
+                          <button
+                            className="btn btn-success"
+                            onClick={async () => {
+                              try {
+                                if (editableTitle.trim() === "") {
+                                  toast.error(
+                                    "El título no puede estar vacío."
+                                  );
+                                  return;
+                                }
+                                const duplicates =
+                                  await checkDuplicateProjectName(
+                                    editableTitle
+                                  );
+                                if (
+                                  duplicates.length > 0 &&
+                                  duplicates[0].id !==
+                                    projectData.projectInfo.id
+                                ) {
+                                  toast.error(
+                                    "El nombre del proyecto ya existe. Elige otro."
+                                  );
+                                  setEditableTitle(
+                                    projectData.projectInfo.title
+                                  );
+                                  return;
+                                }
+
+                                await updateProduct(
+                                  projectData.projectInfo.id,
+                                  editableTitle
+                                );
+                                await handleProjectData({
+                                  pID: projectData.projectInfo.id,
+                                });
+                                toast.success(
+                                  "Título actualizado exitosamente"
+                                );
+                              } catch (error) {
+                                console.error(
+                                  "Error actualizando el título:",
+                                  error
+                                );
+                                toast.error(
+                                  "Error al actualizar el título. Intenta nuevamente."
+                                );
+                              } finally {
+                                setIsEditingTitle(false);
+                              }
+                            }}
+                          >
+                            Confirmar
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => {
+                              setEditableTitle(projectData.projectInfo.title);
+                              setIsEditingTitle(false);
+                            }}
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="fs-3 mb-0">{editableTitle}</p>
+                          {isPostulant && (
+                            <button
+                              className="bg-transparent border-0 p-0"
+                              onClick={() => setIsEditingTitle(true)}
+                              title="Editar título"
+                            >
+                              <FiEdit3 size={20} color="gray" />
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
 
                     <div className="flex gap-2">
                       {projectData.projectInfo.status && (
@@ -335,7 +368,7 @@ export default function ProjectPage() {
                       </div>
                     </div>
                   </header>
-                  
+
                   <section>
                     <p className="fs-6 mb-0 fw-bold">Fecha de creación:</p>
                     <p className="fs-6 mb-0">
@@ -349,21 +382,22 @@ export default function ProjectPage() {
                     </p>
                   </section>
                   {campaign && (
-  <div className="d-flex align-items-center justify-content-between w-100">
-    <div>
-      <p className="fs-6 mb-0 fw-bold">Pertenece a la campaña:</p>
-      <p className="fs-6 mb-0">{campaign.name}</p>
-    </div>
-    <div className="w-75">
-      <TimelineProject
-        currentStep={currentStep}
-        onStepChange={(step) => setCurrentStep(step)}
-      />
-    </div>
-  </div>
-)}
+                    <div className="d-flex align-items-center justify-content-between w-100">
+                      <div>
+                        <p className="fs-6 mb-0 fw-bold">
+                          Pertenece a la campaña:
+                        </p>
+                        <p className="fs-6 mb-0">{campaign.name}</p>
+                      </div>
+                      <div className="w-75">
+                        <TimelineProject
+                          currentStep={currentStep}
+                          onStepChange={(step) => setCurrentStep(step)}
+                        />
+                      </div>
+                    </div>
+                  )}
 
-                   
                   {projectData.projectInfo.token.actualPeriodTokenAmount &&
                     projectData.projectInfo.token.actualPeriodTokenPrice && (
                       <section>
@@ -435,7 +469,6 @@ export default function ProjectPage() {
                     </section>
                   )}
                 </div>
-              
 
                 <ul className="font-medium flex flex-wrap gap-2 mt-4 pl-0 justify-center md:justify-start">
                   <li>
@@ -460,7 +493,7 @@ export default function ProjectPage() {
                         )}
                     </a>
                   </li>
-                  {(isVerifier || isAdmon || isPostulant) && !isAnalyst && (
+                  {/* {(isVerifier || isAdmon || isPostulant) && !isAnalyst && (
                     <li>
                       <a
                         href="#files"
@@ -481,51 +514,50 @@ export default function ProjectPage() {
                           )}
                       </a>
                     </li>
+                  )} */}
+
+                  {(isVerifier || isAdmon || isAnalyst) && (
+                    <li>
+                      <a
+                        href="#file_manager"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("file_manager");
+                        }}
+                        className={`${
+                          activeSection === "file_manager"
+                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                            : "text-blue-500"
+                        } flex py-2 px-3`}
+                      >
+                        Sistema de datos
+                      </a>
+                    </li>
                   )}
 
-{(isVerifier || isAdmon || isAnalyst) && (
-  <li>
-    <a
-      href="#file_manager"
-      onClick={(e) => {
-        e.preventDefault();
-        setActiveSection("file_manager");
-      }}
-      className={`${
-        activeSection === "file_manager"
-          ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-          : "text-blue-500"
-      } flex py-2 px-3`}
-    >
-      Sistema de datos
-    </a>
-  </li>
-)}
-
-{(isVerifier || isAdmon) && (
-  <li>
-    <a
-      href="#settings"
-      onClick={(e) => {
-        e.preventDefault();
-        setActiveSection("settings");
-      }}
-      className={`${
-        activeSection === "settings"
-          ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-          : "text-blue-500"
-      } py-2 px-3 flex`}
-    >
-      Configuración
-      {(autorizedUser || isAdmon) &&
-        (!progressObj?.sectionsStatus.technicalInfo ||
-          !progressObj?.sectionsStatus.financialInfo) && (
-          <HourGlassIcon className="text-danger ms-2" />
-        )}
-    </a>
-  </li>
-)}
-
+                  {(isVerifier || isAdmon) && (
+                    <li>
+                      <a
+                        href="#settings"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("settings");
+                        }}
+                        className={`${
+                          activeSection === "settings"
+                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
+                            : "text-blue-500"
+                        } py-2 px-3 flex`}
+                      >
+                        Configuración
+                        {(autorizedUser || isAdmon) &&
+                          (!progressObj?.sectionsStatus.technicalInfo ||
+                            !progressObj?.sectionsStatus.financialInfo) && (
+                            <HourGlassIcon className="text-danger ms-2" />
+                          )}
+                      </a>
+                    </li>
+                  )}
 
                   {user?.id &&
                     (isPostulant || isVerifier || isAdmon) &&
@@ -579,12 +611,11 @@ export default function ProjectPage() {
                 visible={activeSection === "file_manager"}
                 userGroup={userGroup}
               />
-              <ProjectFiles visible={activeSection === "files"} />
+              {/* <ProjectFiles visible={activeSection === "files"} /> */}
               <FinanceCard visible={activeSection === "finance"} />
               <ProjectSettings
-                visible={
-                  activeSection === "settings" && (isVerifier || isAdmon)
-                }
+  visible={activeSection === "settings" && (isVerifier || isAdmon)}
+  campaign={campaign}
               />
               <ProjectAnalysis
                 visible={activeSection === "analysis"}

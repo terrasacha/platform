@@ -15,6 +15,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { stateMapper } from "utilities/propertyStateMapper";
 import { useAuth } from "context/AuthContext";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
+import { Tooltip as ReactTooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 // Componente para representar una campaña individual
 const CampaignCard = ({ campaign }) => {
@@ -50,7 +52,24 @@ const CampaignCard = ({ campaign }) => {
             </span>
           </div>
           <h3 className="text-lg font-bold mb-2">{campaign?.name}</h3>
-          <p className="text-gray-600 text-sm mb-4">{campaign?.description}</p>
+       <p
+  data-tooltip-id={`tooltip-${campaign?.id}`}
+  data-tooltip-content={campaign?.description}
+  className="text-gray-600 text-sm mb-4 line-clamp-4 leading-relaxed cursor-pointer"
+>
+  {campaign?.description}
+</p>
+
+<ReactTooltip
+  id={`tooltip-${campaign?.id}`}
+  place="top"
+  style={{
+    maxWidth: '300px',
+    whiteSpace: 'pre-wrap',
+    fontSize: '0.85rem',
+  }}
+/>
+
           <div className="flex justify-between items-center mt-3 space-x-4">
           <a
   href={`campaign/${campaign?.id}`}

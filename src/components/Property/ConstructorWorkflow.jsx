@@ -8,6 +8,7 @@
   import { useS3Client } from "context/s3ClientContext";
 import { listPropertyFeatures } from "graphql/queries";
 import { usePropertyData } from "context/PropertyDataContext";
+import PropertyChatHistory from "./PropertyChatHistory";
 import { useAuth } from "context/AuthContext";
 
   const STEPS = [
@@ -34,6 +35,7 @@ import { useAuth } from "context/AuthContext";
     const progress = Math.round((completedCount / STEPS.length) * 100);
     const { propertyData } = usePropertyData();
     const basePath = `public/property/${propertyData.propertyInfo?.id}/other/`
+    const [showHistory, setShowHistory] = useState(false);
     const { user } = useAuth(); // O ajusta según tu estructura
     const isConstructor = user?.role === "validator";
 
@@ -311,13 +313,39 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
     {/* Divider */}
     <div className="w-px bg-gray-300" />
 
-    {/* Right Panel */}
-    <div className="w-2/5 p-8 bg-white rounded-r-lg shadow-inner flex flex-col">
-      <h3 className="text-2xl font-bold mb-6">Mensajería del Predio</h3>
-      <div className="flex-1 overflow-auto border rounded p-4 bg-gray-50">
-        <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
-      </div>
+        {/* Right Panel */}
+        <div className="w-2/5 p-8 bg-white rounded-r-lg shadow-inner flex flex-col">
+         <div className="flex items-center justify-between mb-4">
+  <h3 className="text-2xl font-bold">Mensajería del Predio</h3>
+  <button
+    onClick={() => setShowHistory(true)}
+    className="text-sm text-blue-600 hover:underline"
+  >
+    Ver historial
+  </button>
+</div>
+
+          <div className="flex-1 overflow-auto border rounded p-4 bg-gray-50">
+            <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
+          </div>
+        </div>
+        {showHistory && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div className="bg-white rounded-lg p-6 w-[90%] max-w-3xl shadow-lg overflow-y-auto max-h-[90vh] relative">
+      <button
+        onClick={() => setShowHistory(false)}
+        className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl font-bold"
+      >
+        ×
+      </button>
+      <h2 className="text-xl font-semibold mb-4">Historial de Mensajería</h2>
+
+      {/* Aquí se mostrará el historial */}
+      <PropertyChatHistory propertyId={propertyId} featureChat="GLOBAL_PROPERTY_FILES" />
     </div>
   </div>
-);
+)}
+
+      </div>
+    );
   }

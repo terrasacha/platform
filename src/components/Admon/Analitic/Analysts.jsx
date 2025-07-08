@@ -317,7 +317,7 @@ class Analysts extends Component {
                           }-${analyst.createdAt.split("T")[0].split("-")[0]}`}
                         </td>
                         <td>
-                          {analyst.isProfileUpdated ? "Confirmado" : "Pendiente"}
+                          {analyst.status === "confirmed" ? "Confirmado" : "Pendiente"}
                         </td>
                         <td>
                           <button
