@@ -99,7 +99,7 @@ export default function TimelineProject({ currentStep = 1 }) {
                         data-tooltip-content="Ver explicación del paso"
                         aria-label="Ayuda del paso"
                       >
-                        <FaQuestionCircle size={12} />
+                       <FaQuestionCircle size={12} className="text-[#74742c]" />
                       </button>
 
                       <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />

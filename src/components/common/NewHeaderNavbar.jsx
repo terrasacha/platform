@@ -64,6 +64,26 @@ useEffect(() => {
   };
 }, []);
 
+useEffect(() => {
+  Auth.currentAuthenticatedUser()
+    .then((data) => {
+      const userId = data.attributes.sub;
+
+      const reloadKey = `pageReloadedForUser-${userId}`;
+
+      if (!sessionStorage.getItem(reloadKey)) {
+        sessionStorage.setItem(reloadKey, "true");
+        window.location.reload();
+      }
+    })
+    .catch((err) => {
+      console.log("Error obteniendo usuario para control de reload:", err);
+    });
+}, []);
+
+
+
+
 const fetchPendingMessages = async (userId) => { // Eliminar `role` de los parámetros
     if (!userId) return;
 
@@ -108,15 +128,20 @@ const fetchPendingMessages = async (userId) => { // Eliminar `role` de los pará
 
   
 
-  const handleSignOut = async () => {
-    try {
-      await Auth.signOut();
-      localStorage.removeItem("role");
-      window.location.href = window.location.pathname;
-    } catch (error) {
-      console.log("error signing out: ", error);
-    }
-  };
+const handleSignOut = async () => {
+  try {
+    const currentUser = await Auth.currentAuthenticatedUser();
+    const userId = currentUser.attributes.sub;
+    sessionStorage.removeItem(`pageReloadedForUser-${userId}`);
+    
+    await Auth.signOut();
+    localStorage.removeItem("role");
+    window.location.href = "/";
+  } catch (error) {
+    console.log("error signing out: ", error);
+  }
+};
+
 
   const userRoleMapper = {
     admon: "Administrador",

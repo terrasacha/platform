@@ -81,7 +81,7 @@ const CampaignCard = ({ campaign }) => {
 };
 
 // Property card component
-const PropertyCard = ({ property }) => (
+ const PropertyCard = ({ property }) => (
   <div className="p-4">
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
       <div className="p-4">
@@ -99,12 +99,13 @@ const PropertyCard = ({ property }) => (
             {statusEs[property.status]}
           </span>
         </div>
-    <a
+   <a
   href={`property/${property?.id}`}
-  className="w-full inline-flex bg-blue-500 text-white text-sm justify-center font-bold px-4 py-2 rounded hover:bg-blue-600 transition"
+  className="w-full inline-flex bg-[#74742c] text-white text-sm justify-center font-bold px-4 py-2 rounded hover:bg-[#5f5f23] transition"
 >
   Ver más
 </a>
+
 
       </div>
     </div>

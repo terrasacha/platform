@@ -325,15 +325,14 @@ export default function Timeline({
 
     {/* Ícono de ayuda superpuesto en esquina inferior derecha */}
     <button
-      onClick={() => openHelp(step)}
-      className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 border border-gray-300 shadow hover:text-blue-600 transition-transform hover:scale-110"
-      title="Ver explicación del paso"
-      data-tooltip-id={`help-tooltip-${step.id}`}
-      data-tooltip-content="Ver explicación del paso"
-      aria-label="Ayuda del paso"
-    >
-      <FaQuestionCircle size={12} />
-    </button>
+  onClick={() => openHelp(step)}
+  className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md border border-gray-300 hover:scale-110 transition-transform"
+  title="Ver explicación del paso"
+  aria-label="Ayuda del paso"
+>
+  <FaQuestionCircle size={14} className="text-[#74742c]" />
+</button>
+
 
     <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
   </div>
