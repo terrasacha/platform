@@ -329,22 +329,29 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
             <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
           </div>
         </div>
-        {showHistory && (
+      {showHistory && (
   <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-    <div className="bg-white rounded-lg p-6 w-[90%] max-w-3xl shadow-lg overflow-y-auto max-h-[90vh] relative">
+    <div className="bg-white rounded-xl p-5 w-full max-w-lg shadow-2xl max-h-[85vh] overflow-y-auto relative">
       <button
         onClick={() => setShowHistory(false)}
-        className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl font-bold"
+        className="absolute top-3 right-3 w-8 h-8 bg-[#72722c] text-white rounded-full hover:bg-[#5c5c22] flex items-center justify-center"
+        title="Cerrar"
       >
         ×
       </button>
-      <h2 className="text-xl font-semibold mb-4">Historial de Mensajería</h2>
 
-      {/* Aquí se mostrará el historial */}
-      <PropertyChatHistory propertyId={propertyId} featureChat="GLOBAL_PROPERTY_FILES" />
+      <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+        Historial de Mensajería
+      </h2>
+
+      <PropertyChatHistory
+        propertyId={propertyId}
+        featureChat="GLOBAL_PROPERTY_FILES"
+      />
     </div>
   </div>
 )}
+
 
       </div>
     );

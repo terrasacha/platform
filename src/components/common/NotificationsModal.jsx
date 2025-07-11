@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API, graphqlOperation } from "aws-amplify";
 import { updateNotification } from "graphql/mutations";
@@ -7,24 +7,39 @@ import { updateNotification } from "graphql/mutations";
 export default function NotificationsModal({ show, onClose, messages, fetchPendingMessages, userId }) {
   const navigate = useNavigate();
 
-  // Función para marcar la notificación como leída antes de redirigir
   const markAsRead = async (notificationId) => {
     try {
       const response = await API.graphql(
         graphqlOperation(updateNotification, {
           input: {
             id: notificationId,
-            isRead: true, // Marcar como leído
+            isRead: true,
           },
         })
       );
-
-      // Solo refrescar si la actualización fue exitosa
       if (response?.data?.updateNotification) {
         await fetchPendingMessages(userId);
       }
     } catch (error) {
       console.error("❌ Error al actualizar la notificación:", error);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      const unreadMessages = messages.filter((msg) => !msg.isRead);
+      await Promise.all(
+        unreadMessages.map((msg) =>
+          API.graphql(
+            graphqlOperation(updateNotification, {
+              input: { id: msg.id, isRead: true },
+            })
+          )
+        )
+      );
+      await fetchPendingMessages(userId);
+    } catch (error) {
+      console.error("❌ Error al marcar todas como leídas:", error);
     }
   };
 
@@ -35,62 +50,78 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
       </Modal.Header>
 
       <Modal.Body className="modal-body-custom">
+        {messages.length > 0 && (
+          <div className="d-flex justify-end mb-3">
+            <OverlayTrigger
+              placement="left"
+              overlay={<Tooltip>Marcar todos como leídos</Tooltip>}
+            >
+              <Button
+                variant="outline-success"
+                size="sm"
+                onClick={markAllAsRead}
+              >
+                ✅ Marcar todos
+              </Button>
+            </OverlayTrigger>
+          </div>
+        )}
+
         {messages.length > 0 ? (
           <div className="messages-container">
             {messages.map((msg) => (
-             <div key={msg.id} className="message-box">
-  <p className="sender-name">
-    <strong>De:</strong> {msg.senderName || "Desconocido"}
-  </p>
-  <p className="message-text">{msg.message}</p>
-  <p className="message-date">
-    {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : "Fecha desconocida"}
-  </p>
+              <div key={msg.id} className="message-box">
+                <p className="sender-name">
+                  <strong>De:</strong> {msg.senderName || "Desconocido"}
+                </p>
+                <p className="message-text">{msg.message}</p>
+                <p className="message-date">
+                  {msg.createdAt
+                    ? new Date(msg.createdAt).toLocaleString()
+                    : "Fecha desconocida"}
+                </p>
 
-  <div className="flex gap-2 mt-2">
-    {/* ✅ Nuevo botón: Marcar como leído */}
-    <Button
-      variant="outline-success"
-      size="sm"
-      className="mark-read-button"
-      onClick={() => markAsRead(msg.id)}
-    >
-      Marcar como leído
-    </Button>
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    variant="outline-success"
+                    size="sm"
+                    className="mark-read-button"
+                    onClick={() => markAsRead(msg.id)}
+                  >
+                    Marcar como leído
+                  </Button>
 
-    {/* 🧭 Botón existente para redirigir */}
-    {msg.propertyID ? (
-      <Button
-        variant="primary"
-        size="sm"
-        className="reply-button"
-        onClick={async () => {
-          await markAsRead(msg.id);
-          let chatTargetParam = "";
-          if (msg.type === "MESSAGE_LEGAL") chatTargetParam = "legal";
-          else if (msg.type === "MESSAGE_VALIDATOR") chatTargetParam = "validator";
+                  {msg.propertyID ? (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="reply-button"
+                      onClick={async () => {
+                        await markAsRead(msg.id);
+                        let chatTargetParam = "";
+                        if (msg.type === "MESSAGE_LEGAL") chatTargetParam = "legal";
+                        else if (msg.type === "MESSAGE_VALIDATOR") chatTargetParam = "validator";
 
-          if (msg.type === "CAMPAING") {
-            navigate(`/campaign/${msg.propertyID}`);
-          } else if (msg.type === "PROPERTY") {
-            navigate(`/property/${msg.propertyID}`);
-          } else {
-            navigate(`/property/${msg.propertyID}?openChat=true&chatTarget=${chatTargetParam}`);
-          }
-        }}
-      >
-        {msg.type === "CAMPAING"
-          ? "Ir a campaña"
-          : msg.type === "PROPERTY"
-          ? "Ir al predio"
-          : "Responder"}
-      </Button>
-    ) : (
-      <p className="no-reply-text">No se puede responder a este mensaje.</p>
-    )}
-  </div>
-</div>
-  
+                        if (msg.type === "CAMPAING") {
+                          navigate(`/campaign/${msg.propertyID}`);
+                        } else if (msg.type === "PROPERTY") {
+                          navigate(`/property/${msg.propertyID}`);
+                        } else {
+                          navigate(`/property/${msg.propertyID}?openChat=true&chatTarget=${chatTargetParam}`);
+                        }
+                      }}
+                    >
+                      {msg.type === "CAMPAING"
+                        ? "Ir a campaña"
+                        : msg.type === "PROPERTY"
+                        ? "Ir al predio"
+                        : "Responder"}
+                    </Button>
+                  ) : (
+                    <p className="no-reply-text">No se puede responder a este mensaje.</p>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         ) : (
@@ -109,7 +140,7 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
   .custom-modal .modal-content {
     max-width: 520px;
     border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: #7b7b2c;
     border: 2px solid #ccc;
   }
 

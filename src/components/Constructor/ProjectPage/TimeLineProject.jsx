@@ -21,40 +21,35 @@ export default function TimelineProject({ currentStep = 1 }) {
       id: 1,
       title: "Proyecto creado",
       description: "El proyecto ha sido creado correctamente.",
-      helpText:
-        "En este paso se ha completado el registro inicial del proyecto. No requiere más acciones.",
+      helpText: "En este paso se ha completado el registro inicial del proyecto. No requiere más acciones.",
       icon: <FaClipboardCheck size={18} />,
     },
     {
       id: 2,
       title: "Cierre de convocatoria",
       description: "Esperando el cierre de la convocatoria de predios.",
-      helpText:
-        "Aquí el proyecto permanece mientras la campaña de inscripción de predios está abierta.",
+      helpText: "Aquí el proyecto permanece mientras la campaña de inscripción de predios está abierta.",
       icon: <FaClock size={18} />,
     },
     {
       id: 3,
       title: "Completar información",
       description: "Debes completar toda la información del proyecto.",
-      helpText:
-        "Incluye datos técnicos, financieros, geográficos y generales del proyecto.",
+      helpText: "Incluye datos técnicos, financieros, geográficos y generales del proyecto.",
       icon: <FaFileSignature size={18} />,
     },
     {
       id: 4,
       title: "Condiciones financieras",
       description: "Esperando aceptación de condiciones financieras.",
-      helpText:
-        "Debes aceptar las condiciones financieras ofrecidas para continuar.",
+      helpText: "El propietario debe aceptar las condiciones financieras ofrecidas para continuar.",
       icon: <FaHandHoldingUsd size={18} />,
     },
     {
       id: 5,
       title: "Proyecto subido a marketplace",
       description: "¡Tu proyecto ahora es visible en el marketplace!",
-      helpText:
-        "El proyecto cumple todos los requisitos y ha sido publicado en el marketplace.",
+      helpText: "El proyecto cumple todos los requisitos y ha sido publicado en el marketplace.",
       icon: <FaStore size={18} />,
     },
   ];
@@ -71,20 +66,17 @@ export default function TimelineProject({ currentStep = 1 }) {
           {steps.map((step) => (
             <Step key={step.id}>
               {({ accomplished }) => {
-                let stepClass =
-                  "bg-gray-300 text-gray-500 border-gray-400 opacity-50";
-
+                let stepClass = "bg-gray-300 text-gray-500 border-gray-400 opacity-50";
                 if (step.id === currentStep) {
-                  stepClass =
-                    "bg-yellow-500 text-white border-yellow-600 animate-pulse shadow-xl";
+                  stepClass = "bg-yellow-500 text-white border-yellow-600 animate-pulse shadow-xl";
                 } else if (accomplished) {
-                  stepClass =
-                    "bg-green-500 text-white border-green-600 shadow-lg";
+                  stepClass = "bg-green-500 text-white border-green-600 shadow-lg";
                 }
 
                 return (
                   <div className="flex flex-col items-center w-24 text-center relative">
                     <div className="relative flex flex-col items-center">
+                      {/* Círculo del paso */}
                       <div
                         className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-500 cursor-pointer shadow-md mb-2 ${stepClass}`}
                         data-tooltip-id={`tooltip-${step.id}`}
@@ -92,15 +84,17 @@ export default function TimelineProject({ currentStep = 1 }) {
                         {step.icon}
                       </div>
 
-                      <button
+                      {/* Ícono de ayuda a la derecha */}
+                      <span
                         onClick={() => setHelpStep(step)}
-                        className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 border border-gray-300 shadow hover:text-blue-600 hover:scale-110 transition"
+                        className="absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer"
+                        title="Ver explicación del paso"
+                        aria-label="Ayuda del paso"
                         data-tooltip-id={`help-tooltip-${step.id}`}
                         data-tooltip-content="Ver explicación del paso"
-                        aria-label="Ayuda del paso"
                       >
-                       <FaQuestionCircle size={12} className="text-[#74742c]" />
-                      </button>
+                        <FaQuestionCircle size={14} className="text-[#7b7b2c] opacity-90 hover:opacity-100" />
+                      </span>
 
                       <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
                     </div>
@@ -136,11 +130,7 @@ export default function TimelineProject({ currentStep = 1 }) {
       </div>
 
       {/* Modal de ayuda */}
-      <Modal
-        show={!!helpStep}
-        onHide={() => setHelpStep(null)}
-        centered
-      >
+      <Modal show={!!helpStep} onHide={() => setHelpStep(null)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{helpStep?.title}</Modal.Title>
         </Modal.Header>

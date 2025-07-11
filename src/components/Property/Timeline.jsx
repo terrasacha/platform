@@ -124,7 +124,7 @@ export default function Timeline({
     id: 1,
     title: "Predio Inscrito",
     description: "El predio ha sido registrado.",
-    helpText: "Solo necesitas ingresar y guardar alguna información básica del predio en el formulario para completar este paso.",
+    helpText: "Por favor, diligencia el formulario con la información disponible y guarda los cambios para continuar con el siguiente paso.",
     icon: <FaClipboardList size={18} />,
   },
   {
@@ -156,7 +156,7 @@ export default function Timeline({
       ? "El predio ha cumplido con todos los requisitos y ha sido aprobado para continuar en el proceso."
       : isRejected
       ? "El predio no cumplió con los requisitos técnicos o legales y ha sido rechazado. Puede reiniciar el proceso si se corrigen los errores."
-      : "Se ha seleccionado el predio para integrar el proyecto. Inicia la siguiente etapa del plan. Debes esperar que se cierre la campaña y aceptar la propuesta financiera ",
+      : "Se ha seleccionado el predio para integrar el proyecto. Inicia la siguiente etapa del proyecto. Debes esperar que se cierre la campaña y aceptar la propuesta financiera ",
     icon: isApproved ? (
       <FaCheckCircle size={18} className="text-white" />
     ) : isRejected ? (
@@ -312,8 +312,8 @@ export default function Timeline({
                     )}
 
                     {/* 📌 Ícono del paso con animación especial para el paso 2 */}
-            <div className="flex flex-col items-center">
-  <div className={`relative flex flex-col items-center`}>
+<div className="flex flex-col items-center">
+  <div className="relative flex flex-col items-center">
     {/* Ícono principal del paso */}
     <div
       className={`w-10 h-10 flex items-center justify-center rounded-full border-2 ${stepClass} ${glowEffect}`}
@@ -323,16 +323,15 @@ export default function Timeline({
       {step.icon}
     </div>
 
-    {/* Ícono de ayuda superpuesto en esquina inferior derecha */}
-    <button
-  onClick={() => openHelp(step)}
-  className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md border border-gray-300 hover:scale-110 transition-transform"
-  title="Ver explicación del paso"
-  aria-label="Ayuda del paso"
->
-  <FaQuestionCircle size={14} className="text-[#74742c]" />
-</button>
-
+    {/* Ícono de ayuda alineado a la derecha del círculo */}
+    <span
+      onClick={() => openHelp(step)}
+      className="absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer"
+      title="Ver explicación del paso"
+      aria-label="Ayuda del paso"
+    >
+      <FaQuestionCircle size={14} className="text-[#7b7b2c] opacity-90 hover:opacity-100" />
+    </span>
 
     <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
   </div>
