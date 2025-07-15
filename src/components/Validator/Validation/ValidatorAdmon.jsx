@@ -10,11 +10,7 @@ import {
   FaPlus,
   FaMinus,
   FaInfoCircle,
-  FaClock,
-  FaCheckCircle,
-  FaTimesCircle,
   FaCheck,
-  FaBan,
   FaTimes,
 } from "react-icons/fa";
 import { Row } from "react-bootstrap";
@@ -28,14 +24,11 @@ import { formatArea } from "components/Constructor/ProjectPage/mappers";
 import { Modal } from "react-bootstrap";
 
 const getPropertyArea = (property) => {
-  console.log("property", property);
-  if (property) {
-    const areaFeature = property.propertyFeatures?.items.find(
-      (feature) => feature?.featureID === "D_area"
-    );
-    if (!areaFeature) return "No disponible";
-    return formatArea(areaFeature?.value) || "No disponible";
-  }
+  const areaFeature = property.propertyFeatures?.items.find(
+    (feature) => feature?.featureID === "D_area"
+  );
+  if (!areaFeature) return "No disponible";
+  return formatArea(areaFeature?.value) || "No disponible";
 };
 
 const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
@@ -195,10 +188,8 @@ export default function ValidatorAdmon() {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const { user } = useAuth();
 
-  console.log('userCampaigns', userCampaigns)
-  console.log('properties', properties)
-
-  const navigate = useNavigate();
+  console.log("userCampaigns", userCampaigns);
+  console.log("properties", properties);
 
   // Opciones de filtro de estado de campañas
   const campaignsStatusFilterOptions = [
@@ -236,20 +227,15 @@ export default function ValidatorAdmon() {
   const [campaignsCurrentPage, setCampaignsCurrentPage] = useState(1);
   const [campaignsRowsPerPage, setCampaignsRowsPerPage] = useState(10);
   const [campaignsFilterStatus, setCampaignsFilterStatus] = useState("ALL");
-  const campaignsFilterOptions = [
-    { key: "ALL", label: "Todas", color: "bg-gray-200 text-gray-700 border border-gray-400" },
-    ...Object.keys(stateMapper).map((key) => ({
-      key,
-      label: stateMapper[key].label,
-      color: stateMapper[key].badge,
-    })),
-  ];
   const filteredCampaigns =
     campaignsFilterStatus === "ALL"
       ? filteredCampaignsByStatus
-      : filteredCampaignsByStatus.filter((c) => c.status === campaignsFilterStatus);
+      : filteredCampaignsByStatus.filter(
+          (c) => c.status === campaignsFilterStatus
+        );
   const campaignsTotalRows = filteredCampaigns.length;
-  const campaignsTotalPages = Math.ceil(campaignsTotalRows / campaignsRowsPerPage) || 1;
+  const campaignsTotalPages =
+    Math.ceil(campaignsTotalRows / campaignsRowsPerPage) || 1;
   const paginatedCampaigns = filteredCampaigns.slice(
     (campaignsCurrentPage - 1) * campaignsRowsPerPage,
     campaignsCurrentPage * campaignsRowsPerPage
@@ -263,7 +249,11 @@ export default function ValidatorAdmon() {
   const [propertiesRowsPerPage, setPropertiesRowsPerPage] = useState(10);
   const [propertiesFilterStatus, setPropertiesFilterStatus] = useState("ALL");
   const propertiesFilterOptions = [
-    { key: "ALL", label: "Todos", color: "bg-gray-200 text-gray-700 border border-gray-400" },
+    {
+      key: "ALL",
+      label: "Todos",
+      color: "bg-gray-200 text-gray-700 border border-gray-400",
+    },
     ...Object.keys(stateMapper).map((key) => ({
       key,
       label: stateMapper[key].label,
@@ -275,7 +265,8 @@ export default function ValidatorAdmon() {
       ? filteredProperties
       : filteredProperties.filter((p) => p.status === propertiesFilterStatus);
   const propertiesTotalRows = filteredPropertiesByStatus.length;
-  const propertiesTotalPages = Math.ceil(propertiesTotalRows / propertiesRowsPerPage) || 1;
+  const propertiesTotalPages =
+    Math.ceil(propertiesTotalRows / propertiesRowsPerPage) || 1;
   const paginatedProperties = filteredPropertiesByStatus.slice(
     (propertiesCurrentPage - 1) * propertiesRowsPerPage,
     propertiesCurrentPage * propertiesRowsPerPage
@@ -407,7 +398,8 @@ export default function ValidatorAdmon() {
                   Mis campañas
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">
-                  Aquí puedes ver y gestionar todas las campañas en las que participas como consultor.
+                  Aquí puedes ver y gestionar todas las campañas en las que
+                  participas como consultor.
                 </p>
               </div>
               {/* Filtros de estado de campaña */}
@@ -433,10 +425,14 @@ export default function ValidatorAdmon() {
               <div className="bg-white rounded-t-lg shadow-xl border border-gray-100">
                 <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
                   <div className="flex items-center gap-2 w-full md:w-auto">
-                    <span className="text-sm font-medium text-gray-700">Filas por página:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Filas por página:
+                    </span>
                     <select
                       value={campaignsRowsPerPage}
-                      onChange={(e) => setCampaignsRowsPerPage(Number(e.target.value))}
+                      onChange={(e) =>
+                        setCampaignsRowsPerPage(Number(e.target.value))
+                      }
                       className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     >
                       {[10, 20, 30, 50].map((num) => (
@@ -449,7 +445,9 @@ export default function ValidatorAdmon() {
                   <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
                     <button
                       className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() => setCampaignsCurrentPage((p) => Math.max(1, p - 1))}
+                      onClick={() =>
+                        setCampaignsCurrentPage((p) => Math.max(1, p - 1))
+                      }
                       disabled={campaignsCurrentPage === 1}
                     >
                       Anterior
@@ -459,7 +457,11 @@ export default function ValidatorAdmon() {
                     </span>
                     <button
                       className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() => setCampaignsCurrentPage((p) => Math.min(campaignsTotalPages, p + 1))}
+                      onClick={() =>
+                        setCampaignsCurrentPage((p) =>
+                          Math.min(campaignsTotalPages, p + 1)
+                        )
+                      }
                       disabled={campaignsCurrentPage === campaignsTotalPages}
                     >
                       Siguiente
@@ -512,12 +514,24 @@ export default function ValidatorAdmon() {
                       <thead>
                         <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                           <th className="text-left px-2 py-1 font-semibold text-xs w-8"></th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">Nombre</th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">Descripción</th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">Fecha de inicio</th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">Fecha de finalización</th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">Estado</th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">Acciones</th>
+                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                            Nombre
+                          </th>
+                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                            Descripción
+                          </th>
+                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                            Fecha de inicio
+                          </th>
+                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                            Fecha de finalización
+                          </th>
+                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                            Estado
+                          </th>
+                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                            Acciones
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -537,15 +551,19 @@ export default function ValidatorAdmon() {
                           const isExpanded = expandedRows.has(campaign.id);
                           // Calcular estado de la campaña
                           let campaignStatusLabel = "En curso";
-                          let campaignStatusColor = "bg-green-100 text-green-700 border border-green-400";
-                          let campaignStatusTooltip = "La campaña sigue activa.";
+                          let campaignStatusColor =
+                            "bg-green-100 text-green-700 border border-green-400";
+                          let campaignStatusTooltip =
+                            "La campaña sigue activa.";
                           if (campaign.endDate) {
                             const endDate = new Date(campaign.endDate * 1000);
                             const now = new Date();
                             if (endDate < now) {
                               campaignStatusLabel = "Finalizada";
-                              campaignStatusColor = "bg-gray-200 text-gray-600 border border-gray-400";
-                              campaignStatusTooltip = "La campaña ya ha finalizado.";
+                              campaignStatusColor =
+                                "bg-gray-200 text-gray-600 border border-gray-400";
+                              campaignStatusTooltip =
+                                "La campaña ya ha finalizado.";
                             }
                           }
                           // Filtrar predios asociados a esta campaña
@@ -561,13 +579,23 @@ export default function ValidatorAdmon() {
                               >
                                 <td className="px-2 py-1 w-8">
                                   <button
-                                    onClick={() => handleToggleExpand(campaign.id)}
-                                    aria-label={isExpanded ? "Colapsar predios" : "Expandir predios"}
+                                    onClick={() =>
+                                      handleToggleExpand(campaign.id)
+                                    }
+                                    aria-label={
+                                      isExpanded
+                                        ? "Colapsar predios"
+                                        : "Expandir predios"
+                                    }
                                     className="flex items-center justify-center w-7 h-7 rounded-full border border-gray-300 bg-white hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                                     tabIndex={0}
                                     type="button"
                                   >
-                                    {isExpanded ? <FaMinus size={13} /> : <FaPlus size={13} />}
+                                    {isExpanded ? (
+                                      <FaMinus size={13} />
+                                    ) : (
+                                      <FaPlus size={13} />
+                                    )}
                                   </button>
                                 </td>
                                 <td className="px-2 py-1 min-w-36">
@@ -608,18 +636,27 @@ export default function ValidatorAdmon() {
                                 <td className="px-2 py-1 min-w-28">
                                   {campaign.endDate
                                     ? (() => {
-                                        const endDate = new Date(campaign.endDate * 1000);
+                                        const endDate = new Date(
+                                          campaign.endDate * 1000
+                                        );
                                         const now = new Date();
-                                        const diffTime = endDate.getTime() - now.getTime();
-                                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                        const showWarning = diffDays <= 5 && diffDays >= 0;
+                                        const diffTime =
+                                          endDate.getTime() - now.getTime();
+                                        const diffDays = Math.ceil(
+                                          diffTime / (1000 * 60 * 60 * 24)
+                                        );
+                                        const showWarning =
+                                          diffDays <= 5 && diffDays >= 0;
                                         return (
                                           <span className="flex items-center gap-1">
-                                            {endDate.toLocaleDateString("es-ES", {
-                                              year: "numeric",
-                                              month: "2-digit",
-                                              day: "2-digit",
-                                            })}
+                                            {endDate.toLocaleDateString(
+                                              "es-ES",
+                                              {
+                                                year: "numeric",
+                                                month: "2-digit",
+                                                day: "2-digit",
+                                              }
+                                            )}
                                             {showWarning && (
                                               <span
                                                 className="ml-2 text-yellow-500 cursor-pointer"
@@ -628,7 +665,10 @@ export default function ValidatorAdmon() {
                                                 tabIndex={0}
                                                 aria-label="Advertencia: campaña próxima a finalizar"
                                               >
-                                                <FaInfoCircle className="inline" size={15} />
+                                                <FaInfoCircle
+                                                  className="inline"
+                                                  size={15}
+                                                />
                                                 <ReactTooltip
                                                   id={`tooltip-enddate-warning-${campaign.id}`}
                                                   place="top"
@@ -657,7 +697,12 @@ export default function ValidatorAdmon() {
                                 </td>
                                 <td className="px-2 py-1 flex gap-2">
                                   <button
-                                    onClick={() => window.open(`/campaign/${campaign.id}`, "_blank")}
+                                    onClick={() =>
+                                      window.open(
+                                        `/campaign/${campaign.id}`,
+                                        "_blank"
+                                      )
+                                    }
                                     className="border border-yellow-500 bg-yellow-500 text-white rounded-lg p-1 text-xs hover:bg-yellow-600 hover:shadow-md active:bg-yellow-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
                                     aria-label="Ver campaña"
                                     data-tooltip-id={`tooltip-campaign-link-${campaign.id}`}
@@ -673,14 +718,28 @@ export default function ValidatorAdmon() {
                                     effect="solid"
                                   />
                                   <button
-                                    onClick={() => campaign.products?.items?.[0]?.id && window.open(`/project/${campaign.products.items[0].id}`, "_blank")}
-                                    className={`border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105 ${!campaign.products?.items?.[0]?.id ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    onClick={() =>
+                                      campaign.products?.items?.[0]?.id &&
+                                      window.open(
+                                        `/project/${campaign.products.items[0].id}`,
+                                        "_blank"
+                                      )
+                                    }
+                                    className={`border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105 ${
+                                      !campaign.products?.items?.[0]?.id
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                    }`}
                                     aria-label="Ver proyecto"
                                     data-tooltip-id={`tooltip-project-${campaign.id}`}
                                     data-tooltip-content="Ver proyecto"
-                                    tabIndex={campaign.products?.items?.[0]?.id ? 0 : -1}
+                                    tabIndex={
+                                      campaign.products?.items?.[0]?.id ? 0 : -1
+                                    }
                                     type="button"
-                                    disabled={!campaign.products?.items?.[0]?.id}
+                                    disabled={
+                                      !campaign.products?.items?.[0]?.id
+                                    }
                                   >
                                     <FaEye size={13} />
                                   </button>
@@ -691,28 +750,38 @@ export default function ValidatorAdmon() {
                                   />
                                 </td>
                               </tr>
-                              {isExpanded && (
-                                campaignProperties.length > 0 ? (
+                              {isExpanded &&
+                                (campaignProperties.length > 0 ? (
                                   campaignProperties.map((property) => (
-                                    <tr key={property.id} className="bg-gray-50 border-b border-gray-200">
+                                    <tr
+                                      key={property.id}
+                                      className="bg-gray-50 border-b border-gray-200"
+                                    >
                                       <td></td>
-                                      <td colSpan={5} className="pl-8 py-2 align-middle">
+                                      <td
+                                        colSpan={5}
+                                        className="pl-8 py-2 align-middle"
+                                      >
                                         <div className="flex items-center gap-4">
                                           <span className="font-semibold text-gray-700 text-xs">
-                                            {property.name ? property.name.toUpperCase() : "Predio sin nombre"}
+                                            {property.name
+                                              ? property.name.toUpperCase()
+                                              : "Predio sin nombre"}
                                           </span>
                                           <span
                                             className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${
-                                              stateMapper[property.status]?.badge ||
+                                              stateMapper[property.status]
+                                                ?.badge ||
                                               "bg-gray-300 text-gray-800 border border-gray-400"
                                             }`}
                                             data-tooltip-id={`tooltip-property-status-${property.id}`}
                                             data-tooltip-content={
-                                              stateMapper[property.status]?.tooltip ||
-                                              "Estado indefinido"
+                                              stateMapper[property.status]
+                                                ?.tooltip || "Estado indefinido"
                                             }
                                           >
-                                            {stateMapper[property.status]?.label || "SIN DEFINIR"}
+                                            {stateMapper[property.status]
+                                              ?.label || "SIN DEFINIR"}
                                           </span>
                                           <ReactTooltip
                                             id={`tooltip-property-status-${property.id}`}
@@ -721,7 +790,9 @@ export default function ValidatorAdmon() {
                                           />
                                           <span className="text-xs text-gray-500">
                                             {property.createdAt
-                                              ? new Date(property.createdAt).toLocaleDateString("es-ES", {
+                                              ? new Date(
+                                                  property.createdAt
+                                                ).toLocaleDateString("es-ES", {
                                                   year: "numeric",
                                                   month: "2-digit",
                                                   day: "2-digit",
@@ -735,12 +806,14 @@ export default function ValidatorAdmon() {
                                 ) : (
                                   <tr className="bg-gray-50 border-b border-gray-200">
                                     <td></td>
-                                    <td colSpan={5} className="pl-8 py-2 align-middle text-xs text-gray-500 italic">
+                                    <td
+                                      colSpan={5}
+                                      className="pl-8 py-2 align-middle text-xs text-gray-500 italic"
+                                    >
                                       Sin predios asignados
                                     </td>
                                   </tr>
-                                )
-                              )}
+                                ))}
                             </React.Fragment>
                           );
                         })}
@@ -760,7 +833,8 @@ export default function ValidatorAdmon() {
                   Predios sin campaña
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">
-                  Aquí puedes ver y gestionar todos los predios que aún no han sido asignados a una campaña.
+                  Aquí puedes ver y gestionar todos los predios que aún no han
+                  sido asignados a una campaña.
                 </p>
               </div>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 mb-2">
@@ -785,10 +859,14 @@ export default function ValidatorAdmon() {
               <div className="bg-white rounded-t-lg shadow-xl border border-gray-100 flex flex-col">
                 <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
                   <div className="flex items-center gap-2 w-full md:w-auto">
-                    <span className="text-sm font-medium text-gray-700">Filas por página:</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Filas por página:
+                    </span>
                     <select
                       value={propertiesRowsPerPage}
-                      onChange={(e) => setPropertiesRowsPerPage(Number(e.target.value))}
+                      onChange={(e) =>
+                        setPropertiesRowsPerPage(Number(e.target.value))
+                      }
                       className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     >
                       {[10, 20, 30, 50].map((num) => (
@@ -801,7 +879,9 @@ export default function ValidatorAdmon() {
                   <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
                     <button
                       className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() => setPropertiesCurrentPage((p) => Math.max(1, p - 1))}
+                      onClick={() =>
+                        setPropertiesCurrentPage((p) => Math.max(1, p - 1))
+                      }
                       disabled={propertiesCurrentPage === 1}
                     >
                       Anterior
@@ -811,7 +891,11 @@ export default function ValidatorAdmon() {
                     </span>
                     <button
                       className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() => setPropertiesCurrentPage((p) => Math.min(propertiesTotalPages, p + 1))}
+                      onClick={() =>
+                        setPropertiesCurrentPage((p) =>
+                          Math.min(propertiesTotalPages, p + 1)
+                        )
+                      }
                       disabled={propertiesCurrentPage === propertiesTotalPages}
                     >
                       Siguiente
@@ -915,8 +999,7 @@ export default function ValidatorAdmon() {
                               </div>
                             </td>
                             <td className="px-2 py-1 min-w-20">
-                              {getPropertyArea(property.area) ||
-                                "No disponible"}
+                              {getPropertyArea(property) || "No disponible"}
                             </td>
                             <td className="px-2 py-1">
                               {property.department || "-"}
@@ -946,7 +1029,12 @@ export default function ValidatorAdmon() {
                             </td>
                             <td className="px-2 py-1 flex gap-2">
                               <button
-                                onClick={() => window.open(`/property/${property.id}`, "_blank")}
+                                onClick={() =>
+                                  window.open(
+                                    `/property/${property.id}`,
+                                    "_blank"
+                                  )
+                                }
                                 className="border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
                                 aria-label="Ver detalles del predio"
                                 data-tooltip-id={`tooltip-details-${property.id}`}
