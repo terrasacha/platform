@@ -19,6 +19,9 @@ import { createPropertyFeature, createVerification, updateVerification } from "g
 import { listPropertyFeatures, listVerifications } from "graphql/queries";
 import { useAuth } from "context/AuthContext";
 import ConstructorWorkflow from "./ConstructorWorkflow";
+import StepHelpModal from "./StepHelpModal";
+import { FaQuestionCircle } from "react-icons/fa";
+
 
 export default function Timeline({
   currentStep = 1,
@@ -36,13 +39,14 @@ export default function Timeline({
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [propertyVerificationID, setPropertyVerificationID] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [helpStep, setHelpStep] = useState(null); // null o el step actual
+  const openHelp = (step) => setHelpStep(step);
+  const closeHelp = () => setHelpStep(null);
+
   const { user } = useAuth();
 
   useEffect(() => {
     if (!openChatOnLoad || !chatTarget) return;
-    console.log("🔁 openChatOnLoad:", openChatOnLoad);
-    console.log("📌 chatTarget:", chatTarget);
-    console.log("📌 currentStep:", currentStep);
   
     if (chatTarget === "legal" ) {
       setModalIsOpen(true); // Abrir ValidationModal
@@ -115,52 +119,54 @@ export default function Timeline({
   const isApproved = propertyStatus === "APPROVED";
   const isRejected = propertyStatus === "REJECTED";
 
-  const steps = [
-    {
-      id: 1,
-      title: "Predio Inscrito",
-      description: "El predio ha sido registrado.",
-      icon: <FaClipboardList size={18} />,
-    },
-    {
-      id: 2,
-      title: "Documentación Legal",
-      description: "Carga de documentos para validación.",
-      icon: <FaUpload size={18} />,
-    },
-    {
-      id: 3,
-      title: "Validación Legal",
-      description: "Revisión de documentos y requisitos.",
-      icon: <FaProjectDiagram size={18} />,
-    },
-    {
-      id: 4,
-      title: "Estudio",
-      description: "Análisis técnico y estudios ambientales.",
-      icon: <FaHourglassHalf size={18} />,
-    },
-    {
-      id: 5,
-      title: isApproved
-        ? "Predio Aprobado"
-        : isRejected
-        ? "Predio Rechazado"
-        : "Proyecto Elegido",
-      description: isApproved
-        ? "El predio ha sido aprobado."
-        : isRejected
-        ? "El predio ha sido rechazado."
-        : "Aprobación final del predio.",
-      icon: isApproved ? (
-        <FaCheckCircle size={18} className="text-white" />
-      ) : isRejected ? (
-        <FaTimesCircle size={18} className="text-white" />
-      ) : (
-        <FaCheckCircle size={18} />
-      ),
-    },
-  ];
+ const steps = [
+  {
+    id: 1,
+    title: "Predio Inscrito",
+    description: "El predio ha sido registrado.",
+    helpText: "Solo necesitas ingresar y guardar alguna información básica del predio en el formulario para completar este paso.",
+    icon: <FaClipboardList size={18} />,
+  },
+  {
+    id: 2,
+    title: "Documentación Legal",
+    description: "Carga de documentos para validación.",
+    helpText: "Aquí se debe subir la documentación legal obligatoria, como escrituras, certificados y planos catrastales. La revisión inicia después de completarlo.",
+    icon: <FaUpload size={18} />,
+  },
+  {
+    id: 3,
+    title: "Validación Legal",
+    description: "Revisión de documentos y requisitos.",
+    helpText: "Un equipo legal revisa la documentación enviada para verificar su autenticidad, validez y cumplimiento de requisitos.",
+    icon: <FaProjectDiagram size={18} />,
+  },
+  {
+    id: 4,
+    title: "Estudio",
+    description: "Análisis técnico y estudios ambientales.",
+    helpText: "Se realizan estudios técnicos, como análisis de suelo, uso del suelo, impacto ambiental y viabilidad del predio para el proyecto.",
+    icon: <FaHourglassHalf size={18} />,
+  },
+  {
+    id: 5,
+    title: isApproved ? "Predio Aprobado" : isRejected ? "Predio Rechazado" : "Proyecto Elegido",
+    description: isApproved ? "El predio ha sido aprobado." : isRejected ? "El predio ha sido rechazado." : "Aprobación final del predio.",
+    helpText: isApproved
+      ? "El predio ha cumplido con todos los requisitos y ha sido aprobado para continuar en el proceso."
+      : isRejected
+      ? "El predio no cumplió con los requisitos técnicos o legales y ha sido rechazado. Puede reiniciar el proceso si se corrigen los errores."
+      : "Se ha seleccionado el predio para integrar el proyecto. Inicia la siguiente etapa del plan. Debes esperar que se cierre la campaña y aceptar la propuesta financiera ",
+    icon: isApproved ? (
+      <FaCheckCircle size={18} className="text-white" />
+    ) : isRejected ? (
+      <FaTimesCircle size={18} className="text-white" />
+    ) : (
+      <FaCheckCircle size={18} />
+    ),
+  },
+];
+
 
   const handleChatFeature = async () => {
     try {
@@ -306,13 +312,34 @@ export default function Timeline({
                     )}
 
                     {/* 📌 Ícono del paso con animación especial para el paso 2 */}
-                    <div
-                      className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-500 cursor-pointer shadow-md mb-2 ${stepClass} ${glowEffect}`}
-                      data-tooltip-id={`tooltip-${step.id}`}
-                      onClick={() => openModal(step.id)}
-                    >
-                      {step.icon}
-                    </div>
+            <div className="flex flex-col items-center">
+  <div className={`relative flex flex-col items-center`}>
+    {/* Ícono principal del paso */}
+    <div
+      className={`w-10 h-10 flex items-center justify-center rounded-full border-2 ${stepClass} ${glowEffect}`}
+      data-tooltip-id={`tooltip-${step.id}`}
+      onClick={() => openModal(step.id)}
+    >
+      {step.icon}
+    </div>
+
+    {/* Ícono de ayuda superpuesto en esquina inferior derecha */}
+    <button
+      onClick={() => openHelp(step)}
+      className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 border border-gray-300 shadow hover:text-blue-600 transition-transform hover:scale-110"
+      title="Ver explicación del paso"
+      data-tooltip-id={`help-tooltip-${step.id}`}
+      data-tooltip-content="Ver explicación del paso"
+      aria-label="Ayuda del paso"
+    >
+      <FaQuestionCircle size={12} />
+    </button>
+
+    <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
+  </div>
+</div>
+
+
 
                     <div className="w-1 h-6 bg-gray-400 mx-auto mt-1"></div>
 
@@ -380,6 +407,14 @@ export default function Timeline({
     <ConstructorWorkflow propertyId={propertyId} />
   </Modal.Body>
 </Modal>
+{helpStep && (
+  <StepHelpModal
+    isOpen={!!helpStep}
+    onClose={closeHelp}
+    stepTitle={helpStep.title}
+    stepDescription={helpStep.helpText}
+  />
+)}
 
 
     </div>

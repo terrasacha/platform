@@ -8,6 +8,7 @@
   import { useS3Client } from "context/s3ClientContext";
 import { listPropertyFeatures } from "graphql/queries";
 import { usePropertyData } from "context/PropertyDataContext";
+import PropertyChatHistory from "./PropertyChatHistory";
 
   const STEPS = [
     "Visita técnica",
@@ -40,6 +41,7 @@ import { usePropertyData } from "context/PropertyDataContext";
     const [expirationConfirmed, setExpirationConfirmed] = useState(false);
     const { propertyData } = usePropertyData();
     const basePath = `public/property/${propertyData.propertyInfo?.id}/other/`
+    const [showHistory, setShowHistory] = useState(false);
 
 
     useEffect(() => {
@@ -325,7 +327,7 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
               <text x="18" y="20" className="text-sm font-semibold fill-current text-green-600" textAnchor="middle">{progress}%</text>
             </svg>
           </div>
-          <h3 className="text-2xl font-bold mb-6">Pasos del Constructor</h3>
+          <h3 className="text-2xl font-bold mb-6">Pasos del Propietario</h3>
           <ul className="space-y-4">
             {STEPS.map((step, i) => (
               <li key={i} className={`flex items-center justify-between p-4 rounded-lg ${completed[i] ? 'bg-green-50' : 'bg-gray-50'} ${isStepDisabled(i) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}>              
@@ -429,11 +431,37 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
 
         {/* Right Panel */}
         <div className="w-2/5 p-8 bg-white rounded-r-lg shadow-inner flex flex-col">
-          <h3 className="text-2xl font-bold mb-6">Mensajería del Predio</h3>
+         <div className="flex items-center justify-between mb-4">
+  <h3 className="text-2xl font-bold">Mensajería del Predio</h3>
+  <button
+    onClick={() => setShowHistory(true)}
+    className="text-sm text-blue-600 hover:underline"
+  >
+    Ver historial
+  </button>
+</div>
+
           <div className="flex-1 overflow-auto border rounded p-4 bg-gray-50">
             <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
           </div>
         </div>
+        {showHistory && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div className="bg-white rounded-lg p-6 w-[90%] max-w-3xl shadow-lg overflow-y-auto max-h-[90vh] relative">
+      <button
+        onClick={() => setShowHistory(false)}
+        className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl font-bold"
+      >
+        ×
+      </button>
+      <h2 className="text-xl font-semibold mb-4">Historial de Mensajería</h2>
+
+      {/* Aquí se mostrará el historial */}
+      <PropertyChatHistory propertyId={propertyId} featureChat="GLOBAL_PROPERTY_FILES" />
+    </div>
+  </div>
+)}
+
       </div>
     );
   }

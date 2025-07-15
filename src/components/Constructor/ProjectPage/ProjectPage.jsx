@@ -76,44 +76,56 @@ export default function ProjectPage() {
   const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
-    if (!projectData || !progressObj) return;
+  if (!projectData || !progressObj) return;
 
-    const {
-      projectInfo,
-      geodataInfo,
-      technicalInfo,
-      financialInfo,
-      ownerAcceptsConditions,
-      projectOnMarketplace,
-    } = progressObj.sectionsStatus || {};
+  const {
+    projectInfo,
+    geodataInfo,
+    technicalInfo,
+    financialInfo,
+    ownerAcceptsConditions,
+    projectOnMarketplace,
+  } = progressObj.sectionsStatus || {};
 
-    // ⚪ Paso 1: Proyecto creado (estado inicial)
-    setCurrentStep(1);
+  console.log("🧠 Evaluando paso actual según reglas nuevas:", {
+    campaignAvailable: campaign?.available,
+    projectInfo,
+    geodataInfo,
+    technicalInfo,
+    financialInfo,
+    technicalFreeze: projectData.isTechnicalFreeze,
+    financialFreeze: projectData.isFinancialFreeze,
+    ownerAcceptsConditions,
+    projectOnMarketplace,
+  });
 
-    // 🔵 Paso 2: En espera de cierre de convocatoria
-    if (campaign?.available === true) {
-      setCurrentStep(2);
-    }
+  let step = 2; // 🔵 Paso 2 por defecto: esperando cierre de campaña
 
-    // 🟠 Paso 3: Completar información general técnica y financiera
-    if (projectInfo && geodataInfo && technicalInfo && financialInfo) {
-      setCurrentStep(3);
-    }
+  // 🟠 Paso 3: Campaña cerrada pero falta info
+  if (
+    campaign?.available === false &&
+    (!projectInfo || !geodataInfo || !technicalInfo || !financialInfo)
+  ) {
+    step = 3;
+  }
 
-    // 🟡 Paso 4: En espera de condiciones financieras (congelado pero sin aceptar)
-    if (
-      projectData.isTechnicalFreeze &&
-      projectData.isFinancialFreeze &&
-      !ownerAcceptsConditions
-    ) {
-      setCurrentStep(4);
-    }
+  // 🟡 Paso 4: Datos congelados, pero condiciones no aceptadas
+  if (
+    projectData.isTechnicalFreeze &&
+    projectData.isFinancialFreeze &&
+    !ownerAcceptsConditions
+  ) {
+    step = 4;
+  }
 
-    // 🟢 Paso 5: Proyecto subido al marketplace
-    if (projectOnMarketplace) {
-      setCurrentStep(5);
-    }
-  }, [projectData, progressObj, campaign]);
+  // 🟢 Paso 5: Proyecto publicado
+  if (projectOnMarketplace) {
+    step = 5;
+  }
+
+  setCurrentStep(step);
+}, [projectData, progressObj, campaign?.available]);
+
 
   useEffect(() => {
     const fetchUserGroups = async () => {
@@ -602,9 +614,8 @@ export default function ProjectPage() {
               {/* <ProjectFiles visible={activeSection === "files"} /> */}
               <FinanceCard visible={activeSection === "finance"} />
               <ProjectSettings
-                visible={
-                  activeSection === "settings" && (isVerifier || isAdmon)
-                }
+  visible={activeSection === "settings" && (isVerifier || isAdmon)}
+  campaign={campaign}
               />
               <ProjectAnalysis
                 visible={activeSection === "analysis"}
