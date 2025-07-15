@@ -1,19 +1,10 @@
 import React, { useState } from "react";
 import useUserCampaigns from "hooks/useUserCampaigns";
 import vacio from "../../views/_images/caja-vacia-gris.png";
-import {
-  getImagesCategories,
-  getYearFromAWSDatetime,
-} from "components/Constructor/ProjectPage/utils";
-import HeaderNavbar from "components/Investor/Navbars/HeaderNavbar";
-import { API, Auth, graphqlOperation } from "aws-amplify";
-import useFetchProperties from "hooks/useFetchProperties";
-import { createNotification, createUserProduct, updateProperty } from "graphql/mutations";
-import { formatArea } from "components/Constructor/ProjectPage/mappers";
-import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import { stateMapper } from "utilities/propertyStateMapper";
-import { useAuth } from "context/AuthContext";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
+import { FaEye, FaList, FaPlus, FaInfoCircle } from "react-icons/fa";
+import { Row } from "react-bootstrap";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
