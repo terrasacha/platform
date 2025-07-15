@@ -822,6 +822,8 @@ query ListProperties(
           userID
           name
           description
+          images
+          endDate
         }
         propertyFeatures {
           items {

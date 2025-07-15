@@ -327,7 +327,7 @@ export default function TokenDistributionInputTable(props) {
       );
       if (!response.data.createProductFeature) error = true;
     }
-    await fetchProjectData();
+      await fetchProjectData();
     if (!error) {
       notify({
         msg: "Distribución de tokens guardada exitosamente",
@@ -344,10 +344,10 @@ export default function TokenDistributionInputTable(props) {
           const totalOwnerTokens = parseFloat(row.TOKENS) || 0;
           const totalPercentage = newDistribution.reduce((sum, owner) => sum + (parseFloat(owner.percentage) || 0), 0);
           if (totalPercentage > 100) {
-            notify({
+      notify({
               msg: "El porcentaje total de propietarios no puede exceder el 100%",
-              type: "error",
-            });
+        type: "error",
+      });
             return row; // No actualizar si excede
           }
           return { ...row, ownerDistribution: newDistribution };
