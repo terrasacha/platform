@@ -41155,12 +41155,7 @@
         "name" : "deprecated",
         "description" : null,
         "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
-        "name" : "deprecated",
-        "description" : null,
-        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
         "args" : [ {
-          "name" : "reason",
-          "description" : null,
           "name" : "reason",
           "description" : null,
           "type" : {
@@ -41168,7 +41163,6 @@
             "name" : "String",
             "ofType" : null
           },
-          "defaultValue" : "\"No longer supported\""
           "defaultValue" : "\"No longer supported\""
         } ],
         "onOperation" : false,
