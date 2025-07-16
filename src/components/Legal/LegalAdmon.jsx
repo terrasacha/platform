@@ -54,18 +54,19 @@ const DocumentationModal = ({
 
   console.log("property", property);
 
-  const propertyFiles = property?.propertyFeatures?.items
-    .find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
-    .documents.items.map((document) => {
-      const documentData = JSON.parse(document.data || "");
-      return {
-        name: documentData.name,
-        type:
-          documentTypeMapper[documentData.type] ||
-          "Tipo de documento desconocido",
-        url: documentData.url,
-      };
-    });
+ const globalFilesFeature = property?.propertyFeatures?.items.find(
+  (feature) => feature?.featureID === "GLOBAL_PROPERTY_FILES"
+);
+
+const propertyFiles = globalFilesFeature?.documents?.items?.map((document) => {
+  const documentData = JSON.parse(document.data || "{}");
+  return {
+    name: documentData.name,
+    type: documentTypeMapper[documentData.type] || "Tipo de documento desconocido",
+    url: documentData.url,
+  };
+});
+
 
   console.log(propertyFiles);
 

@@ -19,5 +19,12 @@
         "platform": {}
       }
     }
+  },
+  "develop": {
+    "categories": {
+      "auth": {
+        "platform": {}
+      }
+    }
   }
 }
