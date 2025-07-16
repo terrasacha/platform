@@ -26,7 +26,7 @@ import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 import AlertMessage from "./AlertMessage";
 import { FiEdit3 } from "react-icons/fi";
 import TimelineProject from "./TimeLineProject";
-import LOGO from "../../common/_images/suan_logo.png";
+import LOGO from "../../common/TerrasachaLogo";
 
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
@@ -626,13 +626,10 @@ export default function ProjectPage() {
             <ToastContainer></ToastContainer>
           </div>
         ) : (
-         <div className="loading-overlay">
-    <img
-      src={LOGO}
-      alt="Logo Suan"
-      className="loading-logo"
-    />
-  </div>
+       <div className="loading-overlay">
+  <LOGO className="loading-logo" alt="logo" />
+</div>
+
         )}
       </div>
     </S3ClientProvider>

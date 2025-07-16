@@ -207,9 +207,13 @@ export default function ProductsList() {
       <hr className="my-10 border-t-2 border-dashed border-gray-300 w-full max-w-4xl mx-auto" />
       <div className="mb-4">
         <div className="flex items-baseline gap-2">
-          <h1 className="text-2xl font-bold text-left text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex-shrink-0">
-            Mis predios
-          </h1>
+         <h1
+  className="text-2xl font-bold text-left flex-shrink-0"
+  style={{ color: '#7b7b2c' }}
+>
+  Mis predios
+</h1>
+
         </div>
         <p className="text-sm text-gray-600 mt-1">
           Aquí puedes ver, filtrar y gestionar todos los predios que has

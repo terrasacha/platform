@@ -330,15 +330,16 @@ export default function ModalNewProperty({
         </Modal.Body>
         <hr className="my-0 border-t border-gray-200" />
         <div className="flex flex-col md:flex-row gap-3 justify-between bg-gray-50 rounded-b-2xl border-0 px-4 py-4">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-300 transition w-full md:w-auto"
-            aria-label="Cerrar modal"
-          >
-            <FaTimes className="text-base" />
-            Cancelar
-          </button>
+         <button
+  type="button"
+  onClick={handleClose}
+  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-white bg-[#7b7b2c] hover:bg-[#6a6a24] focus:outline-none focus:ring-2 focus:ring-[#b5b56a] transition shadow-md w-full md:w-auto"
+  aria-label="Cerrar modal"
+>
+  <FaTimes className="text-base" />
+  Cancelar
+</button>
+
           <button
             type="button"
             onClick={handleSave}

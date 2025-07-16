@@ -394,9 +394,12 @@ export default function ValidatorAdmon() {
           {activeTab === "campaigns" && (
             <section className="mx-auto p-2">
               <div className="mb-4">
-                <h1 className="text-2xl font-bold text-left text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex-shrink-0">
-                  Mis campañas
-                </h1>
+                <h1
+  className="text-2xl font-bold text-left flex-shrink-0"
+  style={{ color: '#74742c' }}
+>
+  Mis campañas
+</h1>
                 <p className="text-sm text-gray-600 mt-1">
                   Aquí puedes ver y gestionar todas las campañas en las que
                   participas como consultor.

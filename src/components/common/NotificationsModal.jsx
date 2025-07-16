@@ -145,7 +145,7 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
   }
 
   .header-custom {
-    background: #3b3b3b;
+    background: #7b7b2c;
     color: white;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;

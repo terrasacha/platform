@@ -28,9 +28,14 @@ export default class HeaderNavbar extends Component {
 
   getNavLinksByRole(role) {
     const commonLinks = [
-      <Nav.Link href="https://terrasacha.gitbook.io/terrasacha" target="_blank" rel="noopener noreferrer">
-        Ayuda
-      </Nav.Link>
+     <Nav.Link
+  href="https://terrasacha.gitbook.io/terrasacha"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="item-menu"
+>
+  Ayuda
+</Nav.Link>
     ];
 
     const roleBasedLinks = {
