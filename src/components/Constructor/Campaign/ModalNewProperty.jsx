@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { getPredialDataByCadastralNumber } from "services/getPredialDataByCadastralNumber";
 import { CheckIcon } from "components/common/icons/CheckIcon";
 import { XIcon } from "components/common/icons/XIcon";
+import { FaCheck, FaTimes, FaLeaf } from "react-icons/fa";
 
 const initialForm = {
   userID: "",
@@ -34,7 +35,8 @@ export default function ModalNewProperty({
   fetchCampaign,
 }) {
   const [loading, setLoading] = useState(false);
-  const [errorModal, setErrorModal] = useState({ show: false, message: "" }); // Estado para el modal de error
+  const [errorModal, setErrorModal] = useState({ show: false, message: "" });
+  const [fieldErrors, setFieldErrors] = useState({});
   const userID = useRef(null);
   const navigate = useNavigate();
   //const [predialFetchedData, setPredialFetchedData] = useState(null);
@@ -97,25 +99,18 @@ export default function ModalNewProperty({
 
   const handleSave = async () => {
     setLoading(true);
-  
-    // Validación del nombre del predio
-  
-    // Validación del nombre del predio
+    let errors = {};
     if (formData.name.trim() === "") {
-      showError("El nombre del predio es obligatorio.");
-      setLoading(false);
-      return;
+      errors.name = "El nombre del predio es obligatorio.";
     }
-  
-    // Validación de identificadores catastrales
     if (formData.description.trim() === "") {
-      showError("La descripción es obligatoria.");
-      setLoading(false);
-      return;
+      errors.description = "La descripción es obligatoria.";
     }
-
     if (formData.department === "") {
-      showError("Debe seleccionar un departamento.");
+      errors.department = "Debe seleccionar un departamento.";
+    }
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
       setLoading(false);
       return;
     }
@@ -214,6 +209,7 @@ export default function ModalNewProperty({
       }, 3000);
     } catch (error) {
       console.error("Error al postular el predio:", error);
+      showError("Ocurrió un error al postular el predio. Intenta nuevamente.");
     } finally {
       setLoading(false);
     }
@@ -225,6 +221,7 @@ export default function ModalNewProperty({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    setFieldErrors({ ...fieldErrors, [name]: undefined });
   };
 
   const handleCadastralChange = (e, index) => {
@@ -254,95 +251,70 @@ export default function ModalNewProperty({
   return (
     <>
       <Modal
-        aria-labelledby="contained-modal-title-vcenter"
+        aria-labelledby="modal-nuevo-predio-title"
         centered
         show={showModal}
         onHide={handleClose}
+        contentClassName="rounded-2xl shadow-2xl border-0"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Postular nuevo predio</Modal.Title>
+        <Modal.Header closeButton className="bg-green-50 border-0 rounded-t-2xl flex items-center gap-3">
+          <FaLeaf className="text-green-600 text-2xl mr-2" aria-hidden="true" />
+          <div>
+            <Modal.Title id="modal-nuevo-predio-title" className="text-2xl font-bold text-green-800">
+              Postular nuevo predio
+            </Modal.Title>
+            <div className="text-sm text-gray-600 font-normal mt-1">
+              Completa la información para comenzar el registro de tu predio en la plataforma.
+            </div>
+          </div>
         </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="pb-4" controlId="cadastralNumber">
-              <Form.Label>Nombre del predio</Form.Label>
+        <Modal.Body className="py-6 px-4 md:px-8">
+          <Form className="space-y-5">
+            <Form.Group controlId="propertyName">
+              <Form.Label className="font-semibold text-gray-700">Nombre del predio</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                placeholder="Ej: Finca El Paraíso"
+                aria-label="Nombre del predio"
+                aria-invalid={!!fieldErrors.name}
+                className={`rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition w-full ${fieldErrors.name ? "border-red-400" : ""}`}
                 required
               />
+              {fieldErrors.name && (
+                <div className="text-red-500 text-xs mt-1">{fieldErrors.name}</div>
+              )}
             </Form.Group>
-        {/*    <Form.Group className="pb-4" controlId="cadastralNumbers">
-              <Form.Label>Identificadores catastrales</Form.Label>
-              {formData.cadastralNumbers.map((cadastralNumber, index) => (
-                <div key={index} className="flex w-100 align-items-center mb-2">
-                  <Form.Control
-                    type="text"
-                    className="border-dark"
-                    name={`cadastralNumber-${index}`}
-                    value={cadastralNumber}
-                    placeholder="ex: 505730002000000070093000000000"
-                    onChange={(e) => handleCadastralChange(e, index)}
-                    required
-                  />
-                  {predialFetchedData &&
-                    predialFetchedData[cadastralNumber.trim()] ? (
-                    <CheckIcon className="ms-2 text-success" />
-                  ) : (
-                    <XIcon className="ms-2 text-danger" />
-                  )}
-                  <button
-                    type="button"
-                    className="btn btn-danger ms-2"
-                    onClick={() => removeCadastralNumber(index)}
-                  >
-                    <TrashIcon />
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                className="btn btn-primary mt-2"
-                onClick={addCadastralNumber}
-              >
-                Agregar identificador
-              </button>
-              <div className="mt-3">
-    <p className="text-muted">
-      ¿No sabes cómo sacar tu número catastral?{" "}
-      <a
-        href="https://terrasacha.gitbook.io/terrasacha/guia-de-usuario-plataforma/rol-propietario/como-obtener-el-numero-catastral-de-un-predio"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary"
-      >
-        Mira esta guía
-      </a>
-    </p>
-  </div>
-            </Form.Group>
- */}
-  <Form.Group className="pb-4" controlId="description">
-              <Form.Label>Descripción</Form.Label>
+            <Form.Group controlId="propertyDescription">
+              <Form.Label className="font-semibold text-gray-700">Descripción</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                placeholder="Describe brevemente el predio, ubicación, uso, etc."
+                aria-label="Descripción del predio"
+                aria-invalid={!!fieldErrors.description}
+                className={`rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition w-full ${fieldErrors.description ? "border-red-400" : ""}`}
                 required
               />
+              {fieldErrors.description && (
+                <div className="text-red-500 text-xs mt-1">{fieldErrors.description}</div>
+              )}
             </Form.Group>
-            
-            <Form.Group className="pb-4" controlId="department">
-              <Form.Label>Departamento</Form.Label>
+            <Form.Group controlId="propertyDepartment">
+              <Form.Label className="font-semibold text-gray-700">Departamento</Form.Label>
               <Form.Control
                 as="select"
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
+                aria-label="Departamento"
+                aria-invalid={!!fieldErrors.department}
+                className={`rounded-lg border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition w-full ${fieldErrors.department ? "border-red-400" : ""}`}
                 required
               >
                 <option value="">Seleccione un departamento</option>
@@ -350,27 +322,34 @@ export default function ModalNewProperty({
                   <option key={index} value={dept}>{dept}</option>
                 ))}
               </Form.Control>
+              {fieldErrors.department && (
+                <div className="text-red-500 text-xs mt-1">{fieldErrors.department}</div>
+              )}
             </Form.Group>
           </Form>
-         
         </Modal.Body>
-         {/* <Form.Group className='pb-4' controlId="images">
-            <Form.Label>Certificado de tradición</Form.Label>
-            <Form.Control
-              type="file"
-              name="files"
-              multiple
-              onChange={handleChange}
-            />
-          </Form.Group> */}
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cerrar
-          </Button>
-          <Button variant="primary" onClick={handleSave} disabled={loading}>
-            {loading ? <Spinner animation="border" size="sm" /> : "Postular"}
-          </Button>
-        </Modal.Footer>
+        <hr className="my-0 border-t border-gray-200" />
+        <div className="flex flex-col md:flex-row gap-3 justify-between bg-gray-50 rounded-b-2xl border-0 px-4 py-4">
+          <button
+            type="button"
+            onClick={handleClose}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-300 transition w-full md:w-auto"
+            aria-label="Cerrar modal"
+          >
+            <FaTimes className="text-base" />
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={loading}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 transition shadow-md w-full md:w-auto disabled:opacity-60"
+            aria-label="Postular predio"
+          >
+            {loading ? <Spinner animation="border" size="sm" /> : <FaCheck className="text-base" />}
+            {loading ? "Postulando..." : "Postular"}
+          </button>
+        </div>
       </Modal>
 
       {/* Modal para errores */}

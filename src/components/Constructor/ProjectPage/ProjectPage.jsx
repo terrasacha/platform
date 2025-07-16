@@ -26,6 +26,8 @@ import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 import AlertMessage from "./AlertMessage";
 import { FiEdit3 } from "react-icons/fi";
 import TimelineProject from "./TimeLineProject";
+import LOGO from "../../common/_images/suan_logo.png";
+
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 
@@ -624,7 +626,13 @@ export default function ProjectPage() {
             <ToastContainer></ToastContainer>
           </div>
         ) : (
-          <p>Loading or no data available</p>
+         <div className="loading-overlay">
+    <img
+      src={LOGO}
+      alt="Logo Suan"
+      className="loading-logo"
+    />
+  </div>
         )}
       </div>
     </S3ClientProvider>

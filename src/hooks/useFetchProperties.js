@@ -3,12 +3,12 @@ import { listProperties } from 'utilities/customQueries';
 import { API, graphqlOperation } from 'aws-amplify';
 
 export default function useFetchProperties() {
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [properties, setProperties] = useState([]);
     const [error, setError] = useState(null);
 
     const fetchProperties = async () => {
-        setLoading(true);
+        setIsLoading(true);
         try {
             const result = await API.graphql(graphqlOperation(listProperties));
               
@@ -18,7 +18,7 @@ export default function useFetchProperties() {
             console.error(error);
             setError(error);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -26,5 +26,5 @@ export default function useFetchProperties() {
         fetchProperties()
     },[])
 
-    return { loading, properties, error, fetchProperties };
+    return { isLoading, properties, error, fetchProperties };
 }

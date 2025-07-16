@@ -275,6 +275,7 @@ export default function PropertyDetails({
           documentTypeMapper[documentData.type] ||
           "Tipo de documento desconocido",
         url: documentData.url || document.url,
+        key: new URL(documentData.url).pathname.slice(1)
       };
     });
     console.log('files', files)
@@ -395,17 +396,27 @@ export default function PropertyDetails({
                           {doc.name}{" "}
                           <span className="text-gray-400 text-xs">({doc.type})</span>
                         </span>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            window.open(doc.url, "_blank");
-                          }}
-                          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                          aria-label={`Ver documento ${doc.name}`}
-                          tabIndex={0}
-                        >
-                          Ver
-                        </button>
+                       <button
+  type="button"
+  onClick={async () => {
+    if (!doc.key) {
+      toast.error("No se pudo obtener la clave del archivo en S3");
+      return;
+    }
+    const signedUrl = await getSignedFileUrl(doc.key);
+    if (signedUrl) {
+      window.open(signedUrl, "_blank");
+    } else {
+      toast.error("No se pudo generar la URL firmada");
+    }
+  }}
+  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+  aria-label={`Ver documento ${doc.name}`}
+  tabIndex={0}
+>
+  Ver
+</button>
+
                       </li>
                     ))}
                   </ul>
