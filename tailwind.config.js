@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        jost: ['Jost', 'sans-serif'], // Define la fuente personalizada
+        jost: ['Jost'], // Define la fuente personalizada
       },
     },
   },

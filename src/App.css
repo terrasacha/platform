@@ -27,13 +27,13 @@
   color: white;
 }
 
-body p, body h1, body h2, body h3, body h4, body h5, body h6 {
-  font-family: 'Jost', sans-serif !important;
+body {
+  @apply font-jost !important; 
 }
 
 button {
-  background-color: #74742c !important; /* Color de fondo */
-  border: 2px solid #74742c !important; /* Color del borde */
+  background-color: #6e6c35 !important; /* Color de fondo */
+  border: 2px solid #6e6c35 !important; /* Color del borde */
   color: white !important; /* Color del texto */
   padding: 10px 20px !important; /* Espaciado interno */
   font-size: 16px !important; /* Tamaño de la fuente */
