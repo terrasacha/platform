@@ -22,19 +22,29 @@ import Timeline from "./Timeline";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { DocumentationModal } from "../Legal/LegalAdmon";
 import { useAuth } from "context/AuthContext";
+import { FaArrowLeft, FaEye, FaCheck, FaTimes, FaGavel } from "react-icons/fa";
+
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 const statusColor = {
-  PENDING: "bg-gray-600",
-  APPROVED: "bg-green-600",
-  REJECTED: "bg-red-600",
+  PENDING: "bg-gray-500",
+  APPROVED: "bg-terrasacha-success",
+  REJECTED: "bg-terrasacha-danger",
+  SELECTABLE: "bg-terrasacha-secondary2",
+  DOC_UPLOADED: "bg-terrasacha-light",
+  ELEGIBLE: "bg-terrasacha-primary",
 };
+
 const statusEs = {
   PENDING: "Pendiente",
   APPROVED: "Aprobado",
   REJECTED: "Rechazado",
   NOT_SELECTABLE: "No seleccionable",
+  SELECTABLE: "Elegible",
+  DOC_UPLOADED: "Documentación Cargada",
+  ELEGIBLE: "Elegible",
 };
+
 export default function Property() {
   const { id } = useParams();
   const { propertyData, handlePropertyData } = usePropertyData();
@@ -135,6 +145,8 @@ export default function Property() {
         showCancelButton: true,
         confirmButtonText: "Sí, salir",
         cancelButtonText: "Cancelar",
+        confirmButtonColor: "#849b50", // terrasacha-secondary2
+        cancelButtonColor: "#dc3545",
       }).then((result) => {
         if (result.isConfirmed) {
           navigate(path);
@@ -142,6 +154,27 @@ export default function Property() {
       });
     } else {
       navigate(path);
+    }
+  };
+
+  const handleGoBack = () => {
+    if (hasUnsavedChanges) {
+      Swal.fire({
+        title: "Cambios sin guardar",
+        text: "Tienes cambios sin guardar. ¿Seguro que deseas salir?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, salir",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#849b50", // terrasacha-secondary2
+        cancelButtonColor: "#dc3545",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate(-1); // Go back to previous page
+        }
+      });
+    } else {
+      navigate(-1); // Go back to previous page
     }
   };
 
@@ -278,142 +311,164 @@ export default function Property() {
 
   return (
     <S3ClientProvider>
-      <div>
-        <div className="container-sm">
-          <div className="mb-5">
+      <div className="min-h-screen bg-gradient-to-br from-terrasacha-earth to-terrasacha-light">
+        <div className="container mx-auto px-4 py-6">
+          {/* Header Navigation */}
+          <div className="mb-8">
             <NewHeaderNavbar />
           </div>
-          <div className="my-2">-</div>
-          <div className="mt-4">
+
+          {/* Navigation Breadcrumb */}
+          <div className="mb-6">
             {property.campaign ? (
-              <a
+              <button
                 onClick={() =>
                   handleNavigation(`/campaign/${property.campaign.id}`)
                 }
-                className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-terrasacha-earth hover:bg-terrasacha-light text-terrasacha-secondary1 font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
               >
+                <FaArrowLeft className="text-sm" />
                 Regresar a la campaña
-              </a>
+              </button>
             ) : (
-              <a
-                onClick={() => handleNavigation(`/constructor`)}
-                className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+              <button
+                onClick={handleGoBack}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-terrasacha-earth hover:bg-terrasacha-light text-terrasacha-secondary1 font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
               >
-                Ir a mis predios
-              </a>
+                <FaArrowLeft className="text-sm" />
+                Volver
+              </button>
             )}
+          </div>
 
-            {/* 📌 Aquí está el contenedor donde agregaremos la línea de tiempo */}
-            <div className="relative pt-3 px-4 mb-4 mt-4 border rounded shadow">
-              <div className="row gy-2">
-                <header className="d-flex justify-content-between">
-                  <p className="fs-3 mb-0">{property.name}</p>
-                </header>
-                <section>
-                  <p className="fs-6 mb-0 fw-bold">Fecha de creación:</p>
-                  <p className="fs-6 mb-0">{property.createdAt}</p>
-                </section>
-                <section>
-                  <p className="fs-6 mb-0 fw-bold">Área Total:</p>
-                  <p className="fs-6 mb-0">
-                    {propertyData.projectCadastralRecords.totalAreaFormatted}
-                  </p>
-                </section>
-              </div>
-
-              {/* 📌 Estado del predio */}
+          {/* Property Header Card */}
+          <div className="bg-white rounded-2xl shadow-terrasacha-2xl border border-terrasacha-light p-8 mb-8 relative">
+            {/* Status Badge */}
+            <div className="absolute top-6 right-6">
               <span
-                className={`${
-                  statusColor[property.status]
-                } absolute top-4 right-4 bg-blue-500 text-xs text-white font-bold px-4 py-2 w-fit rounded-md text-nowrap`}
+                className={`${statusColor[property.status]} text-white text-xs font-typographica font-bold px-4 py-2 rounded-lg shadow-terrasacha`}
               >
                 {statusEs[property.status]}
               </span>
-
-              {/* 📌 Línea de tiempo horizontal dentro del div */}
-              <div className="mt-6">
-                <Timeline
-                  currentStep={currentStep}
-                  isFormComplete={isFormComplete}
-                  handleValidationComplete={handleValidationComplete}
-                  onStepChange={handleStepChange}
-                  propertyStatus={propertyData?.propertyInfo?.status}
-                  filesAreComplete={filesAreComplete}
-                  propertyId={propertyData?.propertyInfo?.id}
-                  userId={propertyData?.projectPostulant?.id}
-                  campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
-                  openChatOnLoad={openChatOnLoad}
-                  chatTarget={chatTarget}
-                />
-              </div>
-
-              <ul className="font-medium flex mt-4 pl-0 ">
-                <li>
-                  <a
-                    href="#details"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveSection("details");
-                    }}
-                    className={`${
-                      activeSection === "details"
-                        ? "text-black border-t border-r border-l border-gray-400 rounded-t-md"
-                        : "text-blue-500"
-                    } flex py-2 px-3`}
-                    aria-current="page"
-                  >
-                    Detalles
-                  </a>
-                </li>
-              </ul>
             </div>
-            {/* Acciones legales: Ver Documentación y Asignar/Desasignar predio */}
-            {user?.role === "legal" && (() => {
-              const canAssign = property.userLegalID === null && property.status !== "REJECTED" && property.status !== "APPROVED";
-              const canUnassign = property.userLegalID === user.id && property.status !== "REJECTED" && property.status !== "APPROVED";
-              const canValidate = property.userLegalID === user.id && property.status !== "APPROVED";
-              const showActions = canAssign || canUnassign || canValidate;
 
-              return showActions ? (
-                <div
-                  className="flex flex-wrap gap-2 mb-4"
-                  role="group"
-                  aria-label="Acciones legales"
+            {/* Property Title */}
+            <header className="mb-6">
+              <h1 className="text-4xl font-typographica font-bold text-terrasacha-secondary1 mb-4">
+                {property.name}
+              </h1>
+            </header>
+
+            {/* Property Info Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-typographica font-semibold text-terrasacha-secondary1 mb-2">
+                    Fecha de creación
+                  </h3>
+                  <p className="text-terrasacha-light font-typographica">
+                    {new Date(property.createdAt).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-typographica font-semibold text-terrasacha-secondary1 mb-2">
+                    Área Total
+                  </h3>
+                  <p className="text-terrasacha-light font-typographica">
+                    {propertyData.projectCadastralRecords.totalAreaFormatted}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Timeline Section */}
+            <div className=" border-terrasacha-light pt-6">
+              <Timeline
+                currentStep={currentStep}
+                isFormComplete={isFormComplete}
+                handleValidationComplete={handleValidationComplete}
+                onStepChange={handleStepChange}
+                propertyStatus={propertyData?.propertyInfo?.status}
+                filesAreComplete={filesAreComplete}
+                propertyId={propertyData?.propertyInfo?.id}
+                userId={propertyData?.projectPostulant?.id}
+                campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
+                openChatOnLoad={openChatOnLoad}
+                chatTarget={chatTarget}
+              />
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className=" border-terrasacha-light pt-6 mt-6">
+              <nav className="flex space-x-1">
+                <button
+                  onClick={() => setActiveSection("details")}
+                  className={`px-6 py-3 font-typographica font-semibold rounded-lg transition-all duration-300 ${
+                    activeSection === "details"
+                      ? "bg-terrasacha-primary text-white shadow-terrasacha"
+                      : "text-terrasacha-secondary1 hover:bg-terrasacha-light hover:text-terrasacha-secondary1"
+                  }`}
                 >
+                  Detalles
+                </button>
+              </nav>
+            </div>
+          </div>
+
+          {/* Legal Actions Section */}
+          {user?.role === "legal" && (() => {
+            const canAssign = property.userLegalID === null && property.status !== "REJECTED" && property.status !== "APPROVED";
+            const canUnassign = property.userLegalID === user.id && property.status !== "REJECTED" && property.status !== "APPROVED";
+            const canValidate = property.userLegalID === user.id && property.status !== "APPROVED";
+            const showActions = canAssign || canUnassign || canValidate;
+
+            return showActions ? (
+              <div className="bg-white rounded-2xl shadow-terrasacha-xl border border-terrasacha-light p-6 mb-8">
+                <h2 className="text-2xl font-typographica font-bold text-terrasacha-secondary1 mb-6 flex items-center gap-3">
+                  <FaGavel className="text-terrasacha-secondary2" />
+                  Acciones Legales
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {canAssign && (
                     <button
-                      className="w-full bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 text-white px-4 py-2 rounded transition-colors duration-150"
-                      aria-label="Asignar predio"
-                      tabIndex={0}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-terrasacha-success hover:bg-terrasacha-secondary2 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
                       onClick={() => handleToggleAssign(property)}
                     >
+                      <FaCheck />
                       Asignar predio
                     </button>
                   )}
                   {canUnassign && (
                     <button
-                      className="w-full bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 text-white px-4 py-2 rounded transition-colors duration-150"
-                      aria-label="Desasignar predio"
-                      tabIndex={0}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-terrasacha-danger hover:bg-red-600 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
                       onClick={() => handleToggleAssign(property)}
                     >
+                      <FaTimes />
                       Desasignar predio
                     </button>
                   )}
                   {canValidate && (
                     <button
-                      className="w-full bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 text-white px-4 py-2 rounded transition-colors duration-150"
-                      aria-label="Ver Documentación"
-                      tabIndex={0}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
                       onClick={() => setShowDocumentationModal(true)}
                     >
+                      <FaEye />
                       Validar Predio
                     </button>
                   )}
                 </div>
-              ) : null;
-            })()}
+              </div>
+            ) : null;
+          })()}
 
+          {/* Property Details Section */}
+          <div className="bg-white rounded-2xl shadow-terrasacha-xl border border-terrasacha-light">
             <PropertyDetails
               visible={activeSection === "details"}
               setHasUnsavedChanges={setHasUnsavedChanges}
@@ -426,6 +481,7 @@ export default function Property() {
           <ToastContainer />
         </div>
       </div>
+      
       <DocumentationModal
         isOpen={showDocumentationModal}
         onClose={() => setShowDocumentationModal(false)}

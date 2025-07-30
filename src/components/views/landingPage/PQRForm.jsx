@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { Form, Button, Modal, Container } from "react-bootstrap";
 import { Storage, Auth } from "aws-amplify";
 import awsmobile from "aws-exports";
-import s from "./LandingPage.module.css";
 import { FaArrowLeft } from "react-icons/fa";
 
 export default class PQRForm extends Component {
@@ -137,118 +135,155 @@ export default class PQRForm extends Component {
     }
 
     return (
-      <div className="container-fluid bg-tecnologia p-5" id="tecnologia">
-        <Container className={`${s.pqrContainer} mt-5 p-4`}>
-          <Button
-            variant="link"
-            style={{ color: "#1C3541" }}
-            className="mb-4 d-flex align-items-center gap-2"
-            onClick={() => (window.location.href = "/")}
-          >
-            <FaArrowLeft />
-            Regresar
-          </Button>
-          <h2 className="text-center mb-4">Envía tu PQRS</h2>
-          <Form onSubmit={this.handlePRQSubmit}>
-            <Form.Group controlId="prqDescription" className="mb-3">
-              <Form.Label>Descripción de la consulta</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={prqDescription}
-                onChange={(e) =>
-                  this.setState({ prqDescription: e.target.value })
-                }
-                required
-                minLength="30"
-                placeholder="Describe detalladamente tu consulta"
-              />
-
-              <Form.Text>
-                <div className="flex justify-between text-muted text-sm m-0">
-                  <p>La descripción debe tener al menos 30 caracteres.</p>
-                  <p>{prqDescription.length} caracteres</p>
-                </div>
-              </Form.Text>
-            </Form.Group>
-            <Form.Group controlId="prqFile" className="mb-3">
-              <Form.Label>Archivo (opcional)</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/png, image/gif, image/jpeg, image/jpg, application/pdf"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const maxFileSize = 15 * 1024 * 1024; // 15 MB en bytes
-                    if (
-                      ![
-                        "image/png",
-                        "image/gif",
-                        "image/jpeg",
-                        "image/jpg",
-                        "application/pdf",
-                      ].includes(file.type)
-                    ) {
-                      alert(
-                        "Solo se aceptan imágenes en formato PNG, GIF, PDF, JPEG o JPG."
-                      );
-                      e.target.value = null; // Limpiar el campo de archivo
-                    } else if (file.size > maxFileSize) {
-                      alert(
-                        "El tamaño máximo permitido para el archivo es de 15 MB."
-                      );
-                      e.target.value = null; // Limpiar el campo de archivo
-                    } else {
-                      this.setState({ prqFile: file });
-                    }
-                  }
-                }}
-              />
-              <Form.Text className="text-muted">
-                Formatos aceptados: PNG, GIF, JPEG, PDF, JPG. Tamaño máximo: 15
-                MB.
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group controlId="prqEmail" className="mb-3">
-              <Form.Label>Correo de contacto</Form.Label>
-              <Form.Control
-                type="email"
-                value={prqEmail}
-                onChange={(e) => this.setState({ prqEmail: e.target.value })}
-                required
-                placeholder="Ingresa tu correo electrónico"
-              />
-            </Form.Group>
-            <Button
-              type="submit"
-              style={{
-                backgroundColor: "#1C3541",
-                borderColor: "#1C3541",
-                color: "#fff",
-              }}
-              variant="primary"
-              className="w-100 mt-3"
-              disabled={isLoading}
+      <div className="min-h-screen bg-gradient-terrasacha-subtle flex items-center justify-center">
+        <div className="w-full max-w-6xl mx-auto py-16 px-8">
+          <div className="bg-white rounded-2xl shadow-terrasacha-xl p-8">
+            <button
+              onClick={() => window.history.back()}
+              className="text-terrasacha-secondary1 hover:text-terrasacha-primary mb-6 inline-flex items-center gap-2 transition-all duration-300 bg-transparent border-none p-0 cursor-pointer"
             >
-              Enviar PQRS
-            </Button>
-          </Form>
+              <FaArrowLeft className="text-lg" />
+              <span>Regresar</span>
+            </button>
+            
+            <h2 className="text-4xl font-bold text-center text-terrasacha-secondary1 mb-8">
+              Envía tu PQRS
+            </h2>
+            
+            <form onSubmit={this.handlePRQSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="prqDescription" className="text-terrasacha-secondary1 font-semibold text-lg mb-2 block">
+                  Descripción de la consulta
+                </label>
+                <textarea
+                  id="prqDescription"
+                  rows={4}
+                  value={prqDescription}
+                  onChange={(e) =>
+                    this.setState({ prqDescription: e.target.value })
+                  }
+                  required
+                  minLength="30"
+                  placeholder="Describe detalladamente tu consulta"
+                  className="w-full border-2 border-terrasacha-light rounded-xl p-4 focus:border-terrasacha-primary focus:ring-2 focus:ring-terrasacha-primary focus:ring-opacity-20 transition-all duration-300 resize-none"
+                />
+                <div className="flex justify-between text-sm text-terrasacha-light mt-2">
+                  <p>La descripción debe tener al menos 30 caracteres.</p>
+                  <p className={prqDescription.length >= 30 ? "text-terrasacha-secondary2" : "text-red-500"}>
+                    {prqDescription.length} caracteres
+                  </p>
+                </div>
+              </div>
+              
+              <div>
+                <label htmlFor="prqFile" className="text-terrasacha-secondary1 font-semibold text-lg mb-2 block">
+                  Archivo (opcional)
+                </label>
+                <input
+                  id="prqFile"
+                  type="file"
+                  accept="image/png, image/gif, image/jpeg, image/jpg, application/pdf"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const maxFileSize = 15 * 1024 * 1024; // 15 MB en bytes
+                      if (
+                        ![
+                          "image/png",
+                          "image/gif",
+                          "image/jpeg",
+                          "image/jpg",
+                          "application/pdf",
+                        ].includes(file.type)
+                      ) {
+                        alert(
+                          "Solo se aceptan imágenes en formato PNG, GIF, PDF, JPEG o JPG."
+                        );
+                        e.target.value = null; // Limpiar el campo de archivo
+                      } else if (file.size > maxFileSize) {
+                        alert(
+                          "El tamaño máximo permitido para el archivo es de 15 MB."
+                        );
+                        e.target.value = null; // Limpiar el campo de archivo
+                      } else {
+                        this.setState({ prqFile: file });
+                      }
+                    }
+                  }}
+                  className="w-full border-2 border-terrasacha-light rounded-xl p-3 focus:border-terrasacha-primary focus:ring-2 focus:ring-terrasacha-primary focus:ring-opacity-20 transition-all duration-300"
+                />
+                <p className="text-terrasacha-light text-sm mt-2">
+                  Formatos aceptados: PNG, GIF, JPEG, PDF, JPG. Tamaño máximo: 15 MB.
+                </p>
+              </div>
 
-          <Modal show={showModal} onHide={this.closeModal} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {modalType === "success" ? "Éxito" : "Error"}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{modalMessage}</Modal.Body>
-            <Modal.Footer>
-              <Button variant="primary" onClick={this.closeModal}>
-                Cerrar
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </Container>
+              <div>
+                <label htmlFor="prqEmail" className="text-terrasacha-secondary1 font-semibold text-lg mb-2 block">
+                  Correo de contacto
+                </label>
+                <input
+                  id="prqEmail"
+                  type="email"
+                  value={prqEmail}
+                  onChange={(e) => this.setState({ prqEmail: e.target.value })}
+                  required
+                  placeholder="Ingresa tu correo electrónico"
+                  className="w-full border-2 border-terrasacha-light rounded-xl p-4 focus:border-terrasacha-primary focus:ring-2 focus:ring-terrasacha-primary focus:ring-opacity-20 transition-all duration-300"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 shadow-terrasacha-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Enviando...
+                  </div>
+                ) : (
+                  "Enviar PQRS"
+                )}
+              </button>
+            </form>
+
+            {/* Modal */}
+            {showModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-scale-in">
+                <div className="bg-white rounded-2xl max-w-md w-full mx-4 shadow-terrasacha-2xl">
+                  {/* Modal Header */}
+                  <div className="bg-terrasacha-earth border-b border-terrasacha-light rounded-t-2xl p-6 flex justify-between items-center">
+                    <h3 className="text-terrasacha-secondary1 font-bold text-lg">
+                      {modalType === "success" ? "Éxito" : "Error"}
+                    </h3>
+                    <button
+                      onClick={this.closeModal}
+                      className="text-terrasacha-secondary1 hover:text-terrasacha-primary transition-all duration-300 text-2xl font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  
+                  {/* Modal Body */}
+                  <div className="p-6 text-terrasacha-secondary1">
+                    {modalMessage}
+                  </div>
+                  
+                  {/* Modal Footer */}
+                  <div className="bg-terrasacha-earth border-t border-terrasacha-light rounded-b-2xl p-6">
+                    <button 
+                      onClick={this.closeModal}
+                      className="bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-terrasacha"
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     );
   }

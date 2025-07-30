@@ -29,17 +29,17 @@ export default function ProductsList() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Colores de estado y labels
+  // Colores de estado y labels - Aplicando paleta Terrasacha
   const stateMapper = {
     PENDING: {
       label: "Pendiente",
-      badge: "bg-yellow-100 text-yellow-700 border border-yellow-400",
+      badge: "bg-terrasacha-earth text-terrasacha-secondary1 border border-terrasacha-earth",
       tooltip: "Pendiente: El predio está pendiente de revisión.",
       icon: <FaClock className="inline mr-1" />,
     },
     APPROVED: {
       label: "Aprobado",
-      badge: "bg-green-100 text-green-700 border border-green-400",
+      badge: "bg-terrasacha-secondary2 text-white border border-terrasacha-secondary2",
       tooltip: "Aprobado: El predio ha sido aprobado.",
       icon: <FaCheckCircle className="inline mr-1" />,
     },
@@ -51,7 +51,7 @@ export default function ProductsList() {
     },
     SELECTABLE: {
       label: "Seleccionable",
-      badge: "bg-blue-100 text-blue-700 border border-blue-400",
+      badge: "bg-terrasacha-light text-terrasacha-secondary1 border border-terrasacha-light",
       tooltip:
         "Seleccionable: El predio es elegible para continuar el proceso.",
       icon: <FaCheck className="inline mr-1" />,
@@ -122,100 +122,97 @@ export default function ProductsList() {
 
   return (
     <section className="mx-auto p-2">
-      {/* Banner */}
-      <div className="bg-gray-100 rounded-3xl p-8 md:p-12">
+      {/* Banner - Aplicando diseño Terrasacha */}
+      <div className="bg-gradient-terrasacha-subtle rounded-3xl p-8 md:p-12 shadow-terrasacha-lg">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 text-left mb-10 md:mb-0 md:pr-12 relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
-              Gestiona tus <span className="text-green-600">predios</span> para
+            <h1 className="text-4xl md:text-5xl font-typographica font-bold text-terrasacha-secondary1 leading-tight">
+              Gestiona tus <span className="text-terrasacha-primary">predios</span> para
               un futuro sostenible
             </h1>
-            <p className="mt-4 text-gray-600 text-lg">
+            <p className="mt-4 text-terrasacha-secondary1 text-lg font-typographica">
               Convierte tu predio en un activo ambiental, accede a beneficios y
               contribuye a la sostenibilidad gestionando toda la información y
               el estado de tus predios desde un solo lugar.
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="mt-8 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300"
+              className="mt-8 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-bold py-3 px-6 rounded-lg shadow-terrasacha transition-all duration-300 transform hover:scale-105"
             >
               Registrar predio
             </button>
           </div>
-          {/* Decoracion */}
+          {/* Decoracion - Usando colores Terrasacha */}
           <div className="md:w-1/2 relative flex justify-center items-center">
             <div className="relative w-[350px] h-[350px] md:w-[500px] md:h-[500px]">
               <div className="absolute -bottom-12 -right-16 w-60 h-60 pointer-events-none z-0">
                 <svg
-                  className="w-full h-full text-green-100 opacity-60"
+                  className="w-full h-full text-terrasacha-light opacity-60"
                   fill="currentColor"
                   viewBox="0 0 200 200"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M47.7,-59.8C62.2,-51,74.7,-36.5,78.3,-19.9C81.9,-3.3,76.6,15.4,67.7,30.3C58.8,45.2,46.4,56.3,31.7,64.9C17,73.5,-0.1,79.5,-16,77.2C-31.9,74.9,-46.7,64.2,-58.5,51.3C-70.3,38.4,-79.1,23.3,-81.4,7.1C-83.7,-9.1,-79.5,-26.3,-69.5,-40.7C-59.5,-55.1,-43.7,-66.8,-28.1,-71.4C-12.5,-76,-0.6,-73.4,11.8,-69C24.1,-64.6,33.1,-68.5,47.7,-59.8Z"
-                    fill="#A9D6B8"
+                    fill="currentColor"
                     transform="translate(100 100) scale(1.2)"
                   ></path>
                 </svg>
               </div>
               <div className="absolute top-0 -left-40 w-52 h-52 pointer-events-none z-0">
                 <svg
-                  className="w-full h-full text-sky-100 opacity-70"
+                  className="w-full h-full text-terrasacha-earth opacity-70"
                   fill="currentColor"
                   viewBox="0 0 200 200"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M52.1,-63.3C66.8,-53.2,77.5,-36.8,79.8,-19.4C82.1,-2,76,16.4,66.1,32.1C56.2,47.8,42.5,60.8,26.5,68.8C10.5,76.8,-7.7,79.8,-25.5,75.4C-43.2,71,-60.5,59.2,-69.7,43.9C-78.9,28.6,-80.1,9.8,-75.9,-6.2C-71.7,-22.2,-62.1,-35.5,-50.3,-46.9C-38.5,-58.3,-24.5,-67.7,-8.7,-70.7C7,-73.7,27.5,-70.5,52.1,-63.3Z"
-                    fill="#D1E5F0"
+                    fill="currentColor"
                     transform="translate(100 100) scale(1.1)"
                   ></path>
                 </svg>
               </div>
               <div className="absolute top-0 right-20 w-32 h-32 pointer-events-none z-0">
                 <svg
-                  className="w-full h-full text-purple-100 opacity-50"
+                  className="w-full h-full text-terrasacha-secondary2 opacity-50"
                   fill="currentColor"
                   viewBox="0 0 200 200"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M47.7,-59.8C62.2,-51,74.7,-36.5,78.3,-19.9C81.9,-3.3,76.6,15.4,67.7,30.3C58.8,45.2,46.4,56.3,31.7,64.9C17,73.5,-0.1,79.5,-16,77.2C-31.9,74.9,-46.7,64.2,-58.5,51.3C-70.3,38.4,-79.1,23.3,-81.4,7.1C-83.7,-9.1,-79.5,-26.3,-69.5,-40.7C-59.5,-55.1,-43.7,-66.8,-28.1,-71.4C-12.5,-76,-0.6,-73.4,11.8,-69C24.1,-64.6,33.1,-68.5,47.7,-59.8Z"
-                    fill="#E9D5FF"
+                    fill="currentColor"
                     transform="translate(100 100) scale(1.1)"
                   ></path>
                 </svg>
               </div>
               <div
-                className="absolute inset-0 bg-cover bg-center rounded-xl shadow-xl"
+                className="absolute inset-0 bg-cover bg-center rounded-xl shadow-terrasacha-xl"
                 style={{
                   backgroundImage: "url('/hexagon_no_white_bg.png')",
                   clipPath:
                     "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
                 }}
               ></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-200 text-gray-800 px-6 py-3 rounded-full shadow-lg flex items-center z-10">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-terrasacha-secondary1 px-6 py-3 rounded-full shadow-terrasacha-lg flex items-center z-10">
                 <span className="font-semibold mr-2 text-lg">CO₂</span>
-                <FaCheckCircle className="text-green-600 text-3xl" />
+                <FaCheckCircle className="text-terrasacha-secondary2 text-3xl" />
               </div>
             </div>
           </div>
         </div>
       </div>
       {/* Separador decorativo */}
-      <hr className="my-10 border-t-2 border-dashed border-gray-300 w-full max-w-4xl mx-auto" />
+      <hr className="my-10 border-t-2 border-dashed border-terrasacha-light w-full max-w-4xl mx-auto" />
       <div className="mb-4">
         <div className="flex items-baseline gap-2">
-         <h1
-  className="text-2xl font-bold text-left flex-shrink-0"
-  style={{ color: '#7b7b2c' }}
->
+         <h1 className="text-2xl font-typographica font-bold text-left flex-shrink-0 text-terrasacha-primary">
   Mis predios
 </h1>
 
         </div>
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-sm text-terrasacha-secondary1 mt-1 font-typographica">
           Aquí puedes ver, filtrar y gestionar todos los predios que has
           registrado en la plataforma.
         </p>
@@ -226,10 +223,10 @@ export default function ProductsList() {
             <button
               key={option.key}
               type="button"
-              className={`flex items-center px-3 py-1 rounded-lg border text-xs font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`flex items-center px-3 py-1 rounded-lg border text-xs font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary ${
                 filterStatus === option.key
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                  ? "bg-terrasacha-primary text-white border-terrasacha-primary shadow-terrasacha"
+                  : "bg-white text-terrasacha-secondary1 border-terrasacha-light hover:bg-terrasacha-earth hover:border-terrasacha-primary"
               }`}
               aria-label={`Filtrar por estado: ${option.label}`}
               onClick={() => setFilterStatus(option.key)}
@@ -240,13 +237,13 @@ export default function ProductsList() {
           ))}
         </div>
       </div>
-      <div className="bg-white rounded-t-lg shadow-xl border border-gray-100 flex flex-col">
+      <div className="bg-white rounded-t-lg rounded-b-lg shadow-terrasacha-xl border border-terrasacha-light flex flex-col">
         {/* Buscador y paginación */}
-        <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
+        <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-terrasacha-earth border-b border-terrasacha-light">
           <div className="flex items-center gap-2 w-full md:w-auto">
             <label
               htmlFor="searchInput"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-terrasacha-secondary1 font-typographica"
             >
               Buscar predio:
             </label>
@@ -256,18 +253,18 @@ export default function ProductsList() {
               placeholder="Nombre del predio..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 flex-1 min-w-0"
+              className="border border-terrasacha-light rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-terrasacha-primary focus:border-terrasacha-primary transition-all duration-200 hover:border-terrasacha-primary flex-1 min-w-0 font-typographica"
             />
           </div>
           <div className="flex flex-col gap-2 w-full md:w-auto md:flex-row md:gap-4 md:justify-end">
             <div className="flex items-center gap-2 w-full md:w-auto md:order-1">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-terrasacha-secondary1 font-typographica">
                 Filas por página:
               </span>
               <select
                 value={rowsPerPage}
                 onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="border border-terrasacha-light rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-terrasacha-primary focus:border-terrasacha-primary transition-all duration-200 font-typographica"
               >
                 {[10, 20, 30, 50].map((num) => (
                   <option key={num} value={num}>
@@ -278,17 +275,17 @@ export default function ProductsList() {
             </div>
             <div className="flex items-center gap-2 w-full md:w-auto md:order-2 justify-between md:justify-end">
               <button
-                className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
+                className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1 font-typographica"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
                 Anterior
               </button>
-              <span className="text-sm font-medium text-gray-700 px-3 py-1 bg-white rounded-lg border border-gray-200">
+              <span className="text-sm font-medium text-terrasacha-secondary1 px-3 py-1 bg-white rounded-lg border border-terrasacha-light font-typographica">
                 Página {currentPage} de {totalPages}
               </span>
               <button
-                className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
+                className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1 font-typographica"
                 onClick={() =>
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
@@ -301,9 +298,9 @@ export default function ProductsList() {
         </div>
         {/* Tabla de predios */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 shadow-lg border border-gray-200">
+          <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-terrasacha-earth to-terrasacha-light shadow-terrasacha-lg border border-terrasacha-light">
             <svg
-              className="animate-spin h-16 w-16 text-blue-500 mb-6"
+              className="animate-spin h-16 w-16 text-terrasacha-primary mb-6"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -324,43 +321,43 @@ export default function ProductsList() {
                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
               ></path>
             </svg>
-            <p className="text-gray-500 text-lg font-medium">
+            <p className="text-terrasacha-secondary1 text-lg font-medium font-typographica">
               Cargando predios...
             </p>
           </div>
         ) : sortedProperties.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg border border-gray-200">
+          <div className="flex rounded-b-lg flex-col items-center justify-center py-16 bg-gradient-to-br from-terrasacha-earth to-terrasacha-light shadow-terrasacha-lg border border-terrasacha-light">
             <img
               src={vacio}
               className="w-32 h-32 mb-6 opacity-60"
               alt="Sin predios"
             />
-            <p className="text-gray-500 text-lg font-medium">
+            <p className="text-terrasacha-secondary1 text-lg font-medium font-typographica">
               No tienes predios postulados.
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-terrasacha-light scrollbar-track-terrasacha-earth">
             <table className="min-w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                  <th className="text-left px-2 py-1 font-semibold text-xs"></th>
-                  <th className="text-left px-2 py-1 font-semibold text-xs">
+                <tr className="bg-gradient-to-r from-terrasacha-earth to-terrasacha-light border-b border-terrasacha-light">
+                  <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica"></th>
+                  <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica">
                     Predio
                   </th>
-                  <th className="text-left px-2 py-1 font-semibold text-xs">
+                  <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica">
                     Descripción
                   </th>
-                  <th className="text-left px-2 py-1 font-semibold text-xs">
+                  <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica">
                     Campaña
                   </th>
-                  <th className="text-left px-2 py-1 font-semibold text-xs">
+                  <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica">
                     Fecha de inscripción
                   </th>
-                  <th className="text-left px-2 py-1 font-semibold text-xs">
+                  <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica">
                     Departamento
                   </th>
-                  <th className="text-left px-2 py-1 font-semibold text-xs">
+                  <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica">
                     Estado
                   </th>
                 </tr>
@@ -369,14 +366,14 @@ export default function ProductsList() {
                 {paginatedProperties.map((property, idx) => (
                   <tr
                     key={property.id}
-                    className={`text-xs transition-all duration-200 uppercase border-b border-gray-100 hover:bg-blue-200 ${
-                      idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    className={`text-xs transition-all duration-200 uppercase border-b border-terrasacha-light hover:bg-terrasacha-earth ${
+                      idx % 2 === 0 ? "bg-white" : "bg-terrasacha-earth"
                     }`}
                   >
                     <td className="px-3 py-2">
                       <button
                         onClick={() => window.location.href = `/property/${property.id}`}
-                        className="border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
+                        className="border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-secondary1 hover:shadow-terrasacha active:bg-terrasacha-secondary1 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
                         aria-label="Ver detalles del predio"
                         data-tooltip-id={`tooltip-details-${property.id}`}
                         data-tooltip-content="Ver detalles del predio"
@@ -389,8 +386,8 @@ export default function ProductsList() {
                         effect="solid"
                       />
                     </td>
-                    <td className="px-2 py-1 min-w-36">{property.name}</td>
-                    <td className="px-2 py-1 max-w-xs truncate">
+                    <td className="px-2 py-1 min-w-36 text-terrasacha-secondary1 font-typographica">{property.name}</td>
+                    <td className="px-2 py-1 max-w-xs truncate text-terrasacha-secondary1 font-typographica">
                       {property.description || "Sin descripción"}
                     </td>
                     <td className="px-2 py-1 min-w-36">
@@ -405,7 +402,7 @@ export default function ProductsList() {
                         return (
                           <>
                             <span
-                              className="inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase bg-blue-100 text-blue-700 border border-blue-400 cursor-pointer hover:bg-blue-200 transition"
+                              className="inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase bg-terrasacha-light text-terrasacha-secondary1 border border-terrasacha-light cursor-pointer hover:bg-terrasacha-secondary2 hover:text-white transition"
                               data-tooltip-id={`tooltip-campaign-${property.id}`}
                               aria-label={`Información de la campaña: ${property.campaign.name}`}
                               as="a"
@@ -413,7 +410,7 @@ export default function ProductsList() {
                               <a
                                 href={`/campaign/${property.campaign.id}`}
                                 tabIndex={0}
-                                className="outline-none focus:ring-2 focus:ring-blue-400 rounded"
+                                className="outline-none focus:ring-2 focus:ring-terrasacha-primary rounded"
                                 onClick={e => e.stopPropagation()}
                                 onKeyDown={e => {
                                   if (e.key === 'Enter' || e.key === ' ') {
@@ -436,7 +433,7 @@ export default function ProductsList() {
                                     <img
                                       src={campaignImage}
                                       alt="Imagen campaña"
-                                      className="w-32 h-20 object-cover rounded mb-2 border border-gray-200 shadow"
+                                      className="w-32 h-20 object-cover rounded mb-2 border border-terrasacha-light shadow-terrasacha"
                                     />
                                   )}
                                   <div className="text-xs text-left">
@@ -444,7 +441,7 @@ export default function ProductsList() {
                                     {property.campaign.description && (
                                       <div className="mb-1">{property.campaign.description}</div>
                                     )}
-                                    <div className="text-gray-500">
+                                    <div className="text-terrasacha-secondary1">
                                       Fecha: {property.campaign.endDate ? new Date(property.campaign.endDate*1000).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" }) : "-"}
                                     </div>
                                   </div>
@@ -459,7 +456,7 @@ export default function ProductsList() {
                         </span>
                       )}
                     </td>
-                    <td className="px-2 py-1 min-w-28">
+                    <td className="px-2 py-1 min-w-28 text-terrasacha-secondary1 font-typographica">
                       {property.createdAt
                         ? new Date(property.createdAt).toLocaleDateString(
                             "es-ES",
@@ -471,7 +468,7 @@ export default function ProductsList() {
                           )
                         : "-"}
                     </td>
-                    <td className="px-2 py-1">{property.department || "-"}</td>
+                    <td className="px-2 py-1 text-terrasacha-secondary1 font-typographica">{property.department || "-"}</td>
                     <td className="px-2 py-1 min-w-36">
                       <span
                         className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${

@@ -6,6 +6,7 @@ import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import { usePropertyData } from "context/PropertyDataContext";
 import Swal from "sweetalert2";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { FaEye, FaCheck, FaTimes, FaExclamationTriangle } from "react-icons/fa";
 
 import ActualUseAndPotential from "components/Constructor/Property/ActualUseAndPotential";
 import UseRestrictions from "./UseRestrictions";
@@ -98,210 +99,148 @@ export default function PropertyDetails({
 
   const handleValidateProperty = async (status) => {
     if (!propertyData?.propertyInfo?.id) {
-      console.error("❌ Error: El predio no tiene un ID válido.");
-      toast.error("Error en la información del predio.");
+      toast.error("No se pudo obtener el ID del predio");
       return;
     }
 
-    setIsLoading(true);
     try {
-      // 🔹 Actualizar estado del predio en la API
       await API.graphql(
         graphqlOperation(updateProperty, {
           input: {
             id: propertyData.propertyInfo.id,
-            status,
+            status: status,
           },
         })
       );
 
-      // 🔹 Obtener el ID del dueño del predio
-      const propertyOwnerID = propertyData.projectPostulant?.id || null;
-
-      if (!propertyOwnerID) {
-        console.warn("⚠️ No se encontró un dueño del predio en propertyData.");
-      }
-
-      // 🔹 Crear mensaje de notificación según estado
-      const notificationMessage =
-        status === "APPROVED"
-          ? `✅ Tu predio '${propertyData.propertyInfo.name}' ha sido aprobado. 🎉`
-          : `❌ Tu predio '${propertyData.propertyInfo.name}' ha sido rechazado.`;
-
       const notificationData = {
-        userOriginID: user.id, // Usuario que realiza la validación
-        userID: propertyOwnerID, // Dueño del predio
-        message: notificationMessage,
+        userOriginID: user.id,
+        userID: propertyData.projectPostulant.id,
+        message: `Tu predio '${propertyData.propertyInfo.name}' ha sido ${status === "APPROVED" ? "aprobado" : "rechazado"}.`,
         type: "PROPERTY",
-        resourceID: propertyData.propertyInfo.id, // ID del predio
+        resourceID: propertyData.propertyInfo.id,
         isRead: false,
       };
 
-      console.log("📩 Enviando notificación:", notificationData);
-
-      // 🔹 Enviar la notificación si hay un propietario identificado
-      if (propertyOwnerID) {
-        await API.graphql(
-          graphqlOperation(createNotification, { input: notificationData })
-        );
-      } else {
-        console.warn(
-          "⚠️ No se envió la notificación porque no hay dueño asignado al predio."
-        );
-      }
+      await API.graphql(
+        graphqlOperation(createNotification, { input: notificationData })
+      );
 
       toast.success(
-        `Predio ${
-          status === "APPROVED" ? "aprobado" : "rechazado"
-        } exitosamente`
+        `Predio ${status === "APPROVED" ? "aprobado" : "rechazado"} exitosamente`
       );
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // Actualizar el estado local
+      setStatus(status);
     } catch (error) {
-      console.error(
-        "❌ Error al actualizar el estado del predio o enviar la notificación:",
-        error
-      );
-      toast.error("Error en la validación del predio.");
-    } finally {
-      setIsLoading(false);
+      console.error("Error al actualizar el estado del predio:", error);
+      toast.error("Error al actualizar el estado del predio");
     }
   };
 
   const updateFormCompletion = (formName, isComplete) => {
-    console.log(`📩 Recibido desde hijo: ${formName} →`, isComplete);
-
-    setFormCompletion((prev) => {
-      const newCompletion = { ...prev, [formName]: Boolean(isComplete) };
-      const anyComplete = Object.values(newCompletion).some(
-        (value) => value === true
-      );
-      setIsFormComplete(anyComplete);
-
-      return newCompletion;
-    });
+    setFormCompletion((prev) => ({
+      ...prev,
+      [formName]: isComplete,
+    }));
   };
 
   const checkAllStepsCompleted = async () => {
-    try {
-      const response = await API.graphql(
-        graphqlOperation(listPropertyFeatures, {
-          filter: {
-            propertyID: { eq: propertyData?.propertyInfo?.id },
-            featureID: { eq: "GLOBAL_PROPERTY_STATUS" },
-          },
-        })
-      );
+    const allCompleted = Object.values(formCompletion).every(
+      (isComplete) => isComplete
+    );
 
-      const items = response?.data?.listPropertyFeatures?.items || [];
-      if (items.length === 0) return false;
-
-      const value = JSON.parse(items[0].value);
-
-      const booleanFieldsValid =
-        value.analisis === true &&
-        value.monitoreos === true &&
-        value.revision_memorando === true &&
-        value.validacion_inicial === true;
-
-      const memorandoValid =
-        value.memorando &&
-        !!value.memorando.uploadDate &&
-        !!value.memorando.url;
-
-      return booleanFieldsValid && memorandoValid;
-    } catch (error) {
-      console.error("❌ Error verificando pasos del propertyFeature:", error);
-      return false;
+    if (allCompleted) {
+      console.log("✅ Todos los formularios están completos");
+      setIsFormComplete(true);
+    } else {
+      console.log("❌ Algunos formularios no están completos:", formCompletion);
+      setIsFormComplete(false);
     }
   };
 
-  // Función para mostrar el modal con las opciones de validación
-  const handleVerifyClick = async () => {
-    const allStepsReady = await checkAllStepsCompleted();
+  useEffect(() => {
+    checkAllStepsCompleted();
+  }, [formCompletion]);
 
-    if (!allStepsReady) {
-      Swal.fire({
-        icon: "warning",
-        title: "Pasos pendientes",
-        text: "Aún hay pasos del propietario sin completar. Por favor, completa todos antes de validar.",
-      });
+  const handleVerifyClick = async () => {
+    if (currentStep < 4) {
+      toast.error("Debes completar los pasos anteriores antes de verificar");
       return;
     }
 
-    Swal.fire({
-      title: "Verificación del predio",
-      text: "Selecciona si deseas aprobar o rechazar el predio.",
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¿Deseas aprobar este predio?",
       icon: "question",
       showCancelButton: true,
-      showDenyButton: true,
-      confirmButtonText: "✅ Aprobar",
-      denyButtonText: "❌ Rechazar",
+      confirmButtonText: "Sí, aprobar",
       cancelButtonText: "Cancelar",
-      reverseButtons: true,
-      confirmButtonColor: "#28a745",
-      denyButtonColor: "#dc3545",
-      cancelButtonColor: "#6c757d",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleValidateProperty("APPROVED");
-      } else if (result.isDenied) {
-        handleValidateProperty("REJECTED");
-      }
+      confirmButtonColor: "#849b50", // terrasacha-secondary2
+      cancelButtonColor: "#dc3545",
     });
-  };
 
-  // Función para setear los documentos del predio (GLOBAL_PROPERTY_FILES)
-  const updatePropertyFiles = () => {
-    const globalFilesFeature = propertyData?.propertyFeatures?.find(
-      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
-    );
-    if (!globalFilesFeature || !Array.isArray(globalFilesFeature.documents?.items)) {
-      setPropertyFiles([]);
-      return;
-    }
-    const files = globalFilesFeature.documents.items.map((document) => {
-      let documentData = {};
+    if (result.isConfirmed) {
+      setIsLoading(true);
       try {
-        documentData = JSON.parse(document.data || "");
-      } catch {
-        documentData = {};
+        await handleValidateProperty("APPROVED");
+      } finally {
+        setIsLoading(false);
       }
-      return {
-        name: documentData.name || document.id,
-        type:
-          documentTypeMapper[documentData.type] ||
-          "Tipo de documento desconocido",
-        url: documentData.url || document.url,
-        key: new URL(documentData.url).pathname.slice(1)
-      };
-    });
-    console.log('files', files)
-    setPropertyFiles(files);
+    }
   };
 
-  const getSignedFileUrl = async (fileKey) => {
-    const command = new GetObjectCommand({
-      Bucket: bucketName,
-      Key: fileKey,
-    });
+  const updatePropertyFiles = () => {
+    if (!propertyData?.propertyInfo?.id) return;
 
-    return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+    const files = propertyData.propertyFeatures?.items
+      ?.filter((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
+      ?.map((feature) => {
+        try {
+          const filesData = JSON.parse(feature.value || "[]");
+          return filesData.map((file) => ({
+            ...file,
+            type: documentTypeMapper[file.type] || file.type,
+          }));
+        } catch (error) {
+          console.error("Error parsing files data:", error);
+          return [];
+        }
+      })
+      ?.flat() || [];
+
+    setPropertyFiles(files);
   };
 
   useEffect(() => {
     updatePropertyFiles();
-    // eslint-disable-next-line
   }, [propertyData]);
+
+  const getSignedFileUrl = async (fileKey) => {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: bucketName,
+        Key: fileKey,
+      });
+
+      const signedUrl = await getSignedUrl(s3Client, command, {
+        expiresIn: 3600, // 1 hora
+      });
+
+      return signedUrl;
+    } catch (error) {
+      console.error("Error generating signed URL:", error);
+      return null;
+    }
+  };
 
   return (
     <>
       {visible && propertyData && (
-        <>
-          <div className="row row-cols-1 row-cols-xl-2 g-4">
-            <div className="col-12 col-xl-12">
+        <div className="p-8">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {/* Cadastral Records - Full Width */}
+            <div className="xl:col-span-2">
               <CadastralRecords
                 autorizedUser={autorizedUser}
                 totalArea={totalArea}
@@ -315,7 +254,8 @@ export default function PropertyDetails({
               />
             </div>
 
-            <div className="col-12">
+            {/* Actual Use and Potential */}
+            <div className="xl:col-span-2">
               <ActualUseAndPotential
                 autorizedUser={autorizedUser}
                 setHasUnsavedChanges={setHasUnsavedChanges}
@@ -326,7 +266,8 @@ export default function PropertyDetails({
               />
             </div>
 
-            <div className="col-12">
+            {/* Use Restrictions */}
+            <div className="xl:col-span-2">
               <UseRestrictions
                 autorizedUser={autorizedUser}
                 setHasUnsavedChanges={setHasUnsavedChanges}
@@ -337,7 +278,8 @@ export default function PropertyDetails({
               />
             </div>
 
-            <div className="col-12">
+            {/* Ecosystem */}
+            <div className="xl:col-span-2">
               <Ecosystem
                 autorizedUser={autorizedUser}
                 setHasUnsavedChanges={setHasUnsavedChanges}
@@ -348,7 +290,8 @@ export default function PropertyDetails({
               />
             </div>
 
-            <div className="col">
+            {/* General Aspects */}
+            <div>
               <GeneralAspects
                 autorizedUser={autorizedUser}
                 setHasUnsavedChanges={setHasUnsavedChanges}
@@ -359,7 +302,8 @@ export default function PropertyDetails({
               />
             </div>
 
-            <div className="col">
+            {/* Relations */}
+            <div>
               <Relations
                 autorizedUser={autorizedUser}
                 setHasUnsavedChanges={setHasUnsavedChanges}
@@ -370,7 +314,8 @@ export default function PropertyDetails({
               />
             </div>
 
-            <div className="col">
+            {/* Additional Files */}
+            <div>
               <AdditionalFiles
                 autorizedUser={autorizedUser}
                 basePath={`projects/${propertyData.propertyInfo?.projectID}/other/`}
@@ -379,96 +324,121 @@ export default function PropertyDetails({
               />
             </div>
 
-            {/* Sección de documentos del predio */}
-            <div className="col">
-              <div className="bg-white shadow rounded-lg p-6">
-                <h3 className="text-lg font-bold mb-4">Documentos del predio</h3>
+            {/* Property Documents */}
+            <div>
+              <div className="bg-white shadow-terrasacha-xl rounded-2xl p-6 border border-terrasacha-light">
+                <h3 className="text-xl font-typographica font-bold text-terrasacha-secondary1 mb-6">
+                  Documentos del predio
+                </h3>
                 {propertyFiles.length === 0 ? (
-                  <p className="text-gray-500 italic">No hay documentos asociados.</p>
+                  <p className="text-terrasacha-light italic font-typographica">
+                    No hay documentos asociados.
+                  </p>
                 ) : (
-                  <ul>
+                  <div className="space-y-3">
                     {propertyFiles.map((doc, idx) => (
-                      <li
+                      <div
                         key={doc.url + idx}
-                        className="flex items-center justify-between border-b py-2"
+                        className="flex items-center justify-between p-3 bg-terrasacha-light bg-opacity-30 rounded-lg border border-terrasacha-light"
                       >
-                        <span className="truncate max-w-xs">
-                          {doc.name}{" "}
-                          <span className="text-gray-400 text-xs">({doc.type})</span>
-                        </span>
-                       <button
-  type="button"
-  onClick={async () => {
-    if (!doc.key) {
-      toast.error("No se pudo obtener la clave del archivo en S3");
-      return;
-    }
-    const signedUrl = await getSignedFileUrl(doc.key);
-    if (signedUrl) {
-      window.open(signedUrl, "_blank");
-    } else {
-      toast.error("No se pudo generar la URL firmada");
-    }
-  }}
-  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-  aria-label={`Ver documento ${doc.name}`}
-  tabIndex={0}
->
-  Ver
-</button>
-
-                      </li>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-terrasacha-secondary1 font-typographica font-medium truncate">
+                            {doc.name}
+                          </p>
+                          <p className="text-terrasacha-light text-sm font-typographica">
+                            {doc.type}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (!doc.key) {
+                              toast.error("No se pudo obtener la clave del archivo en S3");
+                              return;
+                            }
+                            const signedUrl = await getSignedFileUrl(doc.key);
+                            if (signedUrl) {
+                              window.open(signedUrl, "_blank");
+                            } else {
+                              toast.error("No se pudo generar la URL firmada");
+                            }
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
+                          aria-label={`Ver documento ${doc.name}`}
+                        >
+                          <FaEye className="text-sm" />
+                          Ver
+                        </button>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
             </div>
           </div>
 
+          {/* Status and Verification Section */}
           <div className="w-full mt-12 mb-16">
-            <div className="bg-white shadow-xl rounded-lg p-6 w-full text-center border border-gray-300">
-              {/* Mostrar estado del predio */}
+            <div className="bg-white shadow-terrasacha-2xl rounded-2xl p-8 w-full text-center border border-terrasacha-light">
+              {/* Property Status */}
               {status === "APPROVED" && (
-                <div className="px-4 py-2 text-white bg-green-500 rounded-md font-semibold">
+                <div className="inline-flex items-center gap-3 px-6 py-3 bg-terrasacha-success text-white rounded-xl font-typographica font-bold shadow-terrasacha">
+                  <FaCheck className="text-lg" />
                   ✅ Predio Aprobado
                 </div>
               )}
 
               {status === "REJECTED" && (
-                <div className="px-4 py-2 text-white bg-red-500 rounded-md font-semibold">
+                <div className="inline-flex items-center gap-3 px-6 py-3 bg-terrasacha-danger text-white rounded-xl font-typographica font-bold shadow-terrasacha">
+                  <FaTimes className="text-lg" />
                   ❌ Predio Rechazado
                 </div>
               )}
 
               {status === "NOT_SELECTABLE" && (
-                <div className="px-4 py-2 text-white bg-red-500 rounded-md font-semibold">
+                <div className="inline-flex items-center gap-3 px-6 py-3 bg-terrasacha-danger text-white rounded-xl font-typographica font-bold shadow-terrasacha">
+                  <FaTimes className="text-lg" />
                   ❌ Predio no elegible
                 </div>
               )}
-              {/* Mostrar el botón solo si el usuario es verificador y el estado es PENDING */}
 
+              {/* Verification Button */}
               {isVerifier && (
-                <>
+                <div className="mt-6">
                   <button
-                    className="w-full mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
+                    className="w-full px-8 py-4 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-typographica font-bold rounded-xl transition-all duration-300 shadow-terrasacha-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     onClick={handleVerifyClick}
-                    disabled={isLoading || currentStep < 4} // ✅ Bloqueado si no estamos en el paso 3
+                    disabled={isLoading || currentStep < 4}
                   >
-                    {isLoading ? "Procesando..." : "Verificar"}
+                    {isLoading ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Procesando...
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-3">
+                        <FaCheck className="text-lg" />
+                        Verificar
+                      </div>
+                    )}
                   </button>
 
-                  {/* 🔴 Mensaje de advertencia si el usuario intenta verificar antes del paso 3 */}
+                  {/* Warning Message */}
                   {currentStep < 4 && (
-                    <p className="text-red-500 text-sm mt-2">
-                      ⚠ Debes completar los pasos anteriores antes llegar al
-                      paso 4.
-                    </p>
+                    <div className="mt-4 p-4 bg-terrasacha-earth bg-opacity-30 rounded-xl border border-terrasacha-earth">
+                      <div className="flex items-center gap-3 text-terrasacha-secondary1 font-typographica">
+                        <FaExclamationTriangle className="text-terrasacha-primary" />
+                        <p className="text-sm">
+                          ⚠ Debes completar los pasos anteriores antes llegar al paso 4.
+                        </p>
+                      </div>
+                    </div>
                   )}
-                </>
+                </div>
               )}
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

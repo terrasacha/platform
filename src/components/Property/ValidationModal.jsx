@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Spinner } from "react-bootstrap";
 import {
   FaFileUpload,
   FaTrash,
@@ -7,6 +6,8 @@ import {
   FaEdit,
   FaCheckCircle,
   FaExclamationTriangle,
+  FaTimes,
+  FaSave,
 } from "react-icons/fa";
 import { useS3Client } from "context/s3ClientContext";
 import { useAuth } from "context/AuthContext";
@@ -65,7 +66,6 @@ export default function ValidationModal({
     if (isOpen) {
       listS3Files();
     }
-
   }, [isOpen, propertyData?.propertyInfo?.id]);
 
   useEffect(() => {
@@ -102,103 +102,87 @@ export default function ValidationModal({
       });
 
       const response = await s3Client.send(command);
-      const allFiles = response.Contents || [];
+      const files = response.Contents || [];
 
-      const formattedFiles = allFiles.map((file) => ({
-        key: file.Key,
-        name: file.Key.split("/").pop(),
-      }));
-
-      setS3Files(formattedFiles);
-
-      // 🔴 Asignar archivos ya subidos según el predio seleccionado
-      const uploaded = {};
-      formattedFiles.forEach((file) => {
-        const fileType = file.name.split("_")[0];
-        uploaded[fileType] = file.key;
+      const fileMap = {};
+      files.forEach((file) => {
+        const fileName = file.Key.split("/").pop();
+        if (fileName.includes("certificado")) {
+          fileMap.certificado = file.Key;
+        } else if (fileName.includes("escrituras")) {
+          fileMap.escrituras = file.Key;
+        } else if (fileName.includes("planos")) {
+          fileMap.planos = file.Key;
+        }
       });
 
-      setUploadedFiles(uploaded);
+      setUploadedFiles(fileMap);
     } catch (error) {
-      console.error("Error al listar archivos en S3:", error);
+      console.error("Error listing S3 files:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const uploadFiles = async () => {
+    if (Object.keys(selectedFiles).length === 0) {
+      toast.error("No hay archivos seleccionados para subir");
+      return;
+    }
+
     setLoading(true);
     try {
-      const uploadedDocuments = [];
+      const documents = [];
 
-      // ✅ Marcar archivos como en proceso de carga
-      const progressState = {};
-      Object.keys(selectedFiles).forEach((fileType) => {
-        progressState[fileType] = "loading";
-      });
-      setUploadProgress(progressState);
+      for (const [fileType, file] of Object.entries(selectedFiles)) {
+        const fileKey = `${basePath}${fileType}_${Date.now()}_${file.name}`;
 
-      await Promise.all(
-        Object.entries(selectedFiles).map(async ([fileType, file]) => {
-          // ✅ Verificar si ya hay un archivo en S3 y eliminarlo
-          if (uploadedFiles[fileType]) {
-            console.log(
-              `🗑️ Eliminando archivo existente antes de subir el nuevo: ${uploadedFiles[fileType]}`
-            );
-            await deleteS3File(uploadedFiles[fileType], fileType);
-          }
+        const command = new PutObjectCommand({
+          Bucket: bucketName,
+          Key: fileKey,
+          Body: file,
+          ContentType: file.type,
+        });
 
-          // ✅ Definir la nueva clave del archivo a subir
-          const fileKey = `${basePath}${fileType}_${file.name}`;
+        await s3Client.send(command);
+        documents.push({
+          type: fileType.toUpperCase(),
+          name: file.name,
+          url: `https://${bucketName}.s3.amazonaws.com/${fileKey}`,
+          key: fileKey,
+        });
 
-          const command = new PutObjectCommand({
-            Bucket: bucketName,
-            Key: fileKey,
-            Body: file,
-            ContentType: file.type,
-          });
+        setUploadProgress((prev) => ({
+          ...prev,
+          [fileType]: 100,
+        }));
+      }
 
-          await s3Client.send(command);
-          uploadedDocuments.push({ key: fileKey, name: file.name });
+      // Crear PropertyFeature si no existe
+      if (!propertyFeatureID) {
+        const propertyFeatureID = await createPropertyFeatureEntry(documents);
+        setPropertyFeatureID(propertyFeatureID);
+      } else {
+        // Actualizar PropertyFeature existente
+        await updatePropertyFeatureEntry(documents);
+      }
 
-          // ✅ Actualizar el estado de archivos subidos y limpiar `pendingFiles`
-          setUploadedFiles((prev) => ({
-            ...prev,
-            [fileType]: fileKey, // Guardamos la nueva clave del archivo subido
-          }));
-          setPendingFiles((prev) => {
-            const updated = { ...prev };
-            delete updated[fileType]; // 🔹 Eliminar de `pendingFiles`
-            return updated;
-          });
+      // Crear Verification si no existe
+      if (!verificationCreated) {
+        await createVerificationEntry(propertyFeatureID);
+        setVerificationCreated(true);
+      }
 
-          // ✅ Actualizar estado de carga a "success"
-          setUploadProgress((prev) => ({ ...prev, [fileType]: "success" }));
-        })
-      );
+      // Actualizar estado del predio
+      await updatePropertyStatus();
 
-      await listS3Files();
+      toast.success("Archivos subidos exitosamente");
       setSelectedFiles({});
-
-      await createPropertyFeatureEntry(uploadedDocuments);
-
-      toast.success("Los archivos fueron actualizados con éxito");
-      checkIfAllFilesUploaded(uploadedFiles);
+      setPendingFiles({});
+      onValidationComplete();
     } catch (error) {
-      console.error("❌ Error al subir archivos a S3:", error);
-      toast.error("Error al subir los archivos. Inténtalo de nuevo.");
-
-      // ❌ Marcar el archivo con error si falló la carga
-      setUploadProgress((prev) => {
-        const failedFiles = Object.keys(selectedFiles).reduce(
-          (acc, fileType) => {
-            acc[fileType] = "error";
-            return acc;
-          },
-          {}
-        );
-        return { ...prev, ...failedFiles };
-      });
+      console.error("Error uploading files:", error);
+      toast.error("Error al subir los archivos");
     } finally {
       setLoading(false);
     }
@@ -206,161 +190,121 @@ export default function ValidationModal({
 
   const createPropertyFeatureEntry = async (documents) => {
     try {
-      const propertyID = propertyData.propertyInfo?.id;
-      if (!propertyID) throw new Error("❌ El propertyID es indefinido.");
-
-      // ✅ Si ya tenemos el propertyFeatureID, solo asociamos los documentos
-      if (propertyFeatureID) {
-        console.log("📌 Usando PropertyFeature existente:", propertyFeatureID);
-        await Promise.all(
-          documents.map(async (doc) => {
-            await createDocumentEntry(propertyFeatureID, doc);
-          })
-        );
-        return;
-      }
-
-      // ✅ Si no existe, lo creamos y guardamos su ID
       const input = {
-        propertyID,
+        propertyID: propertyData.propertyInfo.id,
         featureID: "GLOBAL_PROPERTY_FILES",
+        value: JSON.stringify(documents),
+        isToBlockChain: false,
+        isOnMainCard: false,
       };
 
-      console.log("📌 Creando PropertyFeature con:", input);
-      const propertyFeatureResponse = await API.graphql(
+      const response = await API.graphql(
         graphqlOperation(createPropertyFeature, { input })
       );
-      const newPropertyFeatureID =
-        propertyFeatureResponse.data.createPropertyFeature.id;
 
-      setPropertyFeatureID(newPropertyFeatureID);
-      console.log("✅ PropertyFeature creado:", newPropertyFeatureID);
-
-      // ✅ Asociar documentos con el nuevo PropertyFeature
-      await Promise.all(
-        documents.map(async (doc) => {
-          await createDocumentEntry(newPropertyFeatureID, doc);
-        })
-      );
-
-      // ✅ Crear `Verification` una sola vez
-      await createVerificationEntry(newPropertyFeatureID);
+      return response.data.createPropertyFeature.id;
     } catch (error) {
-      console.error("❌ Error al crear PropertyFeature:", error);
+      console.error("Error creating property feature:", error);
+      throw error;
+    }
+  };
+
+  const updatePropertyFeatureEntry = async (documents) => {
+    try {
+      const existingDocuments = propertyData.propertyFeatures?.items
+        ?.find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
+        ?.value;
+
+      let allDocuments = [];
+      if (existingDocuments) {
+        try {
+          allDocuments = JSON.parse(existingDocuments);
+        } catch (error) {
+          console.error("Error parsing existing documents:", error);
+        }
+      }
+
+      allDocuments = [...allDocuments, ...documents];
+
+      const input = {
+        id: propertyFeatureID,
+        value: JSON.stringify(allDocuments),
+      };
+
+      await API.graphql(
+        graphqlOperation(updateProperty, { input })
+      );
+    } catch (error) {
+      console.error("Error updating property feature:", error);
+      throw error;
     }
   };
 
   const createDocumentEntry = async (propertyFeatureID, document) => {
     try {
-      const fileUrl = await getS3FileUrl(document.key); // 🔹 Obtener Signed URL
-      if (!fileUrl)
-        throw new Error("No se pudo generar la URL del archivo en S3.");
-
-      // ✅ Extraer el fileType correctamente desde document.key
-      const fileNameParts = document.key.split("/").pop().split("_");
-      const fileType = fileNameParts[0]; // Extraer el prefijo (ejemplo: "certificado", "escrituras", "planos")
-
-      // ✅ Mapear el fileType a los tipos de documento correctos
-      let documentType = "";
-      switch (fileType) {
-        case "certificado":
-          documentType = "CERTIFICADO_TRADICION";
-          break;
-        case "escrituras":
-          documentType = "ESCRITURA_PUBLICA";
-          break;
-        case "planos":
-          documentType = "PLANO_CATASTRAL";
-          break;
-        default:
-          console.warn(`⚠️ Tipo de documento desconocido: ${fileType}`);
-          documentType = "DESCONOCIDO"; // Opcional: manejar casos inesperados
-      }
-
-      // ✅ Crear la estructura del JSON para el atributo `data`
-      const documentData = {
-        name: document.name,
-        type: documentType,
-        url: fileUrl,
-      };
-
       const input = {
-        propertyFeatureID,
-        userID: user.id,
-        url: fileUrl, // ✅ Usar la Signed URL generada
-        data: JSON.stringify(documentData), // 🔹 Guardar como JSON string
-        timeStamp: Math.floor(Date.now() / 1000),
-        docHash: null,
-        signed: null,
-        signedHash: null,
-        isApproved: false,
-        status: "PENDING",
-        visible: true,
-        isUploadedToBlockChain: false,
+        propertyFeatureID: propertyFeatureID,
+        name: document.name,
+        type: document.type,
+        url: document.url,
+        data: JSON.stringify(document),
       };
 
-      console.log("📌 Creando Documento con:", input);
       await API.graphql(graphqlOperation(createDocument, { input }));
-
-      console.log("✅ Documento creado con éxito.");
     } catch (error) {
-      console.error("❌ Error al crear Documento:", error);
+      console.error("Error creating document entry:", error);
+      throw error;
     }
   };
 
   const createVerificationEntry = async (propertyFeatureID) => {
     try {
-      if (verificationCreated) {
-        console.log("📌 Verification ya creada. No se volverá a crear.");
-        return;
-      }
-
       const input = {
-        userVerifiedID: user.id,
-        propertyFeatureID,
+        propertyFeatureID: propertyFeatureID,
+        userVerifiedID: propertyData.projectPostulant.id,
+        status: "PENDING",
       };
 
-      console.log("📌 Creando Verification con:", input);
       await API.graphql(graphqlOperation(createVerification, { input }));
-
-      setVerificationCreated(true);
-      console.log("✅ Verification creada.");
     } catch (error) {
-      console.error("❌ Error al crear Verification:", error);
+      console.error("Error creating verification entry:", error);
+      throw error;
     }
   };
 
   const deleteS3File = async (fileKey, fileType) => {
     try {
-      console.log(`🗑️ Eliminando archivo de S3: ${fileKey}`);
-
       const command = new DeleteObjectCommand({
         Bucket: bucketName,
         Key: fileKey,
       });
 
       await s3Client.send(command);
-
-      // ✅ Actualizar el estado eliminando el archivo del registro
       setUploadedFiles((prev) => {
-        const updated = { ...prev };
-        delete updated[fileType];
-        return updated;
+        const newFiles = { ...prev };
+        delete newFiles[fileType];
+        return newFiles;
       });
 
-      console.log("✅ Archivo eliminado con éxito.");
+      toast.success("Archivo eliminado exitosamente");
     } catch (error) {
-      console.error("❌ Error al eliminar archivo de S3:", error);
+      console.error("Error deleting file:", error);
+      toast.error("Error al eliminar el archivo");
     }
   };
 
   const getSignedFileUrl = async (fileKey) => {
-    const command = new GetObjectCommand({
-      Bucket: bucketName,
-      Key: fileKey,
-    });
+    try {
+      const command = new GetObjectCommand({
+        Bucket: bucketName,
+        Key: fileKey,
+      });
 
-    return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+      return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+    } catch (error) {
+      console.error("Error generating signed URL:", error);
+      return null;
+    }
   };
 
   const getS3FileUrl = async (fileKey) => {
@@ -370,204 +314,205 @@ export default function ValidationModal({
         Key: fileKey,
       });
 
-      const signedUrl = await getSignedUrl(s3Client, command, {
-        expiresIn: 3600,
-      });
-      return signedUrl;
+      return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
     } catch (error) {
-      console.error("❌ Error al generar Signed URL:", error);
+      console.error("Error generating S3 URL:", error);
       return null;
     }
   };
 
   const handleFileSelection = (event, fileType) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      setSelectedFiles((prev) => ({ ...prev, [fileType]: selectedFile }));
-      setPendingFiles((prev) => ({ ...prev, [fileType]: true })); // ✅ Marcar como en precarga
-
-      // 🔹 Simular que el archivo ya está "cargado" para cambiar de "Subir" a "Editar"
-      setUploadedFiles((prev) => ({
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFiles((prev) => ({
         ...prev,
-        [fileType]: `pending-${selectedFile.name}`, // Simulamos un archivo subido con un prefijo temporal
+        [fileType]: file,
       }));
-
-      // 🔹 LIMPIAR el input para permitir seleccionar otro archivo con el mismo nombre
-      event.target.value = "";
+      setPendingFiles((prev) => ({
+        ...prev,
+        [fileType]: file.name,
+      }));
     }
   };
 
   const updatePropertyStatus = async () => {
     try {
-      const propertyID = propertyData.propertyInfo?.id;
-      if (!propertyID) throw new Error("❌ El propertyID es indefinido.");
-
-      if (propertyData.propertyInfo?.status === "DOC_UPLOADED") {
-        console.log(
-          "⚠️ El estado ya es 'DOC_UPLOADED'. No se actualizará nuevamente."
-        );
-        return;
-      }
-
       const input = {
-        id: propertyID,
+        id: propertyData.propertyInfo.id,
         status: "DOC_UPLOADED",
       };
 
-      console.log(
-        "📌 Actualizando estado de la propiedad a DOC_UPLOADED con:",
-        input
-      );
       await API.graphql(graphqlOperation(updateProperty, { input }));
-
-      console.log("✅ Estado de la propiedad actualizado.");
-      onValidationComplete(); // ✅ Llamamos a onValidationComplete para avanzar al siguiente paso
     } catch (error) {
-      console.error("❌ Error al actualizar estado de la propiedad:", error);
+      console.error("Error updating property status:", error);
     }
   };
 
   const checkIfAllFilesUploaded = (files) => {
-    const requiredFiles = ["certificado", "escrituras", "planos"];
-    const allFilesUploaded = requiredFiles.every(
-      (fileType) => fileType in files
-    );
-
-    if (allFilesUploaded) {
-      console.log(
-        "✅ Todos los archivos requeridos han sido subidos. Actualizando estado..."
-      );
-      updatePropertyStatus(); // ✅ Ahora SOLO se llama si el usuario subió archivos nuevos
-    } else {
-      console.log(
-        "⚠️ Aún faltan archivos por subir. No se actualizará el estado."
-      );
-    }
+    const requiredTypes = ["certificado", "escrituras", "planos"];
+    return requiredTypes.every((type) => files[type]);
   };
 
-
   return (
-    <Modal size="lg" show={isOpen} onHide={onClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Requisitos para la Prefactibilidad</Modal.Title>
-      </Modal.Header>
+    <>
+      {/* Custom Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            {/* Background overlay */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" 
+              onClick={onClose}
+            ></div>
 
-      <Modal.Body>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div>
-            <p className="text-gray-600 mb-4">
-              Para completar este paso, debes subir los siguientes documentos:
-            </p>
-
-            {["certificado", "escrituras", "planos"].map((fileType) => (
-              <div
-                key={fileType}
-                className="flex items-center justify-between border p-3 rounded-md shadow-sm mb-3"
-              >
-                <span className="text-gray-700 text-sm capitalize">
-                  {fileType === "certificado"
-                    ? "Certificado de Libertad(vigencia 30 dias)"
-                    : fileType === "escrituras"
-                    ? "Escrituras Públicas"
-                    : "Planos Catastrales"}
-                </span>
-
-                <div className="flex items-center gap-2">
-                  {/* 🔹 Botón "Ver" solo si el archivo ya está en S3 */}
-                  {uploadedFiles[fileType] &&
-                    !uploadedFiles[fileType].startsWith("pending-") && (
-                      <button
-                        onClick={async () =>{
-                          console.log('uploadedFiles[fileType]', uploadedFiles[fileType])
-                          window.open(
-                            await getSignedFileUrl(uploadedFiles[fileType]),
-                            "_blank"
-                          )}
-                        }
-                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
-                      >
-                        <FaEye size={14} />
-                        Ver
-                      </button>
-                    )}
-
-                  {!isUploadDisabled ? (
-                    (uploadedFiles[fileType] || pendingFiles[fileType]) && (
-                      <>
-                        <input
-                          type="file"
-                          className="hidden"
-                          id={`file-upload-${fileType}`}
-                          onChange={(e) => handleFileSelection(e, fileType)}
-                        />
-                        <label
-                          htmlFor={`file-upload-${fileType}`}
-                          className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2"
-                        >
-                          <FaEdit size={14} />
-                          Editar
-                        </label>
-                      </>
-                    )
-                  ) : (
-                    <span className="text-gray-500 text-sm italic">
-                      No editable
-                    </span>
-                  )}
-
-                  {/* 🔹 Botón "Subir" solo si no hay un archivo seleccionado todavía */}
-                  {!isUploadDisabled &&
-                    !uploadedFiles[fileType] &&
-                    !pendingFiles[fileType] && (
-                      <>
-                        <input
-                          type="file"
-                          className="hidden"
-                          id={`file-upload-${fileType}`}
-                          onChange={(e) => handleFileSelection(e, fileType)}
-                        />
-                        <label
-                          htmlFor={`file-upload-${fileType}`}
-                          className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-2"
-                        >
-                          <FaFileUpload size={14} />
-                          Subir
-                        </label>
-                      </>
-                    )}
-                </div>
+            {/* Modal content */}
+            <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+              {/* Modal Header */}
+              <div className="bg-gradient-terrasacha border-0 rounded-t-2xl p-6 flex items-center justify-between">
+                <h3 className="text-xl font-typographica font-bold text-white">
+                  Requisitos para la Prefactibilidad
+                </h3>
+                <button
+                  onClick={onClose}
+                  className="text-white hover:text-terrasacha-light transition-colors"
+                  aria-label="Cerrar modal"
+                >
+                  <FaTimes className="text-xl" />
+                </button>
               </div>
-            ))}
-          </div>
-          <div>
-            <PropertyChat
-              propertyId={propertyData.propertyInfo?.id}
-              featureChat={"GLOBAL_PROPERTY_FILES"}
-            />
+
+              {/* Modal Body */}
+              <div className="p-6 bg-gradient-terrasacha-subtle">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-terrasacha-secondary1 mb-6 font-typographica">
+                      Para completar este paso, debes subir los siguientes documentos:
+                    </p>
+
+                    {["certificado", "escrituras", "planos"].map((fileType) => (
+                      <div
+                        key={fileType}
+                        className="flex items-center justify-between p-4 bg-white rounded-xl border border-terrasacha-light shadow-terrasacha mb-4"
+                      >
+                        <span className="text-terrasacha-secondary1 text-sm font-typographica capitalize">
+                          {fileType === "certificado"
+                            ? "Certificado de Libertad (vigencia 30 días)"
+                            : fileType === "escrituras"
+                            ? "Escrituras Públicas"
+                            : "Planos Catastrales"}
+                        </span>
+
+                        <div className="flex items-center gap-2">
+                          {/* Botón "Ver" solo si el archivo ya está en S3 */}
+                          {uploadedFiles[fileType] &&
+                            !uploadedFiles[fileType].startsWith("pending-") && (
+                              <button
+                                onClick={async () => {
+                                  console.log('uploadedFiles[fileType]', uploadedFiles[fileType]);
+                                  const url = await getSignedFileUrl(uploadedFiles[fileType]);
+                                  if (url) {
+                                    window.open(url, "_blank");
+                                  }
+                                }}
+                                className="flex items-center gap-2 px-3 py-2 bg-terrasacha-success hover:bg-terrasacha-secondary2 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
+                              >
+                                <FaEye size={14} />
+                                Ver
+                              </button>
+                            )}
+
+                          {!isUploadDisabled ? (
+                            (uploadedFiles[fileType] || pendingFiles[fileType]) && (
+                              <>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  id={`file-upload-${fileType}`}
+                                  onChange={(e) => handleFileSelection(e, fileType)}
+                                />
+                                <label
+                                  htmlFor={`file-upload-${fileType}`}
+                                  className="cursor-pointer flex items-center gap-2 px-3 py-2 bg-terrasacha-earth hover:bg-terrasacha-light text-terrasacha-secondary1 font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
+                                >
+                                  <FaEdit size={14} />
+                                  Editar
+                                </label>
+                              </>
+                            )
+                          ) : (
+                            <span className="text-terrasacha-light text-sm italic font-typographica">
+                              No editable
+                            </span>
+                          )}
+
+                          {/* Botón "Subir" solo si no hay un archivo seleccionado todavía */}
+                          {!isUploadDisabled &&
+                            !uploadedFiles[fileType] &&
+                            !pendingFiles[fileType] && (
+                              <>
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  id={`file-upload-${fileType}`}
+                                  onChange={(e) => handleFileSelection(e, fileType)}
+                                />
+                                <label
+                                  htmlFor={`file-upload-${fileType}`}
+                                  className="cursor-pointer flex items-center gap-2 px-3 py-2 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
+                                >
+                                  <FaFileUpload size={14} />
+                                  Subir
+                                </label>
+                              </>
+                            )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div>
+                    <PropertyChat
+                      propertyId={propertyData.propertyInfo?.id}
+                      featureChat={"GLOBAL_PROPERTY_FILES"}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-center mt-6">
+                  <button
+                    className="flex items-center gap-3 px-6 py-3 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-typographica font-bold rounded-xl transition-all duration-300 shadow-terrasacha-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    onClick={() => uploadFiles()}
+                    disabled={loading || Object.keys(selectedFiles).length === 0}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Subiendo...
+                      </>
+                    ) : (
+                      <>
+                        <FaSave className="text-lg" />
+                        Guardar Cambios
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {!hasCampaign && (
+                  <div className="mt-6 p-4 bg-terrasacha-earth bg-opacity-30 rounded-xl border border-terrasacha-earth">
+                    <div className="flex items-center gap-3 text-terrasacha-secondary1 font-typographica">
+                      <FaExclamationTriangle className="text-terrasacha-primary" />
+                      <p className="text-sm font-semibold">
+                        Cualquier solicitud en esta etapa debe realizarse a través de un
+                        PQRS, ya que aún no hay un consultor asignado.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="flex justify-center mt-4">
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            onClick={() => uploadFiles()}
-            disabled={loading || Object.keys(selectedFiles).length === 0}
-          >
-            {loading ? (
-              <Spinner size="sm" animation="border" />
-            ) : (
-              "Guardar Cambios"
-            )}
-          </button>
-        </div>
-
-        {!hasCampaign && (
-          <p className="text-red-500 text-sm mt-4 font-semibold">
-            Cualquier solicitud en esta etapa debe realizarse a través de un
-            PQRS, ya que aún no hay un consultor asignado.
-          </p>
-        )}
-      </Modal.Body>
-    </Modal>
+      )}
+    </>
   );
 }
