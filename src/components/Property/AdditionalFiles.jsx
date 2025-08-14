@@ -174,16 +174,16 @@ export default function AdditionalFiles(props) {
         <div className="max-w-xl mx-auto bg-white">
         {canUpload && (
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
-              ${files.length > 0 ? "border-red-500 bg-red-100" : "border-gray-300 bg-gray-50 hover:bg-gray-100"}
+            className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 font-typographica
+              ${files.length > 0 ? "border-terrasacha-danger bg-red-50" : "border-terrasacha-light/40 bg-terrasacha-light/10 hover:bg-terrasacha-light/20 hover:border-terrasacha-light/60"}
             `}
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
           >
-            <p className="text-gray-700 text-lg font-medium mb-2">
+            <p className="text-terrasacha-secondary1 text-lg font-medium mb-2">
               Arrastra y suelta tus archivos aquí
             </p>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-terrasacha-light mb-4">
               o haz clic para seleccionarlos
             </p>
             <input
@@ -196,7 +196,7 @@ export default function AdditionalFiles(props) {
              {canUpload && (
             <label
               htmlFor="file-upload"
-              className="mt-3 inline-block px-6 py-3 bg-[#74742c] text-white rounded-md text-sm font-semibold hover:bg-[#5f5f23] shadow cursor-pointer transition-all duration-200"
+              className="mt-3 inline-block px-6 py-3 bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 text-white rounded-xl text-sm font-semibold hover:from-terrasacha-secondary1 hover:to-terrasacha-primary shadow-terrasacha hover:shadow-terrasacha-lg transform hover:scale-105 border border-white/20 cursor-pointer transition-all duration-300"
             >
               Seleccionar archivos
             </label>
@@ -206,21 +206,21 @@ export default function AdditionalFiles(props) {
 
 {canUpload && files.length > 0 && (
             <>
-              <h3 className="text-lg font-semibold text-gray-700 mt-6 mb-4">
+              <h3 className="text-lg font-semibold text-terrasacha-secondary1 mt-6 mb-4 font-typographica">
                 Archivos seleccionados:
               </h3>
               <ul className="space-y-3 m-0 p-0">
                 {files.map((file, index) => (
                   <li
                     key={index}
-                    className="flex items-center justify-between bg-gray-100 shadow-md rounded-lg px-4 py-3 hover:bg-gray-200 transition-all duration-200"
+                    className="flex items-center justify-between bg-gradient-to-r from-terrasacha-light/20 to-transparent shadow-terrasacha rounded-xl px-4 py-3 hover:bg-terrasacha-light/30 transition-all duration-300 border border-terrasacha-light/40"
                   >
-                    <span className="text-sm text-gray-800 truncate">
+                    <span className="text-sm text-terrasacha-secondary1 truncate font-typographica">
                       {file.name}
                     </span>
                     <button
                       onClick={() => removeFile(index)}
-                      className="text-red-600 text-sm font-semibold hover:underline"
+                      className="text-terrasacha-danger text-sm font-semibold hover:text-red-800 transition-colors duration-200"
                     >
                       Eliminar
                     </button>
@@ -231,7 +231,7 @@ export default function AdditionalFiles(props) {
              
                 <button
                   onClick={uploadFiles}
-                  className="mt-6 px-6 py-3 bg-green-500 text-white rounded-md text-sm font-semibold hover:bg-green-600 shadow-lg transition-all duration-200"
+                  className="mt-6 px-6 py-3 bg-gradient-to-r from-terrasacha-success to-green-600 hover:from-green-600 hover:to-terrasacha-success text-white rounded-xl text-sm font-semibold shadow-terrasacha-lg hover:shadow-terrasacha-xl transition-all duration-300 transform hover:scale-105 border border-white/20"
                 >
                   Subir archivo seleccionado
                 </button>
@@ -242,7 +242,7 @@ export default function AdditionalFiles(props) {
 
 {s3Files.length > 0 && (
   <>
-    <h3 className="text-lg font-semibold text-gray-700 mt-10 mb-4">
+    <h3 className="text-lg font-semibold text-terrasacha-secondary1 mt-10 mb-4 font-typographica">
       Archivos 
     </h3>
     <ul className="space-y-3 m-0 p-0">
@@ -253,18 +253,18 @@ export default function AdditionalFiles(props) {
         return (
           <li
             key={index}
-            className="flex items-center justify-between bg-gray-100 shadow-md rounded-lg px-4 py-3 hover:bg-gray-200 transition-all duration-200"
+            className="flex items-center justify-between bg-gradient-to-r from-terrasacha-light/20 to-transparent shadow-terrasacha rounded-xl px-4 py-3 hover:bg-terrasacha-light/30 transition-all duration-300 border border-terrasacha-light/40"
           >
-           <span className="text-gray-800 text-sm truncate">
+           <span className="text-terrasacha-secondary1 text-sm truncate font-typographica">
               {fileName} 
-              <strong className="text-blue-600 ml-2">{file.uploader}</strong>
+              <strong className="text-terrasacha-primary ml-2">{file.uploader}</strong>
             </span>
             
             <div className="flex gap-3">
   {/* Botón para Ver archivo 👁 */}
   <button 
     onClick={async () => window.open(await getSignedFileUrl(file.key), "_blank")} 
-    className="text-blue-500 hover:text-blue-700 transition !bg-transparent !border-none !shadow-none !p-0 !m-0"
+    className="text-terrasacha-primary hover:text-terrasacha-secondary1 transition-colors duration-200 !bg-transparent !border-none !shadow-none !p-0 !m-0"
     title="Ver archivo"
   >
     👁
@@ -274,7 +274,7 @@ export default function AdditionalFiles(props) {
   <a 
     href={file.key} 
     download={file.name} 
-    className="text-green-500 hover:text-green-700 transition !bg-transparent !border-none !shadow-none !p-0 !m-0"
+    className="text-terrasacha-success hover:text-green-700 transition-colors duration-200 !bg-transparent !border-none !shadow-none !p-0 !m-0"
     title="Descargar archivo"
   >
     ⬇
@@ -284,7 +284,7 @@ export default function AdditionalFiles(props) {
   {user?.id === file.uploaderId && (
     <button
       onClick={() => deleteS3File(file.key)}
-      className="text-red-600 hover:text-red-800 transition !bg-transparent !border-none !shadow-none !p-0 !m-0"
+      className="text-terrasacha-danger hover:text-red-800 transition-colors duration-200 !bg-transparent !border-none !shadow-none !p-0 !m-0"
       title="Eliminar archivo"
     >
       🗑
@@ -299,7 +299,7 @@ export default function AdditionalFiles(props) {
   </>
 )}
           {loading && (
-            <p className="text-center text-gray-500 mt-6 text-sm">
+            <p className="text-center text-terrasacha-light mt-6 text-sm font-typographica">
               Procesando...
             </p>
           )}

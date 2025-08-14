@@ -55,11 +55,11 @@ export default function TimelineProject({ currentStep = 1 }) {
   ];
 
   return (
-    <div className="w-full flex flex-col items-start mt-6 px-4">
-      <div className="w-full max-w-3xl ml-[-40px]">
+    <div className="w-full flex flex-col items-start mt-6 px-2 sm:px-4">
+      <div className="w-full max-w-3xl mx-auto sm:ml-[-40px]">
         <ProgressBar
           percent={((currentStep - 1) / (steps.length - 1)) * 100}
-          filledBackground="linear-gradient(to right, #34d399, #059669)"
+          filledBackground="linear-gradient(to right, #849b50, #6e6c35)"
           height={6}
           transitionDuration={800}
         >
@@ -67,39 +67,48 @@ export default function TimelineProject({ currentStep = 1 }) {
             <Step key={step.id}>
               {({ accomplished }) => {
                 let stepClass = "bg-gray-300 text-gray-500 border-gray-400 opacity-50";
+                let stepStyle = {};
+                
                 if (step.id === currentStep) {
-                  stepClass = "bg-yellow-500 text-white border-yellow-600 animate-pulse shadow-xl";
+                  stepClass = "text-white border-2 animate-pulse shadow-xl";
+                  stepStyle = { backgroundColor: '#e8d79a', borderColor: '#e8d79a' };
                 } else if (accomplished) {
-                  stepClass = "bg-green-500 text-white border-green-600 shadow-lg";
+                  stepClass = "text-white border-2 shadow-lg";
+                  stepStyle = { backgroundColor: '#849b50', borderColor: '#849b50' };
+                } else {
+                  stepStyle = { backgroundColor: '#b1c181', borderColor: '#b1c181' };
                 }
 
                 return (
-                  <div className="flex flex-col items-center w-24 text-center relative">
+                  <div className="flex flex-col items-center w-16 sm:w-20 md:w-24 text-center relative">
                     <div className="relative flex flex-col items-center">
                       {/* Círculo del paso */}
                       <div
-                        className={`w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-500 cursor-pointer shadow-md mb-2 ${stepClass}`}
+                        className={`w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border-2 transition-all duration-500 cursor-pointer shadow-md mb-2 ${stepClass}`}
+                        style={stepStyle}
                         data-tooltip-id={`tooltip-${step.id}`}
                       >
-                        {step.icon}
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                          {step.icon}
+                        </div>
                       </div>
 
-                      {/* Ícono de ayuda a la derecha */}
+                      {/* Ícono de ayuda a la derecha - solo visible en pantallas medianas y grandes */}
                       <span
                         onClick={() => setHelpStep(step)}
-                        className="absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer"
+                        className="hidden sm:block absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer"
                         title="Ver explicación del paso"
                         aria-label="Ayuda del paso"
                         data-tooltip-id={`help-tooltip-${step.id}`}
                         data-tooltip-content="Ver explicación del paso"
                       >
-                        <FaQuestionCircle size={14} className="text-[#7b7b2c] opacity-90 hover:opacity-100" />
+                        <FaQuestionCircle size={14} style={{ color: '#6e6c35' }} className="opacity-90 hover:opacity-100" />
                       </span>
 
                       <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
                     </div>
 
-                    <div className="w-1 h-6 bg-gray-400 mx-auto mt-1"></div>
+                    <div className="w-1 h-4 sm:h-6 mx-auto mt-1" style={{ backgroundColor: '#b1c181' }}></div>
 
                     <Tooltip
                       id={`tooltip-${step.id}`}
@@ -113,13 +122,28 @@ export default function TimelineProject({ currentStep = 1 }) {
                     <p
                       className={`mt-2 text-xs font-semibold ${
                         step.id === currentStep
-                          ? "text-yellow-600 font-bold"
+                          ? "font-bold"
                           : accomplished
-                          ? "text-green-600"
-                          : "text-gray-500"
+                          ? ""
+                          : ""
                       }`}
+                      style={{ 
+                        color: step.id === currentStep 
+                          ? '#e8d79a' 
+                          : accomplished 
+                            ? '#849b50' 
+                            : '#44482c' 
+                      }}
                     >
-                      {step.title}
+                      {/* Títulos más cortos en móviles */}
+                      <span className="hidden sm:inline">{step.title}</span>
+                      <span className="sm:hidden">
+                        {step.id === 1 ? "Creado" :
+                         step.id === 2 ? "Convocatoria" :
+                         step.id === 3 ? "Información" :
+                         step.id === 4 ? "Financiero" :
+                         "Marketplace"}
+                      </span>
                     </p>
                   </div>
                 );
@@ -130,13 +154,18 @@ export default function TimelineProject({ currentStep = 1 }) {
       </div>
 
       {/* Modal de ayuda */}
-      <Modal show={!!helpStep} onHide={() => setHelpStep(null)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{helpStep?.title}</Modal.Title>
+      <Modal show={!!helpStep} onHide={() => setHelpStep(null)} centered size="lg">
+        <Modal.Header closeButton style={{ backgroundColor: '#f8f9fa', borderColor: '#b1c181' }}>
+          <Modal.Title style={{ color: '#6e6c35' }} className="text-sm sm:text-base">{helpStep?.title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>{helpStep?.helpText}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setHelpStep(null)}>
+        <Modal.Body style={{ color: '#44482c' }} className="text-sm sm:text-base">{helpStep?.helpText}</Modal.Body>
+        <Modal.Footer style={{ borderColor: '#b1c181' }}>
+          <Button 
+            variant="secondary" 
+            onClick={() => setHelpStep(null)}
+            style={{ backgroundColor: '#849b50', borderColor: '#849b50' }}
+            className="w-full sm:w-auto"
+          >
             Cerrar
           </Button>
         </Modal.Footer>

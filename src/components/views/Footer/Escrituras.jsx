@@ -172,7 +172,7 @@ const Escrituras = () => {
     <div className="bg-[#f9f9f9] min-h-screen">
       <NewHeaderNavbar />
 
-      <div className="pt-10 pb-20 px-4 max-w-5xl mx-auto">
+      <div className="pt-24 pb-20 px-4 max-w-5xl mx-auto">
         <div className="bg-white shadow-md rounded-xl p-6 md:p-10">
           <h1 className="text-3xl font-bold text-center text-[#4b4a2f] mb-4">
             Preguntas Frecuentes

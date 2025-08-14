@@ -13,6 +13,7 @@ import { fetchProjectDataByProjectID } from "../api";
 import { createProductFeature, updateProductFeature } from "graphql/mutations";
 import useProjectItems from "hooks/useProjectItems";
 import TokenDistributionInputTable from "./SettingCards/TokenDistributionInputTable";
+import { FiSettings, FiTool, FiDollarSign, FiCheckCircle, FiXCircle, FiInfo, FiSave, FiEdit3 } from "react-icons/fi";
 
 export default function ProjectSettings({ visible, campaign }) {
   const [activeSection, setActiveSection] = useState("technical");
@@ -46,12 +47,14 @@ export default function ProjectSettings({ visible, campaign }) {
       })
       .catch((error) => setValidatorSubRole(undefined));
   }, []);
+  
   const checkStakeHolders = (item) => {
     const neededSH = ['BIOC', 'PROPIETARIO', 'BUFFER', 'INVERSIONISTA'];
     const itemConcepts = item.map(i => i.CONCEPTO);
     const allPresent = neededSH.every(sh => itemConcepts.includes(sh));
     return allPresent;
-};
+  };
+  
   const handleSetValidatorDataComplete = async (item) => {
     const updatedProjectData = await fetchProjectDataByProjectID(
       projectData.projectInfo.id
@@ -197,6 +200,7 @@ export default function ProjectSettings({ visible, campaign }) {
       });
     }
   };
+  
   const checkIfIsEditable = (type) => {
     switch (type) {
       case "technical":
@@ -225,43 +229,106 @@ export default function ProjectSettings({ visible, campaign }) {
         return true;
     }
   };
+
+  if (!visible) return null;
+
   return (
-    <>
-      {visible && (
-        <div className="row row-cols-1  g-4">
-          <div className="col">
+    <div className="mt-4">
+      {/* Header de la sección */}
+      <div className="d-flex align-items-center gap-2 mb-4 p-3 rounded" style={{ backgroundColor: '#f0f4e6', border: '1px solid #e8d79a' }}>
+        <FiSettings style={{ color: '#6e6c35' }} size={24} />
+        <div>
+          <h4 className="mb-0" style={{ color: '#6e6c35' }}>Configuración del Proyecto</h4>
+          <p className="mb-0 small" style={{ color: '#44482c' }}>Ajustes técnicos y financieros del proyecto</p>
+        </div>
+      </div>
+
+      {/* Contenido principal */}
+      <div 
+        className="row row-cols-1 g-3" 
+        style={{ 
+          backgroundColor: '#f8f9fa', 
+          padding: '20px', 
+          borderRadius: '12px', 
+          border: '2px solid #b1c181',
+          boxShadow: '0 4px 6px rgba(110, 108, 53, 0.1)'
+        }}
+      >
+        {/* Tarjeta de configuración del proyecto */}
+        <div className="col">
+          <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+            <div className="d-flex align-items-center gap-2 mb-3">
+              <FiSettings style={{ color: '#849b50' }} />
+              <h6 className="mb-0" style={{ color: '#44482c' }}>Configuración General</h6>
+            </div>
             <ProjectSettingsCard />
           </div>
-          <div className={s.selectSettingTypeContainer}>
+        </div>
+
+        {/* Navegación por pestañas */}
+        <div className="col-12">
+          <div className={`${s.selectSettingTypeContainer} d-flex flex-column flex-sm-row gap-3 p-3 rounded`} style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
             <button
               className={`${s.selectSettingType} ${
                 activeSection === "technical" ? s.selectSettingTypeActive : ""
-              }`}
+              } flex-fill d-flex align-items-center justify-content-center gap-2 py-3 px-4 rounded-pill border-0 transition-all`}
               onClick={() => setActiveSection("technical")}
+              style={{ 
+                backgroundColor: activeSection === "technical" ? '#6e6c35' : '#b1c181',
+                color: activeSection === "technical" ? 'white' : '#44482c',
+                borderColor: '#6e6c35',
+                transform: activeSection === "technical" ? 'scale(1.02)' : 'scale(1)',
+                boxShadow: activeSection === "technical" ? '0 4px 8px rgba(110, 108, 53, 0.3)' : '0 2px 4px rgba(110, 108, 53, 0.1)'
+              }}
+              title="Configuración técnica del proyecto"
             >
-              Configuración técnica
+              <FiTool size={18} />
+              <span className="d-none d-sm-inline">Configuración técnica</span>
+              <span className="d-sm-none">Técnica</span>
             </button>
+            
             <button
               className={`${s.selectSettingType} ${
                 activeSection === "financial" ? s.selectSettingTypeActive : ""
-              }`}
+              } flex-fill d-flex align-items-center justify-content-center gap-2 py-3 px-4 rounded-pill border-0 transition-all`}
               onClick={() => setActiveSection("financial")}
+              style={{ 
+                backgroundColor: activeSection === "financial" ? '#6e6c35' : '#b1c181',
+                color: activeSection === "financial" ? 'white' : '#44482c',
+                borderColor: '#6e6c35',
+                transform: activeSection === "financial" ? 'scale(1.02)' : 'scale(1)',
+                boxShadow: activeSection === "financial" ? '0 4px 8px rgba(110, 108, 53, 0.3)' : '0 2px 4px rgba(110, 108, 53, 0.1)'
+              }}
+              title="Configuración financiera del proyecto"
             >
-              Configuración financiera
+              <FiDollarSign size={18} />
+              <span className="d-none d-sm-inline">Configuración financiera</span>
+              <span className="d-sm-none">Financiera</span>
             </button>
           </div>
-          {activeSection === "technical" && (
-            <>
-              <div className="col">
+        </div>
+
+        {/* Sección técnica */}
+        {activeSection === "technical" && (
+          <>
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiEdit3 style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Descripción del Validador</h6>
+                </div>
                 <DescriptionValidator
                   canEdit={checkIfIsEditable("technical")}
-                  /* (validatorSubRole === undefined
-                  ? false
-                  : activeSection !== validatorSubRole) ||
-                !projectData.isTechnicalFreeze */
                 />
               </div>
-              <div className="col">
+            </div>
+            
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiDollarSign style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Ingresos por Producto</h6>
+                </div>
                 <GenericInputTable
                   title={"Ingresos por producto"}
                   fID={"GLOBAL_INGRESOS_POR_PRODUCTO"}
@@ -270,7 +337,14 @@ export default function ProjectSettings({ visible, campaign }) {
                   conceptOptions={projectItems["Ingresos por producto"]}
                 />
               </div>
-              <div className="col">
+            </div>
+            
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiTool style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Productos del Ciclo del Proyecto</h6>
+                </div>
                 <GenericInputTable
                   title={"Productos del ciclo del proyecto"}
                   fID={"GLOBAL_PRODUCTOS_DEL_CICLO_DE_PROYECTO"}
@@ -281,7 +355,14 @@ export default function ProjectSettings({ visible, campaign }) {
                   }
                 />
               </div>
-              <div className="col">
+            </div>
+            
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiInfo style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Indicadores Financieros del Proyecto</h6>
+                </div>
                 <GenericInputTable
                   title={"Indicadores financieros (Proyecto)"}
                   fID={"GLOBAL_INDICADORES_FINANCIEROS"}
@@ -292,36 +373,64 @@ export default function ProjectSettings({ visible, campaign }) {
                   }
                 />
               </div>
-              <div className="d-flex justify-content-center mb-2">
+            </div>
+            
+            {/* Botón de oficialización técnica */}
+            <div className="col-12">
+              <div className="d-flex justify-content-center">
                 <button
-                  className={`${
-                    projectData.isTechnicalFreeze
-                      ? "bg-blue-400 p-2 text-white  rounded-md"
-                      : "bg-blue-600 p-2 text-white rounded-md"
-                  } `}
+                  className="d-flex align-items-center gap-2 py-3 px-4 text-white rounded-pill w-100 w-sm-auto border-0 transition-all"
                   disabled={projectData.isTechnicalFreeze || campaign?.available} 
-                  onClick={() =>
-                    handleSetValidatorDataComplete("technicalInfo")
-                  }
+                  onClick={() => handleSetValidatorDataComplete("technicalInfo")}
+                  style={{ 
+                    backgroundColor: projectData.isTechnicalFreeze ? '#b1c181' : '#6e6c35',
+                    borderColor: projectData.isTechnicalFreeze ? '#b1c181' : '#6e6c35',
+                    opacity: projectData.isTechnicalFreeze || campaign?.available ? 0.6 : 1,
+                    transform: projectData.isTechnicalFreeze || campaign?.available ? 'scale(1)' : 'scale(1)',
+                    boxShadow: projectData.isTechnicalFreeze || campaign?.available ? 'none' : '0 4px 8px rgba(110, 108, 53, 0.3)'
+                  }}
+                  title={projectData.isTechnicalFreeze ? "Información técnica ya oficializada" : campaign?.available ? "Campaña aún no cerrada" : "Oficializar información técnica"}
                 >
-                  Oficializar información técnica
+                  {projectData.isTechnicalFreeze ? (
+                    <>
+                      <FiCheckCircle size={18} />
+                      <span className="d-none d-sm-inline">Información técnica oficializada</span>
+                      <span className="d-sm-none">Técnica oficializada</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiSave size={18} />
+                      <span className="d-none d-sm-inline">Oficializar información técnica</span>
+                      <span className="d-sm-none">Oficializar técnica</span>
+                    </>
+                  )}
                 </button>
               </div>
-            </>
-          )}
-          {activeSection === "financial" && (
-            <>
-              <div className="col">
+            </div>
+          </>
+        )}
+
+        {/* Sección financiera */}
+        {activeSection === "financial" && (
+          <>
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiDollarSign style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Configuración de Tokens</h6>
+                </div>
                 <TokenSettingsCard
                   canEdit={checkIfIsEditable("financial")}
-                  /* (validatorSubRole === undefined
-                  ? false
-                  : activeSection !== validatorSubRole) ||
-                projectData.isFinancialFreeze */
                 />
               </div>
+            </div>
 
-              <div>
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiDollarSign style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Distribución de Volumen de Tokens</h6>
+                </div>
                 <TokenDistributionInputTable
                   title={"Distribución volumen de tokens"}
                   fID={"GLOBAL_TOKEN_AMOUNT_DISTRIBUTION"}
@@ -332,10 +441,24 @@ export default function ProjectSettings({ visible, campaign }) {
                   }
                 />
               </div>
-              <div className="col">
+            </div>
+            
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiDollarSign style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Configuración de Flujo de Caja</h6>
+                </div>
                 <CashFlowSettings canEdit={checkIfIsEditable("financial")} />
               </div>
-              <div className="col">
+            </div>
+            
+            <div className="col-12">
+              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '1px solid #b1c181' }}>
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <FiInfo style={{ color: '#849b50' }} />
+                  <h6 className="mb-0" style={{ color: '#44482c' }}>Indicadores Financieros del Token</h6>
+                </div>
                 <GenericInputTable
                   title={"Indicadores financieros (Token)"}
                   fID={"GLOBAL_INDICADORES_FINANCIEROS_TOKEN"}
@@ -346,25 +469,65 @@ export default function ProjectSettings({ visible, campaign }) {
                   }
                 />
               </div>
-              <div className="d-flex justify-content-center mb-2">
+            </div>
+            
+            {/* Botón de oficialización financiera */}
+            <div className="col-12">
+              <div className="d-flex justify-content-center">
                 <button
-                  className={`${
-                    projectData.isFinancialFreeze
-                      ? "bg-blue-400 p-2 text-white  rounded-md"
-                      : "bg-blue-600 p-2 text-white rounded-md"
-                  } `}
-                  disabled={projectData.isTechnicalFreeze || campaign?.available}
-                  onClick={() =>
-                    handleSetValidatorDataComplete("financialInfo")
-                  }
+                  className="d-flex align-items-center gap-2 py-3 px-4 text-white rounded-pill w-100 w-sm-auto border-0 transition-all"
+                  disabled={projectData.isFinancialFreeze || campaign?.available}
+                  onClick={() => handleSetValidatorDataComplete("financialInfo")}
+                  style={{ 
+                    backgroundColor: projectData.isFinancialFreeze ? '#b1c181' : '#6e6c35',
+                    borderColor: projectData.isFinancialFreeze ? '#b1c181' : '#6e6c35',
+                    opacity: projectData.isFinancialFreeze || campaign?.available ? 0.6 : 1,
+                    transform: projectData.isFinancialFreeze || campaign?.available ? 'scale(1)' : 'scale(1)',
+                    boxShadow: projectData.isFinancialFreeze || campaign?.available ? 'none' : '0 4px 8px rgba(110, 108, 53, 0.3)'
+                  }}
+                  title={projectData.isFinancialFreeze ? "Información financiera ya oficializada" : campaign?.available ? "Campaña aún no cerrada" : "Oficializar información financiera"}
                 >
-                  Oficializar información financiera
+                  {projectData.isFinancialFreeze ? (
+                    <>
+                      <FiCheckCircle size={18} />
+                      <span className="d-none d-sm-inline">Información financiera oficializada</span>
+                      <span className="d-sm-none">Financiera oficializada</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiSave size={18} />
+                      <span className="d-none d-sm-inline">Oficializar información financiera</span>
+                      <span className="d-sm-none">Oficializar financiera</span>
+                    </>
+                  )}
                 </button>
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Footer informativo */}
+      <div className="mt-4 p-3 rounded text-center" style={{ backgroundColor: '#f0f4e6', border: '1px solid #e8d79a' }}>
+        <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
+          <FiInfo style={{ color: '#6e6c35' }} />
+          <small style={{ color: '#44482c' }}>
+            {activeSection === "technical" ? 
+              "Configuración técnica: Define los parámetros técnicos y operativos del proyecto" :
+              "Configuración financiera: Establece los parámetros económicos y de tokens del proyecto"
+            }
+          </small>
         </div>
-      )}
-    </>
+        <div className="d-flex align-items-center justify-content-center gap-2">
+          <FiCheckCircle style={{ color: '#849b50' }} />
+          <small style={{ color: '#44482c' }}>
+            {activeSection === "technical" ? 
+              `Estado técnico: ${projectData.isTechnicalFreeze ? 'Oficializado' : 'Pendiente de oficialización'}` :
+              `Estado financiero: ${projectData.isFinancialFreeze ? 'Oficializado' : 'Pendiente de oficialización'}`
+            }
+          </small>
+        </div>
+      </div>
+    </div>
   );
 }

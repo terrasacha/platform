@@ -312,34 +312,31 @@ export default function Property() {
   return (
     <S3ClientProvider>
       <div className="min-h-screen bg-gradient-to-br from-terrasacha-earth via-terrasacha-light to-white">
-        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6 lg:py-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           {/* Header Navigation */}
-          <div className="mb-6 sm:mb-8 md:mb-10">
+          <div className="mb-6 sm:mb-8">
             <NewHeaderNavbar />
           </div>
 
-          {/* Separador visual */}
-          <div className="border-b border-terrasacha-light/20 mb-6 sm:mb-8 md:mb-10"></div>
-
-          {/* Navigation Breadcrumb - Separado del header con espacio propio */}
-          <div className="mb-8 sm:mb-10 md:mb-12 pt-4 sm:pt-6 md:pt-8">
+          {/* Navigation Breadcrumb */}
+          <div className="mb-4 sm:mb-6">
             {property.campaign ? (
               <button
                 onClick={() =>
                   handleNavigation(`/campaign/${property.campaign.id}`)
                 }
-                className="group inline-flex items-center gap-2 px-4 sm:px-5 md:px-6 py-3 sm:py-4 bg-gradient-to-r from-terrasacha-earth to-terrasacha-light hover:from-terrasacha-light hover:to-terrasacha-earth text-terrasacha-secondary1 font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-terrasacha-light/20 text-sm sm:text-base md:text-lg"
+                className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-terrasacha-earth to-terrasacha-light hover:from-terrasacha-light hover:to-terrasacha-earth text-terrasacha-secondary1 font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-terrasacha-light/20"
               >
-                <FaArrowLeft className="text-sm md:text-base group-hover:-translate-x-1 transition-transform duration-300" />
+                <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform duration-300" />
                 <span className="hidden sm:inline">Regresar a la campaña</span>
                 <span className="sm:hidden">Campaña</span>
               </button>
             ) : (
               <button
                 onClick={handleGoBack}
-                className="group inline-flex items-center gap-2 px-4 sm:px-5 md:px-6 py-3 sm:py-4 bg-gradient-to-r from-terrasacha-earth to-terrasacha-light hover:from-terrasacha-light hover:to-terrasacha-earth text-terrasacha-secondary1 font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-terrasacha-light/20 text-sm sm:text-base md:text-lg"
+                className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-terrasacha-earth to-terrasacha-light hover:from-terrasacha-light hover:to-terrasacha-earth text-terrasacha-secondary1 font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-terrasacha-light/20"
               >
-                <FaArrowLeft className="text-sm md:text-base group-hover:-translate-x-1 transition-transform duration-300" />
+                <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform duration-300" />
                 <span className="hidden sm:inline">Volver</span>
                 <span className="sm:hidden">←</span>
               </button>
@@ -347,7 +344,7 @@ export default function Property() {
           </div>
 
           {/* Property Header Card */}
-          <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-terrasacha-light/30 p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 relative overflow-hidden">
+          <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-terrasacha-light/30 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-gradient-to-br from-transparent via-terrasacha-light/5 to-transparent opacity-50"></div>
             
@@ -362,7 +359,7 @@ export default function Property() {
 
             {/* Property Title */}
             <header className="mb-6 relative z-10">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-typographica font-bold text-transparent bg-clip-text bg-gradient-to-r from-terrasacha-secondary1 to-terrasacha-primary mb-4 leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-typographica font-bold text-transparent bg-clip-text bg-gradient-to-r from-terrasacha-secondary1 to-terrasacha-primary mb-4 leading-tight">
                 {property.name}
               </h1>
             </header>
@@ -479,8 +476,8 @@ export default function Property() {
                   )}
                   
                   {canValidate && (
-                    <button
-                      className="group flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 hover:from-terrasacha-secondary1 hover:to-terrasacha-primary text-white font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/20"
+                    <buttonelon
+                      className="group flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 hover:from-terrasacha-secondarycedary1 hover:to-terrasacha-primary text-white font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/20"
                       onClick={() => setShowDocumentationModal(true)}
                     >
                       <FaEye className="group-hover:scale-110 transition-transform duration-300" />

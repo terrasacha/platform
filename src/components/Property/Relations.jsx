@@ -228,9 +228,9 @@ export default function Relations(props) {
           </div>
         </div>
         {autorizedUser && (
-      <div className="d-flex justify-content-center mt-3">
+      <div className="flex justify-center mt-6">
         <button
-          className="p-2 text-white bg-green-700 rounded-md"
+          className="px-6 py-3 text-white bg-gradient-to-r from-terrasacha-success to-green-600 hover:from-green-600 hover:to-terrasacha-success rounded-xl transition-all duration-300 shadow-terrasacha-lg hover:shadow-terrasacha-xl transform hover:scale-105 border border-white/20 font-typographica font-semibold"
           onClick={handleSaveBtn}
         >
           Guardar
