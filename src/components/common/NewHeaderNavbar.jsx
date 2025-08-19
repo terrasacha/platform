@@ -287,6 +287,17 @@ export default function NewHeaderNavbar() {
                     </>
                   )}
 
+{user.attributes["custom:role"] === "admon" && (
+                    <>
+                      <button
+                        onClick={() => navigate("/admon")}
+                        className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
+                      >
+                        Administrar
+                      </button>
+                    </>
+                  )}
+
                   <button
                     key="pqrs-constructor"
                     onClick={() => (window.location.href = "/PQRS")}
@@ -479,6 +490,20 @@ export default function NewHeaderNavbar() {
                           className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
                         >
                           Crear campaña
+                        </button>
+                      </>
+                    )}
+
+{user.attributes["custom:role"] === "admon" && (
+                      <>
+                        <button
+                          onClick={() => {
+                            navigate("/admon");
+                            handleCloseOffcanvas();
+                          }}
+                          className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
+                        >
+                          Administrar
                         </button>
                       </>
                     )}

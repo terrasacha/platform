@@ -143,25 +143,17 @@ export default function PropertyDetails({
       ...prev,
       [formName]: isComplete,
     }));
-  };
-
-  const checkAllStepsCompleted = async () => {
-    const allCompleted = Object.values(formCompletion).every(
-      (isComplete) => isComplete
-    );
-
-    if (allCompleted) {
-      console.log("✅ Todos los formularios están completos");
+    
+    // 🔴 AVANCE INMEDIATO: Si cualquier formulario está completo, avanzar al paso 2
+    if (isComplete) {
+      console.log(`✅ Formulario ${formName} completado. Avanzando al paso 2...`);
       setIsFormComplete(true);
-    } else {
-      console.log("❌ Algunos formularios no están completos:", formCompletion);
-      setIsFormComplete(false);
     }
   };
 
-  useEffect(() => {
-    checkAllStepsCompleted();
-  }, [formCompletion]);
+  // 🔴 ELIMINAMOS estas funciones que ya no necesitamos:
+  // - checkAllStepsCompleted
+  // - useEffect que llama a checkAllStepsCompleted
 
   const handleVerifyClick = async () => {
     if (currentStep < 4) {

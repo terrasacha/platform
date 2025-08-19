@@ -50,6 +50,7 @@ export default function ValidationModal({
   const [pendingFiles, setPendingFiles] = useState({});
   const [property, setPropertyData] = useState(null);
   const [propertyDetails, setPropertyDetails] = useState(null);
+  const [chatReady, setChatReady] = useState(false); // 🔧 Nuevo estado para controlar el chat
   const propertyID = propertyData.propertyInfo?.id;
 
   // ✅ Verifica si el predio ya tiene archivos subidos o es nuevo
@@ -65,14 +66,73 @@ export default function ValidationModal({
   useEffect(() => {
     if (isOpen) {
       listS3Files();
+      // 🔴 Crear verificación para el chat si no existe
+      createVerificationForChat();
     }
   }, [isOpen, propertyData?.propertyInfo?.id]);
+
+  // 🔍 Debug: Verificar cambios en chatReady
+  useEffect(() => {
+    console.log("🔍 ValidationModal - chatReady cambió:", chatReady);
+  }, [chatReady]);
 
   useEffect(() => {
     if (isOpen && propertyID) {
       fetchPropertyData(propertyID);
     }
   }, [isOpen, propertyID]);
+
+  // 🔴 Nueva función para crear verificación para el chat
+  const createVerificationForChat = async () => {
+    try {
+      if (!propertyData?.propertyInfo?.id) return;
+
+      // Verificar si ya existe una verificación para GLOBAL_PROPERTY_FILES
+      const existingFeature = propertyData.propertyFeatures?.items?.find(
+        (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+      );
+
+      if (existingFeature?.verifications?.items?.length > 0) {
+        console.log("✅ Ya existe verificación para el chat");
+        setChatReady(true); // 🔧 Marcar chat como listo
+        return;
+      }
+
+      // Crear PropertyFeature si no existe
+      let propertyFeatureID = existingFeature?.id;
+      if (!propertyFeatureID) {
+        const input = {
+          propertyID: propertyData.propertyInfo.id,
+          featureID: "GLOBAL_PROPERTY_FILES",
+          value: JSON.stringify([]),
+          isToBlockChain: false,
+          isOnMainCard: false,
+        };
+
+        const response = await API.graphql(
+          graphqlOperation(createPropertyFeature, { input })
+        );
+        propertyFeatureID = response.data.createPropertyFeature.id;
+        console.log("✅ PropertyFeature creado para el chat:", propertyFeatureID);
+      }
+
+      // Crear Verification para el chat
+      const verificationInput = {
+        propertyFeatureID: propertyFeatureID,
+        userVerifiedID: propertyData.projectPostulant.id,
+      };
+
+      await API.graphql(
+        graphqlOperation(createVerification, { input: verificationInput })
+      );
+
+      console.log("✅ Verification creada para el chat");
+      setChatReady(true); // 🔧 Marcar chat como listo después de crear la verificación
+    } catch (error) {
+      console.error("❌ Error creando verificación para el chat:", error);
+      setChatReady(false); // 🔧 Marcar chat como no listo en caso de error
+    }
+  };
 
   // Función para obtener los datos de la propiedad desde la API
   const fetchPropertyData = async (propertyID) => {
@@ -133,6 +193,7 @@ export default function ValidationModal({
     setLoading(true);
     try {
       const documents = [];
+      const newUploadedFiles = { ...uploadedFiles };
 
       for (const [fileType, file] of Object.entries(selectedFiles)) {
         const fileKey = `${basePath}${fileType}_${Date.now()}_${file.name}`;
@@ -152,11 +213,17 @@ export default function ValidationModal({
           key: fileKey,
         });
 
+        // 🔴 Actualizar el estado uploadedFiles inmediatamente
+        newUploadedFiles[fileType] = fileKey;
+
         setUploadProgress((prev) => ({
           ...prev,
           [fileType]: 100,
         }));
       }
+
+      // 🔴 Actualizar el estado uploadedFiles con los nuevos archivos
+      setUploadedFiles(newUploadedFiles);
 
       // Crear PropertyFeature si no existe
       if (!propertyFeatureID) {
@@ -262,7 +329,7 @@ export default function ValidationModal({
       const input = {
         propertyFeatureID: propertyFeatureID,
         userVerifiedID: propertyData.projectPostulant.id,
-        status: "PENDING",
+        // ❌ Removido el campo status que no existe en el schema
       };
 
       await API.graphql(graphqlOperation(createVerification, { input }));
@@ -357,7 +424,7 @@ export default function ValidationModal({
     <>
       {/* Custom Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             {/* Background overlay */}
             <div 
@@ -366,9 +433,9 @@ export default function ValidationModal({
             ></div>
 
             {/* Modal content */}
-            <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+            <div className="relative z-[10000] inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
               {/* Modal Header */}
-              <div className="bg-gradient-terrasacha border-0 rounded-t-2xl p-6 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-t-2xl p-6 flex items-center justify-between">
                 <h3 className="text-xl font-typographica font-bold text-white">
                   Requisitos para la Prefactibilidad
                 </h3>
@@ -382,7 +449,7 @@ export default function ValidationModal({
               </div>
 
               {/* Modal Body */}
-              <div className="p-6 bg-gradient-terrasacha-subtle">
+              <div className="p-6 bg-gradient-to-br from-terrasacha-light/10 via-white to-terrasacha-earth/10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
                     <p className="text-terrasacha-secondary1 mb-6 font-typographica">
@@ -404,25 +471,24 @@ export default function ValidationModal({
 
                         <div className="flex items-center gap-2">
                           {/* Botón "Ver" solo si el archivo ya está en S3 */}
-                          {uploadedFiles[fileType] &&
-                            !uploadedFiles[fileType].startsWith("pending-") && (
-                              <button
-                                onClick={async () => {
-                                  console.log('uploadedFiles[fileType]', uploadedFiles[fileType]);
-                                  const url = await getSignedFileUrl(uploadedFiles[fileType]);
-                                  if (url) {
-                                    window.open(url, "_blank");
-                                  }
-                                }}
-                                className="flex items-center gap-2 px-3 py-2 bg-terrasacha-success hover:bg-terrasacha-secondary2 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
-                              >
-                                <FaEye size={14} />
-                                Ver
-                              </button>
-                            )}
+                          {uploadedFiles[fileType] && (
+                            <button
+                              onClick={async () => {
+                                console.log('uploadedFiles[fileType]', uploadedFiles[fileType]);
+                                const url = await getSignedFileUrl(uploadedFiles[fileType]);
+                                if (url) {
+                                  window.open(url, "_blank");
+                                }
+                              }}
+                              className="flex items-center gap-2 px-3 py-2 bg-terrasacha-success hover:bg-terrasacha-secondary2 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
+                            >
+                              <FaEye size={14} />
+                              Ver
+                            </button>
+                          )}
 
                           {!isUploadDisabled ? (
-                            (uploadedFiles[fileType] || pendingFiles[fileType]) && (
+                            (uploadedFiles[fileType] || pendingFiles[fileType]) ? (
                               <>
                                 <input
                                   type="file"
@@ -438,17 +504,7 @@ export default function ValidationModal({
                                   Editar
                                 </label>
                               </>
-                            )
-                          ) : (
-                            <span className="text-terrasacha-light text-sm italic font-typographica">
-                              No editable
-                            </span>
-                          )}
-
-                          {/* Botón "Subir" solo si no hay un archivo seleccionado todavía */}
-                          {!isUploadDisabled &&
-                            !uploadedFiles[fileType] &&
-                            !pendingFiles[fileType] && (
+                            ) : (
                               <>
                                 <input
                                   type="file"
@@ -464,16 +520,41 @@ export default function ValidationModal({
                                   Subir
                                 </label>
                               </>
-                            )}
+                            )
+                          ) : (
+                            <span className="text-terrasacha-light text-sm italic font-typographica">
+                              No editable
+                            </span>
+                          )}
                         </div>
                       </div>
                     ))}
                   </div>
                   <div>
-                    <PropertyChat
-                      propertyId={propertyData.propertyInfo?.id}
-                      featureChat={"GLOBAL_PROPERTY_FILES"}
-                    />
+                    {chatReady ? (
+                      <PropertyChat
+                        propertyId={propertyData.propertyInfo?.id}
+                        featureChat={"GLOBAL_PROPERTY_FILES"}
+                      />
+                    ) : (
+                      <div className="bg-gradient-to-br from-white to-terrasacha-light/20 p-6 border border-terrasacha-light/30 rounded-2xl shadow-terrasacha-lg h-96 flex flex-col">
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="text-xl font-typographica font-bold text-terrasacha-secondary1">
+                            Mensajería del Predio
+                          </h2>
+                        </div>
+                        <div className="flex-grow flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-terrasacha-light/20 to-terrasacha-earth/20 rounded-full flex items-center justify-center animate-spin">
+                              <svg className="w-8 h-8 text-terrasacha-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                            </div>
+                            <p className="text-terrasacha-secondary1 font-typographica">Preparando chat...</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

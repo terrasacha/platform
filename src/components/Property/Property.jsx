@@ -22,7 +22,10 @@ import Timeline from "./Timeline";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { DocumentationModal } from "../Legal/LegalAdmon";
 import { useAuth } from "context/AuthContext";
-import { FaArrowLeft, FaEye, FaCheck, FaTimes, FaGavel, FaCalendarAlt, FaRulerCombined } from "react-icons/fa";
+import { FaArrowLeft, FaEye, FaCheck, FaTimes, FaGavel, FaCalendarAlt, FaRulerCombined, FaTimesCircle } from "react-icons/fa";
+import TerrasachaLogo from "components/common/TerrasachaLogo";
+import ConstructorWorkflow from "./ConstructorWorkflow";
+import ValidationModal from "./ValidationModal";
 
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
@@ -59,38 +62,99 @@ export default function Property() {
   const [s3Files, setS3Files] = useState([]);
   const [filesAreComplete, setFilesAreComplete] = useState(false);
   const [s3Loading, setS3Loading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const openChatOnLoad = queryParams.get("openChat") === "true";
   const chatTarget = queryParams.get("chatTarget"); // legal | validator
   const [showDocumentationModal, setShowDocumentationModal] = useState(false);
+  const [showValidationModal, setShowValidationModal] = useState(false);
+  const [showConstructorWorkflowModal, setShowConstructorWorkflowModal] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
     const status = propertyData?.propertyInfo?.status;
-    console.log("📌 propertyData actualizado:", propertyData);
 
-    if (status === "APPROVED" || status === "REJECTED") {
-      setCurrentStep(5); // ✅ Ahora el paso final es el 5
-    } else if (status === "SELECTABLE") {
-      setCurrentStep(4); // ✅ Ahora el estudio se activa solo si es "ELEGIBLE"
-    } else if (status === "DOC_UPLOADED") {
-      setCurrentStep(3); // ✅ Si los archivos están completos, pasa a Validación Legal
-    } else if (isFormComplete) {
-      setCurrentStep(2); // ✅ Si el formulario está completo, pasa a Subir Documentación
-    } else {
-      setCurrentStep(1); // ✅ Estado inicial
+    // Verificar si el formulario ya estaba completo antes de la recarga
+    const checkFormCompletionStatus = () => {
+      if (!propertyData) return false;
+      
+      // Verificar si hay datos en los formularios principales con campos correctos
+      const hasCadastralRecords = propertyData.projectCadastralRecords?.totalArea > 0;
+      
+      // Verificar ActualUseAndPotential con campos reales
+      const actualUseData = propertyData.projectActualUseAndPotential;
+      const hasActualUse = actualUseData && (
+        actualUseData.D_actual_use?.length > 0 ||
+        actualUseData.D_area_potrero ||
+        actualUseData.D_especie_plantaciones1 ||
+        actualUseData.D_ha_plantaciones1 ||
+        actualUseData.D_especie_plantaciones2 ||
+        actualUseData.D_ha_plantaciones2
+      );
+      
+      // Verificar UseRestrictions con campos reales
+      const useRestrictionsData = propertyData.projectUseRestrictions;
+      const hasUseRestrictions = useRestrictionsData && (
+        useRestrictionsData.restrictions ||
+        useRestrictionsData.description ||
+        useRestrictionsData.notes
+      );
+      
+      // Verificar Ecosystem con campos reales
+      const ecosystemData = propertyData.projectEcosystem;
+      const hasEcosystem = ecosystemData && (
+        ecosystemData.ecosystemType ||
+        ecosystemData.description ||
+        ecosystemData.notes
+      );
+      
+      // Verificar GeneralAspects con campos reales
+      const generalAspectsData = propertyData.projectGeneralAspects;
+      const hasGeneralAspects = generalAspectsData && (
+        generalAspectsData.description ||
+        generalAspectsData.notes ||
+        generalAspectsData.observations
+      );
+      
+      // Verificar Relations con campos reales
+      const relationsData = propertyData.projectRelations;
+      const hasRelations = relationsData && (
+        relationsData.description ||
+        relationsData.notes ||
+        relationsData.observations
+      );
+      
+      // Si al menos 3 formularios tienen datos, consideramos que está completo
+      const completedForms = [hasCadastralRecords, hasActualUse, hasUseRestrictions, hasEcosystem, hasGeneralAspects, hasRelations].filter(Boolean).length;
+      
+      return completedForms >= 3;
+    };
+
+    // Verificar el estado real del formulario
+    const actualFormComplete = checkFormCompletionStatus();
+    
+    if (actualFormComplete && !isFormComplete) {
+      setIsFormComplete(true);
     }
 
-    console.log("📌 Nuevo currentStep:", currentStep);
+    if (status === "APPROVED" || status === "REJECTED") {
+      setCurrentStep(5);
+    } else if (status === "SELECTABLE") {
+      setCurrentStep(4);
+    } else if (status === "DOC_UPLOADED") {
+      setCurrentStep(3);
+    } else if (actualFormComplete || isFormComplete) {
+      setCurrentStep(2);
+    } else {
+      setCurrentStep(1);
+    }
   }, [isFormComplete, propertyData, filesAreComplete, s3Loading]);
 
   const handleValidationComplete = () => {
-    console.log("📌 ¡Los archivos están completos! Pasando al paso 3.");
     handleStepChange(3);
 
     if (propertyData?.propertyInfo?.status === "ELEGIBLE") {
-      console.log("📌 Predio es elegible. Pasando al paso 4...");
       setCurrentStep(4);
     }
   };
@@ -108,7 +172,12 @@ export default function Property() {
 
       fetchUserGroups(); */
     const fetchPropertyData = async () => {
-      await handlePropertyData({ pID: id });
+      setIsLoading(true);
+      try {
+        await handlePropertyData({ pID: id });
+      } finally {
+        setIsLoading(false);
+      }
     };
     if (id) {
       fetchPropertyData();
@@ -132,7 +201,6 @@ export default function Property() {
   }, [hasUnsavedChanges]);
 
   const handleStepChange = (step) => {
-    console.log(`📌 Cambiando al paso ${step}`);
     setCurrentStep(step);
   };
 
@@ -218,6 +286,12 @@ export default function Property() {
       fetchProperty();
     }
   }, [propertyData]);
+
+  useEffect(() => {
+    if (propertyData && property) {
+      setIsLoading(false);
+    }
+  }, [propertyData, property]);
 
   // --- Reutilización de handleToggleAssign de LegalAdmon.jsx ---
   const handleToggleAssign = async (property) => {
@@ -306,8 +380,66 @@ export default function Property() {
     }
   };
 
-  if (!property) return null;
-  if (!propertyData) return null;
+  const handleOpenValidationModal = () => {
+    setShowValidationModal(true);
+  };
+
+  const handleCloseValidationModal = () => {
+    setShowValidationModal(false);
+  };
+
+  const handleOpenConstructorWorkflow = () => {
+    setShowConstructorWorkflowModal(true);
+  };
+
+  const handleCloseConstructorWorkflow = () => {
+    setShowConstructorWorkflowModal(false);
+  };
+
+  // Componente de carga con el logo de Terrasacha
+  const LoadingSpinner = () => (
+    <div className="min-h-screen bg-gradient-to-br from-terrasacha-earth via-terrasacha-light to-white flex items-center justify-center">
+      <div className="text-center">
+        <div className="relative">
+          {/* Logo principal con efecto de pulso */}
+          <div className="animate-pulse-terrasacha">
+            <TerrasachaLogo className="w-48 h-auto mx-auto mb-8 opacity-80" />
+          </div>
+          
+          {/* Círculos concéntricos animados */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-64 h-64 border-4 border-terrasacha-primary/20 rounded-full animate-ping"></div>
+            <div className="absolute w-48 h-48 border-4 border-terrasacha-secondary2/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute w-32 h-32 border-4 border-terrasacha-light/40 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+          </div>
+        </div>
+        
+        {/* Texto de carga */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-typographica font-bold text-terrasacha-secondary1 mb-2">
+            Cargando Predio
+          </h2>
+          <p className="text-terrasacha-light font-typographica text-lg">
+            Obteniendo información...
+          </p>
+        </div>
+        
+        {/* Indicador de progreso animado */}
+        <div className="mt-6 flex justify-center">
+          <div className="flex space-x-2">
+            <div className="w-3 h-3 bg-terrasacha-primary rounded-full animate-bounce"></div>
+            <div className="w-3 h-3 bg-terrasacha-secondary2 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-3 h-3 bg-terrasacha-light rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Mostrar componente de carga mientras esté cargando
+  if (isLoading || !property || !propertyData) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <S3ClientProvider>
@@ -416,6 +548,8 @@ export default function Property() {
                 campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
                 openChatOnLoad={openChatOnLoad}
                 chatTarget={chatTarget}
+                onOpenValidationModal={handleOpenValidationModal}
+                onOpenConstructorWorkflow={handleOpenConstructorWorkflow}
               />
             </div>
 
@@ -508,6 +642,50 @@ export default function Property() {
         </div>
       </div>
       
+      {/* ValidationModal - Renderizado por fuera del Timeline */}
+      {showValidationModal && (
+        <ValidationModal
+          isOpen={showValidationModal}
+          onClose={handleCloseValidationModal}
+          onValidationComplete={handleValidationComplete}
+        />
+      )}
+
+      {/* ConstructorWorkflow Modal - Renderizado por fuera del Timeline */}
+      {showConstructorWorkflowModal && (
+        <div className="fixed inset-0 z-[9999] overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            {/* Background overlay */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" 
+              onClick={handleCloseConstructorWorkflow}
+            ></div>
+
+            {/* Modal content */}
+            <div className="relative z-[10000] inline-block align-bottom bg-white/95 backdrop-blur-sm rounded-3xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full border border-terrasacha-light/30">
+              {/* Modal Header */}
+              <div className="bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-t-3xl p-6 flex items-center justify-between">
+                <h3 className="text-xl font-typographica font-bold text-white">
+                  Flujo de Trabajo del Consultor
+                </h3>
+                <button
+                  onClick={handleCloseConstructorWorkflow}
+                  className="text-white hover:text-terrasacha-light transition-all duration-300 hover:scale-110 transform"
+                  aria-label="Cerrar modal"
+                >
+                  <FaTimesCircle className="text-xl" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 bg-gradient-to-br from-terrasacha-light/10 via-white to-terrasacha-earth/10">
+                <ConstructorWorkflow propertyId={propertyData?.propertyInfo?.id} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <DocumentationModal
         isOpen={showDocumentationModal}
         onClose={() => setShowDocumentationModal(false)}
@@ -518,3 +696,6 @@ export default function Property() {
     </S3ClientProvider>
   );
 }
+
+
+

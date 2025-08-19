@@ -695,7 +695,7 @@ export default function LogIn() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
+                    className="absolute right-3 top-1/2 transform  text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
                   >
                     {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                   </button>

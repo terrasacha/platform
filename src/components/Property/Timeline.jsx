@@ -11,7 +11,6 @@ import {
 } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
-import ValidationModal from "./ValidationModal";
 import PropertyChat from "components/Legal/PropertyChat";
 import { API, graphqlOperation } from "aws-amplify";
 import { createPropertyFeature, createVerification, updateVerification } from "graphql/mutations";
@@ -30,9 +29,10 @@ export default function Timeline({
   userId, 
   campaignOwnerId,
   openChatOnLoad=false,
-  chatTarget
+  chatTarget,
+  onOpenValidationModal, // 🔴 Callback para ValidationModal
+  onOpenConstructorWorkflow // 🔴 Nuevo callback para ConstructorWorkflow
 }) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [chatModalIsOpen, setChatModalIsOpen] = useState(false);
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [propertyVerificationID, setPropertyVerificationID] = useState(null);
@@ -47,13 +47,16 @@ export default function Timeline({
     if (!openChatOnLoad || !chatTarget) return;
   
     if (chatTarget === "legal" ) {
-      setModalIsOpen(true); // Abrir ValidationModal
+      // 🔴 En lugar de abrir el modal directamente, llamamos al callback
+      if (onOpenValidationModal) {
+        onOpenValidationModal();
+      }
     }
   
     if (chatTarget === "validator" ) {
       handleChatFeature(); // Abrir PropertyChat
     }
-  }, [openChatOnLoad, currentStep, chatTarget]);
+  }, [openChatOnLoad, currentStep, chatTarget, onOpenValidationModal]);
 
   useEffect(() => {
     if (propertyId) {
@@ -91,16 +94,18 @@ export default function Timeline({
    
   const openModal = (stepId) => {
     if (stepId === 2) {
-      setModalIsOpen(true);
+      // 🔴 En lugar de abrir el modal directamente, llamamos al callback
+      if (onOpenValidationModal) {
+        onOpenValidationModal();
+      }
     }
     if (stepId === 4) {
-      handleChatFeature();
+      // 🔴 Solo permitir abrir ConstructorWorkflow si estás en el paso 4
+      if (currentStep === 4 && onOpenConstructorWorkflow) {
+        onOpenConstructorWorkflow();
+      }
+      // Si no estás en el paso 4, simplemente no hacer nada
     }
-  };
-  
-  const closeModal = () => {
-    console.log("🔴 Cerrando el modal...");
-    setModalIsOpen(false);
   };
 
   const handleValidationComplete = () => {
@@ -150,9 +155,9 @@ export default function Timeline({
       ? "El predio no cumplió con los requisitos técnicos o legales y ha sido rechazado. Puede reiniciar el proceso si se corrigen los errores."
       : "Se ha seleccionado el predio para integrar el proyecto. Inicia la siguiente etapa del proyecto. Debes esperar que se cierre la campaña y aceptar la propuesta financiera ",
     icon: isApproved ? (
-      <FaCheckCircle size={18} className="text-white" />
+      <FaCheckCircle size={18} />
     ) : isRejected ? (
-      <FaTimesCircle size={18} className="text-white" />
+      <FaTimesCircle size={18} />
     ) : (
       <FaCheckCircle size={18} />
     ),
@@ -261,130 +266,125 @@ export default function Timeline({
   };
    
   return (
-    <div className="w-full flex flex-col items-center mt-6 px-4">
-      <div className="w-full max-w-4xl">
-        <ProgressBar
-          percent={((currentStep - 1) / (steps.length - 1)) * 100}
-          filledBackground="linear-gradient(135deg, #6e6c35 0%, #849b50 100%)"
-          height={8}
-          transitionDuration={800}
-          className="rounded-full shadow-terrasacha-lg"
-        >
-          {steps.map((step, index) => (
-            <Step key={step.id}>
-              {({ accomplished }) => {
-                let stepClass = "bg-terrasacha-light/80 text-terrasacha-secondary1 border-terrasacha-light/60 opacity-60 backdrop-blur-sm";
+    <>
+      <div className="w-full flex flex-col items-center mt-6 px-4">
+        <div className="w-full max-w-4xl">
+          <ProgressBar
+            percent={((currentStep - 1) / (steps.length - 1)) * 100}
+            filledBackground="linear-gradient(135deg, #6e6c35 0%, #849b50 100%)"
+            height={8}
+            transitionDuration={800}
+            className="rounded-full shadow-terrasacha-lg"
+          >
+            {steps.map((step, index) => (
+              <Step key={step.id}>
+                {({ accomplished }) => {
+                  let stepClass = "bg-terrasacha-light/80 text-terrasacha-secondary1 border-terrasacha-light/60 opacity-60 backdrop-blur-sm";
 
-                // 🔥 Si es el paso actual, se pone con el color primario de Terrasacha
-                if (step.id === currentStep && step.id !== steps.length) {
-                  stepClass = "bg-gradient-to-br from-terrasacha-primary to-terrasacha-secondary1 text-white border-terrasacha-primary shadow-terrasacha-2xl animate-pulse-terrasacha";
-                }
-                else if (accomplished) {
-                  stepClass = "bg-gradient-to-br from-terrasacha-success to-green-600 text-white border-terrasacha-success shadow-terrasacha-xl hover:shadow-terrasacha-2xl transform hover:scale-105 transition-all duration-300";
-                }
+                  // 🔥 Si es el paso actual, se pone con el color primario de Terrasacha
+                  if (step.id === currentStep && step.id !== steps.length) {
+                    stepClass = "bg-gradient-to-br from-terrasacha-primary to-terrasacha-secondary1 text-white border-terrasacha-primary shadow-terrasacha-2xl animate-pulse-terrasacha";
+                  }
+                  else if (accomplished) {
+                    stepClass = "bg-gradient-to-br from-terrasacha-success to-green-600 text-white border-terrasacha-success shadow-terrasacha-xl hover:shadow-terrasacha-2xl transform hover:scale-105 transition-all duration-300";
+                  }
 
-                // 🔥 Animación especial para el paso 2 (resplandor y pulsación)
-                const isStep2Active = step.id === 2 && currentStep === 2;
-                const glowEffect = isStep2Active
-                  ? "animate-pulse ring-4 ring-terrasacha-earth/50 shadow-terrasacha-2xl"
-                  : "";
+                  // 🔥 Animación especial para el paso 2 (resplandor y pulsación)
+                  const isStep2Active = step.id === 2 && currentStep === 2;
+                  const glowEffect = isStep2Active
+                    ? "animate-pulse ring-4 ring-terrasacha-earth/50 shadow-terrasacha-2xl"
+                    : "";
 
-                return (
-                  <div className="flex flex-col items-center w-28 text-center relative">
-                    {/* 📌 Flecha animada SOLO para el paso 2 */}
-                    {isStep2Active && (
-                      <div className="absolute -top-8 text-terrasacha-primary text-lg font-typographica font-bold animate-bounce">
-                        <div className="bg-gradient-to-br from-terrasacha-primary to-terrasacha-secondary1 text-white px-2 py-1 rounded-lg shadow-terrasacha-lg">
-                          ⬇️
+                  return (
+                    <div className="flex flex-col items-center w-28 text-center relative">
+                      {/* 📌 Flecha animada SOLO para el paso 2 */}
+                      {isStep2Active && (
+                        <div className="absolute -top-8 text-terrasacha-primary text-lg font-typographica font-bold animate-bounce">
+                          <div className="bg-gradient-to-br from-terrasacha-primary to-terrasacha-secondary1 text-white px-2 py-1 rounded-lg shadow-terrasacha-lg">
+                            ⬇️
+                          </div>
+                          <p className="text-xs font-typographica font-semibold text-terrasacha-primary mt-1">clic</p>
                         </div>
-                        <p className="text-xs font-typographica font-semibold text-terrasacha-primary mt-1">clic</p>
-                      </div>
-                    )}
-
-                    {/* 📌 Ícono del paso con animación especial para el paso 2 */}
-                    <div className="flex flex-col items-center">
-                      <div className="relative flex flex-col items-center">
-                        {/* Ícono principal del paso */}
-                        <div
-                          className={`w-12 h-12 flex items-center justify-center rounded-full border-2 transition-all duration-300 cursor-pointer ${stepClass} ${glowEffect}`}
-                          data-tooltip-id={`tooltip-${step.id}`}
-                          onClick={() => openModal(step.id)}
-                        >
-                          {step.icon}
-                        </div>
-
-                        {/* Ícono de ayuda alineado a la derecha del círculo */}
-                        <span
-                          onClick={() => openHelp(step)}
-                          className="absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer transition-all duration-300 hover:scale-110 hover:opacity-100"
-                          title="Ver explicación del paso"
-                          aria-label="Ayuda del paso"
-                        >
-                          <div className="bg-gradient-to-br from-terrasacha-primary/20 to-terrasacha-secondary1/20 p-1 rounded-full border border-terrasacha-primary/30">
-                            <FaQuestionCircle size={16} className="text-terrasacha-primary" />
-                          </div>
-                        </span>
-
-                        <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
-                      </div>
-                    </div>
-
-                    <div className="w-1 h-8 bg-gradient-to-b from-terrasacha-light/60 to-transparent mx-auto mt-2 rounded-full"></div>
-
-                    <Tooltip
-                      id={`tooltip-${step.id}`}
-                      effect="solid"
-                      place="bottom"
-                      className="text-xs p-4 bg-gradient-to-br from-terrasacha-secondary1 to-terrasacha-primary text-white rounded-xl shadow-terrasacha-2xl flex items-center gap-2 animate-fade-in font-typographica max-w-xs border border-terrasacha-light/20"
-                    >
-                      {step.id === 1 ? (
-                        !isFormComplete ? (
-                          <div className="flex items-center gap-2">
-                            <FaTimesCircle className="text-red-400" size={14} />
-                            <span>
-                              Para completar el paso 1, debes llenar toda la
-                              información del formulario.
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <FaCheckCircle
-                              className="text-terrasacha-success"
-                              size={14}
-                            />
-                            <span>¡Paso 1 completado!</span>
-                          </div>
-                        )
-                      ) : (
-                        <span>{step.description}</span>
                       )}
-                    </Tooltip>
 
-                    <p
-                      className={`mt-3 text-sm font-typographica font-semibold transition-all duration-500 ${
-                        step.id === currentStep
-                          ? "text-transparent bg-clip-text bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 font-bold"
-                          : accomplished
-                          ? "text-terrasacha-success"
-                          : "text-terrasacha-secondary1"
-                      } hover:text-terrasacha-primary hover:scale-105 transform`}
-                    >
-                      {step.title}
-                    </p>
-                  </div>
-                );
-              }}
-            </Step>
-          ))}
-        </ProgressBar>
+                      {/* 📌 Ícono del paso con animación especial para el paso 2 */}
+                      <div className="flex flex-col items-center">
+                        <div className="relative flex flex-col items-center">
+                          {/* Ícono principal del paso */}
+                          <div
+                            className={`w-12 h-12 flex items-center justify-center rounded-full border-2 transition-all duration-300 cursor-pointer ${stepClass} ${glowEffect}`}
+                            data-tooltip-id={`tooltip-${step.id}`}
+                            onClick={() => openModal(step.id)}
+                          >
+                            {step.icon}
+                          </div>
+
+                          {/* Ícono de ayuda alineado a la derecha del círculo */}
+                          <span
+                            onClick={() => openHelp(step)}
+                            className="absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer transition-all duration-300 hover:scale-110 hover:opacity-100"
+                            title="Ver explicación del paso"
+                            aria-label="Ayuda del paso"
+                          >
+                            <div className="bg-gradient-to-br from-terrasacha-primary/20 to-terrasacha-secondary1/20 p-1 rounded-full border border-terrasacha-primary/30">
+                              <FaQuestionCircle size={16} className="text-terrasacha-primary" />
+                            </div>
+                          </span>
+
+                          <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
+                        </div>
+                      </div>
+
+                      <div className="w-1 h-8 bg-gradient-to-b from-terrasacha-light/60 to-transparent mx-auto mt-2 rounded-full"></div>
+
+                      <Tooltip
+                        id={`tooltip-${step.id}`}
+                        effect="solid"
+                        place="bottom"
+                        className="text-xs p-4 bg-gradient-to-br from-terrasacha-secondary1 to-terrasacha-primary text-white rounded-xl shadow-terrasacha-2xl flex items-center gap-2 animate-fade-in font-typographica max-w-xs border border-terrasacha-light/20"
+                      >
+                        {step.id === 1 ? (
+                          !isFormComplete ? (
+                            <div className="flex items-center gap-2">
+                              <FaTimesCircle className="text-red-400" size={14} />
+                              <span>
+                                Para completar el paso 1, debes llenar toda la
+                                información del formulario.
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <FaCheckCircle
+                                className="text-terrasacha-success"
+                                size={14}
+                              />
+                              <span>¡Paso 1 completado!</span>
+                            </div>
+                          )
+                        ) : (
+                          <span>{step.description}</span>
+                        )}
+                      </Tooltip>
+
+                      <p
+                        className={`mt-3 text-sm font-typographica font-semibold transition-all duration-500 ${
+                          step.id === currentStep
+                            ? "text-transparent bg-clip-text bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 font-bold"
+                            : accomplished
+                            ? "text-terrasacha-success"
+                            : "text-terrasacha-secondary1"
+                        } hover:text-terrasacha-primary hover:scale-105 transform`}
+                      >
+                        {step.title}
+                      </p>
+                    </div>
+                  );
+                }}
+              </Step>
+            ))}
+          </ProgressBar>
+        </div>
       </div>
-      
-      <ValidationModal
-        isOpen={modalIsOpen}
-        onClose={closeModal}
-        onValidationComplete={handleValidationComplete}
-        checkDocuments={true}
-      />
 
       {/* Custom Chat Modal */}
       {chatModalIsOpen && (
@@ -414,7 +414,7 @@ export default function Timeline({
 
               {/* Modal Body */}
               <div className="p-6 bg-gradient-to-br from-terrasacha-light/10 via-white to-terrasacha-earth/10">
-                <ConstructorWorkflow propertyId={propertyId} />
+                <PropertyChat propertyId={propertyId} />
               </div>
             </div>
           </div>
@@ -429,6 +429,6 @@ export default function Timeline({
           stepDescription={helpStep.helpText}
         />
       )}
-    </div>
+    </>
   );
 }
