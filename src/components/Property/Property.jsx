@@ -149,14 +149,19 @@ export default function Property() {
     console.log("📌 useEffect principal completado");
   }, [propertyData]); // ✅ Solo se ejecuta cuando cambia propertyData
 
-  const handleValidationComplete = () => {
+  const handleValidationComplete = async () => {
     console.log("📌 ¡Los archivos están completos! Pasando al paso 3.");
-    handleStepChange(3);
-
-    if (propertyData?.propertyInfo?.status === "ELEGIBLE") {
-      console.log("📌 Predio es elegible. Pasando al paso 4...");
-      setCurrentStep(4);
+    
+    // ✅ Refrescar los datos del predio para obtener el status actualizado
+    try {
+      await handlePropertyData({ pID: id });
+      console.log("📌 Datos del predio refrescados");
+    } catch (error) {
+      console.error("❌ Error refrescando datos del predio:", error);
     }
+    
+    // ✅ El useEffect detectará el cambio de status y avanzará automáticamente
+    setCurrentStep(3);
   };
 
   // 🔴 Callbacks para los modales del Timeline

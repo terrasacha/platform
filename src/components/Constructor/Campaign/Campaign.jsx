@@ -240,23 +240,35 @@ export default function Campaign() {
         <NewHeaderNavbar />
       </div>
 
-      {/* Hero Section - Responsive */}
-      <section className="relative h-[40vh] sm:h-[50vh] md:h-[60vh] min-h-[300px] sm:min-h-[350px] md:min-h-[400px] max-h-[500px] sm:max-h-[550px] md:max-h-[600px] w-full flex items-center justify-center text-white text-center overflow-hidden">
-        <div className="absolute inset-0 bg-black/50 z-10"></div>
-        <img
-          src={getCampaignImage()}
-          alt="Imagen de la campaña"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="font-champagne text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl leading-tight shadow-text px-2">
-            {campaign.name}
-          </h1>
-          <p className="font-typographica text-base sm:text-lg md:text-xl lg:text-2xl mt-2 sm:mt-3 md:mt-4 text-terrasacha-earth px-4">
-            "Pioneros del Mañana"
-          </p>
-        </div>
-      </section>
+             {/* Hero Section - Responsive */}
+       <section className="relative h-[40vh] sm:h-[50vh] md:h-[60vh] min-h-[300px] sm:min-h-[350px] md:min-h-[400px] max-h-[500px] sm:max-h-[550px] md:max-h-[600px] w-full flex items-center justify-center text-white text-center overflow-hidden">
+         <div className="absolute inset-0 bg-black/50 z-10"></div>
+         <img
+           src={getCampaignImage()}
+           alt="Imagen de la campaña"
+           className="absolute inset-0 w-full h-full object-cover"
+         />
+         
+                                                                               {/* ✅ NUEVO: Botón de edición de imagen sobre la imagen */}
+            {editable && (
+              <button
+                onClick={handleShowEditImage}
+                className="absolute top-20 right-4 z-30 p-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full hover:bg-white/30 hover:border-white/50 transition-all duration-300 group"
+                aria-label="Editar imagen de la campaña"
+              >
+                <FiEdit3 className="w-5 h-5 text-white group-hover:text-terrasacha-earth transition-colors duration-300" />
+              </button>
+            )}
+         
+         <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8">
+           <h1 className="font-champagne text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl leading-tight shadow-text px-2">
+             {campaign.name}
+           </h1>
+           <p className="font-typographica text-base sm:text-lg md:text-xl lg:text-2xl mt-2 sm:mt-3 md:mt-4 text-terrasacha-earth px-4">
+             "Pioneros del Mañana"
+           </p>
+         </div>
+       </section>
 
       {/* Main Content - Ajustado para mejor integración - Responsive */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-[-80px] sm:mt-[-100px] md:mt-[-120px] relative z-20 mb-8 sm:mb-12 md:mb-16">
@@ -266,21 +278,24 @@ export default function Campaign() {
             <div className="bg-white p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl shadow-terrasacha-xl">
               {/* Campaign Header - Mejorado el espaciado - Responsive */}
               <div className="mb-6 sm:mb-8 md:mb-10">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 sm:mb-6">
-                  <h2 className="font-champagne text-2xl sm:text-3xl md:text-4xl text-terrasacha-secondary1 mb-2 sm:mb-0">
-                    {campaign.name}
-                    {editable && (
-                      <FiEdit3
-                        onClick={handleShow}
-                        className="inline ml-2 sm:ml-3 text-terrasacha-primary hover:text-terrasacha-secondary1 transition-all duration-300 cursor-pointer w-5 h-5 sm:w-6 sm:h-6"
-                      />
-                    )}
-                  </h2>
-                  <div className="flex items-center text-gray-500 font-typographica mt-2 sm:mt-1.5 whitespace-nowrap text-sm sm:text-base">
-                    <FiCalendar className="text-lg sm:text-xl mr-2 text-terrasacha-secondary2" />
-                    <span>Fecha límite: {formatDate(campaign.endDate)}</span>
+                                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 sm:mb-6">
+                    <h2 className="font-champagne text-2xl sm:text-3xl md:text-4xl text-terrasacha-secondary1 mb-2 sm:mb-0">
+                      {campaign.name}
+                      {editable && (
+                        <FiEdit3
+                          onClick={handleShow}
+                          className="inline ml-2 sm:ml-3 text-terrasacha-primary hover:text-terrasacha-secondary1 transition-all duration-300 cursor-pointer w-5 h-5 sm:w-6 sm:h-6"
+                        />
+                      )}
+                    </h2>
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="flex items-center text-gray-500 font-typographica whitespace-nowrap text-sm sm:text-base">
+                        <FiCalendar className="text-lg sm:text-xl mr-2 text-terrasacha-secondary2" />
+                        <span>Fecha límite: {formatDate(campaign.endDate)}</span>
+                      </div>
+
+                    </div>
                   </div>
-                </div>
                 <p className="font-champagne text-lg sm:text-xl md:text-2xl text-terrasacha-secondary2 mb-3 sm:mb-4">"Pioneros del Mañana"</p>
                 <p className="font-typographica text-sm sm:text-base text-gray-600 max-w-3xl leading-relaxed">
                   {campaign.description}

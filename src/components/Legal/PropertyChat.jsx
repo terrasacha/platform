@@ -8,9 +8,9 @@ import {
   updateNotification,
 } from "graphql/mutations";
 import { getProperty } from "utilities/customQueries";
-import { listNotifications } from "graphql/queries";
+import { listNotifications, listVerifications } from "graphql/queries";
 
-export default function PropertyChat({ propertyId, featureChat }) {
+export default function PropertyChat({ propertyId, featureChat, isValidatorAssigned }) {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [verificationID, setVerificationID] = useState(null);
@@ -22,6 +22,7 @@ export default function PropertyChat({ propertyId, featureChat }) {
   const [propertyName, setPropertyName] = useState("");
   const messagesEndRef = useRef(null);
   const [userVerifiedName, setUserVerifiedName] = useState("");
+  const [canUserWrite, setCanUserWrite] = useState(false);
 
 
 
@@ -97,6 +98,47 @@ export default function PropertyChat({ propertyId, featureChat }) {
       notificationsRead();
     }
   }, [propertyID]);
+  
+  // ✅ CORREGIDO: useEffect para controlar permisos de escritura
+  useEffect(() => {
+    // ✅ CORREGIDO: Lógica simplificada y correcta
+    if (user?.role === "validator") {
+      // Validador: Solo si está asignado
+      setCanUserWrite(isValidatorAssigned);
+    } else if (user?.role === "constructor") {
+      // Propietario: SIEMPRE puede escribir
+      setCanUserWrite(true);
+    } else {
+      // Otros roles: Solo si están en availableChatUsers
+      setCanUserWrite(availableChatUsers.includes(user?.id));
+    }
+  }, [isValidatorAssigned, availableChatUsers, user?.id, user?.role]);
+
+  // ✅ NUEVO: useEffect para verificar si el validador ya está asignado en la verification
+  useEffect(() => {
+    if (user?.role === "validator" && verificationID && !isValidatorAssigned) {
+      // Verificar si el validador ya está asignado en la verification actual
+      const checkValidatorAssignment = async () => {
+        try {
+          const response = await API.graphql(
+            graphqlOperation(listVerifications, {
+              filter: { id: { eq: verificationID } }
+            })
+          );
+          
+          const verification = response.data.listVerifications.items[0];
+          if (verification?.userVerifierID === user.id) {
+            // ✅ El validador ya está asignado, habilitar escritura
+            setCanUserWrite(true);
+          }
+        } catch (error) {
+          console.error("Error verificando asignación del validador:", error);
+        }
+      };
+      
+      checkValidatorAssignment();
+    }
+  }, [user?.role, verificationID, isValidatorAssigned, user?.id]);
   
 
 
@@ -250,12 +292,12 @@ export default function PropertyChat({ propertyId, featureChat }) {
                 className="border border-gray-300 rounded-md p-2 flex-grow"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                disabled={!availableChatUsers.includes(user.id)}
+                disabled={!canUserWrite}
               />
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2"
                 onClick={handleSendMessage}
-                disabled={!availableChatUsers.includes(user.id)}
+                disabled={!canUserWrite}
               >
                 Enviar
               </button>

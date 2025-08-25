@@ -762,43 +762,67 @@ export default function ValidatorAdmon() {
                                         colSpan={5}
                                         className="pl-8 py-2 align-middle"
                                       >
-                                        <div className="flex items-center gap-4">
-                                          <span className="font-typographica font-semibold text-terrasacha-secondary1 text-xs">
-                                            {property.name
-                                              ? property.name.toUpperCase()
-                                              : "Predio sin nombre"}
-                                          </span>
-                                          <span
-                                            className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${
-                                              stateMapper[property.status]
-                                                ?.badge ||
-                                              "bg-gray-300 text-gray-800 border border-gray-400"
-                                            }`}
-                                            data-tooltip-id={`tooltip-property-status-${property.id}`}
-                                            data-tooltip-content={
-                                              stateMapper[property.status]
-                                                ?.tooltip || "Estado indefinido"
+                                        <div className="flex items-center justify-between w-full">
+                                          <div className="flex items-center gap-4">
+                                            <span className="font-typographica font-semibold text-terrasacha-secondary1 text-xs">
+                                              {property.name
+                                                ? property.name.toUpperCase()
+                                                : "Predio sin nombre"}
+                                            </span>
+                                            <span
+                                              className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${
+                                                stateMapper[property.status]
+                                                  ?.badge ||
+                                                "bg-gray-300 text-gray-800 border border-gray-400"
+                                              }`}
+                                              data-tooltip-id={`tooltip-property-status-${property.id}`}
+                                              data-tooltip-content={
+                                                stateMapper[property.status]
+                                                  ?.tooltip || "Estado indefinido"
+                                              }
+                                            >
+                                              {stateMapper[property.status]
+                                                ?.label || "SIN DEFINIR"}
+                                            </span>
+                                            <ReactTooltip
+                                              id={`tooltip-property-status-${property.id}`}
+                                              place="top"
+                                              effect="solid"
+                                            />
+                                            <span className="text-xs text-terrasacha-secondary1">
+                                              {property.createdAt
+                                                ? new Date(
+                                                    property.createdAt
+                                                  ).toLocaleDateString("es-ES", {
+                                                    year: "numeric",
+                                                    month: "2-digit",
+                                                    day: "2-digit",
+                                                  })
+                                                : "-"}
+                                            </span>
+                                          </div>
+                                          {/* ✅ NUEVO: Botón para visualizar predio en la esquina derecha */}
+                                          <button
+                                            onClick={() =>
+                                              window.open(
+                                                `/property/${property.id}`,
+                                                "_blank"
+                                              )
                                             }
+                                            className="border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-primary/80 hover:shadow-terrasacha active:bg-terrasacha-primary transition-all duration-200 flex items-center justify-center w-6 h-6 transform hover:scale-105"
+                                            aria-label="Ver detalles del predio"
+                                            data-tooltip-id={`tooltip-property-view-${property.id}`}
+                                            data-tooltip-content="Ver detalles del predio"
+                                            tabIndex={0}
+                                            type="button"
                                           >
-                                            {stateMapper[property.status]
-                                              ?.label || "SIN DEFINIR"}
-                                          </span>
+                                            <FaEye size={10} />
+                                          </button>
                                           <ReactTooltip
-                                            id={`tooltip-property-status-${property.id}`}
+                                            id={`tooltip-property-view-${property.id}`}
                                             place="top"
                                             effect="solid"
                                           />
-                                          <span className="text-xs text-terrasacha-secondary1">
-                                            {property.createdAt
-                                              ? new Date(
-                                                  property.createdAt
-                                                ).toLocaleDateString("es-ES", {
-                                                  year: "numeric",
-                                                  month: "2-digit",
-                                                  day: "2-digit",
-                                                })
-                                              : "-"}
-                                          </span>
                                         </div>
                                       </td>
                                     </tr>

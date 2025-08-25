@@ -43,12 +43,12 @@ export default function PropertyChatHistory({ propertyId, featureChat }) {
           No hay historial de mensajes.
         </p>
       ) : (
-        verifications.map((v) =>
+        verifications.map((v, vIndex) =>
           v.verificationComments.items
             .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
             .map((msg) => (
               <div
-                key={msg.id}
+                key={`${v.id}-${msg.id}-${vIndex}`}
                 className={`flex ${
                   msg.isCommentByVerifier ? "justify-start" : "justify-end"
                 }`}
