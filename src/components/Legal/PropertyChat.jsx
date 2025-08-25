@@ -23,7 +23,6 @@ export default function PropertyChat({ propertyId, featureChat }) {
   const messagesEndRef = useRef(null);
   const [userVerifiedName, setUserVerifiedName] = useState("");
 
-
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -36,9 +35,12 @@ export default function PropertyChat({ propertyId, featureChat }) {
         const property = response.data.getProperty;
         setPropertyID(property.id)
         setPropertyName(property.name);
+        
+        // 🔍 Buscar la verificación específica para el featureChat
         const propertyVerification = property?.propertyFeatures?.items.find(
           (feature) => feature.featureID === featureChat
         )?.verifications?.items[0];
+        
         setUserVerifiedName(propertyVerification?.userVerified?.name || "");
   
         if (!propertyVerification) {
@@ -79,7 +81,6 @@ export default function PropertyChat({ propertyId, featureChat }) {
     fetchMessages();
   }, [propertyId, featureChat]);
   
-
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -92,7 +93,6 @@ export default function PropertyChat({ propertyId, featureChat }) {
     }
   }, [propertyID]);
   
-
   console.log("availableChatUsers", availableChatUsers);
 
   const handleSendMessage = async () => {
@@ -189,7 +189,6 @@ export default function PropertyChat({ propertyId, featureChat }) {
     }
   };
   
-
   return (
     <>
       {verificationID && (

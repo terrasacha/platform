@@ -72,13 +72,19 @@ export default function Property() {
   const [showConstructorWorkflowModal, setShowConstructorWorkflowModal] = useState(false);
   const { user } = useAuth();
 
+  // ✅ CORREGIDO: useEffect principal solo para verificación inicial del formulario
   useEffect(() => {
-    const status = propertyData?.propertyInfo?.status;
+    console.log("📌 useEffect principal ejecutándose...");
+    console.log("📌 propertyData:", propertyData ? "disponible" : "no disponible");
+    console.log("📌 isFormComplete actual:", isFormComplete);
 
-    // Verificar si el formulario ya estaba completo antes de la recarga
+    if (!propertyData) {
+      console.log("📌 No hay propertyData, esperando...");
+      return;
+    }
+
+    // ✅ CORREGIDO: Verificar si el formulario ya estaba completo antes de la recarga
     const checkFormCompletionStatus = () => {
-      if (!propertyData) return false;
-      
       // Verificar si hay datos en los formularios principales con campos correctos
       const hasCadastralRecords = propertyData.projectCadastralRecords?.totalArea > 0;
       
@@ -131,32 +137,43 @@ export default function Property() {
       return completedForms >= 3;
     };
 
-    // Verificar el estado real del formulario
+    // ✅ CORREGIDO: Verificar el estado real del formulario y actualizarlo si es necesario
     const actualFormComplete = checkFormCompletionStatus();
+    console.log("📌 Estado real del formulario:", actualFormComplete);
     
     if (actualFormComplete && !isFormComplete) {
+      console.log("📌 Actualizando isFormComplete a true");
       setIsFormComplete(true);
     }
-
-    if (status === "APPROVED" || status === "REJECTED") {
-      setCurrentStep(5);
-    } else if (status === "SELECTABLE") {
-      setCurrentStep(4);
-    } else if (status === "DOC_UPLOADED") {
-      setCurrentStep(3);
-    } else if (actualFormComplete || isFormComplete) {
-      setCurrentStep(2);
-    } else {
-      setCurrentStep(1);
-    }
-  }, [isFormComplete, propertyData, filesAreComplete, s3Loading]);
+    
+    console.log("📌 useEffect principal completado");
+  }, [propertyData]); // ✅ Solo se ejecuta cuando cambia propertyData
 
   const handleValidationComplete = () => {
+    console.log("📌 ¡Los archivos están completos! Pasando al paso 3.");
     handleStepChange(3);
 
     if (propertyData?.propertyInfo?.status === "ELEGIBLE") {
+      console.log("📌 Predio es elegible. Pasando al paso 4...");
       setCurrentStep(4);
     }
+  };
+
+  // 🔴 Callbacks para los modales del Timeline
+  const handleOpenValidationModal = () => {
+    setShowValidationModal(true);
+  };
+
+  const handleCloseValidationModal = () => {
+    setShowValidationModal(false);
+  };
+
+  const handleOpenConstructorWorkflow = () => {
+    setShowConstructorWorkflowModal(true);
+  };
+
+  const handleCloseConstructorWorkflow = () => {
+    setShowConstructorWorkflowModal(false);
   };
 
   useEffect(() => {
@@ -287,6 +304,82 @@ export default function Property() {
     }
   }, [propertyData]);
 
+  // ✅ CORREGIDO: Refrescar datos del predio cuando cambie el status
+  useEffect(() => {
+    if (propertyData?.propertyInfo?.status) {
+      console.log("📌 Status del predio detectado:", propertyData.propertyInfo.status);
+      // Refrescar los datos para asegurar que estén actualizados
+      handlePropertyData({ pID: id });
+    }
+  }, [propertyData?.propertyInfo?.status, id]);
+
+  // ✅ CORREGIDO: useEffect específico para manejar cambios en isFormComplete
+  useEffect(() => {
+    if (propertyData && isFormComplete !== undefined) {
+      console.log("📌 isFormComplete cambió a:", isFormComplete);
+      
+      const status = propertyData?.propertyInfo?.status;
+      let newStep = 1;
+      
+      if (status === "APPROVED" || status === "REJECTED") {
+        newStep = 5;
+      } else if (status === "SELECTABLE") {
+        newStep = 4;
+      } else if (status === "DOC_UPLOADED") {
+        newStep = 3;
+      } else if (status === "PENDING" && isFormComplete) {
+        newStep = 2;
+      } else if (isFormComplete) {
+        newStep = 2;
+      } else {
+        newStep = 1;
+      }
+      
+      console.log("📌 Recalculando paso basado en isFormComplete:", { status, isFormComplete, newStep });
+      
+      if (newStep !== currentStep) {
+        setCurrentStep(newStep);
+        console.log("📌 currentStep actualizado a:", newStep);
+      }
+    }
+  }, [isFormComplete, propertyData, currentStep]);
+
+  // ✅ CORREGIDO: useEffect para establecer el currentStep inicial cuando se carga la página
+  useEffect(() => {
+    if (propertyData && isFormComplete !== undefined) {
+      console.log("📌 Estableciendo currentStep inicial...");
+      
+      const status = propertyData?.propertyInfo?.status;
+      let initialStep = 1;
+      
+      if (status === "APPROVED" || status === "REJECTED") {
+        initialStep = 5;
+      } else if (status === "SELECTABLE") {
+        initialStep = 4;
+      } else if (status === "DOC_UPLOADED") {
+        initialStep = 3;
+      } else if (status === "PENDING" && isFormComplete) {
+        initialStep = 2;
+      } else if (isFormComplete) {
+        initialStep = 2;
+      } else {
+        initialStep = 1;
+      }
+      
+      console.log("📌 currentStep inicial calculado:", { status, isFormComplete, initialStep });
+      
+      if (initialStep !== currentStep) {
+        setCurrentStep(initialStep);
+        console.log("📌 currentStep inicial establecido a:", initialStep);
+      }
+    }
+  }, [propertyData, isFormComplete]); // ✅ Solo se ejecuta cuando se cargan los datos iniciales
+
+  // ✅ DEBUG: Monitorear cambios en currentStep
+  useEffect(() => {
+    console.log("📌 Property - currentStep cambió a:", currentStep);
+  }, [currentStep]);
+
   useEffect(() => {
     if (propertyData && property) {
       setIsLoading(false);
@@ -380,20 +473,12 @@ export default function Property() {
     }
   };
 
-  const handleOpenValidationModal = () => {
-    setShowValidationModal(true);
+  const handleOpenDocumentationModal = () => {
+    setShowDocumentationModal(true);
   };
 
-  const handleCloseValidationModal = () => {
-    setShowValidationModal(false);
-  };
-
-  const handleOpenConstructorWorkflow = () => {
-    setShowConstructorWorkflowModal(true);
-  };
-
-  const handleCloseConstructorWorkflow = () => {
-    setShowConstructorWorkflowModal(false);
+  const handleCloseDocumentationModal = () => {
+    setShowDocumentationModal(false);
   };
 
   // Componente de carga con el logo de Terrasacha
@@ -536,21 +621,24 @@ export default function Property() {
 
             {/* Timeline Section */}
             <div className="border-t border-terrasacha-light/30 pt-6 relative z-10">
-              <Timeline
-                currentStep={currentStep}
-                isFormComplete={isFormComplete}
-                handleValidationComplete={handleValidationComplete}
-                onStepChange={handleStepChange}
-                propertyStatus={propertyData?.propertyInfo?.status}
-                filesAreComplete={filesAreComplete}
-                propertyId={propertyData?.propertyInfo?.id}
-                userId={propertyData?.projectPostulant?.id}
-                campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
-                openChatOnLoad={openChatOnLoad}
-                chatTarget={chatTarget}
-                onOpenValidationModal={handleOpenValidationModal}
-                onOpenConstructorWorkflow={handleOpenConstructorWorkflow}
-              />
+              {/* 📌 Línea de tiempo horizontal dentro del div */}
+              <div className="mt-6">
+                <Timeline
+                  currentStep={currentStep}
+                  isFormComplete={isFormComplete}
+                  handleValidationComplete={handleValidationComplete}
+                  onStepChange={handleStepChange}
+                  propertyStatus={propertyData?.propertyInfo?.status}
+                  filesAreComplete={filesAreComplete}
+                  propertyId={propertyData?.propertyInfo?.id}
+                  userId={propertyData?.projectPostulant?.id}
+                  campaignOwnerId={propertyData?.propertyCampaign?.userId || ""}
+                  openChatOnLoad={openChatOnLoad}
+                  chatTarget={chatTarget}
+                  onOpenValidationModal={handleOpenValidationModal}
+                  onOpenConstructorWorkflow={handleOpenConstructorWorkflow}
+                />
+              </div>
             </div>
 
             {/* Navigation Tabs */}
@@ -642,15 +730,6 @@ export default function Property() {
         </div>
       </div>
       
-      {/* ValidationModal - Renderizado por fuera del Timeline */}
-      {showValidationModal && (
-        <ValidationModal
-          isOpen={showValidationModal}
-          onClose={handleCloseValidationModal}
-          onValidationComplete={handleValidationComplete}
-        />
-      )}
-
       {/* ConstructorWorkflow Modal - Renderizado por fuera del Timeline */}
       {showConstructorWorkflowModal && (
         <div className="fixed inset-0 z-[9999] overflow-y-auto">
@@ -692,6 +771,12 @@ export default function Property() {
         property={property}
         fetchProperties={fetchProperty}
         user={user}
+      />
+
+      <ValidationModal
+        isOpen={showValidationModal}
+        onClose={handleCloseValidationModal}
+        onValidationComplete={handleValidationComplete}
       />
     </S3ClientProvider>
   );

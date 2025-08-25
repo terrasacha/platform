@@ -11,8 +11,10 @@ import {
 } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import ValidationModal from "./ValidationModal";
 import PropertyChat from "components/Legal/PropertyChat";
 import { API, graphqlOperation } from "aws-amplify";
+import { Modal } from "react-bootstrap";
 import { createPropertyFeature, createVerification, updateVerification } from "graphql/mutations";
 import { listPropertyFeatures, listVerifications } from "graphql/queries";
 import { useAuth } from "context/AuthContext";
@@ -33,7 +35,8 @@ export default function Timeline({
   onOpenValidationModal, // 🔴 Callback para ValidationModal
   onOpenConstructorWorkflow // 🔴 Nuevo callback para ConstructorWorkflow
 }) {
-  const [chatModalIsOpen, setChatModalIsOpen] = useState(false);
+  // ✅ DEBUG: Log para verificar el currentStep recibido
+  console.log("📌 Timeline - currentStep recibido:", currentStep);
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [propertyVerificationID, setPropertyVerificationID] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +45,11 @@ export default function Timeline({
   const closeHelp = () => setHelpStep(null);
 
   const { user } = useAuth();
+
+  // ✅ DEBUG: Monitorear cambios en currentStep
+  useEffect(() => {
+    console.log("📌 Timeline - currentStep cambió a:", currentStep);
+  }, [currentStep]);
 
   useEffect(() => {
     if (!openChatOnLoad || !chatTarget) return;
@@ -57,7 +65,7 @@ export default function Timeline({
       handleChatFeature(); // Abrir PropertyChat
     }
   }, [openChatOnLoad, currentStep, chatTarget, onOpenValidationModal]);
-
+  
   useEffect(() => {
     if (propertyId) {
       checkExistingFeature();
@@ -155,9 +163,9 @@ export default function Timeline({
       ? "El predio no cumplió con los requisitos técnicos o legales y ha sido rechazado. Puede reiniciar el proceso si se corrigen los errores."
       : "Se ha seleccionado el predio para integrar el proyecto. Inicia la siguiente etapa del proyecto. Debes esperar que se cierre la campaña y aceptar la propuesta financiera ",
     icon: isApproved ? (
-      <FaCheckCircle size={18} />
+      <FaCheckCircle size={18} className="text-white" />
     ) : isRejected ? (
-      <FaTimesCircle size={18} />
+      <FaTimesCircle size={18} className="text-white" />
     ) : (
       <FaCheckCircle size={18} />
     ),
@@ -211,7 +219,10 @@ export default function Timeline({
           }
         }
   
-        setChatModalIsOpen(true);
+        // 🔴 En lugar de abrir el modal directamente, llamamos al callback
+        if (onOpenConstructorWorkflow) {
+          onOpenConstructorWorkflow();
+        }
         return;
       }
   
@@ -256,7 +267,10 @@ export default function Timeline({
         );
       }
   
-      setChatModalIsOpen(true);
+      // 🔴 En lugar de abrir el modal directamente, llamamos al callback
+      if (onOpenConstructorWorkflow) {
+        onOpenConstructorWorkflow();
+      }
       console.log("✅ PropertyFeature y Verification creados con éxito.");
     } catch (error) {
       console.error("❌ Error al crear PropertyFeature y Verification:", error);
@@ -385,41 +399,6 @@ export default function Timeline({
           </ProgressBar>
         </div>
       </div>
-
-      {/* Custom Chat Modal */}
-      {chatModalIsOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Background overlay */}
-            <div 
-              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" 
-              onClick={() => setChatModalIsOpen(false)}
-            ></div>
-
-            {/* Modal content */}
-            <div className="inline-block align-bottom bg-white/95 backdrop-blur-sm rounded-3xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full border border-terrasacha-light/30">
-              {/* Modal Header */}
-              <div className="bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-t-3xl p-6 flex items-center justify-between">
-                <h3 className="text-xl font-typographica font-bold text-white">
-                  Proceso del Predio
-                </h3>
-                <button
-                  onClick={() => setChatModalIsOpen(false)}
-                  className="text-white hover:text-terrasacha-light transition-all duration-300 hover:scale-110 transform"
-                  aria-label="Cerrar modal"
-                >
-                  <FaTimesCircle className="text-xl" />
-                </button>
-              </div>
-
-              {/* Modal Body */}
-              <div className="p-6 bg-gradient-to-br from-terrasacha-light/10 via-white to-terrasacha-earth/10">
-                <PropertyChat propertyId={propertyId} />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {helpStep && (
         <StepHelpModal

@@ -28,6 +28,7 @@ import {
   createPropertyFeature,
   createVerification,
   updateProperty,
+  updatePropertyFeature,
 } from "graphql/mutations";
 import PropertyChat from "components/Legal/PropertyChat";
 import { getProperty } from "utilities/customQueries";
@@ -68,6 +69,8 @@ export default function ValidationModal({
       listS3Files();
       // 🔴 Crear verificación para el chat si no existe
       createVerificationForChat();
+      // 🔴 Inicializar propertyFeatureID si ya existe
+      initializePropertyFeatureID();
     }
   }, [isOpen, propertyData?.propertyInfo?.id]);
 
@@ -225,10 +228,23 @@ export default function ValidationModal({
       // 🔴 Actualizar el estado uploadedFiles con los nuevos archivos
       setUploadedFiles(newUploadedFiles);
 
+      // 🔴 Obtener el PropertyFeatureID existente si no lo tenemos
+      let currentPropertyFeatureID = propertyFeatureID;
+      if (!currentPropertyFeatureID) {
+        const existingFeature = propertyData.propertyFeatures?.items?.find(
+          (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+        );
+        if (existingFeature) {
+          currentPropertyFeatureID = existingFeature.id;
+          setPropertyFeatureID(existingFeature.id);
+        }
+      }
+
       // Crear PropertyFeature si no existe
-      if (!propertyFeatureID) {
-        const propertyFeatureID = await createPropertyFeatureEntry(documents);
-        setPropertyFeatureID(propertyFeatureID);
+      if (!currentPropertyFeatureID) {
+        const newPropertyFeatureID = await createPropertyFeatureEntry(documents);
+        setPropertyFeatureID(newPropertyFeatureID);
+        currentPropertyFeatureID = newPropertyFeatureID;
       } else {
         // Actualizar PropertyFeature existente
         await updatePropertyFeatureEntry(documents);
@@ -236,7 +252,7 @@ export default function ValidationModal({
 
       // Crear Verification si no existe
       if (!verificationCreated) {
-        await createVerificationEntry(propertyFeatureID);
+        await createVerificationEntry(currentPropertyFeatureID);
         setVerificationCreated(true);
       }
 
@@ -278,11 +294,19 @@ export default function ValidationModal({
 
   const updatePropertyFeatureEntry = async (documents) => {
     try {
-      const existingDocuments = propertyData.propertyFeatures?.items
-        ?.find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
-        ?.value;
+      // 🔴 Obtener el PropertyFeature existente
+      const existingFeature = propertyData.propertyFeatures?.items?.find(
+        (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+      );
 
+      if (!existingFeature) {
+        console.error("❌ No se encontró PropertyFeature para GLOBAL_PROPERTY_FILES");
+        return;
+      }
+
+      const existingDocuments = existingFeature.value;
       let allDocuments = [];
+      
       if (existingDocuments) {
         try {
           allDocuments = JSON.parse(existingDocuments);
@@ -294,13 +318,16 @@ export default function ValidationModal({
       allDocuments = [...allDocuments, ...documents];
 
       const input = {
-        id: propertyFeatureID,
+        id: existingFeature.id, // ✅ Usar el ID del feature existente
         value: JSON.stringify(allDocuments),
       };
 
+      // ✅ CORREGIDO: Usar updatePropertyFeature
       await API.graphql(
-        graphqlOperation(updateProperty, { input })
+        graphqlOperation(updatePropertyFeature, { input })
       );
+
+      console.log("✅ PropertyFeature actualizado con documentos:", allDocuments);
     } catch (error) {
       console.error("Error updating property feature:", error);
       throw error;
@@ -418,6 +445,17 @@ export default function ValidationModal({
   const checkIfAllFilesUploaded = (files) => {
     const requiredTypes = ["certificado", "escrituras", "planos"];
     return requiredTypes.every((type) => files[type]);
+  };
+
+  // 🔴 Nueva función para inicializar propertyFeatureID
+  const initializePropertyFeatureID = () => {
+    const existingFeature = propertyData.propertyFeatures?.items?.find(
+      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+    );
+    if (existingFeature) {
+      setPropertyFeatureID(existingFeature.id);
+      console.log("✅ PropertyFeatureID inicializado:", existingFeature.id);
+    }
   };
 
   return (
