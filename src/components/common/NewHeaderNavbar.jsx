@@ -259,15 +259,15 @@ export default function NewHeaderNavbar() {
                   {/* Botón "Mis Predios" para constructores e inversores */}
                   {(user.attributes["custom:role"] === "constructor" ||
                     user.attributes["custom:role"] === "investor") && (
-                    <>
-                      <button
-                        onClick={() => navigate("/constructor")}
-                        className="bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-2 text-sm rounded-lg shadow-terrasacha transition-all duration-300 transform hover:scale-105"
-                      >
-                        Mis Predios
-                      </button>
-                    </>
-                  )}
+                      <>
+                        <button
+                          onClick={() => navigate("/constructor")}
+                          className="bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-2 text-sm rounded-lg shadow-terrasacha transition-all duration-300 transform hover:scale-105"
+                        >
+                          Mis Predios
+                        </button>
+                      </>
+                    )}
 
                   {/* Enlace "Mis Campañas" para Validators */}
                   {user.attributes["custom:role"] === "validator" && (
@@ -287,13 +287,24 @@ export default function NewHeaderNavbar() {
                     </>
                   )}
 
-{user.attributes["custom:role"] === "admon" && (
+                  {user.attributes["custom:role"] === "admon" && (
                     <>
                       <button
                         onClick={() => navigate("/admon")}
                         className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
                       >
                         Administrar
+                      </button>
+                    </>
+                  )}
+
+                  {user.attributes["custom:role"] === "legal" && (
+                    <>
+                      <button
+                        onClick={() => navigate("/legal_admon")}
+                        className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
+                      >
+                        Perfil
                       </button>
                     </>
                   )}
@@ -310,27 +321,26 @@ export default function NewHeaderNavbar() {
                   {(user.attributes["custom:role"] === "validator" ||
                     user.attributes["custom:role"] === "legal" ||
                     user.attributes["custom:role"] === "constructor") && (
-                    <div
-                      className="relative cursor-pointer flex items-center justify-center"
-                      onClick={handleShowNotifications}
-                    >
-                      <div className="relative">
-                        {messages.length > 0 && (
-                          <>
-                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
-                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
-                          </>
-                        )}
-                        <BellFill
-                          className={`w-5 h-5 ${
-                            messages.length > 0
-                              ? "text-red-500"
-                              : "text-terrasacha-secondary1"
-                          }`}
-                        />
+                      <div
+                        className="relative cursor-pointer flex items-center justify-center"
+                        onClick={handleShowNotifications}
+                      >
+                        <div className="relative">
+                          {messages.length > 0 && (
+                            <>
+                              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                            </>
+                          )}
+                          <BellFill
+                            className={`w-5 h-5 ${messages.length > 0
+                                ? "text-red-500"
+                                : "text-terrasacha-secondary1"
+                              }`}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   {/* Contenedor del usuario */}
                   <div className="flex space-x-1">
@@ -459,16 +469,16 @@ export default function NewHeaderNavbar() {
                     {/* Botón "Mis Predios" para constructores e inversores */}
                     {(user.attributes["custom:role"] === "constructor" ||
                       user.attributes["custom:role"] === "investor") && (
-                      <button
-                        onClick={() => {
-                          navigate("/constructor");
-                          handleCloseOffcanvas();
-                        }}
-                        className="w-full bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-3 text-sm rounded-lg shadow-terrasacha transition-all duration-300"
-                      >
-                        Mis Predios
-                      </button>
-                    )}
+                        <button
+                          onClick={() => {
+                            navigate("/constructor");
+                            handleCloseOffcanvas();
+                          }}
+                          className="w-full bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-3 text-sm rounded-lg shadow-terrasacha transition-all duration-300"
+                        >
+                          Mis Predios
+                        </button>
+                      )}
 
                     {/* Enlace "Mis Campañas" para Validators */}
                     {user.attributes["custom:role"] === "validator" && (
@@ -494,7 +504,7 @@ export default function NewHeaderNavbar() {
                       </>
                     )}
 
-{user.attributes["custom:role"] === "admon" && (
+                    {user.attributes["custom:role"] === "admon" && (
                       <>
                         <button
                           onClick={() => {
@@ -504,6 +514,20 @@ export default function NewHeaderNavbar() {
                           className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
                         >
                           Administrar
+                        </button>
+                      </>
+                    )}
+
+                    {user.attributes["custom:role"] === "legal" && (
+                      <>
+                        <button
+                          onClick={() => {
+                            navigate("/legal_admon");
+                            handleCloseOffcanvas();
+                          }}
+                          className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
+                        >
+                          Perfil
                         </button>
                       </>
                     )}
@@ -520,35 +544,34 @@ export default function NewHeaderNavbar() {
                     {(user.attributes["custom:role"] === "validator" ||
                       user.attributes["custom:role"] === "legal" ||
                       user.attributes["custom:role"] === "constructor") && (
-                      <div className="flex items-center justify-between py-2">
-                        <span className="text-terrasacha-secondary1 font-medium text-sm">
-                          Notificaciones
-                        </span>
-                        <div
-                          className="relative cursor-pointer"
-                          onClick={() => {
-                            handleShowNotifications();
-                            handleCloseOffcanvas();
-                          }}
-                        >
-                          <div className="relative">
-                            {messages.length > 0 && (
-                              <>
-                                <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
-                                <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
-                              </>
-                            )}
-                            <BellFill
-                              className={`w-5 h-5 ${
-                                messages.length > 0
-                                  ? "text-red-500"
-                                  : "text-terrasacha-secondary1"
-                              }`}
-                            />
+                        <div className="flex items-center justify-between py-2">
+                          <span className="text-terrasacha-secondary1 font-medium text-sm">
+                            Notificaciones
+                          </span>
+                          <div
+                            className="relative cursor-pointer"
+                            onClick={() => {
+                              handleShowNotifications();
+                              handleCloseOffcanvas();
+                            }}
+                          >
+                            <div className="relative">
+                              {messages.length > 0 && (
+                                <>
+                                  <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+                                  <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                                </>
+                              )}
+                              <BellFill
+                                className={`w-5 h-5 ${messages.length > 0
+                                    ? "text-red-500"
+                                    : "text-terrasacha-secondary1"
+                                  }`}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
                     {/* Usuario en móvil */}
                     <div className="flex space-x-1 justify-between border-t border-terrasacha-light pt-4 mt-4 ">
