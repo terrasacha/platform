@@ -2,7 +2,7 @@
   import PropertyChat from "components/Legal/PropertyChat";
   import { FaCheckCircle, FaRegCheckCircle, FaRegClock, FaFilePdf, FaEye, FaEdit } from "react-icons/fa";
   import { API, graphqlOperation } from "aws-amplify";
-  import { createPropertyFeature, updatePropertyFeature } from "graphql/mutations";
+  import { createPropertyFeature, updatePropertyFeature, createVerification, updateVerification } from "graphql/mutations";
   import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
   import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
   import { useS3Client } from "context/s3ClientContext";
@@ -102,6 +102,137 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
     
       fetchFeature();
     }, [propertyId]);
+    
+    // ✅ NUEVO: useEffect para obtener el feature del chat
+    useEffect(() => {
+      const fetchChatFeature = async () => {
+        if (!propertyId) return;
+        
+        try {
+          console.log("🔍 Buscando feature del chat para propertyId:", propertyId);
+          
+          const response = await API.graphql(
+            graphqlOperation(listPropertyFeatures, {
+              filter: {
+                propertyID: { eq: propertyId },
+                featureID: { eq: "GLOBAL_PROPERTY_CHAT" },
+              },
+            })
+          );
+          
+          const chatFeatures = response.data.listPropertyFeatures.items;
+          console.log("💬 Features del chat encontrados:", chatFeatures);
+          
+          if (chatFeatures.length > 0) {
+            const chatFeature = chatFeatures[0];
+            console.log("✅ Feature del chat encontrado:", chatFeature);
+            
+            // Verificar si tiene verifications
+            if (chatFeature.verifications?.items?.length > 0) {
+              const verification = chatFeature.verifications.items[0];
+              console.log("✅ Verification del chat encontrada:", verification);
+            } else {
+              console.log("⚠️ Feature del chat no tiene verifications");
+            }
+          } else {
+            console.log("ℹ️ No se encontraron features del chat para este property.");
+            console.log("🛠 Creando feature del chat automáticamente...");
+            
+            // ✅ NUEVO: Crear el feature del chat automáticamente
+            await createChatFeature();
+          }
+        } catch (error) {
+          console.error("❌ Error al obtener feature del chat:", error);
+        }
+      };
+      
+      fetchChatFeature();
+    }, [propertyId]);
+
+    // ✅ NUEVO: Función para crear el feature del chat
+    const createChatFeature = async () => {
+      if (!propertyId || !propertyData?.projectPostulant?.id) {
+        console.warn("⚠️ No se puede crear feature del chat: faltan datos necesarios");
+        console.log("🔍 Datos disponibles:", {
+          propertyId,
+          projectPostulantId: propertyData?.projectPostulant?.id,
+          propertyData: propertyData ? "disponible" : "no disponible"
+        });
+        return;
+      }
+
+      try {
+        console.log("🛠 Creando PropertyFeature para chat...");
+        console.log("🔍 Datos para crear feature:", {
+          propertyID: propertyId,
+          featureID: "GLOBAL_PROPERTY_CHAT",
+          userVerifiedID: propertyData.projectPostulant.id
+        });
+        
+        // 1. Crear PropertyFeature
+        const propertyFeatureInput = {
+          propertyID: propertyId,
+          featureID: "GLOBAL_PROPERTY_CHAT",
+        };
+
+        const propertyFeatureResponse = await API.graphql(
+          graphqlOperation(createPropertyFeature, { input: propertyFeatureInput })
+        );
+
+        const newPropertyFeatureID = propertyFeatureResponse.data.createPropertyFeature.id;
+        console.log("✅ PropertyFeature del chat creado:", newPropertyFeatureID);
+
+        // 2. Crear Verification
+        console.log("🛠 Creando Verification para el chat...");
+        
+        const verificationInput = {
+          userVerifiedID: propertyData.projectPostulant.id,
+          propertyFeatureID: newPropertyFeatureID,
+        };
+
+        const verificationResponse = await API.graphql(
+          graphqlOperation(createVerification, { input: verificationInput })
+        );
+
+        const newVerificationID = verificationResponse.data.createVerification.id;
+        console.log("✅ Verification del chat creada:", newVerificationID);
+
+        // 3. Si hay campaignOwnerId, asignarlo como userVerifierID
+        if (propertyData?.propertyCampaign?.userId) {
+          console.log("🔄 Asignando campaignOwnerId como userVerifierID...");
+          console.log("🔍 campaignOwnerId:", propertyData.propertyCampaign.userId);
+          
+          await API.graphql(
+            graphqlOperation(updateVerification, {
+              input: {
+                id: newVerificationID,
+                userVerifierID: propertyData.propertyCampaign.userId,
+              },
+            })
+          );
+          
+          console.log("✅ userVerifierID asignado correctamente");
+        } else {
+          console.log("ℹ️ No hay campaignOwnerId disponible para asignar como userVerifierID");
+        }
+
+        console.log("✅ Feature del chat creado exitosamente");
+        console.log("🔄 Recargando página en 1 segundo para aplicar cambios...");
+        
+        // 4. Refrescar la página para que PropertyChat detecte el nuevo feature
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+        
+      } catch (error) {
+        console.error("❌ Error al crear feature del chat:", error);
+        console.error("🔍 Detalles del error:", {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        });
+      }
+    };
     
     
 
@@ -326,7 +457,23 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
 </div>
 
           <div className="flex-1 overflow-auto border rounded p-4 bg-gray-50">
-            <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
+            {/* ✅ DEBUG: Log para verificar propertyId */}
+            {console.log("🔍 ConstructorWorkflow - propertyId para PropertyChat:", propertyId)}
+            
+            {/* ✅ CORREGIDO: PropertyChat siempre visible */}
+            <PropertyChat 
+              propertyId={propertyId} 
+              featureChat="GLOBAL_PROPERTY_CHAT" 
+            />
+            
+            {/* ✅ DEBUG: Indicador visual si no hay propertyId */}
+            {!propertyId && (
+              <div className="text-center text-gray-500 p-4">
+                ⚠️ No hay propertyId disponible para el chat
+              </div>
+            )}
+            
+
           </div>
         </div>
       {showHistory && (

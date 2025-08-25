@@ -23,20 +23,28 @@ export default function PropertyChat({ propertyId, featureChat }) {
   const messagesEndRef = useRef(null);
   const [userVerifiedName, setUserVerifiedName] = useState("");
 
+
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         setLoading(true);
+  
+        if (!propertyId) {
+          setLoading(false);
+          return;
+        }
   
         const response = await API.graphql(
           graphqlOperation(getProperty, { id: propertyId })
         );
   
         const property = response.data.getProperty;
+        
         setPropertyID(property.id)
         setPropertyName(property.name);
         
-        // 🔍 Buscar la verificación específica para el featureChat
+        // Buscar la verificación específica para el featureChat
         const propertyVerification = property?.propertyFeatures?.items.find(
           (feature) => feature.featureID === featureChat
         )?.verifications?.items[0];
@@ -44,7 +52,6 @@ export default function PropertyChat({ propertyId, featureChat }) {
         setUserVerifiedName(propertyVerification?.userVerified?.name || "");
   
         if (!propertyVerification) {
-          console.warn(`⚠️ No se encontró Verification para featureChat: ${featureChat}`);
           setVerificationID(null);
           setMessages([]);
           setLoading(false);
@@ -53,10 +60,10 @@ export default function PropertyChat({ propertyId, featureChat }) {
   
         setVerificationID(propertyVerification.id);
   
-        // 🔍 Filtrar mensajes solo de la Verification correspondiente al featureChat
+        // Filtrar mensajes solo de la Verification correspondiente al featureChat
         const filteredMessages = propertyVerification.verificationComments?.items || [];
   
-        // 🔍 Ordenar mensajes por fecha de creación
+        // Ordenar mensajes por fecha de creación
         const sortedMessages = filteredMessages.sort(
           (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
         );
@@ -64,18 +71,16 @@ export default function PropertyChat({ propertyId, featureChat }) {
         setMessages(sortedMessages);
         setLoading(false);
   
-        // 🔍 Asignar usuarios disponibles en el chat
+        // Asignar usuarios disponibles en el chat
         const userVerifierId = propertyVerification?.userVerifierID;
         const userVerifiedId = propertyVerification.userVerifiedID;
         setAvailableChatUsers([userVerifierId, userVerifiedId]);
         setVerifierRole(propertyVerification?.userVerifier?.role);
-  
-        console.log("✅ propertyVerificationID:", propertyVerification.id);
-      } catch (error) {
-        console.error("❌ Error fetching messages:", error);
-        notify({ msg: "Error al cargar los mensajes", type: "error" });
-        setLoading(false);
-      }
+              } catch (error) {
+          console.error("Error fetching messages:", error);
+          notify({ msg: "Error al cargar los mensajes", type: "error" });
+          setLoading(false);
+        }
     };
   
     fetchMessages();
@@ -93,7 +98,7 @@ export default function PropertyChat({ propertyId, featureChat }) {
     }
   }, [propertyID]);
   
-  console.log("availableChatUsers", availableChatUsers);
+
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -183,62 +188,81 @@ export default function PropertyChat({ propertyId, featureChat }) {
         );
       }
   
-      console.log("✅ Notificaciones marcadas como leídas para propertyID:", propertyID);
+      console.log("Notificaciones marcadas como leídas para propertyID:", propertyID);
     } catch (error) {
-      console.error("❌ Error marcando notificaciones como leídas:", error);
+      console.error("Error marcando notificaciones como leídas:", error);
     }
   };
   
   return (
     <>
-      {verificationID && (
-        <div className="bg-white p-3 border rounded-md shadow-sm h-96 flex flex-col">
-          <h2 className="text-lg font-bold mb-2">Mensajería</h2>
-          <div className="flex-grow max-h-96 overflow-y-auto">
-            {loading ? (
-              <p>Cargando mensajes...</p>
-            ) : (
-              messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`p-2 mb-2 rounded-md ${
-                    message.isCommentByVerifier ? "bg-blue-100" : "bg-gray-100"
-                  }`}
-                >
-                  <p className="font-semibold mb-0">
-                    {message.isCommentByVerifier
-                      ? roleMapper[verifierRole]
-                      : userVerifiedName}
-                    :
-                  </p>
-                  <p className="mb-0">{message.comment}</p>
-                  <p className="text-sm text-gray-500 mb-0 text-right">
-                    {new Date(message.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              ))
-            )}
-            <div ref={messagesEndRef} />
+
+
+              {/* Mostrar chat siempre, con diferentes estados */}
+      <div className="bg-white p-3 border rounded-md shadow-sm h-96 flex flex-col">
+        <h2 className="text-lg font-bold mb-2">Mensajería</h2>
+        
+        {loading ? (
+          <div className="flex-grow flex items-center justify-center">
+            <p>Cargando mensajes...</p>
           </div>
-          <div className="flex">
-            <input
-              type="text"
-              placeholder="Escribe tu mensaje..."
-              className="border border-gray-300 rounded-md p-2 flex-grow"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              disabled={!availableChatUsers.includes(user.id)}
-            />
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2"
-              onClick={handleSendMessage}
-              disabled={!availableChatUsers.includes(user.id)}
-            >
-              Enviar
-            </button>
+        ) : !verificationID ? (
+          <div className="flex-grow flex items-center justify-center">
+                         <div className="text-center text-gray-500">
+               <p>No se encontró verificación para el chat</p>
+               <p className="text-sm">featureChat: {featureChat}</p>
+               <p className="text-sm">propertyId: {propertyId}</p>
+             </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            <div className="flex-grow max-h-96 overflow-y-auto">
+              {messages.length === 0 ? (
+                <p className="text-gray-500 text-center">No hay mensajes aún</p>
+              ) : (
+                messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`p-2 mb-2 rounded-md ${
+                      message.isCommentByVerifier ? "bg-blue-100" : "bg-gray-100"
+                    }`}
+                  >
+                    <p className="font-semibold mb-0">
+                      {message.isCommentByVerifier
+                        ? roleMapper[verifierRole] || 'Verificador'
+                        : userVerifiedName || 'Usuario'}
+                      :
+                    </p>
+                    <p className="mb-0">{message.comment}</p>
+                    <p className="text-sm text-gray-500 mb-0 text-right">
+                      {new Date(message.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                ))
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+            
+            <div className="flex">
+              <input
+                type="text"
+                placeholder="Escribe tu mensaje..."
+                className="border border-gray-300 rounded-md p-2 flex-grow"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                disabled={!availableChatUsers.includes(user.id)}
+              />
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2"
+                onClick={handleSendMessage}
+                disabled={!availableChatUsers.includes(user.id)}
+              >
+                Enviar
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </>
   );
 }
