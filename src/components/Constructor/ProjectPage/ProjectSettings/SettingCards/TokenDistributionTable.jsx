@@ -172,7 +172,7 @@ const TokenDistributionTable = ({
                 </button>
               ) : (
                 <button
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-md w-full flex justify-center items-center focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="bg-terrasacha-secondary2 hover:bg-terrasacha-secondary2-dark text-white p-2 rounded-md w-full flex justify-center items-center focus:outline-none focus:ring-2 focus:ring-terrasacha-secondary2/50 transition-all duration-300 hover:scale-105"
                   disabled={canEdit}
                   onClick={() => setIsEditing(true)}
                   aria-label="Editar"

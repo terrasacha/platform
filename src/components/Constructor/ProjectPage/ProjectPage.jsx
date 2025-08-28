@@ -24,9 +24,10 @@ import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import { API, graphqlOperation } from "aws-amplify";
 import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 import AlertMessage from "./AlertMessage";
-import { FiEdit3, FiCalendar, FiFileText, FiDollarSign, FiUsers, FiCheckCircle, FiXCircle, FiInfo } from "react-icons/fi";
+import { FiEdit3 } from "react-icons/fi";
 import TimelineProject from "./TimeLineProject";
-import TerrasachaLogo from "../../common/TerrasachaLogo";
+import LOGO from "../../common/_images/suan_logo.png";
+import TerrasachaLogo from "components/common/TerrasachaLogo";
 
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
@@ -62,7 +63,6 @@ export default function ProjectPage() {
   const [editableTitle, setEditableTitle] = useState("");
   const [campaign, setCampaign] = useState(null);
   const [userGroup, setUserGroup] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const projectStatusMapper = {
     draft: "En borrador",
     verified: "Verificado",
@@ -145,12 +145,7 @@ export default function ProjectPage() {
 
     fetchUserGroups();
     const fetchProjectData = async () => {
-      setIsLoading(true);
-      try {
-        await handleProjectData({ pID: id });
-      } finally {
-        setIsLoading(false);
-      }
+      await handleProjectData({ pID: id });
     };
     if (id) {
       fetchProjectData();
@@ -256,80 +251,30 @@ export default function ProjectPage() {
     }
   };
 
-  // Componente de carga con el logo de Terrasacha
-  const LoadingSpinner = () => (
-    <div className="min-h-screen bg-gradient-to-br from-terrasacha-earth via-terrasacha-light to-white flex items-center justify-center">
-      <div className="text-center">
-        <div className="relative">
-          {/* Logo principal con efecto de pulso */}
-          <div className="animate-pulse-terrasacha">
-            <TerrasachaLogo className="w-48 h-auto mx-auto mb-8 opacity-80" />
-          </div>
-          
-          {/* Círculos concéntricos animados */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-64 h-64 border-4 border-terrasacha-primary/20 rounded-full animate-ping"></div>
-            <div className="absolute w-48 h-48 border-4 border-terrasacha-secondary2/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
-            <div className="absolute w-32 h-32 border-4 border-terrasacha-light/40 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
-          </div>
-        </div>
-        
-        {/* Texto de carga */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-typographica font-bold text-terrasacha-secondary1 mb-2">
-            Cargando Proyecto
-          </h2>
-          <p className="text-terrasacha-light font-typographica text-lg">
-            Obteniendo información del proyecto...
-          </p>
-        </div>
-        
-        {/* Indicador de progreso animado */}
-        <div className="mt-6 flex justify-center">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 bg-terrasacha-primary rounded-full animate-bounce"></div>
-            <div className="w-3 h-3 bg-terrasacha-secondary2 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-            <div className="w-3 h-3 bg-terrasacha-light rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Mostrar componente de carga mientras esté cargando
-  if (isLoading || !projectData) {
-    return <LoadingSpinner />;
-  }
-
   return (
     <S3ClientProvider>
-      <div className="mb-8">
-        <div className="container-sm">
-          <div className="mb-5">
-            <NewHeaderNavbar></NewHeaderNavbar>
-          </div>
-          
-          <div>
-            {/* Header principal del proyecto */}
-            <div className="pt-4 px-3 px-md-4 mb-4 mt-4 border rounded shadow-lg" style={{ borderColor: '#b1c181', backgroundColor: '#f8f9fa' }}>
-              <div className="row gy-3">
-                {/* Título y botones de estado */}
-                <header className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                  <div className="d-flex align-items-center gap-3 flex-wrap">
-                    {isEditingTitle ? (
-                      <div className="d-flex align-items-center gap-2 flex-wrap">
-                        <input
-                          type="text"
-                          className="form-control fs-3"
-                          style={{ borderColor: '#b1c181', color: '#6e6c35', minWidth: '200px' }}
-                          value={editableTitle}
-                          onChange={(e) => setEditableTitle(e.target.value)}
-                          placeholder="Nombre del proyecto"
-                        />
-                        <div className="d-flex gap-2">
+      <div>
+        {projectData ? (
+          <div className="container-sm">
+            <div className="mb-5">
+              <NewHeaderNavbar></NewHeaderNavbar>
+            </div>
+            <div className="my-2">-</div>
+            <div>
+              <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">
+                <div className="row gy-2">
+                  <header className="d-flex justify-content-between">
+                    <div className="d-flex align-items-center gap-2">
+                      {isEditingTitle ? (
+                        <div className="d-flex align-items-center gap-2">
+                          <input
+                            type="text"
+                            className="form-control fs-3"
+                            value={editableTitle}
+                            onChange={(e) => setEditableTitle(e.target.value)}
+                          />
                           <button
-                            className="btn btn-sm"
-                            style={{ backgroundColor: '#849b50', borderColor: '#849b50', color: 'white' }}
+                            className="btn btn-success"
                             onClick={async () => {
                               try {
                                 if (editableTitle.trim() === "") {
@@ -379,354 +324,346 @@ export default function ProjectPage() {
                               }
                             }}
                           >
-                            <FiCheckCircle className="me-1" />
                             Confirmar
                           </button>
                           <button
-                            className="btn btn-sm"
-                            style={{ backgroundColor: '#dc3545', borderColor: '#dc3545', color: 'white' }}
+                            className="btn btn-danger"
                             onClick={() => {
                               setEditableTitle(projectData.projectInfo.title);
                               setIsEditingTitle(false);
                             }}
                           >
-                            <FiXCircle className="me-1" />
                             Cancelar
                           </button>
                         </div>
-                      </div>
-                    ) : (
-                      <>
-                        <h1 className="fs-3 mb-0 d-flex align-items-center gap-2" style={{ color: '#6e6c35' }}>
-                          <FiFileText style={{ color: '#849b50' }} />
-                          {editableTitle}
-                        </h1>
-                        {isPostulant && (
-                          <button
-                            className="btn btn-outline-secondary btn-sm"
-                            onClick={() => setIsEditingTitle(true)}
-                            title="Editar título"
-                            style={{ borderColor: '#b1c181', color: '#44482c' }}
-                          >
-                            <FiEdit3 size={16} />
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  {/* Badges de estado */}
-                  <div className="d-flex flex-wrap gap-2">
-                    {projectData.projectInfo.status && (
-                      <div className="d-flex align-items-center gap-1 text-xs text-white font-bold px-3 py-2 rounded-pill text-nowrap h-8" style={{ backgroundColor: '#6e6c35' }}>
-                        <FiInfo size={12} />
-                        {projectStatusMapper[projectData.projectInfo.status]}
-                      </div>
-                    )}
-                    <div
-                      className="d-flex align-items-center gap-1 text-xs text-white font-bold px-3 py-2 rounded-pill text-nowrap h-8"
-                      style={{ 
-                        backgroundColor: projectData.projectVerifiers?.length > 0 ? '#849b50' : '#dc3545'
-                      }}
-                    >
-                      {projectData.projectVerifiers?.length > 0 ? (
-                        <>
-                          <FiUsers size={12} />
-                          Consultor asignado
-                        </>
                       ) : (
                         <>
-                          <FiXCircle size={12} />
-                          Sin consultor
+                          <p className="fs-3 mb-0">{editableTitle}</p>
+                          {isPostulant && (
+                            <button
+                              className="bg-transparent border-0 p-0"
+                              onClick={() => setIsEditingTitle(true)}
+                              title="Editar título"
+                            >
+                              <FiEdit3 size={20} color="gray" />
+                            </button>
+                          )}
                         </>
                       )}
                     </div>
-                  </div>
-                </header>
 
-                {/* Información del proyecto */}
-                <div className="col-12">
-                  <div className="row g-2 g-md-3">
-                    <div className="col-md-6">
-                      <div className="d-flex align-items-center gap-2 p-3 rounded" style={{ backgroundColor: '#f0f4e6', border: '1px solid #e8d79a' }}>
-                        <FiCalendar style={{ color: '#6e6c35' }} />
-                        <div className="flex-grow-1">
-                          <p className="fs-6 mb-0 fw-bold" style={{ color: '#44482c' }}>Fecha de creación:</p>
-                          <p className="fs-6 mb-0" style={{ color: '#6e6c35' }}>
-                            {projectData.projectInfo.createdAt}
-                          </p>
+                    <div className="flex gap-2">
+                      {projectData.projectInfo.status && (
+                        <div className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap h-8">
+                          {projectStatusMapper[projectData.projectInfo.status]}
                         </div>
+                      )}
+                      <div
+                        className={`${
+                          projectData.projectVerifiers?.length > 0
+                            ? "bg-green-600"
+                            : "bg-red-500"
+                        } text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap h-8`}
+                      >
+                        {projectData.projectVerifiers?.length > 0
+                          ? "Consultor asignado"
+                          : "Sin consultor"}
                       </div>
                     </div>
-                    
-                    <div className="col-md-6">
-                      <div className="d-flex align-items-center gap-2 p-3 rounded" style={{ backgroundColor: '#f0f4e6', border: '1px solid #e8d79a' }}>
-                        <FiFileText style={{ color: '#6e6c35' }} />
-                        <div className="flex-grow-1">
-                          <p className="fs-6 mb-0 fw-bold" style={{ color: '#44482c' }}>Descripción:</p>
-                          <p className="fs-6 mb-0 text-truncate" style={{ color: '#6e6c35', maxWidth: '200px' }} title={projectData.projectInfo.description}>
-                            {projectData.projectInfo.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </header>
 
-                {/* Sección de campaña y timeline */}
-                {campaign && (
-                  <div className="col-12">
-                    <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3 gap-lg-4 p-3 p-md-4 rounded" style={{ backgroundColor: '#f0f4e6', border: '1px solid #e8d79a' }}>
-                      <div className="d-flex align-items-center gap-2">
-                        <FiInfo style={{ color: '#6e6c35' }} />
-                        <div>
-                          <p className="fs-6 mb-0 fw-bold" style={{ color: '#44482c' }}>
-                            Pertenece a la campaña:
-                          </p>
-                          <p className="fs-6 mb-0 fw-bold" style={{ color: '#6e6c35' }}>{campaign.name}</p>
-                        </div>
+                  <section>
+                    <p className="fs-6 mb-0 fw-bold">Fecha de creación:</p>
+                    <p className="fs-6 mb-0">
+                      {projectData.projectInfo.createdAt}
+                    </p>
+                  </section>
+                  <section>
+                    <p className="fs-6 mb-0 fw-bold">Descripción:</p>
+                    <p className="fs-6 mb-0">
+                      {projectData.projectInfo.description}
+                    </p>
+                  </section>
+                  {campaign && (
+                    <div className="d-flex align-items-center justify-content-between w-100">
+                      <div>
+                        <p className="fs-6 mb-0 fw-bold">
+                          Pertenece a la campaña:
+                        </p>
+                        <p className="fs-6 mb-0">{campaign.name}</p>
                       </div>
-                      <div className="w-100 w-lg-75">
+                      <div className="w-75">
                         <TimelineProject
                           currentStep={currentStep}
                           onStepChange={(step) => setCurrentStep(step)}
                         />
                       </div>
                     </div>
-                  </div>
-                )}
-
-                {/* Sección de tokenomics */}
-                {projectData.projectInfo.token.actualPeriodTokenAmount &&
-                  projectData.projectInfo.token.actualPeriodTokenPrice && (
-                    <div className="col-12">
-                      <div className="p-3 p-md-4 rounded" style={{ backgroundColor: '#44482c', border: '2px solid #b1c181' }}>
-                        <div className="d-flex align-items-center gap-2 mb-3">
-                          <FiDollarSign style={{ color: 'white' }} />
-                          <h6 className="mb-0 text-white fw-bold">Tokenomics del Proyecto</h6>
-                        </div>
-                        <div className="row g-2 g-md-3">
-                          {projectData.projectInfo.token.actualPeriodTokenAmount && (
-                            <div className="col-md-6">
-                              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '2px solid #b1c181' }}>
-                                <MiniInfoCard
-                                  label="Cantidad total de tokens"
-                                  value={formatNumberWithThousandsSeparator(
-                                    projectData.projectInfo.token.totalTokenAmount
-                                  )}
-                                  className="mb-0"
-                                  style={{ backgroundColor: 'transparent', color: '#6e6c35', border: 'none' }}
-                                />
-                              </div>
-                            </div>
-                          )}
-                          {projectData.projectInfo.token.actualPeriodTokenPrice && (
-                            <div className="col-md-6">
-                              <div className="p-3 rounded" style={{ backgroundColor: 'white', border: '2px solid #b1c181' }}>
-                                <MiniInfoCard
-                                  label="Valor del token"
-                                  value={
-                                    projectData.projectInfo.token.actualPeriodTokenPrice +
-                                    " " +
-                                    projectData.projectInfo.token.currency
-                                  }
-                                  className="mb-0"
-                                  style={{ backgroundColor: 'transparent', color: '#6e6c35', border: 'none' }}
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
                   )}
 
-                {/* Estado del marketplace */}
-                <div className="col-12">
-                  <div className="d-flex justify-content-center">
-                    <div
-                      className="d-flex align-items-center gap-2 text-xs text-white font-bold px-3 px-md-4 py-2 py-md-3 rounded-pill"
-                      style={{ 
-                        backgroundColor: projectData.projectInfo.isActive ? '#849b50' : '#dc3545'
-                      }}
-                    >
-                      {projectData.projectInfo.isActive ? (
-                        <>
-                          <FiCheckCircle size={14} />
-                          Publicado en marketplace
-                        </>
-                      ) : (
-                        <>
-                          <FiXCircle size={14} />
-                          No publicado en marketplace
-                        </>
-                      )}
+                  {projectData.projectInfo.token.actualPeriodTokenAmount &&
+                    projectData.projectInfo.token.actualPeriodTokenPrice && (
+                      <section>
+                        <p className="fs-6 mb-0 fw-bold">Tokenomics:</p>
+                        <div className="d-flex">
+                          {/* {projectData.projectInfo.token.name && (
+                        <MiniInfoCard
+                          label="Nombre del token"
+                          value={projectData.projectInfo.token.name}
+                          className="me-2 bg-dark text-white"
+                        />
+                      )} */}
+                          {projectData.projectInfo.token
+                            .actualPeriodTokenAmount && (
+                            <MiniInfoCard
+                              label="Cantidad de tokens"
+                              value={formatNumberWithThousandsSeparator(
+                                projectData.projectInfo.token.totalTokenAmount
+                              )}
+                              className="me-2 bg-dark text-white"
+                            />
+                          )}
+                          {projectData.projectInfo.token
+                            .actualPeriodTokenPrice && (
+                            <MiniInfoCard
+                              label="Valor del token"
+                              value={
+                                projectData.projectInfo.token
+                                  .actualPeriodTokenPrice +
+                                " " +
+                                projectData.projectInfo.token.currency
+                              }
+                              className="me-2 bg-dark text-white"
+                            />
+                          )}
+                        </div>
+                      </section>
+                    )}
+                  <section>
+                    <div className="flex gap-2">
+                      <div
+                        className={`${
+                          projectData.projectInfo.isActive
+                            ? "bg-green-600"
+                            : "bg-red-500"
+                        } text-xs text-white font-bold px-4 py-2 rounded-md text-nowrap`}
+                      >
+                        {projectData.projectInfo.isActive
+                          ? "Publicado en marketplace"
+                          : "No publicado en marketplace"}
+                      </div>
                     </div>
-                  </div>
+                  </section>
+                  {projectData.projectVerifierNames.length > 0 && (
+                    <section>
+                      <p className="fs-6 mb-0 fw-bold">Consultores:</p>
+                      <div className="flex gap-2">
+                        {projectData.projectVerifierNames.map((pvn, index) => {
+                          return (
+                            <div
+                              className="bg-blue-500 text-xs text-white font-bold px-4 py-2 rounded-md"
+                              key={index}
+                            >
+                              Consultor {index + 1}: {pvn}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  )}
                 </div>
 
-                {/* Lista de consultores */}
-                {projectData.projectVerifierNames.length > 0 && (
-                  <div className="col-12">
-                    <div className="d-flex align-items-center gap-2 mb-2">
-                      <FiUsers style={{ color: '#44482c' }} />
-                      <p className="fs-6 mb-0 fw-bold" style={{ color: '#44482c' }}>Consultores asignados:</p>
-                    </div>
-                    <div className="d-flex flex-wrap gap-2">
-                      {projectData.projectVerifierNames.map((pvn, index) => {
-                        return (
-                          <div
-                            className="d-flex align-items-center gap-2 text-xs text-white font-bold px-3 py-2 rounded-pill"
-                            style={{ backgroundColor: '#6e6c35' }}
-                            key={index}
-                          >
-                            <FiUsers size={12} />
-                            Consultor {index + 1}: {pvn}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Navegación por pestañas */}
-              <div className="mt-4 pt-3 border-top" style={{ borderColor: '#b1c181' }}>
-                <nav className="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-                  <button
-                    onClick={() => setActiveSection("details")}
-                    className={`d-flex align-items-center gap-2 py-2 px-3 rounded-pill text-decoration-none border-0 ${
-                      activeSection === "details"
-                        ? "fw-bold"
-                        : ""
-                    }`}
-                    style={{ 
-                      backgroundColor: activeSection === "details" ? '#6e6c35' : 'transparent',
-                      color: activeSection === "details" ? 'white' : '#849b50',
-                      border: activeSection === "details" ? '2px solid #b1c181' : '2px solid transparent'
-                    }}
-                    aria-current={activeSection === "details" ? "page" : undefined}
-                  >
-                    <FiFileText size={16} />
-                    Detalles
-                    {(autorizedUser || isPostulant || isAdmon) &&
-                      (!progressObj?.sectionsStatus.projectInfo ||
-                        !progressObj?.sectionsStatus.geodataInfo) && (
-                        <HourGlassIcon className="text-danger ms-1" />
-                      )}
-                  </button>
+                <ul className="font-medium flex flex-wrap gap-2 mt-4 pl-0 justify-center md:justify-start">
+                  <li>
+                    <a
+                      href="#details"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveSection("details");
+                      }}
+                      className={`${
+                        activeSection === "details"
+                          ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                          : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                      } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
+                      aria-current="page"
+                    >
+                      Detalles
+                      {(autorizedUser || isPostulant || isAdmon) &&
+                        (!progressObj?.sectionsStatus.projectInfo ||
+                          !progressObj?.sectionsStatus.geodataInfo) && (
+                          <HourGlassIcon className="text-terrasacha-danger ms-2" />
+                        )}
+                    </a>
+                  </li>
+                  {/* {(isVerifier || isAdmon || isPostulant) && !isAnalyst && (
+                    <li>
+                      <a
+                        href="#files"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("files");
+                        }}
+                        className={`${
+                          activeSection === "files"
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
+                      >
+                        Validación
+                        {(autorizedUser || isPostulant || isAdmon) &&
+                          !progressObj?.sectionsStatus.validationsComplete && (
+                            <HourGlassIcon className="text-terrasacha-danger ms-2" />
+                          )}
+                      </a>
+                    </li>
+                  )} */}
 
                   {(isVerifier || isAdmon || isAnalyst) && (
-                    <button
-                      onClick={() => setActiveSection("file_manager")}
-                      className={`d-flex align-items-center gap-2 py-2 px-3 rounded-pill text-decoration-none border-0 ${
-                        activeSection === "file_manager"
-                          ? "fw-bold"
-                          : ""
-                      }`}
-                      style={{ 
-                        backgroundColor: activeSection === "file_manager" ? '#6e6c35' : 'transparent',
-                        color: activeSection === "file_manager" ? 'white' : '#849b50',
-                        border: activeSection === "file_manager" ? '2px solid #b1c181' : '2px solid transparent'
-                      }}
-                    >
-                      <FiFileText size={16} />
-                      Sistema de datos
-                    </button>
+                    <li>
+                      <a
+                        href="#file_manager"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("file_manager");
+                        }}
+                        className={`${
+                          activeSection === "file_manager"
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
+                      >
+                        Sistema de datos
+                      </a>
+                    </li>
                   )}
 
                   {(isVerifier || isAdmon) && (
-                    <button
-                      onClick={() => setActiveSection("settings")}
-                      className={`d-flex align-items-center gap-2 py-2 px-3 rounded-pill text-decoration-none border-0 ${
-                        activeSection === "settings"
-                          ? "fw-bold"
-                          : ""
-                      }`}
-                      style={{ 
-                        backgroundColor: activeSection === "settings" ? '#6e6c35' : 'transparent',
-                        color: activeSection === "settings" ? 'white' : '#849b50',
-                        border: activeSection === "settings" ? '2px solid #b1c181' : '2px solid transparent'
-                      }}
-                    >
-                      <FiFileText size={16} />
-                      Configuración
-                      {(autorizedUser || isAdmon) &&
-                        (!progressObj?.sectionsStatus.technicalInfo ||
-                          !progressObj?.sectionsStatus.financialInfo) && (
-                            <HourGlassIcon className="text-danger ms-1" />
+                    <li>
+                      <a
+                        href="#settings"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("settings");
+                        }}
+                        className={`${
+                          activeSection === "settings"
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } py-2 px-3 flex rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
+                      >
+                        Configuración
+                        {(autorizedUser || isAdmon) &&
+                          (!progressObj?.sectionsStatus.technicalInfo ||
+                            !progressObj?.sectionsStatus.financialInfo) && (
+                            <HourGlassIcon className="text-terrasacha-danger ms-2" />
                           )}
-                    </button>
+                      </a>
+                    </li>
                   )}
 
                   {user?.id &&
                     (isPostulant || isVerifier || isAdmon) &&
                     projectData.isFinancialFreeze &&
                     projectData.isTechnicalFreeze && (
-                      <button
-                        onClick={() => setActiveSection("finance")}
-                        className={`d-flex align-items-center gap-2 py-2 px-3 rounded-pill text-decoration-none border-0 ${
-                          activeSection === "finance"
-                            ? "fw-bold"
-                            : ""
-                        }`}
-                        style={{ 
-                          backgroundColor: activeSection === "finance" ? '#6e6c35' : 'transparent',
-                          color: activeSection === "finance" ? 'white' : '#849b50',
-                          border: activeSection === "finance" ? '2px solid #b1c181' : '2px solid transparent'
-                        }}
-                      >
-                        <FiDollarSign size={16} />
-                        Finanzas
-                        {(autorizedUser || isPostulant || isAdmon) &&
-                          !progressObj?.sectionsStatus
-                            .ownerAcceptsConditions && (
-                              <HourGlassIcon className="text-danger ms-1" />
+                      <li>
+                        <a
+                          href="#finance"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveSection("finance");
+                          }}
+                          className={`${
+                            activeSection === "finance"
+                              ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                              : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                          } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
+                        >
+                          Finanzas
+                          {(autorizedUser || isPostulant || isAdmon) &&
+                            !progressObj?.sectionsStatus
+                              .ownerAcceptsConditions && (
+                              <HourGlassIcon className="text-terrasacha-danger ms-2" />
                             )}
-                      </button>
+                        </a>
+                      </li>
                     )}
-                    
                   {(isAdmon || isAnalyst) && (
-                    <button
-                      onClick={() => setActiveSection("analysis")}
-                      className={`d-flex align-items-center gap-2 py-2 px-3 rounded-pill text-decoration-none border-0 ${
-                        activeSection === "analysis"
-                          ? "fw-bold"
-                          : ""
-                      }`}
-                      style={{ 
-                        backgroundColor: activeSection === "analysis" ? '#6e6c35' : 'transparent',
-                        color: activeSection === "analysis" ? 'white' : '#849b50',
-                        border: activeSection === "analysis" ? '2px solid #b1c181' : '2px solid transparent'
-                      }}
-                    >
-                      <FiFileText size={16} />
-                      Análisis
-                    </button>
+                    <li>
+                      <a
+                        href="#analysis"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection("analysis");
+                        }}
+                        className={`${
+                          activeSection === "analysis"
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
+                      >
+                        Análisis
+                      </a>
+                    </li>
                   )}
-                </nav>
+                </ul>
+              </div>
+              <AlertMessage />
+              <ProjectDetails visible={activeSection === "details"} />
+              <ProjectFileManager
+                visible={activeSection === "file_manager"}
+                userGroup={userGroup}
+              />
+              {/* <ProjectFiles visible={activeSection === "files"} /> */}
+              <FinanceCard visible={activeSection === "finance"} />
+              <ProjectSettings
+  visible={activeSection === "settings" && (isVerifier || isAdmon)}
+  campaign={campaign}
+              />
+              <ProjectAnalysis
+                visible={activeSection === "analysis"}
+              ></ProjectAnalysis>
+            </div>
+            <ToastContainer></ToastContainer>
+          </div>
+        ) : (
+          <div className="min-h-screen bg-gradient-to-br from-terrasacha-earth via-terrasacha-light to-white flex items-center justify-center">
+            <div className="text-center">
+              <div className="relative">
+                {/* Logo principal con efecto de pulso */}
+                <div className="animate-pulse-terrasacha">
+                  <TerrasachaLogo className="w-48 h-auto mx-auto mb-8 opacity-80" />
+                </div>
+                
+                {/* Círculos concéntricos animados */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-64 h-64 border-4 border-terrasacha-primary/20 rounded-full animate-ping"></div>
+                  <div className="absolute w-48 h-48 border-4 border-terrasacha-secondary2/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                  <div className="absolute w-32 h-32 border-4 border-terrasacha-light/40 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+                </div>
+              </div>
+              
+              {/* Texto de carga */}
+              <div className="mt-8">
+                <h2 className="text-2xl font-typographica font-bold text-terrasacha-secondary1 mb-2">
+                  Cargando Proyecto
+                </h2>
+                <p className="text-terrasacha-light font-typographica text-lg">
+                  Obteniendo información...
+                </p>
+              </div>
+              
+              {/* Indicador de progreso animado */}
+              <div className="mt-6 flex justify-center">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 bg-terrasacha-primary rounded-full animate-bounce"></div>
+                  <div className="w-3 h-3 bg-terrasacha-secondary2 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-3 h-3 bg-terrasacha-light rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </div>
               </div>
             </div>
-
-            {/* Contenido de las secciones */}
-            <AlertMessage />
-            <ProjectDetails visible={activeSection === "details"} />
-            <ProjectFileManager
-              visible={activeSection === "file_manager"}
-              userGroup={userGroup}
-            />
-            <FinanceCard visible={activeSection === "finance"} />
-            <ProjectSettings
-              visible={activeSection === "settings" && (isVerifier || isAdmon)}
-              campaign={campaign}
-            />
-            <ProjectAnalysis
-              visible={activeSection === "analysis"}
-            ></ProjectAnalysis>
           </div>
-          
-          <ToastContainer></ToastContainer>
-        </div>
+        )}
       </div>
     </S3ClientProvider>
   );

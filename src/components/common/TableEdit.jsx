@@ -103,9 +103,9 @@ export default function TableEdit({
                     <button
                       className={`${
                         canEdit
-                          ? "bg-[#f8d771]"
-                          : "bg-yellow-500 hover:bg-yellow-600"
-                      } p-2 text-white  rounded-md  `}
+                          ? "bg-terrasacha-light text-terrasacha-secondary1"
+                          : "bg-terrasacha-secondary2 hover:bg-terrasacha-secondary2-dark"
+                      } p-2 text-white rounded-md transition-all duration-300 hover:scale-105`}
                       disabled={canEdit}
                       onClick={() => handleEditValue(index)}
                     >

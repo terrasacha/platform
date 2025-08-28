@@ -321,9 +321,9 @@ export default function CashFlowSettings(props) {
 
   return (
     <>
-      <Card className={className}>
+      <Card className={`${className} bg-gradient-to-br from-terrasacha-light/5 to-transparent border border-terrasacha-light/20 rounded-2xl shadow-terrasacha`}>
         <Card.Header title="Flujo de caja del proyecto" sep={true} />
-        <Card.Body>
+        <Card.Body className="p-6">
           <FormGroup
             type="flex"
             placeholder="Paste Excel data here..."
@@ -337,7 +337,7 @@ export default function CashFlowSettings(props) {
             onChangeInputValue={(e) => handleChangeInputValue(e)}
             onClickSaveBtn={() => handlePasteFromExcel()}
           />
-          <p className="mb-3">Flujo de caja del proyecto</p>
+          <p className="mb-3 text-terrasacha-secondary1 font-typographica">Flujo de caja del proyecto</p>
           <div>
             <TableEdit
               canEdit={canEdit}
