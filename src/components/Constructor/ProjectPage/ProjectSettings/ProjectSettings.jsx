@@ -353,7 +353,7 @@ export default function ProjectSettings({ visible, campaign }) {
                       ? "bg-terrasacha-light text-terrasacha-secondary1 shadow-terrasacha border border-terrasacha-light/30"
                       : "bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 text-white shadow-terrasacha hover:shadow-terrasacha-lg hover:scale-105 border border-terrasacha-light/20"
                   } `}
-                  disabled={projectData.isTechnicalFreeze || campaign?.available}
+                  disabled={projectData.isFinancialFreeze || campaign?.available}
                   onClick={() =>
                     handleSetValidatorDataComplete("financialInfo")
                   }
