@@ -253,6 +253,296 @@ module.exports = {
         '.animate-pulse-terrasacha': {
           animation: theme('animation.pulse-terrasacha'),
         },
+        // Botones estandarizados de Terrasacha
+        '.btn-terrasacha-primary': {
+          backgroundColor: theme('colors.terrasacha.primary.DEFAULT'),
+          color: theme('colors.white'),
+          fontFamily: theme('fontFamily.typographica'),
+          fontWeight: theme('fontWeight.bold'),
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`,
+          borderRadius: theme('borderRadius.lg'),
+          boxShadow: theme('boxShadow.terrasacha'),
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            backgroundColor: theme('colors.terrasacha.primary.dark'),
+            transform: 'translateY(-1px)',
+            boxShadow: theme('boxShadow.terrasacha-lg'),
+          },
+          '&:disabled': {
+            backgroundColor: theme('colors.gray.400'),
+            cursor: 'not-allowed',
+            transform: 'none',
+            boxShadow: 'none',
+          },
+        },
+        '.btn-terrasacha-secondary': {
+          backgroundColor: theme('colors.terrasacha.secondary2.DEFAULT'),
+          color: theme('colors.white'),
+          fontFamily: theme('fontFamily.typographica'),
+          fontWeight: theme('fontWeight.bold'),
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`,
+          borderRadius: theme('borderRadius.lg'),
+          boxShadow: theme('boxShadow.terrasacha'),
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            backgroundColor: theme('colors.terrasacha.secondary2.dark'),
+            transform: 'translateY(-1px)',
+            boxShadow: theme('boxShadow.terrasacha-lg'),
+          },
+          '&:disabled': {
+            backgroundColor: theme('colors.gray.400'),
+            cursor: 'not-allowed',
+            transform: 'none',
+            boxShadow: 'none',
+          },
+        },
+        '.btn-terrasacha-success': {
+          backgroundColor: theme('colors.terrasacha.success'),
+          color: theme('colors.white'),
+          fontFamily: theme('fontFamily.typographica'),
+          fontWeight: theme('fontWeight.bold'),
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`,
+          borderRadius: theme('borderRadius.lg'),
+          boxShadow: theme('boxShadow.terrasacha'),
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            backgroundColor: theme('colors.terrasacha.secondary2.dark'),
+            transform: 'translateY(-1px)',
+            boxShadow: theme('boxShadow.terrasacha-lg'),
+          },
+          '&:disabled': {
+            backgroundColor: theme('colors.gray.400'),
+            cursor: 'not-allowed',
+            transform: 'none',
+            boxShadow: 'none',
+          },
+        },
+        '.btn-terrasacha-warning': {
+          backgroundColor: theme('colors.terrasacha.warning'),
+          color: theme('colors.terrasacha.secondary1.DEFAULT'),
+          fontFamily: theme('fontFamily.typographica'),
+          fontWeight: theme('fontWeight.bold'),
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`,
+          borderRadius: theme('borderRadius.lg'),
+          boxShadow: theme('boxShadow.terrasacha'),
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            backgroundColor: theme('colors.terrasacha.earth.dark'),
+            transform: 'translateY(-1px)',
+            boxShadow: theme('boxShadow.terrasacha-lg'),
+          },
+          '&:disabled': {
+            backgroundColor: theme('colors.gray.400'),
+            cursor: 'not-allowed',
+            transform: 'none',
+            boxShadow: 'none',
+          },
+        },
+        '.btn-terrasacha-danger': {
+          backgroundColor: theme('colors.terrasacha.danger'),
+          color: theme('colors.white'),
+          fontFamily: theme('fontFamily.typographica'),
+          fontWeight: theme('fontWeight.bold'),
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`,
+          borderRadius: theme('borderRadius.lg'),
+          boxShadow: theme('boxShadow.terrasacha'),
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            backgroundColor: '#c82333',
+            transform: 'translateY(-1px)',
+            boxShadow: theme('boxShadow.terrasacha-lg'),
+          },
+          '&:disabled': {
+            backgroundColor: theme('colors.gray.400'),
+            cursor: 'not-allowed',
+            transform: 'none',
+            boxShadow: 'none',
+          },
+        },
+        '.btn-terrasacha-outline': {
+          backgroundColor: 'transparent',
+          color: theme('colors.terrasacha.primary.DEFAULT'),
+          fontFamily: theme('fontFamily.typographica'),
+          fontWeight: theme('fontWeight.bold'),
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`,
+          borderRadius: theme('borderRadius.lg'),
+          border: `2px solid ${theme('colors.terrasacha.primary.DEFAULT')}`,
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            backgroundColor: theme('colors.terrasacha.primary.DEFAULT'),
+            color: theme('colors.white'),
+            transform: 'translateY(-1px)',
+            boxShadow: theme('boxShadow.terrasacha-lg'),
+          },
+          '&:disabled': {
+            borderColor: theme('colors.gray.400'),
+            color: theme('colors.gray.400'),
+            cursor: 'not-allowed',
+            transform: 'none',
+            boxShadow: 'none',
+          },
+        },
+        // Formularios estandarizados de Terrasacha
+        '.form-terrasacha-input': {
+          width: '100%',
+          padding: `${theme('spacing.3')} ${theme('spacing.4')}`,
+          border: `1px solid ${theme('colors.terrasacha.light.DEFAULT')}`,
+          borderRadius: theme('borderRadius.lg'),
+          fontFamily: theme('fontFamily.typographica'),
+          transition: 'all 0.2s ease-in-out',
+          boxShadow: theme('boxShadow.sm'),
+          '&:focus': {
+            outline: 'none',
+            ringWidth: '2px',
+            ringColor: theme('colors.terrasacha.primary.DEFAULT'),
+            borderColor: 'transparent',
+          },
+          '&:hover': {
+            boxShadow: theme('boxShadow.terrasacha'),
+          },
+        },
+        '.form-terrasacha-label': {
+          display: 'block',
+          fontSize: theme('fontSize.sm[0]'),
+          fontWeight: theme('fontWeight.bold'),
+          color: theme('colors.terrasacha.secondary1.DEFAULT'),
+          fontFamily: theme('fontFamily.typographica'),
+          marginBottom: theme('spacing.2'),
+        },
+        '.form-terrasacha-select': {
+          width: '100%',
+          padding: `${theme('spacing.3')} ${theme('spacing.4')}`,
+          border: `1px solid ${theme('colors.terrasacha.light.DEFAULT')}`,
+          borderRadius: theme('borderRadius.lg'),
+          fontFamily: theme('fontFamily.typographica'),
+          backgroundColor: theme('colors.white'),
+          transition: 'all 0.2s ease-in-out',
+          boxShadow: theme('boxShadow.sm'),
+          '&:focus': {
+            outline: 'none',
+            ringWidth: '2px',
+            ringColor: theme('colors.terrasacha.primary.DEFAULT'),
+            borderColor: 'transparent',
+          },
+          '&:hover': {
+            boxShadow: theme('boxShadow.terrasacha'),
+          },
+        },
+        // Sistema completo de tablas Terrasacha
+        '.table-terrasacha-container': {
+          backgroundColor: theme('colors.white'),
+          boxShadow: theme('boxShadow.terrasacha'),
+          borderRadius: theme('borderRadius.lg'),
+          overflow: 'hidden',
+          border: `1px solid ${theme('colors.terrasacha.light.DEFAULT')}20`,
+        },
+        '.table-terrasacha-header-section': {
+          padding: `${theme('spacing.6')} ${theme('spacing.6')} ${theme('spacing.4')}`,
+          backgroundColor: `${theme('colors.terrasacha.light.DEFAULT')}10`,
+          borderBottom: `1px solid ${theme('colors.terrasacha.light.DEFAULT')}20`,
+        },
+        '.table-terrasacha-title': {
+          fontSize: theme('fontSize.lg[0]'),
+          fontWeight: theme('fontWeight.bold'),
+          color: theme('colors.terrasacha.primary.DEFAULT'),
+          fontFamily: theme('fontFamily.champagne'),
+        },
+        '.table-terrasacha-subtitle': {
+          fontSize: theme('fontSize.sm[0]'),
+          color: theme('colors.terrasacha.secondary1.DEFAULT'),
+          fontFamily: theme('fontFamily.typographica'),
+          marginTop: theme('spacing.1'),
+        },
+        '.table-terrasacha': {
+          width: '100%',
+        },
+        '.table-terrasacha-thead': {
+          backgroundColor: theme('colors.terrasacha.primary.DEFAULT'),
+          color: theme('colors.white'),
+        },
+        '.table-terrasacha-th': {
+          padding: `${theme('spacing.3')} ${theme('spacing.4')}`,
+          textAlign: 'left',
+          fontSize: theme('fontSize.xs[0]'),
+          fontWeight: theme('fontWeight.bold'),
+          fontFamily: theme('fontFamily.typographica'),
+          textTransform: 'uppercase',
+          letterSpacing: theme('letterSpacing.wider'),
+        },
+        '.table-terrasacha-tbody': {
+          backgroundColor: theme('colors.white'),
+        },
+        '.table-terrasacha-tr': {
+          transition: 'all 0.15s ease-in-out',
+          borderBottom: `1px solid ${theme('colors.terrasacha.light.DEFAULT')}20`,
+          '&:nth-child(even)': {
+            backgroundColor: `${theme('colors.terrasacha.light.DEFAULT')}05`,
+          },
+          '&:hover': {
+            backgroundColor: `${theme('colors.terrasacha.light.DEFAULT')}10`,
+          },
+        },
+        '.table-terrasacha-td': {
+          padding: `${theme('spacing.4')} ${theme('spacing.4')}`,
+          fontSize: theme('fontSize.sm[0]'),
+          fontFamily: theme('fontFamily.typographica'),
+        },
+        '.table-terrasacha-td-primary': {
+          padding: `${theme('spacing.4')} ${theme('spacing.4')}`,
+          fontSize: theme('fontSize.sm[0]'),
+          fontFamily: theme('fontFamily.typographica'),
+          fontWeight: theme('fontWeight.medium'),
+          color: theme('colors.terrasacha.primary.DEFAULT'),
+        },
+        '.table-terrasacha-td-secondary': {
+          padding: `${theme('spacing.4')} ${theme('spacing.4')}`,
+          fontSize: theme('fontSize.sm[0]'),
+          fontFamily: theme('fontFamily.typographica'),
+          color: theme('colors.terrasacha.secondary1.DEFAULT'),
+        },
+        '.table-terrasacha-badge': {
+          display: 'inline-flex',
+          padding: `${theme('spacing.1')} ${theme('spacing.2')}`,
+          borderRadius: theme('borderRadius.full'),
+          fontSize: theme('fontSize.xs[0]'),
+          fontWeight: theme('fontWeight.bold'),
+          fontFamily: theme('fontFamily.typographica'),
+        },
+        '.table-terrasacha-badge-success': {
+          backgroundColor: theme('colors.terrasacha.success'),
+          color: theme('colors.white'),
+        },
+        '.table-terrasacha-badge-warning': {
+          backgroundColor: theme('colors.terrasacha.warning'),
+          color: theme('colors.terrasacha.secondary1.DEFAULT'),
+        },
+        '.table-terrasacha-badge-info': {
+          backgroundColor: theme('colors.terrasacha.info'),
+          color: theme('colors.white'),
+        },
+        '.table-terrasacha-badge-secondary': {
+          backgroundColor: theme('colors.terrasacha.secondary2.DEFAULT'),
+          color: theme('colors.white'),
+        },
+        '.table-terrasacha-badge-neutral': {
+          backgroundColor: theme('colors.gray.200'),
+          color: theme('colors.gray.600'),
+        },
+        '.table-terrasacha-badge-danger': {
+          backgroundColor: theme('colors.terrasacha.danger'),
+          color: theme('colors.white'),
+        },
+        
+        // Componentes de formulario adicionales
+        '.form-checkbox': {
+          borderRadius: theme('borderRadius.DEFAULT'),
+          borderWidth: '1px',
+          borderColor: theme('colors.terrasacha.light.DEFAULT'),
+          '&:focus': {
+            borderColor: theme('colors.terrasacha.primary'),
+            '--tw-ring-color': theme('colors.terrasacha.primary'),
+          }
+        },
       }
       addUtilities(newUtilities)
     }

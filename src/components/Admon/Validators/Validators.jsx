@@ -405,7 +405,7 @@ class Validators extends Component {
             <button
               type="button"
               onClick={() => this.showModalCreate()}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="btn-terrasacha-primary"
             >
               Crear
             </button>

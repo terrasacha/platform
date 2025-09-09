@@ -126,7 +126,7 @@ class FeaturesType extends Component {
                   <td className="border p-2">{featuresType.description}</td>
                   <td className="border p-2">
                     <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                      className="btn-terrasacha-secondary text-sm"
                       onClick={(e) =>
                         this.handleLoadEditFeatureType(featuresType, e)
                       }
@@ -180,7 +180,7 @@ class FeaturesType extends Component {
           </div>
           <div>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="btn-terrasacha-primary"
               onClick={this.handleCRUDFeatureType}
               disabled={this.state.isCRUDButtonDisable}
             >

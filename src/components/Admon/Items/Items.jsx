@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 // Amplify
 // import '@aws-amplify/ui-react/styles.css'
-// Bootstrap
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+// Bootstrap components reemplazados con Tailwind CSS
 // GraphQL
 import { API, graphqlOperation } from "aws-amplify";
 import {
@@ -199,31 +198,50 @@ class Items extends Component {
     const renderCategorys = () => {
       if (categorys.length > 0) {
         return (
-          <Table striped bordered hover responsive>
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="px-4 py-2 text-left">Nombre</th>
-                <th className="px-4 py-2 text-left">Tipo</th>
-                <th className="px-4 py-2 text-left">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categorys.map((category) => (
-                <tr key={category.id} className="bg-white border-b">
-                  <td className="px-4 py-2">{category.name}</td>
-                  <td className="px-4 py-2">{category.type}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={(e) => this.handleLoadEditCategory(category, e)}
+          <div className="bg-white shadow-terrasacha rounded-lg overflow-hidden border border-terrasacha-light/20 mt-6">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-terrasacha-primary text-white">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Nombre
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Tipo
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Acción
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-terrasacha-light/20">
+                  {categorys.map((category, index) => (
+                    <tr 
+                      key={category.id}
+                      className={`${
+                        index % 2 === 0 ? 'bg-white' : 'bg-terrasacha-light/5'
+                      } hover:bg-terrasacha-light/10 transition-colors duration-150`}
                     >
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-terrasacha-primary font-typographica">
+                        {category.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-terrasacha-secondary1 font-typographica">
+                        {category.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <button
+                          className="btn-terrasacha-secondary text-sm"
+                          onClick={(e) => this.handleLoadEditCategory(category, e)}
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         );
       }
     };
@@ -241,7 +259,7 @@ class Items extends Component {
                 <input
                   type="text"
                   id="formGridNewCategoryName"
-                  className="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
                   placeholder="Ex. NUEVO CONCEPTO"
                   name="category.name"
                   value={newCategory.name}
@@ -282,7 +300,7 @@ class Items extends Component {
             </div>
             <div>
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="btn-terrasacha-primary"
                 onClick={this.handleCRUDCategory}
                 disabled={this.state.isCRUDButtonDisable}
                 aria-label={CRUDButtonName}

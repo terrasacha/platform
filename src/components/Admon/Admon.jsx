@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 // Auth
 import { Auth } from "aws-amplify";
-// Bootstrap
-import { Alert, Col, Container, Row } from "react-bootstrap";
+// Nota: React Bootstrap reemplazado con Tailwind CSS
 // Components
 import UserProducts from "./UserProducts/UserProducts";
 import AdmonProfile from "./AdmonProfile/AdmonProfile";
@@ -682,8 +681,9 @@ export default class Admon extends Component {
       isShowAssign_legales,
     } = this.state;
     return (
-      <div className="pt-20">
-        <div className="flex">
+      <div className="min-h-screen bg-gradient-terrasacha-subtle font-typographica">
+        {/* Header Section */}
+        <div className="fixed top-0 w-full z-50 bg-white shadow-terrasacha">
           <HeaderNavbar
             changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
             handleSignOut={this.handleSignOut}
@@ -692,122 +692,337 @@ export default class Admon extends Component {
           />
         </div>
 
-        <div className="flex flex-wrap">
-          {isShowAdmonProfile && (
-            <AdmonProfile
-              user={this.state.user}
-              setUserIDUsingCognitoSignedUser={
-                this.setUserIDUsingCognitoSignedUser
-              }
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              setUserGraphQLUser={this.setUserGraphQLUser}
-              handleOnChangeInputForm={this.handleOnChangeInputForm}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowProducts && (
-            <Products
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-            />
-          )}
-          {isShowCategorys && (
-            <Categorys
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowItems && (
-            <Items
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowFeatures && (
-            <Features
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowUOM && (
-            <UOM
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowFormulas && (
-            <Formulas
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowResults && (
-            <Results
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowDocuments && (
-            <Documents
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowAnalysts && (
-            <Analysts
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowAssign_analyst && (
-            <AssignAnalyst
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowLegal && (
-            <Legales
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowAssign_legales && (
-            <AssignLegal
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-          {isShowNotAuthorize && (
-            <Alert key="key_warning" variant="warning">
-              Perfil no autorizado
-            </Alert>
-          )}
-          {isShowAProducts && <UserProducts />}
-          {isShowAPF && <AssignPF />}
-          {isShowValidators && <Validators />}
-          {isShowMarketplaceAdmin && <ManageMarketplaceAdmin />}
-          {isShowAppStatus && <CheckAppStatus />}
-          {isShowConfigure && (
-            <Configure
-              user={this.state.user}
-              changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-              handleCUUser={this.handleCUUser}
-            />
-          )}
-        </div>
+        {/* Main Content Area */}
+        <main className="pt-24 px-4 sm:px-6 lg:px-8 max-w-9xl mx-auto mt-16">
+          <div className="bg-white rounded-xl shadow-terrasacha-lg border border-terrasacha-light/20 overflow-hidden animate-fade-in">
+            {/* Content Header */}
+            <div className="bg-terrasacha-primary px-6 py-4">
+              <h1 className="text-2xl font-bold text-white font-champagne tracking-wide">
+                Panel de Administración - Terrasacha
+              </h1>
+              <p className="text-terrasacha-earth mt-1 font-typographica">
+                Gestión integral de la plataforma "Pioneros del Mañana"
+              </p>
+            </div>
 
-        <ToastContainer></ToastContainer>
+            {/* Main Content Container */}
+            <div className="p-6 min-h-screen-75">
+              {isShowAdmonProfile && (
+                <div className="animate-slide-up">
+                  <AdmonProfile
+                    user={this.state.user}
+                    setUserIDUsingCognitoSignedUser={
+                      this.setUserIDUsingCognitoSignedUser
+                    }
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    setUserGraphQLUser={this.setUserGraphQLUser}
+                    handleOnChangeInputForm={this.handleOnChangeInputForm}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowProducts && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Gestión de Proyectos
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Products
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                  />
+                </div>
+              )}
+              
+              {isShowCategorys && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Gestión de Categorías
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Categorys
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowItems && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Items de Proyectos
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Items
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowFeatures && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Características
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Features
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowUOM && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Unidades de Medida
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <UOM
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowFormulas && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Fórmulas
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Formulas
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowResults && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Resultados
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Results
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowDocuments && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Documentos
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Documents
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowAnalysts && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Gestión de Analistas
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Analysts
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowAssign_analyst && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Asignar Analistas
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <AssignAnalyst
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowLegal && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Gestión Legal
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Legales
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowAssign_legales && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Asignar Equipo Legal
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <AssignLegal
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+              
+              {isShowNotAuthorize && (
+                <div className="animate-scale-in">
+                  <div className="bg-terrasacha-earth/10 border-l-4 border-terrasacha-earth p-4 rounded-md">
+                    <div className="flex">
+                      <div className="ml-3">
+                        <p className="text-sm text-terrasacha-secondary1 font-medium">
+                          ⚠️ Perfil no autorizado
+                        </p>
+                        <p className="mt-1 text-sm text-terrasacha-secondary1">
+                          No tienes permisos para acceder a esta sección. Contacta al administrador si necesitas acceso.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {isShowAProducts && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Productos de Usuario
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <UserProducts />
+                </div>
+              )}
+              
+              {isShowAPF && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Asignar Consultores
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <AssignPF />
+                </div>
+              )}
+              
+              {isShowValidators && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Gestión de Consultores
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Validators />
+                </div>
+              )}
+              
+              {isShowMarketplaceAdmin && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Administración del Marketplace
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <ManageMarketplaceAdmin />
+                </div>
+              )}
+              
+              {isShowAppStatus && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Estado de Aplicaciones
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <CheckAppStatus />
+                </div>
+              )}
+              
+              {isShowConfigure && (
+                <div className="animate-slide-up">
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                      Configuración del Sistema
+                    </h2>
+                    <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                  </div>
+                  <Configure
+                    user={this.state.user}
+                    changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
+                    handleCUUser={this.handleCUUser}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+
+        {/* Toast Container with Terrasacha styling */}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          toastClassName="shadow-terrasacha border-l-4 border-terrasacha-primary"
+        />
       </div>
     );
   }
