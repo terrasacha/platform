@@ -316,34 +316,23 @@ export default function PropertyDetails({
               />
             </div>
 
-            {/* Property Documents */}
-            <div>
-              <div className="bg-white/95 backdrop-blur-sm shadow-terrasacha-xl rounded-3xl p-4 sm:p-6 border border-terrasacha-light/30 relative overflow-hidden">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-terrasacha-light/5 to-transparent opacity-50"></div>
-                
-                <h3 className="text-xl font-typographica font-bold text-transparent bg-clip-text bg-gradient-to-r from-terrasacha-secondary1 to-terrasacha-primary mb-6 relative z-10">
-                  Documentos del predio
-                </h3>
+            {/* Sección de documentos del predio */}
+            <div className="col">
+              <div className="bg-white shadow-terrasacha rounded-lg p-6 border border-terrasacha-light">
+                <h3 className="text-lg font-bold mb-4 font-typographica text-terrasacha-primary">Documentos del predio</h3>
                 {propertyFiles.length === 0 ? (
-                  <p className="text-terrasacha-light italic font-typographica relative z-10">
-                    No hay documentos asociados.
-                  </p>
+                  <p className="text-terrasacha-secondary2 italic font-typographica">No hay documentos asociados.</p>
                 ) : (
                   <div className="space-y-3 relative z-10">
                     {propertyFiles.map((doc, idx) => (
                       <div
                         key={doc.url + idx}
-                        className="flex items-center justify-between p-3 bg-gradient-to-r from-terrasacha-light/20 to-transparent rounded-xl border border-terrasacha-light/40 hover:border-terrasacha-light/60 transition-all duration-300 hover:shadow-terrasacha-lg"
+                        className="flex items-center justify-between border-b border-terrasacha-light py-2"
                       >
-                        <div className="flex-1 min-w-0">
-                          <p className="text-terrasacha-secondary1 font-typographica font-medium truncate">
-                            {doc.name}
-                          </p>
-                          <p className="text-terrasacha-light text-sm font-typographica">
-                            {doc.type}
-                          </p>
-                        </div>
+                        <span className="truncate max-w-xs font-typographica text-terrasacha-secondary1">
+                          {doc.name}{" "}
+                          <span className="text-terrasacha-secondary2 text-xs">({doc.type})</span>
+                        </span>
                         <button
                           type="button"
                           onClick={async () => {
@@ -358,7 +347,12 @@ export default function PropertyDetails({
                               toast.error("No se pudo generar la URL firmada");
                             }
                           }}
-                          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 hover:from-terrasacha-secondary1 hover:to-terrasacha-primary text-white font-typographica font-semibold rounded-xl transition-all duration-300 shadow-terrasacha-lg hover:shadow-terrasacha-xl transform hover:scale-105 border border-white/20"
+                          className="btn px-3 py-1 font-typographica"
+                          style={{
+                            backgroundColor: '#6e6c35', // Verde Selva
+                            borderColor: '#6e6c35',
+                            color: 'white'
+                          }}
                           aria-label={`Ver documento ${doc.name}`}
                         >
                           <FaEye className="text-sm" />
@@ -372,29 +366,32 @@ export default function PropertyDetails({
             </div>
           </div>
 
-          {/* Status and Verification Section */}
-          <div className="w-full mt-8 sm:mt-12 mb-12 sm:mb-16">
-            <div className="bg-white/95 backdrop-blur-sm shadow-terrasacha-2xl rounded-3xl p-6 sm:p-8 w-full text-center border border-terrasacha-light/30 relative overflow-hidden">
-              {/* Background Pattern */}
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-terrasacha-light/5 to-transparent opacity-50"></div>
-              {/* Property Status */}
+          <div className="w-full mt-12 mb-16">
+            <div className="bg-white shadow-terrasacha-xl rounded-lg p-6 w-full text-center border border-terrasacha-light">
+              {/* Mostrar estado del predio */}
               {status === "APPROVED" && (
-                <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-terrasacha-success to-green-600 text-white rounded-xl font-typographica font-bold shadow-terrasacha-lg border border-white/20 relative z-10">
-                  <FaCheck className="text-lg" />
+                <div 
+                  className="px-4 py-2 text-white rounded-lg font-semibold font-typographica"
+                  style={{ backgroundColor: '#849b50' }} // Verde Pradera
+                >
                   ✅ Predio Aprobado
                 </div>
               )}
 
               {status === "REJECTED" && (
-                <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-terrasacha-danger to-red-600 text-white rounded-xl font-typographica font-bold shadow-terrasacha-lg border border-white/20 relative z-10">
-                  <FaTimes className="text-lg" />
+                <div 
+                  className="px-4 py-2 text-white rounded-lg font-semibold font-typographica"
+                  style={{ backgroundColor: '#dc3545' }} // Rojo
+                >
                   ❌ Predio Rechazado
                 </div>
               )}
 
               {status === "NOT_SELECTABLE" && (
-                <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-terrasacha-danger to-red-600 text-white rounded-xl font-typographica font-bold shadow-terrasacha-lg border border-white/20 relative z-10">
-                  <FaTimes className="text-lg" />
+                <div 
+                  className="px-4 py-2 text-white rounded-lg font-semibold font-typographica"
+                  style={{ backgroundColor: '#dc3545' }} // Rojo
+                >
                   ❌ Predio no elegible
                 </div>
               )}
@@ -403,7 +400,12 @@ export default function PropertyDetails({
               {isVerifier && (
                 <div className="mt-6 relative z-10">
                   <button
-                    className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 hover:from-terrasacha-secondary1 hover:to-terrasacha-primary text-white font-typographica font-bold rounded-2xl transition-all duration-300 shadow-terrasacha-xl hover:shadow-terrasacha-2xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border border-white/20"
+                    className="btn w-full mt-4 px-6 py-3 font-typographica"
+                    style={{
+                      backgroundColor: '#6e6c35', // Verde Selva
+                      borderColor: '#6e6c35',
+                      color: 'white'
+                    }}
                     onClick={handleVerifyClick}
                     disabled={isLoading || currentStep < 4}
                   >
@@ -422,14 +424,10 @@ export default function PropertyDetails({
 
                   {/* Warning Message */}
                   {currentStep < 4 && (
-                    <div className="mt-4 p-4 bg-gradient-to-r from-terrasacha-earth/20 to-terrasacha-light/20 rounded-xl border border-terrasacha-earth/40 relative z-10">
-                      <div className="flex items-center gap-3 text-terrasacha-secondary1 font-typographica">
-                        <FaExclamationTriangle className="text-terrasacha-primary" />
-                        <p className="text-sm">
-                          ⚠ Debes completar los pasos anteriores antes llegar al paso 4.
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-terrasacha-danger text-sm mt-2 font-typographica">
+                      ⚠ Debes completar los pasos anteriores antes llegar al
+                      paso 4.
+                    </p>
                   )}
                 </div>
               )}

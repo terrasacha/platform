@@ -163,9 +163,9 @@ export default function Timeline({
       ? "El predio no cumplió con los requisitos técnicos o legales y ha sido rechazado. Puede reiniciar el proceso si se corrigen los errores."
       : "Se ha seleccionado el predio para integrar el proyecto. Inicia la siguiente etapa del proyecto. Debes esperar que se cierre la campaña y aceptar la propuesta financiera ",
     icon: isApproved ? (
-      <FaCheckCircle size={18} className="text-white" />
+      <FaCheckCircle size={18} className="text-terrasacha-secondary1" />
     ) : isRejected ? (
-      <FaTimesCircle size={18} className="text-white" />
+      <FaTimesCircle size={18} className="text-terrasacha-secondary1" />
     ) : (
       <FaCheckCircle size={18} />
     ),
@@ -280,46 +280,44 @@ export default function Timeline({
   };
    
   return (
-    <>
-      <div className="w-full flex flex-col items-center mt-6 px-4">
-        <div className="w-full max-w-4xl">
-          <ProgressBar
-            percent={((currentStep - 1) / (steps.length - 1)) * 100}
-            filledBackground="linear-gradient(135deg, #6e6c35 0%, #849b50 100%)"
-            height={8}
-            transitionDuration={800}
-            className="rounded-full shadow-terrasacha-lg"
-          >
-            {steps.map((step, index) => (
-              <Step key={step.id}>
-                {({ accomplished }) => {
-                  let stepClass = "bg-terrasacha-light/80 text-terrasacha-secondary1 border-terrasacha-light/60 opacity-60 backdrop-blur-sm";
+    <div className="w-full flex flex-col items-center mt-6 px-4">
+      <div className="w-full max-w-3xl">
+        <ProgressBar
+          percent={((currentStep - 1) / (steps.length - 1)) * 100}
+          filledBackground="linear-gradient(to right, #6e6c35, #849b50)"
+          height={6}
+          transitionDuration={800}
+        >
+          {steps.map((step, index) => (
+            <Step key={step.id}>
+              {({ accomplished }) => {
+                let stepClass =
+                  "bg-gray-300 text-gray-500 border-gray-400 opacity-50";
 
-                  // 🔥 Si es el paso actual, se pone con el color primario de Terrasacha
-                  if (step.id === currentStep && step.id !== steps.length) {
-                    stepClass = "bg-gradient-to-br from-terrasacha-primary to-terrasacha-secondary1 text-white border-terrasacha-primary shadow-terrasacha-2xl animate-pulse-terrasacha";
-                  }
-                  else if (accomplished) {
-                    stepClass = "bg-gradient-to-br from-terrasacha-success to-green-600 text-white border-terrasacha-success shadow-terrasacha-xl hover:shadow-terrasacha-2xl transform hover:scale-105 transition-all duration-300";
-                  }
+                // 🔥 Si es el paso actual, se pone amarillo
+                if (step.id === currentStep && step.id !== steps.length) {
+                  stepClass = "bg-terrasacha-warning text-terrasacha-secondary1 border-terrasacha-warning animate-pulse shadow-terrasacha-xl";
+                }
+                 else if (accomplished) {
+                  stepClass =
+                    "bg-terrasacha-success text-terrasacha-secondary1 border-terrasacha-success shadow-terrasacha-lg hover:shadow-terrasacha-xl";
+                }
 
-                  // 🔥 Animación especial para el paso 2 (resplandor y pulsación)
-                  const isStep2Active = step.id === 2 && currentStep === 2;
-                  const glowEffect = isStep2Active
-                    ? "animate-pulse ring-4 ring-terrasacha-earth/50 shadow-terrasacha-2xl"
-                    : "";
+                // 🔥 Animación especial para el paso 2 (resplandor y pulsación)
+                const isStep2Active = step.id === 2 && currentStep === 2;
+                const glowEffect = isStep2Active
+                  ? "animate-pulse ring-4 ring-terrasacha-warning"
+                  : "";
 
-                  return (
-                    <div className="flex flex-col items-center w-28 text-center relative">
-                      {/* 📌 Flecha animada SOLO para el paso 2 */}
-                      {isStep2Active && (
-                        <div className="absolute -top-8 text-terrasacha-primary text-lg font-typographica font-bold animate-bounce">
-                          <div className="bg-gradient-to-br from-terrasacha-primary to-terrasacha-secondary1 text-white px-2 py-1 rounded-lg shadow-terrasacha-lg">
-                            ⬇️
-                          </div>
-                          <p className="text-xs font-typographica font-semibold text-terrasacha-primary mt-1">clic</p>
-                        </div>
-                      )}
+                return (
+                  <div className="flex flex-col items-center w-24 text-center relative">
+                    {/* 📌 Flecha animada SOLO para el paso 2 */}
+                    {isStep2Active && (
+                      <div className="absolute -top-8 text-terrasacha-warning text-lg font-bold animate-bounce font-typographica">
+                        ⬇️
+                        <p className="text-xs font-semibold">clic</p>
+                      </div>
+                    )}
 
                       {/* 📌 Ícono del paso con animación especial para el paso 2 */}
                       <div className="flex flex-col items-center">
@@ -333,17 +331,15 @@ export default function Timeline({
                             {step.icon}
                           </div>
 
-                          {/* Ícono de ayuda alineado a la derecha del círculo */}
-                          <span
-                            onClick={() => openHelp(step)}
-                            className="absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer transition-all duration-300 hover:scale-110 hover:opacity-100"
-                            title="Ver explicación del paso"
-                            aria-label="Ayuda del paso"
-                          >
-                            <div className="bg-gradient-to-br from-terrasacha-primary/20 to-terrasacha-secondary1/20 p-1 rounded-full border border-terrasacha-primary/30">
-                              <FaQuestionCircle size={16} className="text-terrasacha-primary" />
-                            </div>
-                          </span>
+    {/* Ícono de ayuda alineado a la derecha del círculo */}
+    <span
+      onClick={() => openHelp(step)}
+      className="absolute left-full top-1/2 -translate-y-1/2 ml-2 cursor-pointer"
+      title="Ver explicación del paso"
+      aria-label="Ayuda del paso"
+    >
+      <FaQuestionCircle size={14} className="text-terrasacha-primary opacity-90 hover:opacity-100" />
+    </span>
 
                           <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
                         </div>
@@ -380,34 +376,51 @@ export default function Timeline({
                         )}
                       </Tooltip>
 
-                      <p
-                        className={`mt-3 text-sm font-typographica font-semibold transition-all duration-500 ${
-                          step.id === currentStep
-                            ? "text-transparent bg-clip-text bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 font-bold"
-                            : accomplished
-                            ? "text-terrasacha-success"
-                            : "text-terrasacha-secondary1"
-                        } hover:text-terrasacha-primary hover:scale-105 transform`}
-                      >
-                        {step.title}
-                      </p>
-                    </div>
-                  );
-                }}
-              </Step>
-            ))}
-          </ProgressBar>
-        </div>
+                    <p
+                      className={`mt-2 text-xs font-semibold transition-colors duration-500 font-typographica ${
+                        step.id === currentStep
+                          ? "text-terrasacha-warning font-bold"
+                          : accomplished
+                          ? "text-terrasacha-success"
+                          : "text-gray-600"
+                      } hover:text-terrasacha-success`}
+                    >
+                      {step.title}
+                    </p>
+                  </div>
+                );
+              }}
+            </Step>
+          ))}
+        </ProgressBar>
       </div>
+      
 
-      {helpStep && (
-        <StepHelpModal
-          isOpen={!!helpStep}
-          onClose={closeHelp}
-          stepTitle={helpStep.title}
-          stepDescription={helpStep.helpText}
-        />
-      )}
-    </>
+      <ValidationModal
+        isOpen={modalIsOpen}
+        onClose={closeModal}
+        onValidationComplete={handleValidationComplete}
+        checkDocuments={true}
+      />
+
+<Modal show={chatModalIsOpen} onHide={() => setChatModalIsOpen(false)} size="xl" centered>
+  <Modal.Header closeButton className="bg-terrasacha-light">
+    <Modal.Title className="font-typographica text-terrasacha-primary">Proceso del Predio</Modal.Title>
+  </Modal.Header>
+  <Modal.Body className="bg-white">
+    <ConstructorWorkflow propertyId={propertyId} />
+  </Modal.Body>
+</Modal>
+{helpStep && (
+  <StepHelpModal
+    isOpen={!!helpStep}
+    onClose={closeHelp}
+    stepTitle={helpStep.title}
+    stepDescription={helpStep.helpText}
+  />
+)}
+
+
+    </div>
   );
 }

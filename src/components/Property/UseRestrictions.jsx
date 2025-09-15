@@ -171,8 +171,8 @@ export default function UseRestrictions(props) {
               inputName="projectRestrictionsDesc"
               inputValue={formData.projectRestrictionsDesc}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["projectRestrictionsDesc"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["projectRestrictionsDesc"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -184,8 +184,8 @@ export default function UseRestrictions(props) {
               inputName="projectRestrictionsOther"
               inputValue={formData.projectRestrictionsOther}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["projectRestrictionsOther"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["projectRestrictionsOther"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -195,7 +195,7 @@ export default function UseRestrictions(props) {
         {autorizedUser && (
           <div className="flex justify-center mt-6">
             <button
-              className="px-6 py-3 text-white bg-gradient-to-r from-terrasacha-success to-green-600 hover:from-green-600 hover:to-terrasacha-success rounded-xl transition-all duration-300 shadow-terrasacha-lg hover:shadow-terrasacha-xl transform hover:scale-105 border border-white/20 font-typographica font-semibold disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="btn-terrasacha-success p-2 font-typographica"
               onClick={handleSaveBtn}
               disabled={!Object.values(changedFields).some((changed) => changed)} // Se desactiva si no hay cambios
             >

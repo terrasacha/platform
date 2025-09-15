@@ -459,179 +459,127 @@ export default function ValidationModal({
   };
 
   return (
-    <>
-      {/* Custom Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 z-[9999] overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Background overlay */}
-            <div 
-              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" 
-              onClick={onClose}
-            ></div>
+    <Modal size="lg" show={isOpen} onHide={onClose} centered>
+      <Modal.Header closeButton className="bg-terrasacha-light">
+        <Modal.Title className="font-typographica text-terrasacha-primary">Requisitos para la Prefactibilidad</Modal.Title>
+      </Modal.Header>
 
-            {/* Modal content */}
-            <div className="relative z-[10000] inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-              {/* Modal Header */}
-              <div className="bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-t-2xl p-6 flex items-center justify-between">
-                <h3 className="text-xl font-typographica font-bold text-white">
-                  Requisitos para la Prefactibilidad
-                </h3>
-                <button
-                  onClick={onClose}
-                  className="text-white hover:text-terrasacha-light transition-colors"
-                  aria-label="Cerrar modal"
-                >
-                  <FaTimes className="text-xl" />
-                </button>
-              </div>
+      <Modal.Body>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div>
+            <p className="text-terrasacha-secondary1 mb-4 font-typographica">
+              Para completar este paso, debes subir los siguientes documentos:
+            </p>
 
-              {/* Modal Body */}
-              <div className="p-6 bg-gradient-to-br from-terrasacha-light/10 via-white to-terrasacha-earth/10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-terrasacha-secondary1 mb-6 font-typographica">
-                      Para completar este paso, debes subir los siguientes documentos:
-                    </p>
+            {["certificado", "escrituras", "planos"].map((fileType) => (
+              <div
+                key={fileType}
+                className="flex items-center justify-between border border-terrasacha-light p-3 rounded-lg shadow-terrasacha mb-3 bg-white"
+              >
+                <span className="text-terrasacha-secondary1 text-sm capitalize font-typographica">
+                  {fileType === "certificado"
+                    ? "Certificado de Libertad(vigencia 30 dias)"
+                    : fileType === "escrituras"
+                    ? "Escrituras Públicas"
+                    : "Planos Catastrales"}
+                </span>
 
-                    {["certificado", "escrituras", "planos"].map((fileType) => (
-                      <div
-                        key={fileType}
-                        className="flex items-center justify-between p-4 bg-white rounded-xl border border-terrasacha-light shadow-terrasacha mb-4"
+                <div className="flex items-center gap-2">
+                  {/* 🔹 Botón "Ver" solo si el archivo ya está en S3 */}
+                  {uploadedFiles[fileType] &&
+                    !uploadedFiles[fileType].startsWith("pending-") && (
+                      <button
+                        onClick={async () =>{
+                          console.log('uploadedFiles[fileType]', uploadedFiles[fileType])
+                          window.open(
+                            await getSignedFileUrl(uploadedFiles[fileType]),
+                            "_blank"
+                          )}
+                        }
+                        className="btn-terrasacha-success px-3 py-1 flex items-center gap-2 font-typographica"
                       >
-                        <span className="text-terrasacha-secondary1 text-sm font-typographica capitalize">
-                          {fileType === "certificado"
-                            ? "Certificado de Libertad (vigencia 30 días)"
-                            : fileType === "escrituras"
-                            ? "Escrituras Públicas"
-                            : "Planos Catastrales"}
-                        </span>
-
-                        <div className="flex items-center gap-2">
-                          {/* Botón "Ver" solo si el archivo ya está en S3 */}
-                          {uploadedFiles[fileType] && (
-                            <button
-                              onClick={async () => {
-                                console.log('uploadedFiles[fileType]', uploadedFiles[fileType]);
-                                const url = await getSignedFileUrl(uploadedFiles[fileType]);
-                                if (url) {
-                                  window.open(url, "_blank");
-                                }
-                              }}
-                              className="flex items-center gap-2 px-3 py-2 bg-terrasacha-success hover:bg-terrasacha-secondary2 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
-                            >
-                              <FaEye size={14} />
-                              Ver
-                            </button>
-                          )}
-
-                          {!isUploadDisabled ? (
-                            (uploadedFiles[fileType] || pendingFiles[fileType]) ? (
-                              <>
-                                <input
-                                  type="file"
-                                  className="hidden"
-                                  id={`file-upload-${fileType}`}
-                                  onChange={(e) => handleFileSelection(e, fileType)}
-                                />
-                                <label
-                                  htmlFor={`file-upload-${fileType}`}
-                                  className="cursor-pointer flex items-center gap-2 px-3 py-2 bg-terrasacha-earth hover:bg-terrasacha-light text-terrasacha-secondary1 font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
-                                >
-                                  <FaEdit size={14} />
-                                  Editar
-                                </label>
-                              </>
-                            ) : (
-                              <>
-                                <input
-                                  type="file"
-                                  className="hidden"
-                                  id={`file-upload-${fileType}`}
-                                  onChange={(e) => handleFileSelection(e, fileType)}
-                                />
-                                <label
-                                  htmlFor={`file-upload-${fileType}`}
-                                  className="cursor-pointer flex items-center gap-2 px-3 py-2 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-typographica font-semibold rounded-lg transition-all duration-300 shadow-terrasacha transform hover:scale-105"
-                                >
-                                  <FaFileUpload size={14} />
-                                  Subir
-                                </label>
-                              </>
-                            )
-                          ) : (
-                            <span className="text-terrasacha-light text-sm italic font-typographica">
-                              No editable
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div>
-                    {chatReady ? (
-                      <PropertyChat
-                        propertyId={propertyData.propertyInfo?.id}
-                        featureChat={"GLOBAL_PROPERTY_FILES"}
-                      />
-                    ) : (
-                      <div className="bg-gradient-to-br from-white to-terrasacha-light/20 p-6 border border-terrasacha-light/30 rounded-2xl shadow-terrasacha-lg h-96 flex flex-col">
-                        <div className="flex items-center justify-between mb-4">
-                          <h2 className="text-xl font-typographica font-bold text-terrasacha-secondary1">
-                            Mensajería del Predio
-                          </h2>
-                        </div>
-                        <div className="flex-grow flex items-center justify-center">
-                          <div className="text-center">
-                            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-terrasacha-light/20 to-terrasacha-earth/20 rounded-full flex items-center justify-center animate-spin">
-                              <svg className="w-8 h-8 text-terrasacha-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                              </svg>
-                            </div>
-                            <p className="text-terrasacha-secondary1 font-typographica">Preparando chat...</p>
-                          </div>
-                        </div>
-                      </div>
+                        <FaEye size={14} />
+                        Ver
+                      </button>
                     )}
-                  </div>
-                </div>
 
-                <div className="flex justify-center mt-6">
-                  <button
-                    className="flex items-center gap-3 px-6 py-3 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-typographica font-bold rounded-xl transition-all duration-300 shadow-terrasacha-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                    onClick={() => uploadFiles()}
-                    disabled={loading || Object.keys(selectedFiles).length === 0}
-                  >
-                    {loading ? (
+                  {!isUploadDisabled ? (
+                    (uploadedFiles[fileType] || pendingFiles[fileType]) && (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        Subiendo...
+                        <input
+                          type="file"
+                          className="hidden"
+                          id={`file-upload-${fileType}`}
+                          onChange={(e) => handleFileSelection(e, fileType)}
+                        />
+                        <label
+                          htmlFor={`file-upload-${fileType}`}
+                          className="btn-terrasacha-warning cursor-pointer px-3 py-1 flex items-center gap-2 font-typographica"
+                        >
+                          <FaEdit size={14} />
+                          Editar
+                        </label>
                       </>
-                    ) : (
+                    )
+                  ) : (
+                    <span className="text-terrasacha-secondary2 text-sm italic font-typographica">
+                      No editable
+                    </span>
+                  )}
+
+                  {/* 🔹 Botón "Subir" solo si no hay un archivo seleccionado todavía */}
+                  {!isUploadDisabled &&
+                    !uploadedFiles[fileType] &&
+                    !pendingFiles[fileType] && (
                       <>
-                        <FaSave className="text-lg" />
-                        Guardar Cambios
+                        <input
+                          type="file"
+                          className="hidden"
+                          id={`file-upload-${fileType}`}
+                          onChange={(e) => handleFileSelection(e, fileType)}
+                        />
+                        <label
+                          htmlFor={`file-upload-${fileType}`}
+                          className="btn-terrasacha-primary cursor-pointer px-3 py-1 flex items-center gap-2 font-typographica"
+                        >
+                          <FaFileUpload size={14} />
+                          Subir
+                        </label>
                       </>
                     )}
-                  </button>
                 </div>
-
-                {!hasCampaign && (
-                  <div className="mt-6 p-4 bg-terrasacha-earth bg-opacity-30 rounded-xl border border-terrasacha-earth">
-                    <div className="flex items-center gap-3 text-terrasacha-secondary1 font-typographica">
-                      <FaExclamationTriangle className="text-terrasacha-primary" />
-                      <p className="text-sm font-semibold">
-                        Cualquier solicitud en esta etapa debe realizarse a través de un
-                        PQRS, ya que aún no hay un consultor asignado.
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
-            </div>
+            ))}
+          </div>
+          <div>
+            <PropertyChat
+              propertyId={propertyData.propertyInfo?.id}
+              featureChat={"GLOBAL_PROPERTY_FILES"}
+            />
           </div>
         </div>
-      )}
-    </>
+
+        <div className="flex justify-center mt-4">
+          <button
+            className="btn-terrasacha-primary px-4 py-2 font-typographica"
+            onClick={() => uploadFiles()}
+            disabled={loading || Object.keys(selectedFiles).length === 0}
+          >
+            {loading ? (
+              <Spinner size="sm" animation="border" />
+            ) : (
+              "Guardar Cambios"
+            )}
+          </button>
+        </div>
+
+        {!hasCampaign && (
+          <p className="text-terrasacha-danger text-sm mt-4 font-semibold font-typographica">
+            Cualquier solicitud en esta etapa debe realizarse a través de un
+            PQRS, ya que aún no hay un consultor asignado.
+          </p>
+        )}
+      </Modal.Body>
+    </Modal>
   );
 }

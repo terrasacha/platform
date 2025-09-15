@@ -30,12 +30,9 @@ import ValidationModal from "./ValidationModal";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 const statusColor = {
-  PENDING: "bg-gradient-to-r from-gray-500 to-gray-600",
-  APPROVED: "bg-gradient-to-r from-terrasacha-success to-green-600",
-  REJECTED: "bg-gradient-to-r from-terrasacha-danger to-red-600",
-  SELECTABLE: "bg-gradient-to-r from-terrasacha-secondary2 to-yellow-600",
-  DOC_UPLOADED: "bg-gradient-to-r from-terrasacha-light to-blue-500",
-  ELEGIBLE: "bg-gradient-to-r from-terrasacha-primary to-blue-600",
+  PENDING: "text-terrasacha-secondary1", // Amarillo Tierra (#e8d79a) con texto Verde Bosques Nublados (#44482c)
+  APPROVED: "text-white", // Verde Pradera (#849b50) con texto blanco
+  REJECTED: "text-white", // Rojo con texto blanco
 };
 
 const statusEs = {
@@ -550,23 +547,36 @@ export default function Property() {
                 onClick={() =>
                   handleNavigation(`/campaign/${property.campaign.id}`)
                 }
-                className="group inline-flex items-center gap-2 px-4 sm:px-5 md:px-6 py-3 sm:py-4 bg-gradient-to-r from-terrasacha-earth to-terrasacha-light hover:from-terrasacha-light hover:to-terrasacha-earth text-terrasacha-secondary1 font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-terrasacha-light/20 text-sm sm:text-base md:text-lg"
+                className="btn-terrasacha-warning font-typographica"
               >
-                <FaArrowLeft className="text-sm md:text-base group-hover:-translate-x-1 transition-transform duration-300" />
-                <span className="hidden sm:inline">Regresar a la campaña</span>
-                <span className="sm:hidden">Campaña</span>
-              </button>
+                Regresar a la campaña
+              </a>
             ) : (
-              <button
-                onClick={handleGoBack}
-                className="group inline-flex items-center gap-2 px-4 sm:px-5 md:px-6 py-3 sm:py-4 bg-gradient-to-r from-terrasacha-earth to-terrasacha-light hover:from-terrasacha-light hover:to-terrasacha-earth text-terrasacha-secondary1 font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-terrasacha-light/20 text-sm sm:text-base md:text-lg"
+              <a
+                onClick={() => handleNavigation(`/constructor`)}
+                className="btn-terrasacha-warning font-typographica"
               >
-                <FaArrowLeft className="text-sm md:text-base group-hover:-translate-x-1 transition-transform duration-300" />
-                <span className="hidden sm:inline">Volver</span>
-                <span className="sm:hidden">←</span>
-              </button>
+                Ir a mis predios
+              </a>
             )}
-          </div>
+
+            {/* 📌 Aquí está el contenedor donde agregaremos la línea de tiempo */}
+            <div className="relative pt-3 px-4 mb-4 mt-4 border border-terrasacha-light rounded-lg shadow-terrasacha bg-white">
+              <div className="row gy-2">
+                <header className="d-flex justify-content-between">
+                  <p className="fs-3 mb-0 font-typographica text-terrasacha-primary">{property.name}</p>
+                </header>
+                <section>
+                  <p className="fs-6 mb-0 fw-bold font-typographica text-terrasacha-secondary1">Fecha de creación:</p>
+                  <p className="fs-6 mb-0 font-typographica text-terrasacha-secondary2">{property.createdAt}</p>
+                </section>
+                <section>
+                  <p className="fs-6 mb-0 fw-bold font-typographica text-terrasacha-secondary1">Área Total:</p>
+                  <p className="fs-6 mb-0 font-typographica text-terrasacha-secondary2">
+                    {propertyData.projectCadastralRecords.totalAreaFormatted}
+                  </p>
+                </section>
+              </div>
 
           {/* Property Header Card */}
           <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-terrasacha-light/30 p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 relative overflow-hidden">
@@ -576,7 +586,15 @@ export default function Property() {
             {/* Status Badge */}
             <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10">
               <span
-                className={`${statusColor[property.status]} text-white text-xs sm:text-sm font-typographica font-bold px-3 sm:px-4 py-2 rounded-xl shadow-lg backdrop-blur-sm border border-white/20`}
+                className={`${
+                  statusColor[property.status]
+                } absolute top-4 right-4 text-xs font-bold px-4 py-2 w-fit rounded-lg text-nowrap font-typographica shadow-terrasacha`}
+                style={{
+                  backgroundColor: property.status === 'PENDING' ? '#e8d79a' : // Amarillo Tierra
+                                  property.status === 'APPROVED' ? '#849b50' : // Verde Pradera
+                                  property.status === 'REJECTED' ? '#dc3545' : '#6e6c35', // Rojo o Verde Selva por defecto
+                  color: property.status === 'PENDING' ? '#44482c' : 'white' // Verde Bosques Nublados para PENDING, blanco para otros
+                }}
               >
                 {statusEs[property.status]}
               </span>
@@ -646,20 +664,25 @@ export default function Property() {
               </div>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="border-t border-terrasacha-light/30 pt-6 mt-6 relative z-10">
-              <nav className="flex space-x-1">
-                <button
-                  onClick={() => setActiveSection("details")}
-                  className={`px-4 sm:px-6 py-2 sm:py-3 font-typographica font-semibold rounded-xl transition-all duration-300 text-sm sm:text-base ${
-                    activeSection === "details"
-                      ? "bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 text-white shadow-lg transform scale-105"
-                      : "text-terrasacha-secondary1 hover:bg-terrasacha-light/50 hover:text-terrasacha-secondary1 hover:scale-105"
-                  }`}
-                >
-                  Detalles
-                </button>
-              </nav>
+              <ul className="font-medium flex mt-4 pl-0 font-typographica">
+                <li>
+                  <a
+                    href="#details"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("details");
+                    }}
+                    className={`${
+                      activeSection === "details"
+                        ? "text-terrasacha-primary border-t border-r border-l border-terrasacha-primary rounded-t-md bg-terrasacha-light bg-opacity-20"
+                        : "text-terrasacha-secondary2 hover:text-terrasacha-primary"
+                    } flex py-2 px-3 transition-colors duration-200`}
+                    aria-current="page"
+                  >
+                    Detalles
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -685,7 +708,14 @@ export default function Property() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 relative z-10">
                   {canAssign && (
                     <button
-                      className="group flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-terrasacha-success to-green-600 hover:from-green-600 hover:to-terrasacha-success text-white font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/20"
+                      className="btn w-full font-typographica"
+                      style={{
+                        backgroundColor: '#849b50', // Verde Pradera
+                        borderColor: '#849b50',
+                        color: 'white'
+                      }}
+                      aria-label="Asignar predio"
+                      tabIndex={0}
                       onClick={() => handleToggleAssign(property)}
                     >
                       <FaCheck className="group-hover:scale-110 transition-transform duration-300" />
@@ -696,7 +726,14 @@ export default function Property() {
                   
                   {canUnassign && (
                     <button
-                      className="group flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-terrasacha-danger to-red-600 hover:from-red-600 hover:to-terrasacha-danger text-white font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/20"
+                      className="btn w-full font-typographica"
+                      style={{
+                        backgroundColor: '#dc3545', // Rojo
+                        borderColor: '#dc3545',
+                        color: 'white'
+                      }}
+                      aria-label="Desasignar predio"
+                      tabIndex={0}
                       onClick={() => handleToggleAssign(property)}
                     >
                       <FaTimes className="group-hover:scale-110 transition-transform duration-300" />
@@ -707,8 +744,15 @@ export default function Property() {
                   
                   {canValidate && (
                     <button
-                      className="group flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 hover:from-terrasacha-secondary1 hover:to-terrasacha-primary text-white font-typographica font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/20"
-                      onClick={() => setShowDocumentationModal(true)}
+                      className="btn w-full font-typographica"
+                      style={{
+                        backgroundColor: '#6e6c35', // Verde Selva
+                        borderColor: '#6e6c35',
+                        color: 'white'
+                      }}
+                      aria-label="Ver Documentación"
+                      tabIndex={0}
+                      onClick={() => property && setShowDocumentationModal(true)}
                     >
                       <FaEye className="group-hover:scale-110 transition-transform duration-300" />
                       <span className="hidden sm:inline">Validar Predio</span>
