@@ -193,7 +193,7 @@ export default function UseRestrictions(props) {
 
         {/* Botón único para guardar todos los cambios */}
         {autorizedUser && (
-          <div className="flex justify-center mt-6">
+          <div className="d-flex justify-content-center mt-3">
             <button
               className="btn-terrasacha-success p-2 font-typographica"
               onClick={handleSaveBtn}

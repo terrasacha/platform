@@ -22,6 +22,7 @@ import ConstructorWorkflow from "./ConstructorWorkflow";
 import StepHelpModal from "./StepHelpModal";
 import { FaQuestionCircle } from "react-icons/fa";
 
+
 export default function Timeline({
   currentStep = 1,
   isFormComplete,
@@ -31,12 +32,10 @@ export default function Timeline({
   userId, 
   campaignOwnerId,
   openChatOnLoad=false,
-  chatTarget,
-  onOpenValidationModal, // 🔴 Callback para ValidationModal
-  onOpenConstructorWorkflow // 🔴 Nuevo callback para ConstructorWorkflow
+  chatTarget
 }) {
-  // ✅ DEBUG: Log para verificar el currentStep recibido
-  console.log("📌 Timeline - currentStep recibido:", currentStep);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [chatModalIsOpen, setChatModalIsOpen] = useState(false);
   const [propertyFeatureID, setPropertyFeatureID] = useState(null);
   const [propertyVerificationID, setPropertyVerificationID] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,26 +45,21 @@ export default function Timeline({
 
   const { user } = useAuth();
 
-  // ✅ DEBUG: Monitorear cambios en currentStep
-  useEffect(() => {
-    console.log("📌 Timeline - currentStep cambió a:", currentStep);
-  }, [currentStep]);
-
   useEffect(() => {
     if (!openChatOnLoad || !chatTarget) return;
   
     if (chatTarget === "legal" ) {
-      // 🔴 En lugar de abrir el modal directamente, llamamos al callback
-      if (onOpenValidationModal) {
-        onOpenValidationModal();
-      }
+      setModalIsOpen(true); // Abrir ValidationModal
     }
   
     if (chatTarget === "validator" ) {
       handleChatFeature(); // Abrir PropertyChat
     }
-  }, [openChatOnLoad, currentStep, chatTarget, onOpenValidationModal]);
+  }, [openChatOnLoad, currentStep, chatTarget]);
   
+  
+  
+
   useEffect(() => {
     if (propertyId) {
       checkExistingFeature();
@@ -100,20 +94,21 @@ export default function Timeline({
     }
   };
    
+
+ 
   const openModal = (stepId) => {
     if (stepId === 2) {
-      // 🔴 En lugar de abrir el modal directamente, llamamos al callback
-      if (onOpenValidationModal) {
-        onOpenValidationModal();
-      }
+      setModalIsOpen(true);
     }
     if (stepId === 4) {
-      // 🔴 Solo permitir abrir ConstructorWorkflow si estás en el paso 4
-      if (currentStep === 4 && onOpenConstructorWorkflow) {
-        onOpenConstructorWorkflow();
-      }
-      // Si no estás en el paso 4, simplemente no hacer nada
+      handleChatFeature();
     }
+  };
+  
+
+  const closeModal = () => {
+    console.log("🔴 Cerrando el modal...");
+    setModalIsOpen(false);
   };
 
   const handleValidationComplete = () => {
@@ -172,8 +167,10 @@ export default function Timeline({
   },
 ];
 
+
   const handleChatFeature = async () => {
     try {
+
       if (currentStep !== 4) {
         console.warn("⚠️ El chat solo puede abrirse en el paso 4.");
         return;
@@ -219,10 +216,7 @@ export default function Timeline({
           }
         }
   
-        // 🔴 En lugar de abrir el modal directamente, llamamos al callback
-        if (onOpenConstructorWorkflow) {
-          onOpenConstructorWorkflow();
-        }
+        setChatModalIsOpen(true);
         return;
       }
   
@@ -267,10 +261,7 @@ export default function Timeline({
         );
       }
   
-      // 🔴 En lugar de abrir el modal directamente, llamamos al callback
-      if (onOpenConstructorWorkflow) {
-        onOpenConstructorWorkflow();
-      }
+      setChatModalIsOpen(true);
       console.log("✅ PropertyFeature y Verification creados con éxito.");
     } catch (error) {
       console.error("❌ Error al crear PropertyFeature y Verification:", error);
@@ -279,6 +270,7 @@ export default function Timeline({
     }
   };
    
+
   return (
     <div className="w-full flex flex-col items-center mt-6 px-4">
       <div className="w-full max-w-3xl">
@@ -319,17 +311,17 @@ export default function Timeline({
                       </div>
                     )}
 
-                      {/* 📌 Ícono del paso con animación especial para el paso 2 */}
-                      <div className="flex flex-col items-center">
-                        <div className="relative flex flex-col items-center">
-                          {/* Ícono principal del paso */}
-                          <div
-                            className={`w-12 h-12 flex items-center justify-center rounded-full border-2 transition-all duration-300 cursor-pointer ${stepClass} ${glowEffect}`}
-                            data-tooltip-id={`tooltip-${step.id}`}
-                            onClick={() => openModal(step.id)}
-                          >
-                            {step.icon}
-                          </div>
+                    {/* 📌 Ícono del paso con animación especial para el paso 2 */}
+<div className="flex flex-col items-center">
+  <div className="relative flex flex-col items-center">
+    {/* Ícono principal del paso */}
+    <div
+      className={`w-10 h-10 flex items-center justify-center rounded-full border-2 ${stepClass} ${glowEffect}`}
+      data-tooltip-id={`tooltip-${step.id}`}
+      onClick={() => openModal(step.id)}
+    >
+      {step.icon}
+    </div>
 
     {/* Ícono de ayuda alineado a la derecha del círculo */}
     <span
@@ -341,40 +333,42 @@ export default function Timeline({
       <FaQuestionCircle size={14} className="text-terrasacha-primary opacity-90 hover:opacity-100" />
     </span>
 
-                          <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
-                        </div>
-                      </div>
+    <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
+  </div>
+</div>
 
-                      <div className="w-1 h-8 bg-gradient-to-b from-terrasacha-light/60 to-transparent mx-auto mt-2 rounded-full"></div>
 
-                      <Tooltip
-                        id={`tooltip-${step.id}`}
-                        effect="solid"
-                        place="bottom"
-                        className="text-xs p-4 bg-gradient-to-br from-terrasacha-secondary1 to-terrasacha-primary text-white rounded-xl shadow-terrasacha-2xl flex items-center gap-2 animate-fade-in font-typographica max-w-xs border border-terrasacha-light/20"
-                      >
-                        {step.id === 1 ? (
-                          !isFormComplete ? (
-                            <div className="flex items-center gap-2">
-                              <FaTimesCircle className="text-red-400" size={14} />
-                              <span>
-                                Para completar el paso 1, debes llenar toda la
-                                información del formulario.
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-2">
-                              <FaCheckCircle
-                                className="text-terrasacha-success"
-                                size={14}
-                              />
-                              <span>¡Paso 1 completado!</span>
-                            </div>
-                          )
+
+                    <div className="w-1 h-6 bg-gray-400 mx-auto mt-1"></div>
+
+                    <Tooltip
+                      id={`tooltip-${step.id}`}
+                      effect="solid"
+                      place="bottom"
+                      className="text-xs p-3 bg-black text-white rounded-md shadow-md flex items-center gap-2 animate-fade-in"
+                    >
+                      {step.id === 1 ? (
+                        !isFormComplete ? (
+                          <div className="flex items-center gap-2">
+                            <FaTimesCircle className="text-red-500" size={14} />
+                            <span>
+                              Para completar el paso 1, debes llenar toda la
+                              información del formulario.
+                            </span>
+                          </div>
                         ) : (
-                          <span>{step.description}</span>
-                        )}
-                      </Tooltip>
+                          <div className="flex items-center gap-2">
+                            <FaCheckCircle
+                              className="text-green-500"
+                              size={14}
+                            />
+                            <span>¡Paso 1 completado!</span>
+                          </div>
+                        )
+                      ) : (
+                        <span>{step.description}</span>
+                      )}
+                    </Tooltip>
 
                     <p
                       className={`mt-2 text-xs font-semibold transition-colors duration-500 font-typographica ${

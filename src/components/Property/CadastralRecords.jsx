@@ -58,7 +58,7 @@ export default function CadastralRecords(props) {
   const [newMessage, setNewMessage] = useState("");
   const [isFileVerifier, setIsFileVerifier] = useState(false);
   const [isDocApproved, setIsDocApproved] = useState(false);
-  const isOwner = propertyData?.propertyCampaign?.userId === user?.id;
+  const isOwner = propertyData.propertyCampaign.userId === user.id;
   const { handleUpdateContextFileVerification } = useProjectData();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -161,11 +161,6 @@ export default function CadastralRecords(props) {
   }, [multipleData]);
 
   const handleMessageButtonClick = async (fileIndex, type) => {
-    if (!propertyData?.projectFiles) {
-      notify({ msg: "No hay archivos disponibles.", type: "warning" });
-      return;
-    }
-    
     const file = propertyData.projectFiles.find((doc) => doc.id === multipleData[fileIndex].documentID);
   
     if (!file || !file.verification) {
@@ -226,11 +221,6 @@ export default function CadastralRecords(props) {
  const deleteFileFromS3AndDB = async (documentID) => {
     if (!documentID) {
         console.warn("⚠️ No se proporcionó documentID para eliminar.");
-        return;
-    }
-
-    if (!propertyData?.projectFiles) {
-        console.warn("⚠️ No hay archivos disponibles en propertyData.");
         return;
     }
 
@@ -382,11 +372,6 @@ export default function CadastralRecords(props) {
   };
 
   const saveFileOnDB = async (fileToSave, documentID = null) => {
-    if (!propertyData?.propertyInfo?.campaignID || !propertyData?.propertyInfo?.id) {
-      notify({ msg: "Información del predio incompleta", type: "error" });
-      return;
-    }
-    
     let docID = documentID;
     const urlPath = `public/campaign/${
       propertyData.propertyInfo.campaignID
@@ -906,11 +891,6 @@ export default function CadastralRecords(props) {
     };
   
     // Obtener el archivo según el tipo
-    if (!propertyData?.projectFiles || !propertyData?.projectPropertyFiles) {
-      notify({ msg: "Archivos del proyecto no disponibles", type: "error" });
-      return;
-    }
-    
     const file = typeVerification[type] === "propertyFeatureID" 
       ? propertyData.projectFiles[index] 
       : propertyData.projectPropertyFiles[index];
@@ -926,11 +906,6 @@ export default function CadastralRecords(props) {
   
     // Si el archivo no tiene verificación, creamos una nueva
     if (!file.verification) {
-      if (!propertyData?.projectPostulant?.id) {
-        notify({ msg: "Información del postulante incompleta", type: "error" });
-        return;
-      }
-      
       const newVerification = {
         [typeVerification[type]]: file.pfID,
         userVerifierID: user.id,
@@ -1091,7 +1066,7 @@ export default function CadastralRecords(props) {
   <button
     onClick={() => toggleVisibility(data.documentID, data.visible)}
     disabled={!autorizedUser}
-    className={`p-2 rounded-lg text-white transition-all duration-300 shadow-terrasacha hover:shadow-terrasacha-lg transform hover:scale-105 border border-white/20 ${
+    className={`p-2 rounded text-white transition duration-200 ${
       !autorizedUser
         ? "bg-gray-300 text-gray-500 cursor-not-allowed" // 🔒 Estilo gris cuando está deshabilitado
         : data.visible
@@ -1123,21 +1098,21 @@ export default function CadastralRecords(props) {
             </tbody>
           </table>
         </div>
-        )}
-        {isMessageCardActive && (
-          <div className="col">
-            <MessagesHistoryCard
-              className="scale-up-ver-top"
-              messages={messages}
-              newMessage={newMessage}
-              setNewMessage={setNewMessage}
-              handleSendMessageButtonClick={handleSendMessageButtonClick}
-              isFileVerifier={isFileVerifier}
-              isDocApproved={isDocApproved}
-            />
-          </div>
-        )}
       </Card.Body>
+      {isMessageCardActive && (
+  <div className="col">
+    <MessagesHistoryCard
+      className="scale-up-ver-top"
+      messages={messages}
+      newMessage={newMessage}
+      setNewMessage={setNewMessage}
+      handleSendMessageButtonClick={handleSendMessageButtonClick}
+      isFileVerifier={isFileVerifier}
+      isDocApproved={isDocApproved}
+    />
+  </div>
+)}
+
     </Card>
   );
   

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Modal, Button, Spinner } from "react-bootstrap";
 import {
   FaFileUpload,
   FaTrash,
@@ -6,8 +7,6 @@ import {
   FaEdit,
   FaCheckCircle,
   FaExclamationTriangle,
-  FaTimes,
-  FaSave,
 } from "react-icons/fa";
 import { useS3Client } from "context/s3ClientContext";
 import { useAuth } from "context/AuthContext";
@@ -28,7 +27,6 @@ import {
   createPropertyFeature,
   createVerification,
   updateProperty,
-  updatePropertyFeature,
 } from "graphql/mutations";
 import PropertyChat from "components/Legal/PropertyChat";
 import { getProperty } from "utilities/customQueries";
@@ -51,7 +49,6 @@ export default function ValidationModal({
   const [pendingFiles, setPendingFiles] = useState({});
   const [property, setPropertyData] = useState(null);
   const [propertyDetails, setPropertyDetails] = useState(null);
-  const [chatReady, setChatReady] = useState(false); // 🔧 Nuevo estado para controlar el chat
   const propertyID = propertyData.propertyInfo?.id;
 
   // ✅ Verifica si el predio ya tiene archivos subidos o es nuevo
@@ -67,75 +64,15 @@ export default function ValidationModal({
   useEffect(() => {
     if (isOpen) {
       listS3Files();
-      // 🔴 Crear verificación para el chat si no existe
-      createVerificationForChat();
-      // 🔴 Inicializar propertyFeatureID si ya existe
-      initializePropertyFeatureID();
     }
-  }, [isOpen, propertyData?.propertyInfo?.id]);
 
-  // 🔍 Debug: Verificar cambios en chatReady
-  useEffect(() => {
-    console.log("🔍 ValidationModal - chatReady cambió:", chatReady);
-  }, [chatReady]);
+  }, [isOpen, propertyData?.propertyInfo?.id]);
 
   useEffect(() => {
     if (isOpen && propertyID) {
       fetchPropertyData(propertyID);
     }
   }, [isOpen, propertyID]);
-
-  // 🔴 Nueva función para crear verificación para el chat
-  const createVerificationForChat = async () => {
-    try {
-      if (!propertyData?.propertyInfo?.id) return;
-
-      // Verificar si ya existe una verificación para GLOBAL_PROPERTY_FILES
-      const existingFeature = propertyData.propertyFeatures?.items?.find(
-        (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
-      );
-
-      if (existingFeature?.verifications?.items?.length > 0) {
-        console.log("✅ Ya existe verificación para el chat");
-        setChatReady(true); // 🔧 Marcar chat como listo
-        return;
-      }
-
-      // Crear PropertyFeature si no existe
-      let propertyFeatureID = existingFeature?.id;
-      if (!propertyFeatureID) {
-        const input = {
-          propertyID: propertyData.propertyInfo.id,
-          featureID: "GLOBAL_PROPERTY_FILES",
-          value: JSON.stringify([]),
-          isToBlockChain: false,
-          isOnMainCard: false,
-        };
-
-        const response = await API.graphql(
-          graphqlOperation(createPropertyFeature, { input })
-        );
-        propertyFeatureID = response.data.createPropertyFeature.id;
-        console.log("✅ PropertyFeature creado para el chat:", propertyFeatureID);
-      }
-
-      // Crear Verification para el chat
-      const verificationInput = {
-        propertyFeatureID: propertyFeatureID,
-        userVerifiedID: propertyData.projectPostulant.id,
-      };
-
-      await API.graphql(
-        graphqlOperation(createVerification, { input: verificationInput })
-      );
-
-      console.log("✅ Verification creada para el chat");
-      setChatReady(true); // 🔧 Marcar chat como listo después de crear la verificación
-    } catch (error) {
-      console.error("❌ Error creando verificación para el chat:", error);
-      setChatReady(false); // 🔧 Marcar chat como no listo en caso de error
-    }
-  };
 
   // Función para obtener los datos de la propiedad desde la API
   const fetchPropertyData = async (propertyID) => {
@@ -165,107 +102,103 @@ export default function ValidationModal({
       });
 
       const response = await s3Client.send(command);
-      const files = response.Contents || [];
+      const allFiles = response.Contents || [];
 
-      const fileMap = {};
-      files.forEach((file) => {
-        const fileName = file.Key.split("/").pop();
-        if (fileName.includes("certificado")) {
-          fileMap.certificado = file.Key;
-        } else if (fileName.includes("escrituras")) {
-          fileMap.escrituras = file.Key;
-        } else if (fileName.includes("planos")) {
-          fileMap.planos = file.Key;
-        }
+      const formattedFiles = allFiles.map((file) => ({
+        key: file.Key,
+        name: file.Key.split("/").pop(),
+      }));
+
+      setS3Files(formattedFiles);
+
+      // 🔴 Asignar archivos ya subidos según el predio seleccionado
+      const uploaded = {};
+      formattedFiles.forEach((file) => {
+        const fileType = file.name.split("_")[0];
+        uploaded[fileType] = file.key;
       });
 
-      setUploadedFiles(fileMap);
+      setUploadedFiles(uploaded);
     } catch (error) {
-      console.error("Error listing S3 files:", error);
+      console.error("Error al listar archivos en S3:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const uploadFiles = async () => {
-    if (Object.keys(selectedFiles).length === 0) {
-      toast.error("No hay archivos seleccionados para subir");
-      return;
-    }
-
     setLoading(true);
     try {
-      const documents = [];
-      const newUploadedFiles = { ...uploadedFiles };
+      const uploadedDocuments = [];
 
-      for (const [fileType, file] of Object.entries(selectedFiles)) {
-        const fileKey = `${basePath}${fileType}_${Date.now()}_${file.name}`;
+      // ✅ Marcar archivos como en proceso de carga
+      const progressState = {};
+      Object.keys(selectedFiles).forEach((fileType) => {
+        progressState[fileType] = "loading";
+      });
+      setUploadProgress(progressState);
 
-        const command = new PutObjectCommand({
-          Bucket: bucketName,
-          Key: fileKey,
-          Body: file,
-          ContentType: file.type,
-        });
+      await Promise.all(
+        Object.entries(selectedFiles).map(async ([fileType, file]) => {
+          // ✅ Verificar si ya hay un archivo en S3 y eliminarlo
+          if (uploadedFiles[fileType]) {
+            console.log(
+              `🗑️ Eliminando archivo existente antes de subir el nuevo: ${uploadedFiles[fileType]}`
+            );
+            await deleteS3File(uploadedFiles[fileType], fileType);
+          }
 
-        await s3Client.send(command);
-        documents.push({
-          type: fileType.toUpperCase(),
-          name: file.name,
-          url: `https://${bucketName}.s3.amazonaws.com/${fileKey}`,
-          key: fileKey,
-        });
+          // ✅ Definir la nueva clave del archivo a subir
+          const fileKey = `${basePath}${fileType}_${file.name}`;
 
-        // 🔴 Actualizar el estado uploadedFiles inmediatamente
-        newUploadedFiles[fileType] = fileKey;
+          const command = new PutObjectCommand({
+            Bucket: bucketName,
+            Key: fileKey,
+            Body: file,
+            ContentType: file.type,
+          });
 
-        setUploadProgress((prev) => ({
-          ...prev,
-          [fileType]: 100,
-        }));
-      }
+          await s3Client.send(command);
+          uploadedDocuments.push({ key: fileKey, name: file.name });
 
-      // 🔴 Actualizar el estado uploadedFiles con los nuevos archivos
-      setUploadedFiles(newUploadedFiles);
+          // ✅ Actualizar el estado de archivos subidos y limpiar `pendingFiles`
+          setUploadedFiles((prev) => ({
+            ...prev,
+            [fileType]: fileKey, // Guardamos la nueva clave del archivo subido
+          }));
+          setPendingFiles((prev) => {
+            const updated = { ...prev };
+            delete updated[fileType]; // 🔹 Eliminar de `pendingFiles`
+            return updated;
+          });
 
-      // 🔴 Obtener el PropertyFeatureID existente si no lo tenemos
-      let currentPropertyFeatureID = propertyFeatureID;
-      if (!currentPropertyFeatureID) {
-        const existingFeature = propertyData.propertyFeatures?.items?.find(
-          (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
-        );
-        if (existingFeature) {
-          currentPropertyFeatureID = existingFeature.id;
-          setPropertyFeatureID(existingFeature.id);
-        }
-      }
+          // ✅ Actualizar estado de carga a "success"
+          setUploadProgress((prev) => ({ ...prev, [fileType]: "success" }));
+        })
+      );
 
-      // Crear PropertyFeature si no existe
-      if (!currentPropertyFeatureID) {
-        const newPropertyFeatureID = await createPropertyFeatureEntry(documents);
-        setPropertyFeatureID(newPropertyFeatureID);
-        currentPropertyFeatureID = newPropertyFeatureID;
-      } else {
-        // Actualizar PropertyFeature existente
-        await updatePropertyFeatureEntry(documents);
-      }
-
-      // Crear Verification si no existe
-      if (!verificationCreated) {
-        await createVerificationEntry(currentPropertyFeatureID);
-        setVerificationCreated(true);
-      }
-
-      // Actualizar estado del predio
-      await updatePropertyStatus();
-
-      toast.success("Archivos subidos exitosamente");
+      await listS3Files();
       setSelectedFiles({});
-      setPendingFiles({});
-      onValidationComplete();
+
+      await createPropertyFeatureEntry(uploadedDocuments);
+
+      toast.success("Los archivos fueron actualizados con éxito");
+      checkIfAllFilesUploaded(uploadedFiles);
     } catch (error) {
-      console.error("Error uploading files:", error);
-      toast.error("Error al subir los archivos");
+      console.error("❌ Error al subir archivos a S3:", error);
+      toast.error("Error al subir los archivos. Inténtalo de nuevo.");
+
+      // ❌ Marcar el archivo con error si falló la carga
+      setUploadProgress((prev) => {
+        const failedFiles = Object.keys(selectedFiles).reduce(
+          (acc, fileType) => {
+            acc[fileType] = "error";
+            return acc;
+          },
+          {}
+        );
+        return { ...prev, ...failedFiles };
+      });
     } finally {
       setLoading(false);
     }
@@ -273,132 +206,161 @@ export default function ValidationModal({
 
   const createPropertyFeatureEntry = async (documents) => {
     try {
-      const input = {
-        propertyID: propertyData.propertyInfo.id,
-        featureID: "GLOBAL_PROPERTY_FILES",
-        value: JSON.stringify(documents),
-        isToBlockChain: false,
-        isOnMainCard: false,
-      };
+      const propertyID = propertyData.propertyInfo?.id;
+      if (!propertyID) throw new Error("❌ El propertyID es indefinido.");
 
-      const response = await API.graphql(
-        graphqlOperation(createPropertyFeature, { input })
-      );
-
-      return response.data.createPropertyFeature.id;
-    } catch (error) {
-      console.error("Error creating property feature:", error);
-      throw error;
-    }
-  };
-
-  const updatePropertyFeatureEntry = async (documents) => {
-    try {
-      // 🔴 Obtener el PropertyFeature existente
-      const existingFeature = propertyData.propertyFeatures?.items?.find(
-        (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
-      );
-
-      if (!existingFeature) {
-        console.error("❌ No se encontró PropertyFeature para GLOBAL_PROPERTY_FILES");
+      // ✅ Si ya tenemos el propertyFeatureID, solo asociamos los documentos
+      if (propertyFeatureID) {
+        console.log("📌 Usando PropertyFeature existente:", propertyFeatureID);
+        await Promise.all(
+          documents.map(async (doc) => {
+            await createDocumentEntry(propertyFeatureID, doc);
+          })
+        );
         return;
       }
 
-      const existingDocuments = existingFeature.value;
-      let allDocuments = [];
-      
-      if (existingDocuments) {
-        try {
-          allDocuments = JSON.parse(existingDocuments);
-        } catch (error) {
-          console.error("Error parsing existing documents:", error);
-        }
-      }
-
-      allDocuments = [...allDocuments, ...documents];
-
+      // ✅ Si no existe, lo creamos y guardamos su ID
       const input = {
-        id: existingFeature.id, // ✅ Usar el ID del feature existente
-        value: JSON.stringify(allDocuments),
+        propertyID,
+        featureID: "GLOBAL_PROPERTY_FILES",
       };
 
-      // ✅ CORREGIDO: Usar updatePropertyFeature
-      await API.graphql(
-        graphqlOperation(updatePropertyFeature, { input })
+      console.log("📌 Creando PropertyFeature con:", input);
+      const propertyFeatureResponse = await API.graphql(
+        graphqlOperation(createPropertyFeature, { input })
+      );
+      const newPropertyFeatureID =
+        propertyFeatureResponse.data.createPropertyFeature.id;
+
+      setPropertyFeatureID(newPropertyFeatureID);
+      console.log("✅ PropertyFeature creado:", newPropertyFeatureID);
+
+      // ✅ Asociar documentos con el nuevo PropertyFeature
+      await Promise.all(
+        documents.map(async (doc) => {
+          await createDocumentEntry(newPropertyFeatureID, doc);
+        })
       );
 
-      console.log("✅ PropertyFeature actualizado con documentos:", allDocuments);
+      // ✅ Crear `Verification` una sola vez
+      await createVerificationEntry(newPropertyFeatureID);
     } catch (error) {
-      console.error("Error updating property feature:", error);
-      throw error;
+      console.error("❌ Error al crear PropertyFeature:", error);
     }
   };
 
   const createDocumentEntry = async (propertyFeatureID, document) => {
     try {
-      const input = {
-        propertyFeatureID: propertyFeatureID,
+      const fileUrl = await getS3FileUrl(document.key); // 🔹 Obtener Signed URL
+      if (!fileUrl)
+        throw new Error("No se pudo generar la URL del archivo en S3.");
+
+      // ✅ Extraer el fileType correctamente desde document.key
+      const fileNameParts = document.key.split("/").pop().split("_");
+      const fileType = fileNameParts[0]; // Extraer el prefijo (ejemplo: "certificado", "escrituras", "planos")
+
+      // ✅ Mapear el fileType a los tipos de documento correctos
+      let documentType = "";
+      switch (fileType) {
+        case "certificado":
+          documentType = "CERTIFICADO_TRADICION";
+          break;
+        case "escrituras":
+          documentType = "ESCRITURA_PUBLICA";
+          break;
+        case "planos":
+          documentType = "PLANO_CATASTRAL";
+          break;
+        default:
+          console.warn(`⚠️ Tipo de documento desconocido: ${fileType}`);
+          documentType = "DESCONOCIDO"; // Opcional: manejar casos inesperados
+      }
+
+      // ✅ Crear la estructura del JSON para el atributo `data`
+      const documentData = {
         name: document.name,
-        type: document.type,
-        url: document.url,
-        data: JSON.stringify(document),
+        type: documentType,
+        url: fileUrl,
       };
 
+      const input = {
+        propertyFeatureID,
+        userID: user.id,
+        url: fileUrl, // ✅ Usar la Signed URL generada
+        data: JSON.stringify(documentData), // 🔹 Guardar como JSON string
+        timeStamp: Math.floor(Date.now() / 1000),
+        docHash: null,
+        signed: null,
+        signedHash: null,
+        isApproved: false,
+        status: "PENDING",
+        visible: true,
+        isUploadedToBlockChain: false,
+      };
+
+      console.log("📌 Creando Documento con:", input);
       await API.graphql(graphqlOperation(createDocument, { input }));
+
+      console.log("✅ Documento creado con éxito.");
     } catch (error) {
-      console.error("Error creating document entry:", error);
-      throw error;
+      console.error("❌ Error al crear Documento:", error);
     }
   };
 
   const createVerificationEntry = async (propertyFeatureID) => {
     try {
+      if (verificationCreated) {
+        console.log("📌 Verification ya creada. No se volverá a crear.");
+        return;
+      }
+
       const input = {
-        propertyFeatureID: propertyFeatureID,
-        userVerifiedID: propertyData.projectPostulant.id,
-        // ❌ Removido el campo status que no existe en el schema
+        userVerifiedID: user.id,
+        propertyFeatureID,
       };
 
+      console.log("📌 Creando Verification con:", input);
       await API.graphql(graphqlOperation(createVerification, { input }));
+
+      setVerificationCreated(true);
+      console.log("✅ Verification creada.");
     } catch (error) {
-      console.error("Error creating verification entry:", error);
-      throw error;
+      console.error("❌ Error al crear Verification:", error);
     }
   };
 
   const deleteS3File = async (fileKey, fileType) => {
     try {
+      console.log(`🗑️ Eliminando archivo de S3: ${fileKey}`);
+
       const command = new DeleteObjectCommand({
         Bucket: bucketName,
         Key: fileKey,
       });
 
       await s3Client.send(command);
+
+      // ✅ Actualizar el estado eliminando el archivo del registro
       setUploadedFiles((prev) => {
-        const newFiles = { ...prev };
-        delete newFiles[fileType];
-        return newFiles;
+        const updated = { ...prev };
+        delete updated[fileType];
+        return updated;
       });
 
-      toast.success("Archivo eliminado exitosamente");
+      console.log("✅ Archivo eliminado con éxito.");
     } catch (error) {
-      console.error("Error deleting file:", error);
-      toast.error("Error al eliminar el archivo");
+      console.error("❌ Error al eliminar archivo de S3:", error);
     }
   };
 
   const getSignedFileUrl = async (fileKey) => {
-    try {
-      const command = new GetObjectCommand({
-        Bucket: bucketName,
-        Key: fileKey,
-      });
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: fileKey,
+    });
 
-      return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-    } catch (error) {
-      console.error("Error generating signed URL:", error);
-      return null;
-    }
+    return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
   };
 
   const getS3FileUrl = async (fileKey) => {
@@ -408,55 +370,81 @@ export default function ValidationModal({
         Key: fileKey,
       });
 
-      return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+      const signedUrl = await getSignedUrl(s3Client, command, {
+        expiresIn: 3600,
+      });
+      return signedUrl;
     } catch (error) {
-      console.error("Error generating S3 URL:", error);
+      console.error("❌ Error al generar Signed URL:", error);
       return null;
     }
   };
 
   const handleFileSelection = (event, fileType) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFiles((prev) => ({
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setSelectedFiles((prev) => ({ ...prev, [fileType]: selectedFile }));
+      setPendingFiles((prev) => ({ ...prev, [fileType]: true })); // ✅ Marcar como en precarga
+
+      // 🔹 Simular que el archivo ya está "cargado" para cambiar de "Subir" a "Editar"
+      setUploadedFiles((prev) => ({
         ...prev,
-        [fileType]: file,
+        [fileType]: `pending-${selectedFile.name}`, // Simulamos un archivo subido con un prefijo temporal
       }));
-      setPendingFiles((prev) => ({
-        ...prev,
-        [fileType]: file.name,
-      }));
+
+      // 🔹 LIMPIAR el input para permitir seleccionar otro archivo con el mismo nombre
+      event.target.value = "";
     }
   };
 
   const updatePropertyStatus = async () => {
     try {
+      const propertyID = propertyData.propertyInfo?.id;
+      if (!propertyID) throw new Error("❌ El propertyID es indefinido.");
+
+      if (propertyData.propertyInfo?.status === "DOC_UPLOADED") {
+        console.log(
+          "⚠️ El estado ya es 'DOC_UPLOADED'. No se actualizará nuevamente."
+        );
+        return;
+      }
+
       const input = {
-        id: propertyData.propertyInfo.id,
+        id: propertyID,
         status: "DOC_UPLOADED",
       };
 
+      console.log(
+        "📌 Actualizando estado de la propiedad a DOC_UPLOADED con:",
+        input
+      );
       await API.graphql(graphqlOperation(updateProperty, { input }));
+
+      console.log("✅ Estado de la propiedad actualizado.");
+      onValidationComplete(); // ✅ Llamamos a onValidationComplete para avanzar al siguiente paso
     } catch (error) {
-      console.error("Error updating property status:", error);
+      console.error("❌ Error al actualizar estado de la propiedad:", error);
     }
   };
 
   const checkIfAllFilesUploaded = (files) => {
-    const requiredTypes = ["certificado", "escrituras", "planos"];
-    return requiredTypes.every((type) => files[type]);
-  };
-
-  // 🔴 Nueva función para inicializar propertyFeatureID
-  const initializePropertyFeatureID = () => {
-    const existingFeature = propertyData.propertyFeatures?.items?.find(
-      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+    const requiredFiles = ["certificado", "escrituras", "planos"];
+    const allFilesUploaded = requiredFiles.every(
+      (fileType) => fileType in files
     );
-    if (existingFeature) {
-      setPropertyFeatureID(existingFeature.id);
-      console.log("✅ PropertyFeatureID inicializado:", existingFeature.id);
+
+    if (allFilesUploaded) {
+      console.log(
+        "✅ Todos los archivos requeridos han sido subidos. Actualizando estado..."
+      );
+      updatePropertyStatus(); // ✅ Ahora SOLO se llama si el usuario subió archivos nuevos
+    } else {
+      console.log(
+        "⚠️ Aún faltan archivos por subir. No se actualizará el estado."
+      );
     }
   };
+
 
   return (
     <Modal size="lg" show={isOpen} onHide={onClose} centered>

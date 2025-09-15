@@ -550,7 +550,7 @@ export default function Property() {
                 className="btn-terrasacha-warning font-typographica"
               >
                 Regresar a la campaña
-              </a>
+              </button>
             ) : (
               <a
                 onClick={() => handleNavigation(`/constructor`)}
@@ -812,6 +812,7 @@ export default function Property() {
             </div>
           </div>
         </div>
+        
       )}
       
       <DocumentationModal
@@ -827,7 +828,9 @@ export default function Property() {
         onClose={handleCloseValidationModal}
         onValidationComplete={handleValidationComplete}
       />
+      </div>
     </S3ClientProvider>
+ 
   );
 }
 
