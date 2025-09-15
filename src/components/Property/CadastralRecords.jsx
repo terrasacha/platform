@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 
 import { TrashIcon } from "components/common/icons/TrashIcon";
@@ -70,7 +71,7 @@ export default function CadastralRecords(props) {
 
 
   useEffect(() => {
-    if (propertyData && propertyData.projectCadastralRecords) {
+    if (propertyData && propertyData.projectCadastralRecords)  {
       const fetchDocumentsVisibility = async () => {
         try {
           // Mapeamos los datos y consultamos la API para obtener la visibilidad correcta
