@@ -65,7 +65,7 @@ export default function ProjectDetails({ visible }) {
   return (
     <>
       {visible && (
-        <div className="row row-cols-1 row-cols-xl-2 g-4">
+        <div className="row row-cols-1 row-cols-xl-2 g-4 p-4 bg-gradient-to-br from-terrasacha-light/5 to-transparent rounded-2xl border border-terrasacha-light/20">
           <div className="col">
             <ProjectInfoCard
               autorizedUser={autorizedUser}
@@ -74,9 +74,9 @@ export default function ProjectDetails({ visible }) {
               tooltip={
                 (autorizedUser || isPostulant) &&
                 (progressObj?.sectionsStatus.projectInfo ? (
-                  <CheckIcon className="text-success" />
+                  <CheckIcon className="text-terrasacha-success" />
                 ) : (
-                  <HourGlassIcon className="text-danger" />
+                  <HourGlassIcon className="text-terrasacha-danger" />
                 ))
               }
             />
@@ -89,9 +89,9 @@ export default function ProjectDetails({ visible }) {
               tooltip={
                 (autorizedUser || isPostulant) &&
                 (progressObj?.sectionsStatus.geodataInfo ? (
-                  <CheckIcon className="text-success" />
+                  <CheckIcon className="text-terrasacha-success" />
                 ) : (
-                  <HourGlassIcon className="text-danger" />
+                  <HourGlassIcon className="text-terrasacha-danger" />
                 ))
               }
             />
@@ -106,9 +106,9 @@ export default function ProjectDetails({ visible }) {
               tooltip={
                 (autorizedUser || isPostulant) &&
                 (progressObj?.sectionsStatus.predialInfo ? (
-                  <CheckIcon className="text-success" />
+                  <CheckIcon className="text-terrasacha-success" />
                 ) : (
-                  <HourGlassIcon className="text-danger" />
+                  <HourGlassIcon className="text-terrasacha-danger" />
                 ))
               }
             />
@@ -120,9 +120,9 @@ export default function ProjectDetails({ visible }) {
               tooltip={
                 (autorizedUser || isPostulant) &&
                 (progressObj?.sectionsStatus.ownersInfo ? (
-                  <CheckIcon className="text-success" />
+                  <CheckIcon className="text-terrasacha-success" />
                 ) : (
-                  <HourGlassIcon className="text-danger" />
+                  <HourGlassIcon className="text-terrasacha-danger" />
                 ))
               }
             />
@@ -156,7 +156,7 @@ export default function ProjectDetails({ visible }) {
           <div className="col">
             <PropertyInfoCard autorizedUser={autorizedUser} />
           </div>
-          <div className="col mb-5">
+          <div className="col">
             <RelationsInfoCard autorizedUser={autorizedUser} />
           </div> */}
           <div className="col-12 col-xl-12">

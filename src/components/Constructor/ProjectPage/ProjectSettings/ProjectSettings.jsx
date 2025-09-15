@@ -292,12 +292,12 @@ export default function ProjectSettings({ visible, campaign }) {
                   }
                 />
               </div>
-              <div className="d-flex justify-content-center mb-2">
+              <div className="d-flex justify-content-center mb-4">
                 <button
-                  className={`${
+                  className={`px-6 py-3 rounded-xl font-typographica font-semibold transition-all duration-300 ${
                     projectData.isTechnicalFreeze
-                      ? "bg-blue-400 p-2 text-white  rounded-md"
-                      : "bg-blue-600 p-2 text-white rounded-md"
+                      ? "bg-terrasacha-light text-terrasacha-secondary1 shadow-terrasacha border border-terrasacha-light/30"
+                      : "bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 text-white shadow-terrasacha hover:shadow-terrasacha-lg hover:scale-105 border border-terrasacha-light/20"
                   } `}
                   disabled={projectData.isTechnicalFreeze || campaign?.available} 
                   onClick={() =>
@@ -346,14 +346,14 @@ export default function ProjectSettings({ visible, campaign }) {
                   }
                 />
               </div>
-              <div className="d-flex justify-content-center mb-2">
+              <div className="d-flex justify-content-center mb-4">
                 <button
-                  className={`${
+                  className={`px-6 py-3 rounded-xl font-typographica font-semibold transition-all duration-300 ${
                     projectData.isFinancialFreeze
-                      ? "bg-blue-400 p-2 text-white  rounded-md"
-                      : "bg-blue-600 p-2 text-white rounded-md"
+                      ? "bg-terrasacha-light text-terrasacha-secondary1 shadow-terrasacha border border-terrasacha-light/30"
+                      : "bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 text-white shadow-terrasacha hover:shadow-terrasacha-lg hover:scale-105 border border-terrasacha-light/20"
                   } `}
-                  disabled={projectData.isTechnicalFreeze || campaign?.available}
+                  disabled={projectData.isFinancialFreeze || campaign?.available}
                   onClick={() =>
                     handleSetValidatorDataComplete("financialInfo")
                   }

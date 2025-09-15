@@ -1,17 +1,15 @@
 import { Auth, Hub } from "aws-amplify";
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-bootstrap";
 // GraphQL
 import { API, graphqlOperation } from "aws-amplify";
 import { createUser, updateUser } from "../../../graphql/mutations";
 import { useNavigate } from "react-router";
-import s from "./Login.module.css";
-/* import LOGO from "../../common/_images/suan_logo.png"; */
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TerrasachaLogo from "components/common/TerrasachaLogo";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { notify } from "utilities/notify";
+import backgroundImage from "../_images/0162_cesar_david_martinez.jpg";
 
 const initialFormState = {
   username: "",
@@ -56,14 +54,12 @@ export default function LogIn() {
   let role = localStorage.getItem("role");
 
   useEffect(() => {
-    /* checkUser() */
     setAuthListener();
   }, []);
+
   useEffect(() => {
     if (formState.formType === "signedIn") {
-      const redirectPath = window.sessionStorage.getItem(
-        "redirect_after_login"
-      );
+      const redirectPath = window.sessionStorage.getItem("redirect_after_login");
       if (redirectPath) {
         const pathArray = JSON.parse(redirectPath);
         window.sessionStorage.removeItem("redirect_after_login");
@@ -86,24 +82,14 @@ export default function LogIn() {
     });
   }
 
-  async function checkUser() {
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      updateUser(user);
-      updateFormState(() => ({ ...formState, formType: "signedIn" }));
-    } catch (err) {
-      // updateUser(null)
-    }
-  }
-
   function validatePassword(password) {
     const validations = {
       length: password.length >= 8,
       number: /\d/.test(password),
     };
 
-    setPasswordValidations(validations); // Sigue actualizando el estado
-    return validations; // 📌 Devuelve el objeto para que pueda ser usado en otras funciones
+    setPasswordValidations(validations);
+    return validations;
   }
 
   function handleChange(e) {
@@ -121,7 +107,7 @@ export default function LogIn() {
     updateFormState(() => ({ ...formState, [e.target.name]: e.target.value }));
     if (e.target.name === "password") {
       const validations = validatePassword(e.target.value);
-      setShowPopover(true); // Mostrar popover con los requisitos
+      setShowPopover(true);
     }
     if (e.target.name === "username")
       setInputError((prevState) => ({
@@ -133,6 +119,7 @@ export default function LogIn() {
         "Dueño de un predio interesado en transformar un predio en un activo ambiental monetizable"
       );
   }
+
   function validarString(str, regex) {
     if (!regex.test(str)) {
       return "Espacios y caracteres especiales no permitidos";
@@ -141,6 +128,7 @@ export default function LogIn() {
   }
 
   const { formType } = formState;
+
   async function signUp(e) {
     e.preventDefault();
     const {
@@ -165,35 +153,34 @@ export default function LogIn() {
     if (username.length < 1) setError("Debe ingresar un nombre de usuario");
     if (email.length < 1) setError("Debe ingresar un email");
     if (password !== confirmPassword) setError("Las contraseñas no coinciden.");
-    {
-      try {
-        setError("");
-        setLoading(true);
-        let response = await Auth.signUp({
-          username,
-          password,
-          attributes: {
-            email,
-            "custom:role": role,
-          },
-        });
-        const userPayload = {
-          id: response.userSub,
-          name: username,
-          isProfileUpdated: true,
-          role: role,
-          email: email,
-        };
-        await API.graphql(graphqlOperation(createUser, { input: userPayload }));
-        setLoading(false);
-        updateFormState(() => ({ ...formState, formType: "confirmSignUp" }));
-      } catch (error) {
-        setLoading(false);
-        setExplain(
-          "Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente"
-        );
-        setError("El nombre de usuario ya existe. Por favor, escoja otro.");
-      }
+
+    try {
+      setError("");
+      setLoading(true);
+      let response = await Auth.signUp({
+        username,
+        password,
+        attributes: {
+          email,
+          "custom:role": role,
+        },
+      });
+      const userPayload = {
+        id: response.userSub,
+        name: username,
+        isProfileUpdated: true,
+        role: role,
+        email: email,
+      };
+      await API.graphql(graphqlOperation(createUser, { input: userPayload }));
+      setLoading(false);
+      updateFormState(() => ({ ...formState, formType: "confirmSignUp" }));
+    } catch (error) {
+      setLoading(false);
+      setExplain(
+        "Una persona, empresa, fondo u organización que quiere rentabilizar su dinero a través de la creación de riqueza con un componente de impacto y protección del medio ambiente"
+      );
+      setError("El nombre de usuario ya existe. Por favor, escoja otro.");
     }
   }
 
@@ -215,21 +202,21 @@ export default function LogIn() {
 
   const handleResendCode = async (e, username) => {
     e.preventDefault();
-    if (!canResend) return; // No permitir reenviar si el tiempo no ha pasado
+    if (!canResend) return;
     const { CodeDeliveryDetails } = await Auth.resendSignUp(username);
     if (CodeDeliveryDetails) {
       setResendMessage(`El código ha sido enviado nuevamente`);
       setCanResend(false);
-      setShowResendButton(false); // Ocultar el botón de reenviar
-      setResendTimer(30); // Iniciar el contador en 30 segundos
+      setShowResendButton(false);
+      setResendTimer(30);
 
       const timer = setInterval(() => {
         setResendTimer((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
-            setCanResend(true); // Permitir reenviar después de 30 segundos
-            setShowResendButton(true); // Mostrar el botón de reenviar
-            setResendMessage(""); // Limpiar el mensaje
+            setCanResend(true);
+            setShowResendButton(true);
+            setResendMessage("");
             return 0;
           }
           return prev - 1;
@@ -253,11 +240,9 @@ export default function LogIn() {
         setUser(response);
         updateFormState(() => ({ ...formState, formType: "changePassword" }));
       } else if (response.challengeName === "SOFTWARE_TOKEN_MFA") {
-        // El usuario tiene activado MFA con TOTP
         setLoading(false);
         updateFormState(() => ({ ...formState, formType: "confirmTOTP" }));
         setSignInUserData(response);
-        // Aquí debes mostrar un formulario donde el usuario ingrese el código TOTP
       } else {
         updateFormState(() => ({ ...formState, formType: "signedIn" }));
         let currentUser = await Auth.currentAuthenticatedUser();
@@ -265,24 +250,24 @@ export default function LogIn() {
         localStorage.setItem("role", currentUser);
       }
     } catch (error) {
-    console.error("🔴 Error al iniciar sesión:", error);
+      console.error("🔴 Error al iniciar sesión:", error);
 
-    const errorMessages = {
-      UserNotFoundException: "El nombre de usuario ingresado no está registrado.",
-      NotAuthorizedException: "La contraseña es incorrecta. Por favor, vuelve a intentarlo.",
-      UserNotConfirmedException: "Tu cuenta no ha sido confirmada. Revisa tu correo electrónico.",
-      PasswordResetRequiredException: "Debes restablecer tu contraseña para iniciar sesión.",
-    };
+      const errorMessages = {
+        UserNotFoundException: "El nombre de usuario ingresado no está registrado.",
+        NotAuthorizedException: "La contraseña es incorrecta. Por favor, vuelve a intentarlo.",
+        UserNotConfirmedException: "Tu cuenta no ha sido confirmada. Revisa tu correo electrónico.",
+        PasswordResetRequiredException: "Debes restablecer tu contraseña para iniciar sesión.",
+      };
 
-    setError(errorMessages[error.code] || "Ocurrió un error inesperado. Intenta nuevamente más tarde.");
-  } finally {
-    setLoading(false);
+      setError(errorMessages[error.code] || "Ocurrió un error inesperado. Intenta nuevamente más tarde.");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   async function confirmTOTP(e) {
     e.preventDefault();
-    const { totpCode } = formState; // Asegúrate de tener un campo para capturar el código TOTP
+    const { totpCode } = formState;
     const { username } = formState;
     try {
       setError("");
@@ -318,25 +303,16 @@ export default function LogIn() {
       setLoading(true);
       await Auth.forgotPassword(username);
       updateFormState(() => ({ ...formState, formType: "confirmFPcode" }));
-      setError(
-        "Hemos enviado un código de recuperación a su correo electrónico."
-      );
+      setError("Hemos enviado un código de recuperación a su correo electrónico.");
     } catch (error) {
       setLoading(false);
 
-      // Manejo de errores comunes
       if (error.code === "UserNotFoundException") {
-        setError(
-          "El usuario ingresado no existe. Por favor, verifique e intente nuevamente."
-        );
+        setError("El usuario ingresado no existe. Por favor, verifique e intente nuevamente.");
       } else if (error.code === "LimitExceededException") {
-        setError(
-          "Se ha excedido el límite de intentos. Por favor, espere un momento antes de intentarlo nuevamente."
-        );
+        setError("Se ha excedido el límite de intentos. Por favor, espere un momento antes de intentarlo nuevamente.");
       } else {
-        setError(
-          "Ocurrió un error al intentar recuperar la contraseña. Por favor, intente nuevamente."
-        );
+        setError("Ocurrió un error al intentar recuperar la contraseña. Por favor, intente nuevamente.");
       }
     }
     setLoading(false);
@@ -348,19 +324,11 @@ export default function LogIn() {
 
     const validations = validatePassword(password);
 
-    // 📌 Verificar si alguna validación no se cumple
-    if (
-      !validations.length ||
-      !validations.number ||
-      !validations.specialChar ||
-      !validations.uppercase ||
-      !validations.lowercase
-    ) {
+    if (!validations.length || !validations.number) {
       setError("La contraseña no cumple con los requisitos mínimos.");
       return;
     }
 
-    // Intentar confirmar la nueva contraseña
     try {
       setError("");
       setLoading(true);
@@ -369,7 +337,6 @@ export default function LogIn() {
     } catch (error) {
       setLoading(false);
 
-      // Manejo de errores de código inválido
       if (error.code === "CodeMismatchException") {
         setError("El código de verificación no es válido. Inténtalo de nuevo.");
       } else if (error.code === "ExpiredCodeException") {
@@ -382,15 +349,9 @@ export default function LogIn() {
 
   async function changePassword(e) {
     e.preventDefault();
-    console.log("🔹 Iniciando proceso de cambio de contraseña...");
-
     const { newPassword, confirmNewPassword } = formState;
-    console.log("📌 Nueva contraseña ingresada:", newPassword);
-    console.log("📌 Confirmación de contraseña:", confirmNewPassword);
 
-    // Validación de la contraseña
     const validations = validatePassword(newPassword);
-    console.log("🔍 Validaciones de contraseña:", validations);
 
     if (!validations.length || !validations.number) {
       setError("La contraseña no cumple con los requisitos mínimos.");
@@ -398,7 +359,6 @@ export default function LogIn() {
     }
 
     if (newPassword !== confirmNewPassword) {
-      console.log("❌ Error: Las contraseñas no coinciden.");
       setError("Las contraseñas no coinciden.");
       return;
     }
@@ -406,807 +366,666 @@ export default function LogIn() {
     try {
       setError("");
       setLoading(true);
-      console.log("🔄 Enviando nueva contraseña a Cognito...");
 
       if (newPassword === confirmNewPassword) {
         await Auth.completeNewPassword(user, newPassword);
-        console.log("✅ Contraseña cambiada en Cognito exitosamente.");
 
-        // Obtener el usuario autenticado desde Cognito
         const currentUser = await Auth.currentAuthenticatedUser();
-        console.log("👤 Usuario autenticado:", currentUser);
-
         const userId = currentUser.attributes.sub;
-        console.log("📌 ID del usuario (Cognito Sub):", userId);
 
-        // Construcción del payload para la actualización en la base de datos
         const updateUserPayload = {
-          id: userId, 
+          id: userId,
           status: "confirmed",
         };
-        console.log(
-          "📡 Enviando mutación GraphQL `updateUser` con payload:",
-          updateUserPayload
-        );
 
-        // Actualización del perfil en DynamoDB
         const response = await API.graphql(
           graphqlOperation(updateUser, { input: updateUserPayload })
         );
-        console.log("✅ Respuesta de GraphQL `updateUser`:", response);
 
         notify("Contraseña cambiada con éxito y perfil actualizado.");
         updateFormState(() => ({ ...formState, formType: "signedIn" }));
-        console.log("✅ Estado actualizado a `signedIn`.");
       } else {
-        console.log("❌ Error: Las contraseñas no coinciden.");
         setError("Las contraseñas no coinciden.");
       }
     } catch (error) {
-      console.log("🚨 Error capturado:", error);
       setError("Error al cambiar la contraseña.");
     }
     setLoading(false);
-    console.log("🔚 Finalizando proceso de cambio de contraseña.");
   }
 
   return (
-    <div className={s.container}>
+    <div className="min-h-screen bg-gradient-to-br from-terrasacha-primary to-terrasacha-secondary2 flex items-center overflow-hidden relative">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      ></div>
+      
       <ToastContainer />
-      <div className={s.firstContainer}>
-        <div className={s.info}>
-          <h2>Aceleramos la transición hacia un mundo de carbono neutral</h2>
-          <p>
+      
+      {/* Left Container - Info Section */}
+      <div className="hidden lg:flex lg:w-3/5 xl:w-2/3 justify-center items-center relative z-10">
+        <div className="w-3/5 text-white">
+          <h2 className="text-4xl xl:text-5xl 2xl:text-6xl font-bold mb-6 leading-tight">
+            Aceleramos la transición hacia un mundo de carbono neutral
+          </h2>
+          <p className="text-lg xl:text-xl 2xl:text-2xl leading-relaxed opacity-90">
             Somos un motor alternativo para facilitar el desarrollo,
             financiación e implementación de proyectos de mitigación de cambio
             climático
           </p>
         </div>
       </div>
-      <div className={s.secondContainer}>
-        {formType === "signUp" && (
-          <div className={s.containerLogin}>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-                <TerrasachaLogo className={"w-48 h-auto"} />
-                <h2 className="text-center mb-4">Registro</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
+
+      {/* Right Container - Form Section */}
+      <div className="w-full lg:w-2/5 xl:w-1/3 flex justify-center items-center p-4 relative z-10">
+        <div className="w-full max-w-md">
+          {/* Sign Up Form */}
+          {formType === "signUp" && (
+            <div className="bg-white rounded-2xl shadow-terrasacha-2xl p-8 animate-fade-in">
+              <div className="text-center mb-8">
+                <TerrasachaLogo className="w-48 h-auto mx-auto mb-6" />
+                <h2 className="text-2xl font-bold text-terrasacha-secondary1">Registro</h2>
+                {error && (
+                  <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
               </div>
-              <form className={s.inputContainer}>
-                <fieldset>
+
+              <form className="space-y-6">
+                <div>
                   <input
                     name="username"
                     onChange={onChange}
                     placeholder="Usuario"
-                    className="border-[1px] border-gray-300 rounded-md px-2"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
                   {inputError.username && (
-                    <span style={{ color: "red", fontSize: ".8em" }}>
-                      {inputError.username}
-                    </span>
+                    <p className="mt-1 text-red-600 text-xs">{inputError.username}</p>
                   )}
-                </fieldset>
-                <p
-                  style={{
-                    color: "#797979",
-                    fontSize: ".6em",
-                    margin: 0,
-                    width: "100%",
-                  }}
-                >
-                  El nombre de usuario no debe contener espacios
-                </p>
-                <fieldset>
+                  <p className="mt-1 text-gray-500 text-xs">
+                    El nombre de usuario no debe contener espacios
+                  </p>
+                </div>
+
+                <div>
                   <input
                     type="email"
                     name="email"
                     onChange={onChange}
                     placeholder="Example@example.com"
-                    className="border-[1px] border-gray-300 rounded-md px-2"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                </fieldset>
-                <fieldset style={{ position: "relative" }}>
+                </div>
+
+                <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
                     onChange={onChange}
-                    onFocus={() => setFocusPassword(true)} // Mostrar popover al hacer clic
-                    onBlur={() => setFocusPassword(false)} // Ocultar popover cuando pierde el foco
+                    onFocus={() => setFocusPassword(true)}
+                    onBlur={() => setFocusPassword(false)}
                     placeholder="Contraseña"
-                    className="border-[1px] border-gray-300 rounded-md px-2 w-full"
-                    style={{
-                      paddingRight: "2.5rem", // Espacio para el ícono
-                    }}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                  <span
+                  <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute",
-                      left: "89%",
-                      top: "47%",
-                      transform: "translateY(-50%)",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "black", // Color negro para el ícono
-                    }}
-                    aria-label={
-                      showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-                    }
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
                   >
-                    {showPassword ? (
-                      <FaEyeSlash size={18} />
-                    ) : (
-                      <FaEye size={18} />
-                    )}
-                  </span>
-                </fieldset>
+                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+                </div>
+
                 {focusPassword && (
-                  <div className={s.popover}>
-                    <ul>
-                      <li
-                        style={{
-                          color: passwordValidations.length ? "green" : "red",
-                        }}
-                      >
-                        ✅ Al menos 8 caracteres
+                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <ul className="space-y-2 text-sm">
+                      <li className={`flex items-center ${passwordValidations.length ? 'text-green-600' : 'text-red-600'}`}>
+                        <span className="mr-2">✅</span>
+                        Al menos 8 caracteres
                       </li>
-                      <li
-                        style={{
-                          color: passwordValidations.number ? "green" : "red",
-                        }}
-                      >
-                        ✅ Al menos 1 número
+                      <li className={`flex items-center ${passwordValidations.number ? 'text-green-600' : 'text-red-600'}`}>
+                        <span className="mr-2">✅</span>
+                        Al menos 1 número
                       </li>
                     </ul>
                   </div>
                 )}
-                <fieldset style={{ position: "relative" }}>
+
+                <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
                     onChange={onChange}
                     placeholder="Confirmar Contraseña"
-                    className="border-[1px] border-gray-300 rounded-md px-2 w-full"
-                    style={{
-                      paddingRight: "2.5rem", // Espacio para el ícono
-                    }}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                  <span
+                  <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={{
-                      position: "absolute",
-                      left: "89%",
-                      top: "47%",
-                      transform: "translateY(-50%)",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "black", // Color negro para el ícono
-                    }}
-                    aria-label={
-                      showConfirmPassword
-                        ? "Ocultar contraseña"
-                        : "Mostrar contraseña"
-                    }
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
                   >
-                    {showConfirmPassword ? (
-                      <FaEyeSlash size={18} />
-                    ) : (
-                      <FaEye size={18} />
-                    )}
-                  </span>
-                </fieldset>
-                <fieldset>
-                  <legend>Rol</legend>
+                    {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Rol</label>
                   <input
                     type="text"
                     name="role"
                     value="Propietario"
                     readOnly
-                    className="border-[1px] border-gray-300 rounded-md px-2 bg-gray-100 cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                   />
-                </fieldset>
+                  <p className="mt-1 text-gray-500 text-xs">{explain}</p>
+                </div>
 
-                {
-                  <p style={{ color: "#797979", fontSize: ".6em" }}>
-                    {explain}
-                  </p>
-                }
-                <fieldset className={s.checkbox}>
-                  <input
-                    type="checkbox"
-                    name="terms"
-                    className="mr-2"
-                    onChange={() =>
-                      updateFormState(() => ({
-                        ...formState,
-                        terms: !formState.terms,
-                      }))
-                    }
-                  />
-                  <label>
-                    Acepto los{" "}
-                    <a href="/use_terms" target="_blank">
-                      términos de uso
-                    </a>
-                  </label>
-                </fieldset>
-                <fieldset className={s.checkbox}>
-                  <input
-                    type="checkbox"
-                    name="privacy_policy"
-                    className="mr-2"
-                    onChange={() =>
-                      updateFormState(() => ({
-                        ...formState,
-                        privacy_policy: !formState.privacy_policy,
-                      }))
-                    }
-                  />
-                  <label>
-                    Acepto la{" "}
-                    <a href="/privacy_policy" target="_blank">
-                      Politica de privacidad
-                    </a>
-                  </label>
-                </fieldset>
+                <div className="space-y-4">
+                  <div className="flex items-start">
+                    <input
+                      type="checkbox"
+                      name="terms"
+                      checked={formState.terms}
+                      onChange={() =>
+                        updateFormState(() => ({
+                          ...formState,
+                          terms: !formState.terms,
+                        }))
+                      }
+                      className="mt-1 mr-3 text-terrasacha-primary focus:ring-terrasacha-primary"
+                    />
+                    <label className="text-sm text-gray-700">
+                      Acepto los{" "}
+                      <a href="/use_terms" target="_blank" className="text-terrasacha-primary hover:underline">
+                        términos de uso
+                      </a>
+                    </label>
+                  </div>
+
+                  <div className="flex items-start">
+                    <input
+                      type="checkbox"
+                      name="privacy_policy"
+                      checked={formState.privacy_policy}
+                      onChange={() =>
+                        updateFormState(() => ({
+                          ...formState,
+                          privacy_policy: !formState.privacy_policy,
+                        }))
+                      }
+                      className="mt-1 mr-3 text-terrasacha-primary focus:ring-terrasacha-primary"
+                    />
+                    <label className="text-sm text-gray-700">
+                      Acepto la{" "}
+                      <a href="/privacy_policy" target="_blank" className="text-terrasacha-primary hover:underline">
+                        Política de privacidad
+                      </a>
+                    </label>
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   onClick={(e) => signUp(e)}
-                  disabled={
+                  disabled={loading || !formState.terms || !formState.privacy_policy}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
                     loading || !formState.terms || !formState.privacy_policy
-                  }
-                  className={`w-full px-4 py-2 rounded-md text-white font-semibold ${
-                    loading || !formState.terms || !formState.privacy_policy
-                      ? "bg-gray-400 cursor-not-allowed opacity-50" // Estado deshabilitado
-                      : "bg-green-600 hover:bg-green-700 cursor-pointer" // Estado activo
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha"
                   }`}
                 >
-                  {loading ? "Cargando" : "Registrarse"}
+                  {loading ? "Cargando..." : "Registrarse"}
                 </button>
               </form>
-              <div className={s.needAccount}>
-                ¿Ya tienes una cuenta?{" "}
-                <span
-                  style={{ cursor: "pointer" }}
-                  className="text-[#6e6c35] text-sm font-bold"
+
+              <div className="mt-6 text-center">
+                <span className="text-gray-600">¿Ya tienes una cuenta? </span>
+                <button
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
                       formType: "signIn",
                     }))
                   }
+                  className="text-terrasacha-primary hover:text-terrasacha-secondary1 font-semibold transition-colors duration-300"
                 >
                   Ingresar
-                </span>
+                </button>
               </div>
             </div>
-          </div>
-        )}
-        {formType === "confirmSignUp" && (
-          <div className={s.containerLogin}>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-                <TerrasachaLogo className={"w-48 h-auto"} />
-                <h2 className="text-center mb-4">Confirmación</h2>
+          )}
+
+          {/* Confirm Sign Up Form */}
+          {formType === "confirmSignUp" && (
+            <div className="bg-white rounded-2xl shadow-terrasacha-2xl p-8 animate-fade-in">
+              <div className="text-center mb-8">
+                <TerrasachaLogo className="w-48 h-auto mx-auto mb-6" />
+                <h2 className="text-2xl font-bold text-terrasacha-secondary1">Confirmación</h2>
               </div>
-              <Alert>Codigo de verificación enviado a {formState.email}</Alert>
-              {error && <Alert variant="danger">{error}</Alert>}
-              <form className={s.inputContainer}>
-                <fieldset>
-                  <legend>Codigo de verificación</legend>
+
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-sm">
+                Código de verificación enviado a {formState.email}
+              </div>
+
+              {error && (
+                <div className="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">
+                    Código de verificación
+                  </label>
                   <input
                     name="authCode"
                     onChange={onChange}
-                    className="border-[1px] border-gray-300 rounded-md px-2"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                </fieldset>
+                </div>
+
                 {resendMessage && (
-                  <p>
+                  <p className="text-sm text-gray-600">
                     {resendMessage}{" "}
                     {resendTimer > 0 &&
                       `(${resendTimer} segundos restantes para poder solicitar nuevamente)`}
                   </p>
                 )}
+
                 {showResendButton && (
-                  <span
-                    style={{
-                      cursor: "pointer",
-                      width: "100%",
-                      fontSize: ".9em",
-                      color: "rgba(77,188,94,1)",
-                      textAlign: "end",
-                    }}
+                  <button
+                    type="button"
                     onClick={(e) => handleResendCode(e, formState.username)}
+                    className="w-full text-sm text-terrasacha-primary hover:text-terrasacha-secondary1 transition-colors duration-300"
                   >
                     Reenviar código
-                  </span>
+                  </button>
                 )}
+
                 <button
                   type="submit"
                   onClick={(e) => confirmSignUp(e)}
                   disabled={loading}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha"
+                  }`}
                 >
-                  {loading ? "Cargando" : "Confirmar registro"}
+                  {loading ? "Cargando..." : "Confirmar registro"}
                 </button>
               </form>
             </div>
-          </div>
-        )}
-        {formType === "signIn" && (
-          <div className={s.containerLogin}>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-                <TerrasachaLogo className={"w-48 h-auto"} />
-                <h2 className="text-center mb-4">Inicio de sesión</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
+          )}
+
+          {/* Sign In Form */}
+          {formType === "signIn" && (
+            <div className="bg-white rounded-2xl shadow-terrasacha-2xl p-8 animate-fade-in">
+              <div className="text-center mb-8">
+                <TerrasachaLogo className="w-48 h-auto mx-auto mb-6" />
+                <h2 className="text-2xl font-bold text-terrasacha-secondary1">Inicio de sesión</h2>
+                {error && (
+                  <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
               </div>
-              <form className={s.inputContainer}>
-                <fieldset>
-                  <legend>Usuario</legend>
+
+              <form className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Usuario</label>
                   <input
                     name="username"
                     onChange={onChange}
-                    className="border-[1px] border-gray-300 rounded-md px-2"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                </fieldset>
-                <fieldset style={{ position: "relative" }}>
-                  <legend>Contraseña</legend>
+                </div>
+
+                <div className="relative">
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Contraseña</label>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
                     onChange={onChange}
-                    className="border-[1px] border-gray-300 rounded-md px-2"
-                    style={{ paddingRight: "2.5rem" }} // Espacio para el ícono
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                  <span
+                  <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute",
-                      left: "90%",
-                      top: "68%",
-                      transform: "translateY(-50%)",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "black", // Color negro
-                    }}
-                    aria-label={
-                      showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-                    }
+                    className="absolute right-3 top-1/2 transform  text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
                   >
-                    {showPassword ? (
-                      <FaEyeSlash size={20} />
-                    ) : (
-                      <FaEye size={20} />
-                    )}
-                  </span>
-                </fieldset>
-                <span
-                  style={{
-                    cursor: "pointer",
-                    width: "100%",
-                    fontSize: ".9em",
-                    color: "rgba(77,188,94,1)",
-                    textAlign: "end",
-                  }}
-                  className="text-[#6e6c35] text-sm font-bold"
+                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  </button>
+                </div>
+
+                <button
+                  type="button"
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
                       formType: "ForgotPassword",
                     }))
                   }
+                  className="w-full text-sm text-terrasacha-primary hover:text-terrasacha-secondary1 transition-colors duration-300 text-right"
                 >
-                  Olvidaste tu contraseña?
-                </span>
+                  ¿Olvidaste tu contraseña?
+                </button>
+
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => signIn(e)}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha"
+                  }`}
                 >
-                  {loading ? "Cargando" : "Ingresar"}
+                  {loading ? "Cargando..." : "Ingresar"}
                 </button>
               </form>
-              <div className={s.needAccount}>
-                ¿Necesitas una cuenta?{" "}
-                <span
-                  style={{ cursor: "pointer" }}
-                  className="text-[#6e6c35] text-sm font-bold"
+
+              <div className="mt-6 text-center">
+                <span className="text-gray-600">¿Necesitas una cuenta? </span>
+                <button
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
                       formType: "signUp",
                     }))
                   }
+                  className="text-terrasacha-primary hover:text-terrasacha-secondary1 font-semibold transition-colors duration-300"
                 >
                   Registrarse
-                </span>
+                </button>
               </div>
             </div>
-          </div>
-        )}
-        {formType === "confirmTOTP" && (
-          <div className={s.containerLogin}>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-              <img src={TerrasachaLogo} style={{ width: "30px" }} alt="logo" />
-                <h2 className="text-center mb-4">Verificación TOTP</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
+          )}
+
+          {/* TOTP Confirmation Form */}
+          {formType === "confirmTOTP" && (
+            <div className="bg-white rounded-2xl shadow-terrasacha-2xl p-8 animate-fade-in">
+              <div className="text-center mb-8">
+                <TerrasachaLogo className="w-48 h-auto mx-auto mb-6" />
+                <h2 className="text-2xl font-bold text-terrasacha-secondary1">Verificación TOTP</h2>
+                {error && (
+                  <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
               </div>
-              <form className={s.inputContainer}>
-                <fieldset>
-                  <legend>Código TOTP</legend>
+
+              <form className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Código TOTP</label>
                   <input
                     name="totpCode"
-                    onChange={onChange} // Asegúrate de tener la función onChange definida para actualizar el estado
-                    className="border-[1px] border-gray-300 rounded-md"
+                    onChange={onChange}
                     placeholder="Introduce el código TOTP"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                </fieldset>
+                </div>
+
                 <button
                   type="submit"
                   disabled={loading}
-                  onClick={(e) => confirmTOTP(e)} // Llama al método confirmTOTP cuando se haga submit
-                  className="btn-login"
+                  onClick={(e) => confirmTOTP(e)}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha"
+                  }`}
                 >
                   {loading ? "Verificando..." : "Verificar"}
                 </button>
               </form>
-              <div className={s.needAccount}>
-                <span
-                  style={{ cursor: "pointer" }}
-                  className="text-[#6e6c35] text-sm font-bold"
+
+              <div className="mt-6 text-center">
+                <button
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
-                      formType: "signIn", // Regresa al formulario de inicio de sesión si el usuario desea cancelar
+                      formType: "signIn",
                     }))
                   }
+                  className="text-terrasacha-primary hover:text-terrasacha-secondary1 font-semibold transition-colors duration-300"
                 >
                   Regresar a inicio de sesión
-                </span>
+                </button>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {formType === "ForgotPassword" && (
-          <div>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-                <TerrasachaLogo className={"w-48 h-auto"} />
-                <h2 className="text-center mb-4">Recuperar contraseña</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
+          {/* Forgot Password Form */}
+          {formType === "ForgotPassword" && (
+            <div className="bg-white rounded-2xl shadow-terrasacha-2xl p-8 animate-fade-in">
+              <div className="text-center mb-8">
+                <TerrasachaLogo className="w-48 h-auto mx-auto mb-6" />
+                <h2 className="text-2xl font-bold text-terrasacha-secondary1">Recuperar contraseña</h2>
+                {error && (
+                  <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
               </div>
-              <form className={s.inputContainer}>
-                <fieldset>
-                  <legend>Usuario</legend>
+
+              <form className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Usuario</label>
                   <input
                     name="username"
                     onChange={onChange}
-                    style={{
-                      border: "1px solid black",
-                      borderRadius: "4px",
-                      padding: "0.5rem",
-                      width: "100%",
-                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                </fieldset>
-                <span className={s.forgotPasswordSpan}>
-                  El código se enviará a la dirección de correo electrónico
-                  asociada al usuario
-                </span>
+                </div>
+
+                <p className="text-sm text-gray-600">
+                  El código se enviará a la dirección de correo electrónico asociada al usuario
+                </p>
+
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => forgotPassword(e)}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha"
+                  }`}
                 >
-                  {loading ? "Enviando" : "Enviar código"}
+                  {loading ? "Enviando..." : "Enviar código"}
                 </button>
               </form>
-              <div className={s.needAccount}>
-                ¿Necesita una cuenta?{" "}
-                <span
-                  style={{ cursor: "pointer" }}
-                  className="text-[#6e6c35] text-sm font-bold"
+
+              <div className="mt-6 text-center">
+                <span className="text-gray-600">¿Necesita una cuenta? </span>
+                <button
                   onClick={() =>
                     updateFormState(() => ({
                       ...formState,
                       formType: "signUp",
                     }))
                   }
+                  className="text-terrasacha-primary hover:text-terrasacha-secondary1 font-semibold transition-colors duration-300"
                 >
                   Registrarse
-                </span>
+                </button>
               </div>
             </div>
-          </div>
-        )}
-        {formType === "confirmFPcode" && (
-          <div>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-                <TerrasachaLogo className={"w-48 h-auto"} />
-                <h2 className="text-center mb-4">Confirmar código</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
+          )}
+
+          {/* Confirm Forgot Password Code Form */}
+          {formType === "confirmFPcode" && (
+            <div className="bg-white rounded-2xl shadow-terrasacha-2xl p-8 animate-fade-in">
+              <div className="text-center mb-8">
+                <TerrasachaLogo className="w-48 h-auto mx-auto mb-6" />
+                <h2 className="text-2xl font-bold text-terrasacha-secondary1">Confirmar código</h2>
+                {error && (
+                  <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
               </div>
-              <form className={s.inputContainer}>
-                <fieldset>
-                  <legend>Usuario</legend>
+
+              <form className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Usuario</label>
                   <input
                     name="username"
                     onChange={onChange}
-                    style={{
-                      border: "1px solid black",
-                      borderRadius: "4px",
-                      padding: "0.5rem",
-                      width: "100%",
-                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                </fieldset>
-                <fieldset>
-                  <legend>Código</legend>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Código</label>
                   <input
                     name="code"
                     onChange={onChange}
-                    style={{
-                      border: "1px solid black",
-                      borderRadius: "4px",
-                      padding: "0.5rem",
-                      width: "100%",
-                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                </fieldset>
-                <fieldset>
-                  <legend>Nueva contraseña</legend>
-                  <div style={{ position: "relative" }}>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      onFocus={() => setShowPopover(true)}
-                      onBlur={() =>
-                        setTimeout(() => setShowPopover(false), 200)
-                      } // 📌 Esconde el popover con un delay
-                      onChange={onChange} // 📌 Valida la contraseña en tiempo real
-                      style={{
-                        border: "1px solid black",
-                        borderRadius: "4px",
-                        padding: "0.5rem",
-                        width: "100%",
-                        paddingRight: "2.5rem",
-                      }}
-                    />
-                    <span
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: "absolute",
-                        left: "90%",
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "black",
-                      }}
-                      aria-label={
-                        showPassword
-                          ? "Ocultar contraseña"
-                          : "Mostrar contraseña"
-                      }
-                    >
-                      {showPassword ? (
-                        <FaEyeSlash size={18} />
-                      ) : (
-                        <FaEye size={18} />
-                      )}
-                    </span>
+                </div>
 
-                    {showPopover && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: "0",
-                          background: "#fff",
-                          border: "1px solid #ccc",
-                          borderRadius: "5px",
-                          padding: "10px",
-                          boxShadow: "0 0 5px rgba(0,0,0,0.2)",
-                          fontSize: "0.9em",
-                          width: "250px",
-                          zIndex: 10,
-                        }}
-                      >
-                        <strong>Requisitos de contraseña:</strong>
-                        <ul style={{ paddingLeft: "20px", margin: "5px 0" }}>
-                          <li
-                            style={{
-                              color: passwordValidations.length
-                                ? "green"
-                                : "red",
-                            }}
-                          >
-                            {passwordValidations.length ? "✔" : "✖"} Mínimo 8
-                            caracteres
-                          </li>
-                          <li
-                            style={{
-                              color: passwordValidations.number
-                                ? "green"
-                                : "red",
-                            }}
-                          >
-                            {passwordValidations.number ? "✔" : "✖"} Al menos 1
-                            número
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </fieldset>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Nueva contraseña</label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    onFocus={() => setShowPopover(true)}
+                    onBlur={() => setTimeout(() => setShowPopover(false), 200)}
+                    onChange={onChange}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
+                  >
+                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+
+                  {showPopover && (
+                    <div className="absolute top-full left-0 mt-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg text-sm w-64 z-10">
+                      <strong className="block mb-2">Requisitos de contraseña:</strong>
+                      <ul className="space-y-1">
+                        <li className={`flex items-center ${passwordValidations.length ? 'text-green-600' : 'text-red-600'}`}>
+                          <span className="mr-2">{passwordValidations.length ? "✔" : "✖"}</span>
+                          Mínimo 8 caracteres
+                        </li>
+                        <li className={`flex items-center ${passwordValidations.number ? 'text-green-600' : 'text-red-600'}`}>
+                          <span className="mr-2">{passwordValidations.number ? "✔" : "✖"}</span>
+                          Al menos 1 número
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => confirmNewPassword(e)}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha"
+                  }`}
                 >
-                  {loading ? "Cargando" : "Confirmar nueva contraseña"}
+                  {loading ? "Cargando..." : "Confirmar nueva contraseña"}
                 </button>
               </form>
             </div>
-          </div>
-        )}
-        {formType === "changePassword" && (
-          <div>
-            <div className={s.containerCard}>
-              <div className={s.containerTitle}>
-                <h2 className="text-center mb-4">
-                  Cambio de contraseña requerido
-                </h2>
+          )}
+
+          {/* Change Password Form */}
+          {formType === "changePassword" && (
+            <div className="bg-white rounded-2xl shadow-terrasacha-2xl p-8 animate-fade-in">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-terrasacha-secondary1">Cambio de contraseña requerido</h2>
               </div>
-              {error && <Alert variant="danger">{error}</Alert>}
-              <form className={s.inputContainer}>
-                <p style={{ color: "#797979", fontSize: ".8em" }}>
+
+              {error && (
+                <div className="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form className="space-y-6">
+                <p className="text-sm text-gray-600">
                   {`Para poder ingresar a la plataforma como ${formState.username} primero debe cambiar la contraseña`}
                 </p>
 
-                {/* 📌 Campo de Nueva Contraseña con Popover */}
-                <fieldset
-                  style={{ position: "relative", marginBottom: "15px" }}
-                >
-                  <legend>Nueva contraseña</legend>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Nueva contraseña</label>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="newPassword"
                     onChange={handleChange}
                     onFocus={() => setShowPopover(true)}
                     onBlur={() => setTimeout(() => setShowPopover(false), 200)}
-                    className="border-[1px] border-gray-300 rounded-md w-full"
-                    style={{ paddingRight: "2.5rem" }}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                  <span
+                  <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute",
-                      left: "90%",
-                      top: "65%",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      color: "black",
-                    }}
-                    aria-label={
-                      showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-                    }
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
                   >
-                    {showPassword ? (
-                      <FaEyeSlash size={18} />
-                    ) : (
-                      <FaEye size={18} />
-                    )}
-                  </span>
+                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
 
-                  {/* 📌 Popover de Validación */}
                   {showPopover && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "100%",
-                        left: "0",
-                        background: "#fff",
-                        border: "1px solid #ccc",
-                        borderRadius: "5px",
-                        padding: "10px",
-                        boxShadow: "0 0 5px rgba(0,0,0,0.2)",
-                        fontSize: "0.9em",
-                        width: "250px",
-                        zIndex: 10,
-                      }}
-                    >
-                      <strong>Requisitos de contraseña:</strong>
-                      <ul style={{ paddingLeft: "20px", margin: "5px 0" }}>
-                        <li
-                          style={{
-                            color: passwordValidations.length ? "green" : "red",
-                          }}
-                        >
-                          {passwordValidations.length ? "✔" : "✖"} Mínimo 8
-                          caracteres
+                    <div className="absolute top-full left-0 mt-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg text-sm w-64 z-10">
+                      <strong className="block mb-2">Requisitos de contraseña:</strong>
+                      <ul className="space-y-1">
+                        <li className={`flex items-center ${passwordValidations.length ? 'text-green-600' : 'text-red-600'}`}>
+                          <span className="mr-2">{passwordValidations.length ? "✔" : "✖"}</span>
+                          Mínimo 8 caracteres
                         </li>
-                        <li
-                          style={{
-                            color: passwordValidations.number ? "green" : "red",
-                          }}
-                        >
-                          {passwordValidations.number ? "✔" : "✖"} Al menos 1
-                          número
+                        <li className={`flex items-center ${passwordValidations.number ? 'text-green-600' : 'text-red-600'}`}>
+                          <span className="mr-2">{passwordValidations.number ? "✔" : "✖"}</span>
+                          Al menos 1 número
                         </li>
                       </ul>
                     </div>
                   )}
-                </fieldset>
+                </div>
 
-                {/* 📌 Campo de Confirmar Contraseña */}
-                <fieldset
-                  style={{ position: "relative", marginBottom: "15px" }}
-                >
-                  <legend>Confirmar contraseña</legend>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2">Confirmar contraseña</label>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmNewPassword"
                     onChange={handleChange}
-                    className="border-[1px] border-gray-300 rounded-md w-full"
-                    style={{ paddingRight: "2.5rem" }}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent transition-all duration-300"
                   />
-                  <span
+                  <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={{
-                      position: "absolute",
-                      left: "90%",
-                      top: "65%",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      color: "black",
-                    }}
-                    aria-label={
-                      showConfirmPassword
-                        ? "Ocultar contraseña"
-                        : "Mostrar contraseña"
-                    }
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-terrasacha-primary transition-colors duration-300"
                   >
-                    {showConfirmPassword ? (
-                      <FaEyeSlash size={18} />
-                    ) : (
-                      <FaEye size={18} />
-                    )}
-                  </span>
-                </fieldset>
+                    {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  </button>
+                </div>
 
                 <button
                   type="submit"
                   disabled={loading}
                   onClick={(e) => changePassword(e)}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha"
+                  }`}
                 >
-                  {loading ? "Cargando" : "Cambiar Contraseña"}
+                  {loading ? "Cargando..." : "Cambiar Contraseña"}
                 </button>
               </form>
             </div>
-          </div>
-        )}
-
-        {/* {formType === "signedIn" && (() => {
-          if(window.sessionStorage.getItem('redirect_after_login')){
-            navigate(JSON.parse(window.sessionStorage.getItem('redirect_after_login')))
-          }else{
-            navigate('/')
-          }
-        })} */}
+          )}
+        </div>
       </div>
     </div>
   );

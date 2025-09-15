@@ -39,6 +39,7 @@ export default function AlertMessage({ visible }) {
             projectData?.projectInfo.id,
             user.subrole
           );
+          console.log(obj, "progress");
           setProgressObj(obj);
         } catch (error) {
           console.error("Error al obtener datos:", error);
@@ -76,17 +77,12 @@ export default function AlertMessage({ visible }) {
             <h3 className="text-2xl">
               Estado de requerimientos para la publicación del proyecto{" "}
               <a
-  href={
-    marketplaceURLMapper?.[projectData?.projectInfo?.marketplaceID]?.[process.env.REACT_APP_ENV] ||
-    process.env.REACT_APP_URL_MARKETPLACE || 
-    "#"
-  }
-  target="_blank"
-  rel="noreferrer"
->
-  Marketplace
-</a>
-
+                href={marketplaceURLMapper[projectData.projectInfo.marketplaceID || 'suan'][process.env.REACT_APP_ENV]} // remove href={process.env.REACT_APP_URL_MARKETPLACE}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Marketplace
+              </a>
             </h3>
             <p>
               Para garantizar la transparencia, confiabilidad y calidad de los
@@ -110,25 +106,6 @@ export default function AlertMessage({ visible }) {
                       )}
                       ) Completar información del proyecto
                     </li>
-                    {/* <li className="font-bold flex">
-                          (
-                          {progressObj.sectionsStatus.ownersInfo ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Completar información de titulares y certificados de
-                          tradición
-                        </li> */}
-                    {/* <li className="font-bold flex">
-                          (
-                          {progressObj.sectionsStatus.geodataInfo ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Completar ubicación geográfica
-                        </li> */}
                     <li className="font-bold flex">
                       (
                       {progressObj.sectionsStatus.ownerAcceptsConditions ? (
@@ -138,26 +115,6 @@ export default function AlertMessage({ visible }) {
                       )}
                       ) Aceptar condiciones financieras
                     </li>
-                    {/* <li className="font-bold flex">
-                          (
-                          {progressObj.sectionsStatus.validationsComplete &&
-                          progressObj.sectionsStatus.technicalInfo &&
-                          progressObj.sectionsStatus.financialInfo ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Revisión por parte de los validadores
-                        </li>
-                        <li className="font-bold flex">
-                          (
-                          {progressObj.sectionsStatus.tokenGenesis ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Distribución de tokens del proyecto
-                        </li> */}
                   </ul>
                 </div>
               )}
@@ -168,17 +125,6 @@ export default function AlertMessage({ visible }) {
                     Consultores SUAN.
                   </p>
                   <ul className="pl-0">
-                    {/*  <li className="font-bold flex">
-                      <p className="mb-0 flex">
-                        (
-                        {progressObj.sectionsStatus.validationsComplete ? (
-                          <CheckIcon className="text-success" />
-                        ) : (
-                          <HourGlassIcon className="text-danger" />
-                        )}
-                        ) Validación de documentos
-                      </p>
-                    </li>*/}
                     <li className="font-bold flex">
                       <p className="mb-0 flex">
                         (
@@ -201,27 +147,6 @@ export default function AlertMessage({ visible }) {
                         ) Oficialización de información Financiera
                       </p>
                     </li>
-                    {/* <li className="font-bold flex">
-                          (
-                          {progressObj.sectionsStatus.ownerAcceptsConditions ? (
-                            <CheckIcon className="text-success" />
-                          ) : (
-                            <HourGlassIcon className="text-danger" />
-                          )}
-                          ) Propietario acepta condiciones financieras
-                        </li> */}
-                    {/* <li className="font-bold flex">
-                          <p className="mb-0 flex">
-                            (
-                            {progressObj.sectionsStatus.projectInfo &&
-                            progressObj.sectionsStatus.geodataInfo ? (
-                              <CheckIcon className="text-success" />
-                            ) : (
-                              <HourGlassIcon className="text-danger" />
-                            )}
-                            ) Completar información del proyecto
-                          </p>
-                        </li> */}
                     <li className="font-bold flex">
                       (
                       {progressObj.sectionsStatus.tokenGenesis ? (
@@ -250,16 +175,6 @@ export default function AlertMessage({ visible }) {
                 ? "Este proyecto cumple la totalidad de los requerimientos"
                 : "Este proyecto aún no cumple la totalidad de requerimientos para su publicación"}
             </p>
-            {/* <hr />
-            <div>
-              <div>
-                <ProgressBar
-                  striped
-                  variant="danger"
-                  now={progressObj.progressValue}
-                />
-              </div>
-            </div> */}
           </div>
         </div>
       )}

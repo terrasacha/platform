@@ -54,40 +54,40 @@ const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
   };
 
   return (
-    <Modal
-      aria-labelledby="modal-asignar-campania-title"
-      centered
-      show={isOpen}
-      onHide={onClose}
-      contentClassName="rounded-2xl shadow-2xl border-0"
-    >
-      <Modal.Header
-        closeButton
-        className="bg-blue-50 border-0 rounded-t-2xl flex items-center gap-3"
+          <Modal
+        aria-labelledby="modal-asignar-campania-title"
+        centered
+        show={isOpen}
+        onHide={onClose}
+        contentClassName="rounded-2xl shadow-terrasacha-2xl border-0"
       >
-        <FaPlus className="text-blue-600 text-2xl mr-2" aria-hidden="true" />
-        <div>
-          <Modal.Title
-            id="modal-asignar-campania-title"
-            className="text-2xl font-bold text-blue-800"
-          >
-            Asignar a campaña
-          </Modal.Title>
-          <div className="text-sm text-gray-600 font-normal mt-1">
-            Selecciona la campaña a la que deseas asignar el predio.
+        <Modal.Header
+          closeButton
+          className="bg-terrasacha-light/10 border-0 rounded-t-2xl flex items-center gap-3"
+        >
+          <FaPlus className="text-terrasacha-primary text-2xl mr-2" aria-hidden="true" />
+          <div>
+            <Modal.Title
+              id="modal-asignar-campania-title"
+              className="text-2xl font-champagne font-bold text-terrasacha-secondary1"
+            >
+              Asignar a campaña
+            </Modal.Title>
+            <div className="text-sm text-terrasacha-secondary1 font-typographica font-normal mt-1">
+              Selecciona la campaña a la que deseas asignar el predio.
+            </div>
           </div>
-        </div>
-      </Modal.Header>
+        </Modal.Header>
       <Modal.Body className="py-6 px-4 md:px-8">
         <label
           htmlFor="campaignSelect"
-          className="block font-semibold text-gray-700 mb-2"
+          className="block font-typographica font-semibold text-terrasacha-secondary1 mb-2"
         >
           Campaña
         </label>
         <select
           id="campaignSelect"
-          className={`w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition ${
+          className={`w-full border border-terrasacha-light/40 rounded-lg px-3 py-2 text-sm font-typographica focus:ring-2 focus:ring-terrasacha-primary/20 focus:border-terrasacha-primary transition-all duration-300 ${
             error ? "border-red-400" : ""
           }`}
           onChange={(e) => {
@@ -116,46 +116,46 @@ const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
         </select>
         {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
       </Modal.Body>
-      <hr className="my-0 border-t border-gray-200" />
-      <div className="flex flex-col md:flex-row gap-3 justify-between bg-gray-50 rounded-b-2xl border-0 px-4 py-4">
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300 transition w-full md:w-auto"
-          aria-label="Cancelar asignación"
-        >
-          <FaTimes className="text-base" />
-          Cancelar
-        </button>
-        <button
-          type="button"
-          onClick={handleAssign}
-          disabled={loading}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-md w-full md:w-auto disabled:opacity-60"
-          aria-label="Asignar campaña"
-        >
-          {loading ? (
-            <span className="animate-spin h-4 w-4 border-2 border-white border-t-blue-400 rounded-full"></span>
-          ) : (
-            <FaCheck className="text-base" />
-          )}
-          {loading ? "Asignando..." : "Asignar"}
-        </button>
-      </div>
+              <hr className="my-0 border-t border-terrasacha-light/30" />
+        <div className="flex flex-col md:flex-row gap-3 justify-between bg-terrasacha-light/10 rounded-b-2xl border-0 px-4 py-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-typographica font-semibold text-terrasacha-secondary1 bg-white border border-terrasacha-light/40 hover:bg-terrasacha-light/20 hover:border-terrasacha-light/60 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/30 transition-all duration-300 w-full md:w-auto"
+            aria-label="Cancelar asignación"
+          >
+            <FaTimes className="text-base" />
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={handleAssign}
+            disabled={loading}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-typographica font-semibold text-white bg-terrasacha-primary hover:bg-terrasacha-primary/80 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 transition-all duration-300 shadow-terrasacha hover:shadow-terrasacha-lg w-full md:w-auto disabled:opacity-60"
+            aria-label="Asignar campaña"
+          >
+            {loading ? (
+              <span className="animate-spin h-4 w-4 border-2 border-white border-t-terrasacha-light rounded-full"></span>
+            ) : (
+              <FaCheck className="text-base" />
+            )}
+            {loading ? "Asignando..." : "Asignar"}
+          </button>
+        </div>
     </Modal>
   );
 };
 
-// Copio el stateMapper de ProductsList.jsx
+// StateMapper actualizado con colores de Terrasacha
 const stateMapper = {
   PENDING: {
     label: "Pendiente",
-    badge: "bg-yellow-100 text-yellow-700 border border-yellow-400",
+    badge: "bg-[#e8d79a] text-[#44482c] border border-[#b1c181]",
     tooltip: "Pendiente: El predio está pendiente de revisión.",
   },
   APPROVED: {
     label: "Aprobado",
-    badge: "bg-green-100 text-green-700 border border-green-400",
+    badge: "bg-terrasacha-light/20 text-terrasacha-secondary2 border border-terrasacha-light/40",
     tooltip: "Aprobado: El predio ha sido aprobado.",
   },
   REJECTED: {
@@ -165,7 +165,7 @@ const stateMapper = {
   },
   SELECTABLE: {
     label: "Seleccionable",
-    badge: "bg-blue-100 text-blue-700 border border-blue-400",
+    badge: "bg-terrasacha-primary/20 text-terrasacha-primary border border-terrasacha-primary/40",
     tooltip: "Seleccionable: El predio es elegible para continuar el proceso.",
   },
   NOT_SELECTABLE: {
@@ -175,7 +175,7 @@ const stateMapper = {
   },
   DOC_UPLOADED: {
     label: "Documentos cargados",
-    badge: "bg-indigo-100 text-indigo-700 border border-indigo-400",
+    badge: "bg-terrasacha-secondary2/20 text-terrasacha-secondary2 border border-terrasacha-secondary2/40",
     tooltip: "El usuario ha cargado la documentación requerida para el predio.",
   },
 };
@@ -357,18 +357,18 @@ export default function ValidatorAdmon() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-lime-50 pt-16">
+    <div className="min-h-screen w-full bg-gradient-to-br from-terrasacha-earth/10 via-white to-terrasacha-light/10 pt-16">
       <Row>
         <NewHeaderNavbar />
       </Row>
       {/* Barra de navegación tipo tabs */}
       <div className="w-full max-w-7xl mx-auto flex justify-center mt-8">
-        <div className="flex gap-2 bg-white rounded-xl shadow border p-1">
+        <div className="flex gap-2 bg-white rounded-2xl shadow-terrasacha-xl border border-terrasacha-light/30 p-1">
           <button
-            className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+            className={`px-6 py-3 rounded-xl font-typographica font-semibold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
               activeTab === "campaigns"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-blue-50"
+                ? "bg-terrasacha-primary text-white shadow-terrasacha"
+                : "bg-white text-terrasacha-secondary1 hover:bg-terrasacha-light/20"
             }`}
             onClick={() => setActiveTab("campaigns")}
             aria-label="Ver mis campañas"
@@ -376,10 +376,10 @@ export default function ValidatorAdmon() {
             <FaList className="inline mr-2" /> Mis campañas
           </button>
           <button
-            className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+            className={`px-6 py-3 rounded-xl font-typographica font-semibold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
               activeTab === "properties"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-blue-50"
+                ? "bg-terrasacha-primary text-white shadow-terrasacha"
+                : "bg-white text-terrasacha-secondary1 hover:bg-terrasacha-light/20"
             }`}
             onClick={() => setActiveTab("properties")}
             aria-label="Ver predios sin campaña"
@@ -389,21 +389,18 @@ export default function ValidatorAdmon() {
         </div>
       </div>
       <div className="flex justify-center px-2 md:px-0">
-        <div className="w-full max-w-7xl mt-8 mb-8 bg-white rounded-2xl shadow-2xl md:p-8">
+        <div className="w-full max-w-7xl mt-8 mb-8 bg-white rounded-2xl shadow-terrasacha-2xl border border-terrasacha-light/20 md:p-8">
           {/* Sección Mis campañas */}
           {activeTab === "campaigns" && (
             <section className="mx-auto p-2">
               <div className="mb-4">
-                <h1
-  className="text-2xl font-bold text-left flex-shrink-0"
-  style={{ color: '#74742c' }}
->
-  Mis campañas
-</h1>
-                <p className="text-sm text-gray-600 mt-1">
-                  Aquí puedes ver y gestionar todas las campañas en las que
-                  participas como consultor.
-                </p>
+                <h1 className="text-2xl font-champagne font-bold text-left flex-shrink-0 text-terrasacha-primary">
+                  Mis campañas
+                </h1>
+                                   <p className="text-sm text-terrasacha-secondary1 font-typographica mt-1">
+                     Aquí puedes ver y gestionar todas las campañas en las que
+                     participas como consultor.
+                   </p>
               </div>
               {/* Filtros de estado de campaña */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 mb-2">
@@ -412,10 +409,10 @@ export default function ValidatorAdmon() {
                     <button
                       key={option.key}
                       type="button"
-                      className={`flex items-center px-3 py-1 rounded-lg border text-xs font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      className={`flex items-center px-3 py-1.5 rounded-xl border text-xs font-typographica font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
                         campaignsStatusFilter === option.key
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+                          ? "bg-terrasacha-primary text-white border-terrasacha-primary shadow-terrasacha"
+                          : "bg-white text-terrasacha-secondary1 border-terrasacha-light/40 hover:bg-terrasacha-light/10"
                       }`}
                       aria-label={`Filtrar campañas por estado: ${option.label}`}
                       onClick={() => setCampaignsStatusFilter(option.key)}
@@ -425,56 +422,56 @@ export default function ValidatorAdmon() {
                   ))}
                 </div>
               </div>
-              <div className="bg-white rounded-t-lg shadow-xl border border-gray-100">
-                <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
-                  <div className="flex items-center gap-2 w-full md:w-auto">
-                    <span className="text-sm font-medium text-gray-700">
-                      Filas por página:
-                    </span>
-                    <select
-                      value={campaignsRowsPerPage}
-                      onChange={(e) =>
-                        setCampaignsRowsPerPage(Number(e.target.value))
-                      }
-                      className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                    >
-                      {[10, 20, 30, 50].map((num) => (
-                        <option key={num} value={num}>
-                          {num}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
-                    <button
-                      className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() =>
-                        setCampaignsCurrentPage((p) => Math.max(1, p - 1))
-                      }
-                      disabled={campaignsCurrentPage === 1}
-                    >
-                      Anterior
-                    </button>
-                    <span className="text-sm font-medium text-gray-700 px-3 py-1 bg-white rounded-lg border border-gray-200">
-                      Página {campaignsCurrentPage} de {campaignsTotalPages}
-                    </span>
-                    <button
-                      className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() =>
-                        setCampaignsCurrentPage((p) =>
-                          Math.min(campaignsTotalPages, p + 1)
-                        )
-                      }
-                      disabled={campaignsCurrentPage === campaignsTotalPages}
-                    >
-                      Siguiente
-                    </button>
-                  </div>
-                </div>
+              <div className="bg-white rounded-t-lg shadow-terrasacha-xl border border-terrasacha-light/20">
+                                                  <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-terrasacha-earth border-b border-terrasacha-light">
+                   <div className="flex items-center gap-2 w-full md:w-auto">
+                     <span className="text-sm font-typographica font-medium text-terrasacha-secondary1">
+                       Filas por página:
+                     </span>
+                     <select
+                       value={campaignsRowsPerPage}
+                       onChange={(e) =>
+                         setCampaignsRowsPerPage(Number(e.target.value))
+                       }
+                       className="border border-terrasacha-light rounded-lg px-3 py-1 text-sm font-typographica focus:ring-2 focus:ring-terrasacha-primary focus:border-terrasacha-primary transition-all duration-200"
+                     >
+                       {[10, 20, 30, 50].map((num) => (
+                         <option key={num} value={num}>
+                           {num}
+                         </option>
+                       ))}
+                     </select>
+                   </div>
+                   <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                     <button
+                       className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-typographica font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1"
+                       onClick={() =>
+                         setCampaignsCurrentPage((p) => Math.max(1, p - 1))
+                       }
+                       disabled={campaignsCurrentPage === 1}
+                     >
+                       Anterior
+                     </button>
+                     <span className="text-sm font-typographica font-medium text-terrasacha-secondary1 px-3 py-1 bg-white rounded-lg border border-terrasacha-light">
+                       Página {campaignsCurrentPage} de {campaignsTotalPages}
+                     </span>
+                     <button
+                       className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-typographica font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1"
+                       onClick={() =>
+                         setCampaignsCurrentPage((p) =>
+                           Math.min(campaignsTotalPages, p + 1)
+                         )
+                       }
+                       disabled={campaignsCurrentPage === campaignsTotalPages}
+                     >
+                       Siguiente
+                     </button>
+                   </div>
+                 </div>
                 {isLoadingCampaigns ? (
-                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 shadow-lg border border-gray-200">
+                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-terrasacha-light/10 to-terrasacha-earth/10 shadow-terrasacha-lg border border-terrasacha-light/30">
                     <svg
-                      className="animate-spin h-16 w-16 text-blue-500 mb-6"
+                      className="animate-spin h-16 w-16 text-terrasacha-primary mb-6"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -495,44 +492,44 @@ export default function ValidatorAdmon() {
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       ></path>
                     </svg>
-                    <p className="text-gray-500 text-lg font-medium">
+                    <p className="text-terrasacha-secondary1 text-lg font-typographica font-medium">
                       Cargando campañas...
                     </p>
                   </div>
                 ) : Array.isArray(userCampaigns) &&
                   userCampaigns.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-t-lg shadow-lg border border-gray-200">
+                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-terrasacha-light/10 to-terrasacha-earth/10 rounded-t-lg shadow-terrasacha-lg border border-terrasacha-light/30">
                     <img
                       src={vacio}
                       className="w-32 h-32 mb-6 opacity-60"
                       alt="Sin campañas"
                     />
-                    <p className="text-gray-500 text-lg font-medium">
+                    <p className="text-terrasacha-secondary1 text-lg font-typographica font-medium">
                       No tienes campañas aún.
                     </p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 rounded-t-lg">
+                  <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-terrasacha-light scrollbar-track-terrasacha-earth">
                     <table className="min-w-full">
                       <thead>
-                        <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                          <th className="text-left px-2 py-1 font-semibold text-xs w-8"></th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                        <tr className="bg-gradient-to-r from-terrasacha-earth to-terrasacha-light border-b border-terrasacha-light">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs w-8 text-terrasacha-secondary1"></th>
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Nombre
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Descripción
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Fecha de inicio
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Fecha de finalización
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Estado
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Acciones
                           </th>
                         </tr>
@@ -554,32 +551,32 @@ export default function ValidatorAdmon() {
                           const isExpanded = expandedRows.has(campaign.id);
                           // Calcular estado de la campaña
                           let campaignStatusLabel = "En curso";
-                          let campaignStatusColor =
-                            "bg-green-100 text-green-700 border border-green-400";
-                          let campaignStatusTooltip =
-                            "La campaña sigue activa.";
-                          if (campaign.endDate) {
-                            const endDate = new Date(campaign.endDate * 1000);
-                            const now = new Date();
-                            if (endDate < now) {
-                              campaignStatusLabel = "Finalizada";
-                              campaignStatusColor =
-                                "bg-gray-200 text-gray-600 border border-gray-400";
-                              campaignStatusTooltip =
-                                "La campaña ya ha finalizado.";
-                            }
-                          }
+                                                     let campaignStatusColor =
+                             "bg-terrasacha-light/20 text-terrasacha-secondary2 border border-terrasacha-light/40";
+                           let campaignStatusTooltip =
+                             "La campaña sigue activa.";
+                           if (campaign.endDate) {
+                             const endDate = new Date(campaign.endDate * 1000);
+                             const now = new Date();
+                             if (endDate < now) {
+                               campaignStatusLabel = "Finalizada";
+                               campaignStatusColor =
+                                 "bg-terrasacha-earth/20 text-terrasacha-secondary1 border border-terrasacha-earth/40";
+                               campaignStatusTooltip =
+                                 "La campaña ya ha finalizado.";
+                             }
+                           }
                           // Filtrar predios asociados a esta campaña
                           const campaignProperties = properties.filter(
                             (property) => property.campaignID === campaign.id
                           );
                           return (
                             <React.Fragment key={campaign.id}>
-                              <tr
-                                className={`text-xs transition-all duration-200 border-b border-gray-100 hover:bg-blue-100 ${
-                                  idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                                }`}
-                              >
+                                                                                            <tr
+                                 className={`text-xs transition-all duration-200 uppercase border-b border-terrasacha-light hover:bg-terrasacha-earth ${
+                                   idx % 2 === 0 ? "bg-white" : "bg-terrasacha-earth"
+                                 }`}
+                               >
                                 <td className="px-2 py-1 w-8">
                                   <button
                                     onClick={() =>
@@ -590,7 +587,7 @@ export default function ValidatorAdmon() {
                                         ? "Colapsar predios"
                                         : "Expandir predios"
                                     }
-                                    className="flex items-center justify-center w-7 h-7 rounded-full border border-gray-300 bg-white hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                                    className="flex items-center justify-center w-7 h-7 rounded-full border border-terrasacha-light/40 bg-white hover:bg-terrasacha-light/20 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 transition-all duration-300"
                                     tabIndex={0}
                                     type="button"
                                   >
@@ -685,13 +682,13 @@ export default function ValidatorAdmon() {
                                     : "-"}
                                 </td>
                                 <td className="px-2 py-1 min-w-24">
-                                  <span
-                                    className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${campaignStatusColor}`}
-                                    data-tooltip-id={`tooltip-campaign-status-${campaign.id}`}
-                                    data-tooltip-content={campaignStatusTooltip}
-                                  >
-                                    {campaignStatusLabel}
-                                  </span>
+                                                             <span
+                             className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${campaignStatusColor}`}
+                             data-tooltip-id={`tooltip-campaign-status-${campaign.id}`}
+                             data-tooltip-content={campaignStatusTooltip}
+                           >
+                             {campaignStatusLabel}
+                           </span>
                                   <ReactTooltip
                                     id={`tooltip-campaign-status-${campaign.id}`}
                                     place="top"
@@ -706,7 +703,7 @@ export default function ValidatorAdmon() {
                                         "_blank"
                                       )
                                     }
-                                    className="border border-yellow-500 bg-yellow-500 text-white rounded-lg p-1 text-xs hover:bg-yellow-600 hover:shadow-md active:bg-yellow-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
+                                    className="border border-terrasacha-secondary2 bg-terrasacha-secondary2 text-white rounded-lg p-1 text-xs hover:bg-terrasacha-secondary2 hover:shadow-terrasacha active:bg-terrasacha-secondary2 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
                                     aria-label="Ver campaña"
                                     data-tooltip-id={`tooltip-campaign-link-${campaign.id}`}
                                     data-tooltip-content="Ver campaña"
@@ -728,7 +725,7 @@ export default function ValidatorAdmon() {
                                         "_blank"
                                       )
                                     }
-                                    className={`border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105 ${
+                                    className={`border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-primary hover:shadow-terrasacha active:bg-terrasacha-primary transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105 ${
                                       !campaign.products?.items?.[0]?.id
                                         ? "opacity-50 cursor-not-allowed"
                                         : ""
@@ -756,66 +753,90 @@ export default function ValidatorAdmon() {
                               {isExpanded &&
                                 (campaignProperties.length > 0 ? (
                                   campaignProperties.map((property) => (
-                                    <tr
-                                      key={property.id}
-                                      className="bg-gray-50 border-b border-gray-200"
-                                    >
+                                                                                                              <tr
+                                       key={property.id}
+                                       className="bg-terrasacha-earth border-b border-terrasacha-light"
+                                     >
                                       <td></td>
                                       <td
                                         colSpan={5}
                                         className="pl-8 py-2 align-middle"
                                       >
-                                        <div className="flex items-center gap-4">
-                                          <span className="font-semibold text-gray-700 text-xs">
-                                            {property.name
-                                              ? property.name.toUpperCase()
-                                              : "Predio sin nombre"}
-                                          </span>
-                                          <span
-                                            className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${
-                                              stateMapper[property.status]
-                                                ?.badge ||
-                                              "bg-gray-300 text-gray-800 border border-gray-400"
-                                            }`}
-                                            data-tooltip-id={`tooltip-property-status-${property.id}`}
-                                            data-tooltip-content={
-                                              stateMapper[property.status]
-                                                ?.tooltip || "Estado indefinido"
+                                        <div className="flex items-center justify-between w-full">
+                                          <div className="flex items-center gap-4">
+                                            <span className="font-typographica font-semibold text-terrasacha-secondary1 text-xs">
+                                              {property.name
+                                                ? property.name.toUpperCase()
+                                                : "Predio sin nombre"}
+                                            </span>
+                                            <span
+                                              className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${
+                                                stateMapper[property.status]
+                                                  ?.badge ||
+                                                "bg-gray-300 text-gray-800 border border-gray-400"
+                                              }`}
+                                              data-tooltip-id={`tooltip-property-status-${property.id}`}
+                                              data-tooltip-content={
+                                                stateMapper[property.status]
+                                                  ?.tooltip || "Estado indefinido"
+                                              }
+                                            >
+                                              {stateMapper[property.status]
+                                                ?.label || "SIN DEFINIR"}
+                                            </span>
+                                            <ReactTooltip
+                                              id={`tooltip-property-status-${property.id}`}
+                                              place="top"
+                                              effect="solid"
+                                            />
+                                            <span className="text-xs text-terrasacha-secondary1">
+                                              {property.createdAt
+                                                ? new Date(
+                                                    property.createdAt
+                                                  ).toLocaleDateString("es-ES", {
+                                                    year: "numeric",
+                                                    month: "2-digit",
+                                                    day: "2-digit",
+                                                  })
+                                                : "-"}
+                                            </span>
+                                          </div>
+                                          {/* ✅ NUEVO: Botón para visualizar predio en la esquina derecha */}
+                                          <button
+                                            onClick={() =>
+                                              window.open(
+                                                `/property/${property.id}`,
+                                                "_blank"
+                                              )
                                             }
+                                            className="border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-primary/80 hover:shadow-terrasacha active:bg-terrasacha-primary transition-all duration-200 flex items-center justify-center w-6 h-6 transform hover:scale-105"
+                                            aria-label="Ver detalles del predio"
+                                            data-tooltip-id={`tooltip-property-view-${property.id}`}
+                                            data-tooltip-content="Ver detalles del predio"
+                                            tabIndex={0}
+                                            type="button"
                                           >
-                                            {stateMapper[property.status]
-                                              ?.label || "SIN DEFINIR"}
-                                          </span>
+                                            <FaEye size={10} />
+                                          </button>
                                           <ReactTooltip
-                                            id={`tooltip-property-status-${property.id}`}
+                                            id={`tooltip-property-view-${property.id}`}
                                             place="top"
                                             effect="solid"
                                           />
-                                          <span className="text-xs text-gray-500">
-                                            {property.createdAt
-                                              ? new Date(
-                                                  property.createdAt
-                                                ).toLocaleDateString("es-ES", {
-                                                  year: "numeric",
-                                                  month: "2-digit",
-                                                  day: "2-digit",
-                                                })
-                                              : "-"}
-                                          </span>
                                         </div>
                                       </td>
                                     </tr>
                                   ))
                                 ) : (
-                                  <tr className="bg-gray-50 border-b border-gray-200">
-                                    <td></td>
-                                    <td
-                                      colSpan={5}
-                                      className="pl-8 py-2 align-middle text-xs text-gray-500 italic"
-                                    >
-                                      Sin predios asignados
-                                    </td>
-                                  </tr>
+                                                                                                        <tr className="bg-terrasacha-earth border-b border-terrasacha-light">
+                                     <td></td>
+                                     <td
+                                       colSpan={5}
+                                       className="pl-8 py-2 align-middle text-xs text-terrasacha-secondary1 italic"
+                                     >
+                                       Sin predios asignados
+                                     </td>
+                                   </tr>
                                 ))}
                             </React.Fragment>
                           );
@@ -832,13 +853,13 @@ export default function ValidatorAdmon() {
           {activeTab === "properties" && (
             <section className="mx-auto p-2">
               <div className="mb-4">
-                <h1 className="text-2xl font-bold text-left text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex-shrink-0">
+                <h1 className="text-2xl font-champagne font-bold text-left text-terrasacha-secondary1 flex-shrink-0">
                   Predios sin campaña
                 </h1>
-                <p className="text-sm text-gray-600 mt-1">
-                  Aquí puedes ver y gestionar todos los predios que aún no han
-                  sido asignados a una campaña.
-                </p>
+                                   <p className="text-sm text-terrasacha-secondary1 font-typographica mt-1">
+                     Aquí puedes ver y gestionar todos los predios que aún no han
+                     sido asignados a una campaña.
+                   </p>
               </div>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 mb-2">
                 <div className="flex flex-col gap-2 md:flex-row md:gap-2 md:justify-start w-full">
@@ -846,10 +867,10 @@ export default function ValidatorAdmon() {
                     <button
                       key={option.key}
                       type="button"
-                      className={`flex items-center px-3 py-1 rounded-lg border text-xs font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      className={`flex items-center px-3 py-1.5 rounded-xl border text-xs font-typographica font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
                         propertiesFilterStatus === option.key
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : option.color + " hover:bg-blue-50"
+                          ? "bg-terrasacha-primary text-white border-terrasacha-primary shadow-terrasacha"
+                          : option.color + " hover:bg-terrasacha-light/10"
                       }`}
                       aria-label={`Filtrar por estado: ${option.label}`}
                       onClick={() => setPropertiesFilterStatus(option.key)}
@@ -859,56 +880,56 @@ export default function ValidatorAdmon() {
                   ))}
                 </div>
               </div>
-              <div className="bg-white rounded-t-lg shadow-xl border border-gray-100 flex flex-col">
-                <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
-                  <div className="flex items-center gap-2 w-full md:w-auto">
-                    <span className="text-sm font-medium text-gray-700">
-                      Filas por página:
-                    </span>
-                    <select
-                      value={propertiesRowsPerPage}
-                      onChange={(e) =>
-                        setPropertiesRowsPerPage(Number(e.target.value))
-                      }
-                      className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                    >
-                      {[10, 20, 30, 50].map((num) => (
-                        <option key={num} value={num}>
-                          {num}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
-                    <button
-                      className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() =>
-                        setPropertiesCurrentPage((p) => Math.max(1, p - 1))
-                      }
-                      disabled={propertiesCurrentPage === 1}
-                    >
-                      Anterior
-                    </button>
-                    <span className="text-sm font-medium text-gray-700 px-3 py-1 bg-white rounded-lg border border-gray-200">
-                      Página {propertiesCurrentPage} de {propertiesTotalPages}
-                    </span>
-                    <button
-                      className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                      onClick={() =>
-                        setPropertiesCurrentPage((p) =>
-                          Math.min(propertiesTotalPages, p + 1)
-                        )
-                      }
-                      disabled={propertiesCurrentPage === propertiesTotalPages}
-                    >
-                      Siguiente
-                    </button>
-                  </div>
-                </div>
+              <div className="bg-white rounded-t-lg shadow-terrasacha-xl border border-terrasacha-light/20 flex flex-col">
+                                                  <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-terrasacha-earth border-b border-terrasacha-light">
+                   <div className="flex items-center gap-2 w-full md:w-auto">
+                     <span className="text-sm font-typographica font-medium text-terrasacha-secondary1">
+                       Filas por página:
+                     </span>
+                     <select
+                       value={propertiesRowsPerPage}
+                       onChange={(e) =>
+                         setPropertiesRowsPerPage(Number(e.target.value))
+                       }
+                       className="border border-terrasacha-light rounded-lg px-3 py-1 text-sm font-typographica focus:ring-2 focus:ring-terrasacha-primary focus:border-terrasacha-primary transition-all duration-200"
+                     >
+                       {[10, 20, 30, 50].map((num) => (
+                         <option key={num} value={num}>
+                           {num}
+                         </option>
+                       ))}
+                     </select>
+                   </div>
+                   <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                     <button
+                       className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-typographica font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1"
+                       onClick={() =>
+                         setPropertiesCurrentPage((p) => Math.max(1, p - 1))
+                       }
+                       disabled={propertiesCurrentPage === 1}
+                     >
+                       Anterior
+                     </button>
+                                           <span className="text-sm font-typographica font-medium text-terrasacha-secondary1 px-3 py-1 bg-white rounded-lg border border-terrasacha-light">
+                        Página {propertiesCurrentPage} de {propertiesTotalPages}
+                      </span>
+                      <button
+                        className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-typographica font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1"
+                        onClick={() =>
+                          setPropertiesCurrentPage((p) =>
+                            Math.min(propertiesTotalPages, p + 1)
+                          )
+                        }
+                        disabled={propertiesCurrentPage === propertiesTotalPages}
+                      >
+                        Siguiente
+                      </button>
+                   </div>
+                 </div>
                 {isLoading ? (
-                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 shadow-lg border border-gray-200">
+                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-terrasacha-light/10 to-terrasacha-earth/10 shadow-terrasacha-lg border border-terrasacha-light/30">
                     <svg
-                      className="animate-spin h-16 w-16 text-blue-500 mb-6"
+                      className="animate-spin h-16 w-16 text-terrasacha-primary mb-6"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -929,54 +950,54 @@ export default function ValidatorAdmon() {
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       ></path>
                     </svg>
-                    <p className="text-gray-500 text-lg font-medium">
+                    <p className="text-terrasacha-secondary1 text-lg font-typographica font-medium">
                       Cargando predios...
                     </p>
                   </div>
                 ) : filteredProperties.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-t-lg shadow-lg border border-gray-200">
+                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-terrasacha-light/10 to-terrasacha-earth/10 rounded-t-lg shadow-terrasacha-lg border border-terrasacha-light/30">
                     <img
                       src={vacio}
                       className="w-32 h-32 mb-6 opacity-60"
                       alt="Sin propiedades"
                     />
-                    <p className="text-gray-500 text-lg font-medium">
+                    <p className="text-terrasacha-secondary1 text-lg font-typographica font-medium">
                       No hay propiedades disponibles.
                     </p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-terrasacha-light scrollbar-track-terrasacha-earth">
                     <table className="min-w-full">
                       <thead>
-                        <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                        <tr className="bg-gradient-to-r from-terrasacha-earth to-terrasacha-light border-b border-terrasacha-light">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Nombre
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Descripción
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Área
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Departamento
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Estado
                           </th>
-                          <th className="text-left px-2 py-1 font-semibold text-xs">
+                          <th className="text-left px-2 py-1 font-typographica font-semibold text-xs text-terrasacha-secondary1">
                             Acciones
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedProperties.map((property, idx) => (
-                          <tr
-                            key={property.id}
-                            className={`text-xs transition-all duration-200 border-b border-gray-100 hover:bg-blue-100 ${
-                              idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                            }`}
-                          >
+                                                     <tr
+                             key={property.id}
+                             className={`text-xs transition-all duration-200 uppercase border-b border-terrasacha-light hover:bg-terrasacha-earth/40 ${
+                               idx % 2 === 0 ? "bg-white" : "bg-terrasacha-earth/20"
+                             }`}
+                           >
                             <td className="px-2 py-1 min-w-36">
                               {property.name.toUpperCase()}
                             </td>
@@ -1008,20 +1029,20 @@ export default function ValidatorAdmon() {
                               {property.department || "-"}
                             </td>
                             <td className="px-2 py-1">
-                              <span
-                                className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${
-                                  stateMapper[property.status]?.badge ||
-                                  "bg-gray-300 text-gray-800 border border-gray-400"
-                                }`}
-                                data-tooltip-id={`tooltip-status-${property.id}`}
-                                data-tooltip-content={
-                                  stateMapper[property.status]?.tooltip ||
-                                  "Estado indefinido"
-                                }
-                              >
-                                {stateMapper[property.status]?.label ||
-                                  "SIN DEFINIR"}
-                              </span>
+                                                             <span
+                                 className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${
+                                   stateMapper[property.status]?.badge ||
+                                   "bg-terrasacha-earth/20 text-terrasacha-secondary1 border border-terrasacha-earth/40"
+                                 }`}
+                                 data-tooltip-id={`tooltip-status-${property.id}`}
+                                 data-tooltip-content={
+                                   stateMapper[property.status]?.tooltip ||
+                                   "Estado indefinido"
+                                 }
+                               >
+                                 {stateMapper[property.status]?.label ||
+                                   "SIN DEFINIR"}
+                               </span>
                               <div className="hidden md:block">
                                 <ReactTooltip
                                   id={`tooltip-status-${property.id}`}
@@ -1038,7 +1059,7 @@ export default function ValidatorAdmon() {
                                     "_blank"
                                   )
                                 }
-                                className="border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
+                                className="border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-primary hover:shadow-terrasacha active:bg-terrasacha-primary transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
                                 aria-label="Ver detalles del predio"
                                 data-tooltip-id={`tooltip-details-${property.id}`}
                                 data-tooltip-content="Ver detalles del predio"
@@ -1053,7 +1074,7 @@ export default function ValidatorAdmon() {
                                 effect="solid"
                               />
                               <button
-                                className="inline-block bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600 transition"
+                                className="inline-block bg-terrasacha-secondary2 text-white text-xs px-3 py-1.5 rounded-lg font-typographica font-semibold hover:bg-terrasacha-secondary2 transition-all duration-200 shadow-terrasacha hover:shadow-terrasacha-lg"
                                 onClick={() => {
                                   setSelectedProperty(property);
                                   setIsModalOpen(true);

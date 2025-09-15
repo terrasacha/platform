@@ -158,9 +158,9 @@ export default function Timeline({
       ? "El predio no cumplió con los requisitos técnicos o legales y ha sido rechazado. Puede reiniciar el proceso si se corrigen los errores."
       : "Se ha seleccionado el predio para integrar el proyecto. Inicia la siguiente etapa del proyecto. Debes esperar que se cierre la campaña y aceptar la propuesta financiera ",
     icon: isApproved ? (
-      <FaCheckCircle size={18} className="text-white" />
+      <FaCheckCircle size={18} className="text-terrasacha-secondary1" />
     ) : isRejected ? (
-      <FaTimesCircle size={18} className="text-white" />
+      <FaTimesCircle size={18} className="text-terrasacha-secondary1" />
     ) : (
       <FaCheckCircle size={18} />
     ),
@@ -276,7 +276,7 @@ export default function Timeline({
       <div className="w-full max-w-3xl">
         <ProgressBar
           percent={((currentStep - 1) / (steps.length - 1)) * 100}
-          filledBackground="linear-gradient(to right, #34d399, #059669)"
+          filledBackground="linear-gradient(to right, #6e6c35, #849b50)"
           height={6}
           transitionDuration={800}
         >
@@ -288,24 +288,24 @@ export default function Timeline({
 
                 // 🔥 Si es el paso actual, se pone amarillo
                 if (step.id === currentStep && step.id !== steps.length) {
-                  stepClass = "bg-yellow-500 text-white border-yellow-600 animate-pulse shadow-xl";
+                  stepClass = "bg-terrasacha-warning text-terrasacha-secondary1 border-terrasacha-warning animate-pulse shadow-terrasacha-xl";
                 }
                  else if (accomplished) {
                   stepClass =
-                    "bg-green-500 text-white border-green-600 shadow-lg hover:shadow-xl";
+                    "bg-terrasacha-success text-terrasacha-secondary1 border-terrasacha-success shadow-terrasacha-lg hover:shadow-terrasacha-xl";
                 }
 
                 // 🔥 Animación especial para el paso 2 (resplandor y pulsación)
                 const isStep2Active = step.id === 2 && currentStep === 2;
                 const glowEffect = isStep2Active
-                  ? "animate-pulse ring-4 ring-yellow-400"
+                  ? "animate-pulse ring-4 ring-terrasacha-warning"
                   : "";
 
                 return (
                   <div className="flex flex-col items-center w-24 text-center relative">
                     {/* 📌 Flecha animada SOLO para el paso 2 */}
                     {isStep2Active && (
-                      <div className="absolute -top-8 text-yellow-500 text-lg font-bold animate-bounce">
+                      <div className="absolute -top-8 text-terrasacha-warning text-lg font-bold animate-bounce font-typographica">
                         ⬇️
                         <p className="text-xs font-semibold">clic</p>
                       </div>
@@ -330,7 +330,7 @@ export default function Timeline({
       title="Ver explicación del paso"
       aria-label="Ayuda del paso"
     >
-      <FaQuestionCircle size={14} className="text-[#7b7b2c] opacity-90 hover:opacity-100" />
+      <FaQuestionCircle size={14} className="text-terrasacha-primary opacity-90 hover:opacity-100" />
     </span>
 
     <Tooltip id={`help-tooltip-${step.id}`} place="top" effect="solid" />
@@ -371,13 +371,13 @@ export default function Timeline({
                     </Tooltip>
 
                     <p
-                      className={`mt-2 text-xs font-semibold transition-colors duration-500 ${
+                      className={`mt-2 text-xs font-semibold transition-colors duration-500 font-typographica ${
                         step.id === currentStep
-                          ? "text-yellow-600 font-bold"
+                          ? "text-terrasacha-warning font-bold"
                           : accomplished
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      } hover:text-green-500`}
+                          ? "text-terrasacha-success"
+                          : "text-gray-600"
+                      } hover:text-terrasacha-success`}
                     >
                       {step.title}
                     </p>
@@ -398,10 +398,10 @@ export default function Timeline({
       />
 
 <Modal show={chatModalIsOpen} onHide={() => setChatModalIsOpen(false)} size="xl" centered>
-  <Modal.Header closeButton>
-    <Modal.Title>Proceso del Predio</Modal.Title>
+  <Modal.Header closeButton className="bg-terrasacha-light">
+    <Modal.Title className="font-typographica text-terrasacha-primary">Proceso del Predio</Modal.Title>
   </Modal.Header>
-  <Modal.Body>
+  <Modal.Body className="bg-white">
     <ConstructorWorkflow propertyId={propertyId} />
   </Modal.Body>
 </Modal>

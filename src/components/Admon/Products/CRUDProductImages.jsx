@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-//Bootstrap
-import {  Button,Form, Col, Table, Spinner} from 'react-bootstrap'
+// Bootstrap reemplazado con Tailwind CSS y sistema Terrasacha
+// Componentes Terrasacha
+import TerrasachaTable, { TerrasachaTableCell, TerrasachaBadge } from "../../common/TerrasachaTable";
 
 export default class CRUDProductImages extends Component {
     constructor(props) {
@@ -15,132 +16,189 @@ export default class CRUDProductImages extends Component {
 
     const renderCRUDProductImages = () => {
         return (
-            <Table striped bordered hover responsive>
-                <thead>
-                <tr>
-                    <th>Cargar</th>
-                    <th>Imagen</th>
-                    <th>URL</th>
-                    <th>Titulo</th>
-                    <th>Orden</th>
-                    <th>¿Está On Carouse?l</th>
-                    <th>Etiqueta Carrusel</th>
-                    <th>Carousel Descripción </th>
-                </tr>
-                </thead>
-                <tbody>
-                {CRUD_Product.images.map(image => (
-                    <tr key={image.id}>
-                        <td>
-                            <Form.Group controlId='formFile' className='mb-3'>
-                                <Form.Control type='file' onChange={(e) => this.handleChangeProductImageProperty(e, image, 'carouselImage')} />
-                            </Form.Group>
-                            {renderIsisImageUploadingFile()}
-                        </td>
-                        <td>
-                            {renderProductImage(image)}
-                        </td>
-                        <td>
-                            {image.imageURL}
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridNewProductImageTitle'>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Ex. Cats'
-                                    name='newProductImageTitle'
-                                    value={image.title}
-                                    onChange={(e) => this.handleChangeProductImageProperty(e, image, 'newProductImageTitle')} />
-                            </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridNewProductImageOrder'>
-                                <Form.Control
-                                    type='number'
-                                    placeholder='Ex. 1'
-                                    name='newProductImageOrder'
-                                    value={image.order}
-                                    onChange={(e) => this.handleChangeProductImageProperty(e, image, 'newProductImageOrder')} />
-                            </Form.Group>
-                        </td>
-                        <td>
-                            <Form.Group as={Col} controlId='formGridCRUD_ProductIsOnCarousel'>
-                                <Button 
-                                    variant='primary'
-                                    size='lg' 
-                                     
+            <TerrasachaTable
+                title="🖼️ Gestión de Imágenes del Proyecto"
+                subtitle="Configuración y administración de todas las imágenes asociadas al proyecto"
+                headers={[
+                    'Cargar', 'Vista Previa', 'URL', 'Título', 
+                    'Orden', 'En Carrusel', 'Etiqueta', 'Descripción'
+                ]}
+                data={CRUD_Product.images}
+                renderRow={(image) => (
+                    <>
+                        {/* Columna Cargar */}
+                        <TerrasachaTableCell>
+                            <div className="space-y-2">
+                                <div className="flex flex-col space-y-2">
+                                    <label className="form-terrasacha-label text-sm">
+                                        📤 Subir Imagen
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="form-terrasacha-input text-sm file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:font-medium file:bg-terrasacha-primary file:text-white hover:file:bg-terrasacha-primary/80"
+                                        onChange={(e) => this.handleChangeProductImageProperty(e, image, 'carouselImage')}
+                                    />
+                                </div>
+                                {renderIsisImageUploadingFile()}
+                            </div>
+                        </TerrasachaTableCell>
+
+                        {/* Columna Vista Previa */}
+                        <TerrasachaTableCell>
+                            <div className="flex justify-center">
+                                {renderProductImage(image)}
+                            </div>
+                        </TerrasachaTableCell>
+
+                        {/* Columna URL */}
+                        <TerrasachaTableCell variant="secondary">
+                            <div className="max-w-32">
+                                <p className="text-xs text-terrasacha-secondary1 truncate font-mono" title={image.imageURL}>
+                                    {image.imageURL || "Sin URL"}
+                                </p>
+                            </div>
+                        </TerrasachaTableCell>
+
+                        {/* Columna Título */}
+                        <TerrasachaTableCell>
+                            <input
+                                type="text"
+                                placeholder="Ej. Imagen del bosque"
+                                name="newProductImageTitle"
+                                value={image.title || ''}
+                                className="form-terrasacha-input text-sm w-full"
+                                onChange={(e) => this.handleChangeProductImageProperty(e, image, 'newProductImageTitle')}
+                            />
+                        </TerrasachaTableCell>
+
+                        {/* Columna Orden */}
+                        <TerrasachaTableCell>
+                            <input
+                                type="number"
+                                placeholder="1"
+                                name="newProductImageOrder"
+                                value={image.order || ''}
+                                className="form-terrasacha-input text-sm w-20"
+                                onChange={(e) => this.handleChangeProductImageProperty(e, image, 'newProductImageOrder')}
+                            />
+                        </TerrasachaTableCell>
+
+                        {/* Columna En Carrusel */}
+                        <TerrasachaTableCell>
+                            <TerrasachaBadge variant={image.isOnCarousel ? 'success' : 'neutral'}>
+                                <button
+                                    className="bg-transparent border-none text-inherit font-inherit cursor-pointer font-bold"
                                     onClick={(e) => this.handleChangeProductImageProperty(e, image, 'isOnCarousel')}
-                                >{image.isOnCarousel? 'YES' : 'NO'}</Button>
-                            </Form.Group>
-                        </td>
-                        <td>
+                                >
+                                    {image.isOnCarousel ? '✅ Sí' : '❌ No'}
+                                </button>
+                            </TerrasachaBadge>
+                        </TerrasachaTableCell>
+
+                        {/* Columna Etiqueta Carrusel */}
+                        <TerrasachaTableCell>
                             {renderCarouselLabelForm(image)}
-                        </td>
-                        <td>
+                        </TerrasachaTableCell>
+
+                        {/* Columna Descripción Carrusel */}
+                        <TerrasachaTableCell>
                             {renderCarouselDescriptionForm(image)}
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
+                        </TerrasachaTableCell>
+                    </>
+                )}
+            />
         )
-        
     }
     const renderIsisImageUploadingFile = () => {
         if (this.state.isImageUploadingFile) {
             return (
-                <Spinner animation='border' variant='primary' />
+                <div className="flex items-center justify-center space-x-2 mt-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-terrasacha-primary"></div>
+                    <span className="text-sm text-terrasacha-secondary1 font-typographica">Subiendo...</span>
+                </div>
             )
         }
-    
     }
     const renderProductImage = (pImage) => {
         if (pImage.imageURL !== '' && !isImageUploadingFile) {
             return (
-                <img
-                    src={urlS3Image+pImage.imageURL}
-                    alt={pImage.id}
-                    height={100}
-                    width={100}
-                />
+                <div className="relative group">
+                    <img
+                        src={urlS3Image + pImage.imageURL}
+                        alt={pImage.title || pImage.id}
+                        className="h-20 w-20 object-cover rounded-lg shadow-terrasacha border border-terrasacha-light/20 group-hover:scale-105 transition-transform duration-200"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all duration-200"></div>
+                </div>
             )
         } else {
-            <p>N/A</p>
+            return (
+                <div className="h-20 w-20 flex items-center justify-center bg-terrasacha-light/10 border border-terrasacha-light/20 rounded-lg">
+                    <span className="text-xs text-terrasacha-secondary1 font-typographica">Sin imagen</span>
+                </div>
+            )
         }
     }
     const renderCarouselLabelForm = (pImage) => {
         if (pImage.isOnCarousel) {
             return (
-                <Form.Group as={Col} controlId='formGridCarouselLabel'>
-                    <Form.Control
-                        type='text'
-                        placeholder='Ex. lorem ipsum label'
-                        name='carouselLabel'
-                        value={pImage.carouselLabel}
-                        onChange={(e) => this.handleChangeProductImageProperty(e, pImage,'carouselLabel')} />
-                </Form.Group>
+                <div className="space-y-1">
+                    <label className="form-terrasacha-label text-xs">
+                        🏷️ Etiqueta
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Ej. Bosque Primario"
+                        name="carouselLabel"
+                        value={pImage.carouselLabel || ''}
+                        className="form-terrasacha-input text-sm w-full"
+                        onChange={(e) => this.handleChangeProductImageProperty(e, pImage, 'carouselLabel')}
+                    />
+                </div>
+            )
+        } else {
+            return (
+                <div className="flex items-center justify-center h-12">
+                    <TerrasachaBadge variant="neutral">
+                        No disponible
+                    </TerrasachaBadge>
+                </div>
             )
         }
     }
     const renderCarouselDescriptionForm = (pImage) => {
         if (pImage.isOnCarousel) {
             return (
-                <Form.Group as={Col} controlId='formGridCarouselDescription'>
-                    <Form.Control
-                        type='text'
-                        placeholder='Ex. lorem ipsum description'
-                        name='carouselDescription'
-                        value={pImage.carouselDescription}
-                        onChange={(e) => this.handleChangeProductImageProperty(e,pImage,'carouselDescription')} />
-                </Form.Group>
+                <div className="space-y-1">
+                    <label className="form-terrasacha-label text-xs">
+                        📝 Descripción
+                    </label>
+                    <textarea
+                        placeholder="Ej. Imagen que muestra la biodiversidad del bosque..."
+                        name="carouselDescription"
+                        value={pImage.carouselDescription || ''}
+                        rows="3"
+                        className="form-terrasacha-input text-sm w-full resize-none"
+                        onChange={(e) => this.handleChangeProductImageProperty(e, pImage, 'carouselDescription')}
+                    />
+                </div>
+            )
+        } else {
+            return (
+                <div className="flex items-center justify-center h-12">
+                    <TerrasachaBadge variant="neutral">
+                        No disponible
+                    </TerrasachaBadge>
+                </div>
             )
         }
     }
 
     return (
-      <>
+      <div className="space-y-6 animate-fade-in">
         {renderCRUDProductImages()}
-      </>
+      </div>
     )
   }
 }

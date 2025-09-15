@@ -1,15 +1,9 @@
 import React, { Component } from "react";
-// Bootstrap
-import {
-  Button,
-  Image,
-  Modal,
-  Table,
-  Form,
-  Col,
-  ListGroup,
-} from "react-bootstrap";
+// Bootstrap reemplazado con Tailwind CSS y sistema Terrasacha
 import { deleteAllInfoProduct } from "./functions";
+// Componentes Terrasacha
+import TerrasachaTable, { TerrasachaTableCell, TerrasachaBadge } from "../../common/TerrasachaTable";
+import TerrasachaModal, { TerrasachaModalButton } from "../../common/TerrasachaModal";
 // GraphQL
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import { listProductFeatureResults } from "../../../graphql/queries";
@@ -359,9 +353,8 @@ export default class ListProducts extends Component {
     const canBeDeleted = !this.checkRequirementsCompleted(product);
   
     return canBeDeleted ? (
-      <Button
-        variant="danger"
-        size="sm"
+      <button
+        className="btn-terrasacha-danger text-sm"
         onClick={() =>
           this.setState({
             showModalDeleteProduct: true,
@@ -370,7 +363,7 @@ export default class ListProducts extends Component {
         }
       >
         Eliminar
-      </Button>
+      </button>
     ) : null;
   };
   
@@ -416,262 +409,266 @@ export default class ListProducts extends Component {
     const renderProducts = () => {
       if (listCleanProducts.length > 0) {
         return (
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th>Eliminar</th>
-                <th>Nombre</th>
-                <th>Categoria</th>
-                <th>Estado</th>
-                <th>Descripción</th>
-                <th>Imagen</th>
-                <th>Características</th>
-                <th>Verificaciones</th>
-                <th>Oficialización Técnica</th>
-                <th>Oficialización Financiera</th>
-                <th>¿Está activo?</th>
-                <th>Acción</th>
-                <th>Certificado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product.id}>
-                  <td>
+          <TerrasachaTable
+            title="Lista de Proyectos"
+            subtitle="Gestión completa de todos los proyectos en la plataforma"
+            headers={[
+              'Eliminar', 'Nombre', 'Categoría', 'Estado', 'Descripción', 
+              'Imagen', 'Características', 'Verificaciones', 'Of. Técnica', 
+              'Of. Financiera', '¿Activo?', 'Acción', 'Certificado'
+            ]}
+            data={products}
+            renderRow={(product) => (
+              <>
+                <TerrasachaTableCell>
                   {this.ProductAction({ product })}
-                  </td>
-                  <td>
-                    <a
-                      href={`/project/${product.id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {product.name ? product.name : ""}
-                    </a>
-                  </td>
-                  <td>{product.category ? product.category.name : ""}</td>
-                  <td>
-                    {/* <Button 
-                                            variant={product.status !== 'disabled'? 'danger': 'success'}
-                                            size='md' 
-                                            onClick={(e) => this.handleUpdateProductIsActive(product)}
-                                        >{product.status !== 'disabled'? 'Disable': 'Activate'}</Button> */}
-                    <Form.Group>
-                      <Form.Select
-                        type="text"
-                        size="sm"
-                        value={product.status}
-                        onChange={(e) =>
-                          this.props.handleUpdateProductStatus(
-                            product,
-                            e.target.value
-                          )
-                        }
-                      >
-                        {[
-                          "draft",
-                          "verified",
-                          "in_blockchain",
-                          "in_equilibrium",
-                        ].map((op) => (
-                          <option value={op} key={op}>
-                            {op}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </td>
-                  <td>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={(e) =>
-                        this.handleLoadSelectedProduct(
-                          e,
-                          product,
-                          "show_modal_product_description"
-                        )
-                      }
-                    >
-                      Descripción
-                    </Button>
-                    {/* {product.description} */}
-                  </td>
-                  <td>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={(e) =>
-                        this.handleLoadSelectedProduct(
-                          e,
-                          product,
-                          "show_modal_product_images"
-                        )
-                      }
-                    >
-                      Imagen
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={(e) =>
-                        this.handleLoadSelectedProduct(
-                          e,
-                          product,
-                          "show_modal_product_features"
-                        )
-                      }
-                    >
-                      Características del producto
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={(e) =>
-                        this.handleLoadSelectedProduct(
-                          e,
-                          product,
-                          "show_modal_verifications"
-                        )
-                      }
-                    >
-                      Verification
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant={
-                        this.handleGetTechnicalStatus(product) ===
-                        "Habilitar cambios"
-                          ? "danger"
-                          : "success"
-                      }
-                      size="sm"
-                      onClick={(e) =>
-                        this.handleUpdateProductTechnical(product)
-                      }
-                    >
-                      {this.handleGetTechnicalStatus(product)}
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant={
-                        this.handleGetFinancialStatus(product) ===
-                        "Habilitar cambios"
-                          ? "danger"
-                          : "success"
-                      }
-                      size="sm"
-                      onClick={(e) =>
-                        this.handleUpdateProductFinancial(product)
-                      }
-                    >
-                      {this.handleGetFinancialStatus(product)}
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant={product.isActive ? "danger" : "success"}
-                      size="sm"
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell variant="primary">
+                  <a
+                    href={`/project/${product.id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-terrasacha-primary hover:text-terrasacha-primary/80 font-medium underline font-typographica"
+                  >
+                    {product.name || "Sin nombre"}
+                  </a>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell variant="secondary">
+                  {product.category ? product.category.name : "Sin categoría"}
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <select
+                    className="form-terrasacha-select text-sm"
+                    value={product.status}
+                    onChange={(e) =>
+                      this.props.handleUpdateProductStatus(
+                        product,
+                        e.target.value
+                      )
+                    }
+                  >
+                    {[
+                      "draft",
+                      "verified", 
+                      "in_blockchain",
+                      "in_equilibrium",
+                    ].map((op) => (
+                      <option value={op} key={op}>
+                        {op}
+                      </option>
+                    ))}
+                  </select>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <button
+                    className="btn-terrasacha-outline text-sm"
+                    onClick={(e) =>
+                      this.handleLoadSelectedProduct(
+                        e,
+                        product,
+                        "show_modal_product_description"
+                      )
+                    }
+                  >
+                    Ver Descripción
+                  </button>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <button
+                    className="btn-terrasacha-outline text-sm"
+                    onClick={(e) =>
+                      this.handleLoadSelectedProduct(
+                        e,
+                        product,
+                        "show_modal_product_images"
+                      )
+                    }
+                  >
+                    Ver Imágenes
+                  </button>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <button
+                    className="btn-terrasacha-outline text-sm"
+                    onClick={(e) =>
+                      this.handleLoadSelectedProduct(
+                        e,
+                        product,
+                        "show_modal_product_features"
+                      )
+                    }
+                  >
+                    Características
+                  </button>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <button
+                    className="btn-terrasacha-outline text-sm"
+                    onClick={(e) =>
+                      this.handleLoadSelectedProduct(
+                        e,
+                        product,
+                        "show_modal_verifications"
+                      )
+                    }
+                  >
+                    Verificaciones
+                  </button>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <button
+                    className={`text-sm font-typographica font-bold py-2 px-3 rounded-lg transition-colors duration-200 ${
+                      this.handleGetTechnicalStatus(product) === "Habilitar cambios"
+                        ? "btn-terrasacha-danger"
+                        : "btn-terrasacha-success"
+                    }`}
+                    onClick={(e) =>
+                      this.handleUpdateProductTechnical(product)
+                    }
+                  >
+                    {this.handleGetTechnicalStatus(product)}
+                  </button>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <button
+                    className={`text-sm font-typographica font-bold py-2 px-3 rounded-lg transition-colors duration-200 ${
+                      this.handleGetFinancialStatus(product) === "Habilitar cambios"
+                        ? "btn-terrasacha-danger"
+                        : "btn-terrasacha-success"
+                    }`}
+                    onClick={(e) =>
+                      this.handleUpdateProductFinancial(product)
+                    }
+                  >
+                    {this.handleGetFinancialStatus(product)}
+                  </button>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <TerrasachaBadge variant={product.isActive ? 'success' : 'warning'}>
+                    <button
+                      className="bg-transparent border-none text-inherit font-inherit cursor-pointer"
                       onClick={(e) => this.handleUpdateProductIsActive(product)}
                     >
-                      {product.isActive ? "Disable" : "Activate"}
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      disabled={product.status === "on_block_chain"}
-                      onClick={(e) => this.handleLoadEditProduct(product, e)}
-                    >
-                      {product.status === "on_block_chain"
-                        ? "No se puede editar"
-                        : "Editar"}
-                    </Button>
-                  </td>
-                  <td>
-                    {product.toCertified ? (
-                      product.status !== "certified" ? (
-                        <Button
-                          variant="outline-success"
-                          size="sm"
-                          onClick={() => this.certifyProduct(product)}
-                        >
-                          Certificar
-                        </Button>
-                      ) : (
-                        "Certificado"
-                      )
+                      {product.isActive ? "Activo" : "Inactivo"}
+                    </button>
+                  </TerrasachaBadge>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  <button
+                    className={`text-sm font-typographica font-bold py-2 px-3 rounded-lg transition-colors duration-200 ${
+                      product.status === "on_block_chain"
+                        ? "bg-gray-400 cursor-not-allowed text-gray-600"
+                        : "btn-terrasacha-primary"
+                    }`}
+                    disabled={product.status === "on_block_chain"}
+                    onClick={(e) => this.handleLoadEditProduct(product, e)}
+                  >
+                    {product.status === "on_block_chain"
+                      ? "No editable"
+                      : "Editar"}
+                  </button>
+                </TerrasachaTableCell>
+                
+                <TerrasachaTableCell>
+                  {product.toCertified ? (
+                    product.status !== "certified" ? (
+                      <button
+                        className="btn-terrasacha-secondary text-sm"
+                        onClick={() => this.certifyProduct(product)}
+                      >
+                        Certificar
+                      </button>
                     ) : (
-                      "Falta certificación"
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                      <TerrasachaBadge variant="success">
+                        Certificado
+                      </TerrasachaBadge>
+                    )
+                  ) : (
+                    <TerrasachaBadge variant="warning">
+                      Falta certificación
+                    </TerrasachaBadge>
+                  )}
+                </TerrasachaTableCell>
+              </>
+            )}
+          />
         );
       }
     };
     const modalProductImages = () => {
       if (isRenderModalProductImages && selectedProductToShow !== null) {
         return (
-          <Modal
-            show={isRenderModalProductImages}
-            onHide={(e) => this.handleHideModalProductImages(e)}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
+          <TerrasachaModal
+            isOpen={isRenderModalProductImages}
+            onClose={() => this.handleHideModalProductImages()}
+            title="🖼️ Imágenes del Proyecto"
+            size="xl"
+            footer={
+              <TerrasachaModalButton
+                variant="outline"
+                onClick={() => this.handleHideModalProductImages()}
+              >
+                Cerrar
+              </TerrasachaModalButton>
+            }
           >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                Images
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Table striped hover size="sm" borderless>
-                <thead>
-                  <tr>
-                    <th>Image</th>
-                    <th>Title</th>
-                    <th>Order</th>
-                    <th>Is On Carousel</th>
-                    <th>Carousel Label</th>
-                    <th>Carousel Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedProductToShow.images.items.map((image) => (
-                    <tr key={image.id}>
-                      <td>
-                        <Image
-                          src={urlS3Image + image.imageURL}
-                          rounded
-                          style={{ height: 200, width: "auto" }}
-                        />
-                      </td>
-                      <td>{image.title}</td>
-                      <td>{image.order === null ? "N/A" : image.order}</td>
-                      <td>{image.isOnCarousel ? "YES" : "NO"}</td>
-                      <td>{image.carouselLabel}</td>
-                      <td>{image.carouselDescription}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={(e) => this.handleHideModalProductImages()}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
+            <TerrasachaTable
+              title={`Imágenes de ${selectedProductToShow.name || 'Proyecto'}`}
+              subtitle="Galería completa de imágenes asociadas al proyecto"
+              headers={['Imagen', 'Título', 'Orden', 'En Carrusel', 'Etiqueta', 'Descripción']}
+              data={selectedProductToShow.images.items}
+              renderRow={(image) => (
+                <>
+                  <TerrasachaTableCell>
+                    <div className="flex justify-center">
+                      <img
+                        src={this.props.urlS3Image + image.imageURL}
+                        alt={image.title || 'Imagen del proyecto'}
+                        className="h-32 w-auto object-cover rounded-lg shadow-terrasacha border border-terrasacha-light/20"
+                      />
+                    </div>
+                  </TerrasachaTableCell>
+                  
+                  <TerrasachaTableCell variant="primary">
+                    {image.title || "Sin título"}
+                  </TerrasachaTableCell>
+                  
+                  <TerrasachaTableCell variant="secondary">
+                    {image.order === null ? "N/A" : image.order}
+                  </TerrasachaTableCell>
+                  
+                  <TerrasachaTableCell>
+                    <TerrasachaBadge variant={image.isOnCarousel ? 'success' : 'neutral'}>
+                      {image.isOnCarousel ? "Sí" : "No"}
+                    </TerrasachaBadge>
+                  </TerrasachaTableCell>
+                  
+                  <TerrasachaTableCell variant="secondary">
+                    {image.carouselLabel || "N/A"}
+                  </TerrasachaTableCell>
+                  
+                  <TerrasachaTableCell>
+                    <div className="max-w-xs">
+                      <p className="text-sm text-terrasacha-secondary1 truncate" title={image.carouselDescription}>
+                        {image.carouselDescription || "Sin descripción"}
+                      </p>
+                    </div>
+                  </TerrasachaTableCell>
+                </>
+              )}
+            />
+          </TerrasachaModal>
         );
       }
     };
@@ -698,70 +695,89 @@ export default class ListProducts extends Component {
         }
         if (productFeaturesCopy.length > 0) {
           return (
-            <Modal
-              show={isRenderModalProductFeatures}
-              onHide={(e) => this.handleHideModalProductFeatures(e)}
+            <TerrasachaModal
+              isOpen={isRenderModalProductFeatures}
+              onClose={() => this.handleHideModalProductFeatures()}
+              title="⚙️ Características del Proyecto"
               size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                  Product Features
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <ToastContainer />
-                <Table striped bordered hover responsive borderless>
-                  <thead>
-                    <tr>
-                      <th>Feature ID</th>
-                      <th>Value</th>
-                      <th>Result Assigned</th>
-                      <th>Main Card</th>
-                      <th>Is to BlockChain?</th>
-                      <th>Is Verifable?</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productFeaturesCopy?.map((pfeature, idx) => (
-                      <tr key={pfeature.id}>
-                        <td>{pfeature.feature.name}</td>
-                        <td>{pfeature.value}</td>
-                        <td>
-                          {pfeature.productFeatureResults2[0]
-                            ? pfeature.productFeatureResults2[0].result.value
-                            : "no result assigned"}
-                        </td>
-                        <td>{pfeature.isOnMainCard ? "YES" : "NO"}</td>
-                        <td>{pfeature.isToBlockChain ? "YES" : "NO"}</td>
-                        <td>{pfeature.isVerifable ? "YES" : "NO"}</td>
-                        <td>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={(e) =>
-                              this.handleShowModalDeteleProductFeatureConfirmation(
-                                e,
-                                pfeature
-                              )
-                            }
-                          >
-                            Delete
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button onClick={(e) => this.handleHideModalProductFeatures(e)}>
+              footer={
+                <TerrasachaModalButton
+                  variant="outline"
+                  onClick={() => this.handleHideModalProductFeatures()}
+                >
                   Cerrar
-                </Button>
-              </Modal.Footer>
-            </Modal>
+                </TerrasachaModalButton>
+              }
+            >
+              <ToastContainer />
+              <TerrasachaTable
+                title={`Características de ${selectedProductToShow.name || 'Proyecto'}`}
+                subtitle="Configuración completa de características y atributos del proyecto"
+                headers={['Característica', 'Valor', 'Resultado', 'En Tarjeta', 'BlockChain', 'Verificable', 'Acciones']}
+                data={productFeaturesCopy}
+                renderRow={(pfeature) => (
+                  <>
+                    <TerrasachaTableCell variant="primary">
+                      {pfeature.feature.name}
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell variant="secondary">
+                      <div className="max-w-xs">
+                        <p className="truncate font-typographica" title={pfeature.value}>
+                          {pfeature.value || "Sin valor"}
+                        </p>
+                      </div>
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      {pfeature.productFeatureResults2[0]
+                        ? (
+                          <TerrasachaBadge variant="info">
+                            {pfeature.productFeatureResults2[0].result.value}
+                          </TerrasachaBadge>
+                        )
+                        : (
+                          <TerrasachaBadge variant="neutral">
+                            Sin resultado
+                          </TerrasachaBadge>
+                        )}
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      <TerrasachaBadge variant={pfeature.isOnMainCard ? 'success' : 'neutral'}>
+                        {pfeature.isOnMainCard ? "Sí" : "No"}
+                      </TerrasachaBadge>
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      <TerrasachaBadge variant={pfeature.isToBlockChain ? 'info' : 'neutral'}>
+                        {pfeature.isToBlockChain ? "Sí" : "No"}
+                      </TerrasachaBadge>
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      <TerrasachaBadge variant={pfeature.isVerifable ? 'warning' : 'neutral'}>
+                        {pfeature.isVerifable ? "Sí" : "No"}
+                      </TerrasachaBadge>
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      <button
+                        className="btn-terrasacha-danger text-sm"
+                        onClick={(e) =>
+                          this.handleShowModalDeteleProductFeatureConfirmation(
+                            e,
+                            pfeature
+                          )
+                        }
+                      >
+                        Eliminar
+                      </button>
+                    </TerrasachaTableCell>
+                  </>
+                )}
+              />
+            </TerrasachaModal>
           );
         }
       }
@@ -769,77 +785,97 @@ export default class ListProducts extends Component {
     const modalProductDescription = () => {
       if (isRenderModalProductDescription && selectedProductToShow !== null) {
         return (
-          <Modal
-            show={isRenderModalProductDescription}
-            onHide={(e) => this.handleHideModalProductDescription(e)}
+          <TerrasachaModal
+            isOpen={isRenderModalProductDescription}
+            onClose={() => this.handleHideModalProductDescription()}
+            title="Descripción del Proyecto"
             size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                Description
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <p>{selectedProductToShow.description}</p>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                onClick={(e) => this.handleHideModalProductDescription(e)}
+            footer={
+              <TerrasachaModalButton
+                variant="outline"
+                onClick={() => this.handleHideModalProductDescription()}
               >
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                Cerrar
+              </TerrasachaModalButton>
+            }
+          >
+            <div className="bg-terrasacha-light/5 p-4 rounded-lg border border-terrasacha-light/20">
+              <h3 className="text-lg font-bold text-terrasacha-primary font-champagne mb-3">
+                {selectedProductToShow.name || "Sin nombre"}
+              </h3>
+              <p className="text-terrasacha-secondary1 font-typographica leading-relaxed">
+                {selectedProductToShow.description || "No hay descripción disponible para este proyecto."}
+              </p>
+            </div>
+          </TerrasachaModal>
         );
       }
     };
     const modalDeleteProduct = () => {
       if (this.state.showModalDeleteProduct) {
         return (
-          <Modal
-            show={this.state.showModalDeleteProduct}
-            onHide={() => this.setState({ showModalDeleteProduct: false })}
+          <TerrasachaModal
+            isOpen={this.state.showModalDeleteProduct}
+            onClose={() => this.setState({ showModalDeleteProduct: false })}
+            title="⚠️ Confirmar Eliminación"
+            size="md"
+            footer={
+              <>
+                <TerrasachaModalButton
+                  variant="outline"
+                  onClick={() => this.setState({ showModalDeleteProduct: false })}
+                >
+                  Cancelar
+                </TerrasachaModalButton>
+                <TerrasachaModalButton
+                  variant="danger"
+                  disabled={this.state.isLoading}
+                  onClick={async () => {
+                    this.setState({ isLoading: true });
+                    try {
+                      await deleteAllInfoProduct(this.state.selectedProductToShow);
+                      this.setState({
+                        showModalDeleteProduct: false,
+                        isLoading: false,
+                      });
+                      this.notify("Producto eliminado exitosamente.");
+                    } catch (error) {
+                      console.error("Error al eliminar el producto:", error);
+                      this.setState({ isLoading: false });
+                      this.notifyError(
+                        "Error al eliminar el producto. Intente nuevamente."
+                      );
+                    }
+                  }}
+                >
+                  {this.state.isLoading ? "Eliminando..." : "Confirmar Eliminación"}
+                </TerrasachaModalButton>
+              </>
+            }
           >
-            <Modal.Header closeButton>
-              <Modal.Title>Confirmar eliminación</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {`¿Estás seguro que quieres borrar el proyecto?`}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={() => this.setState({ showModalDeleteProduct: false })}
-              >
-                Cancelar
-              </Button>
-              <Button
-            variant="danger"
-            disabled={this.state.isLoading} // Deshabilitar durante la carga
-            onClick={async () => {
-              this.setState({ isLoading: true }); // Iniciar carga
-              try {
-                await deleteAllInfoProduct(this.state.selectedProductToShow);
-                this.setState({
-                  showModalDeleteProduct: false,
-                  isLoading: false, // Finalizar carga
-                });
-                this.notify("Producto eliminado exitosamente.");
-              } catch (error) {
-                console.error("Error al eliminar el producto:", error);
-                this.setState({ isLoading: false }); // Finalizar carga en caso de error
-                this.notifyError(
-                  "Error al eliminar el producto. Intente nuevamente."
-                );
-              }
-            }}
-          >
-            {this.state.isLoading ? "Confirmando..." : "Confirmar"}
-          </Button>
-            </Modal.Footer>
-          </Modal>
+            <div className="text-center">
+              <div className="bg-terrasacha-danger/10 border border-terrasacha-danger/20 rounded-lg p-6 mb-4">
+                <div className="text-6xl mb-4">🗑️</div>
+                <h3 className="text-lg font-bold text-terrasacha-danger font-champagne mb-2">
+                  Acción Irreversible
+                </h3>
+                <p className="text-terrasacha-secondary1 font-typographica">
+                  ¿Estás seguro que quieres eliminar permanentemente este proyecto?
+                </p>
+              </div>
+              
+              {this.state.selectedProductToShow && (
+                <div className="bg-terrasacha-light/5 p-4 rounded-lg border border-terrasacha-light/20">
+                  <p className="text-sm text-terrasacha-secondary1 font-typographica">
+                    <span className="font-bold">Proyecto:</span> {this.state.selectedProductToShow.name || "Sin nombre"}
+                  </p>
+                  <p className="text-sm text-terrasacha-secondary1 font-typographica mt-1">
+                    <span className="font-bold">ID:</span> {this.state.selectedProductToShow.id}
+                  </p>
+                </div>
+              )}
+            </div>
+          </TerrasachaModal>
         );
       }
     };
@@ -869,77 +905,81 @@ export default class ListProducts extends Component {
         }
         if (productFeaturesCopy.length > 0) {
           return (
-            <Modal
-              show={isRenderModalVerifications}
-              onHide={(e) => this.handleHideModalProductVerification(e)}
+            <TerrasachaModal
+              isOpen={isRenderModalVerifications}
+              onClose={() => this.handleHideModalProductVerification()}
+              title="✅ Verificaciones del Proyecto"
               size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                  Product Features
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <ToastContainer />
-                <Table striped hover size="sm" borderless>
-                  <thead>
-                    <tr>
-                      <th>Feature ID</th>
-                      <th>Is Verifable?</th>
-                      <th>Get Document</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productFeaturesCopy?.map((pfeature, idx) => (
-                      <tr key={pfeature.id}>
-                        <td>{pfeature.feature.name}</td>
-                        <td>{pfeature.feature.isVerifable ? "YES" : "NO"}</td>
-                        <td>
-                          <Button
-                            variant="outline-primary"
-                            size="sm"
-                            onClick={() => this.handleDownload(pfeature)}
-                          >
-                            Download Document
-                          </Button>
-                        </td>
-                        <td>
-                          <Form.Group>
-                            <Form.Select
-                              type="text"
-                              size="sm"
-                              value={pfeature.documents.items[0].status}
-                              onChange={(e) =>
-                                this.props.handleUpdateDocumentStatus(
-                                  pfeature.documents.items[0].id,
-                                  e.target.value
-                                )
-                              }
-                            >
-                              {["pending", "accepted", "rejected"].map((op) => (
-                                <option value={op} key={op}>
-                                  {op}
-                                </option>
-                              ))}
-                            </Form.Select>
-                          </Form.Group>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  onClick={(e) => this.handleHideModalProductVerification(e)}
+              footer={
+                <TerrasachaModalButton
+                  variant="outline"
+                  onClick={() => this.handleHideModalProductVerification()}
                 >
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
+                  Cerrar
+                </TerrasachaModalButton>
+              }
+            >
+              <ToastContainer />
+              <TerrasachaTable
+                title={`Verificaciones de ${selectedProductToShow.name || 'Proyecto'}`}
+                subtitle="Gestión de documentos verificables y su estado de validación"
+                headers={['Característica', 'Verificable', 'Documento', 'Estado/Acción']}
+                data={productFeaturesCopy}
+                renderRow={(pfeature) => (
+                  <>
+                    <TerrasachaTableCell variant="primary">
+                      {pfeature.feature.name}
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      <TerrasachaBadge variant={pfeature.feature.isVerifable ? 'success' : 'neutral'}>
+                        {pfeature.feature.isVerifable ? "Verificable" : "No verificable"}
+                      </TerrasachaBadge>
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      <button
+                        className="btn-terrasacha-outline text-sm"
+                        onClick={() => this.handleDownload(pfeature)}
+                      >
+                        📥 Descargar
+                      </button>
+                    </TerrasachaTableCell>
+                    
+                    <TerrasachaTableCell>
+                      <div className="flex items-center space-x-2">
+                        <select
+                          className="form-terrasacha-select text-sm min-w-32"
+                          value={pfeature.documents.items[0].status}
+                          onChange={(e) =>
+                            this.props.handleUpdateDocumentStatus(
+                              pfeature.documents.items[0].id,
+                              e.target.value
+                            )
+                          }
+                        >
+                          {["pending", "accepted", "rejected"].map((op) => (
+                            <option value={op} key={op}>
+                              {op === "pending" ? "Pendiente" : 
+                               op === "accepted" ? "Aceptado" : "Rechazado"}
+                            </option>
+                          ))}
+                        </select>
+                        <TerrasachaBadge 
+                          variant={
+                            pfeature.documents.items[0].status === "accepted" ? "success" :
+                            pfeature.documents.items[0].status === "rejected" ? "danger" : "warning"
+                          }
+                        >
+                          {pfeature.documents.items[0].status === "pending" ? "⏳ Pendiente" : 
+                           pfeature.documents.items[0].status === "accepted" ? "✅ Aceptado" : "❌ Rechazado"}
+                        </TerrasachaBadge>
+                      </div>
+                    </TerrasachaTableCell>
+                  </>
+                )}
+              />
+            </TerrasachaModal>
           );
         }
       }
@@ -950,84 +990,105 @@ export default class ListProducts extends Component {
         selectedProductFeatureToDelete !== null
       ) {
         return (
-          <Modal
-            show={isRenderModalDeleteProductFeatureConfirmation}
-            onHide={() =>
+          <TerrasachaModal
+            isOpen={isRenderModalDeleteProductFeatureConfirmation}
+            onClose={() =>
               this.handleHideModalDeleteProductFeatureConfirmation()
             }
+            title="⚠️ Confirmar Eliminación de Característica"
             size="md"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                Confirmacion
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <p>
-                Estas de acuerdo con borrar el ProductFeature:{" "}
-                {selectedProductFeatureToDelete.feature.name} ?
-              </p>
-              <p>Seran eliminados los siguientes elementos:</p>
-              <ListGroup>
-                <ListGroup.Item>
-                  {"Documentos (" +
-                    selectedProductFeatureToDelete.documents.items.length +
-                    ")"}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  {"Validadores (" +
-                    selectedProductFeatureToDelete.verifications.items.length +
-                    ")"}{" "}
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  {"Resultados (" +
-                    selectedProductFeatureToDelete.productFeatureResults.items
-                      .length +
-                    ")"}
-                </ListGroup.Item>
-              </ListGroup>
-              <Form.Group className="my-3" controlId="formBasicCheckbox">
-                <Form.Check
-                  type="checkbox"
-                  label="Estoy de acuerdo"
-                  onChange={(e) =>
-                    this.setState({
-                      selectedProductFeatureToDeleteConfirmationCheck:
-                        e.target.checked,
-                    })
+            footer={
+              <>
+                <TerrasachaModalButton
+                  variant="outline"
+                  onClick={() =>
+                    this.handleHideModalDeleteProductFeatureConfirmation()
                   }
-                />
-              </Form.Group>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                size="sm"
-                onClick={() =>
-                  this.handleHideModalDeleteProductFeatureConfirmation()
-                }
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="danger"
-                size="sm"
-                disabled={
-                  !this.state.selectedProductFeatureToDeleteConfirmationCheck
-                }
-                onClick={(e) => this.handleDeleteProductFeature(e)}
-              >
-                Eliminar
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                >
+                  Cancelar
+                </TerrasachaModalButton>
+                <TerrasachaModalButton
+                  variant="danger"
+                  disabled={
+                    !this.state.selectedProductFeatureToDeleteConfirmationCheck
+                  }
+                  onClick={(e) => this.handleDeleteProductFeature(e)}
+                >
+                  Confirmar Eliminación
+                </TerrasachaModalButton>
+              </>
+            }
+          >
+            <div className="space-y-6">
+              {/* Mensaje principal */}
+              <div className="bg-terrasacha-danger/10 border border-terrasacha-danger/20 rounded-lg p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="text-3xl">🗑️</div>
+                  <div>
+                    <h3 className="text-lg font-bold text-terrasacha-danger font-champagne">
+                      Eliminar Característica
+                    </h3>
+                    <p className="text-sm text-terrasacha-secondary1 font-typographica">
+                      ¿Estás seguro de eliminar la característica <span className="font-bold">
+                        {selectedProductFeatureToDelete.feature.name}
+                      </span>?
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Elementos que serán eliminados */}
+              <div className="bg-terrasacha-light/5 border border-terrasacha-light/20 rounded-lg p-4">
+                <h4 className="text-md font-bold text-terrasacha-primary font-champagne mb-3">
+                  Elementos que serán eliminados:
+                </h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-2 bg-white rounded border border-terrasacha-light/10">
+                    <span className="text-terrasacha-secondary1 font-typographica">📄 Documentos</span>
+                    <TerrasachaBadge variant="info">
+                      {selectedProductFeatureToDelete.documents.items.length}
+                    </TerrasachaBadge>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white rounded border border-terrasacha-light/10">
+                    <span className="text-terrasacha-secondary1 font-typographica">✅ Validadores</span>
+                    <TerrasachaBadge variant="warning">
+                      {selectedProductFeatureToDelete.verifications.items.length}
+                    </TerrasachaBadge>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white rounded border border-terrasacha-light/10">
+                    <span className="text-terrasacha-secondary1 font-typographica">📊 Resultados</span>
+                    <TerrasachaBadge variant="secondary">
+                      {selectedProductFeatureToDelete.productFeatureResults.items.length}
+                    </TerrasachaBadge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Checkbox de confirmación */}
+              <div className="bg-terrasacha-warning/10 border border-terrasacha-warning/20 rounded-lg p-4">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-terrasacha-primary border-terrasacha-light/30 rounded focus:ring-terrasacha-primary focus:ring-2"
+                    onChange={(e) =>
+                      this.setState({
+                        selectedProductFeatureToDeleteConfirmationCheck:
+                          e.target.checked,
+                      })
+                    }
+                  />
+                  <span className="font-typographica text-terrasacha-secondary1 font-medium">
+                    Entiendo que esta acción es <span className="font-bold text-terrasacha-danger">irreversible</span> y confirmo que quiero proceder
+                  </span>
+                </label>
+              </div>
+            </div>
+          </TerrasachaModal>
         );
       }
     };
     return (
-      <>
-        <h1>Lista de proyectos</h1>
+      <div className="space-y-6">
         {renderProducts()}
         {modalProductImages()}
         {modalProductFeatures()}
@@ -1035,7 +1096,7 @@ export default class ListProducts extends Component {
         {modalProductDescription()}
         {modalDeleteProductFeatureConfirmation()}
         {modalDeleteProduct()}
-      </>
+      </div>
     );
   }
 }

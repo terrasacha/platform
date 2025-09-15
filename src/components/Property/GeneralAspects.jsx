@@ -170,8 +170,8 @@ export default function GeneralAspects(props) {
               optionCheckedList={formData.G_habita_predio}
               inputName="G_habita_predio"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_habita_predio"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_habita_predio"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -187,8 +187,8 @@ export default function GeneralAspects(props) {
               optionCheckedList={formData.G_caminos_existence}
               inputName="G_caminos_existence"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_caminos_existence"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_caminos_existence"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -205,8 +205,8 @@ export default function GeneralAspects(props) {
                 optionCheckedList={formData.G_Temporal_permanente}
                 inputName="G_Temporal_permanente"
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                className={`border rounded-md p-1 ${
-                  changedFields["G_Temporal_permanente"] ? "border-red-500 bg-red-100" : ""
+                className={`border border-terrasacha-light rounded-lg p-1 ${
+                  changedFields["G_Temporal_permanente"] ? "border-terrasacha-danger bg-red-100" : ""
                 }`}
               />
             </div>
@@ -220,8 +220,8 @@ export default function GeneralAspects(props) {
                 inputValue={formData.G_habita_years}
                 inputName="G_habita_years"
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                className={`border rounded-md p-1 ${
-                  changedFields["G_habita_years"] ? "border-red-500 bg-red-100" : ""
+                className={`border border-terrasacha-light rounded-lg p-1 ${
+                  changedFields["G_habita_years"] ? "border-terrasacha-danger bg-red-100" : ""
                 }`}
               />
             </div>
@@ -234,8 +234,8 @@ export default function GeneralAspects(props) {
               inputValue={formData.G_viviendas_number}
               inputName="G_viviendas_number"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_viviendas_number"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_viviendas_number"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -247,8 +247,8 @@ export default function GeneralAspects(props) {
               inputValue={formData.G_familias}
               inputName="G_familias"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_familias"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_familias"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -262,8 +262,8 @@ export default function GeneralAspects(props) {
                 inputValue={formData.G_familias_miembros}
                 inputName="G_familias_miembros"
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                className={`border rounded-md p-1 ${
-                  changedFields["G_familias_miembros"] ? "border-red-500 bg-red-100" : ""
+                className={`border border-terrasacha-light rounded-lg p-1 ${
+                  changedFields["G_familias_miembros"] ? "border-terrasacha-danger bg-red-100" : ""
                 }`}
               />
             </div>
@@ -276,8 +276,8 @@ export default function GeneralAspects(props) {
               inputValue={formData.G_vias_state}
               inputName="G_vias_state"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_vias_state"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_vias_state"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -289,8 +289,8 @@ export default function GeneralAspects(props) {
               inputValue={formData.G_distancia_predio_municipal}
               inputName="G_distancia_predio_municipal"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_distancia_predio_municipal"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_distancia_predio_municipal"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -302,8 +302,8 @@ export default function GeneralAspects(props) {
               inputValue={formData.G_transport_mean}
               inputName="G_transport_mean"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_transport_mean"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_transport_mean"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -315,16 +315,21 @@ export default function GeneralAspects(props) {
               inputValue={formData.G_risks_erosion_derrumbe}
               inputName="G_risks_erosion_derrumbe"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["G_risks_erosion_derrumbe"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["G_risks_erosion_derrumbe"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
         </div>
         {autorizedUser && (
-          <div className="d-flex justify-content-center">
+          <div className="flex justify-center mt-6">
             <button
-              className="p-2 text-white bg-green-700 rounded-md"
+              className="btn p-2 font-typographica"
+              style={{
+                backgroundColor: '#849b50', // Verde Pradera
+                borderColor: '#849b50',
+                color: 'white'
+              }}
               onClick={() => handleSaveBtn()}
               variant="success"
             >

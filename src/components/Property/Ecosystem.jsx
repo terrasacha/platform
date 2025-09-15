@@ -163,8 +163,8 @@ export default function Ecosystem(props) {
               optionCheckedList={formData.F_nacimiento_agua}
               inputName="F_nacimiento_agua"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_nacimiento_agua"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_nacimiento_agua"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -177,8 +177,8 @@ export default function Ecosystem(props) {
                 inputValue={formData.F_nacimiento_agua_quantity}
                 inputName="F_nacimiento_agua_quantity"
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                className={`border rounded-md p-1 ${
-                  changedFields["F_nacimiento_agua_quantity"] ? "border-red-500 bg-red-100" : ""
+                className={`border border-terrasacha-light rounded-lg p-1 ${
+                  changedFields["F_nacimiento_agua_quantity"] ? "border-terrasacha-danger bg-red-100" : ""
                 }`}
               />
             </div>
@@ -195,8 +195,8 @@ export default function Ecosystem(props) {
               optionCheckedList={formData.F_agua_concede}
               inputName="F_agua_concede"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_agua_concede"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_agua_concede"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -209,8 +209,8 @@ export default function Ecosystem(props) {
                 inputValue={formData.F_agua_concede_entity}
                 inputName="F_agua_concede_entity"
                 onChangeInputValue={(e) => handleChangeInputValue(e)}
-                className={`border rounded-md p-1 ${
-                  changedFields["F_agua_concede_entity"] ? "border-red-500 bg-red-100" : ""
+                className={`border border-terrasacha-light rounded-lg p-1 ${
+                  changedFields["F_agua_concede_entity"] ? "border-terrasacha-danger bg-red-100" : ""
                 }`}
               />
             </div>
@@ -223,8 +223,8 @@ export default function Ecosystem(props) {
               inputValue={formData.F_amenazas_defo_desc}
               inputName="F_amenazas_defo_desc"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_amenazas_defo_desc"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_amenazas_defo_desc"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -236,8 +236,8 @@ export default function Ecosystem(props) {
               inputValue={formData.F_conservacion_desc}
               inputName="F_conservacion_desc"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_conservacion_desc"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_conservacion_desc"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -249,8 +249,8 @@ export default function Ecosystem(props) {
               inputValue={formData.F_especies_fauna}
               inputName="F_especies_fauna"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_especies_fauna"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_especies_fauna"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -262,8 +262,8 @@ export default function Ecosystem(props) {
               inputValue={formData.F_especies_mamiferos}
               inputName="F_especies_mamiferos"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_especies_mamiferos"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_especies_mamiferos"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -275,8 +275,8 @@ export default function Ecosystem(props) {
               inputValue={formData.F_especies_aves}
               inputName="F_especies_aves"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_especies_aves"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_especies_aves"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -288,16 +288,16 @@ export default function Ecosystem(props) {
               inputValue={formData.F_especies_flora}
               inputName="F_especies_flora"
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["F_especies_flora"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["F_especies_flora"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
         </div>
         {autorizedUser && (
-          <div className="d-flex justify-content-center">
+          <div className="flex justify-center mt-6">
             <button
-              className="p-2 text-white bg-green-700 rounded-md"
+              className="btn-terrasacha-success p-2 font-typographica"
               onClick={() => handleSaveBtn()}
               variant="success"
             >

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-// Auth css custom
-// Bootstrap
-import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
+// Bootstrap reemplazado con Tailwind CSS y sistema Terrasacha
+// Componentes Terrasacha
+import TerrasachaTable, { TerrasachaTableCell, TerrasachaBadge } from "../../common/TerrasachaTable";   
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
@@ -335,43 +335,64 @@ class Results extends Component {
     }
     render() {
         const SelectProductForm = () => {
-            
-                return(
-                    <Form.Group as={Col}>
-                    <Form.Label>Select a product</Form.Label>
-                    <Form.Select 
-                        name='result.selectedProduct'
-                        defaultValue={'-'}
-                        onChange={(e) => this.handleOnChangeInputForm(e)}>
-                            <option>-</option>
-                            {this.state.products.map((products, idx) => (<option value={products.id} key={idx}>{products.name}</option>))}
-                    </Form.Select>
-                </Form.Group>
-                )
+            return(
+                <div className="space-y-2">
+                    <label className="form-terrasacha-label">
+                        🏭 Seleccionar un Producto
+                    </label>
+                    <select
+                        name="result.selectedProduct"
+                        defaultValue=""
+                        className="form-terrasacha-select"
+                        onChange={(e) => this.handleOnChangeInputForm(e)}
+                    >
+                        <option value="">Seleccionar producto...</option>
+                        {this.state.products.map((products, idx) => (
+                            <option value={products.id} key={idx}>
+                                {products.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )
         }
         const SelectFormulaForm = () => {
                 return(
-                    <Form.Group as={Col}>
-                        <Form.Label>Select a formula</Form.Label>
-                        <Form.Select 
-                            name='result.selectedFormula'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option>-</option>
-                                {this.state.formulas.map((formula, idx) => (<option value={formula.id} key={idx}>{formula.varID}: {formula.equation}</option>))}
-                        </Form.Select>
-                    </Form.Group>
+                    <div className="space-y-2">
+                        <label className="form-terrasacha-label">
+                            📐 Seleccionar una Fórmula
+                        </label>
+                        <select
+                            name="result.selectedFormula"
+                            className="form-terrasacha-select"
+                            onChange={(e) => this.handleOnChangeInputForm(e)}
+                        >
+                            <option value="">Seleccionar fórmula...</option>
+                            {this.state.formulas.map((formula, idx) => (
+                                <option value={formula.id} key={idx}>
+                                    {formula.varID}: {formula.equation}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 )
         }
         const CheckVariablesPF = () => {
             if(this.state.selectedFormulaID !== '' && this.state.selectedProductID !== ''){
                 return(
-                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}} >
-                        <h6>Check if ProductFeatures of {this.state.selectedProductName} match with the variables on the equation</h6>
-                        <Button
-                            variant='primary'
-                            size='sm' 
+                    <div className="bg-terrasacha-info/10 border border-terrasacha-info/20 rounded-lg p-4 space-y-3">
+                        <h6 className="text-sm font-bold text-terrasacha-primary font-champagne">
+                            🔍 Verificación de Variables
+                        </h6>
+                        <p className="text-sm text-terrasacha-secondary1 font-typographica">
+                            Verificar si las características del producto <span className="font-bold">{this.state.selectedProductName}</span> coinciden con las variables de la ecuación
+                        </p>
+                        <button
+                            className="btn-terrasacha-info text-sm w-full"
                             onClick={(e) => this.checkIfVariablesMatchWithPF()}
-                        >Check</Button> 
+                        >
+                            🔍 Verificar Compatibilidad
+                        </button>
                     </div>
                 )
             }
@@ -379,35 +400,54 @@ class Results extends Component {
         const Calculate = () => {
             if(this.state.canCalculate){
                 return(
-                    <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}}>
-                        <h6>The variables exists as Features of this Product. You can calculate </h6>
-                        <Button
-                            variant='primary'
-                            size='sm' 
+                    <div className="bg-terrasacha-success/10 border border-terrasacha-success/20 rounded-lg p-4 space-y-3">
+                        <h6 className="text-sm font-bold text-terrasacha-success font-champagne">
+                            ✅ Variables Compatibles
+                        </h6>
+                        <p className="text-sm text-terrasacha-secondary1 font-typographica">
+                            Las variables existen como características de este producto. Puedes proceder con el cálculo.
+                        </p>
+                        <button
+                            className="btn-terrasacha-success text-sm w-full"
                             onClick={(e) => this.resolveFormula()}
-                        >Calculate</Button> 
+                        >
+                            🧮 Calcular Resultado
+                        </button>
                     </div>
                 )
             }
             if(this.state.canCalculate === false){
                 return(
-                    <>
-                        <h6>The variables doesn't exists as Features of this Product. Try  another product/formula</h6>
-                    </>
+                    <div className="bg-terrasacha-danger/10 border border-terrasacha-danger/20 rounded-lg p-4">
+                        <h6 className="text-sm font-bold text-terrasacha-danger font-champagne">
+                            ❌ Variables Incompatibles
+                        </h6>
+                        <p className="text-sm text-terrasacha-secondary1 font-typographica">
+                            Las variables no existen como características de este producto. Intenta con otro producto o fórmula.
+                        </p>
+                    </div>
                 ) 
             }
         }
         const Result = () => {
             if(this.state.result !== ''){
                 return(
-                    <>
-                        <h5>The Result is: {this.state.result}</h5>
-                        <Button
-                            variant='primary'
-                            size='sm' 
+                    <div className="bg-terrasacha-light/10 border border-terrasacha-light/20 rounded-lg p-4 space-y-3">
+                        <h5 className="text-lg font-bold text-terrasacha-primary font-champagne">
+                            🎯 Resultado Calculado
+                        </h5>
+                        <div className="bg-terrasacha-secondary2/10 border border-terrasacha-secondary2/20 rounded p-3">
+                            <code className="text-xl font-mono font-bold text-terrasacha-secondary1">
+                                {this.state.result}
+                            </code>
+                        </div>
+                        <button
+                            className="btn-terrasacha-primary text-sm w-full"
                             onClick={(e) => this.confirmSave()}
-                        >Check Data</Button> 
-                    </>
+                        >
+                            ✅ Verificar Datos
+                        </button>
+                    </div>
                 )
             }
         }
@@ -415,94 +455,120 @@ class Results extends Component {
             if(this.state.confirmSave !== false){
                 let productFeatures = this.state.productFeatures.filter(pf => pf.productID === this.state.selectedProductID)
                 return(
-                    <>
-                    <Row className='mb-2'>
+                    <div className="bg-terrasacha-warning/10 border border-terrasacha-warning/20 rounded-lg p-4 space-y-4">
+                        <h5 className="text-lg font-bold text-terrasacha-primary font-champagne">
+                            💾 Guardar Resultado
+                        </h5>
                         
-                        <Form.Group as={Col}>
-                            <Form.Label>Variable ID</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.varID'
-                                value={this.state.varID}
-                                onChange={(e) => this.handleOnChangeInputForm(e)} />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Result</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.varID'
-                                disabled
-                                value={this.state.result}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="space-y-2">
+                                <label className="form-terrasacha-label text-sm">
+                                    🔤 Variable ID
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="ID de variable"
+                                    name="result.varID"
+                                    value={this.state.varID}
+                                    className="form-terrasacha-input text-sm"
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}
                                 />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Formula</Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder=''
-                                name='result.equation'
-                                disabled
-                                value={this.state.equationSelected}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="form-terrasacha-label text-sm">
+                                    🎯 Resultado
+                                </label>
+                                <input
+                                    type="text"
+                                    name="result.varID"
+                                    disabled
+                                    value={this.state.result}
+                                    className="form-terrasacha-input text-sm bg-gray-100 cursor-not-allowed font-mono"
                                 />
-                        </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Product Features</Form.Label>
-                            <Form.Select 
-                            name='result.selectedProductFeature'
-                            onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                <option>-</option>
-                                {productFeatures.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.id}</option>))}
-                        </Form.Select>
-                        </Form.Group>
-                    </Row>
-                    <Button
-                        variant='primary'
-                        size='sm' 
-                        disabled={this.state.varID === ''}
-                        onClick={(e) => this.saveResult()}
-                        >Save</Button>
-                    </>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="form-terrasacha-label text-sm">
+                                    📐 Fórmula
+                                </label>
+                                <input
+                                    type="text"
+                                    name="result.equation"
+                                    disabled
+                                    value={this.state.equationSelected}
+                                    className="form-terrasacha-input text-sm bg-gray-100 cursor-not-allowed font-mono"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="form-terrasacha-label text-sm">
+                                    ⚙️ Características del Producto
+                                </label>
+                                <select
+                                    name="result.selectedProductFeature"
+                                    className="form-terrasacha-select text-sm"
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}
+                                >
+                                    <option value="">Seleccionar...</option>
+                                    {productFeatures.map((pf, idx) => (
+                                        <option value={pf.id} key={idx}>
+                                            {pf.feature.id}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end pt-4 border-t border-terrasacha-warning/20">
+                            <button
+                                className={`btn-terrasacha-primary ${this.state.varID === '' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={this.state.varID === ''}
+                                onClick={(e) => this.saveResult()}
+                            >
+                                💾 Guardar Resultado
+                            </button>
+                        </div>
+                    </div>
                 )
             }
         }
         const renderResults = () => {
             if (this.state.results.length > 0) {
-                    return (
-                        <>
-                            <h1>Results list</h1>
-                            <Table striped bordered hover>
-                                <thead>
-                                <tr>
-                                    <th>Var ID</th>
-                                    <th>Value</th>
-                                    <th>Formula</th>
-                                    <th>Created At</th>
-
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {this.state.results.map(results =>{ 
-                                    return(
-                                        <tr key={results.id}>
-                                            <td>
-                                                {results.varID} 
-                                            </td>
-                                            <td>
-                                                {results.value} 
-                                            </td>
-                                            <td>
-                                                {results.formula.equation}
-                                            </td>
-                                            <td>
-                                                {results.createdAt.substring(0,10)}
-                                            </td>
-                                        </tr>
-                                    )})}
-                                </tbody>
-                            </Table>
-                        </>
+                return (
+                    <TerrasachaTable
+                        title="📈 Resultados Guardados"
+                        subtitle="Historial de todos los resultados calculados y almacenados"
+                        headers={['Variable ID', 'Valor', 'Fórmula', 'Fecha de Creación']}
+                        data={this.state.results}
+                        renderRow={(results) => (
+                            <>
+                                <TerrasachaTableCell variant="primary">
+                                    <code className="text-sm font-mono bg-terrasacha-light/10 px-2 py-1 rounded">
+                                        {results.varID}
+                                    </code>
+                                </TerrasachaTableCell>
+                                
+                                <TerrasachaTableCell variant="secondary">
+                                    <code className="text-sm font-mono bg-terrasacha-secondary2/10 px-2 py-1 rounded text-terrasacha-secondary1">
+                                        {results.value}
+                                    </code>
+                                </TerrasachaTableCell>
+                                
+                                <TerrasachaTableCell>
+                                    <code className="text-xs font-mono text-terrasacha-secondary1">
+                                        {results.formula.equation}
+                                    </code>
+                                </TerrasachaTableCell>
+                                
+                                <TerrasachaTableCell>
+                                    <TerrasachaBadge variant="info">
+                                        {results.createdAt.substring(0, 10)}
+                                    </TerrasachaBadge>
+                                </TerrasachaTableCell>
+                            </>
+                        )}
+                    />
                 )
             }
         }
@@ -517,98 +583,141 @@ class Results extends Component {
                 }
             }
                     return (
-                        <>
-                            <h1>PF who has a result assign</h1>
-                            <Row className='mb-4'>
-                                <Form.Group as={Col}>
-                                <Form.Label>Filter by Product</Form.Label>
-                                <Form.Select 
-                                name='filterProducts'
-                                onChange={(e) => this.handleChangeFilter(e)}>
-                                    <option value=''>-</option>
-                                    {this.state.products.map((product, idx) => (<option value={product.id} key={idx}>{product.name}</option>))}
-                                </Form.Select>
-                                </Form.Group>
-                            </Row>
-                            {this.state.filterByProduct !== ''?
-                                <Row className='mb-4'>
-                                    <Form.Group as={Col}>
-                                    <Form.Label>Filter by Feature</Form.Label>
-                                    <Form.Select 
-                                    name='filterProductFeature'
-                                    onChange={(e) => this.handleChangeFilter(e)}>
-                                        <option value=''>-</option>
-                                        {this.state.filterByProduct.productFeatures.items.map((pf, idx) => (<option value={pf.id} key={idx}>{pf.feature.name}</option>))}
-                                    </Form.Select>
-                                    </Form.Group>
-                                </Row> : ''
-                            }
-                            <Table striped bordered hover>
-                                <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Feature</th>
-                                    <th>Result Assigned</th>
-                                    <th>Formula</th>
-                                    <th>Active</th>
+                        <div className="space-y-6">
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-bold text-terrasacha-primary font-champagne">
+                                    🎯 Características con Resultados Asignados
+                                </h3>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="form-terrasacha-label text-sm">
+                                            🏭 Filtrar por Producto
+                                        </label>
+                                        <select
+                                            name="filterProducts"
+                                            className="form-terrasacha-select text-sm"
+                                            onChange={(e) => this.handleChangeFilter(e)}
+                                        >
+                                            <option value="">Todos los productos</option>
+                                            {this.state.products.map((product, idx) => (
+                                                <option value={product.id} key={idx}>
+                                                    {product.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
 
-
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    {copyProductFeatureResults?.map(PFR =>{ 
-                                        return(
-                                            <tr key={PFR.id}>
-                                                <td>
-                                                    {PFR.productFeature.product.name} 
-                                                </td>
-                                                <td>
-                                                    {PFR.productFeature.feature.name} 
-                                                </td>
-                                                <td>
-                                                    {PFR.result.value} 
-                                                </td>
-                                                <td>
-                                                    {PFR.result.formula.equation} 
-                                                </td>
-                                                <td>
-                                                <Button
-                                                    variant={PFR.isActive?'secondary' : 'success'}
-                                                    size='sm' 
-                                                    onClick={(e) => this.handleActiveResult(PFR.productFeatureID, PFR.id)}>
-                                                {PFR.isActive? 'Assigned': 'Assign'}
-                                                </Button> 
-                                                </td>
-                                            </tr>
-                                        )})}
-                                </tbody>
-                            </Table>
-                        </>
+                                    {this.state.filterByProduct !== '' && (
+                                        <div className="space-y-2">
+                                            <label className="form-terrasacha-label text-sm">
+                                                ⚙️ Filtrar por Característica
+                                            </label>
+                                            <select
+                                                name="filterProductFeature"
+                                                className="form-terrasacha-select text-sm"
+                                                onChange={(e) => this.handleChangeFilter(e)}
+                                            >
+                                                <option value="">Todas las características</option>
+                                                {this.state.filterByProduct.productFeatures.items.map((pf, idx) => (
+                                                    <option value={pf.id} key={idx}>
+                                                        {pf.feature.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <TerrasachaTable
+                                title="📊 Resultados por Característica"
+                                subtitle="Administrar los resultados asignados a cada característica del producto"
+                                headers={['Producto', 'Característica', 'Resultado Asignado', 'Fórmula', 'Estado']}
+                                data={copyProductFeatureResults || []}
+                                renderRow={(PFR) => (
+                                    <>
+                                        <TerrasachaTableCell variant="primary">
+                                            {PFR.productFeature.product.name}
+                                        </TerrasachaTableCell>
+                                        
+                                        <TerrasachaTableCell variant="secondary">
+                                            {PFR.productFeature.feature.name}
+                                        </TerrasachaTableCell>
+                                        
+                                        <TerrasachaTableCell>
+                                            <code className="text-sm font-mono bg-terrasacha-secondary2/10 px-2 py-1 rounded text-terrasacha-secondary1">
+                                                {PFR.result.value}
+                                            </code>
+                                        </TerrasachaTableCell>
+                                        
+                                        <TerrasachaTableCell>
+                                            <code className="text-xs font-mono text-terrasacha-secondary1">
+                                                {PFR.result.formula.equation}
+                                            </code>
+                                        </TerrasachaTableCell>
+                                        
+                                        <TerrasachaTableCell>
+                                            <button
+                                                className={`text-sm font-typographica font-bold py-2 px-3 rounded-lg transition-colors duration-200 ${
+                                                    PFR.isActive ? 'btn-terrasacha-secondary' : 'btn-terrasacha-success'
+                                                }`}
+                                                onClick={(e) => this.handleActiveResult(PFR.productFeatureID, PFR.id)}
+                                            >
+                                                {PFR.isActive ? '📌 Asignado' : '✅ Asignar'}
+                                            </button>
+                                        </TerrasachaTableCell>
+                                    </>
+                                )}
+                            />
+                        </div>
                 )
             }
         return (
-        <Container>
-            <Container style={{display: 'flex', height: '580px'}}>
-                <Container>
-                    <h2>Calculate Result</h2>            
-                    <Form>
+            <div className="space-y-8 animate-fade-in">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[580px]">
+                    {/* Panel de Cálculo */}
+                    <div className="bg-white rounded-xl shadow-terrasacha-lg border border-terrasacha-light/20 p-6 overflow-y-auto">
+                        <div className="mb-6">
+                            <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                                🧮 Calcular Resultado
+                            </h2>
+                            <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                        </div>
+                        
+                        <div className="space-y-6">
                             {SelectProductForm()}   
                             {SelectFormulaForm()}
-                    </Form>
                             {CheckVariablesPF()}
                             {Calculate()}
                             {Result()}
                             {SaveResult()}
-                </Container>
-                <Container style={{overflow: 'auto'}}>
-                    {renderProductFeaturesResults()}
-                </Container>
-            </Container>
-            <Container>
-                {renderResults()}
-            </Container>
-        </Container>
-    )
+                        </div>
+                    </div>
+
+                    {/* Panel de Resultados de Características */}
+                    <div className="bg-white rounded-xl shadow-terrasacha-lg border border-terrasacha-light/20 p-6 overflow-y-auto">
+                        <div className="mb-6">
+                            <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                                📊 Características del Producto
+                            </h2>
+                            <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                        </div>
+                        {renderProductFeaturesResults()}
+                    </div>
+                </div>
+
+                {/* Lista de Resultados */}
+                <div className="bg-white rounded-xl shadow-terrasacha-lg border border-terrasacha-light/20 p-6">
+                    <div className="mb-6">
+                        <h2 className="text-xl font-bold text-terrasacha-primary font-champagne mb-2">
+                            📈 Lista de Resultados
+                        </h2>
+                        <div className="h-1 w-20 bg-terrasacha-secondary2 rounded-full"></div>
+                    </div>
+                    {renderResults()}
+                </div>
+            </div>
+        )
   }
 }
 export default Results

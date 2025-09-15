@@ -98,7 +98,10 @@ export default function ProjectSettingsCard({ className }) {
           onChangeInputValue={() => setProjectIsActive(!projectIsActive)}
         />
         <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <button className="btn btn-primary" onClick={handleSaveChanges}>
+          <button 
+            className="btn btn-primary bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 hover:from-terrasacha-secondary1 hover:to-terrasacha-primary text-white font-typographica font-semibold rounded-xl shadow-terrasacha hover:shadow-terrasacha-lg transition-all duration-300 hover:scale-105 border border-terrasacha-light/20" 
+            onClick={handleSaveChanges}
+          >
             Guardar Cambios
           </button>
         </div>

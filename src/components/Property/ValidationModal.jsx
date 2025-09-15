@@ -448,23 +448,23 @@ export default function ValidationModal({
 
   return (
     <Modal size="lg" show={isOpen} onHide={onClose} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Requisitos para la Prefactibilidad</Modal.Title>
+      <Modal.Header closeButton className="bg-terrasacha-light">
+        <Modal.Title className="font-typographica text-terrasacha-primary">Requisitos para la Prefactibilidad</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
-            <p className="text-gray-600 mb-4">
+            <p className="text-terrasacha-secondary1 mb-4 font-typographica">
               Para completar este paso, debes subir los siguientes documentos:
             </p>
 
             {["certificado", "escrituras", "planos"].map((fileType) => (
               <div
                 key={fileType}
-                className="flex items-center justify-between border p-3 rounded-md shadow-sm mb-3"
+                className="flex items-center justify-between border border-terrasacha-light p-3 rounded-lg shadow-terrasacha mb-3 bg-white"
               >
-                <span className="text-gray-700 text-sm capitalize">
+                <span className="text-terrasacha-secondary1 text-sm capitalize font-typographica">
                   {fileType === "certificado"
                     ? "Certificado de Libertad(vigencia 30 dias)"
                     : fileType === "escrituras"
@@ -484,7 +484,7 @@ export default function ValidationModal({
                             "_blank"
                           )}
                         }
-                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
+                        className="btn-terrasacha-success px-3 py-1 flex items-center gap-2 font-typographica"
                       >
                         <FaEye size={14} />
                         Ver
@@ -502,7 +502,7 @@ export default function ValidationModal({
                         />
                         <label
                           htmlFor={`file-upload-${fileType}`}
-                          className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 flex items-center gap-2"
+                          className="btn-terrasacha-warning cursor-pointer px-3 py-1 flex items-center gap-2 font-typographica"
                         >
                           <FaEdit size={14} />
                           Editar
@@ -510,7 +510,7 @@ export default function ValidationModal({
                       </>
                     )
                   ) : (
-                    <span className="text-gray-500 text-sm italic">
+                    <span className="text-terrasacha-secondary2 text-sm italic font-typographica">
                       No editable
                     </span>
                   )}
@@ -528,7 +528,7 @@ export default function ValidationModal({
                         />
                         <label
                           htmlFor={`file-upload-${fileType}`}
-                          className="cursor-pointer bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-2"
+                          className="btn-terrasacha-primary cursor-pointer px-3 py-1 flex items-center gap-2 font-typographica"
                         >
                           <FaFileUpload size={14} />
                           Subir
@@ -549,7 +549,7 @@ export default function ValidationModal({
 
         <div className="flex justify-center mt-4">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            className="btn-terrasacha-primary px-4 py-2 font-typographica"
             onClick={() => uploadFiles()}
             disabled={loading || Object.keys(selectedFiles).length === 0}
           >
@@ -562,7 +562,7 @@ export default function ValidationModal({
         </div>
 
         {!hasCampaign && (
-          <p className="text-red-500 text-sm mt-4 font-semibold">
+          <p className="text-terrasacha-danger text-sm mt-4 font-semibold font-typographica">
             Cualquier solicitud en esta etapa debe realizarse a través de un
             PQRS, ya que aún no hay un consultor asignado.
           </p>

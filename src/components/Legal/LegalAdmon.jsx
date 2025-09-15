@@ -28,9 +28,20 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Row } from "react-bootstrap";
 
 const documentTypeMapper = {
+  // Tipos originales (por compatibilidad)
   CERTIFICADO_TRADICION: "Certificado de Tradición",
   ESCRITURA_PUBLICA: "Escritura Pública",
   PLANO_CATASTRAL: "Plano Catastral",
+  
+  // Tipos que realmente están guardados en la base de datos
+  CERTIFICADO: "Certificado de Tradición",
+  ESCRITURAS: "Escritura Pública",
+  PLANOS: "Plano Catastral",
+  
+  // Tipos adicionales que podrían existir
+  CERTIFICADO_TRADICION: "Certificado de Tradición",
+  ESCRITURA: "Escritura Pública",
+  PLANO: "Plano Catastral",
 };
 
 const getPropertyArea = (property) => {
@@ -52,22 +63,72 @@ const DocumentationModal = ({
     useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
-  console.log("property", property);
 
-  const propertyFiles = property?.propertyFeatures?.items
-    .find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
-    .documents.items.map((document) => {
-      const documentData = JSON.parse(document.data || "");
+
+ // ✅ CORREGIDO: Buscar TODOS los features GLOBAL_PROPERTY_FILES y agregar documentos
+const globalFilesFeatures = property?.propertyFeatures?.items.filter(
+  (feature) => feature?.featureID === "GLOBAL_PROPERTY_FILES"
+) || [];
+
+// ✅ CORREGIDO: Agregar documentos de todos los features encontrados
+const propertyFiles = (() => {
+  if (!globalFilesFeatures || globalFilesFeatures.length === 0) {
+    return [];
+  }
+  
+  let allDocuments = [];
+  
+  try {
+    // Iterar por cada feature GLOBAL_PROPERTY_FILES
+    globalFilesFeatures.forEach((feature, index) => {
+      // CASO 1: Documentos en el campo 'value' (como JSON string)
+      if (feature?.value && feature.value !== "[]" && feature.value !== "") {
+        try {
+          const documents = JSON.parse(feature.value);
+          
+          if (Array.isArray(documents)) {
+            allDocuments = allDocuments.concat(documents);
+          }
+        } catch (parseError) {
+          console.error(`Error parsing documents del campo 'value' del feature ${index + 1}:`, parseError, feature);
+        }
+      }
+      
+      // CASO 2: Documentos en el campo 'documents.items[]'
+      if (feature?.documents?.items && feature.documents.items.length > 0) {
+        feature.documents.items.forEach((doc, docIndex) => {
+          try {
+            if (doc?.data) {
+              const documentData = JSON.parse(doc.data);
+              allDocuments.push(documentData);
+            }
+          } catch (parseError) {
+            console.error(`Error parsing documento ${docIndex + 1} del feature ${index + 1}:`, parseError, doc);
+          }
+        });
+      }
+    });
+    
+    // Mapear todos los documentos encontrados
+    const mappedDocuments = allDocuments.map((document) => {
+      const mappedType = documentTypeMapper[document.type];
+      
       return {
-        name: documentData.name,
-        type:
-          documentTypeMapper[documentData.type] ||
-          "Tipo de documento desconocido",
-        url: documentData.url,
+        name: document.name || "Documento sin nombre",
+        type: mappedType || "Tipo de documento desconocido",
+        url: document.url || "#",
       };
     });
+    
+    return mappedDocuments;
+  } catch (error) {
+    console.error("Error processing documents from PropertyFeatures:", error);
+    return [];
+  }
+})();
 
-  console.log(propertyFiles);
+
+
 
   const handleEligible = async (option, reason = "") => {
     try {
@@ -83,17 +144,22 @@ const DocumentationModal = ({
 
       // Si se rechaza, también deja un mensaje en el chat del predio
       if (!option && reason.trim()) {
-        await API.graphql(
-          graphqlOperation(createVerificationComment, {
-            input: {
-              verificationID: property.propertyFeatures.items.find(
-                (f) => f.featureID === "GLOBAL_PROPERTY_FILES"
-              ).verifications.items[0].id,
-              comment: `Predio marcado como No Elegible. Razón: ${reason}`,
-              isCommentByVerifier: true,
-            },
-          })
+        // ✅ CORREGIDO: Usar el primer feature GLOBAL_PROPERTY_FILES encontrado
+        const firstGlobalFilesFeature = property.propertyFeatures.items.find(
+          (f) => f.featureID === "GLOBAL_PROPERTY_FILES"
         );
+        
+        if (firstGlobalFilesFeature?.verifications?.items?.[0]?.id) {
+          await API.graphql(
+            graphqlOperation(createVerificationComment, {
+              input: {
+                verificationID: firstGlobalFilesFeature.verifications.items[0].id,
+                comment: `Predio marcado como No Elegible. Razón: ${reason}`,
+                isCommentByVerifier: true,
+              },
+            })
+          );
+        }
       }
 
       const notificationMessage = option
@@ -132,7 +198,7 @@ const DocumentationModal = ({
         <h2 className="text-xl font-bold mb-4">Documentación del predio</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
-            {propertyFiles.length > 0 ? (
+            {propertyFiles && propertyFiles.length > 0 ? (
               <div className="grid grid-cols-1 gap-4">
                 {propertyFiles.map((file, index) => (
                   <div
@@ -253,9 +319,17 @@ export default function LegalAdmon() {
   };
 
   const handleToggleAssign = async (property) => {
-    const propertyVerificationID = property?.propertyFeatures?.items.find(
+    // ✅ CORREGIDO: Buscar el primer feature GLOBAL_PROPERTY_FILES y verificar que tenga verificaciones
+    const firstGlobalFilesFeature = property?.propertyFeatures?.items.find(
       (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
-    ).verifications.items[0].id;
+    );
+    
+    if (!firstGlobalFilesFeature?.verifications?.items?.[0]?.id) {
+      toast.error("No se encontró verificación para este predio");
+      return;
+    }
+    
+    const propertyVerificationID = firstGlobalFilesFeature.verifications.items[0].id;
 
     if (property.userLegal !== null) {
       if (property.userLegalID === user.id) {
@@ -288,7 +362,7 @@ export default function LegalAdmon() {
         } catch (error) {
           toast.error("Error al actualizar el estado del predio");
         }
-        console.log("Desasignar predio:", property.id, "del legal:", user.id);
+
         return; // Salir de la función después de desasignar
       } else {
         toast.error("El predio pertenece a otro legal");
@@ -334,7 +408,6 @@ export default function LegalAdmon() {
     } catch (error) {
       toast.error("Error al actualizar el estado del predio");
     }
-    console.log("Asignar predio:", property.id, "al legal:", user.id);
   };
 
   let filteredProperties = properties.filter(
@@ -381,7 +454,7 @@ export default function LegalAdmon() {
     ),
   ];
 
-  console.log("properties", properties);
+
   return (
     <>
       <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-lime-50 pt-16">

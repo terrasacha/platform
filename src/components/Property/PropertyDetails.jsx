@@ -275,7 +275,6 @@ export default function PropertyDetails({
           documentTypeMapper[documentData.type] ||
           "Tipo de documento desconocido",
         url: documentData.url || document.url,
-        key: new URL(documentData.url).pathname.slice(1)
       };
     });
     console.log('files', files)
@@ -381,42 +380,37 @@ export default function PropertyDetails({
 
             {/* Sección de documentos del predio */}
             <div className="col">
-              <div className="bg-white shadow rounded-lg p-6">
-                <h3 className="text-lg font-bold mb-4">Documentos del predio</h3>
+              <div className="bg-white shadow-terrasacha rounded-lg p-6 border border-terrasacha-light">
+                <h3 className="text-lg font-bold mb-4 font-typographica text-terrasacha-primary">Documentos del predio</h3>
                 {propertyFiles.length === 0 ? (
-                  <p className="text-gray-500 italic">No hay documentos asociados.</p>
+                  <p className="text-terrasacha-secondary2 italic font-typographica">No hay documentos asociados.</p>
                 ) : (
                   <ul>
                     {propertyFiles.map((doc, idx) => (
                       <li
                         key={doc.url + idx}
-                        className="flex items-center justify-between border-b py-2"
+                        className="flex items-center justify-between border-b border-terrasacha-light py-2"
                       >
-                        <span className="truncate max-w-xs">
+                        <span className="truncate max-w-xs font-typographica text-terrasacha-secondary1">
                           {doc.name}{" "}
-                          <span className="text-gray-400 text-xs">({doc.type})</span>
+                          <span className="text-terrasacha-secondary2 text-xs">({doc.type})</span>
                         </span>
-                       <button
-  type="button"
-  onClick={async () => {
-    if (!doc.key) {
-      toast.error("No se pudo obtener la clave del archivo en S3");
-      return;
-    }
-    const signedUrl = await getSignedFileUrl(doc.key);
-    if (signedUrl) {
-      window.open(signedUrl, "_blank");
-    } else {
-      toast.error("No se pudo generar la URL firmada");
-    }
-  }}
-  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-  aria-label={`Ver documento ${doc.name}`}
-  tabIndex={0}
->
-  Ver
-</button>
-
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            window.open(doc.url, "_blank");
+                          }}
+                          className="btn px-3 py-1 font-typographica"
+                          style={{
+                            backgroundColor: '#6e6c35', // Verde Selva
+                            borderColor: '#6e6c35',
+                            color: 'white'
+                          }}
+                          aria-label={`Ver documento ${doc.name}`}
+                          tabIndex={0}
+                        >
+                          Ver
+                        </button>
                       </li>
                     ))}
                   </ul>
@@ -426,22 +420,31 @@ export default function PropertyDetails({
           </div>
 
           <div className="w-full mt-12 mb-16">
-            <div className="bg-white shadow-xl rounded-lg p-6 w-full text-center border border-gray-300">
+            <div className="bg-white shadow-terrasacha-xl rounded-lg p-6 w-full text-center border border-terrasacha-light">
               {/* Mostrar estado del predio */}
               {status === "APPROVED" && (
-                <div className="px-4 py-2 text-white bg-green-500 rounded-md font-semibold">
+                <div 
+                  className="px-4 py-2 text-white rounded-lg font-semibold font-typographica"
+                  style={{ backgroundColor: '#849b50' }} // Verde Pradera
+                >
                   ✅ Predio Aprobado
                 </div>
               )}
 
               {status === "REJECTED" && (
-                <div className="px-4 py-2 text-white bg-red-500 rounded-md font-semibold">
+                <div 
+                  className="px-4 py-2 text-white rounded-lg font-semibold font-typographica"
+                  style={{ backgroundColor: '#dc3545' }} // Rojo
+                >
                   ❌ Predio Rechazado
                 </div>
               )}
 
               {status === "NOT_SELECTABLE" && (
-                <div className="px-4 py-2 text-white bg-red-500 rounded-md font-semibold">
+                <div 
+                  className="px-4 py-2 text-white rounded-lg font-semibold font-typographica"
+                  style={{ backgroundColor: '#dc3545' }} // Rojo
+                >
                   ❌ Predio no elegible
                 </div>
               )}
@@ -450,7 +453,12 @@ export default function PropertyDetails({
               {isVerifier && (
                 <>
                   <button
-                    className="w-full mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-all duration-300"
+                    className="btn w-full mt-4 px-6 py-3 font-typographica"
+                    style={{
+                      backgroundColor: '#6e6c35', // Verde Selva
+                      borderColor: '#6e6c35',
+                      color: 'white'
+                    }}
                     onClick={handleVerifyClick}
                     disabled={isLoading || currentStep < 4} // ✅ Bloqueado si no estamos en el paso 3
                   >
@@ -459,7 +467,7 @@ export default function PropertyDetails({
 
                   {/* 🔴 Mensaje de advertencia si el usuario intenta verificar antes del paso 3 */}
                   {currentStep < 4 && (
-                    <p className="text-red-500 text-sm mt-2">
+                    <p className="text-terrasacha-danger text-sm mt-2 font-typographica">
                       ⚠ Debes completar los pasos anteriores antes llegar al
                       paso 4.
                     </p>

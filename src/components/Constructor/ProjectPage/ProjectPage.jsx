@@ -26,7 +26,8 @@ import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 import AlertMessage from "./AlertMessage";
 import { FiEdit3 } from "react-icons/fi";
 import TimelineProject from "./TimeLineProject";
-import LOGO from "../../common/TerrasachaLogo";
+import LOGO from "../../common/_images/suan_logo.png";
+import TerrasachaLogo from "components/common/TerrasachaLogo";
 
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
@@ -482,16 +483,16 @@ export default function ProjectPage() {
                       }}
                       className={`${
                         activeSection === "details"
-                          ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                          : "text-blue-500"
-                      } flex py-2 px-3`}
+                          ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                          : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                      } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
                       aria-current="page"
                     >
                       Detalles
                       {(autorizedUser || isPostulant || isAdmon) &&
                         (!progressObj?.sectionsStatus.projectInfo ||
                           !progressObj?.sectionsStatus.geodataInfo) && (
-                          <HourGlassIcon className="text-danger ms-2" />
+                          <HourGlassIcon className="text-terrasacha-danger ms-2" />
                         )}
                     </a>
                   </li>
@@ -505,14 +506,14 @@ export default function ProjectPage() {
                         }}
                         className={`${
                           activeSection === "files"
-                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                            : "text-blue-500"
-                        } flex py-2 px-3`}
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
                       >
                         Validación
                         {(autorizedUser || isPostulant || isAdmon) &&
                           !progressObj?.sectionsStatus.validationsComplete && (
-                            <HourGlassIcon className="text-danger ms-2" />
+                            <HourGlassIcon className="text-terrasacha-danger ms-2" />
                           )}
                       </a>
                     </li>
@@ -528,9 +529,9 @@ export default function ProjectPage() {
                         }}
                         className={`${
                           activeSection === "file_manager"
-                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                            : "text-blue-500"
-                        } flex py-2 px-3`}
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
                       >
                         Sistema de datos
                       </a>
@@ -547,15 +548,15 @@ export default function ProjectPage() {
                         }}
                         className={`${
                           activeSection === "settings"
-                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                            : "text-blue-500"
-                        } py-2 px-3 flex`}
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } py-2 px-3 flex rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
                       >
                         Configuración
                         {(autorizedUser || isAdmon) &&
                           (!progressObj?.sectionsStatus.technicalInfo ||
                             !progressObj?.sectionsStatus.financialInfo) && (
-                            <HourGlassIcon className="text-danger ms-2" />
+                            <HourGlassIcon className="text-terrasacha-danger ms-2" />
                           )}
                       </a>
                     </li>
@@ -574,15 +575,15 @@ export default function ProjectPage() {
                           }}
                           className={`${
                             activeSection === "finance"
-                              ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                              : "text-blue-500"
-                          } flex py-2 px-3`}
+                              ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                              : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                          } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
                         >
                           Finanzas
                           {(autorizedUser || isPostulant || isAdmon) &&
                             !progressObj?.sectionsStatus
                               .ownerAcceptsConditions && (
-                              <HourGlassIcon className="text-danger ms-2" />
+                              <HourGlassIcon className="text-terrasacha-danger ms-2" />
                             )}
                         </a>
                       </li>
@@ -597,9 +598,9 @@ export default function ProjectPage() {
                         }}
                         className={`${
                           activeSection === "analysis"
-                            ? "text-black border-t border-r border-l border-gray-400  rounded-t-md"
-                            : "text-blue-500"
-                        } flex py-2 px-3`}
+                            ? "text-white bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary1 border-0 rounded-lg shadow-terrasacha"
+                            : "text-terrasacha-secondary1 hover:text-terrasacha-primary hover:bg-terrasacha-light/20"
+                        } flex py-2 px-3 rounded-lg transition-all duration-300 border border-transparent hover:border-terrasacha-light/30`}
                       >
                         Análisis
                       </a>
@@ -626,10 +627,42 @@ export default function ProjectPage() {
             <ToastContainer></ToastContainer>
           </div>
         ) : (
-       <div className="loading-overlay">
-  <LOGO className="loading-logo" alt="logo" />
-</div>
-
+          <div className="min-h-screen bg-gradient-to-br from-terrasacha-earth via-terrasacha-light to-white flex items-center justify-center">
+            <div className="text-center">
+              <div className="relative">
+                {/* Logo principal con efecto de pulso */}
+                <div className="animate-pulse-terrasacha">
+                  <TerrasachaLogo className="w-48 h-auto mx-auto mb-8 opacity-80" />
+                </div>
+                
+                {/* Círculos concéntricos animados */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-64 h-64 border-4 border-terrasacha-primary/20 rounded-full animate-ping"></div>
+                  <div className="absolute w-48 h-48 border-4 border-terrasacha-secondary2/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                  <div className="absolute w-32 h-32 border-4 border-terrasacha-light/40 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+                </div>
+              </div>
+              
+              {/* Texto de carga */}
+              <div className="mt-8">
+                <h2 className="text-2xl font-typographica font-bold text-terrasacha-secondary1 mb-2">
+                  Cargando Proyecto
+                </h2>
+                <p className="text-terrasacha-light font-typographica text-lg">
+                  Obteniendo información...
+                </p>
+              </div>
+              
+              {/* Indicador de progreso animado */}
+              <div className="mt-6 flex justify-center">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 bg-terrasacha-primary rounded-full animate-bounce"></div>
+                  <div className="w-3 h-3 bg-terrasacha-secondary2 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-3 h-3 bg-terrasacha-light rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </S3ClientProvider>

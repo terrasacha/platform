@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 // import '@aws-amplify/ui-react/styles.css'
-// Bootstrap
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+// Bootstrap reemplazado con Tailwind CSS y sistema Terrasacha
 // Auth css custom
 import Bootstrap from "../../common/themes";
 //Feature Types component
@@ -334,47 +333,109 @@ class Features extends Component {
     const renderFeatures = () => {
       if (features.length > 0) {
         return (
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border p-2">ID</th>
-                <th className="border p-2">Nombre</th>
-                <th className="border p-2">Descripción</th>
-                <th className="border p-2">Valor por defecto</th>
-                <th className="border p-2">Tipo</th>
-                <th className="border p-2">Unidad de medida</th>
-                <th className="border p-2">¿Es plantilla?</th>
-                <th className="border p-2">¿Es verificable?</th>
-                <th className="border p-2">Editar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {features.map((feature) => (
-                <tr key={feature.id} className="bg-white">
-                  <td className="border p-2">{feature.id}</td>
-                  <td className="border p-2">{feature.name}</td>
-                  <td className="border p-2">{feature.description}</td>
-                  <td className="border p-2">{feature.defaultValue}</td>
-                  <td className="border p-2">{feature.featureTypeID}</td>
-                  <td className="border p-2">{feature.unitOfMeasureID}</td>
-                  <td className="border p-2">
-                    {feature.isTemplate ? "Si" : "No"}
-                  </td>
-                  <td className="border p-2">
-                    {feature.isVerifiable ? "Si" : "No"}
-                  </td>
-                  <td className="border p-2">
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                      onClick={(e) => this.handleLoadEditFeature(feature, e)}
+          <div className="bg-white shadow-terrasacha rounded-lg overflow-hidden border border-terrasacha-light/20 mt-6">
+            <div className="px-6 py-4 bg-terrasacha-light/10 border-b border-terrasacha-light/20">
+              <h3 className="text-lg font-bold text-terrasacha-primary font-champagne">
+                Características Configuradas
+              </h3>
+              <p className="text-sm text-terrasacha-secondary1 font-typographica mt-1">
+                Lista completa de características disponibles en el sistema
+              </p>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-terrasacha-primary text-white">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Nombre
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Descripción
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Valor por Defecto
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Tipo
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Unidad de Medida
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      ¿Es Plantilla?
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      ¿Es Verificable?
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-bold font-typographica uppercase tracking-wider">
+                      Acción
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-terrasacha-light/20">
+                  {features.map((feature, index) => (
+                    <tr 
+                      key={feature.id}
+                      className={`${
+                        index % 2 === 0 ? 'bg-white' : 'bg-terrasacha-light/5'
+                      } hover:bg-terrasacha-light/10 transition-colors duration-150`}
                     >
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                      <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-500 font-mono">
+                        {feature.id.substring(0, 8)}...
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-terrasacha-primary font-typographica">
+                        {feature.name}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-terrasacha-secondary1 font-typographica max-w-xs truncate">
+                        {feature.description}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-terrasacha-secondary1 font-typographica">
+                        {feature.defaultValue || '-'}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <span className="inline-flex px-2 py-1 rounded-full text-xs font-bold bg-terrasacha-secondary2 text-white font-typographica">
+                          {feature.featureTypeID || 'Sin tipo'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-terrasacha-secondary1 font-typographica">
+                        {feature.unitOfMeasureID || '-'}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-bold font-typographica ${
+                          feature.isTemplate 
+                            ? 'bg-terrasacha-success text-white' 
+                            : 'bg-terrasacha-warning text-terrasacha-secondary1'
+                        }`}>
+                          {feature.isTemplate ? 'Sí' : 'No'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-bold font-typographica ${
+                          feature.isVerifiable 
+                            ? 'bg-terrasacha-info text-white' 
+                            : 'bg-gray-200 text-gray-600'
+                        }`}>
+                          {feature.isVerifiable ? 'Sí' : 'No'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm">
+                        <button
+                          className="btn-terrasacha-secondary text-sm"
+                          onClick={(e) => this.handleLoadEditFeature(feature, e)}
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         );
       }
     };
@@ -482,7 +543,7 @@ class Features extends Component {
               type="button"
               onClick={this.handleCRUDFeature}
               disabled={this.state.isCRUDButtonDisable}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="btn-terrasacha-primary"
             >
               {CRUDButtonName}
             </button>

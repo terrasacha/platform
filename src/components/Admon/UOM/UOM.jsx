@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 // import '@aws-amplify/ui-react/styles.css'
-// Bootstrap
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+// Bootstrap components reemplazados con Tailwind CSS
 // Auth css custom
+// Componentes Terrasacha
+import TerrasachaTable, { TerrasachaTableCell, TerrasachaBadge } from "../../common/TerrasachaTable";
 // GraphQL
 import { API, graphqlOperation } from "aws-amplify";
 import {
@@ -170,99 +171,108 @@ class UOM extends Component {
     const renderUnitOfMeasures = () => {
       if (unitOfMeasures.length > 0) {
         return (
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th>Engineering Unit</th>
-                <th>Description</th>
-                <th>Is Float</th>
-                <th>Editar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {unitOfMeasures.map((unitOfMeasure) => (
-                <tr key={unitOfMeasure.id}>
-                  <td>{unitOfMeasure.engineeringUnit}</td>
-                  <td>{unitOfMeasure.description}</td>
-                  <td>{unitOfMeasure.isFloat ? "Yes" : "No"}</td>
-                  <td>
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={(e) =>
-                        this.handleLoadEditUnitOfMeasure(unitOfMeasure, e)
-                      }
-                    >
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <TerrasachaTable
+            title="Unidades de Medida Configuradas"
+            subtitle="Lista de todas las unidades de medida disponibles en el sistema"
+            headers={['Unidad de Ingeniería', 'Descripción', 'Es Float', 'Acción']}
+            data={unitOfMeasures}
+            renderRow={(unitOfMeasure) => (
+              <>
+                <TerrasachaTableCell variant="primary">
+                  {unitOfMeasure.engineeringUnit}
+                </TerrasachaTableCell>
+                <TerrasachaTableCell variant="secondary">
+                  {unitOfMeasure.description}
+                </TerrasachaTableCell>
+                <TerrasachaTableCell>
+                  <TerrasachaBadge variant={unitOfMeasure.isFloat ? 'success' : 'warning'}>
+                    {unitOfMeasure.isFloat ? "Sí" : "No"}
+                  </TerrasachaBadge>
+                </TerrasachaTableCell>
+                <TerrasachaTableCell>
+                  <button
+                    className="btn-terrasacha-secondary text-sm"
+                    onClick={(e) =>
+                      this.handleLoadEditUnitOfMeasure(unitOfMeasure, e)
+                    }
+                  >
+                    Editar
+                  </button>
+                </TerrasachaTableCell>
+              </>
+            )}
+          />
         );
       }
     };
 
     return (
-      <div className="container mx-auto mt-20">
-        <div className="flex flex-col mb-8 p-4 bg-white rounded-md shadow-md">
-          <h2 className="text-2xl">{CRUDButtonName} Unidad de medida</h2>
-          <form className="mt-4">
-            <div className="mb-4">
+      <div className="container mx-auto mt-20 px-4">
+        <div className="bg-white rounded-xl shadow-terrasacha-lg border border-terrasacha-light/20 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-terrasacha-primary font-champagne mb-6">
+            {CRUDButtonName} Unidad de Medida
+          </h2>
+          <form className="space-y-6">
+            <div>
               <label
                 htmlFor="formGridEngineeringUnit"
-                className="block font-semibold"
+                className="block text-sm font-bold text-terrasacha-secondary1 font-typographica mb-2"
               >
                 Unidad de Ingeniería
               </label>
               <input
                 type="text"
-                placeholder=""
+                placeholder="Ingrese la unidad de ingeniería"
                 id="formGridEngineeringUnit"
                 name="newUnitOfMeasure.engineeringUnit"
                 value={newUnitOfMeasure.engineeringUnit}
                 onChange={(e) => this.handleOnChangeInputForm(e)}
-                className="block w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
+                className="w-full px-4 py-3 border border-terrasacha-light rounded-lg focus:outline-none focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica transition-all duration-200 shadow-sm hover:shadow-terrasacha"
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="formGridDescription"
-                className="block font-semibold"
+                className="block text-sm font-bold text-terrasacha-secondary1 font-typographica mb-2"
               >
                 Descripción
               </label>
               <input
                 type="text"
-                placeholder=""
+                placeholder="Ingrese la descripción"
                 id="formGridDescription"
                 name="newUnitOfMeasure.description"
                 value={newUnitOfMeasure.description}
                 onChange={(e) => this.handleOnChangeInputForm(e)}
-                className="block w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
+                className="w-full px-4 py-3 border border-terrasacha-light rounded-lg focus:outline-none focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica transition-all duration-200 shadow-sm hover:shadow-terrasacha"
               />
             </div>
-            <div className="mb-4">
-              <label className="block font-semibold">¿Es Float?</label>
-              <br />
+            <div>
+              <label className="block text-sm font-bold text-terrasacha-secondary1 font-typographica mb-3">
+                ¿Es Float?
+              </label>
               <button
                 type="button"
                 onClick={(e) => this.handleOnChangeInputForm(e, "isFloat")}
-                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
-                  newUnitOfMeasure.isFloat ? "bg-blue-700" : ""
+                className={`font-typographica font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-terrasacha hover:shadow-terrasacha-lg transform hover:-translate-y-0.5 ${
+                  newUnitOfMeasure.isFloat 
+                    ? "bg-terrasacha-secondary2 hover:bg-terrasacha-secondary2/90 text-white" 
+                    : "bg-terrasacha-light hover:bg-terrasacha-light/90 text-terrasacha-secondary1"
                 }`}
               >
-                {newUnitOfMeasure.isFloat ? "SI" : "NO"}
+                {newUnitOfMeasure.isFloat ? "SÍ" : "NO"}
               </button>
             </div>
-            <button
-              type="button"
-              onClick={this.handleCRUDUnitOfMeasure}
-              disabled={this.state.isCRUDButtonDisable}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              {CRUDButtonName}
-            </button>
+            <div className="pt-4 border-t border-terrasacha-light/20">
+              <button
+                type="button"
+                onClick={this.handleCRUDUnitOfMeasure}
+                disabled={this.state.isCRUDButtonDisable}
+                className="btn-terrasacha-primary w-full text-lg py-3"
+              >
+                {CRUDButtonName}
+              </button>
+            </div>
           </form>
         </div>
         {renderUnitOfMeasures()}

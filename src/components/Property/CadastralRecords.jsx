@@ -965,39 +965,39 @@ export default function CadastralRecords(props) {
       <Card.Header title="Información predial" sep={true} tooltip={tooltip} />
       <Card.Body>
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse border border-gray-200">
-            <thead className="bg-gray-100 text-gray-700 text-xs md:text-sm lg:text-base">
+          <table className="table table-striped">
+            <thead>
               <tr>
-                <th className="px-4 py-2 border border-gray-300 min-w-[200px]">
+                <th>
                   Identificador catastral
                 </th>
                    {/*
-                <th className="px-4 py-2 border border-gray-300 min-w-[180px]">
+                <th>
                   Certificado de tradición
                 </th>
                 */}
-                <th className="px-4 py-2 border border-gray-300 min-w-[200px]">
+                <th>
                   Nombre de predio
                 </th>
-                <th className="px-4 py-2 border border-gray-300 min-w-[120px]">
+                <th>
                   Área
                 </th>
-                <th className="px-4 py-2 border border-gray-300 min-w-[100px]">
+                <th>
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody className="text-gray-800 text-xs md:text-sm lg:text-base">
+            <tbody>
               {multipleData.map((data, index) => (
-                <tr key={index} className="border-b border-gray-300 text-center">
+                <tr key={index} className="text-center">
                   {data.editing ? (
                     <>
                       {/* ✅ Ahora es un input editable cuando está en modo edición */}
-                      <td className="p-2 border border-gray-300">
+                      <td>
                         <input
                           type="text"
-                          className={`w-full text-center p-1 border rounded-md ${
-                            changedFields[`cadastralNumber_${index}`] ? "border-red-500 bg-red-100" : ""
+                          className={`form-control w-full text-center ${
+                            changedFields[`cadastralNumber_${index}`] ? "border-danger bg-danger-subtle" : ""
                           }`}
                           value={data.cadastralNumber}
                           onChange={(e) => handleChangeInputValue(e, index)}
@@ -1025,30 +1025,30 @@ export default function CadastralRecords(props) {
 </td>
                       */}
 
-                      <td className="p-2 border border-gray-300">{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
-                      <td className="p-2 border border-gray-300">{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
-                      <td className="p-2 border border-gray-300 flex justify-end gap-2">
-                        <button className="p-2 text-white rounded bg-green-600"  disabled={isLoading} onClick={() => handleSaveHistoricalData(index)}>
+                      <td>{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
+                      <td>{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
+                      <td className="d-flex justify-content-end gap-2">
+                        <button className="btn btn-success p-2"  disabled={isLoading} onClick={() => handleSaveHistoricalData(index)}>
                           <SaveDiskIcon />
                         </button>
-                        <button className="p-2 text-white rounded bg-red-500" onClick={() => handleDeleteHistoricalData(index)}>
+                        <button className="btn btn-danger p-2" onClick={() => handleDeleteHistoricalData(index)}>
                           <TrashIcon />
                         </button>
                       </td>
                     </>
                   ) : (
                     <>
-                      <td className="p-2 border border-gray-300">{data.cadastralNumber}</td>
-                     {/* <td className="p-2 border border-gray-300">{renderFileLinkByDocumentID(data.documentID, data.visible ?? true)}</td>*/}
-                      <td className="p-2 border border-gray-300">{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
-                      <td className="p-2 border border-gray-300">{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
-                        <td className="p-2 border border-gray-300 flex justify-end gap-2">
-                          <button className="p-2 text-white rounded bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                      <td>{data.cadastralNumber}</td>
+                     {/* <td>{renderFileLinkByDocumentID(data.documentID, data.visible ?? true)}</td>*/}
+                      <td>{renderPredioNameByCadastralNumber(data.cadastralNumber)}</td>
+                      <td>{renderAreaByCadastralNumber(data.cadastralNumber)}</td>
+                        <td className="d-flex justify-content-end gap-2">
+                          <button className="btn btn-warning p-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={!autorizedUser}
                             onClick={() => handleEditHistoricalData(index)}>
                             <EditIcon />
                           </button>
-                          <button className="p-2 text-white rounded bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                          <button className="btn btn-danger p-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={!autorizedUser}
                             onClick={() => handleDeleteHistoricalData(index)}>
                             <TrashIcon />
@@ -1070,8 +1070,8 @@ export default function CadastralRecords(props) {
       !autorizedUser
         ? "bg-gray-300 text-gray-500 cursor-not-allowed" // 🔒 Estilo gris cuando está deshabilitado
         : data.visible
-        ? "bg-gray-500 hover:bg-gray-700"
-        : "bg-green-500 hover:bg-green-700"
+        ? "bg-secondary hover:bg-secondary"
+        : "bg-success hover:bg-success"
     }`}
     title={data.visible ? "Ocultar Documento" : "Hacer Visible"}
   >
@@ -1085,9 +1085,9 @@ export default function CadastralRecords(props) {
                 </tr>
               ))}
               <tr>
-                <td colSpan={5} className="p-2">
-                  <div className="flex">
-                    <button className="p-2 w-full text-white rounded bg-gray-600 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                <td colSpan={5}>
+                  <div className="d-flex">
+                    <button className="btn btn-secondary p-2 w-100 d-flex justify-content-center disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={!autorizedUser || multipleData.some(item => item.editing) || deletingIndex !== null}
                       onClick={handleAddNewPeriodToHistoricalData}>
                       <PlusIcon />

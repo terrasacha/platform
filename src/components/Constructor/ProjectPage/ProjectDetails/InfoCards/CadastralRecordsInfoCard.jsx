@@ -758,7 +758,7 @@ export default function CadastralRecordsInfoCard(props) {
                         </td>
                         <td className="flex justify-end gap-1">
                           <button
-                            className="p-2 text-white rounded-md bg-yellow-400"
+                            className="p-2 text-white rounded-md bg-terrasacha-secondary2 hover:bg-terrasacha-secondary2-dark transition-all duration-300 hover:scale-105"
                             disabled={!autorizedUser}
                             onClick={() => handleEditHistoricalData(index)}
                           >

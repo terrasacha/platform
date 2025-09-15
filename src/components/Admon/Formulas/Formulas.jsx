@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
-// import '@aws-amplify/ui-react/styles.css'
-// Bootstrap
-import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
-// Auth css custom
-import Bootstrap from "../../common/themes";
+// Bootstrap reemplazado con Tailwind CSS y sistema Terrasacha
+// Componentes Terrasacha
+import TerrasachaTable, { TerrasachaTableCell, TerrasachaBadge } from "../../common/TerrasachaTable";
 // GraphQL
 import { API, graphqlOperation } from 'aws-amplify';
 import { v4 as uuidv4 } from 'uuid';
@@ -177,96 +175,137 @@ class Formulas extends Component {
         const renderFormulas = () => {
             if (formulas.length > 0) {
                 return (
-                    <Container>
-                        <Table striped bordered hover>
-                            <thead>
-                            <tr>
-                                <th>Variable ID</th>
-                                <th>Equation</th>
-                                <th>Unit of Measure ID</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {formulas.map(formula => (
-                                <tr key={formula.id}>
-
-                                    <td>
+                    <TerrasachaTable
+                        title="📐 Fórmulas Configuradas"
+                        subtitle="Lista de todas las fórmulas matemáticas disponibles en el sistema"
+                        headers={['Variable ID', 'Ecuación', 'Unidad de Medida', 'Acción']}
+                        data={formulas}
+                        renderRow={(formula) => (
+                            <>
+                                <TerrasachaTableCell variant="primary">
+                                    <code className="text-sm font-mono bg-terrasacha-light/10 px-2 py-1 rounded">
                                         {formula.varID}
-                                    </td>
-                                    <td>
+                                    </code>
+                                </TerrasachaTableCell>
+                                
+                                <TerrasachaTableCell variant="secondary">
+                                    <code className="text-sm font-mono bg-terrasacha-secondary2/10 px-2 py-1 rounded text-terrasacha-secondary1">
                                         {formula.equation}
-                                    </td>
-                                    <td>
-                                        {formula.unitOfMeasure !== undefined? formula.unitOfMeasure.engineeringUnit : ''}
-                                    </td>
-                                    <td>
-                                        <Button 
-                                            variant='primary'
-                                            size='sm'
-                                            onClick={(e) => this.handleLoadEditFormula(formula, e)}
-                                        >Editar</Button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </Container>
+                                    </code>
+                                </TerrasachaTableCell>
+                                
+                                <TerrasachaTableCell>
+                                    {formula.unitOfMeasure !== undefined ? (
+                                        <TerrasachaBadge variant="info">
+                                            {formula.unitOfMeasure.engineeringUnit}
+                                        </TerrasachaBadge>
+                                    ) : (
+                                        <TerrasachaBadge variant="neutral">
+                                            Sin unidad
+                                        </TerrasachaBadge>
+                                    )}
+                                </TerrasachaTableCell>
+                                
+                                <TerrasachaTableCell>
+                                    <button
+                                        className="btn-terrasacha-secondary text-sm"
+                                        onClick={(e) => this.handleLoadEditFormula(formula, e)}
+                                    >
+                                        Editar
+                                    </button>
+                                </TerrasachaTableCell>
+                            </>
+                        )}
+                    />
                 )
             }
-        
         }
 
 
         return (
-            <Container style={{display: 'flex', flexDirection: 'column'}}>
-                <Container>
-                    <h2>{CRUDButtonName} Formula: {newFormula.name}</h2>
-                    <Form>
-                        <Row className='mb-2'>
-                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                                <Form.Label>Variable ID</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder=''
-                                    name='formula.varID'
-                                    value={newFormula.varID}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                                <Form.Label>Equation</Form.Label>
-                                <Form.Control
-                                    type='text'
-                                    placeholder='Ex. ANIMALS'
-                                    name='formula.equation'
-                                    value={newFormula.equation}
-                                    onChange={(e) => this.handleOnChangeInputForm(e)} />
-                            </Form.Group>
-                            <Form.Group as={Col} controlId='formGridNewCategoryName'>
-                                <Form.Label>Unit of Measure</Form.Label>
-                                <Form.Select 
-                                    name='formula.unitOfMeasure'
-                                    onChange={(e) => this.handleOnChangeInputForm(e)}>
-                                        <option>-</option>
-                                        {this.state.unitOfMeasures.map((uom, idx) => (<option value={uom.id} key={idx}>{uom.engineeringUnit}</option>))}
-                                </Form.Select>
-                            </Form.Group>
-                        </Row>
+            <div className="space-y-8 animate-fade-in">
+                {/* Formulario de creación/edición */}
+                <div className="bg-white rounded-xl shadow-terrasacha-lg border border-terrasacha-light/20 overflow-hidden">
+                    <div className="bg-terrasacha-primary text-white px-6 py-4">
+                        <h2 className="text-xl font-bold font-champagne tracking-wide">
+                            📐 {CRUDButtonName === 'CREATE' ? 'Crear' : 'Editar'} Fórmula
+                        </h2>
+                        <p className="text-sm text-terrasacha-earth/80 font-typographica mt-1">
+                            {CRUDButtonName === 'CREATE' 
+                                ? 'Define una nueva fórmula matemática para el sistema' 
+                                : `Editando fórmula: ${newFormula.varID || 'Sin nombre'}`
+                            }
+                        </p>
+                    </div>
 
-                        <Row className='mb-1'>
-                            <Button
-                            variant='primary'
-                            size='sm'
-                            onClick={this.handleCRUDFormula}
-                            disabled={this.state.isCRUDButtonDisable}
-                            >{CRUDButtonName}</Button>
-                        </Row>
-                    </Form>
-                </Container>
-                <br></br>
+                    <div className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {/* Variable ID */}
+                            <div className="space-y-2">
+                                <label className="form-terrasacha-label">
+                                    🔤 Variable ID
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Ej. CARBON_CALC"
+                                    name="formula.varID"
+                                    value={newFormula.varID}
+                                    className="form-terrasacha-input"
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}
+                                />
+                            </div>
+
+                            {/* Ecuación */}
+                            <div className="space-y-2">
+                                <label className="form-terrasacha-label">
+                                    ➕ Ecuación
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Ej. area * factor * 0.47"
+                                    name="formula.equation"
+                                    value={newFormula.equation}
+                                    className="form-terrasacha-input font-mono"
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}
+                                />
+                            </div>
+
+                            {/* Unidad de Medida */}
+                            <div className="space-y-2">
+                                <label className="form-terrasacha-label">
+                                    📏 Unidad de Medida
+                                </label>
+                                <select
+                                    name="formula.unitOfMeasure"
+                                    className="form-terrasacha-select"
+                                    onChange={(e) => this.handleOnChangeInputForm(e)}
+                                >
+                                    <option value="">Seleccionar unidad...</option>
+                                    {this.state.unitOfMeasures.map((uom, idx) => (
+                                        <option value={uom.id} key={idx}>
+                                            {uom.engineeringUnit}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Botón de acción */}
+                        <div className="flex justify-end pt-6 border-t border-terrasacha-light/20 mt-6">
+                            <button
+                                className={`btn-terrasacha-primary ${this.state.isCRUDButtonDisable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                onClick={this.handleCRUDFormula}
+                                disabled={this.state.isCRUDButtonDisable}
+                            >
+                                {CRUDButtonName === 'CREATE' ? '✨ Crear Fórmula' : '💾 Actualizar Fórmula'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Lista de fórmulas */}
                 {renderFormulas()}
-            </Container>
-        
+            </div>
         )
     }
 }

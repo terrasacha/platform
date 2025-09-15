@@ -1,15 +1,6 @@
 import React, { Component } from "react";
 // Bootstrap
-import {
-  Alert,
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Modal,
-  Row,
-} from "react-bootstrap";
+import { Alert, Button, Modal } from "react-bootstrap";
 // GraphQL
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import {
@@ -923,7 +914,7 @@ class Products extends Component {
         <form className="bg-white p-4 rounded-lg shadow-sm mb-4">
           <div className="mb-4">
             <h2 className="text-xl font-bold">
-            PROPIEDADES DEL PROYECTO en {CRUDButtonName}
+              PROPIEDADES DEL PROYECTO en {CRUDButtonName}
             </h2>
           </div>
 
@@ -999,18 +990,25 @@ class Products extends Component {
                 onChange={(e) => this.handleOnChangeInputForm(e)}
                 className="w-full px-3 py-2 border rounded-md"
               >
-                {["", "Prefactibilidad", "Factibilidad", "Documento de diseño del proyecto", "Validación externa", "Registro del proyecto"].map(
-                  (op) => (
-                    <option value={op} key={op}>
-                      {op}
-                    </option>
-                  )
-                )}
+                {[
+                  "",
+                  "Prefactibilidad",
+                  "Factibilidad",
+                  "Documento de diseño del proyecto",
+                  "Validación externa",
+                  "Registro del proyecto",
+                ].map((op) => (
+                  <option value={op} key={op}>
+                    {op}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="w-full md:w-1/2 px-2 mb-4">
-              <label className="block text-sm font-bold mb-2">Está activo?</label>
+              <label className="block text-sm font-bold mb-2">
+                Está activo?
+              </label>
               <div>
                 <button
                   className={`inline-block px-3 py-1 rounded-full ${
@@ -1074,7 +1072,7 @@ class Products extends Component {
 
           <div className="mb-4">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="btn-terrasacha-outline"
               onClick={(e) => this.handleAddNewImageToActualProduct(e)}
             >
               AGREGAR IMAGEN AL PROYECTO ACTUAL
@@ -1093,7 +1091,7 @@ class Products extends Component {
 
         <div className="mb-4">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+            className="btn-terrasacha-primary w-full"
             onClick={this.handleCRUDProduct}
             disabled={this.state.isCRUDButtonDisable}
           >

@@ -6,7 +6,8 @@ import {
   onCreateCategory,
   onUpdateCategory,
 } from "../../../graphql/subscriptions";
-import { Table } from "react-bootstrap";
+// Componentes Terrasacha
+import TerrasachaTable, { TerrasachaTableCell } from "../../common/TerrasachaTable";
 
 class Categorys extends Component {
   constructor(props) {
@@ -142,31 +143,30 @@ class Categorys extends Component {
     const renderCategorys = () => {
       if (categorys.length > 0) {
         return (
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categorys.map((category) => (
-                <tr key={category.id}>
-                  <td>{category.id}</td>
-                  <td>{category.name}</td>
-                  <td>
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={(e) => this.handleLoadEditCategory(category, e)}
-                    >
-                      Editar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <TerrasachaTable
+            title="Categorías Configuradas"
+            subtitle="Lista de todas las categorías disponibles en el sistema"
+            headers={['ID', 'Nombre', 'Acción']}
+            data={categorys}
+            renderRow={(category) => (
+              <>
+                <TerrasachaTableCell variant="secondary">
+                  {category.id.substring(0, 8)}...
+                </TerrasachaTableCell>
+                <TerrasachaTableCell variant="primary">
+                  {category.name}
+                </TerrasachaTableCell>
+                <TerrasachaTableCell>
+                  <button
+                    className="btn-terrasacha-secondary text-sm"
+                    onClick={(e) => this.handleLoadEditCategory(category, e)}
+                  >
+                    Editar
+                  </button>
+                </TerrasachaTableCell>
+              </>
+            )}
+          />
         );
       }
     };
@@ -195,7 +195,7 @@ class Categorys extends Component {
 
             <div className="mb-1">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="btn-terrasacha-primary"
                 onClick={this.handleCRUDCategory}
                 disabled={this.state.isCRUDButtonDisable}
               >

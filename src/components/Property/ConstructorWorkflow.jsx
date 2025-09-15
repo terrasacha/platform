@@ -2,11 +2,11 @@
   import PropertyChat from "components/Legal/PropertyChat";
   import { FaCheckCircle, FaRegCheckCircle, FaRegClock, FaFilePdf, FaEye, FaEdit } from "react-icons/fa";
   import { API, graphqlOperation } from "aws-amplify";
-  import { createPropertyFeature, updatePropertyFeature } from "graphql/mutations";
+  import { createPropertyFeature, updatePropertyFeature, createVerification, updateVerification } from "graphql/mutations";
   import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
   import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
   import { useS3Client } from "context/s3ClientContext";
-import { listPropertyFeatures } from "graphql/queries";
+import { listPropertyFeatures, listVerifications } from "graphql/queries";
 import { usePropertyData } from "context/PropertyDataContext";
 import PropertyChatHistory from "./PropertyChatHistory";
 import { useAuth } from "context/AuthContext";
@@ -35,9 +35,12 @@ import { useAuth } from "context/AuthContext";
     const progress = Math.round((completedCount / STEPS.length) * 100);
     const { propertyData } = usePropertyData();
     const basePath = `public/property/${propertyData.propertyInfo?.id}/other/`
-    const [showHistory, setShowHistory] = useState(false);
-    const { user } = useAuth(); // O ajusta según tu estructura
-    const isConstructor = user?.role === "validator";
+      const [showHistory, setShowHistory] = useState(false);
+  const { user } = useAuth(); // O ajusta según tu estructura
+  const isConstructor = user?.role === "validator";
+  const [chatFeatureCreated, setChatFeatureCreated] = useState(false);
+  const [propertyFeatureID, setPropertyFeatureID] = useState(null);
+  const [isValidatorAssigned, setIsValidatorAssigned] = useState(false);
 
   
     useEffect(() => {
@@ -102,6 +105,258 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
     
       fetchFeature();
     }, [propertyId]);
+    
+    // ✅ NUEVO: useEffect para obtener el feature del chat
+    useEffect(() => {
+      const fetchChatFeature = async () => {
+        if (!propertyId) return;
+        
+        try {
+          console.log("🔍 Buscando feature del chat para propertyId:", propertyId);
+          
+          const response = await API.graphql(
+            graphqlOperation(listPropertyFeatures, {
+              filter: {
+                propertyID: { eq: propertyId },
+                featureID: { eq: "GLOBAL_PROPERTY_CHAT" },
+              },
+            })
+          );
+          
+          const chatFeatures = response.data.listPropertyFeatures.items;
+          console.log("💬 Features del chat encontrados:", chatFeatures);
+          
+                     if (chatFeatures.length > 0) {
+             const chatFeature = chatFeatures[0];
+             console.log("✅ Feature del chat encontrado:", chatFeature);
+             
+             // ✅ Actualizar el ID del feature del chat
+             setPropertyFeatureID(chatFeature.id);
+             
+             // ✅ IMPORTANTE: Marcar como creado SIEMPRE que exista el feature
+             setChatFeatureCreated(true);
+             
+             // Verificar verifications y manejarlas correctamente
+             if (chatFeature.verifications?.items?.length > 0) {
+               const verification = chatFeature.verifications.items[0];
+               console.log("✅ Verification del chat encontrada:", verification);
+               
+               // ✅ Si es validador y ya está asignado, marcarlo como true
+               if (isConstructor && verification.userVerifierID === user?.id) {
+                 setIsValidatorAssigned(true);
+               } else if (isConstructor && !verification.userVerifierID) {
+                 // ✅ NUEVO: Si es validador y no hay validador asignado, asignarlo inmediatamente
+                 console.log("🔍 Validador detectado, asignándolo inmediatamente...");
+                 await assignValidatorToChat(user.id);
+               }
+             } else {
+               // ✅ NUEVO: NO tiene verifications, crearlas automáticamente
+               console.log("ℹ️ Feature del chat existe pero no tiene verifications, creándolas...");
+               await createVerificationForExistingFeature(chatFeature.id);
+             }
+           } else {
+            console.log("ℹ️ No se encontraron features del chat para este property.");
+            console.log("🛠 Creando feature del chat automáticamente...");
+            
+            // ✅ NUEVO: Crear el feature del chat automáticamente
+            await createChatFeature();
+          }
+        } catch (error) {
+          console.error("❌ Error al obtener feature del chat:", error);
+        }
+      };
+      
+      fetchChatFeature();
+    }, [propertyId]);
+    
+         // ✅ NUEVO: useEffect para asignar validador cuando entre
+     useEffect(() => {
+       // Si es un validador y hay un feature del chat disponible
+       if (isConstructor && propertyFeatureID && user?.id) {
+         console.log("🔍 Validador detectado, asignando al chat...");
+         assignValidatorToChat(user.id);
+       }
+     }, [isConstructor, propertyFeatureID, user?.id]);
+
+     // ✅ NUEVO: useEffect para sincronizar el estado cuando cambie isValidatorAssigned
+     useEffect(() => {
+       if (isValidatorAssigned) {
+         console.log("✅ Estado sincronizado: Validador asignado y habilitado para escribir");
+       }
+     }, [isValidatorAssigned]);
+
+    // ✅ NUEVO: Función para crear el feature del chat
+    const createChatFeature = async () => {
+      if (!propertyId || !propertyData?.projectPostulant?.id) {
+        console.warn("⚠️ No se puede crear feature del chat: faltan datos necesarios");
+        console.log("🔍 Datos disponibles:", {
+          propertyId,
+          projectPostulantId: propertyData?.projectPostulant?.id,
+          propertyData: propertyData ? "disponible" : "no disponible"
+        });
+        return;
+      }
+
+      try {
+        console.log("🛠 Creando PropertyFeature para chat...");
+        console.log("🔍 Datos para crear feature:", {
+          propertyID: propertyId,
+          featureID: "GLOBAL_PROPERTY_CHAT",
+          userVerifiedID: propertyData.projectPostulant.id
+        });
+        
+        // 1. Crear PropertyFeature
+        const propertyFeatureInput = {
+          propertyID: propertyId,
+          featureID: "GLOBAL_PROPERTY_CHAT",
+        };
+
+        const propertyFeatureResponse = await API.graphql(
+          graphqlOperation(createPropertyFeature, { input: propertyFeatureInput })
+        );
+
+        const newPropertyFeatureID = propertyFeatureResponse.data.createPropertyFeature.id;
+        console.log("✅ PropertyFeature del chat creado:", newPropertyFeatureID);
+        
+        // ✅ Actualizar el estado local
+        setPropertyFeatureID(newPropertyFeatureID);
+
+        // 2. Crear Verification
+        console.log("🛠 Creando Verification para el chat...");
+        
+        const verificationInput = {
+          userVerifiedID: propertyData.projectPostulant.id,
+          propertyFeatureID: newPropertyFeatureID,
+        };
+
+        const verificationResponse = await API.graphql(
+          graphqlOperation(createVerification, { input: verificationInput })
+        );
+
+        const newVerificationID = verificationResponse.data.createVerification.id;
+        console.log("✅ Verification del chat creada:", newVerificationID);
+
+                 // ✅ NUEVO: Si es validador, asignarlo inmediatamente después de crear la verification
+         if (isConstructor && user?.id) {
+           console.log("🔍 Validador detectado, asignándolo inmediatamente después de crear verification...");
+           await API.graphql(
+             graphqlOperation(updateVerification, {
+               input: {
+                 id: newVerificationID,
+                 userVerifierID: user.id,
+               },
+             })
+           );
+           console.log("✅ Validador asignado exitosamente al chat");
+           setIsValidatorAssigned(true);
+         } else {
+           console.log("ℹ️ Validador se asignará cuando entre al chat");
+         }
+         
+         console.log("✅ Feature del chat creado exitosamente");
+         console.log("✅ Postulante asignado como usuario verificado");
+         
+         // ✅ Marcar como creado y NO recargar la página
+         setChatFeatureCreated(true);
+        
+      } catch (error) {
+        console.error("❌ Error al crear feature del chat:", error);
+        console.error("🔍 Detalles del error:", {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        });
+      }
+    };
+    
+         // ✅ NUEVA: Función para crear verification cuando el feature ya existe
+     const createVerificationForExistingFeature = async (featureId) => {
+       if (!propertyData?.projectPostulant?.id) {
+         console.warn("⚠️ No se puede crear verification: faltan datos del postulante");
+         return;
+       }
+       
+       try {
+         console.log("🛠 Creando Verification para feature existente...");
+         
+         const verificationInput = {
+           userVerifiedID: propertyData.projectPostulant.id,
+           propertyFeatureID: featureId,
+         };
+         
+         const verificationResponse = await API.graphql(
+           graphqlOperation(createVerification, { input: verificationInput })
+         );
+         
+         const newVerificationID = verificationResponse.data.createVerification.id;
+         console.log("✅ Verification creada para feature existente:", newVerificationID);
+         
+         // ✅ NUEVO: Asignar validador inmediatamente después de crear la verification
+         if (isConstructor && user?.id) {
+           console.log("🔍 Validador detectado, asignándolo inmediatamente después de crear verification...");
+           // ✅ NUEVO: Asignar directamente sin llamar a assignValidatorToChat
+           await API.graphql(
+             graphqlOperation(updateVerification, {
+               input: {
+                 id: newVerificationID,
+                 userVerifierID: user.id,
+               },
+             })
+           );
+           console.log("✅ Validador asignado exitosamente al chat");
+           setIsValidatorAssigned(true);
+         }
+         
+       } catch (error) {
+         console.error("❌ Error creando verification para feature existente:", error);
+       }
+     };
+    
+         // ✅ NUEVA: Función para asignar validador cuando entre
+     const assignValidatorToChat = async (validatorUserId) => {
+       if (!propertyFeatureID) return;
+       
+       try {
+         console.log("🔍 Buscando verification para asignar validador...");
+         
+         // Buscar la verification existente
+         const response = await API.graphql(
+           graphqlOperation(listVerifications, {
+             filter: { propertyFeatureID: { eq: propertyFeatureID } },
+           })
+         );
+         
+         const verification = response.data.listVerifications.items[0];
+         
+         if (verification && !verification.userVerifierID) {
+           console.log("✅ Asignando validador al chat:", validatorUserId);
+           
+           // Asignar validador solo si no hay uno asignado
+           await API.graphql(
+             graphqlOperation(updateVerification, {
+               input: {
+                 id: verification.id,
+                 userVerifierID: validatorUserId,
+               },
+             })
+           );
+           
+           console.log("✅ Validador asignado exitosamente al chat");
+           // ✅ NUEVO: Marcar como asignado para habilitar el chat
+           setIsValidatorAssigned(true);
+         } else if (verification?.userVerifierID) {
+           console.log("ℹ️ Ya hay un validador asignado:", verification.userVerifierID);
+           // ✅ NUEVO: Si ya está asignado, marcar como true
+           setIsValidatorAssigned(true);
+         } else if (verification && verification.userVerifierID === validatorUserId) {
+           // ✅ NUEVO: Si el validador ya es el asignado, marcarlo como true
+           console.log("✅ Validador ya está asignado a este usuario");
+           setIsValidatorAssigned(true);
+         }
+       } catch (error) {
+         console.error("❌ Error asignando validador:", error);
+       }
+     };
     
     
 
@@ -326,7 +581,44 @@ else if (parsedValue.memorando?.uploadDate && parsedValue.memorando?.expirationD
 </div>
 
           <div className="flex-1 overflow-auto border rounded p-4 bg-gray-50">
-            <PropertyChat propertyId={propertyId} featureChat="GLOBAL_PROPERTY_CHAT" />
+            {/* ✅ DEBUG: Log para verificar propertyId */}
+            {console.log("🔍 ConstructorWorkflow - propertyId para PropertyChat:", propertyId)}
+            
+            {/* ✅ CORREGIDO: PropertyChat solo visible cuando esté creado */}
+                         {chatFeatureCreated ? (
+               <PropertyChat 
+                 propertyId={propertyId} 
+                 featureChat="GLOBAL_PROPERTY_CHAT"
+                 isValidatorAssigned={isValidatorAssigned}
+               />
+             ) : (
+              <div className="bg-gradient-to-br from-white to-terrasacha-light/20 p-6 border border-terrasacha-light/30 rounded-2xl shadow-terrasacha-lg h-96 flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-typographica font-bold text-terrasacha-secondary1">
+                    Mensajería del Predio
+                  </h2>
+                </div>
+                <div className="flex-grow flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-terrasacha-light/20 to-terrasacha-earth/20 rounded-full flex items-center justify-center animate-spin">
+                      <svg className="w-8 h-8 text-terrasacha-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <p className="text-terrasacha-secondary1 font-typographica">Preparando chat...</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* ✅ DEBUG: Indicador visual si no hay propertyId */}
+            {!propertyId && (
+              <div className="text-center text-gray-500 p-4">
+                ⚠️ No hay propertyId disponible para el chat
+              </div>
+            )}
+            
+
           </div>
         </div>
       {showHistory && (

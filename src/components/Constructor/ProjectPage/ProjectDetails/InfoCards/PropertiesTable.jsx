@@ -35,7 +35,7 @@ export default function PropertiesTable() {
                 <td>
                   <a
                     href={`/property/${property.id}`}
-                    className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+                    className="border-2 border-terrasacha-secondary2 bg-terrasacha-secondary2 hover:bg-terrasacha-secondary2-dark text-white rounded-md px-3 py-2 transition-all duration-300 hover:scale-105 shadow-terrasacha"
                   >
                     Detalles
                   </a>
