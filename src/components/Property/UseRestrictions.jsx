@@ -171,8 +171,8 @@ export default function UseRestrictions(props) {
               inputName="projectRestrictionsDesc"
               inputValue={formData.projectRestrictionsDesc}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["projectRestrictionsDesc"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["projectRestrictionsDesc"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -184,8 +184,8 @@ export default function UseRestrictions(props) {
               inputName="projectRestrictionsOther"
               inputValue={formData.projectRestrictionsOther}
               onChangeInputValue={(e) => handleChangeInputValue(e)}
-              className={`border rounded-md p-1 ${
-                changedFields["projectRestrictionsOther"] ? "border-red-500 bg-red-100" : ""
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["projectRestrictionsOther"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -195,7 +195,7 @@ export default function UseRestrictions(props) {
         {autorizedUser && (
           <div className="d-flex justify-content-center mt-3">
             <button
-              className="p-2 text-white bg-green-700 rounded-md"
+              className="btn-terrasacha-success p-2 font-typographica"
               onClick={handleSaveBtn}
               disabled={!Object.values(changedFields).some((changed) => changed)} // Se desactiva si no hay cambios
             >

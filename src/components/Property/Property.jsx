@@ -25,9 +25,9 @@ import { useAuth } from "context/AuthContext";
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
 const statusColor = {
-  PENDING: "bg-gray-600",
-  APPROVED: "bg-green-600",
-  REJECTED: "bg-red-600",
+  PENDING: "text-terrasacha-secondary1", // Amarillo Tierra (#e8d79a) con texto Verde Bosques Nublados (#44482c)
+  APPROVED: "text-white", // Verde Pradera (#849b50) con texto blanco
+  REJECTED: "text-white", // Rojo con texto blanco
 };
 const statusEs = {
   PENDING: "Pendiente",
@@ -290,32 +290,32 @@ export default function Property() {
                 onClick={() =>
                   handleNavigation(`/campaign/${property.campaign.id}`)
                 }
-                className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+                className="btn-terrasacha-warning font-typographica"
               >
                 Regresar a la campaña
               </a>
             ) : (
               <a
                 onClick={() => handleNavigation(`/constructor`)}
-                className="border-2 border-yellow-500 bg-yellow-500 rounded-md px-2 py-1 active:bg-yellow-600 active:border-yellow-600"
+                className="btn-terrasacha-warning font-typographica"
               >
                 Ir a mis predios
               </a>
             )}
 
             {/* 📌 Aquí está el contenedor donde agregaremos la línea de tiempo */}
-            <div className="relative pt-3 px-4 mb-4 mt-4 border rounded shadow">
+            <div className="relative pt-3 px-4 mb-4 mt-4 border border-terrasacha-light rounded-lg shadow-terrasacha bg-white">
               <div className="row gy-2">
                 <header className="d-flex justify-content-between">
-                  <p className="fs-3 mb-0">{property.name}</p>
+                  <p className="fs-3 mb-0 font-typographica text-terrasacha-primary">{property.name}</p>
                 </header>
                 <section>
-                  <p className="fs-6 mb-0 fw-bold">Fecha de creación:</p>
-                  <p className="fs-6 mb-0">{property.createdAt}</p>
+                  <p className="fs-6 mb-0 fw-bold font-typographica text-terrasacha-secondary1">Fecha de creación:</p>
+                  <p className="fs-6 mb-0 font-typographica text-terrasacha-secondary2">{property.createdAt}</p>
                 </section>
                 <section>
-                  <p className="fs-6 mb-0 fw-bold">Área Total:</p>
-                  <p className="fs-6 mb-0">
+                  <p className="fs-6 mb-0 fw-bold font-typographica text-terrasacha-secondary1">Área Total:</p>
+                  <p className="fs-6 mb-0 font-typographica text-terrasacha-secondary2">
                     {propertyData.projectCadastralRecords.totalAreaFormatted}
                   </p>
                 </section>
@@ -325,7 +325,13 @@ export default function Property() {
               <span
                 className={`${
                   statusColor[property.status]
-                } absolute top-4 right-4 bg-blue-500 text-xs text-white font-bold px-4 py-2 w-fit rounded-md text-nowrap`}
+                } absolute top-4 right-4 text-xs font-bold px-4 py-2 w-fit rounded-lg text-nowrap font-typographica shadow-terrasacha`}
+                style={{
+                  backgroundColor: property.status === 'PENDING' ? '#e8d79a' : // Amarillo Tierra
+                                  property.status === 'APPROVED' ? '#849b50' : // Verde Pradera
+                                  property.status === 'REJECTED' ? '#dc3545' : '#6e6c35', // Rojo o Verde Selva por defecto
+                  color: property.status === 'PENDING' ? '#44482c' : 'white' // Verde Bosques Nublados para PENDING, blanco para otros
+                }}
               >
                 {statusEs[property.status]}
               </span>
@@ -347,7 +353,7 @@ export default function Property() {
                 />
               </div>
 
-              <ul className="font-medium flex mt-4 pl-0 ">
+              <ul className="font-medium flex mt-4 pl-0 font-typographica">
                 <li>
                   <a
                     href="#details"
@@ -357,9 +363,9 @@ export default function Property() {
                     }}
                     className={`${
                       activeSection === "details"
-                        ? "text-black border-t border-r border-l border-gray-400 rounded-t-md"
-                        : "text-blue-500"
-                    } flex py-2 px-3`}
+                        ? "text-terrasacha-primary border-t border-r border-l border-terrasacha-primary rounded-t-md bg-terrasacha-light bg-opacity-20"
+                        : "text-terrasacha-secondary2 hover:text-terrasacha-primary"
+                    } flex py-2 px-3 transition-colors duration-200`}
                     aria-current="page"
                   >
                     Detalles
@@ -382,7 +388,12 @@ export default function Property() {
                 >
                   {canAssign && (
                     <button
-                      className="w-full bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 text-white px-4 py-2 rounded transition-colors duration-150"
+                      className="btn w-full font-typographica"
+                      style={{
+                        backgroundColor: '#849b50', // Verde Pradera
+                        borderColor: '#849b50',
+                        color: 'white'
+                      }}
                       aria-label="Asignar predio"
                       tabIndex={0}
                       onClick={() => handleToggleAssign(property)}
@@ -392,7 +403,12 @@ export default function Property() {
                   )}
                   {canUnassign && (
                     <button
-                      className="w-full bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 text-white px-4 py-2 rounded transition-colors duration-150"
+                      className="btn w-full font-typographica"
+                      style={{
+                        backgroundColor: '#dc3545', // Rojo
+                        borderColor: '#dc3545',
+                        color: 'white'
+                      }}
                       aria-label="Desasignar predio"
                       tabIndex={0}
                       onClick={() => handleToggleAssign(property)}
@@ -402,10 +418,15 @@ export default function Property() {
                   )}
                   {canValidate && (
                     <button
-                      className="w-full bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 text-white px-4 py-2 rounded transition-colors duration-150"
+                      className="btn w-full font-typographica"
+                      style={{
+                        backgroundColor: '#6e6c35', // Verde Selva
+                        borderColor: '#6e6c35',
+                        color: 'white'
+                      }}
                       aria-label="Ver Documentación"
                       tabIndex={0}
-                      onClick={() => setShowDocumentationModal(true)}
+                      onClick={() => property && setShowDocumentationModal(true)}
                     >
                       Validar Predio
                     </button>

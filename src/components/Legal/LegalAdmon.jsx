@@ -47,9 +47,14 @@ const DocumentationModal = ({
 
   console.log("property", property);
 
+  // Si no hay propiedad o no está abierto, no renderizar nada
+  if (!isOpen || !property) {
+    return null;
+  }
+
   const propertyFiles = property?.propertyFeatures?.items
-    .find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
-    .documents.items.map((document) => {
+    ?.find((feature) => feature.featureID === "GLOBAL_PROPERTY_FILES")
+    ?.documents?.items?.map((document) => {
       const documentData = JSON.parse(document.data || "");
       return {
         name: documentData.name,
@@ -58,7 +63,7 @@ const DocumentationModal = ({
           "Tipo de documento desconocido",
         url: documentData.url,
       };
-    });
+    }) || [];
 
   console.log(propertyFiles);
 

@@ -177,8 +177,8 @@ export default function Relations(props) {
               onClickSaveBtn={() =>
                 handleSaveBtn("projectRelationsTechnicalAssitance")
               }
-              className={`border rounded-md p-1 ${
-                changedFields["projectRelationsTechnicalAssitance"] ? "border-red-500 bg-red-100" : "border-gray-300"
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["projectRelationsTechnicalAssitance"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -199,8 +199,8 @@ export default function Relations(props) {
               onClickSaveBtn={() =>
                 handleSaveBtn("projectRelationsStrategicAllies")
               }
-              className={`border rounded-md p-1 ${
-                changedFields["projectRelationsStrategicAllies"] ? "border-red-500 bg-red-100" : "border-gray-300"
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["projectRelationsStrategicAllies"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -221,8 +221,8 @@ export default function Relations(props) {
               onClickSaveBtn={() =>
                 handleSaveBtn("projectRelationsCommunityGroups")
               }
-              className={`border rounded-md p-1 ${
-                changedFields["projectRelationsCommunityGroups"] ? "border-red-500 bg-red-100" : "border-gray-300"
+              className={`border border-terrasacha-light rounded-lg p-1 ${
+                changedFields["projectRelationsCommunityGroups"] ? "border-terrasacha-danger bg-red-100" : ""
               }`}
             />
           </div>
@@ -230,7 +230,7 @@ export default function Relations(props) {
         {autorizedUser && (
       <div className="d-flex justify-content-center mt-3">
         <button
-          className="p-2 text-white bg-green-700 rounded-md"
+          className="btn-terrasacha-success p-2 font-typographica"
           onClick={handleSaveBtn}
         >
           Guardar
