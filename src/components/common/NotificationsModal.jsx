@@ -51,7 +51,7 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
         </Modal.Title>
       </Modal.Header>
 
-      <Modal.Body className="bg-gray-50 p-6 max-h-96 overflow-y-auto">
+      <Modal.Body className="bg-gradient-terrasacha-subtle p-6 max-h-96 overflow-y-auto">
         {messages.length > 0 && (
           <div className="flex justify-end mb-4">
             <OverlayTrigger
@@ -62,7 +62,7 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
                 variant="outline-success"
                 size="sm"
                 onClick={markAllAsRead}
-                className="border-terrasacha-secondary2 text-terrasacha-secondary2 hover:bg-terrasacha-secondary2 hover:text-white transition-all duration-300"
+                className="btn-terrasacha-outline"
               >
                 ✅ Marcar todos
               </Button>
@@ -80,10 +80,10 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
                 <p className="font-typographica font-semibold text-terrasacha-secondary1 text-sm mb-2">
                   <strong>De:</strong> {msg.senderName || "Desconocido"}
                 </p>
-                <p className="text-gray-700 text-base mb-3 leading-relaxed">
+                <p className="text-terrasacha-secondary1 text-base mb-3 leading-relaxed">
                   {msg.message}
                 </p>
-                <p className="text-gray-500 text-xs mb-4">
+                <p className="text-terrasacha-secondary1 opacity-80 text-xs mb-4">
                   {msg.createdAt
                     ? new Date(msg.createdAt).toLocaleString()
                     : "Fecha desconocida"}
@@ -94,7 +94,7 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
                     variant="outline-success"
                     size="sm"
                     onClick={() => markAsRead(msg.id)}
-                    className="border-terrasacha-secondary2 text-terrasacha-secondary2 hover:bg-terrasacha-secondary2 hover:text-white transition-all duration-300"
+                    className="btn-terrasacha-success"
                   >
                     Marcar como leído
                   </Button>
@@ -117,7 +117,7 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
                           navigate(`/property/${msg.propertyID}?openChat=true&chatTarget=${chatTargetParam}`);
                         }
                       }}
-                      className="bg-terrasacha-primary border-terrasacha-primary hover:bg-terrasacha-primary-dark hover:border-terrasacha-primary-dark text-white transition-all duration-300"
+                      className="btn-terrasacha-primary"
                     >
                       {msg.type === "CAMPAING"
                         ? "Ir a campaña"
@@ -126,7 +126,7 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
                         : "Responder"}
                     </Button>
                   ) : (
-                    <p className="text-gray-500 text-sm italic">
+                    <p className="text-terrasacha-secondary1 opacity-80 text-sm italic">
                       No se puede responder a este mensaje.
                     </p>
                   )}
@@ -136,18 +136,18 @@ export default function NotificationsModal({ show, onClose, messages, fetchPendi
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-500 font-typographica text-lg">
+            <p className="text-terrasacha-secondary1 opacity-80 font-typographica text-lg">
               No tienes mensajes pendientes.
             </p>
           </div>
         )}
       </Modal.Body>
 
-      <Modal.Footer className="bg-gray-50 border-0 rounded-b-2xl p-4">
+      <Modal.Footer className="bg-gradient-terrasacha-dark text-white border-0 rounded-b-2xl p-4 flex items-center justify-end gap-3 shadow-terrasacha">
         <Button 
           variant="secondary" 
           onClick={onClose} 
-          className="bg-terrasacha-secondary1 border-terrasacha-secondary1 hover:bg-terrasacha-secondary1-dark hover:border-terrasacha-secondary1-dark text-white px-6 py-2 transition-all duration-300"
+          className="btn-terrasacha-secondary"
         >
           Cerrar
         </Button>

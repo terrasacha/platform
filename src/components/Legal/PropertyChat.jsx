@@ -193,17 +193,17 @@ export default function PropertyChat({ propertyId, featureChat }) {
   return (
     <>
       {verificationID && (
-        <div className="bg-white p-3 border rounded-md shadow-sm h-96 flex flex-col">
-          <h2 className="text-lg font-bold mb-2">Mensajería</h2>
+        <div className="bg-white p-3 border border-terrasacha-light rounded-md shadow-terrasacha h-96 flex flex-col">
+          <h2 className="text-lg font-bold mb-2 text-terrasacha-primary font-typographica">Mensajería</h2>
           <div className="flex-grow max-h-96 overflow-y-auto">
             {loading ? (
-              <p>Cargando mensajes...</p>
+              <p className="text-terrasacha-secondary1 opacity-80">Cargando mensajes...</p>
             ) : (
               messages.map((message, index) => (
                 <div
                   key={index}
                   className={`p-2 mb-2 rounded-md ${
-                    message.isCommentByVerifier ? "bg-blue-100" : "bg-gray-100"
+                    message.isCommentByVerifier ? "bg-terrasacha-light" : "bg-terrasacha-earth"
                   }`}
                 >
                   <p className="font-semibold mb-0">
@@ -213,7 +213,7 @@ export default function PropertyChat({ propertyId, featureChat }) {
                     :
                   </p>
                   <p className="mb-0">{message.comment}</p>
-                  <p className="text-sm text-gray-500 mb-0 text-right">
+                  <p className="text-sm text-terrasacha-secondary1 opacity-80 mb-0 text-right">
                     {new Date(message.createdAt).toLocaleString()}
                   </p>
                 </div>
@@ -225,13 +225,13 @@ export default function PropertyChat({ propertyId, featureChat }) {
             <input
               type="text"
               placeholder="Escribe tu mensaje..."
-              className="border border-gray-300 rounded-md p-2 flex-grow"
+              className="form-terrasacha-input flex-grow"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               disabled={!availableChatUsers.includes(user.id)}
             />
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2"
+              className="btn-terrasacha-primary ml-2"
               onClick={handleSendMessage}
               disabled={!availableChatUsers.includes(user.id)}
             >

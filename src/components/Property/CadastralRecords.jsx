@@ -495,7 +495,8 @@ export default function CadastralRecords(props) {
   // Crear una función que actualice el area
 
   const handleSaveHistoricalData = async (indexToSave) => {
-    if (!predialFetchedData[multipleData[indexToSave].cadastralNumber]) {
+    const cadNum = multipleData?.[indexToSave]?.cadastralNumber?.toString?.().trim?.() || "";
+    if (!predialFetchedData || typeof predialFetchedData !== "object" || !cadNum || !(cadNum in predialFetchedData)) {
       notify({
         msg: "Ingresa un identificador catastral valido",
         type: "error",
@@ -834,24 +835,25 @@ export default function CadastralRecords(props) {
 
 
   const renderAreaByCadastralNumber = (cadastralNumber) => {
+    if (!cadastralNumber || typeof cadastralNumber !== "string") return "...";
     const cadNum = cadastralNumber.trim();
-    if (cadNum in predialFetchedData) {
-      return (
-        parseFloat(predialFetchedData[cadNum].area).toLocaleString("es-ES") +
-        " m2"
-      );
-    } else {
-      return "...";
-    }
+    if (!cadNum) return "...";
+    if (!predialFetchedData || typeof predialFetchedData !== "object") return "...";
+    if (!(cadNum in predialFetchedData)) return "...";
+
+    const areaValue = predialFetchedData[cadNum]?.area ?? predialFetchedData[cadNum]?.AREA_TERRENO;
+    if (areaValue == null || isNaN(Number(areaValue))) return "...";
+    return parseFloat(areaValue).toLocaleString("es-ES") + " m2";
   };
 
   const renderPredioNameByCadastralNumber = (cadastralNumber) => {
+    if (!cadastralNumber || typeof cadastralNumber !== "string") return "...";
     const cadNum = cadastralNumber.trim();
-    if (cadNum in predialFetchedData) {
-      return predialFetchedData[cadNum].predio;
-    } else {
-      return "...";
-    }
+    if (!cadNum) return "...";
+    if (!predialFetchedData || typeof predialFetchedData !== "object") return "...";
+    if (!(cadNum in predialFetchedData)) return "...";
+
+    return predialFetchedData[cadNum]?.predio ?? predialFetchedData[cadNum]?.PREDIO ?? "...";
   };
 
   
