@@ -271,7 +271,7 @@ export default function ModalNewProperty({
             ></div>
 
             {/* Modal content */}
-            <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-terrasacha-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl md:max-w-4xl lg:max-w-5xl w-full">
               {/* Modal Header */}
               <div className="bg-gradient-terrasacha border-0 rounded-t-2xl flex items-center gap-3 p-6">
                 <FaBuilding
@@ -378,6 +378,23 @@ export default function ModalNewProperty({
                       </div>
                     )}
                   </div>
+                </div>
+
+                {/* Aviso UCC - Tratamiento de Datos */}
+                <div
+                  className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl"
+                  role="note"
+                  aria-label="Aviso tratamiento de datos UCC"
+                  tabIndex={0}
+                >
+                  <p className="text-xs text-gray-700 font-typographica leading-snug">
+                    LA UNIVERSIDAD COOPERATIVA DE COLOMBIA – UCC le informa que los datos personales que se recolectan a través del presente formulario tienen como finalidad principal cumplir con la obligación de esta institución de informarse y obtener información veraz e imparcial de los grupos de interés con los cuales se relaciona sobre la situación de riesgos provenientes de las actividades clasificadas dentro del sistema SARLAFT. En cumplimiento de esta finalidad principal sus datos podrán ser incluidos en bases de datos de carácter público y/o privado para verificar su situación de cumplimiento; podrán ser cruzados entre bases de datos; aplicarles herramientas de analítica y perfilamiento; entregados a terceros proveedores de estos servicios y de cualquiera otro encargado de acuerdo con los tratamientos requeridos por LA UCC o los que llegaren a imponerse por las normas y mejores prácticas internacionales en esta materia. Para el ejercicio de sus derechos podrá remitir su petición o reclamo a través del siguiente correo electrónico: 
+                    <a href="mailto:habeas.data@ucc.edu.co" className="text-terrasacha-primary underline ml-1">habeas.data@ucc.edu.co</a>
+                    {" "}
+                    y puede consultar la Política de Privacidad de la institución en
+                    {" "}
+                    <a href="https://www.ucc.edu.co" target="_blank" rel="noopener noreferrer" className="text-terrasacha-primary underline">www.ucc.edu.co</a>.
+                  </p>
                 </div>
               </div>
 
