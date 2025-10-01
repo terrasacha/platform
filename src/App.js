@@ -39,6 +39,7 @@ import LegalAdmon from "components/Legal/LegalAdmon";
 import TradicionLibertad from "components/views/Footer/TradicionLibertad";
 import Escrituras from "components/views/Footer/Escrituras";
 import PlanosCatastrales from "components/views/Footer/PlanosCatastrales";
+import SettingsPage from "components/views/Settings/SettingsPage";
 
 function App() {
   return (
@@ -195,6 +196,25 @@ function App() {
               <Route path="/planos-catastrales" element={<PlanosCatastrales />} />
               <Route path="/campaigns" element={<CampaignList />} />
               <Route path="/campaign/:id" element={<Campaign />} exact />
+              <Route
+                path="/settings"
+                element={
+                  <RoleMiddleware
+                    allowedRoles={[
+                      "constructor",
+                      "admon",
+                      "investor",
+                      "validator",
+                      "analyst",
+                      "legal"
+                    ]}
+                    redirectPath="/"
+                  >
+                    <SettingsPage />
+                  </RoleMiddleware>
+                }
+                exact
+              />
               {/* <Route path="/lists3" element={<ListS3 />} /> */}
               <Route path="/*" element={<Error />} />
             </Routes>
