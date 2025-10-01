@@ -10,6 +10,7 @@ import TerrasachaLogo from "components/common/TerrasachaLogo";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { notify } from "utilities/notify";
 import backgroundImage from "../_images/0162_cesar_david_martinez.jpg";
+import TermsModal from "components/common/TermsModal";
 
 const initialFormState = {
   username: "",
@@ -51,6 +52,8 @@ export default function LogIn() {
   const [resendTimer, setResendTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
   const [showResendButton, setShowResendButton] = useState(true);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   let role = localStorage.getItem("role");
 
   useEffect(() => {
@@ -223,6 +226,20 @@ export default function LogIn() {
         });
       }, 1000);
     }
+  };
+
+  const handleTermsAccept = (accepted) => {
+    updateFormState(() => ({
+      ...formState,
+      terms: Boolean(accepted),
+    }));
+  };
+
+  const handlePrivacyAccept = (accepted) => {
+    updateFormState(() => ({
+      ...formState,
+      privacy_policy: Boolean(accepted),
+    }));
   };
 
   async function signIn(e) {
@@ -523,24 +540,20 @@ export default function LogIn() {
                 </div>
 
                 <div className="space-y-4">
+                  
                   <div className="flex items-start">
                     <input
                       type="checkbox"
                       name="terms"
                       checked={formState.terms}
-                      onChange={() =>
-                        updateFormState(() => ({
-                          ...formState,
-                          terms: !formState.terms,
-                        }))
-                      }
-                      className="mt-1 mr-3 text-terrasacha-primary focus:ring-terrasacha-primary"
+                      onClick={() => setShowTermsModal(true)}
+                      className="mt-1 mr-3 text-terrasacha-primary focus:ring-terrasacha-primary cursor-pointer"
                     />
-                    <label className="text-sm text-gray-700">
+                    <label className="text-sm text-gray-700 cursor-pointer" onClick={() => setShowTermsModal(true)}>
                       Acepto los{" "}
-                      <a href="/use_terms" target="_blank" className="text-terrasacha-primary hover:underline">
-                        términos de uso
-                      </a>
+                      <span className="text-terrasacha-primary hover:underline font-medium transition-colors duration-200">
+                        Términos de uso
+                      </span>
                     </label>
                   </div>
 
@@ -549,19 +562,14 @@ export default function LogIn() {
                       type="checkbox"
                       name="privacy_policy"
                       checked={formState.privacy_policy}
-                      onChange={() =>
-                        updateFormState(() => ({
-                          ...formState,
-                          privacy_policy: !formState.privacy_policy,
-                        }))
-                      }
-                      className="mt-1 mr-3 text-terrasacha-primary focus:ring-terrasacha-primary"
+                      onClick={() => setShowPrivacyModal(true)}
+                      className="mt-1 mr-3 text-terrasacha-primary focus:ring-terrasacha-primary cursor-pointer"
                     />
-                    <label className="text-sm text-gray-700">
+                    <label className="text-sm text-gray-700 cursor-pointer" onClick={() => setShowPrivacyModal(true)}>
                       Acepto la{" "}
-                      <a href="/privacy_policy" target="_blank" className="text-terrasacha-primary hover:underline">
+                      <span className="text-terrasacha-primary hover:underline font-medium transition-colors duration-200">
                         Política de privacidad
-                      </a>
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -1027,6 +1035,21 @@ export default function LogIn() {
           )}
         </div>
       </div>
+
+      {/* Modales de Términos y Políticas */}
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        type="terms"
+        onAccept={handleTermsAccept}
+      />
+      
+      <TermsModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+        type="privacy"
+        onAccept={handlePrivacyAccept}
+      />
     </div>
   );
 }
