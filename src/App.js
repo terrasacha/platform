@@ -31,6 +31,7 @@ import Campaign from "components/Constructor/Campaign/Campaign";
 import CampaignList from "components/Constructor/Campaign/CampaignList";
 import PQRForm from "components/views/landingPage/PQRForm";
 import Property from "components/Property/Property";
+import Property2 from "components/Property2/Property";
 import { PropertyDataProvider } from "context/PropertyDataContext";
 import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
 import "./App.css";
@@ -168,6 +169,31 @@ function App() {
               <Route path="/new_campaign" element={<NewCampaign />} />
               <Route
                 path="/property/:id"
+                element={
+                  <RoleMiddleware
+                    allowedRoles={[
+                      "constructor",
+                      "admon",
+                      "investor",
+                      "validator",
+                      "legal",
+                      "analyst",
+                    ]}
+                    redirectPath="/"
+                  >
+                    <ProjectDataProvider>
+                      <PropertyDataProvider>
+                        <S3ClientProvider>
+                          <Property2 />
+                        </S3ClientProvider>
+                      </PropertyDataProvider>
+                    </ProjectDataProvider>
+                  </RoleMiddleware>
+                }
+                exact
+              />
+              <Route
+                path="/propertyOld/:id"
                 element={
                   <RoleMiddleware
                     allowedRoles={[
