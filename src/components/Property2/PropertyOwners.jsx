@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "context/AuthContext";
 import { usePropertyData } from "context/PropertyDataContext";
 import { API, graphqlOperation } from "aws-amplify";
+import { createDocument, deleteDocument, createPropertyFeature, updateDocument } from "graphql/mutations";
+import { listPropertyFeatures } from "graphql/queries";
 import { toast } from "react-toastify";
 import { useS3Client } from "context/s3ClientContext";
 import Swal from "sweetalert2";
@@ -36,6 +38,10 @@ export default function PropertyOwners({
   const { propertyData } = usePropertyData();
   const { s3Client, bucketName } = useS3Client();
 
+  // Cache para evitar crear múltiples veces el GLOBAL_PROPERTY_FILES
+  const globalFilesFeatureRef = useRef(null);
+  const isCreatingGlobalFeatureRef = useRef(false);
+
   // Estados principales
   const [isThirdParty, setIsThirdParty] = useState(null); // null = no seleccionado, true = tercero, false = propio
   const [owners, setOwners] = useState([]);
@@ -66,6 +72,116 @@ export default function PropertyOwners({
   const [postulanteData, setPostulanteData] = useState(null); // Datos del postulante guardados
   const [propietariosData, setPropietariosData] = useState([]); // Array de propietarios guardados
   const [showAddPropietario, setShowAddPropietario] = useState(false); // Mostrar card para agregar más propietarios
+
+  // Carga inicial desde DB (OWNER_INFO, OWNER_RELATION, y archivos por ownerId)
+  useEffect(() => {
+    const loadOwnersFromDB = () => {
+      try {
+        const pfs = propertyData?.propertyFeatures || [];
+        const docs = pfs.flatMap((pf) => (pf?.documents?.items ? pf.documents.items : []));
+        if (!docs || docs.length === 0) return;
+
+        const ownerIdToInfo = {};
+        const ownerIdToFiles = {};
+        let relation = null;
+
+    docs.forEach((d) => {
+          let data = {};
+          try { data = JSON.parse(d.data || '{}'); } catch { data = {}; }
+          const type = data.type;
+      if (type === 'OWNER_BUNDLE') {
+        const ownerId = data.ownerId || d.id;
+        const info = {
+          id: ownerId,
+          name: data.name || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          role: data.role || 'PROPIETARIO',
+        };
+        ownerIdToInfo[ownerId] = info;
+        const files = data.files || [];
+        ownerIdToFiles[ownerId] = ownerIdToFiles[ownerId] || {};
+        files.forEach((f) => {
+          if (f.type === 'USER_ID_FRONT') ownerIdToFiles[ownerId].idFront = f.url;
+          if (f.type === 'USER_ID_BACK') ownerIdToFiles[ownerId].idBack = f.url;
+          if (f.type === 'USER_SELFIE') ownerIdToFiles[ownerId].selfie = f.url;
+        });
+        // Guardar id del bundle para futuras actualizaciones
+        ownerIdToFiles[ownerId].ownerBundleDocumentId = d.id;
+      } else if (type === 'OWNER_INFO') {
+            const ownerId = data.ownerId || d.id; // fallback
+            ownerIdToInfo[ownerId] = {
+              id: ownerId,
+              name: data.name || '',
+              email: data.email || '',
+              phone: data.phone || '',
+              role: data.role || 'PROPIETARIO',
+            };
+          } else if (type === 'OWNER_RELATION') {
+            // Legacy: ya no se usa, pero si existe lo respetamos como fallback
+            relation = data.relation === 'THIRD_PARTY' ? true : false;
+          } else if (type === 'USER_ID_FRONT' || type === 'USER_ID_BACK' || type === 'USER_SELFIE') {
+            const ownerId = data.ownerId;
+            if (!ownerId) return;
+            if (!ownerIdToFiles[ownerId]) ownerIdToFiles[ownerId] = {};
+            if (type === 'USER_ID_FRONT') ownerIdToFiles[ownerId].idFront = data.url || d.url;
+            if (type === 'USER_ID_BACK') ownerIdToFiles[ownerId].idBack = data.url || d.url;
+            if (type === 'USER_SELFIE') ownerIdToFiles[ownerId].selfie = data.url || d.url;
+          }
+        });
+
+        // Construir postulante y propietarios
+        const propietarios = [];
+        let postulante = null;
+        Object.keys(ownerIdToInfo).forEach((oid) => {
+          const info = ownerIdToInfo[oid];
+          const files = ownerIdToFiles[oid] || {};
+          const ownerObj = {
+            id: oid,
+            name: info.name,
+            email: info.email,
+            phone: info.phone,
+            idFront: files.idFront || null,
+            idBack: files.idBack || null,
+            selfie: files.selfie || null,
+            ownerBundleDocumentId: files.ownerBundleDocumentId || null,
+          };
+          if (info.role === 'POSTULANTE') {
+            postulante = ownerObj;
+          } else {
+            propietarios.push(ownerObj);
+          }
+        });
+
+        // Determinar relación preferentemente desde cualquier OWNER_BUNDLE
+        if (relation === null) {
+          const anyBundle = Object.keys(ownerIdToInfo)[0];
+          if (anyBundle) {
+            const ownerFiles = ownerIdToFiles[anyBundle] || {};
+            const inferred = (docs.find((d)=>{
+              try { const data=JSON.parse(d.data||'{}'); return data.type==='OWNER_BUNDLE' && (data.propertyRelation==='THIRD_PARTY'||data.propertyRelation==='SELF'); } catch { return false; }
+            }));
+            if (inferred) {
+              try { const data = JSON.parse(inferred.data||'{}'); relation = data.propertyRelation === 'THIRD_PARTY'; } catch {}
+            }
+          }
+        }
+        if (relation !== null) setIsThirdParty(relation);
+        else if (postulante) setIsThirdParty(true);
+        else if (propietarios.length > 0) setIsThirdParty(false);
+
+        if (postulante) setPostulanteData(postulante);
+        if (propietarios.length > 0) {
+          setPropietariosData(propietarios);
+          setShowAddPropietario(true);
+        }
+      } catch (e) {
+        console.warn('Error cargando propietarios desde DB', e);
+      }
+    };
+    if (propertyData) loadOwnersFromDB();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propertyData]);
 
   useEffect(() => {
     if (user) {
@@ -115,11 +231,205 @@ export default function PropertyOwners({
         ).PutObjectCommand(uploadParams)
       );
 
-      const fileUrl = `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
-      return fileUrl;
+      const rawUrl = `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
+      const fileUrl = encodeURI(rawUrl);
+      return { url: fileUrl, key: fileKey };
     } catch (error) {
       console.error("Error uploading file:", error);
       throw error;
+    }
+  };
+
+  const getGlobalFilesPropertyFeature = () => {
+    try {
+      const fromContext = propertyData?.propertyFeatures?.find(
+        (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+      );
+      return fromContext || globalFilesFeatureRef.current || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const ensureGlobalFilesPropertyFeature = async () => {
+    // Si ya lo tenemos en cache, usarlo
+    if (globalFilesFeatureRef.current?.id) return globalFilesFeatureRef.current;
+
+    // Si viene en propertyData, cachearlo
+    const fromContext = propertyData?.propertyFeatures?.find(
+      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+    );
+    if (fromContext?.id) {
+      globalFilesFeatureRef.current = fromContext;
+      return fromContext;
+    }
+
+    // Evitar condiciones de carrera
+    if (isCreatingGlobalFeatureRef.current) {
+      // Espera activa simple (rápida) hasta 1s
+      for (let i = 0; i < 10; i++) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((r) => setTimeout(r, 100));
+        if (globalFilesFeatureRef.current?.id) return globalFilesFeatureRef.current;
+      }
+    }
+
+    if (!propertyData?.propertyInfo?.id) return null;
+
+    // Consultar si existe en backend (por si otro flujo ya lo creó)
+    try {
+      const resp = await API.graphql(
+        graphqlOperation(listPropertyFeatures, {
+          filter: {
+            propertyID: { eq: propertyData.propertyInfo.id },
+            featureID: { eq: "GLOBAL_PROPERTY_FILES" },
+          },
+        })
+      );
+      const found = resp?.data?.listPropertyFeatures?.items?.[0] || null;
+      if (found?.id) {
+        globalFilesFeatureRef.current = found;
+        return found;
+      }
+    } catch (err) {
+      console.warn("Fallo consultando listPropertyFeatures:", err);
+    }
+
+    // Crear uno nuevo (único)
+    try {
+      isCreatingGlobalFeatureRef.current = true;
+      const input = {
+        propertyID: propertyData.propertyInfo.id,
+        featureID: "GLOBAL_PROPERTY_FILES",
+        value: "{}",
+        isToBlockChain: false,
+        isOnMainCard: false,
+        isResult: false,
+        order: 0,
+      };
+      const resp = await API.graphql(
+        graphqlOperation(createPropertyFeature, { input })
+      );
+      const created = resp?.data?.createPropertyFeature || null;
+      if (created?.id) globalFilesFeatureRef.current = created;
+      return created;
+    } catch (err) {
+      console.error("Error creando GLOBAL_PROPERTY_FILES:", err);
+      return null;
+    } finally {
+      isCreatingGlobalFeatureRef.current = false;
+    }
+  };
+
+  const saveDocumentToDB = async ({ url, name, typeCode, s3Key, extraData }) => {
+    const globalFeature = await ensureGlobalFilesPropertyFeature();
+    if (!globalFeature?.id) return null;
+
+    const userId = propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+    const input = {
+      data: JSON.stringify({ name, type: typeCode, url, s3Key, ...(extraData || {}) }),
+      url,
+      status: "pending_review",
+      visible: true,
+      propertyFeatureID: globalFeature.id,
+      userID: userId,
+    };
+    try {
+      const resp = await API.graphql(graphqlOperation(createDocument, { input }));
+      return resp?.data?.createDocument || null;
+    } catch (err) {
+      console.error("Error creando Document en DB:", err);
+      return null;
+    }
+  };
+
+  const deleteFileAndRecord = async ({ s3Key, documentId }) => {
+    try {
+      Swal.fire({
+        title: "Eliminando documento...",
+        text: "Por favor espera mientras se elimina el archivo",
+        icon: "info",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      if (s3Key) {
+        const { DeleteObjectCommand } = await import("@aws-sdk/client-s3");
+        await s3Client.send(new DeleteObjectCommand({ Bucket: bucketName, Key: s3Key }));
+      }
+      if (documentId) {
+        await API.graphql(graphqlOperation(deleteDocument, { input: { id: documentId } }));
+      }
+
+      Swal.close();
+      toast.success("Documento eliminado");
+    } catch (err) {
+      console.error("Error eliminando documento:", err);
+      Swal.fire({
+        title: "Error al eliminar",
+        text: "No fue posible eliminar el documento. Intenta nuevamente.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#8B4513",
+      });
+      throw err;
+    }
+  };
+
+  const extractKeyFromUrl = (url) => {
+    try {
+      const u = new URL(url);
+      return decodeURIComponent(u.pathname.startsWith('/') ? u.pathname.slice(1) : u.pathname);
+    } catch {
+      return null;
+    }
+  };
+
+  // Relación se integrará dentro del OWNER_BUNDLE (no se crea Document separado)
+
+  const saveOwnerBundleToDB = async ({ ownerId, role, name, email, phone, files, bundleDocumentId, propertyRelation }) => {
+    const globalFeature = await ensureGlobalFilesPropertyFeature();
+    if (!globalFeature?.id) return null;
+    const userId = propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+    const bundle = {
+      type: "OWNER_BUNDLE",
+      ownerId,
+      role,
+      name,
+      email,
+      phone,
+      files,
+      uploadedAt: new Date().toISOString(),
+      propertyRelation,
+    };
+    try {
+      if (bundleDocumentId) {
+        const resp = await API.graphql(
+          graphqlOperation(updateDocument, {
+            input: {
+              id: bundleDocumentId,
+              data: JSON.stringify(bundle),
+            },
+          })
+        );
+        return resp?.data?.updateDocument || null;
+      }
+      const resp = await API.graphql(
+        graphqlOperation(createDocument, {
+          input: {
+            data: JSON.stringify(bundle),
+            status: "pending_review",
+            visible: true,
+            propertyFeatureID: globalFeature.id,
+            userID: userId,
+          },
+        })
+      );
+      return resp?.data?.createDocument || null;
+    } catch (err) {
+      console.error("Error guardando OWNER_BUNDLE en DB:", err);
+      return null;
     }
   };
 
@@ -210,26 +520,50 @@ export default function PropertyOwners({
         }
       });
 
+      // Generar ownerId para vincular documentos e info
+      const ownerUid = Date.now().toString();
+
       // Subir archivos al S3
-      const [idFrontUrl, idBackUrl, selfieUrl] = await Promise.all([
+      const [idFrontUploaded, idBackUploaded, selfieUploaded] = await Promise.all([
         uploadFileToS3(currentOwner.idFront, "idFront"),
         uploadFileToS3(currentOwner.idBack, "idBack"),
         uploadFileToS3(currentOwner.selfie, "selfie")
       ]);
 
-      // Crear objeto con URLs de los archivos subidos
-      const ownerData = {
-        id: Date.now(),
+      // Guardar en DB un único OWNER_BUNDLE con toda la info del propietario
+      const files = [
+        { type: "USER_ID_FRONT", url: idFrontUploaded.url, s3Key: idFrontUploaded.key, name: currentOwner.idFront.name },
+        { type: "USER_ID_BACK", url: idBackUploaded.url, s3Key: idBackUploaded.key, name: currentOwner.idBack.name },
+        { type: "USER_SELFIE", url: selfieUploaded.url, s3Key: selfieUploaded.key, name: currentOwner.selfie.name },
+      ];
+      const bundleDoc = await saveOwnerBundleToDB({
+        ownerId: ownerUid,
+        role: modalType === "postulante" ? "POSTULANTE" : "PROPIETARIO",
         name: currentOwner.name,
         email: currentOwner.email,
         phone: currentOwner.phone,
-        idFront: idFrontUrl,
-        idBack: idBackUrl,
-        selfie: selfieUrl,
+        files,
+        propertyRelation: isThirdParty ? 'THIRD_PARTY' : 'SELF',
+      });
+
+      // Crear objeto con URLs y metadatos
+      const ownerData = {
+        id: ownerUid,
+        name: currentOwner.name,
+        email: currentOwner.email,
+        phone: currentOwner.phone,
+        idFront: idFrontUploaded.url,
+        idBack: idBackUploaded.url,
+        selfie: selfieUploaded.url,
+        ownerBundleDocumentId: bundleDoc?.id || null,
+        idFrontS3Key: idFrontUploaded.key,
+        idBackS3Key: idBackUploaded.key,
+        selfieS3Key: selfieUploaded.key,
       };
 
       if (modalType === "postulante") {
         setPostulanteData(ownerData);
+        // OWNER_BUNDLE ya guarda toda la información
         Swal.fire({
           title: "¡Información Guardada!",
           text: "La información del postulante ha sido guardada exitosamente",
@@ -240,6 +574,7 @@ export default function PropertyOwners({
       } else {
         // Agregar propietario al array
         setPropietariosData(prev => [...prev, ownerData]);
+        // OWNER_BUNDLE ya guarda toda la información
         setShowAddPropietario(true); // Mostrar card para agregar más
         Swal.fire({
           title: "¡Propietario Agregado!",
@@ -323,23 +658,44 @@ export default function PropertyOwners({
         });
 
         // Subir archivos al S3
-        const [idFrontUrl, idBackUrl, selfieUrl] = await Promise.all([
+        const ownerUid = currentOwner.id || Date.now().toString();
+        const [idFrontUploaded, idBackUploaded, selfieUploaded] = await Promise.all([
           uploadFileToS3(currentOwner.idFront, "idFront"),
           uploadFileToS3(currentOwner.idBack, "idBack"),
           uploadFileToS3(currentOwner.selfie, "selfie")
         ]);
+        const files = [
+          { type: "USER_ID_FRONT", url: idFrontUploaded.url, s3Key: idFrontUploaded.key, name: currentOwner.idFront.name },
+          { type: "USER_ID_BACK", url: idBackUploaded.url, s3Key: idBackUploaded.key, name: currentOwner.idBack.name },
+          { type: "USER_SELFIE", url: selfieUploaded.url, s3Key: selfieUploaded.key, name: currentOwner.selfie.name },
+        ];
+        const bundleDoc = await saveOwnerBundleToDB({
+          ownerId: ownerUid,
+          role: "PROPIETARIO",
+          name: currentOwner.name,
+          email: currentOwner.email,
+          phone: currentOwner.phone,
+          files,
+          bundleDocumentId: owners[editingIndex]?.ownerBundleDocumentId,
+          propertyRelation: isThirdParty ? 'THIRD_PARTY' : 'SELF',
+        });
 
-        // Crear objeto con URLs de los archivos subidos
+        // Crear objeto con URLs y metadatos
         const updatedOwnerData = {
           ...currentOwner,
-          idFront: idFrontUrl,
-          idBack: idBackUrl,
-          selfie: selfieUrl,
+          idFront: idFrontUploaded.url,
+          idBack: idBackUploaded.url,
+          selfie: selfieUploaded.url,
+          ownerBundleDocumentId: bundleDoc?.id || owners[editingIndex]?.ownerBundleDocumentId || null,
+          idFrontS3Key: idFrontUploaded.key,
+          idBackS3Key: idBackUploaded.key,
+          selfieS3Key: selfieUploaded.key,
         };
 
         const updatedOwners = [...owners];
         updatedOwners[editingIndex] = updatedOwnerData;
         setOwners(updatedOwners);
+        // OWNER_BUNDLE ya guarda toda la información
         setEditingIndex(-1);
         setIsAddingOwner(false);
         setCurrentOwner({
@@ -379,6 +735,53 @@ export default function PropertyOwners({
     setOwners(updatedOwners);
     setHasUnsavedChanges(true);
     toast.success("Propietario eliminado");
+  };
+
+  const handleDeleteOwnerDoc = async (index, which) => {
+    const owner = owners[index];
+    if (!owner) return;
+    const map = {
+      idFront: { url: owner.idFront, docId: owner.idFrontDocumentId, key: owner.idFrontS3Key },
+      idBack: { url: owner.idBack, docId: owner.idBackDocumentId, key: owner.idBackS3Key },
+      selfie: { url: owner.selfie, docId: owner.selfieDocumentId, key: owner.selfieS3Key },
+    };
+    const target = map[which];
+    if (!target) return;
+    await deleteFileAndRecord({ s3Key: target.key || extractKeyFromUrl(target.url), documentId: target.docId });
+    // Si existe bundle, actualizarlo removiendo el archivo
+    if (owner.ownerBundleDocumentId) {
+      try {
+        const remaining = ['idFront','idBack','selfie']
+          .filter((k) => k !== which)
+          .map((k) => ({
+            type: k === 'idFront' ? 'USER_ID_FRONT' : k === 'idBack' ? 'USER_ID_BACK' : 'USER_SELFIE',
+            url: owner[k],
+            s3Key: owner[`${k}S3Key`],
+            name: undefined,
+          }))
+          .filter((f) => !!f.url);
+        await saveOwnerBundleToDB({
+          ownerId: owner.id,
+          role: 'PROPIETARIO',
+          name: owner.name,
+          email: owner.email,
+          phone: owner.phone,
+          files: remaining,
+          bundleDocumentId: owner.ownerBundleDocumentId,
+        });
+      } catch (e) {
+        console.warn('No se pudo actualizar OWNER_BUNDLE tras eliminar archivo', e);
+      }
+    }
+    const updated = [...owners];
+    updated[index] = {
+      ...owner,
+      [which]: null,
+      [`${which}DocumentId`]: null,
+      [`${which}S3Key`]: null,
+    };
+    setOwners(updated);
+    setHasUnsavedChanges(true);
   };
 
   const removePropietario = (id) => {
@@ -474,7 +877,11 @@ export default function PropertyOwners({
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button
-            onClick={() => !hasDataEntered() && setIsThirdParty(false)}
+            onClick={async () => {
+              if (hasDataEntered()) return;
+              setIsThirdParty(false);
+              // Relación se integrará en OWNER_BUNDLE al crear el primer propietario
+            }}
             disabled={hasDataEntered()}
             className={`p-4 sm:p-6 border-2 rounded-xl transition-colors text-left ${
               isThirdParty === false
@@ -503,7 +910,11 @@ export default function PropertyOwners({
             )}
           </button>
           <button
-            onClick={() => !hasDataEntered() && setIsThirdParty(true)}
+            onClick={async () => {
+              if (hasDataEntered()) return;
+              setIsThirdParty(true);
+              // Relación se integrará en OWNER_BUNDLE al crear el primer propietario
+            }}
             disabled={hasDataEntered()}
             className={`p-4 sm:p-6 border-2 rounded-xl transition-colors text-left ${
               isThirdParty === true
@@ -764,6 +1175,64 @@ export default function PropertyOwners({
                             {owner.phone}
                           </p>
                         )}
+
+                        {/* Documentos del propietario */}
+                        <div className="mt-3 space-y-1">
+                          {owner.idFront && (
+                            <div className="flex items-center space-x-2 text-xs">
+                              <a
+                                href={owner.idFront}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-2 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica"
+                              >
+                                Ver cédula (frente)
+                              </a>
+                              <button
+                                onClick={() => handleDeleteOwnerDoc(index, 'idFront')}
+                                className="px-2 py-1 text-red-500 hover:bg-red-50 rounded font-typographica"
+                              >
+                                Eliminar
+                              </button>
+                            </div>
+                          )}
+                          {owner.idBack && (
+                            <div className="flex items-center space-x-2 text-xs">
+                              <a
+                                href={owner.idBack}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-2 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica"
+                              >
+                                Ver cédula (reverso)
+                              </a>
+                              <button
+                                onClick={() => handleDeleteOwnerDoc(index, 'idBack')}
+                                className="px-2 py-1 text-red-500 hover:bg-red-50 rounded font-typographica"
+                              >
+                                Eliminar
+                              </button>
+                            </div>
+                          )}
+                          {owner.selfie && (
+                            <div className="flex items-center space-x-2 text-xs">
+                              <a
+                                href={owner.selfie}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-2 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica"
+                              >
+                                Ver selfie
+                              </a>
+                              <button
+                                onClick={() => handleDeleteOwnerDoc(index, 'selfie')}
+                                className="px-2 py-1 text-red-500 hover:bg-red-50 rounded font-typographica"
+                              >
+                                Eliminar
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="flex space-x-2 self-end sm:self-auto">
                         <button

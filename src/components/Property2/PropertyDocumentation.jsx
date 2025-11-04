@@ -3,6 +3,8 @@ import { usePropertyData } from "context/PropertyDataContext";
 import { useS3Client } from "context/s3ClientContext";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { API, graphqlOperation } from "aws-amplify";
+import { createDocument, deleteDocument } from "graphql/mutations";
 import {
   FaFileAlt,
   FaFileContract,
@@ -38,22 +40,7 @@ const requiredDocuments = [
   },
 ];
 
-// Tipos de documentos adicionales
-const additionalDocumentTypes = [
-  "Certificado de Tradición y Libertad",
-  "Escritura Pública",
-  "Plano Catastral",
-  "Certificado de Paz y Salvo",
-  "Certificado de Avalúo",
-  "Certificado de Uso del Suelo",
-  "Licencia de Construcción",
-  "Permiso de Ocupación",
-  "Certificado de Estabilidad",
-  "Certificado de Servicios Públicos",
-  "Certificado de No Propiedad",
-  "Certificado de Antigüedad",
-  "Otro",
-];
+// Tipos de documentos adicionales eliminados (se maneja como genérico)
 
 export default function PropertyDocumentation({
   visible,
@@ -70,8 +57,6 @@ export default function PropertyDocumentation({
   
   // Estados para documentos adicionales
   const [additionalDocs, setAdditionalDocs] = useState([]);
-  const [newDocType, setNewDocType] = useState("");
-  const [newDocFile, setNewDocFile] = useState(null);
   const [draggedOverCard, setDraggedOverCard] = useState(null);
   const [dragCounter, setDragCounter] = useState(0);
 
@@ -84,7 +69,177 @@ export default function PropertyDocumentation({
     setRequiredDocs(initialDocs);
   }, []);
 
-  const uploadFileToS3 = async (file, type, docId = null) => {
+  // Mapeo inverso para poblar requeridos desde DB
+  const mapTypeCodeToRequiredId = (typeCode) => {
+    const map = {
+      CERTIFICADO_TRADICION: 'certificado_libertad',
+      ESCRITURA_PUBLICA: 'escrituras_publicas',
+      PLANO_CATASTRAL: 'planos_catastrales',
+    };
+    return map[typeCode] || null;
+  };
+
+  // Cargar documentos ya existentes desde propertyData → GLOBAL_PROPERTY_FILES
+  useEffect(() => {
+    if (!propertyData?.propertyFeatures) return;
+
+    const globalFeature = getGlobalFilesPropertyFeature();
+    const docs = globalFeature?.documents?.items || [];
+
+    if (!Array.isArray(docs) || docs.length === 0) return;
+
+    // Preparar copias locales
+    const nextRequired = { ...requiredDocs };
+    const nextAdditional = [];
+
+    docs.forEach((document) => {
+      let data = {};
+      try {
+        data = JSON.parse(document.data || '{}');
+      } catch {
+        data = {};
+      }
+      const fileName = data.name || document.id;
+      const fileUrl = data.url || document.url;
+      const typeCode = data.type || 'OTRO';
+      const uploadedAtISO = document.timeStamp
+        ? new Date(document.timeStamp * 1000).toISOString()
+        : (document.createdAt || new Date().toISOString());
+      const status = document.status || 'pending_review';
+
+      const requiredId = mapTypeCodeToRequiredId(typeCode);
+      if (requiredId) {
+        nextRequired[requiredId] = {
+          file: null,
+          url: fileUrl,
+          name: fileName,
+          uploadedAt: uploadedAtISO,
+          status,
+          documentId: document.id,
+          s3Key: extractKeyFromUrl(fileUrl),
+        };
+      } else {
+        nextAdditional.push({
+          id: document.id,
+          type: 'Documento adicional',
+          file: null,
+          url: fileUrl,
+          name: fileName,
+          uploadedAt: uploadedAtISO,
+          status,
+          documentId: document.id,
+          s3Key: extractKeyFromUrl(fileUrl),
+        });
+      }
+    });
+
+    setRequiredDocs(nextRequired);
+    setAdditionalDocs(nextAdditional);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propertyData]);
+
+  // Helper: obtener PropertyFeature para GLOBAL_PROPERTY_FILES
+  const getGlobalFilesPropertyFeature = () => {
+    try {
+      return propertyData?.propertyFeatures?.find(
+        (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+      );
+    } catch {
+      return null;
+    }
+  };
+
+  // Helper: mapear id requerido -> código de tipo consistente con PropertyDetails
+  const mapRequiredIdToTypeCode = (docId) => {
+    const map = {
+      certificado_libertad: "CERTIFICADO_TRADICION",
+      escrituras_publicas: "ESCRITURA_PUBLICA",
+      planos_catastrales: "PLANO_CATASTRAL",
+    };
+    return map[docId] || "OTRO";
+  };
+
+// Persistir documento en DB
+const saveDocumentToDB = async ({ url, name, typeCode, s3Key }) => {
+    const globalFeature = getGlobalFilesPropertyFeature();
+    if (!globalFeature?.id) {
+      console.warn("No se encontró PropertyFeature GLOBAL_PROPERTY_FILES para el predio");
+      return null;
+    }
+
+    const userId = propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+    if (!userId) {
+      console.warn("No se encontró userID para asociar el documento");
+    }
+
+  const input = {
+    data: JSON.stringify({ name, type: typeCode, url, s3Key }),
+    url,
+      status: "pending_review",
+      visible: true,
+      propertyFeatureID: globalFeature.id,
+      userID: userId,
+    };
+
+    try {
+      const resp = await API.graphql(graphqlOperation(createDocument, { input }));
+      return resp?.data?.createDocument || null;
+    } catch (err) {
+      console.error("Error creando Document en DB:", err);
+      return null;
+    }
+  };
+
+  // Extraer S3 key desde URL
+  const extractKeyFromUrl = (url) => {
+    try {
+      const u = new URL(url);
+      // https://bucket.s3.amazonaws.com/<KEY>
+      return decodeURIComponent(u.pathname.startsWith('/') ? u.pathname.slice(1) : u.pathname);
+    } catch {
+      return null;
+    }
+  };
+
+  // Eliminar archivo en S3 y registro en DB
+  const deleteFileAndRecord = async ({ s3Key, documentId }) => {
+    try {
+      Swal.fire({
+        title: "Eliminando documento...",
+        text: "Por favor espera mientras se elimina el archivo",
+        icon: "info",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      // 1) Borrar en S3 si hay key
+      if (s3Key) {
+        const { DeleteObjectCommand } = await import("@aws-sdk/client-s3");
+        await s3Client.send(new DeleteObjectCommand({ Bucket: bucketName, Key: s3Key }));
+      }
+
+      // 2) Borrar registro en DB si hay id
+      if (documentId) {
+        await API.graphql(graphqlOperation(deleteDocument, { input: { id: documentId } }));
+      }
+
+      Swal.close();
+      toast.success("Documento eliminado");
+    } catch (err) {
+      console.error("Error eliminando documento:", err);
+      Swal.fire({
+        title: "Error al eliminar",
+        text: "No fue posible eliminar el documento. Intenta nuevamente.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#8B4513",
+      });
+      throw err;
+    }
+  };
+
+const uploadFileToS3 = async (file, type, docId = null) => {
     if (!file) return null;
 
     try {
@@ -105,8 +260,9 @@ export default function PropertyDocumentation({
         ).PutObjectCommand(uploadParams)
       );
 
-      const fileUrl = `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
-      return fileUrl;
+    const rawUrl = `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
+    const fileUrl = encodeURI(rawUrl);
+    return { url: fileUrl, key: fileKey };
     } catch (error) {
       console.error("Error uploading file:", error);
       throw error;
@@ -129,16 +285,22 @@ export default function PropertyDocumentation({
         }
       });
 
-      const fileUrl = await uploadFileToS3(file, "required", docId);
+      const uploaded = await uploadFileToS3(file, "required", docId);
+
+      // Guardar en DB
+      const typeCode = mapRequiredIdToTypeCode(docId);
+      const created = await saveDocumentToDB({ url: uploaded.url, name: file.name, typeCode, s3Key: uploaded.key });
       
       setRequiredDocs(prev => ({
         ...prev,
         [docId]: {
           file: file,
-          url: fileUrl,
+          url: uploaded.url,
           name: file.name,
           uploadedAt: new Date().toISOString(),
-          status: 'pending_review'
+          status: 'pending_review',
+          documentId: created?.id || null,
+          s3Key: uploaded.key,
         }
       }));
 
@@ -266,11 +428,11 @@ export default function PropertyDocumentation({
     }
   };
 
-  const handleAdditionalDocUpload = async () => {
-    if (!newDocType || !newDocFile) {
+  const handleAdditionalDocUpload = async (file) => {
+    if (!file) {
       Swal.fire({
-        title: "Campos Requeridos",
-        text: "Por favor selecciona un tipo de documento y sube el archivo",
+        title: "Archivo requerido",
+        text: "Por favor selecciona un archivo para subir",
         icon: "warning",
         confirmButtonText: "Entendido",
         confirmButtonColor: "#8B4513",
@@ -279,7 +441,6 @@ export default function PropertyDocumentation({
     }
 
     try {
-      // Mostrar loading
       Swal.fire({
         title: "Subiendo documento...",
         text: "Por favor espera mientras se sube el archivo",
@@ -291,21 +452,24 @@ export default function PropertyDocumentation({
         }
       });
 
-      const fileUrl = await uploadFileToS3(newDocFile, "additional");
+      const uploaded = await uploadFileToS3(file, "additional");
       
       const newDoc = {
         id: Date.now(),
-        type: newDocType,
-        file: newDocFile,
-        url: fileUrl,
-        name: newDocFile.name,
+        type: "Documento adicional",
+        file,
+        url: uploaded.url,
+        name: file.name,
         uploadedAt: new Date().toISOString(),
-        status: 'pending_review'
+        status: 'pending_review',
       };
 
+      // Guardar en DB
+      const created = await saveDocumentToDB({ url: uploaded.url, name: file.name, typeCode: "OTRO", s3Key: uploaded.key });
+      newDoc.documentId = created?.id || null;
+      newDoc.s3Key = uploaded.key;
+
       setAdditionalDocs(prev => [...prev, newDoc]);
-      setNewDocType("");
-      setNewDocFile(null);
       setHasUnsavedChanges(true);
       
       Swal.fire({
@@ -328,19 +492,67 @@ export default function PropertyDocumentation({
     }
   };
 
-  const removeRequiredDoc = (docId) => {
-    setRequiredDocs(prev => ({
-      ...prev,
-      [docId]: null
-    }));
-    setHasUnsavedChanges(true);
-    toast.success("Documento eliminado");
+  const triggerAdditionalUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.jpg,.jpeg,.png';
+    input.onchange = (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        handleAdditionalDocUpload(file);
+      }
+    };
+    input.click();
   };
 
-  const removeAdditionalDoc = (docId) => {
-    setAdditionalDocs(prev => prev.filter(doc => doc.id !== docId));
+  const handleDropAdditional = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDraggedOverCard(null);
+    setDragCounter(0);
+    if (e.currentTarget && e.currentTarget.classList) {
+      e.currentTarget.classList.remove(
+        'bg-terrasacha-primary/20', 
+        'border-terrasacha-primary',
+        'scale-105',
+        'shadow-lg',
+        'shadow-terrasacha-primary/20'
+      );
+    }
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+      if (allowedTypes.includes(file.type)) {
+        handleAdditionalDocUpload(file);
+      } else {
+        Swal.fire({
+          title: "Tipo de archivo no válido",
+          text: "Solo se permiten archivos PDF, JPG, JPEG o PNG",
+          icon: "warning",
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#8B4513",
+        });
+      }
+    }
+  };
+
+  const removeRequiredDoc = async (docId) => {
+    const current = requiredDocs[docId];
+    const s3Key = current?.s3Key || extractKeyFromUrl(current?.url);
+    const documentId = current?.documentId;
+    await deleteFileAndRecord({ s3Key, documentId });
+    setRequiredDocs(prev => ({ ...prev, [docId]: null }));
     setHasUnsavedChanges(true);
-    toast.success("Documento eliminado");
+  };
+
+  const removeAdditionalDoc = async (docId) => {
+    const doc = additionalDocs.find(d => d.id === docId);
+    const s3Key = doc?.s3Key || extractKeyFromUrl(doc?.url);
+    const documentId = doc?.documentId;
+    await deleteFileAndRecord({ s3Key, documentId });
+    setAdditionalDocs(prev => prev.filter(d => d.id !== docId));
+    setHasUnsavedChanges(true);
   };
 
   const getColorClasses = (color) => {
@@ -451,12 +663,22 @@ export default function PropertyDocumentation({
                     <div className="text-xs text-terrasacha-secondary1 font-typographica mb-2">
                       Subido: {new Date(isUploaded.uploadedAt).toLocaleDateString('es-ES')}
                     </div>
-                    <button
-                      onClick={() => removeRequiredDoc(doc.id)}
-                      className="text-xs text-red-500 hover:text-red-700 font-typographica"
-                    >
-                      Eliminar
-                    </button>
+                    <div className="flex items-center justify-center space-x-3">
+                      <a
+                        href={isUploaded.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
+                      >
+                        Ver
+                      </a>
+                      <button
+                        onClick={() => removeRequiredDoc(doc.id)}
+                        className="px-3 py-1 text-red-500 hover:bg-red-50 rounded font-typographica text-xs sm:text-sm"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div 
@@ -497,113 +719,99 @@ export default function PropertyDocumentation({
             Documentos Adicionales
           </h3>
           <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica">
-            Agrega otros documentos que consideres relevantes para la propiedad
+            Sube documentación adicional de forma opcional. Puedes agregar tantos como necesites.
           </p>
         </div>
 
-        {/* Formulario para agregar documento adicional */}
-        <div className="bg-terrasacha-light/5 border border-terrasacha-light/20 rounded-lg p-4 sm:p-6 mb-6">
-          <h4 className="text-sm sm:text-base font-semibold text-terrasacha-primary font-typographica mb-4">
-            Agregar Documento Adicional
-          </h4>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
-                Tipo de Documento *
-              </label>
-              <select
-                value={newDocType}
-                onChange={(e) => setNewDocType(e.target.value)}
-                className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica"
-              >
-                <option value="">Seleccionar tipo de documento</option>
-                {additionalDocumentTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
-                Archivo *
-              </label>
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => setNewDocFile(e.target.files[0])}
-                className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent"
-              />
-            </div>
-          </div>
-          
-          <button
-            onClick={handleAdditionalDocUpload}
-            disabled={!newDocType || !newDocFile}
-            className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-terrasacha-primary text-white rounded-lg hover:bg-terrasacha-primary/90 transition-colors font-typographica text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <FaUpload className="inline mr-2" />
-            Subir Documento
-          </button>
-        </div>
-
-        {/* Lista de documentos adicionales subidos */}
-        {additionalDocs.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="text-sm sm:text-md font-semibold text-terrasacha-primary font-typographica mb-3">
-              Documentos Adicionales Subidos
-            </h4>
-            {additionalDocs.map((doc) => (
-              <div
-                key={doc.id}
-                className="p-3 sm:p-4 border border-terrasacha-light rounded-lg bg-terrasacha-light/5"
-              >
-                <div className="flex flex-col sm:flex-row justify-between items-start space-y-2 sm:space-y-0">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <FaFileAlt className="text-terrasacha-primary text-sm flex-shrink-0" />
-                      <h5 className="text-sm sm:text-base font-semibold text-terrasacha-primary font-typographica">
-                        {doc.type}
-                      </h5>
-                    </div>
-                    <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica">
-                      {doc.name}
-                    </p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <div className="bg-blue-50 border border-blue-200 rounded px-2 py-1">
-                        <p className="text-xs text-blue-800 font-semibold font-typographica mb-0">
-                          ⏳ En revisión
-                        </p>
-                      </div>
-                      <p className="text-xs text-terrasacha-secondary1 font-typographica">
-                        {new Date(doc.uploadedAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex space-x-2 self-end sm:self-auto">
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2 sm:px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
-                    >
-                      Ver
-                    </a>
-                    <button
-                      onClick={() => removeAdditionalDoc(doc.id)}
-                      className="px-2 sm:px-3 py-1 text-red-500 hover:bg-red-50 rounded font-typographica text-xs sm:text-sm"
-                    >
-                      <FaTrash className="inline mr-1" />
-                      Eliminar
-                    </button>
-                  </div>
+        {/* Grid de documentos adicionales: subidos + card para agregar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Cards ya subidos */}
+          {additionalDocs.map((doc) => (
+            <div
+              key={doc.id}
+              className="group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative border-terrasacha-primary bg-terrasacha-primary/5"
+            >
+              <div className="text-center">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                  <FaFileAlt className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+                </div>
+                <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
+                  Documento adicional
+                </h4>
+                <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-2 sm:mb-3 break-all">
+                  {doc.name}
+                </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-3">
+                  <p className="text-xs text-blue-800 font-semibold font-typographica mb-0">
+                    ⏳ En proceso de revisión
+                  </p>
+                </div>
+                <div className="text-xs text-terrasacha-secondary1 font-typographica mb-3">
+                  Subido: {new Date(doc.uploadedAt).toLocaleDateString('es-ES')}
+                </div>
+                <div className="flex items-center justify-center space-x-3">
+                  <a
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
+                  >
+                    Ver
+                  </a>
+                  <button
+                    onClick={() => removeAdditionalDoc(doc.id)}
+                    className="px-3 py-1 text-red-500 hover:bg-red-50 rounded font-typographica text-xs sm:text-sm"
+                  >
+                    <FaTrash className="inline mr-1" />
+                    Eliminar
+                  </button>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
+
+          {/* Card para agregar nuevo documento */}
+          <div
+            data-doc-id="additional"
+            className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 hover:scale-102 hover:shadow-md cursor-pointer`}
+            onClick={triggerAdditionalUpload}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDropAdditional}
+          >
+            {/* Overlay de "Suelta aquí" */}
+            {draggedOverCard === 'additional' && (
+              <div className="absolute inset-0 bg-terrasacha-primary/90 rounded-xl flex items-center justify-center z-10">
+                <div className="text-center text-white">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold font-typographica mb-2">
+                    Suelta aquí
+                  </h3>
+                  <p className="text-sm font-typographica opacity-90">
+                    Para subir documento adicional
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="text-center">
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 text-gray-600 border border-gray-200 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:scale-110 transition-transform`}>
+                <FaPlus className="w-6 h-6 sm:w-8 sm:h-8" />
+              </div>
+              <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
+                Agregar documento adicional
+              </h4>
+              <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-0">
+                Haz clic o arrastra un archivo (PDF, JPG, JPEG, PNG)
+              </p>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
