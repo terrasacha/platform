@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { usePropertyData } from "context/PropertyDataContext";
 import { useS3Client } from "context/s3ClientContext";
+import { useAuth } from "context/AuthContext";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { API, graphqlOperation } from "aws-amplify";
@@ -9,6 +10,7 @@ import {
   FaFileAlt,
   FaFileContract,
   FaMap,
+  FaHandshake,
   FaPlus,
   FaUpload,
   FaTrash,
@@ -23,6 +25,7 @@ const requiredDocuments = [
     icon: FaFileAlt,
     description: "Documento que acredita la propiedad",
     color: "red",
+    consultantOnly: false,
   },
   {
     id: "escrituras_publicas",
@@ -30,13 +33,23 @@ const requiredDocuments = [
     icon: FaFileContract,
     description: "Documento notarial de la propiedad",
     color: "blue",
+    consultantOnly: false,
   },
   {
     id: "planos_catastrales",
     name: "Planos Catastrales",
     icon: FaMap,
-    description: "Planos oficiales o a mano alzadadel predio",
+    description: "Planos oficiales o a mano alzada del predio",
     color: "green",
+    consultantOnly: false,
+  },
+  {
+    id: "memorando_entendimiento",
+    name: "Memorando de Entendimiento",
+    icon: FaHandshake,
+    description: "Acuerdo de entendimiento entre las partes",
+    color: "purple",
+    consultantOnly: true,
   },
 ];
 
@@ -49,8 +62,12 @@ export default function PropertyDocumentation({
   setIsFormComplete,
   currentStep,
 }) {
-  const { propertyData } = usePropertyData();
+  const { propertyData, refresh: refreshPropertyData } = usePropertyData();
   const { s3Client, bucketName } = useS3Client();
+  const { user } = useAuth();
+  
+  // Verificar si el usuario es consultor
+  const isConsultant = user?.role === "validator";
 
   // Estados para documentos requeridos
   const [requiredDocs, setRequiredDocs] = useState({});
@@ -59,6 +76,7 @@ export default function PropertyDocumentation({
   const [additionalDocs, setAdditionalDocs] = useState([]);
   const [draggedOverCard, setDraggedOverCard] = useState(null);
   const [dragCounter, setDragCounter] = useState(0);
+  const [hoveredBlockedDoc, setHoveredBlockedDoc] = useState(null);
 
   // Inicializar documentos requeridos
   useEffect(() => {
@@ -75,9 +93,20 @@ export default function PropertyDocumentation({
       CERTIFICADO_TRADICION: 'certificado_libertad',
       ESCRITURA_PUBLICA: 'escrituras_publicas',
       PLANO_CATASTRAL: 'planos_catastrales',
+      MEMORANDO_ENTENDIMIENTO: 'memorando_entendimiento',
     };
     return map[typeCode] || null;
   };
+
+  // Tipos de documentos relacionados con propietarios que NO deben aparecer en documentos adicionales
+  const ownerRelatedTypes = [
+    'OWNER_BUNDLE',
+    'USER_ID_FRONT',
+    'USER_ID_BACK',
+    'USER_SELFIE',
+    'OWNER_INFO',
+    'OWNER_RELATION',
+  ];
 
   // Cargar documentos ya existentes desde propertyData → GLOBAL_PROPERTY_FILES
   useEffect(() => {
@@ -107,6 +136,11 @@ export default function PropertyDocumentation({
         : (document.createdAt || new Date().toISOString());
       const status = document.status || 'pending_review';
 
+      // Excluir documentos relacionados con propietarios
+      if (ownerRelatedTypes.includes(typeCode)) {
+        return; // Saltar este documento
+      }
+
       const requiredId = mapTypeCodeToRequiredId(typeCode);
       if (requiredId) {
         nextRequired[requiredId] = {
@@ -114,7 +148,8 @@ export default function PropertyDocumentation({
           url: fileUrl,
           name: fileName,
           uploadedAt: uploadedAtISO,
-          status,
+          status: document.status || status,
+          isApproved: document.isApproved || false,
           documentId: document.id,
           s3Key: extractKeyFromUrl(fileUrl),
         };
@@ -155,6 +190,7 @@ export default function PropertyDocumentation({
       certificado_libertad: "CERTIFICADO_TRADICION",
       escrituras_publicas: "ESCRITURA_PUBLICA",
       planos_catastrales: "PLANO_CATASTRAL",
+      memorando_entendimiento: "MEMORANDO_ENTENDIMIENTO",
     };
     return map[docId] || "OTRO";
   };
@@ -226,6 +262,11 @@ const saveDocumentToDB = async ({ url, name, typeCode, s3Key }) => {
 
       Swal.close();
       toast.success("Documento eliminado");
+      
+      // Refrescar los datos del predio para que se vean en otros tabs
+      if (refreshPropertyData) {
+        await refreshPropertyData();
+      }
     } catch (err) {
       console.error("Error eliminando documento:", err);
       Swal.fire({
@@ -313,6 +354,11 @@ const uploadFileToS3 = async (file, type, docId = null) => {
         timer: 3000,
         showConfirmButton: false,
       });
+
+      // Refrescar los datos del predio para que se vean en otros tabs
+      if (refreshPropertyData) {
+        await refreshPropertyData();
+      }
 
     } catch (error) {
       console.error("Error uploading required document:", error);
@@ -474,11 +520,16 @@ const uploadFileToS3 = async (file, type, docId = null) => {
       
       Swal.fire({
         title: "¡Documento Agregado!",
-        text: "El documento adicional ha sido subido exitosamente y está en proceso de revisión",
+        text: "El documento adicional ha sido subido exitosamente",
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
       });
+
+      // Refrescar los datos del predio para que se vean en otros tabs
+      if (refreshPropertyData) {
+        await refreshPropertyData();
+      }
 
     } catch (error) {
       console.error("Error uploading additional document:", error);
@@ -556,12 +607,14 @@ const uploadFileToS3 = async (file, type, docId = null) => {
   };
 
   const getColorClasses = (color) => {
+    // Usar colores de Terrasacha según terrasacha-design.json
     const colorMap = {
-      red: "bg-red-100 text-red-600 border-red-200 hover:bg-red-200",
-      blue: "bg-blue-100 text-blue-600 border-blue-200 hover:bg-blue-200",
-      green: "bg-green-100 text-green-600 border-green-200 hover:bg-green-200",
+      red: "bg-[#b1c181]/20 text-[#6e6c35] border-[#849b50]/30 hover:bg-[#b1c181]/30",
+      blue: "bg-[#b1c181]/20 text-[#6e6c35] border-[#849b50]/30 hover:bg-[#b1c181]/30",
+      green: "bg-[#b1c181]/20 text-[#6e6c35] border-[#849b50]/30 hover:bg-[#b1c181]/30",
+      purple: "bg-[#b1c181]/20 text-[#6e6c35] border-[#849b50]/30 hover:bg-[#b1c181]/30",
     };
-    return colorMap[color] || "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200";
+    return colorMap[color] || "bg-[#b1c181]/20 text-[#6e6c35] border-[#849b50]/30 hover:bg-[#b1c181]/30";
   };
 
   if (!visible || !propertyData) {
@@ -608,24 +661,44 @@ const uploadFileToS3 = async (file, type, docId = null) => {
           {requiredDocuments.map((doc) => {
             const IconComponent = doc.icon;
             const isUploaded = requiredDocs[doc.id];
+            const isReadOnly = doc.consultantOnly && !isConsultant;
             
             return (
               <div
                 key={doc.id}
                 data-doc-id={doc.id}
-                className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative ${
+                className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative flex items-center justify-center min-h-[280px] ${
                   isUploaded
                     ? "border-terrasacha-primary bg-terrasacha-primary/5"
                     : "border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 hover:scale-102 hover:shadow-md"
                 }`}
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, doc.id)}
+                onDragOver={isReadOnly ? undefined : handleDragOver}
+                onDragEnter={isReadOnly ? undefined : handleDragEnter}
+                onDragLeave={isReadOnly ? undefined : handleDragLeave}
+                onDrop={isReadOnly ? undefined : (e) => handleDrop(e, doc.id)}
+                onMouseEnter={() => isReadOnly && setHoveredBlockedDoc(doc.id)}
+                onMouseLeave={() => setHoveredBlockedDoc(null)}
               >
+                {/* Tooltip para documentos bloqueados */}
+                {isReadOnly && hoveredBlockedDoc === doc.id && (
+                  <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+                    <div className="bg-[#44482c] text-white text-xs sm:text-sm rounded-lg p-3 sm:p-4 shadow-xl max-w-[90%] mx-auto border border-[#6e6c35] animate-fade-in">
+                      <div className="flex items-start space-x-2">
+                        <span className="text-[#e8d79a] text-base sm:text-lg">🔒</span>
+                        <div>
+                          <p className="font-semibold font-typographica mb-1">Documento Bloqueado</p>
+                          <p className="font-typographica opacity-90">
+                            Este documento debe ser subido por un consultor. No tienes permisos para subirlo.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Overlay de "Suelta aquí" cuando se arrastra */}
                 {draggedOverCard === doc.id && !isUploaded && (
-                  <div className="absolute inset-0 bg-terrasacha-primary/90 rounded-xl flex items-center justify-center z-10">
+                  <div className="absolute inset-0 bg-[#6e6c35]/90 rounded-xl flex items-center justify-center z-10">
                     <div className="text-center text-white">
                       <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -643,62 +716,108 @@ const uploadFileToS3 = async (file, type, docId = null) => {
                 )}
 
                 {isUploaded ? (
-                  <div className="text-center">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
-                      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
-                      {doc.name}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-2 sm:mb-3">
-                      {isUploaded.name}
-                    </p>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-3">
-                      <p className="text-xs text-blue-800 font-semibold font-typographica mb-0">
-                        ⏳ En proceso de revisión
+                  <div className="text-center w-full flex flex-col h-full">
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#b1c181]/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                        <svg className="w-6 h-6 sm:w-8 sm:h-8 text-[#849b50]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
+                        {doc.name}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-2 sm:mb-3">
+                        {isUploaded.name}
                       </p>
+                      <div className="text-xs text-terrasacha-secondary1 font-typographica mb-2">
+                        Subido: {new Date(isUploaded.uploadedAt).toLocaleDateString('es-ES')}
+                      </div>
+                      <div className="flex items-center justify-center space-x-3 mb-3">
+                        <a
+                          href={isUploaded.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
+                        >
+                          Ver
+                        </a>
+                        {isConsultant && (
+                          <button
+                            onClick={() => removeRequiredDoc(doc.id)}
+                            className="px-3 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica text-xs sm:text-sm"
+                          >
+                            Eliminar
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-xs text-terrasacha-secondary1 font-typographica mb-2">
-                      Subido: {new Date(isUploaded.uploadedAt).toLocaleDateString('es-ES')}
-                    </div>
-                    <div className="flex items-center justify-center space-x-3">
-                      <a
-                        href={isUploaded.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
-                      >
-                        Ver
-                      </a>
-                      <button
-                        onClick={() => removeRequiredDoc(doc.id)}
-                        className="px-3 py-1 text-red-500 hover:bg-red-50 rounded font-typographica text-xs sm:text-sm"
-                      >
-                        Eliminar
-                      </button>
+                    {/* Estado del documento en la parte inferior */}
+                    <div className="mt-auto">
+                      {isUploaded.isApproved || isUploaded.status === 'approved' ? (
+                        <div className="bg-[#b1c181]/20 border border-[#849b50] rounded-lg p-2">
+                          <p className="text-xs text-[#849b50] font-semibold font-typographica mb-0">
+                            ✓ Aprobado
+                          </p>
+                        </div>
+                      ) : isUploaded.status === 'rejected' || isUploaded.status === 'rechazado' ? (
+                        <div className="bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2">
+                          <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                            <span className="text-[#44482c] text-sm">✗</span>
+                            <p className="text-xs text-[#44482c] font-semibold font-typographica mb-0">
+                              Rechazado
+                            </p>
+                          </div>
+                          <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
+                            Sube una nueva versión corregida
+                          </p>
+                          {!isReadOnly && (
+                            <button
+                              onClick={() => triggerFileUpload(doc.id)}
+                              className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                              </svg>
+                              Volver a Subir
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg p-2">
+                          <p className="text-xs text-[#6e6c35] font-semibold font-typographica mb-0">
+                            ⏳ En proceso de revisión
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : (
                   <div 
-                    className="text-center cursor-pointer"
-                    onClick={() => triggerFileUpload(doc.id)}
+                    className={`text-center w-full ${isReadOnly ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                    onClick={() => !isReadOnly && triggerFileUpload(doc.id)}
                   >
-                    <div className={`w-12 h-12 sm:w-16 sm:h-16 ${getColorClasses(doc.color)} rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:scale-110 transition-transform`}>
+                    <div className={`w-12 h-12 sm:w-16 sm:h-16 ${getColorClasses(doc.color)} rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto ${!isReadOnly ? 'group-hover:scale-110 transition-transform' : ''}`}>
                       <IconComponent className="w-6 h-6 sm:w-8 sm:h-8" />
                     </div>
                     <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
-                      {doc.name} <span className="text-red-500">*</span>
+                      {doc.name} {isConsultant && <span className="text-[#849b50]">*</span>}
                     </h4>
                     <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-3">
                       {doc.description}
                     </p>
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-2 mb-3">
-                      <p className="text-xs text-red-800 font-semibold font-typographica mb-0">
-                        ⚠️ Requerido
-                      </p>
-                    </div>
+                    {isConsultant ? (
+                      <div className="bg-[#849b50]/20 border border-[#849b50] rounded-lg p-2 mb-3">
+                        <p className="text-xs text-[#849b50] font-semibold font-typographica mb-0">
+                          ⚠️ Requerido
+                        </p>
+                      </div>
+                    ) : isReadOnly && (
+                      <div className="bg-[#b1c181]/10 border border-[#849b50]/30 rounded-lg p-2 mb-3">
+                        <p className="text-xs text-[#6e6c35] font-semibold font-typographica mb-0">
+                          👁️ Solo lectura
+                        </p>
+                      </div>
+                    )}
                     {/* <div className="bg-terrasacha-primary/10 border border-terrasacha-primary/30 rounded-lg p-2">
                       <p className="text-xs text-terrasacha-primary font-semibold font-typographica mb-0">
                         📁 Haz clic o arrastra archivo aquí
@@ -729,11 +848,11 @@ const uploadFileToS3 = async (file, type, docId = null) => {
           {additionalDocs.map((doc) => (
             <div
               key={doc.id}
-              className="group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative border-terrasacha-primary bg-terrasacha-primary/5"
+              className="group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative border-terrasacha-primary bg-terrasacha-primary/5 flex items-center justify-center min-h-[280px]"
             >
-              <div className="text-center">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
-                  <FaFileAlt className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+              <div className="text-center w-full">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#b1c181]/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                  <FaFileAlt className="w-6 h-6 sm:w-8 sm:h-8 text-[#849b50]" />
                 </div>
                 <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
                   Documento adicional
@@ -741,11 +860,6 @@ const uploadFileToS3 = async (file, type, docId = null) => {
                 <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-2 sm:mb-3 break-all">
                   {doc.name}
                 </p>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-3">
-                  <p className="text-xs text-blue-800 font-semibold font-typographica mb-0">
-                    ⏳ En proceso de revisión
-                  </p>
-                </div>
                 <div className="text-xs text-terrasacha-secondary1 font-typographica mb-3">
                   Subido: {new Date(doc.uploadedAt).toLocaleDateString('es-ES')}
                 </div>
@@ -760,7 +874,7 @@ const uploadFileToS3 = async (file, type, docId = null) => {
                   </a>
                   <button
                     onClick={() => removeAdditionalDoc(doc.id)}
-                    className="px-3 py-1 text-red-500 hover:bg-red-50 rounded font-typographica text-xs sm:text-sm"
+                    className="px-3 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica text-xs sm:text-sm"
                   >
                     <FaTrash className="inline mr-1" />
                     Eliminar
@@ -773,7 +887,7 @@ const uploadFileToS3 = async (file, type, docId = null) => {
           {/* Card para agregar nuevo documento */}
           <div
             data-doc-id="additional"
-            className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 hover:scale-102 hover:shadow-md cursor-pointer`}
+            className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ease-in-out transform relative border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 hover:scale-102 hover:shadow-md cursor-pointer flex items-center justify-center min-h-[280px]`}
             onClick={triggerAdditionalUpload}
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
@@ -799,8 +913,8 @@ const uploadFileToS3 = async (file, type, docId = null) => {
               </div>
             )}
 
-            <div className="text-center">
-              <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 text-gray-600 border border-gray-200 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:scale-110 transition-transform`}>
+            <div className="text-center w-full">
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-[#b1c181]/20 text-[#6e6c35] border border-[#849b50]/30 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto group-hover:scale-110 transition-transform`}>
                 <FaPlus className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
               <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">

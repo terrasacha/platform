@@ -35,7 +35,7 @@ export default function PropertyOwners({
   currentStep,
 }) {
   const { user } = useAuth();
-  const { propertyData } = usePropertyData();
+  const { propertyData, refresh: refreshPropertyData } = usePropertyData();
   const { s3Client, bucketName } = useS3Client();
 
   // Cache para evitar crear múltiples veces el GLOBAL_PROPERTY_FILES
@@ -102,9 +102,18 @@ export default function PropertyOwners({
         const files = data.files || [];
         ownerIdToFiles[ownerId] = ownerIdToFiles[ownerId] || {};
         files.forEach((f) => {
-          if (f.type === 'USER_ID_FRONT') ownerIdToFiles[ownerId].idFront = f.url;
-          if (f.type === 'USER_ID_BACK') ownerIdToFiles[ownerId].idBack = f.url;
-          if (f.type === 'USER_SELFIE') ownerIdToFiles[ownerId].selfie = f.url;
+          if (f.type === 'USER_ID_FRONT') {
+            ownerIdToFiles[ownerId].idFront = f.url;
+            ownerIdToFiles[ownerId].idFrontS3Key = f.s3Key;
+          }
+          if (f.type === 'USER_ID_BACK') {
+            ownerIdToFiles[ownerId].idBack = f.url;
+            ownerIdToFiles[ownerId].idBackS3Key = f.s3Key;
+          }
+          if (f.type === 'USER_SELFIE') {
+            ownerIdToFiles[ownerId].selfie = f.url;
+            ownerIdToFiles[ownerId].selfieS3Key = f.s3Key;
+          }
         });
         // Guardar id del bundle para futuras actualizaciones
         ownerIdToFiles[ownerId].ownerBundleDocumentId = d.id;
@@ -130,12 +139,26 @@ export default function PropertyOwners({
           }
         });
 
-        // Construir postulante y propietarios
+        // Construir postulante y propietarios con orden de creación
         const propietarios = [];
         let postulante = null;
+        const ownersWithCreationDate = [];
+        
         Object.keys(ownerIdToInfo).forEach((oid) => {
           const info = ownerIdToInfo[oid];
           const files = ownerIdToFiles[oid] || {};
+          
+          // Buscar el documento para obtener createdAt
+          const ownerDoc = docs.find((d) => {
+            try {
+              const data = JSON.parse(d.data || '{}');
+              return (data.type === 'OWNER_BUNDLE' && (data.ownerId === oid || d.id === files.ownerBundleDocumentId)) ||
+                     (data.type === 'OWNER_INFO' && (data.ownerId === oid || d.id === oid));
+            } catch {
+              return false;
+            }
+          });
+          
           const ownerObj = {
             id: oid,
             name: info.name,
@@ -145,13 +168,28 @@ export default function PropertyOwners({
             idBack: files.idBack || null,
             selfie: files.selfie || null,
             ownerBundleDocumentId: files.ownerBundleDocumentId || null,
+            idFrontS3Key: files.idFrontS3Key || null,
+            idBackS3Key: files.idBackS3Key || null,
+            selfieS3Key: files.selfieS3Key || null,
+            createdAt: ownerDoc?.createdAt || new Date().toISOString(), // Usar createdAt del documento o fecha actual como fallback
           };
+          
           if (info.role === 'POSTULANTE') {
             postulante = ownerObj;
           } else {
-            propietarios.push(ownerObj);
+            ownersWithCreationDate.push(ownerObj);
           }
         });
+        
+        // Ordenar propietarios por fecha de creación (más antiguos primero)
+        ownersWithCreationDate.sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateA - dateB; // Orden ascendente (más antiguos primero)
+        });
+        
+        // Copiar los propietarios ordenados al array final
+        propietarios.push(...ownersWithCreationDate);
 
         // Determinar relación preferentemente desde cualquier OWNER_BUNDLE
         if (relation === null) {
@@ -364,6 +402,11 @@ export default function PropertyOwners({
 
       Swal.close();
       toast.success("Documento eliminado");
+      
+      // Refrescar los datos del predio para que se vean en otros tabs
+      if (refreshPropertyData) {
+        await refreshPropertyData();
+      }
     } catch (err) {
       console.error("Error eliminando documento:", err);
       Swal.fire({
@@ -405,11 +448,14 @@ export default function PropertyOwners({
     };
     try {
       if (bundleDocumentId) {
+        // Cuando se actualiza un documento rechazado, resetear el estado a pending_review
         const resp = await API.graphql(
           graphqlOperation(updateDocument, {
             input: {
               id: bundleDocumentId,
               data: JSON.stringify(bundle),
+              status: "pending_review", // Resetear estado a pending_review
+              isApproved: false, // Resetear aprobación
             },
           })
         );
@@ -431,27 +477,6 @@ export default function PropertyOwners({
       console.error("Error guardando OWNER_BUNDLE en DB:", err);
       return null;
     }
-  };
-
-  const handleInputChange = (field, value, ownerIndex = null) => {
-    if (ownerIndex !== null) {
-      // Actualizar propietario específico
-      const updatedOwners = [...owners];
-      updatedOwners[ownerIndex] = {
-        ...updatedOwners[ownerIndex],
-        [field]: value,
-      };
-      setOwners(updatedOwners);
-    } else {
-      // Actualizar usuario logueado
-      setLoggedUserData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-    }
-
-    setHasUnsavedChanges(true);
-    handleFieldChange(`owner_${field}`, value);
   };
 
   const openModal = (type) => {
@@ -492,11 +517,13 @@ export default function PropertyOwners({
       return;
     }
 
+    // Si estamos editando, permitir que los archivos existentes se mantengan
+    const isEditing = editingIndex !== -1;
     const hasValidFiles = currentOwner.idFront instanceof File && 
                          currentOwner.idBack instanceof File && 
                          currentOwner.selfie instanceof File;
     
-    if (!hasValidFiles) {
+    if (!isEditing && !hasValidFiles) {
       Swal.fire({
         title: "Documentos Requeridos",
         text: "Por favor sube todos los documentos obligatorios (Cédula frente, Cédula reverso, Selfie)",
@@ -520,22 +547,45 @@ export default function PropertyOwners({
         }
       });
 
-      // Generar ownerId para vincular documentos e info
-      const ownerUid = Date.now().toString();
+      // Si estamos editando, usar el ID existente, sino generar uno nuevo
+      const ownerUid = (editingIndex === -2 && postulanteData?.id) || 
+                      (editingIndex >= 0 && propietariosData[editingIndex]?.id) || 
+                      Date.now().toString();
 
-      // Subir archivos al S3
-      const [idFrontUploaded, idBackUploaded, selfieUploaded] = await Promise.all([
-        uploadFileToS3(currentOwner.idFront, "idFront"),
-        uploadFileToS3(currentOwner.idBack, "idBack"),
-        uploadFileToS3(currentOwner.selfie, "selfie")
-      ]);
+      // Subir archivos al S3 (solo si son nuevos archivos File)
+      let idFrontUploaded = currentOwner.idFrontS3Key ? { url: currentOwner.idFront, key: currentOwner.idFrontS3Key } : null;
+      let idBackUploaded = currentOwner.idBackS3Key ? { url: currentOwner.idBack, key: currentOwner.idBackS3Key } : null;
+      let selfieUploaded = currentOwner.selfieS3Key ? { url: currentOwner.selfie, key: currentOwner.selfieS3Key } : null;
+
+      if (currentOwner.idFront instanceof File) {
+        idFrontUploaded = await uploadFileToS3(currentOwner.idFront, "idFront");
+      }
+      if (currentOwner.idBack instanceof File) {
+        idBackUploaded = await uploadFileToS3(currentOwner.idBack, "idBack");
+      }
+      if (currentOwner.selfie instanceof File) {
+        selfieUploaded = await uploadFileToS3(currentOwner.selfie, "selfie");
+      }
+
+      // Si no hay archivos válidos, no continuar
+      if (!idFrontUploaded || !idBackUploaded || !selfieUploaded) {
+        Swal.fire({
+          title: "Documentos Requeridos",
+          text: "Por favor sube todos los documentos obligatorios (Cédula frente, Cédula reverso, Selfie)",
+          icon: "warning",
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#8B4513",
+        });
+        return;
+      }
 
       // Guardar en DB un único OWNER_BUNDLE con toda la info del propietario
       const files = [
-        { type: "USER_ID_FRONT", url: idFrontUploaded.url, s3Key: idFrontUploaded.key, name: currentOwner.idFront.name },
-        { type: "USER_ID_BACK", url: idBackUploaded.url, s3Key: idBackUploaded.key, name: currentOwner.idBack.name },
-        { type: "USER_SELFIE", url: selfieUploaded.url, s3Key: selfieUploaded.key, name: currentOwner.selfie.name },
+        { type: "USER_ID_FRONT", url: idFrontUploaded.url, s3Key: idFrontUploaded.key, name: currentOwner.idFront?.name || "idFront" },
+        { type: "USER_ID_BACK", url: idBackUploaded.url, s3Key: idBackUploaded.key, name: currentOwner.idBack?.name || "idBack" },
+        { type: "USER_SELFIE", url: selfieUploaded.url, s3Key: selfieUploaded.key, name: currentOwner.selfie?.name || "selfie" },
       ];
+      
       const bundleDoc = await saveOwnerBundleToDB({
         ownerId: ownerUid,
         role: modalType === "postulante" ? "POSTULANTE" : "PROPIETARIO",
@@ -543,6 +593,7 @@ export default function PropertyOwners({
         email: currentOwner.email,
         phone: currentOwner.phone,
         files,
+        bundleDocumentId: currentOwner.ownerBundleDocumentId,
         propertyRelation: isThirdParty ? 'THIRD_PARTY' : 'SELF',
       });
 
@@ -555,7 +606,7 @@ export default function PropertyOwners({
         idFront: idFrontUploaded.url,
         idBack: idBackUploaded.url,
         selfie: selfieUploaded.url,
-        ownerBundleDocumentId: bundleDoc?.id || null,
+        ownerBundleDocumentId: bundleDoc?.id || currentOwner.ownerBundleDocumentId || null,
         idFrontS3Key: idFrontUploaded.key,
         idBackS3Key: idBackUploaded.key,
         selfieS3Key: selfieUploaded.key,
@@ -565,25 +616,47 @@ export default function PropertyOwners({
         setPostulanteData(ownerData);
         // OWNER_BUNDLE ya guarda toda la información
         Swal.fire({
-          title: "¡Información Guardada!",
-          text: "La información del postulante ha sido guardada exitosamente",
+          title: editingIndex === -2 ? "¡Información Actualizada!" : "¡Información Guardada!",
+          text: editingIndex === -2 ? "La información del postulante ha sido actualizada exitosamente" : "La información del postulante ha sido guardada exitosamente",
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
         });
       } else {
-        // Agregar propietario al array
-        setPropietariosData(prev => [...prev, ownerData]);
-        // OWNER_BUNDLE ya guarda toda la información
-        setShowAddPropietario(true); // Mostrar card para agregar más
-        Swal.fire({
-          title: "¡Propietario Agregado!",
-          text: "La información del propietario ha sido guardada exitosamente",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+        if (editingIndex >= 0) {
+          // Actualizar propietario existente
+          const updated = [...propietariosData];
+          updated[editingIndex] = ownerData;
+          setPropietariosData(updated);
+          Swal.fire({
+            title: "¡Propietario Actualizado!",
+            text: "La información del propietario ha sido actualizada exitosamente",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        } else {
+          // Agregar propietario al array
+          setPropietariosData(prev => [...prev, ownerData]);
+          // OWNER_BUNDLE ya guarda toda la información
+          setShowAddPropietario(true); // Mostrar card para agregar más
+          Swal.fire({
+            title: "¡Propietario Agregado!",
+            text: "La información del propietario ha sido guardada exitosamente",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        }
       }
+      
+      // Refrescar los datos del predio PRIMERO para que la interfaz se actualice
+      if (refreshPropertyData) {
+        await refreshPropertyData();
+      }
+      
+      // Esperar un momento para que el estado se actualice
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       setCurrentOwner({
         name: "",
@@ -612,6 +685,57 @@ export default function PropertyOwners({
     setCurrentOwner({ ...owners[index] });
     setEditingIndex(index);
     setIsAddingOwner(true);
+  };
+
+  const editPostulante = () => {
+    if (!postulanteData) return;
+    setCurrentOwner({
+      name: postulanteData.name || "",
+      email: postulanteData.email || "",
+      phone: postulanteData.phone || "",
+      idFront: null, // Permitir que el usuario suba un nuevo archivo
+      idBack: null,
+      selfie: null,
+      id: postulanteData.id,
+      ownerBundleDocumentId: postulanteData.ownerBundleDocumentId,
+      idFrontS3Key: postulanteData.idFrontS3Key,
+      idBackS3Key: postulanteData.idBackS3Key,
+      selfieS3Key: postulanteData.selfieS3Key,
+      // Mantener URLs originales para referencia
+      idFrontUrl: postulanteData.idFront,
+      idBackUrl: postulanteData.idBack,
+      selfieUrl: postulanteData.selfie,
+    });
+    setModalType("postulante");
+    setModalTitle("Editar Información del Postulante");
+    setEditingIndex(-2); // -2 para identificar que es postulante
+    setShowModal(true);
+  };
+
+  const editPropietario = (index) => {
+    if (index < 0 || index >= propietariosData.length) return;
+    const propietario = propietariosData[index];
+    setCurrentOwner({
+      name: propietario.name || "",
+      email: propietario.email || "",
+      phone: propietario.phone || "",
+      idFront: null, // Permitir que el usuario suba un nuevo archivo
+      idBack: null,
+      selfie: null,
+      id: propietario.id,
+      ownerBundleDocumentId: propietario.ownerBundleDocumentId,
+      idFrontS3Key: propietario.idFrontS3Key,
+      idBackS3Key: propietario.idBackS3Key,
+      selfieS3Key: propietario.selfieS3Key,
+      // Mantener URLs originales para referencia
+      idFrontUrl: propietario.idFront,
+      idBackUrl: propietario.idBack,
+      selfieUrl: propietario.selfie,
+    });
+    setModalType("propietario");
+    setModalTitle("Editar Información del Propietario");
+    setEditingIndex(index); // índice en propietariosData
+    setShowModal(true);
   };
 
   const updateOwner = async () => {
@@ -717,6 +841,11 @@ export default function PropertyOwners({
         });
         
         closeModal();
+        
+        // Refrescar los datos del predio para que se vean en otros tabs
+        if (refreshPropertyData) {
+          await refreshPropertyData();
+        }
       } catch (error) {
         console.error("Error uploading files:", error);
         Swal.fire({
@@ -784,10 +913,100 @@ export default function PropertyOwners({
     setHasUnsavedChanges(true);
   };
 
-  const removePropietario = (id) => {
-    setPropietariosData(prev => prev.filter(prop => prop.id !== id));
-    setHasUnsavedChanges(true);
-    toast.success("Propietario eliminado");
+  const removePropietario = async (id) => {
+    try {
+      // Encontrar el propietario a eliminar
+      const propietarioToDelete = propietariosData.find(prop => prop.id === id);
+      if (!propietarioToDelete) {
+        toast.error("No se encontró el propietario a eliminar");
+        return;
+      }
+
+      // Confirmar eliminación
+      const result = await Swal.fire({
+        title: "¿Eliminar propietario?",
+        text: `¿Estás seguro de que deseas eliminar a ${propietarioToDelete.name}? Esta acción no se puede deshacer.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#dc3545",
+        cancelButtonColor: "#6c757d",
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      // Mostrar loading
+      Swal.fire({
+        title: "Eliminando propietario...",
+        text: "Por favor espera mientras se elimina la información",
+        icon: "info",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      // Eliminar archivos de S3 si existen
+      const filesToDelete = [];
+      if (propietarioToDelete.idFrontS3Key) {
+        filesToDelete.push({ s3Key: propietarioToDelete.idFrontS3Key });
+      }
+      if (propietarioToDelete.idBackS3Key) {
+        filesToDelete.push({ s3Key: propietarioToDelete.idBackS3Key });
+      }
+      if (propietarioToDelete.selfieS3Key) {
+        filesToDelete.push({ s3Key: propietarioToDelete.selfieS3Key });
+      }
+
+      // Eliminar archivos de S3
+      if (filesToDelete.length > 0) {
+        const { DeleteObjectCommand } = await import("@aws-sdk/client-s3");
+        await Promise.all(
+          filesToDelete.map(({ s3Key }) =>
+            s3Client.send(new DeleteObjectCommand({ Bucket: bucketName, Key: s3Key }))
+          )
+        );
+      }
+
+      // Eliminar el documento OWNER_BUNDLE de la base de datos
+      if (propietarioToDelete.ownerBundleDocumentId) {
+        await API.graphql(
+          graphqlOperation(deleteDocument, {
+            input: { id: propietarioToDelete.ownerBundleDocumentId },
+          })
+        );
+      }
+
+      // Eliminar del estado local
+      const updatedPropietarios = propietariosData.filter(prop => prop.id !== id);
+      setPropietariosData(updatedPropietarios);
+      
+      // Si no quedan más propietarios, ocultar el card de agregar
+      if (updatedPropietarios.length === 0) {
+        setShowAddPropietario(false);
+      }
+
+      setHasUnsavedChanges(true);
+      
+      Swal.close();
+      toast.success("Propietario eliminado exitosamente");
+      
+      // Refrescar los datos del predio para que se vean en otros tabs
+      if (refreshPropertyData) {
+        await refreshPropertyData();
+      }
+    } catch (error) {
+      console.error("Error eliminando propietario:", error);
+      Swal.fire({
+        title: "Error al eliminar",
+        text: "No fue posible eliminar el propietario. Intenta nuevamente.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#8B4513",
+      });
+    }
   };
 
   const hasDataEntered = () => {
@@ -887,7 +1106,7 @@ export default function PropertyOwners({
               isThirdParty === false
                 ? "border-terrasacha-primary bg-terrasacha-primary/5"
                 : hasDataEntered()
-                ? "border-gray-300 bg-gray-100 cursor-not-allowed opacity-60"
+                ? "border-[#849b50]/30 bg-[#b1c181]/10 cursor-not-allowed opacity-60"
                 : "border-terrasacha-light hover:border-terrasacha-primary"
             }`}
           >
@@ -904,7 +1123,7 @@ export default function PropertyOwners({
               </div>
             )}
             {hasDataEntered() && isThirdParty !== false && (
-              <div className="mt-3 text-sm text-gray-500 font-semibold font-typographica">
+              <div className="mt-3 text-sm text-[#6e6c35] font-semibold font-typographica">
                 🔒 Bloqueado
               </div>
             )}
@@ -920,7 +1139,7 @@ export default function PropertyOwners({
               isThirdParty === true
                 ? "border-terrasacha-primary bg-terrasacha-primary/5"
                 : hasDataEntered()
-                ? "border-gray-300 bg-gray-100 cursor-not-allowed opacity-60"
+                ? "border-[#849b50]/30 bg-[#b1c181]/10 cursor-not-allowed opacity-60"
                 : "border-terrasacha-light hover:border-terrasacha-primary"
             }`}
           >
@@ -937,15 +1156,15 @@ export default function PropertyOwners({
               </div>
             )}
             {hasDataEntered() && isThirdParty !== true && (
-              <div className="mt-3 text-sm text-gray-500 font-semibold font-typographica">
+              <div className="mt-3 text-sm text-[#6e6c35] font-semibold font-typographica">
                 🔒 Bloqueado
               </div>
             )}
           </button>
         </div>
-        {hasDataEntered() && (
-          <div className="mt-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-xs sm:text-sm text-blue-800 font-typographica mb-0">
+        {hasDataEntered() && isThirdParty === null && (
+          <div className="mt-4 p-3 sm:p-4 bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg">
+            <p className="text-xs sm:text-sm text-[#6e6c35] font-typographica mb-0">
               ℹ️ Una vez que has ingresado información, no puedes cambiar tu relación con la propiedad.
             </p>
           </div>
@@ -959,7 +1178,7 @@ export default function PropertyOwners({
           <div className="bg-white p-4 sm:p-6 rounded-xl border border-terrasacha-light/20 shadow-terrasacha">
             <div className="mb-4 sm:mb-6">
               <h3 className="text-base sm:text-lg font-bold text-terrasacha-primary font-typographica mb-2">
-                Propietarios de la Propiedad
+                Identificación de postulante y/o propietario(s)
               </h3>
               <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica">
                 Agrega la información de todos los propietarios de la propiedad
@@ -996,44 +1215,102 @@ export default function PropertyOwners({
               {isThirdParty && (
                 <div
                   onClick={() => !postulanteData && openModal("postulante")}
-                  className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 ${
+                  className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 flex flex-col h-full ${
                     postulanteData
                       ? "border-terrasacha-primary bg-terrasacha-primary/5 cursor-default"
                       : "border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 cursor-pointer"
                   }`}
                 >
                   {postulanteData ? (
-                    <div className="text-center">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
-                        <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                      <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
-                        Postulante (Yo)
-                      </h4>
-                      <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-2 sm:mb-3">
-                        {postulanteData.name}
-                      </p>
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2">
-                        <p className="text-xs text-yellow-800 font-semibold font-typographica mb-0">
-                          ⏳ En espera de validación
+                    <div className="text-center w-full flex flex-col h-full">
+                      <div className="flex-1 flex flex-col items-center justify-center">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#b1c181]/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                          <svg className="w-6 h-6 sm:w-8 sm:h-8 text-[#849b50]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
+                          {postulanteData.name}
+                        </h4>
+                        <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-2 sm:mb-3">
+                          Postulante (Yo)
                         </p>
+                      </div>
+                      {/* Estado de validación al final */}
+                      <div className="mt-auto">
+                      {(() => {
+                        // Obtener el estado del postulante desde propertyData
+                        const postulanteDoc = propertyData?.propertyFeatures
+                          ?.flatMap(pf => pf?.documents?.items || [])
+                          .find(d => {
+                            try {
+                              const data = JSON.parse(d.data || '{}');
+                              return data.type === 'OWNER_BUNDLE' && data.role === 'POSTULANTE' && 
+                                     (data.ownerId === postulanteData.id || d.id === postulanteData.ownerBundleDocumentId);
+                            } catch {
+                              return false;
+                            }
+                          });
+                        
+                        const status = postulanteDoc?.status || 'pending_review';
+                        const isApproved = postulanteDoc?.isApproved || false;
+                        
+                        if (isApproved || status === 'approved') {
+                          return (
+                            <div className="bg-[#b1c181]/20 border border-[#849b50] rounded-lg p-2">
+                              <p className="text-xs text-[#849b50] font-semibold font-typographica mb-0">
+                                ✓ Aprobado
+                              </p>
+                            </div>
+                          );
+                        }
+                        if (status === 'rejected' || status === 'rechazado') {
+                          return (
+                            <div 
+                              onClick={() => editPostulante()}
+                              className="bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 cursor-pointer hover:bg-[#44482c]/20 transition-colors"
+                            >
+                              <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                                <span className="text-[#44482c] text-sm">✗</span>
+                                <p className="text-xs text-[#44482c] font-semibold font-typographica mb-0">
+                                  Rechazado
+                                </p>
+                              </div>
+                              <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
+                                Haz clic para subir una versión corregida
+                              </p>
+                              <button className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                Volver a Subir
+                              </button>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg p-2">
+                            <p className="text-xs text-[#6e6c35] font-semibold font-typographica mb-0">
+                              ⏳ En espera de validación
+                            </p>
+                          </div>
+                        );
+                      })()}
                       </div>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center text-center">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-red-200 transition-colors">
-                        <FaPlus className="text-red-600 text-lg sm:text-2xl" />
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#b1c181]/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-[#b1c181]/30 transition-colors">
+                        <FaPlus className="text-[#849b50] text-lg sm:text-2xl" />
                       </div>
                       <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
-                        Postulante (Yo) <span className="text-red-500">*</span>
+                        Postulante (Yo) <span className="text-[#849b50]">*</span>
                       </h4>
                       <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica">
                         Agregar mi información
                       </p>
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-2 mt-2">
-                        <p className="text-xs text-red-800 font-semibold font-typographica mb-0">
+                      <div className="bg-[#849b50]/20 border border-[#849b50] rounded-lg p-2 mt-2">
+                        <p className="text-xs text-[#849b50] font-semibold font-typographica mb-0">
                           ⚠️ Requerido
                         </p>
                       </div>
@@ -1045,46 +1322,104 @@ export default function PropertyOwners({
               {/* Card Propietario Principal */}
               <div
                 onClick={() => propietariosData.length === 0 && openModal("propietario")}
-                className={`group p-6 border-2 rounded-xl transition-all duration-300 ${
+                className={`group p-6 border-2 rounded-xl transition-all duration-300 flex flex-col h-full ${
                   propietariosData.length > 0
                     ? "border-terrasacha-primary bg-terrasacha-primary/5 cursor-default"
                     : "border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 cursor-pointer"
                 }`}
               >
                 {propietariosData.length > 0 ? (
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                      <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <h4 className="text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
-                      {isThirdParty ? "Propietario" : "Propietario (Yo)"}
-                    </h4>
-                    <p className="text-sm text-terrasacha-secondary1 font-typographica mb-3">
-                      {propietariosData[0].name}
-                    </p>
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2">
-                      <p className="text-xs text-yellow-800 font-semibold font-typographica mb-0">
-                        ⏳ En espera de validación
+                  <div className="text-center w-full flex flex-col h-full">
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                      <div className="w-16 h-16 bg-[#b1c181]/20 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <svg className="w-8 h-8 text-[#849b50]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <h4 className="text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
+                        {propietariosData[0].name}
+                      </h4>
+                      <p className="text-sm text-terrasacha-secondary1 font-typographica mb-3">
+                        {isThirdParty ? "Propietario" : "Propietario (Yo)"}
                       </p>
+                    </div>
+                    {/* Estado de validación al final */}
+                    <div className="mt-auto">
+                    {(() => {
+                        // Obtener el estado del propietario desde propertyData
+                        const propietarioDoc = propertyData?.propertyFeatures
+                          ?.flatMap(pf => pf?.documents?.items || [])
+                          .find(d => {
+                            try {
+                              const data = JSON.parse(d.data || '{}');
+                              return data.type === 'OWNER_BUNDLE' && 
+                                     (data.ownerId === propietariosData[0].id || d.id === propietariosData[0].ownerBundleDocumentId);
+                            } catch {
+                              return false;
+                            }
+                          });
+                        
+                        const status = propietarioDoc?.status || 'pending_review';
+                        const isApproved = propietarioDoc?.isApproved || false;
+                        
+                        if (isApproved || status === 'approved') {
+                          return (
+                            <div className="bg-[#b1c181]/20 border border-[#849b50] rounded-lg p-2">
+                              <p className="text-xs text-[#849b50] font-semibold font-typographica mb-0">
+                                ✓ Aprobado
+                              </p>
+                            </div>
+                          );
+                        }
+                        if (status === 'rejected' || status === 'rechazado') {
+                          return (
+                            <div 
+                              onClick={() => editPropietario(0)}
+                              className="bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 cursor-pointer hover:bg-[#44482c]/20 transition-colors"
+                            >
+                              <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                                <span className="text-[#44482c] text-sm">✗</span>
+                                <p className="text-xs text-[#44482c] font-semibold font-typographica mb-0">
+                                  Rechazado
+                                </p>
+                              </div>
+                              <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
+                                Haz clic para subir una versión corregida
+                              </p>
+                              <button className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                Volver a Subir
+                              </button>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg p-2">
+                            <p className="text-xs text-[#6e6c35] font-semibold font-typographica mb-0">
+                              ⏳ En espera de validación
+                            </p>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors">
-                      <FaPlus className="text-red-600 text-2xl" />
+                    <div className="w-16 h-16 bg-[#b1c181]/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#b1c181]/30 transition-colors">
+                      <FaPlus className="text-[#849b50] text-2xl" />
                     </div>
                     <h4 className="text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
-                      {isThirdParty ? "Propietario" : "Propietario (Yo)"} <span className="text-red-500">*</span>
+                      {isThirdParty ? "Propietario" : "Propietario (Yo)"} <span className="text-[#849b50]">*</span>
                     </h4>
                     <p className="text-sm text-terrasacha-secondary1 font-typographica">
                       {isThirdParty
                         ? "Agregar propietario"
                         : "Agregar mi información"}
                     </p>
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-2 mt-2">
-                      <p className="text-xs text-red-800 font-semibold font-typographica mb-0">
+                    <div className="bg-[#849b50]/20 border border-[#849b50] rounded-lg p-2 mt-2">
+                      <p className="text-xs text-[#849b50] font-semibold font-typographica mb-0">
                         ⚠️ Requerido
                       </p>
                     </div>
@@ -1096,32 +1431,88 @@ export default function PropertyOwners({
               {propietariosData.slice(1).map((propietario, index) => (
                 <div
                   key={propietario.id}
-                  className="group p-4 sm:p-6 border-2 border-terrasacha-primary bg-terrasacha-primary/5 rounded-xl transition-all duration-300"
+                  className="group p-4 sm:p-6 border-2 border-terrasacha-primary bg-terrasacha-primary/5 rounded-xl transition-all duration-300 flex flex-col h-full"
                 >
-                  <div className="text-center">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
-                      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <div className="text-center w-full flex flex-col h-full">
+                      {(() => {
+                        // Obtener el estado del propietario adicional desde propertyData
+                        const propietarioDoc = propertyData?.propertyFeatures
+                          ?.flatMap(pf => pf?.documents?.items || [])
+                          .find(d => {
+                            try {
+                              const data = JSON.parse(d.data || '{}');
+                              return data.type === 'OWNER_BUNDLE' && 
+                                     (data.ownerId === propietario.id || d.id === propietario.ownerBundleDocumentId);
+                            } catch {
+                              return false;
+                            }
+                          });
+                        
+                        const status = propietarioDoc?.status || 'pending_review';
+                        const isApproved = propietarioDoc?.isApproved || false;
+                        
+                        return (
+                          <>
+                            <div className="flex-1 flex flex-col items-center justify-center">
+                              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#b1c181]/20 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
+                                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-[#849b50]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                              <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2 sm:mb-3">
+                                {propietario.name}
+                              </h4>
+                              {/* Solo mostrar Eliminar si no está aprobado */}
+                              {!(isApproved || status === 'approved') && (
+                                <button
+                                  onClick={() => removePropietario(propietario.id)}
+                                  className="text-xs text-[#44482c] hover:text-[#6e6c35] font-typographica"
+                                >
+                                  Eliminar
+                                </button>
+                              )}
+                            </div>
+                            {/* Estado de validación al final */}
+                            <div className="mt-auto">
+                            {isApproved || status === 'approved' ? (
+                              <div className="bg-[#b1c181]/20 border border-[#849b50] rounded-lg p-2">
+                                <p className="text-xs text-[#849b50] font-semibold font-typographica mb-0">
+                                  ✓ Aprobado
+                                </p>
+                              </div>
+                            ) : status === 'rejected' || status === 'rechazado' ? (
+                              <div 
+                                onClick={() => editPropietario(index + 1)}
+                                className="bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 cursor-pointer hover:bg-[#44482c]/20 transition-colors"
+                              >
+                                <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                                  <span className="text-[#44482c] text-sm">✗</span>
+                                  <p className="text-xs text-[#44482c] font-semibold font-typographica mb-0">
+                                    Rechazado
+                                  </p>
+                                </div>
+                                <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
+                                  Haz clic para subir una versión corregida
+                                </p>
+                                <button className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                  </svg>
+                                  Volver a Subir
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg p-2">
+                                <p className="text-xs text-[#6e6c35] font-semibold font-typographica mb-0">
+                                  ⏳ En espera de validación
+                                </p>
+                              </div>
+                            )}
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
-                    <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2">
-                      Propietario {index + 2}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica mb-2 sm:mb-3">
-                      {propietario.name}
-                    </p>
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 mb-2">
-                      <p className="text-xs text-yellow-800 font-semibold font-typographica mb-0">
-                        ⏳ En espera de validación
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => removePropietario(propietario.id)}
-                      className="text-xs text-red-500 hover:text-red-700 font-typographica"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
                 </div>
               ))}
 
@@ -1141,8 +1532,8 @@ export default function PropertyOwners({
                     <p className="text-xs sm:text-sm text-terrasacha-secondary1 font-typographica">
                       Agregar otro propietario
                     </p>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mt-2">
-                      <p className="text-xs text-blue-800 font-semibold font-typographica mb-0">
+                    <div className="bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg p-2 mt-2">
+                      <p className="text-xs text-[#6e6c35] font-semibold font-typographica mb-0">
                         ℹ️ Opcional
                       </p>
                     </div>
@@ -1190,7 +1581,7 @@ export default function PropertyOwners({
                               </a>
                               <button
                                 onClick={() => handleDeleteOwnerDoc(index, 'idFront')}
-                                className="px-2 py-1 text-red-500 hover:bg-red-50 rounded font-typographica"
+                                className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
                               >
                                 Eliminar
                               </button>
@@ -1208,7 +1599,7 @@ export default function PropertyOwners({
                               </a>
                               <button
                                 onClick={() => handleDeleteOwnerDoc(index, 'idBack')}
-                                className="px-2 py-1 text-red-500 hover:bg-red-50 rounded font-typographica"
+                                className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
                               >
                                 Eliminar
                               </button>
@@ -1226,7 +1617,7 @@ export default function PropertyOwners({
                               </a>
                               <button
                                 onClick={() => handleDeleteOwnerDoc(index, 'selfie')}
-                                className="px-2 py-1 text-red-500 hover:bg-red-50 rounded font-typographica"
+                                className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
                               >
                                 Eliminar
                               </button>
@@ -1243,7 +1634,7 @@ export default function PropertyOwners({
                         </button>
                         <button
                           onClick={() => removeOwner(index)}
-                          className="px-2 sm:px-3 py-1 text-red-500 hover:bg-red-50 rounded font-typographica text-xs sm:text-sm"
+                          className="px-2 sm:px-3 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica text-xs sm:text-sm"
                         >
                           Eliminar
                         </button>
@@ -1258,8 +1649,8 @@ export default function PropertyOwners({
 
           {/* Modal para agregar/editar propietario */}
           {showModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-              <div className="bg-white rounded-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-50 flex items-center justify-center overflow-y-auto p-2 sm:p-4" style={{ margin: 0 }}>
+              <div className="bg-white rounded-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto my-auto">
                 <div className="p-4 sm:p-6">
                   <div className="flex justify-between items-center mb-4 sm:mb-6">
                     <h3 className="text-lg sm:text-xl font-bold text-terrasacha-primary font-typographica">
@@ -1406,10 +1797,10 @@ export default function PropertyOwners({
                       Cancelar
                     </button>
                     <button
-                      onClick={editingIndex >= 0 ? updateOwner : addOwner}
+                      onClick={(editingIndex >= 0 && owners.length > editingIndex) ? updateOwner : addOwner}
                       className="px-4 sm:px-6 py-2 bg-terrasacha-primary text-white rounded-lg hover:bg-terrasacha-primary/90 transition-colors font-typographica text-sm sm:text-base"
                     >
-                      {editingIndex >= 0 ? "Actualizar" : "Agregar"}
+                      {(editingIndex === -2 || (editingIndex >= 0 && propietariosData.length > editingIndex)) ? "Actualizar" : (editingIndex >= 0 && owners.length > editingIndex) ? "Actualizar" : "Agregar"}
                     </button>
                   </div>
                 </div>

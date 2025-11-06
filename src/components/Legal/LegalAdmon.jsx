@@ -13,6 +13,7 @@ import {
   createVerificationComment,
   updateProperty,
   updateVerification,
+  updateDocument,
 } from "graphql/mutations";
 import PropertyChat from "components/Legal/PropertyChat";
 import {
@@ -59,73 +60,209 @@ const DocumentationModal = ({
   fetchProperties,
   user,
 }) => {
-  const [showRejectionReasonModal, setShowRejectionReasonModal] =
-    useState(false);
+  const [showRejectionReasonModal, setShowRejectionReasonModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [selectedDocumentId, setSelectedDocumentId] = useState(null);
+  const [requiredDocuments, setRequiredDocuments] = useState([]);
+  const [additionalDocuments, setAdditionalDocuments] = useState([]);
+  const [owners, setOwners] = useState([]);
 
+  // Tipos de documentos requeridos (igual que en PropertyDocumentation.jsx)
+  const requiredDocumentTypes = [
+    'CERTIFICADO_TRADICION',
+    'ESCRITURA_PUBLICA',
+    'PLANO_CATASTRAL',
+  ];
 
+  // Tipos de documentos relacionados con propietarios que NO deben aparecer
+  const notToShowDocuments = [
+    'OWNER_BUNDLE',
+    'USER_ID_FRONT',
+    'USER_ID_BACK',
+    'USER_SELFIE',
+    'OWNER_INFO',
+    'OWNER_RELATION',
+    'MEMORANDO_ENTENDIMIENTO',
+  ];
 
- // ✅ CORREGIDO: Buscar TODOS los features GLOBAL_PROPERTY_FILES y agregar documentos
-const globalFilesFeatures = property?.propertyFeatures?.items.filter(
-  (feature) => feature?.featureID === "GLOBAL_PROPERTY_FILES"
-) || [];
+  // Mapeo de tipos de código a nombre legible
+  const mapTypeCodeToName = (typeCode) => {
+    const map = {
+      CERTIFICADO_TRADICION: 'Certificado de Libertad y Tradición',
+      ESCRITURA_PUBLICA: 'Escrituras Públicas',
+      PLANO_CATASTRAL: 'Planos Catastrales',
+      MEMORANDO_ENTENDIMIENTO: 'Memorando de Entendimiento',
+      OTRO: 'Documento adicional',
+    };
+    return map[typeCode] || 'Documento adicional';
+  };
 
-// ✅ CORREGIDO: Agregar documentos de todos los features encontrados
-const propertyFiles = (() => {
-  if (!globalFilesFeatures || globalFilesFeatures.length === 0) {
-    return [];
-  }
-  
-  let allDocuments = [];
-  
-  try {
-    // Iterar por cada feature GLOBAL_PROPERTY_FILES
-    globalFilesFeatures.forEach((feature, index) => {
-      // CASO 1: Documentos en el campo 'value' (como JSON string)
-      if (feature?.value && feature.value !== "[]" && feature.value !== "") {
-        try {
-          const documents = JSON.parse(feature.value);
-          
-          if (Array.isArray(documents)) {
-            allDocuments = allDocuments.concat(documents);
-          }
-        } catch (parseError) {
-          console.error(`Error parsing documents del campo 'value' del feature ${index + 1}:`, parseError, feature);
-        }
+  // Cargar documentos y propietarios desde propertyFeatures
+  useEffect(() => {
+    if (!property?.propertyFeatures?.items) return;
+
+    const globalFeature = property.propertyFeatures.items.find(
+      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+    );
+
+    const allDocs = globalFeature?.documents?.items || [];
+    const required = [];
+    const additional = [];
+    const ownersList = [];
+
+    // Obtener todos los documentos de todos los features para buscar propietarios
+    const allFeaturesDocs = property.propertyFeatures.items.flatMap(
+      (feature) => feature?.documents?.items || []
+    );
+
+    // Primero, crear un mapa de documentos cargados por tipo
+    const loadedDocumentsByType = {};
+
+    allFeaturesDocs.forEach((document) => {
+      let data = {};
+      try {
+        data = JSON.parse(document.data || '{}');
+      } catch {
+        data = {};
       }
-      
-      // CASO 2: Documentos en el campo 'documents.items[]'
-      if (feature?.documents?.items && feature.documents.items.length > 0) {
-        feature.documents.items.forEach((doc, docIndex) => {
-          try {
-            if (doc?.data) {
-              const documentData = JSON.parse(doc.data);
-              allDocuments.push(documentData);
-            }
-          } catch (parseError) {
-            console.error(`Error parsing documento ${docIndex + 1} del feature ${index + 1}:`, parseError, doc);
-          }
+
+      const typeCode = data.type || 'OTRO';
+
+      // Procesar propietarios (OWNER_BUNDLE)
+      if (typeCode === 'OWNER_BUNDLE') {
+        const ownerInfo = {
+          id: document.id,
+          ownerId: data.ownerId || document.id,
+          name: data.name || 'Sin nombre',
+          email: data.email || '',
+          phone: data.phone || '',
+          role: data.role || 'PROPIETARIO',
+          status: document.status || 'pending_review',
+          isApproved: document.isApproved || false,
+          files: data.files || [], // Array de archivos (idFront, idBack, selfie)
+          createdAt: document.createdAt || document.timeStamp
+            ? new Date(document.timeStamp * 1000).toISOString()
+            : new Date().toISOString(),
+        };
+        ownersList.push(ownerInfo);
+        return; // No agregar a documentos
+      }
+
+      // Excluir documentos relacionados con propietarios
+      if (notToShowDocuments.includes(typeCode)) {
+        return;
+      }
+
+      // Solo procesar documentos del GLOBAL_PROPERTY_FILES
+      if (!allDocs.includes(document)) {
+        return;
+      }
+
+      const docInfo = {
+        id: document.id,
+        name: data.name || document.id,
+        url: data.url || document.url,
+        type: typeCode,
+        typeName: mapTypeCodeToName(typeCode),
+        status: document.status || 'pending_review',
+        isApproved: document.isApproved || false,
+        createdAt: document.createdAt || document.timeStamp
+          ? new Date(document.timeStamp * 1000).toISOString()
+          : new Date().toISOString(),
+      };
+
+      if (requiredDocumentTypes.includes(typeCode)) {
+        loadedDocumentsByType[typeCode] = docInfo;
+        required.push(docInfo);
+      } else {
+        additional.push(docInfo);
+      }
+    });
+
+    // Agregar documentos requeridos que no se han cargado aún
+    requiredDocumentTypes.forEach((typeCode) => {
+      if (!loadedDocumentsByType[typeCode]) {
+        required.push({
+          id: `not_uploaded_${typeCode}`, // ID temporal para documentos no cargados
+          name: '',
+          url: null,
+          type: typeCode,
+          typeName: mapTypeCodeToName(typeCode),
+          status: 'not_uploaded',
+          isApproved: false,
+          createdAt: null,
         });
       }
     });
-    
-    // Mapear todos los documentos encontrados
-    const mappedDocuments = allDocuments.map((document) => {
-      const mappedType = documentTypeMapper[document.type];
-      
-      return {
-        name: document.name || "Documento sin nombre",
-        type: mappedType || "Tipo de documento desconocido",
-        url: document.url || "#",
+
+    setRequiredDocuments(required);
+    setAdditionalDocuments(additional);
+    setOwners(ownersList);
+  }, [property]);
+
+  // Manejar aprobación/rechazo de documento
+  const handleDocumentStatus = async (documentId, status, reason = "") => {
+    try {
+      const input = {
+        id: documentId,
+        status: status === 'approved' ? 'approved' : 'rejected',
+        isApproved: status === 'approved',
       };
-    });
-    
-    return mappedDocuments;
-  } catch (error) {
-    console.error("Error processing documents from PropertyFeatures:", error);
-    return [];
-  }
-})();
+
+      await API.graphql(
+        graphqlOperation(updateDocument, { input })
+      );
+
+      // Actualizar estado local para documentos
+      setRequiredDocuments(prev => 
+        prev.map(doc => 
+          doc.id === documentId 
+            ? { ...doc, status: input.status, isApproved: input.isApproved }
+            : doc
+        )
+      );
+
+      toast.success(`Documento ${status === 'approved' ? 'aprobado' : 'rechazado'} exitosamente`);
+      fetchProperties();
+    } catch (error) {
+      console.error("Error actualizando documento:", error);
+      toast.error("Error al actualizar el documento");
+    }
+    setShowRejectionReasonModal(false);
+    setSelectedDocumentId(null);
+  };
+
+  // Manejar aprobación/rechazo de propietario
+  const handleOwnerStatus = async (ownerId, status, reason = "") => {
+    try {
+      const input = {
+        id: ownerId,
+        status: status === 'approved' ? 'approved' : 'rejected',
+        isApproved: status === 'approved',
+      };
+
+      await API.graphql(
+        graphqlOperation(updateDocument, { input })
+      );
+
+      // Actualizar estado local para propietarios
+      setOwners(prev => 
+        prev.map(owner => 
+          owner.id === ownerId 
+            ? { ...owner, status: input.status, isApproved: input.isApproved }
+            : owner
+        )
+      );
+
+      toast.success(`Propietario ${status === 'approved' ? 'aprobado' : 'rechazado'} exitosamente`);
+      fetchProperties();
+    } catch (error) {
+      console.error("Error actualizando propietario:", error);
+      toast.error("Error al actualizar el propietario");
+    }
+    setShowRejectionReasonModal(false);
+    setSelectedDocumentId(null);
+  };
 
 
 
@@ -190,97 +327,392 @@ const propertyFiles = (() => {
     onClose();
   };
 
+  const getStatusBadge = (status, isApproved) => {
+    if (isApproved || status === 'approved') {
+      return (
+        <span className="px-1.5 py-0.5 bg-green-100 text-green-800 rounded text-xs font-semibold">
+          ✓ Aprobado
+        </span>
+      );
+    }
+    if (status === 'rejected' || status === 'rechazado') {
+      return (
+        <span className="px-1.5 py-0.5 bg-red-100 text-red-800 rounded text-xs font-semibold">
+          ✗ Rechazado
+        </span>
+      );
+    }
+    return (
+      <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs font-semibold">
+        ⏳ Pendiente
+      </span>
+    );
+  };
+
+  // Verificar si todos los documentos requeridos y propietarios están validados
+  const areAllValidated = () => {
+    if (owners.length === 0) {
+      return false;
+    }
+
+    const allOwnersValidated = owners.length === 0 || owners.every(
+      owner => owner.isApproved || owner.status === 'approved'
+    );
+
+    const allDocumentsValidated = requiredDocuments.length === 0 || requiredDocuments.every(
+      doc => doc.isApproved || doc.status === 'approved'
+    );
+
+    return allOwnersValidated && allDocumentsValidated;
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-3xl h-auto">
-        <h2 className="text-xl font-bold mb-4">Documentación del predio</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div>
-            {propertyFiles && propertyFiles.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4">
-                {propertyFiles.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 border rounded-md shadow-sm"
-                  >
-                    <span className="text-gray-500 text-sm">{file.type}</span>
-                    <a
-                      href={file.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 flex items-center gap-2"
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto p-2">
+      <div className="bg-white rounded-lg p-3 w-full max-w-5xl max-h-[95vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-bold text-terrasacha-primary font-typographica">
+            Revisión de Documentación
+          </h2>
+          <button
+            className="text-gray-500 hover:text-gray-700 text-xl"
+            onClick={onClose}
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {/* Columna 1: Validación de Identificación */}
+          <div className="space-y-3">
+            {owners.length > 0 ? (
+              <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
+                <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">
+                  Validación de Identificación
+                </h3>
+                <div className="space-y-2">
+                  {owners.map((owner) => (
+                    <div
+                      key={owner.id}
+                      className="border border-terrasacha-light/20 rounded-lg p-2 hover:shadow-md transition-shadow"
                     >
-                      <FaEye size={14} />
-                      Ver
-                    </a>
-                  </div>
-                ))}
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {/* Columna izquierda: Información */}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-xs font-semibold text-terrasacha-primary font-typographica mb-0.5">
+                              {owner.name}
+                            </h4>
+                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0.5">
+                              {owner.email}
+                            </p>
+                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
+                              {owner.phone}
+                            </p>
+                            <p className="text-xs text-gray-500 font-typographica mb-1">
+                              {owner.role === 'POSTULANTE' ? 'Postulante' : 'Propietario'}
+                            </p>
+                            {getStatusBadge(owner.status, owner.isApproved)}
+                          </div>
+                          
+                          {/* Columna derecha: Adjuntos */}
+                          <div className="flex flex-col">
+                            <p className="text-xs font-semibold text-terrasacha-primary font-typographica mb-1">
+                              Documentos Adjuntos
+                            </p>
+                            {owner.files && owner.files.length > 0 ? (
+                              <div className="space-y-1.5">
+                                {owner.files.map((file, idx) => (
+                                  <a
+                                    key={idx}
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-xs text-terrasacha-primary hover:text-terrasacha-primary/80 hover:underline font-typographica p-1.5 border border-terrasacha-light/20 rounded hover:bg-terrasacha-light/5 transition-colors"
+                                  >
+                                    <span>
+                                      {file.type === 'USER_ID_FRONT' ? '📄' :
+                                       file.type === 'USER_ID_BACK' ? '📄' :
+                                       file.type === 'USER_SELFIE' ? '📷' : '📎'}
+                                    </span>
+                                    <span>
+                                      {file.type === 'USER_ID_FRONT' ? 'Cédula Frente' :
+                                       file.type === 'USER_ID_BACK' ? 'Cédula Reverso' :
+                                       file.type === 'USER_SELFIE' ? 'Selfie' : 'Archivo'}
+                                    </span>
+                                  </a>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-gray-400 italic font-typographica">
+                                No hay documentos adjuntos
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Botones Aprobar/Rechazar en fila completa */}
+                        {owner.status === 'pending_review' && (
+                          <div className="flex gap-2 pt-2 border-t border-terrasacha-light/20">
+                            <button
+                              className="flex-1 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 font-typographica text-xs"
+                              onClick={() => handleOwnerStatus(owner.id, 'approved')}
+                            >
+                              Aprobar
+                            </button>
+                            <button
+                              className="flex-1 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 font-typographica text-xs"
+                              onClick={() => {
+                                setSelectedDocumentId(owner.id);
+                                setShowRejectionReasonModal(true);
+                              }}
+                            >
+                              Rechazar
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : (
-              <p className="text-gray-600 italic text-center">
-                No hay documentos subidos para este predio.
-              </p>
+              <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
+                <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">
+                  Validación de Identificación
+                </h3>
+                <p className="text-gray-500 italic text-center py-2 text-xs font-typographica">
+                  No hay propietarios registrados
+                </p>
+              </div>
             )}
           </div>
-          <PropertyChat
-            propertyId={property.id}
-            featureChat={"GLOBAL_PROPERTY_FILES"}
-          />
-        </div>
-        {/* Aquí se puede agregar el contenido del documento */}
-        <div className="flex justify-end mt-4">
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-            onClick={() => handleEligible(true)}
-          >
-            Elegible
-          </button>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-            onClick={() => setShowRejectionReasonModal(true)}
-          >
-            No elegible
-          </button>
 
-          <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
-            Cancelar
-          </button>
+          {/* Columna 2: Documentos Requeridos y Adicionales */}
+          <div className="space-y-3">
+            {/* Documentos Requeridos */}
+            <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
+              <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">
+                Documentos Requeridos
+              </h3>
+              {requiredDocuments.length > 0 ? (
+                <div className="space-y-2">
+                  {requiredDocuments.map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="border border-terrasacha-light/20 rounded-lg p-2 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-semibold text-terrasacha-primary font-typographica mb-0.5">
+                            {doc.typeName}
+                          </h4>
+                          {doc.status === 'not_uploaded' ? (
+                            <p className="text-xs text-gray-400 font-typographica mb-1 italic">
+                              Aún no se ha cargado
+                            </p>
+                          ) : (
+                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1 truncate">
+                              {doc.name}
+                            </p>
+                          )}
+                          {doc.status === 'not_uploaded' ? (
+                            <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-semibold">
+                              No cargado
+                            </span>
+                          ) : (
+                            getStatusBadge(doc.status, doc.isApproved)
+                          )}
+                        </div>
+                        {doc.url && (
+                          <a
+                            href={doc.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-terrasacha-primary text-white px-2 py-1 rounded hover:bg-terrasacha-primary/90 flex items-center gap-1 text-xs font-typographica ml-2 flex-shrink-0"
+                          >
+                            <FaEye size={10} />
+                            Ver
+                          </a>
+                        )}
+                      </div>
+                      {doc.status === 'pending_review' && (
+                        <div className="flex gap-2 pt-2 border-t border-terrasacha-light/20">
+                          <button
+                            className="flex-1 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 font-typographica text-xs"
+                            onClick={() => handleDocumentStatus(doc.id, 'approved')}
+                          >
+                            Aprobar
+                          </button>
+                          <button
+                            className="flex-1 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 font-typographica text-xs"
+                            onClick={() => {
+                              setSelectedDocumentId(doc.id);
+                              setShowRejectionReasonModal(true);
+                            }}
+                          >
+                            Rechazar
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 italic text-center py-2 text-xs font-typographica">
+                  No hay documentos requeridos subidos
+                </p>
+              )}
+            </div>
+
+            {/* Documentos Adicionales - Solo mostrar si hay documentos */}
+            {additionalDocuments.length > 0 && (
+              <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
+                <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">
+                  Documentos Adicionales
+                </h3>
+                <div className="space-y-2">
+                  {additionalDocuments.map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="border border-terrasacha-light/20 rounded-lg p-2 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-semibold text-terrasacha-primary font-typographica mb-0.5">
+                            {doc.typeName}
+                          </h4>
+                          <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1 truncate">
+                            {doc.name}
+                          </p>
+                        </div>
+                        <a
+                          href={doc.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-terrasacha-primary text-white px-2 py-1 rounded hover:bg-terrasacha-primary/90 flex items-center gap-1 text-xs font-typographica ml-2 flex-shrink-0"
+                        >
+                          <FaEye size={10} />
+                          Ver
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Botones de Elegible/No Elegible */}
+        <div className="mt-4 pt-4 border-t border-terrasacha-light/20">
+          <div className="flex justify-between items-center">
+            <div className="flex gap-3">
+              <div className="relative">
+                <button
+                  className={`px-4 py-2 rounded font-typographica text-sm font-semibold transition-colors ${
+                    areAllValidated()
+                      ? 'bg-green-500 text-white hover:bg-green-600'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                  onClick={() => handleEligible(true)}
+                  disabled={!areAllValidated()}
+                  data-tooltip-id={`tooltip-elegible-${property?.id || 'default'}`}
+                  data-tooltip-content={
+                    !areAllValidated()
+                      ? "Deben ser aprobados todos los documentos y validaciones de identidad para poder ser Elegible"
+                      : ""
+                  }
+                >
+                  Elegible
+                </button>
+                {!areAllValidated() && (
+                  <ReactTooltip
+                    id={`tooltip-elegible-${property?.id || 'default'}`}
+                    place="top"
+                    effect="solid"
+                  />
+                )}
+              </div>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded font-typographica text-sm font-semibold hover:bg-red-600 transition-colors"
+                onClick={() => {
+                  // Mostrar modal para razón de rechazo
+                  setShowRejectionReasonModal(true);
+                  setSelectedDocumentId('NO_ELEGIBLE'); // Identificador especial para marcar como no elegible
+                }}
+              >
+                No Elegible
+              </button>
+            </div>
+            <button
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded font-typographica text-sm font-semibold hover:bg-gray-400 transition-colors"
+              onClick={onClose}
+            >
+              Volver
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Modal de razón de rechazo */}
       {showRejectionReasonModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-lg">
-            <h3 className="text-lg font-semibold mb-4">
-              Motivo de No Elegibilidad
+          <div className="bg-white rounded-lg p-4 w-full max-w-lg">
+            <h3 className="text-sm font-semibold mb-3 font-typographica">
+              {selectedDocumentId === 'NO_ELEGIBLE' ? 'Motivo de No Elegible' : 'Motivo de Rechazo'}
             </h3>
             <textarea
-              className="w-full p-2 border border-gray-300 rounded-md"
-              placeholder="Escribe el motivo por el cual el predio no es elegible..."
+              className="w-full p-2 border border-gray-300 rounded-md font-typographica text-xs"
+              placeholder={selectedDocumentId === 'NO_ELEGIBLE' 
+                ? "Escribe el motivo por el cual el predio no es elegible..."
+                : "Escribe el motivo por el cual se rechaza este documento..."}
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              rows={5}
+              rows={4}
             />
-            <div className="flex justify-end gap-2 mt-4">
+            <div className="flex justify-end gap-2 mt-3">
               <button
-                className="bg-gray-300 px-4 py-2 rounded"
-                onClick={() => setShowRejectionReasonModal(false)}
+                className="bg-gray-300 px-3 py-1.5 rounded font-typographica text-xs"
+                onClick={() => {
+                  setShowRejectionReasonModal(false);
+                  setSelectedDocumentId(null);
+                  setRejectionReason("");
+                }}
               >
                 Cancelar
               </button>
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className="bg-red-500 text-white px-3 py-1.5 rounded hover:bg-red-600 font-typographica text-xs"
                 onClick={() => {
+                  // Si es para marcar como no elegible, usar handleEligible
+                  if (selectedDocumentId === 'NO_ELEGIBLE') {
+                    if (!rejectionReason.trim()) {
+                      toast.error("Debes ingresar una razón para marcar como no elegible");
+                      return;
+                    }
+                    handleEligible(false, rejectionReason);
+                    setRejectionReason("");
+                    return;
+                  }
+
+                  // Si es para rechazar un documento o propietario
                   if (!rejectionReason.trim()) {
                     toast.error("Debes ingresar una razón");
                     return;
                   }
-                  handleEligible(false, rejectionReason);
-                  setShowRejectionReasonModal(false);
+                  // Determinar si es un propietario o un documento
+                  const isOwner = owners.some(o => o.id === selectedDocumentId);
+                  if (isOwner) {
+                    handleOwnerStatus(selectedDocumentId, 'rejected', rejectionReason);
+                  } else {
+                    handleDocumentStatus(selectedDocumentId, 'rejected', rejectionReason);
+                  }
+                  setRejectionReason("");
                 }}
               >
-                Confirmar
+                {selectedDocumentId === 'NO_ELEGIBLE' ? 'Confirmar No Elegible' : 'Confirmar Rechazo'}
               </button>
             </div>
           </div>
@@ -685,7 +1117,9 @@ export default function LegalAdmon() {
                           </tr>
                         </thead>
                         <tbody>
-                          {paginatedProperties.map((property, idx) => (
+                          {paginatedProperties.map((property, idx) => {
+                            if (!property || !property.id) return null;
+                            return (
                             <tr
                               key={property.id}
                               className={`text-xs transition-all duration-200 uppercase border-b border-gray-100 hover:bg-blue-50 hover:shadow-sm ${
@@ -720,6 +1154,7 @@ export default function LegalAdmon() {
                                   <div className="flex justify-center flex-1">
                                     {(() => {
                                       const canValidate =
+                                        user?.id &&
                                         property.userLegalID === user.id &&
                                         property.status !== "APPROVED";
                                       return (
@@ -765,6 +1200,7 @@ export default function LegalAdmon() {
                                         property.status !== "REJECTED" &&
                                         property.status !== "APPROVED";
                                       const canUnassign =
+                                        user?.id &&
                                         property.userLegalID === user.id &&
                                         property.status !== "REJECTED" &&
                                         property.status !== "APPROVED";
@@ -936,7 +1372,8 @@ export default function LegalAdmon() {
                                 })()}
                               </td>
                             </tr>
-                          ))}
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>

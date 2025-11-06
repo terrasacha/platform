@@ -9,6 +9,7 @@ import {
   createNotification,
   updateProperty,
   updateVerification,
+  createVerification,
 } from "graphql/mutations";
 
 // Contexts
@@ -22,6 +23,8 @@ import PropertyDetails from "./PropertyDetails";
 import PropertyCatastral from "./PropertyCatastral";
 import PropertyOwners from "./PropertyOwners";
 import PropertyDocumentation from "./PropertyDocumentation";
+import PropertyGeneral from "./PropertyGeneral";
+import PropertyChat from "./PropertyChat";
 
 // Mostrar si tiene asignado validador
 // Tiempo restante para verificar
@@ -680,6 +683,16 @@ export default function Property2() {
                 >
                   Trazabilidad
                 </button>
+                <button 
+                  onClick={() => setActiveTab('chat')}
+                  className={`py-2 px-1 border-b-2 font-typographica font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${
+                    activeTab === 'chat' 
+                      ? 'border-terrasacha-primary text-terrasacha-primary' 
+                      : 'border-transparent text-terrasacha-secondary1 hover:text-terrasacha-primary'
+                  }`}
+                >
+                  Chat
+                </button>
               </nav>
             </div>
 
@@ -687,83 +700,10 @@ export default function Property2() {
             <div className="space-y-6 sm:space-y-8">
               {/* Estado General */}
               {activeTab === 'estado' && (
-                <div className="bg-gradient-to-r from-terrasacha-light/10 to-terrasacha-earth/10 p-4 sm:p-6 rounded-xl border border-terrasacha-light/20">
-                  <h2 className="text-xl font-bold text-terrasacha-primary mb-4 font-typographica">
-                    Estado del Predio
-                  </h2>
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-sm text-terrasacha-secondary1 font-typographica">
-                        Estado Actual
-                      </p>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold font-typographica ${
-                          property?.status === "APPROVED"
-                            ? "bg-terrasacha-secondary2 text-white"
-                            : property?.status === "PENDING"
-                            ? "bg-terrasacha-earth text-terrasacha-secondary1"
-                            : property?.status === "REJECTED"
-                            ? "bg-red-500 text-white"
-                            : "bg-gray-400 text-white"
-                        }`}
-                      >
-                        {statusEs[property?.status] || "Sin estado"}
-                      </span>
-                    </div>
-
-                    {/* Progreso basado en verificaciones */}
-                    <div className="mb-4">
-                      <p className="text-sm text-terrasacha-secondary1 mb-3 font-typographica">
-                        Progreso de Verificación
-                      </p>
-                      <div className="w-full bg-terrasacha-light/30 rounded-full h-3">
-                        <div
-                          className="bg-gradient-terrasacha h-3 rounded-full shadow-terrasacha transition-all duration-500"
-                          style={{
-                            width:
-                              property?.propertyFeatures?.items?.length > 0
-                                ? `${Math.min(
-                                    (property.propertyFeatures.items.filter(
-                                      (pf) => pf.verifications?.items?.length > 0
-                                    ).length /
-                                      property.propertyFeatures.items.length) *
-                                      100,
-                                    100
-                                  )}%`
-                                : "0%",
-                          }}
-                        ></div>
-                      </div>
-                      <p className="text-sm text-terrasacha-secondary1 mt-2 font-typographica">
-                        {property?.propertyFeatures?.items?.filter(
-                          (pf) => pf.verifications?.items?.length > 0
-                        ).length || 0}{" "}
-                        de {property?.propertyFeatures?.items?.length || 0}{" "}
-                        características verificadas
-                      </p>
-                    </div>
-
-                    {/* Información adicional */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4">
-                      <div className="bg-white/50 p-3 rounded-lg">
-                        <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                          Propietario
-                        </p>
-                        <p className="text-sm font-semibold text-terrasacha-primary font-typographica truncate">
-                          {property?.user?.name || "No especificado"}
-                        </p>
-                      </div>
-                      <div className="bg-white/50 p-3 rounded-lg">
-                        <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                          Proyecto
-                        </p>
-                        <p className="text-sm font-semibold text-terrasacha-primary font-typographica truncate">
-                          {property?.product?.name || "Sin proyecto asignado"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <PropertyGeneral 
+                  onNavigateToDocumentation={() => setActiveTab('documentacion')}
+                  onNavigateToOwners={() => setActiveTab('propietarios')}
+                />
               )}
 
               {/* Información Predial */}
@@ -808,6 +748,11 @@ export default function Property2() {
                   setIsFormComplete={setIsFormComplete}
                   currentStep={currentStep}
                 />
+              )}
+
+              {/* Chat */}
+              {activeTab === 'chat' && (
+                <PropertyChat />
               )}
 
               {/* Trazabilidad */}
