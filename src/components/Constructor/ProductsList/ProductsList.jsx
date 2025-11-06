@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useUserProperties from "hooks/useUserProperties";
 import vacio from "../../views/_images/caja-vacia-gris.png";
-import ModalNewProperty from "../Campaign/ModalNewProperty";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import {
@@ -14,15 +14,13 @@ import {
   FaEye,
 } from "react-icons/fa";
 
-// Mantengo solo la lógica de paginación, filtros, tabla, banner, modal y tooltips
+// Componente para mostrar el listado de predios
 export default function ProductsList() {
+  const navigate = useNavigate();
   const { userProperties, isLoading } = useUserProperties();
   const sortedProperties = [...userProperties].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
-
-  console.log('userProperties', userProperties)
-  const [showModal, setShowModal] = useState(false);
 
   // Estados para paginación y búsqueda
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,13 +31,15 @@ export default function ProductsList() {
   const stateMapper = {
     PENDING: {
       label: "Pendiente",
-      badge: "bg-terrasacha-earth text-terrasacha-secondary1 border border-terrasacha-earth",
+      badge:
+        "bg-terrasacha-earth text-terrasacha-secondary1 border border-terrasacha-earth",
       tooltip: "Pendiente: El predio está pendiente de revisión.",
       icon: <FaClock className="inline mr-1" />,
     },
     APPROVED: {
       label: "Aprobado",
-      badge: "bg-terrasacha-secondary2 text-white border border-terrasacha-secondary2",
+      badge:
+        "bg-terrasacha-secondary2 text-white border border-terrasacha-secondary2",
       tooltip: "Aprobado: El predio ha sido aprobado.",
       icon: <FaCheckCircle className="inline mr-1" />,
     },
@@ -51,7 +51,8 @@ export default function ProductsList() {
     },
     SELECTABLE: {
       label: "Seleccionable",
-      badge: "bg-terrasacha-light text-terrasacha-secondary1 border border-terrasacha-light",
+      badge:
+        "bg-terrasacha-light text-terrasacha-secondary1 border border-terrasacha-light",
       tooltip:
         "Seleccionable: El predio es elegible para continuar el proceso.",
       icon: <FaCheck className="inline mr-1" />,
@@ -121,101 +122,19 @@ export default function ProductsList() {
   }, [searchTerm, rowsPerPage, filterStatus]);
 
   return (
-    <section className="mx-auto p-2">
-      {/* Banner - Aplicando diseño Terrasacha */}
-      <div className="bg-gradient-terrasacha-subtle rounded-3xl p-8 md:p-12 shadow-terrasacha-lg">
-        <div className="flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 text-left mb-10 md:mb-0 md:pr-12 relative z-10">
-            <h1 className="text-4xl md:text-5xl font-typographica font-bold text-terrasacha-secondary1 leading-tight">
-              Gestiona tus <span className="text-terrasacha-primary">predios</span> para
-              un futuro sostenible
+    <section className="mx-auto">
+      <div className="mb-6">
+        <div className="bg-white rounded-lg shadow-lg border border-gray-100 p-6">
+          <div className="flex items-baseline gap-2">
+            <h1 className="text-2xl font-typographica font-bold text-left flex-shrink-0 text-terrasacha-primary">
+              Mis predios
             </h1>
-            <p className="mt-4 text-terrasacha-secondary1 text-lg font-typographica">
-              Convierte tu predio en un activo ambiental, accede a beneficios y
-              contribuye a la sostenibilidad gestionando toda la información y
-              el estado de tus predios desde un solo lugar.
-            </p>
-            <button
-              onClick={() => setShowModal(true)}
-              className="mt-8 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-bold py-3 px-6 rounded-lg shadow-terrasacha transition-all duration-300 transform hover:scale-105"
-            >
-              Registrar predio
-            </button>
           </div>
-          {/* Decoracion - Usando colores Terrasacha */}
-          <div className="md:w-1/2 relative flex justify-center items-center">
-            <div className="relative w-[350px] h-[350px] md:w-[500px] md:h-[500px]">
-              <div className="absolute -bottom-12 -right-16 w-60 h-60 pointer-events-none z-0">
-                <svg
-                  className="w-full h-full text-terrasacha-light opacity-60"
-                  fill="currentColor"
-                  viewBox="0 0 200 200"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M47.7,-59.8C62.2,-51,74.7,-36.5,78.3,-19.9C81.9,-3.3,76.6,15.4,67.7,30.3C58.8,45.2,46.4,56.3,31.7,64.9C17,73.5,-0.1,79.5,-16,77.2C-31.9,74.9,-46.7,64.2,-58.5,51.3C-70.3,38.4,-79.1,23.3,-81.4,7.1C-83.7,-9.1,-79.5,-26.3,-69.5,-40.7C-59.5,-55.1,-43.7,-66.8,-28.1,-71.4C-12.5,-76,-0.6,-73.4,11.8,-69C24.1,-64.6,33.1,-68.5,47.7,-59.8Z"
-                    fill="currentColor"
-                    transform="translate(100 100) scale(1.2)"
-                  ></path>
-                </svg>
-              </div>
-              <div className="absolute top-0 -left-40 w-52 h-52 pointer-events-none z-0">
-                <svg
-                  className="w-full h-full text-terrasacha-earth opacity-70"
-                  fill="currentColor"
-                  viewBox="0 0 200 200"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M52.1,-63.3C66.8,-53.2,77.5,-36.8,79.8,-19.4C82.1,-2,76,16.4,66.1,32.1C56.2,47.8,42.5,60.8,26.5,68.8C10.5,76.8,-7.7,79.8,-25.5,75.4C-43.2,71,-60.5,59.2,-69.7,43.9C-78.9,28.6,-80.1,9.8,-75.9,-6.2C-71.7,-22.2,-62.1,-35.5,-50.3,-46.9C-38.5,-58.3,-24.5,-67.7,-8.7,-70.7C7,-73.7,27.5,-70.5,52.1,-63.3Z"
-                    fill="currentColor"
-                    transform="translate(100 100) scale(1.1)"
-                  ></path>
-                </svg>
-              </div>
-              <div className="absolute top-0 right-20 w-32 h-32 pointer-events-none z-0">
-                <svg
-                  className="w-full h-full text-terrasacha-secondary2 opacity-50"
-                  fill="currentColor"
-                  viewBox="0 0 200 200"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M47.7,-59.8C62.2,-51,74.7,-36.5,78.3,-19.9C81.9,-3.3,76.6,15.4,67.7,30.3C58.8,45.2,46.4,56.3,31.7,64.9C17,73.5,-0.1,79.5,-16,77.2C-31.9,74.9,-46.7,64.2,-58.5,51.3C-70.3,38.4,-79.1,23.3,-81.4,7.1C-83.7,-9.1,-79.5,-26.3,-69.5,-40.7C-59.5,-55.1,-43.7,-66.8,-28.1,-71.4C-12.5,-76,-0.6,-73.4,11.8,-69C24.1,-64.6,33.1,-68.5,47.7,-59.8Z"
-                    fill="currentColor"
-                    transform="translate(100 100) scale(1.1)"
-                  ></path>
-                </svg>
-              </div>
-              <div
-                className="absolute inset-0 bg-cover bg-center rounded-xl shadow-terrasacha-xl"
-                style={{
-                  backgroundImage: "url('/hexagon_no_white_bg.png')",
-                  clipPath:
-                    "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-                }}
-              ></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-terrasacha-secondary1 px-6 py-3 rounded-full shadow-terrasacha-lg flex items-center z-10">
-                <span className="font-semibold mr-2 text-lg">CO₂</span>
-                <FaCheckCircle className="text-terrasacha-secondary2 text-3xl" />
-              </div>
-            </div>
-          </div>
+          <p className="text-sm text-terrasacha-secondary1 mt-1 font-typographica">
+            Aquí puedes ver, filtrar y gestionar todos los predios que has
+            registrado en la plataforma.
+          </p>
         </div>
-      </div>
-      {/* Separador decorativo */}
-      <hr className="my-10 border-t-2 border-dashed border-terrasacha-light w-full max-w-4xl mx-auto" />
-      <div className="mb-4">
-        <div className="flex items-baseline gap-2">
-         <h1 className="text-2xl font-typographica font-bold text-left flex-shrink-0 text-terrasacha-primary">
-  Mis predios
-</h1>
-
-        </div>
-        <p className="text-sm text-terrasacha-secondary1 mt-1 font-typographica">
-          Aquí puedes ver, filtrar y gestionar todos los predios que has
-          registrado en la plataforma.
-        </p>
       </div>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 mb-2">
         <div className="flex flex-col gap-2 md:flex-row md:gap-2 md:justify-start w-full">
@@ -226,7 +145,7 @@ export default function ProductsList() {
               className={`flex items-center px-3 py-1 rounded-lg border text-xs font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary ${
                 filterStatus === option.key
                   ? "bg-terrasacha-primary text-white border-terrasacha-primary shadow-terrasacha"
-                  : "bg-white text-terrasacha-secondary1 border-terrasacha-light hover:bg-terrasacha-earth hover:border-terrasacha-primary"
+                  : "bg-white text-terrasacha-secondary1 border-terrasacha-light hover:bg-gray-50 hover:border-terrasacha-primary"
               }`}
               aria-label={`Filtrar por estado: ${option.label}`}
               onClick={() => setFilterStatus(option.key)}
@@ -237,9 +156,9 @@ export default function ProductsList() {
           ))}
         </div>
       </div>
-      <div className="bg-white rounded-t-lg rounded-b-lg shadow-terrasacha-xl border border-terrasacha-light flex flex-col">
+      <div className="bg-white rounded-t-lg rounded-b-lg shadow-lg border border-terrasacha-light flex flex-col">
         {/* Buscador y paginación */}
-        <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-terrasacha-earth border-b border-terrasacha-light">
+        <div className="flex flex-col rounded-t-lg gap-2 md:flex-row md:items-center md:justify-between px-3 py-2 bg-white border-b border-terrasacha-light">
           <div className="flex items-center gap-2 w-full md:w-auto">
             <label
               htmlFor="searchInput"
@@ -275,7 +194,7 @@ export default function ProductsList() {
             </div>
             <div className="flex items-center gap-2 w-full md:w-auto md:order-2 justify-between md:justify-end">
               <button
-                className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1 font-typographica"
+                className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-medium disabled:opacity-50 hover:bg-gray-50 transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1 font-typographica"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
@@ -285,7 +204,7 @@ export default function ProductsList() {
                 Página {currentPage} de {totalPages}
               </span>
               <button
-                className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-medium disabled:opacity-50 hover:bg-terrasacha-earth transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1 font-typographica"
+                className="px-3 py-1 rounded-lg border border-terrasacha-light text-sm font-medium disabled:opacity-50 hover:bg-gray-50 transition-all duration-200 disabled:hover:bg-transparent text-terrasacha-secondary1 font-typographica"
                 onClick={() =>
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
@@ -298,7 +217,7 @@ export default function ProductsList() {
         </div>
         {/* Tabla de predios */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-terrasacha-earth to-terrasacha-light shadow-terrasacha-lg border border-terrasacha-light">
+          <div className="flex flex-col items-center justify-center py-16 bg-white shadow-lg border border-terrasacha-light">
             <svg
               className="animate-spin h-16 w-16 text-terrasacha-primary mb-6"
               xmlns="http://www.w3.org/2000/svg"
@@ -340,7 +259,7 @@ export default function ProductsList() {
           <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-terrasacha-light scrollbar-track-terrasacha-earth">
             <table className="min-w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-terrasacha-earth to-terrasacha-light border-b border-terrasacha-light">
+                <tr className="bg-white border-b border-terrasacha-light">
                   <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica"></th>
                   <th className="text-left px-2 py-1 font-semibold text-xs text-terrasacha-secondary1 font-typographica">
                     Predio
@@ -366,13 +285,13 @@ export default function ProductsList() {
                 {paginatedProperties.map((property, idx) => (
                   <tr
                     key={property.id}
-                    className={`text-xs transition-all duration-200 uppercase border-b border-terrasacha-light hover:bg-terrasacha-earth ${
-                      idx % 2 === 0 ? "bg-white" : "bg-terrasacha-earth"
+                    className={`text-xs transition-all duration-200 uppercase border-b border-terrasacha-light hover:bg-gray-50 ${
+                      idx % 2 === 0 ? "bg-white" : "bg-gray-50"
                     }`}
                   >
                     <td className="px-3 py-2">
                       <button
-                        onClick={() => window.location.href = `/property/${property.id}`}
+                        onClick={() => navigate(`/property/${property.id}`)}
                         className="border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-secondary1 hover:shadow-terrasacha active:bg-terrasacha-secondary1 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
                         aria-label="Ver detalles del predio"
                         data-tooltip-id={`tooltip-details-${property.id}`}
@@ -386,71 +305,93 @@ export default function ProductsList() {
                         effect="solid"
                       />
                     </td>
-                    <td className="px-2 py-1 min-w-36 text-terrasacha-secondary1 font-typographica">{property.name}</td>
+                    <td className="px-2 py-1 min-w-36 text-terrasacha-secondary1 font-typographica">
+                      {property.name}
+                    </td>
                     <td className="px-2 py-1 max-w-xs truncate text-terrasacha-secondary1 font-typographica">
                       {property.description || "Sin descripción"}
                     </td>
                     <td className="px-2 py-1 min-w-36">
-                      {property.campaign?.name ? (() => {
-                        let campaignImage = null;
-                        try {
-                          const imagesArr = property.campaign.images ? JSON.parse(property.campaign.images) : [];
-                          if (Array.isArray(imagesArr) && imagesArr.length > 0) {
-                            campaignImage = imagesArr[0];
-                          }
-                        } catch (e) {}
-                        return (
-                          <>
-                            <span
-                              className="inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase bg-terrasacha-light text-terrasacha-secondary1 border border-terrasacha-light cursor-pointer hover:bg-terrasacha-secondary2 hover:text-white transition"
-                              data-tooltip-id={`tooltip-campaign-${property.id}`}
-                              aria-label={`Información de la campaña: ${property.campaign.name}`}
-                              as="a"
-                            >
-                              <a
-                                href={`/campaign/${property.campaign.id}`}
-                                tabIndex={0}
-                                className="outline-none focus:ring-2 focus:ring-terrasacha-primary rounded"
-                                onClick={e => e.stopPropagation()}
-                                onKeyDown={e => {
-                                  if (e.key === 'Enter' || e.key === ' ') {
-                                    window.location.href = `/campaign/${property.campaign.id}`;
-                                  }
-                                }}
+                      {property.campaign?.name ? (
+                        (() => {
+                          let campaignImage = null;
+                          try {
+                            const imagesArr = property.campaign.images
+                              ? JSON.parse(property.campaign.images)
+                              : [];
+                            if (
+                              Array.isArray(imagesArr) &&
+                              imagesArr.length > 0
+                            ) {
+                              campaignImage = imagesArr[0];
+                            }
+                          } catch (e) {}
+                          return (
+                            <>
+                              <span
+                                className="inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase bg-terrasacha-light text-terrasacha-secondary1 border border-terrasacha-light cursor-pointer hover:bg-terrasacha-secondary2 hover:text-white transition"
+                                data-tooltip-id={`tooltip-campaign-${property.id}`}
+                                aria-label={`Información de la campaña: ${property.campaign.name}`}
+                                as="a"
                               >
-                                {property.campaign.name}
-                              </a>
-                            </span>
-                            <ReactTooltip
-                              id={`tooltip-campaign-${property.id}`}
-                              place="top"
-                              effect="solid"
-                              className="max-w-xs whitespace-pre-line"
-                              clickable
-                              render={() => (
-                                <div className="flex flex-col items-center p-2 max-w-xs">
-                                  {campaignImage && (
-                                    <img
-                                      src={campaignImage}
-                                      alt="Imagen campaña"
-                                      className="w-32 h-20 object-cover rounded mb-2 border border-terrasacha-light shadow-terrasacha"
-                                    />
-                                  )}
-                                  <div className="text-xs text-left">
-                                    <div className="font-bold mb-1">{property.campaign.name}</div>
-                                    {property.campaign.description && (
-                                      <div className="mb-1">{property.campaign.description}</div>
+                                <a
+                                  href={`/campaign/${property.campaign.id}`}
+                                  tabIndex={0}
+                                  className="outline-none focus:ring-2 focus:ring-terrasacha-primary rounded"
+                                  onClick={(e) => e.stopPropagation()}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      navigate(`/campaign/${property.campaign.id}`);
+                                    }
+                                  }}
+                                >
+                                  {property.campaign.name}
+                                </a>
+                              </span>
+                              <ReactTooltip
+                                id={`tooltip-campaign-${property.id}`}
+                                place="top"
+                                effect="solid"
+                                className="max-w-xs whitespace-pre-line"
+                                clickable
+                                render={() => (
+                                  <div className="flex flex-col items-center p-2 max-w-xs">
+                                    {campaignImage && (
+                                      <img
+                                        src={campaignImage}
+                                        alt="Imagen campaña"
+                                        className="w-32 h-20 object-cover rounded mb-2 border border-terrasacha-light shadow-terrasacha"
+                                      />
                                     )}
-                                    <div className="text-terrasacha-secondary1">
-                                      Fecha: {property.campaign.endDate ? new Date(property.campaign.endDate*1000).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" }) : "-"}
+                                    <div className="text-xs text-left">
+                                      <div className="font-bold mb-1">
+                                        {property.campaign.name}
+                                      </div>
+                                      {property.campaign.description && (
+                                        <div className="mb-1">
+                                          {property.campaign.description}
+                                        </div>
+                                      )}
+                                      <div className="text-terrasacha-secondary1">
+                                        Fecha:{" "}
+                                        {property.campaign.endDate
+                                          ? new Date(
+                                              property.campaign.endDate * 1000
+                                            ).toLocaleDateString("es-ES", {
+                                              year: "numeric",
+                                              month: "2-digit",
+                                              day: "2-digit",
+                                            })
+                                          : "-"}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              )}
-                            />
-                          </>
-                        );
-                      })() : (
+                                )}
+                              />
+                            </>
+                          );
+                        })()
+                      ) : (
                         <span className="inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase bg-gray-200 text-gray-700 border border-gray-400">
                           SIN ASIGNAR
                         </span>
@@ -468,7 +409,9 @@ export default function ProductsList() {
                           )
                         : "-"}
                     </td>
-                    <td className="px-2 py-1 text-terrasacha-secondary1 font-typographica">{property.department || "-"}</td>
+                    <td className="px-2 py-1 text-terrasacha-secondary1 font-typographica">
+                      {property.department || "-"}
+                    </td>
                     <td className="px-2 py-1 min-w-36">
                       <span
                         className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${
@@ -498,14 +441,6 @@ export default function ProductsList() {
           </div>
         )}
       </div>
-      {/* 📌 Modal para crear predios sin campaña */}
-      <ModalNewProperty
-        showModal={showModal}
-        handleClose={() => setShowModal(false)}
-        campaignId={null} // No pasamos campaña
-        productId={null} // No pasamos producto
-        fetchCampaign={() => {}}
-      />
     </section>
   );
 }

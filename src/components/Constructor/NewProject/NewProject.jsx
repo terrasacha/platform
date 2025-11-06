@@ -1,5 +1,5 @@
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useXLSXForm from "hooks/useXLSXForm";
 import { API, Storage, graphqlOperation } from "aws-amplify";
 import {
@@ -15,6 +15,7 @@ import DynamicForm from "components/DynamicForm/DynamicForm";
 import { makeFolderOnS3 } from "utilities/makeFolderOnS3";
 
 export default function NewProject() {
+  const navigate = useNavigate();
   const formURL = `${process.env.REACT_APP_URL_BUCKET}/public/XLSForms/FORMULARIO+POSTULACION+PREDIOS+-+SIMPLIFICADO.xlsx`;
   const { user } = useAuth();
   const [formData, setFormData] = useState({});
@@ -440,7 +441,7 @@ export default function NewProject() {
 
     await createProductFeatures(productID);
 
-    return (window.location.href = `/project/${productID}`);
+    return navigate(`/project/${productID}`);
   };
 
   return (
@@ -449,9 +450,6 @@ export default function NewProject() {
         className="container-sm "
         style={{ paddingTop: 60, minHeight: "100vh" }}
       >
-        <div className="mb-5">
-          <NewHeaderNavbar></NewHeaderNavbar>
-        </div>
         <section className="mb-5">
           <h2>Creación de un nuevo proyecto</h2>
           <p>

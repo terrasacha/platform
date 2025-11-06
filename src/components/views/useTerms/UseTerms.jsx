@@ -7,7 +7,6 @@ export default function UseTerms() {
 
   return (
     <>
-    <HeaderNavbar></HeaderNavbar>
     <div className={s.container}>
         <div className={s.steps}>
             <ul>

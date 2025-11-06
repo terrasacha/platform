@@ -62,6 +62,7 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
 
   // Estados para controlar la expansión de secciones
   const [expandedSections, setExpandedSections] = useState({
+    requirements: true,
     owners: true,
     documentation: true,
     study: true,
@@ -70,6 +71,66 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
   // Estados para almacenar la información procesada
   const [ownersInfo, setOwnersInfo] = useState([]);
   const [documentsInfo, setDocumentsInfo] = useState({});
+
+  // Requisitos de información predial: detección por featureID y valor no vacío
+  const featureIdMap = {
+    usoActualPotencial: ['D_USO_ACTUAL_POTENCIAL', 'ACTUAL_USE_POTENTIAL', 'D_actual_use'],
+    limitacionesUsoSuelo: ['D_LIMITACIONES_USO_SUELO', 'USE_RESTRICTIONS', 'E_restriccion_desc', 'E_resctriccion_other'],
+    aspectosEcosistema: ['D_ASPECTOS_ECOSISTEMA', 'ECOSYSTEM', 'D_aspects_ecosystem', 'F_nacimiento_agua'],
+    aspectosPredio: ['D_ASPECTOS_PREDIO', 'GENERAL_ASPECTS', 'D_aspects_property', 'G_habita_predio'],
+    relacionesEntidades: ['D_RELACIONES_ENTIDADES', 'RELATIONS', 'D_relations_entities', 'H_aliados_estrategicos_desc', 'H_grupo_comunitario_desc', 'H_asistance_desc'],
+  };
+
+  const isNonEmptyValue = (value) => {
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'string') {
+      const v = value.trim();
+      if (v.length === 0) return false;
+      try {
+        const parsed = JSON.parse(v);
+        if (parsed && typeof parsed === 'object') {
+          if (Array.isArray(parsed)) return parsed.length > 0;
+          return Object.keys(parsed).length > 0;
+        }
+      } catch (_) {
+        // not JSON, consider non-empty string as valid
+      }
+      return true;
+    }
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) return value.length > 0;
+      return Object.keys(value).length > 0;
+    }
+    return true;
+  };
+
+  const featureCompleted = (ids) => {
+    const pfs = propertyData?.propertyFeatures || [];
+    for (const pf of pfs) {
+      if (ids.includes(pf?.featureID) && isNonEmptyValue(pf?.value)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const buildRequirements = () => {
+    return [
+      { key: 'usoActualPotencial', label: 'Uso actual y potencial', completed: featureCompleted(featureIdMap.usoActualPotencial) },
+      { key: 'limitacionesUsoSuelo', label: 'Limitaciones de uso de suelo', completed: featureCompleted(featureIdMap.limitacionesUsoSuelo) },
+      { key: 'aspectosEcosistema', label: 'Aspectos generales del ecosistema', completed: featureCompleted(featureIdMap.aspectosEcosistema) },
+      { key: 'aspectosPredio', label: 'Aspectos generales del predio', completed: featureCompleted(featureIdMap.aspectosPredio) },
+      { key: 'relacionesEntidades', label: 'Relaciones con entidades y aliados estratégicos', completed: featureCompleted(featureIdMap.relacionesEntidades) },
+    ];
+  };
+
+  const requirements = buildRequirements();
+
+  const calculateRequirementsProgress = () => {
+    const total = requirements.length || 1;
+    const done = requirements.filter(r => r.completed).length;
+    return Math.round((done / total) * 100);
+  };
 
   // Calcular porcentajes de completitud
   const calculateOwnersProgress = () => {
@@ -185,6 +246,73 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+      {/* Requisitos de Información Predial */}
+      <div className="bg-[#b1c181] p-4 rounded-xl border border-[#849b50] shadow-lg self-start flex flex-col">
+        {/* Header con progreso */}
+        <div className={`${expandedSections.requirements ? "mb-4" : "mb-0"} flex-1 flex flex-col justify-center`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
+              <div className="w-12 h-12 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                <FaInfoCircle className="text-white text-lg" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base font-bold text-terrasacha-primary font-typographica mb-1">
+                  Requisitos de Información Predial
+                </h3>
+                <div className="flex items-center space-x-2">
+                  <div className="w-20 bg-gray-200 rounded-full h-1.5 flex-1">
+                    <div
+                      className="bg-[#6e6c35] h-1.5 rounded-full transition-all duration-500"
+                      style={{ width: `${calculateRequirementsProgress()}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-xs font-semibold text-terrasacha-secondary1 font-typographica whitespace-nowrap">
+                    {calculateRequirementsProgress()}%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => toggleSection('requirements')}
+              className="text-[#6e6c35] hover:bg-[#6e6c35]/10 p-2 rounded-lg transition-colors flex-shrink-0"
+              aria-label="Expandir/Colapsar sección"
+            >
+              {expandedSections.requirements ? (
+                <FaChevronUp className="w-4 h-4" />
+              ) : (
+                <FaChevronDown className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {expandedSections.requirements && (
+          <div className="space-y-2">
+            {requirements.map((req) => (
+              <div key={req.key} className="flex items-center justify-between p-2 bg-white rounded border border-[#b1c181] hover:shadow-sm transition-shadow">
+                <div className="flex items-center space-x-2 flex-1 min-w-0">
+                  <div className={`w-6 h-6 ${req.completed ? 'bg-[#849b50]' : 'bg-yellow-200'} rounded flex items-center justify-center flex-shrink-0`}>
+                    {req.completed ? (
+                      <FaCheckCircle className="text-white text-xs" />
+                    ) : (
+                      <FaExclamationTriangle className="text-yellow-700 text-xs" />
+                    )}
+                  </div>
+                  <p className="text-xs font-semibold text-terrasacha-primary font-typographica mb-0 truncate">
+                    {req.label}
+                  </p>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-semibold font-typographica border ml-2 flex-shrink-0 ${req.completed ? 'bg-green-100 text-green-800 border-green-200' : 'bg-yellow-100 text-yellow-800 border-yellow-200'}`}
+                >
+                  {req.completed ? 'Completo' : 'Pendiente'}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Validación de Propietarios */}
       <div className="bg-[#b1c181] p-4 rounded-xl border border-[#849b50] shadow-lg self-start flex flex-col">
         {/* Header con progreso */}

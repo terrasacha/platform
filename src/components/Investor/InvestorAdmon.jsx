@@ -26,7 +26,7 @@ import ProductsBuyed from "./ProductsBuyed/ProductsBuyed";
 import InfoInvestor from "./infoInvestor/InfoInvestor";
 import { queryUserStatus } from "./querys.js";
 import ValidationError from "../validationError/ValidationError";
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
+import { navigate } from "../../utilities/navigate";
 
 class InvestorAdmon extends Component {
   constructor(props) {
@@ -242,10 +242,7 @@ class InvestorAdmon extends Component {
         },
         isRenderCompleteOrUpdateProfile: false,
       });
-      window.location.href = "/";
-      // TODO: Check the option with router
-      // const history = new useHistory()
-      // history.push('/investor_admon')
+      navigate("/");
     } catch (error) {
       console.log("error signing out: ", error);
     }
@@ -443,11 +440,6 @@ class InvestorAdmon extends Component {
     if (this.state.checkUserStatus === null) {
       return (
         <Container fluid style={{ paddingTop: 50, minHeight: "100vh" }}>
-          <Row>
-            <Col>
-              <NewHeaderNavbar />
-            </Col>
-          </Row>
           <div style={{ marginTop: "1%" }}>Cargando...</div>
         </Container>
       );
@@ -455,12 +447,6 @@ class InvestorAdmon extends Component {
     if (this.state.checkUserStatus) {
       return (
         <Container fluid style={{ paddingTop: 50, minHeight: "100vh" }}>
-          <Row>
-            <Col>
-              <NewHeaderNavbar />
-            </Col>
-          </Row>
-
           <Row>
             {/*                     {renderCompleteProfile()}
                         {renderOrders()}
@@ -473,12 +459,6 @@ class InvestorAdmon extends Component {
     } else {
       return (
         <Container fluid style={{ paddingTop: 50, minHeight: "100vh" }}>
-          <Row>
-            <Col>
-              <NewHeaderNavbar />
-            </Col>
-          </Row>
-
           <Row>
             <ValidationError />
           </Row>

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import Card from "components/common/Card";
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { createCampaign, updateCampaign } from "graphql/customMutations";
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import { Auth } from "aws-amplify";
@@ -364,8 +363,6 @@ export default function NewCampaign() {
         <div className="absolute -bottom-20 -left-20 w-48 h-48 md:-bottom-40 md:-left-40 md:w-96 md:h-96 bg-gradient-to-tr from-terrasacha-earth/10 to-terrasacha-secondary2/5 rounded-full blur-3xl animate-pulse-terrasacha" style={{animationDelay: '2s'}}></div>
         <div className="absolute top-1/2 left-1/4 w-16 h-16 md:w-32 md:h-32 bg-gradient-to-r from-terrasacha-light/20 to-transparent rounded-full blur-2xl animate-pulse-terrasacha" style={{animationDelay: '1s'}}></div>
       </div>
-
-      <NewHeaderNavbar />
       
       <div className="flex justify-center px-4 sm:px-6 md:px-8 lg:px-0 relative z-10">
         <div className="w-full max-w-5xl mt-4 sm:mt-6 md:mt-8 mb-8">
@@ -651,7 +648,7 @@ export default function NewCampaign() {
           <div className="mt-8 sm:mt-10 md:mt-12 text-center animate-fade-in" style={{animationDelay: '0.5s'}}>
             <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/60 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/30 shadow-terrasacha">
               <FaCheckCircle className="text-terrasacha-secondary2 text-base sm:text-lg" />
-              <p className="text-xs sm:text-sm font-typographica text-terrasacha-secondary1">
+              <p className="text-xs sm:text-sm font-typographica text-terrasacha-secondary1 mb-0">
                 Al crear una campaña, aceptas nuestros términos y condiciones
               </p>
             </div>

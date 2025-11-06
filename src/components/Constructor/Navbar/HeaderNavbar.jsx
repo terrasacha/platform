@@ -9,6 +9,7 @@ import s from "./HeaderNavbar.module.css";
 
 // Import images
 import LOGO from "../../common/_images/suan_logo.png";
+import { navigate } from "../../../utilities/navigate";
 
 export default class HeaderNavbar extends Component {
   constructor(props) {
@@ -77,13 +78,13 @@ export default class HeaderNavbar extends Component {
                   </Nav.Link>
                   {/* <Nav.Link href="#documents" onClick={(e) => this.props.changeHeaderNavBarRequest('investor_documents')}>Documentos</Nav.Link> */}
                   {/* <Nav.Link href="#products" onClick={(e) => this.props.changeHeaderNavBarRequest('products_buyed')}>Products</Nav.Link> */}
-                  {/* <Nav.Link
-                    onClick={() => (window.location.href = "/new_project")}
+                  {/*                   <Nav.Link
+                    onClick={() => navigate("/new_project")}
                   >
                     Nuevo Proyecto
                   </Nav.Link> */}
                   <Nav.Link
-                    onClick={() => (window.location.href = "/creating_wallet")}
+                    onClick={() => navigate("/creating_wallet")}
                   >
                     ¿Cómo crear tu billetera?
                   </Nav.Link>
@@ -99,7 +100,7 @@ export default class HeaderNavbar extends Component {
                   ) : (
                     <button
                       className={s.signing}
-                      onClick={() => (window.location.href = "/login")}
+                      onClick={() => navigate("/login")}
                     >
                       Conectar
                     </button>

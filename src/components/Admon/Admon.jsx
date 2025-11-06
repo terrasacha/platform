@@ -27,6 +27,7 @@ import Analysts from "./Analitic/Analysts";
 import AssignAnalyst from "./assignAnali/AssignAnalyst";
 import Legales from "./Legal/Legales";
 import AssignLegal from "./assign_Legales/Assign_Legales";
+import { navigate } from "../../utilities/navigate";
 
 export default class Admon extends Component {
   constructor(props) {
@@ -96,8 +97,7 @@ export default class Admon extends Component {
       await Auth.signOut();
       localStorage.removeItem("role");
       this.setState({ actualUser: null, isActualUserLogged: false });
-      /* this.props.history.push("/") */
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       console.log("error signing out: ", error);
     }
@@ -693,8 +693,8 @@ export default class Admon extends Component {
         </div>
 
         {/* Main Content Area */}
-        <main className="pt-24 px-4 sm:px-6 lg:px-8 max-w-9xl mx-auto mt-16">
-          <div className="bg-white rounded-xl shadow-terrasacha-lg border border-terrasacha-light/20 overflow-hidden animate-fade-in">
+        <main className="pt-8 px-4 pb-4 sm:pt-6 sm:px-6 sm:pb-6 lg:pt-8 lg:px-8 lg:pb-8 max-w-9xl mx-auto">
+          <div className="bg-white rounded-xl shadow-lg border border-terrasacha-light/20 overflow-hidden animate-fade-in">
             {/* Content Header */}
             <div className="bg-terrasacha-primary px-6 py-4">
               <h1 className="text-2xl font-bold text-white font-champagne tracking-wide">

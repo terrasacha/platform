@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { useNavigate, useParams } from "react-router";
 import Card from "components/common/Card";
 import { API, Auth, graphqlOperation } from "aws-amplify";
@@ -235,10 +234,6 @@ export default function Campaign() {
         }
       `}</style>
       
-      {/* Navbar sin margen inferior para eliminar el espaciado blanco */}
-      <div className="mb-0">
-        <NewHeaderNavbar />
-      </div>
 
              {/* Hero Section - Responsive */}
        <section className="relative h-[40vh] sm:h-[50vh] md:h-[60vh] min-h-[300px] sm:min-h-[350px] md:min-h-[400px] max-h-[500px] sm:max-h-[550px] md:max-h-[600px] w-full flex items-center justify-center text-white text-center overflow-hidden">

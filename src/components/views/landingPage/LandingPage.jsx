@@ -12,6 +12,7 @@ import blockchain from "../_images/cadena-de-bloques.png";
 import plataforma from "../_images/diseno-de-respuesta.png";
 import DropDownProjects from "components/common/DropDownProjects";
 import NewHeaderNavbar from "components/common/NewHeaderNavbar";
+import { navigate } from "../../../utilities/navigate";
 
 export default class LandingPage extends Component {
   constructor(props) {
@@ -41,7 +42,7 @@ export default class LandingPage extends Component {
   }
 
   handleShow() {
-    if (this.state.userLogged && this.state.userLogged.role === 'constructor') return window.location.href = '/new_campaign'
+    if (this.state.userLogged && this.state.userLogged.role === 'constructor') return navigate('/new_campaign');
     this.setState({ show: true });
   }
 
@@ -152,8 +153,8 @@ export default class LandingPage extends Component {
   }
   async logOut() {
     await Auth.signOut();
-    window.location.href = "/";
     localStorage.removeItem("role");
+    navigate("/");
   }
 
   render() {

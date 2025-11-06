@@ -3,7 +3,7 @@ import { FaTimes } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const termsContent = `
+export const termsContent = `
 El equipo de Terrasacha como responsable del tratamiento de datos personales te da la bienvenida a su sitio web (en adelante, La Plataforma) para que puedas hacer uso de nuestros productos y servicios.
 
 ## DERECHOS DEL TITULAR
@@ -70,7 +70,7 @@ El tratamiento que realizará Terrasacha con la información y datos personales 
 
 TERRASACHA`;
 
-const privacyContent = `
+export const privacyContent = `
 ## COLECCIÓN DE INFORMACIÓN
 
 Terrasacha recopila principalmente la siguiente información personal:
