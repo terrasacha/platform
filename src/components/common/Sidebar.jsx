@@ -484,6 +484,11 @@ const Sidebar = ({ children, onUserSettingsClick }) => {
     return items;
   };
 
+  // Si el usuario no está autenticado, renderizar solo el contenido sin sidebar
+  if (!authUser) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       {/* Mobile Header - Fixed */}

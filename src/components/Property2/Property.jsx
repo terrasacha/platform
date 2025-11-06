@@ -431,7 +431,7 @@ export default function Property2() {
                     <p className="text-xs font-semibold text-terrasacha-primary font-typographica">
                       {property.campaign.initialDate
                         ? new Date(
-                            property.campaign.initialDate
+                            property.campaign.initialDate * 1000
                           ).toLocaleDateString("es-ES", { day: '2-digit', month: 'short' })
                         : "N/A"}
                     </p>
@@ -443,7 +443,7 @@ export default function Property2() {
                     <p className="text-xs font-semibold text-terrasacha-primary font-typographica">
                       {property.campaign.endDate
                         ? new Date(
-                            property.campaign.endDate
+                            property.campaign.endDate * 1000
                           ).toLocaleDateString("es-ES", { day: '2-digit', month: 'short' })
                         : "N/A"}
                     </p>
