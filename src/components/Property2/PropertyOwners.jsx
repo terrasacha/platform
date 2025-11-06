@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "context/AuthContext";
 import { usePropertyData } from "context/PropertyDataContext";
 import { API, graphqlOperation } from "aws-amplify";
-import { createDocument, deleteDocument, createPropertyFeature, updateDocument } from "graphql/mutations";
-import { listPropertyFeatures } from "graphql/queries";
+import { createDocument, deleteDocument, createPropertyFeature, updateDocument, createVerification } from "graphql/mutations";
+import { listPropertyFeatures, listVerifications } from "graphql/queries";
 import { toast } from "react-toastify";
 import { useS3Client } from "context/s3ClientContext";
 import Swal from "sweetalert2";
@@ -299,6 +299,39 @@ export default function PropertyOwners({
     );
     if (fromContext?.id) {
       globalFilesFeatureRef.current = fromContext;
+      
+      // Verificar si existe un verification asociado
+      try {
+        const verificationResp = await API.graphql(
+          graphqlOperation(listVerifications, {
+            filter: {
+              propertyFeatureID: { eq: fromContext.id },
+            },
+          })
+        );
+        
+        const existingVerification = verificationResp?.data?.listVerifications?.items?.[0];
+        
+        if (!existingVerification) {
+          // Crear verification si no existe
+          const userId = propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+          if (userId) {
+            const verificationInput = {
+              propertyFeatureID: fromContext.id,
+              userVerifiedID: userId,
+            };
+            
+            await API.graphql(
+              graphqlOperation(createVerification, { input: verificationInput })
+            );
+            console.log("✅ Verification creado para GLOBAL_PROPERTY_FILES desde contexto");
+          }
+        }
+      } catch (verificationErr) {
+        console.error("Error verificando/creando verification:", verificationErr);
+        // No fallar si hay error con verification
+      }
+      
       return fromContext;
     }
 
@@ -327,6 +360,39 @@ export default function PropertyOwners({
       const found = resp?.data?.listPropertyFeatures?.items?.[0] || null;
       if (found?.id) {
         globalFilesFeatureRef.current = found;
+        
+        // Verificar si existe un verification asociado
+        try {
+          const verificationResp = await API.graphql(
+            graphqlOperation(listVerifications, {
+              filter: {
+                propertyFeatureID: { eq: found.id },
+              },
+            })
+          );
+          
+          const existingVerification = verificationResp?.data?.listVerifications?.items?.[0];
+          
+          if (!existingVerification) {
+            // Crear verification si no existe
+            const userId = propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+            if (userId) {
+              const verificationInput = {
+                propertyFeatureID: found.id,
+                userVerifiedID: userId,
+              };
+              
+              await API.graphql(
+                graphqlOperation(createVerification, { input: verificationInput })
+              );
+              console.log("✅ Verification creado para GLOBAL_PROPERTY_FILES existente");
+            }
+          }
+        } catch (verificationErr) {
+          console.error("Error verificando/creando verification:", verificationErr);
+          // No fallar si hay error con verification
+        }
+        
         return found;
       }
     } catch (err) {
@@ -349,7 +415,46 @@ export default function PropertyOwners({
         graphqlOperation(createPropertyFeature, { input })
       );
       const created = resp?.data?.createPropertyFeature || null;
-      if (created?.id) globalFilesFeatureRef.current = created;
+      if (created?.id) {
+        globalFilesFeatureRef.current = created;
+        
+        // Crear Verification asociado al Property Feature
+        try {
+          const userId = propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+          if (userId) {
+            // Verificar si ya existe un verification para este feature
+            const verificationResp = await API.graphql(
+              graphqlOperation(listVerifications, {
+                filter: {
+                  propertyFeatureID: { eq: created.id },
+                },
+              })
+            );
+            
+            const existingVerification = verificationResp?.data?.listVerifications?.items?.[0];
+            
+            if (!existingVerification) {
+              // Crear verification solo si no existe
+              const verificationInput = {
+                propertyFeatureID: created.id,
+                userVerifiedID: userId,
+              };
+              
+              await API.graphql(
+                graphqlOperation(createVerification, { input: verificationInput })
+              );
+              console.log("✅ Verification creado para GLOBAL_PROPERTY_FILES");
+            } else {
+              console.log("ℹ️ Verification ya existe para este feature");
+            }
+          } else {
+            console.warn("⚠️ No se pudo crear verification: userId no disponible");
+          }
+        } catch (verificationErr) {
+          console.error("Error creando verification:", verificationErr);
+          // No fallar si la creación del verification falla
+        }
+      }
       return created;
     } catch (err) {
       console.error("Error creando GLOBAL_PROPERTY_FILES:", err);
