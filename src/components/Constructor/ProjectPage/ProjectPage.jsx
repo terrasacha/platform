@@ -16,7 +16,6 @@ import { useAuth } from "context/AuthContext";
 import { S3ClientProvider } from "context/s3ClientContext";
 import { fetchProjectDataByProjectID } from "./api";
 import { formatNumberWithThousandsSeparator } from "./utils";
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import ProjectFileManager from "./ProjectFileManager/ProjectFileManager";
 import FinanceCard from "./ProjectFiles/InfoCards/FinanceFilesCard";
 import { getProjectProgress } from "services/getProjectProgress";
@@ -256,9 +255,6 @@ export default function ProjectPage() {
       <div>
         {projectData ? (
           <div className="container-sm">
-            <div className="mb-5">
-              <NewHeaderNavbar></NewHeaderNavbar>
-            </div>
             <div className="my-2">-</div>
             <div>
               <div className="pt-3 px-4 mb-4 mt-4 border rounded shadow">

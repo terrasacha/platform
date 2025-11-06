@@ -23,7 +23,6 @@ import {
   FaInfoCircle,
   FaGavel,
 } from "react-icons/fa";
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { Row } from "react-bootstrap";
@@ -33,12 +32,12 @@ const documentTypeMapper = {
   CERTIFICADO_TRADICION: "Certificado de Tradición",
   ESCRITURA_PUBLICA: "Escritura Pública",
   PLANO_CATASTRAL: "Plano Catastral",
-  
+
   // Tipos que realmente están guardados en la base de datos
   CERTIFICADO: "Certificado de Tradición",
   ESCRITURAS: "Escritura Pública",
   PLANOS: "Plano Catastral",
-  
+
   // Tipos adicionales que podrían existir
   CERTIFICADO_TRADICION: "Certificado de Tradición",
   ESCRITURA: "Escritura Pública",
@@ -60,7 +59,8 @@ const DocumentationModal = ({
   fetchProperties,
   user,
 }) => {
-  const [showRejectionReasonModal, setShowRejectionReasonModal] = useState(false);
+  const [showRejectionReasonModal, setShowRejectionReasonModal] =
+    useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedDocumentId, setSelectedDocumentId] = useState(null);
   const [requiredDocuments, setRequiredDocuments] = useState([]);
@@ -69,32 +69,32 @@ const DocumentationModal = ({
 
   // Tipos de documentos requeridos (igual que en PropertyDocumentation.jsx)
   const requiredDocumentTypes = [
-    'CERTIFICADO_TRADICION',
-    'ESCRITURA_PUBLICA',
-    'PLANO_CATASTRAL',
+    "CERTIFICADO_TRADICION",
+    "ESCRITURA_PUBLICA",
+    "PLANO_CATASTRAL",
   ];
 
   // Tipos de documentos relacionados con propietarios que NO deben aparecer
   const notToShowDocuments = [
-    'OWNER_BUNDLE',
-    'USER_ID_FRONT',
-    'USER_ID_BACK',
-    'USER_SELFIE',
-    'OWNER_INFO',
-    'OWNER_RELATION',
-    'MEMORANDO_ENTENDIMIENTO',
+    "OWNER_BUNDLE",
+    "USER_ID_FRONT",
+    "USER_ID_BACK",
+    "USER_SELFIE",
+    "OWNER_INFO",
+    "OWNER_RELATION",
+    "MEMORANDO_ENTENDIMIENTO",
   ];
 
   // Mapeo de tipos de código a nombre legible
   const mapTypeCodeToName = (typeCode) => {
     const map = {
-      CERTIFICADO_TRADICION: 'Certificado de Libertad y Tradición',
-      ESCRITURA_PUBLICA: 'Escrituras Públicas',
-      PLANO_CATASTRAL: 'Planos Catastrales',
-      MEMORANDO_ENTENDIMIENTO: 'Memorando de Entendimiento',
-      OTRO: 'Documento adicional',
+      CERTIFICADO_TRADICION: "Certificado de Libertad y Tradición",
+      ESCRITURA_PUBLICA: "Escrituras Públicas",
+      PLANO_CATASTRAL: "Planos Catastrales",
+      MEMORANDO_ENTENDIMIENTO: "Memorando de Entendimiento",
+      OTRO: "Documento adicional",
     };
-    return map[typeCode] || 'Documento adicional';
+    return map[typeCode] || "Documento adicional";
   };
 
   // Cargar documentos y propietarios desde propertyFeatures
@@ -121,28 +121,29 @@ const DocumentationModal = ({
     allFeaturesDocs.forEach((document) => {
       let data = {};
       try {
-        data = JSON.parse(document.data || '{}');
+        data = JSON.parse(document.data || "{}");
       } catch {
         data = {};
       }
 
-      const typeCode = data.type || 'OTRO';
+      const typeCode = data.type || "OTRO";
 
       // Procesar propietarios (OWNER_BUNDLE)
-      if (typeCode === 'OWNER_BUNDLE') {
+      if (typeCode === "OWNER_BUNDLE") {
         const ownerInfo = {
           id: document.id,
           ownerId: data.ownerId || document.id,
-          name: data.name || 'Sin nombre',
-          email: data.email || '',
-          phone: data.phone || '',
-          role: data.role || 'PROPIETARIO',
-          status: document.status || 'pending_review',
+          name: data.name || "Sin nombre",
+          email: data.email || "",
+          phone: data.phone || "",
+          role: data.role || "PROPIETARIO",
+          status: document.status || "pending_review",
           isApproved: document.isApproved || false,
           files: data.files || [], // Array de archivos (idFront, idBack, selfie)
-          createdAt: document.createdAt || document.timeStamp
-            ? new Date(document.timeStamp * 1000).toISOString()
-            : new Date().toISOString(),
+          createdAt:
+            document.createdAt || document.timeStamp
+              ? new Date(document.timeStamp * 1000).toISOString()
+              : new Date().toISOString(),
         };
         ownersList.push(ownerInfo);
         return; // No agregar a documentos
@@ -164,11 +165,12 @@ const DocumentationModal = ({
         url: data.url || document.url,
         type: typeCode,
         typeName: mapTypeCodeToName(typeCode),
-        status: document.status || 'pending_review',
+        status: document.status || "pending_review",
         isApproved: document.isApproved || false,
-        createdAt: document.createdAt || document.timeStamp
-          ? new Date(document.timeStamp * 1000).toISOString()
-          : new Date().toISOString(),
+        createdAt:
+          document.createdAt || document.timeStamp
+            ? new Date(document.timeStamp * 1000).toISOString()
+            : new Date().toISOString(),
       };
 
       if (requiredDocumentTypes.includes(typeCode)) {
@@ -184,11 +186,11 @@ const DocumentationModal = ({
       if (!loadedDocumentsByType[typeCode]) {
         required.push({
           id: `not_uploaded_${typeCode}`, // ID temporal para documentos no cargados
-          name: '',
+          name: "",
           url: null,
           type: typeCode,
           typeName: mapTypeCodeToName(typeCode),
-          status: 'not_uploaded',
+          status: "not_uploaded",
           isApproved: false,
           createdAt: null,
         });
@@ -205,24 +207,26 @@ const DocumentationModal = ({
     try {
       const input = {
         id: documentId,
-        status: status === 'approved' ? 'approved' : 'rejected',
-        isApproved: status === 'approved',
+        status: status === "approved" ? "approved" : "rejected",
+        isApproved: status === "approved",
       };
 
-      await API.graphql(
-        graphqlOperation(updateDocument, { input })
-      );
+      await API.graphql(graphqlOperation(updateDocument, { input }));
 
       // Actualizar estado local para documentos
-      setRequiredDocuments(prev => 
-        prev.map(doc => 
-          doc.id === documentId 
+      setRequiredDocuments((prev) =>
+        prev.map((doc) =>
+          doc.id === documentId
             ? { ...doc, status: input.status, isApproved: input.isApproved }
             : doc
         )
       );
 
-      toast.success(`Documento ${status === 'approved' ? 'aprobado' : 'rechazado'} exitosamente`);
+      toast.success(
+        `Documento ${
+          status === "approved" ? "aprobado" : "rechazado"
+        } exitosamente`
+      );
       fetchProperties();
     } catch (error) {
       console.error("Error actualizando documento:", error);
@@ -237,24 +241,26 @@ const DocumentationModal = ({
     try {
       const input = {
         id: ownerId,
-        status: status === 'approved' ? 'approved' : 'rejected',
-        isApproved: status === 'approved',
+        status: status === "approved" ? "approved" : "rejected",
+        isApproved: status === "approved",
       };
 
-      await API.graphql(
-        graphqlOperation(updateDocument, { input })
-      );
+      await API.graphql(graphqlOperation(updateDocument, { input }));
 
       // Actualizar estado local para propietarios
-      setOwners(prev => 
-        prev.map(owner => 
-          owner.id === ownerId 
+      setOwners((prev) =>
+        prev.map((owner) =>
+          owner.id === ownerId
             ? { ...owner, status: input.status, isApproved: input.isApproved }
             : owner
         )
       );
 
-      toast.success(`Propietario ${status === 'approved' ? 'aprobado' : 'rechazado'} exitosamente`);
+      toast.success(
+        `Propietario ${
+          status === "approved" ? "aprobado" : "rechazado"
+        } exitosamente`
+      );
       fetchProperties();
     } catch (error) {
       console.error("Error actualizando propietario:", error);
@@ -263,9 +269,6 @@ const DocumentationModal = ({
     setShowRejectionReasonModal(false);
     setSelectedDocumentId(null);
   };
-
-
-
 
   const handleEligible = async (option, reason = "") => {
     try {
@@ -285,12 +288,13 @@ const DocumentationModal = ({
         const firstGlobalFilesFeature = property.propertyFeatures.items.find(
           (f) => f.featureID === "GLOBAL_PROPERTY_FILES"
         );
-        
+
         if (firstGlobalFilesFeature?.verifications?.items?.[0]?.id) {
           await API.graphql(
             graphqlOperation(createVerificationComment, {
               input: {
-                verificationID: firstGlobalFilesFeature.verifications.items[0].id,
+                verificationID:
+                  firstGlobalFilesFeature.verifications.items[0].id,
                 comment: `Predio marcado como No Elegible. Razón: ${reason}`,
                 isCommentByVerifier: true,
               },
@@ -328,22 +332,22 @@ const DocumentationModal = ({
   };
 
   const getStatusBadge = (status, isApproved) => {
-    if (isApproved || status === 'approved') {
+    if (isApproved || status === "approved") {
       return (
-        <span className="px-1.5 py-0.5 bg-green-100 text-green-800 rounded text-xs font-semibold">
+        <span className="px-1.5 py-0.5 bg-green-100 text-green-800 rounded text-xs font-semibold font-typographica">
           ✓ Aprobado
         </span>
       );
     }
-    if (status === 'rejected' || status === 'rechazado') {
+    if (status === "rejected" || status === "rechazado") {
       return (
-        <span className="px-1.5 py-0.5 bg-red-100 text-red-800 rounded text-xs font-semibold">
+        <span className="px-1.5 py-0.5 bg-red-100 text-red-800 rounded text-xs font-semibold font-typographica">
           ✗ Rechazado
         </span>
       );
     }
     return (
-      <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs font-semibold">
+      <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs font-semibold font-typographica">
         ⏳ Pendiente
       </span>
     );
@@ -355,13 +359,15 @@ const DocumentationModal = ({
       return false;
     }
 
-    const allOwnersValidated = owners.length === 0 || owners.every(
-      owner => owner.isApproved || owner.status === 'approved'
-    );
+    const allOwnersValidated =
+      owners.length === 0 ||
+      owners.every((owner) => owner.isApproved || owner.status === "approved");
 
-    const allDocumentsValidated = requiredDocuments.length === 0 || requiredDocuments.every(
-      doc => doc.isApproved || doc.status === 'approved'
-    );
+    const allDocumentsValidated =
+      requiredDocuments.length === 0 ||
+      requiredDocuments.every(
+        (doc) => doc.isApproved || doc.status === "approved"
+      );
 
     return allOwnersValidated && allDocumentsValidated;
   };
@@ -411,11 +417,13 @@ const DocumentationModal = ({
                               {owner.phone}
                             </p>
                             <p className="text-xs text-gray-500 font-typographica mb-1">
-                              {owner.role === 'POSTULANTE' ? 'Postulante' : 'Propietario'}
+                              {owner.role === "POSTULANTE"
+                                ? "Postulante"
+                                : "Propietario"}
                             </p>
                             {getStatusBadge(owner.status, owner.isApproved)}
                           </div>
-                          
+
                           {/* Columna derecha: Adjuntos */}
                           <div className="flex flex-col">
                             <p className="text-xs font-semibold text-terrasacha-primary font-typographica mb-1">
@@ -432,14 +440,22 @@ const DocumentationModal = ({
                                     className="flex items-center gap-2 text-xs text-terrasacha-primary hover:text-terrasacha-primary/80 hover:underline font-typographica p-1.5 border border-terrasacha-light/20 rounded hover:bg-terrasacha-light/5 transition-colors"
                                   >
                                     <span>
-                                      {file.type === 'USER_ID_FRONT' ? '📄' :
-                                       file.type === 'USER_ID_BACK' ? '📄' :
-                                       file.type === 'USER_SELFIE' ? '📷' : '📎'}
+                                      {file.type === "USER_ID_FRONT"
+                                        ? "📄"
+                                        : file.type === "USER_ID_BACK"
+                                        ? "📄"
+                                        : file.type === "USER_SELFIE"
+                                        ? "📷"
+                                        : "📎"}
                                     </span>
                                     <span>
-                                      {file.type === 'USER_ID_FRONT' ? 'Cédula Frente' :
-                                       file.type === 'USER_ID_BACK' ? 'Cédula Reverso' :
-                                       file.type === 'USER_SELFIE' ? 'Selfie' : 'Archivo'}
+                                      {file.type === "USER_ID_FRONT"
+                                        ? "Cédula Frente"
+                                        : file.type === "USER_ID_BACK"
+                                        ? "Cédula Reverso"
+                                        : file.type === "USER_SELFIE"
+                                        ? "Selfie"
+                                        : "Archivo"}
                                     </span>
                                   </a>
                                 ))}
@@ -451,13 +467,15 @@ const DocumentationModal = ({
                             )}
                           </div>
                         </div>
-                        
+
                         {/* Botones Aprobar/Rechazar en fila completa */}
-                        {owner.status === 'pending_review' && (
+                        {owner.status === "pending_review" && (
                           <div className="flex gap-2 pt-2 border-t border-terrasacha-light/20">
                             <button
                               className="flex-1 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 font-typographica text-xs"
-                              onClick={() => handleOwnerStatus(owner.id, 'approved')}
+                              onClick={() =>
+                                handleOwnerStatus(owner.id, "approved")
+                              }
                             >
                               Aprobar
                             </button>
@@ -508,7 +526,7 @@ const DocumentationModal = ({
                           <h4 className="text-xs font-semibold text-terrasacha-primary font-typographica mb-0.5">
                             {doc.typeName}
                           </h4>
-                          {doc.status === 'not_uploaded' ? (
+                          {doc.status === "not_uploaded" ? (
                             <p className="text-xs text-gray-400 font-typographica mb-1 italic">
                               Aún no se ha cargado
                             </p>
@@ -517,8 +535,8 @@ const DocumentationModal = ({
                               {doc.name}
                             </p>
                           )}
-                          {doc.status === 'not_uploaded' ? (
-                            <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-semibold">
+                          {doc.status === "not_uploaded" ? (
+                            <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-semibold font-typographica">
                               No cargado
                             </span>
                           ) : (
@@ -537,11 +555,13 @@ const DocumentationModal = ({
                           </a>
                         )}
                       </div>
-                      {doc.status === 'pending_review' && (
+                      {doc.status === "pending_review" && (
                         <div className="flex gap-2 pt-2 border-t border-terrasacha-light/20">
                           <button
                             className="flex-1 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 font-typographica text-xs"
-                            onClick={() => handleDocumentStatus(doc.id, 'approved')}
+                            onClick={() =>
+                              handleDocumentStatus(doc.id, "approved")
+                            }
                           >
                             Aprobar
                           </button>
@@ -613,12 +633,14 @@ const DocumentationModal = ({
                 <button
                   className={`px-4 py-2 rounded font-typographica text-sm font-semibold transition-colors ${
                     areAllValidated()
-                      ? 'bg-green-500 text-white hover:bg-green-600'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      ? "bg-green-500 text-white hover:bg-green-600"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                   onClick={() => handleEligible(true)}
                   disabled={!areAllValidated()}
-                  data-tooltip-id={`tooltip-elegible-${property?.id || 'default'}`}
+                  data-tooltip-id={`tooltip-elegible-${
+                    property?.id || "default"
+                  }`}
                   data-tooltip-content={
                     !areAllValidated()
                       ? "Deben ser aprobados todos los documentos y validaciones de identidad para poder ser Elegible"
@@ -629,7 +651,7 @@ const DocumentationModal = ({
                 </button>
                 {!areAllValidated() && (
                   <ReactTooltip
-                    id={`tooltip-elegible-${property?.id || 'default'}`}
+                    id={`tooltip-elegible-${property?.id || "default"}`}
                     place="top"
                     effect="solid"
                   />
@@ -640,7 +662,7 @@ const DocumentationModal = ({
                 onClick={() => {
                   // Mostrar modal para razón de rechazo
                   setShowRejectionReasonModal(true);
-                  setSelectedDocumentId('NO_ELEGIBLE'); // Identificador especial para marcar como no elegible
+                  setSelectedDocumentId("NO_ELEGIBLE"); // Identificador especial para marcar como no elegible
                 }}
               >
                 No Elegible
@@ -661,13 +683,17 @@ const DocumentationModal = ({
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-4 w-full max-w-lg">
             <h3 className="text-sm font-semibold mb-3 font-typographica">
-              {selectedDocumentId === 'NO_ELEGIBLE' ? 'Motivo de No Elegible' : 'Motivo de Rechazo'}
+              {selectedDocumentId === "NO_ELEGIBLE"
+                ? "Motivo de No Elegible"
+                : "Motivo de Rechazo"}
             </h3>
             <textarea
               className="w-full p-2 border border-gray-300 rounded-md font-typographica text-xs"
-              placeholder={selectedDocumentId === 'NO_ELEGIBLE' 
-                ? "Escribe el motivo por el cual el predio no es elegible..."
-                : "Escribe el motivo por el cual se rechaza este documento..."}
+              placeholder={
+                selectedDocumentId === "NO_ELEGIBLE"
+                  ? "Escribe el motivo por el cual el predio no es elegible..."
+                  : "Escribe el motivo por el cual se rechaza este documento..."
+              }
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               rows={4}
@@ -687,9 +713,11 @@ const DocumentationModal = ({
                 className="bg-red-500 text-white px-3 py-1.5 rounded hover:bg-red-600 font-typographica text-xs"
                 onClick={() => {
                   // Si es para marcar como no elegible, usar handleEligible
-                  if (selectedDocumentId === 'NO_ELEGIBLE') {
+                  if (selectedDocumentId === "NO_ELEGIBLE") {
                     if (!rejectionReason.trim()) {
-                      toast.error("Debes ingresar una razón para marcar como no elegible");
+                      toast.error(
+                        "Debes ingresar una razón para marcar como no elegible"
+                      );
                       return;
                     }
                     handleEligible(false, rejectionReason);
@@ -703,16 +731,28 @@ const DocumentationModal = ({
                     return;
                   }
                   // Determinar si es un propietario o un documento
-                  const isOwner = owners.some(o => o.id === selectedDocumentId);
+                  const isOwner = owners.some(
+                    (o) => o.id === selectedDocumentId
+                  );
                   if (isOwner) {
-                    handleOwnerStatus(selectedDocumentId, 'rejected', rejectionReason);
+                    handleOwnerStatus(
+                      selectedDocumentId,
+                      "rejected",
+                      rejectionReason
+                    );
                   } else {
-                    handleDocumentStatus(selectedDocumentId, 'rejected', rejectionReason);
+                    handleDocumentStatus(
+                      selectedDocumentId,
+                      "rejected",
+                      rejectionReason
+                    );
                   }
                   setRejectionReason("");
                 }}
               >
-                {selectedDocumentId === 'NO_ELEGIBLE' ? 'Confirmar No Elegible' : 'Confirmar Rechazo'}
+                {selectedDocumentId === "NO_ELEGIBLE"
+                  ? "Confirmar No Elegible"
+                  : "Confirmar Rechazo"}
               </button>
             </div>
           </div>
@@ -742,7 +782,7 @@ export default function LegalAdmon() {
   async function logOut() {
     await Auth.signOut();
     localStorage.removeItem("role"); // Eliminar el rol del localStorage
-    window.location.href = "/"; // Redirigir a la página principal
+    navigate("/"); // Redirigir a la página principal
   }
 
   const handleOpenModal = (property) => {
@@ -755,13 +795,14 @@ export default function LegalAdmon() {
     const firstGlobalFilesFeature = property?.propertyFeatures?.items.find(
       (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
     );
-    
+
     if (!firstGlobalFilesFeature?.verifications?.items?.[0]?.id) {
       toast.error("No se encontró verificación para este predio");
       return;
     }
-    
-    const propertyVerificationID = firstGlobalFilesFeature.verifications.items[0].id;
+
+    const propertyVerificationID =
+      firstGlobalFilesFeature.verifications.items[0].id;
 
     if (property.userLegal !== null) {
       if (property.userLegalID === user.id) {
@@ -886,483 +927,289 @@ export default function LegalAdmon() {
     ),
   ];
 
-
   return (
     <>
-      <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-lime-50 pt-16">
-        <Row>
-          <NewHeaderNavbar />
-        </Row>
-        <div className="flex justify-center px-2 md:px-0">
-          <div className="w-full max-w-7xl mt-8 mb-8 bg-white rounded-2xl shadow-2xl p-4 md:p-8">
-            {/* 📌 Listado de predios */}
+      <section className="pt-8 px-4 pb-4 sm:pt-6 sm:px-6 sm:pb-6 lg:pt-8 lg:px-8 lg:pb-8">
+        <div className="mb-6">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-100 p-6">
+            <div className="flex items-baseline gap-2">
+              <h1 className="text-2xl font-bold text-left text-terrasacha-primary flex-shrink-0 font-typographica">
+                Listado de predios
+              </h1>
+            </div>
+            <p className="text-sm text-gray-600 mt-1 font-typographica">
+              Aquí puedes ver, filtrar y gestionar todos los predios asignados
+              para revisión legal en la plataforma.
+            </p>
+          </div>
+        </div>
 
-            <section className="mx-auto p-2">
-              <div className="mb-4">
-                <div className="flex items-baseline gap-2">
-                <h1 className="text-2xl font-bold text-left text-[#7b7b2c] flex-shrink-0">
-  Listado de predios
-</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Card de Filtros */}
+          <div className="bg-white rounded-t-lg shadow-lg border border-gray-100 p-6 lg:col-span-1 order-1 lg:order-1 h-[400px] lg:h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <h3 className="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider flex items-center gap-2 font-typographica">
+              🔍 Filtros y Búsqueda
+            </h3>
 
-                </div>
-                <p className="text-sm text-gray-600 mt-1">
-                  Aquí puedes ver, filtrar y gestionar todos los predios
-                  asignados para revisión legal en la plataforma.
-                </p>
+            <div className="space-y-4">
+              {/* Buscador */}
+              <div>
+                <label
+                  htmlFor="searchInput"
+                  className="block text-sm font-semibold text-gray-700 mb-2 font-typographica"
+                >
+                  Buscar predio:
+                </label>
+                <input
+                  id="searchInput"
+                  type="text"
+                  placeholder="Nombre del predio..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 font-typographica"
+                />
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Card de Filtros */}
-                <div className="bg-white rounded-t-lg shadow-lg border border-gray-100 p-6 lg:col-span-1 order-1 lg:order-1 h-[400px] lg:h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                  <h3 className="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider flex items-center gap-2">
-                    🔍 Filtros y Búsqueda
-                  </h3>
+              {/* Filtro por Estado */}
+              <div>
+                <label
+                  htmlFor="statusFilter"
+                  className="block text-sm font-semibold text-gray-700 mb-2 font-typographica"
+                >
+                  Estado:
+                </label>
+                <select
+                  id="statusFilter"
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 font-typographica"
+                >
+                  <option value="">Todos los estados</option>
+                  {Object.keys(stateMapper).map((key) => (
+                    <option key={key} value={key}>
+                      {stateMapper[key].label.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                  <div className="space-y-4">
-                    {/* Buscador */}
-                    <div>
-                      <label
-                        htmlFor="searchInput"
-                        className="block text-sm font-semibold text-gray-700 mb-2"
-                      >
-                        Buscar predio:
-                      </label>
-                      <input
-                        id="searchInput"
-                        type="text"
-                        placeholder="Nombre del predio..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300"
-                      />
-                    </div>
+              {/* Filtro por Legal */}
+              <div>
+                <label
+                  htmlFor="legalFilter"
+                  className="block text-sm font-semibold text-gray-700 mb-2 font-typographica"
+                >
+                  Legal:
+                </label>
+                <select
+                  id="legalFilter"
+                  value={filterLegal}
+                  onChange={(e) => setFilterLegal(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 font-typographica"
+                >
+                  <option value="">Todos los legales</option>
+                  <option value="null">Sin asignar</option>
+                  {uniqueLegals.map((legalId) => {
+                    const legal = properties.find(
+                      (p) => p.userLegalID === legalId
+                    )?.userLegal;
+                    return (
+                      <option key={legalId} value={legalId}>
+                        {(legal?.name || `Legal ${legalId}`).toUpperCase()}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
 
-                    {/* Filtro por Estado */}
-                    <div>
-                      <label
-                        htmlFor="statusFilter"
-                        className="block text-sm font-semibold text-gray-700 mb-2"
-                      >
-                        Estado:
-                      </label>
-                      <select
-                        id="statusFilter"
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300"
-                      >
-                        <option value="">Todos los estados</option>
-                        {Object.keys(stateMapper).map((key) => (
-                          <option key={key} value={key}>
-                            {stateMapper[key].label.toUpperCase()}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Filtro por Legal */}
-                    <div>
-                      <label
-                        htmlFor="legalFilter"
-                        className="block text-sm font-semibold text-gray-700 mb-2"
-                      >
-                        Legal:
-                      </label>
-                      <select
-                        id="legalFilter"
-                        value={filterLegal}
-                        onChange={(e) => setFilterLegal(e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300"
-                      >
-                        <option value="">Todos los legales</option>
-                        <option value="null">Sin asignar</option>
-                        {uniqueLegals.map((legalId) => {
-                          const legal = properties.find(
-                            (p) => p.userLegalID === legalId
-                          )?.userLegal;
-                          return (
-                            <option key={legalId} value={legalId}>
-                              {(
-                                legal?.name || `Legal ${legalId}`
-                              ).toUpperCase()}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-
-                    {/* Información de resultados */}
-                    <div className="pt-4 border-t border-gray-200 mt-6">
-                      <p className="text-sm text-gray-600 font-medium">
-                        Mostrando {searchFilteredProperties.length} de{" "}
-                        {properties.length} predios
-                      </p>
-                    </div>
-                  </div>
+              {/* Información de resultados */}
+              <div className="pt-4 border-t border-gray-200 mt-6">
+                <p className="text-sm text-gray-600 font-medium font-typographica">
+                  Mostrando {searchFilteredProperties.length} de{" "}
+                  {properties.length} predios
+                </p>
+              </div>
+            </div>
+          </div>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg border border-gray-200 lg:col-span-3 order-2 lg:order-2">
+              <svg
+                className="animate-spin h-16 w-16 text-blue-500 mb-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                role="status"
+                aria-label="Cargando predios"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              <p className="text-gray-500 text-lg font-medium font-typographica">
+                Cargando predios...
+              </p>
+            </div>
+          ) : properties.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg border border-gray-200 lg:col-span-3 order-2 lg:order-2">
+              <img
+                src={vacio}
+                className="w-32 h-32 mb-6 opacity-60"
+                alt="Sin propiedades"
+              />
+              <p className="text-gray-500 text-lg font-medium font-typographica">
+                😔 No hay propiedades disponibles.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-t-lg shadow-xl border border-gray-100 lg:col-span-3 order-2 lg:order-2 h-[400px] lg:h-[600px] flex flex-col">
+              {/* Paginación */}
+              <div className="flex flex-col rounded-t-lg md:flex-row md:items-center justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700 text-end font-typographica">
+                    Filas por página:
+                  </span>
+                  <select
+                    value={rowsPerPage}
+                    onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                    className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-typographica"
+                  >
+                    {[5, 10, 15, 20, 30, 50].map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                {isLoading ? (
-                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg border border-gray-200 lg:col-span-3 order-2 lg:order-2">
-                    <svg
-                      className="animate-spin h-16 w-16 text-blue-500 mb-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      role="status"
-                      aria-label="Cargando predios"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      ></path>
-                    </svg>
-                    <p className="text-gray-500 text-lg font-medium">
-                      Cargando predios...
-                    </p>
-                  </div>
-                ) : properties.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg border border-gray-200 lg:col-span-3 order-2 lg:order-2">
-                    <img
-                      src={vacio}
-                      className="w-32 h-32 mb-6 opacity-60"
-                      alt="Sin propiedades"
-                    />
-                    <p className="text-gray-500 text-lg font-medium">
-                      😔 No hay propiedades disponibles.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-white rounded-t-lg shadow-xl border border-gray-100 lg:col-span-3 order-2 lg:order-2 h-[400px] lg:h-[600px] flex flex-col">
-                    {/* Paginación */}
-                    <div className="flex flex-col rounded-t-lg md:flex-row md:items-center justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-700 text-end">
-                          Filas por página:
-                        </span>
-                        <select
-                          value={rowsPerPage}
-                          onChange={(e) =>
-                            setRowsPerPage(Number(e.target.value))
-                          }
-                          className="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                <div className="flex items-center gap-3 justify-end">
+                  <button
+                    className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent font-typographica"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Anterior
+                  </button>
+                  <span className="text-sm font-medium text-gray-700 px-3 py-1 bg-white rounded-lg border border-gray-200 font-typographica">
+                    Página {currentPage} de {totalPages}
+                  </span>
+                  <button
+                    className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent font-typographica"
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </div>
+              <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica"></th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Predio
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Descripción
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Campaña
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Fecha de inscripción
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Área (m2)
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Departamento
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Legal
+                      </th>
+                      <th className="text-left px-2 py-1 font-semibold text-xs font-typographica">
+                        Estado
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedProperties.map((property, idx) => {
+                      if (!property || !property.id) return null;
+                      return (
+                        <tr
+                          key={property.id}
+                          className={`text-xs transition-all duration-200 uppercase border-b border-gray-100 hover:bg-blue-50 hover:shadow-sm ${
+                            idx % 2 === 0 ? "bg-white" : "bg-gray-25"
+                          }`}
                         >
-                          {[5, 10, 15, 20, 30, 50].map((num) => (
-                            <option key={num} value={num}>
-                              {num}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="flex items-center gap-3 justify-end">
-                        <button
-                          className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                          onClick={() =>
-                            setCurrentPage((p) => Math.max(1, p - 1))
-                          }
-                          disabled={currentPage === 1}
-                        >
-                          Anterior
-                        </button>
-                        <span className="text-sm font-medium text-gray-700 px-3 py-1 bg-white rounded-lg border border-gray-200">
-                          Página {currentPage} de {totalPages}
-                        </span>
-                        <button
-                          className="px-3 py-1 rounded-lg border border-gray-300 text-sm font-medium disabled:opacity-50 hover:bg-gray-100 transition-all duration-200 disabled:hover:bg-transparent"
-                          onClick={() =>
-                            setCurrentPage((p) => Math.min(totalPages, p + 1))
-                          }
-                          disabled={currentPage === totalPages}
-                        >
-                          Siguiente
-                        </button>
-                      </div>
-                    </div>
-                    <div className="overflow-x-auto bg-white flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                      <table className="min-w-full">
-                        <thead>
-                          <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                            <th className="text-left px-2 py-1 font-semibold text-xs"></th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Predio
-                            </th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Descripción
-                            </th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Campaña
-                            </th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Fecha de inscripción
-                            </th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Área (m2)
-                            </th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Departamento
-                            </th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Legal
-                            </th>
-                            <th className="text-left px-2 py-1 font-semibold text-xs">
-                              Estado
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {paginatedProperties.map((property, idx) => {
-                            if (!property || !property.id) return null;
-                            return (
-                            <tr
-                              key={property.id}
-                              className={`text-xs transition-all duration-200 uppercase border-b border-gray-100 hover:bg-blue-50 hover:shadow-sm ${
-                                idx % 2 === 0 ? "bg-white" : "bg-gray-25"
-                              }`}
-                            >
-                              <td className="px-3 py-2">
-                                <div className="flex justify-between items-center w-full gap-2">
-                                  {/* Columna 3: Ver Detalles */}
-                                  <div className="flex justify-center flex-1">
-                                    <button
-                                      onClick={() =>
-                                        navigate(`/property/${property.id}`)
-                                      }
-                                      className="border border-yellow-500 bg-yellow-500 text-white rounded-lg p-1 text-xs hover:bg-yellow-600 hover:shadow-md active:bg-yellow-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
-                                      aria-label="Detalles"
-                                      data-tooltip-id={`tooltip-details-${property.id}`}
-                                      data-tooltip-content="Ver detalles del predio"
-                                    >
-                                      <FaInfoCircle size={13} />
-                                    </button>
-                                    <div className="hidden md:block">
-                                      <ReactTooltip
-                                        id={`tooltip-details-${property.id}`}
-                                        place="top"
-                                        effect="solid"
-                                      />
-                                    </div>
-                                  </div>
-
-                                  {/* Columna 2: Revisar Documentación */}
-                                  <div className="flex justify-center flex-1">
-                                    {(() => {
-                                      const canValidate =
-                                        user?.id &&
-                                        property.userLegalID === user.id &&
-                                        property.status !== "APPROVED";
-                                      return (
-                                        <>
-                                          <button
-                                            className={`border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs transition-all duration-200 flex items-center justify-center w-7 h-7 ${
-                                              canValidate
-                                                ? "hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transform hover:scale-105"
-                                                : "opacity-50 cursor-not-allowed"
-                                            }`}
-                                            onClick={() =>
-                                              canValidate &&
-                                              handleOpenModal(property)
-                                            }
-                                            aria-label="Revisar documentación"
-                                            data-tooltip-id={`tooltip-validate-${property.id}`}
-                                            data-tooltip-content={
-                                              canValidate
-                                                ? "Revisar documentación del predio"
-                                                : "No tienes permisos para revisar documentación"
-                                            }
-                                            disabled={!canValidate}
-                                          >
-                                            <FaEye size={13} />
-                                          </button>
-                                          <div className="hidden md:block">
-                                            <ReactTooltip
-                                              id={`tooltip-validate-${property.id}`}
-                                              place="top"
-                                              effect="solid"
-                                            />
-                                          </div>
-                                        </>
-                                      );
-                                    })()}
-                                  </div>
-
-                                  {/* Columna 1: Asignar/Desasignar */}
-                                  <div className="flex justify-center flex-1">
-                                    {(() => {
-                                      const canAssign =
-                                        property.userLegalID === null &&
-                                        property.status !== "REJECTED" &&
-                                        property.status !== "APPROVED";
-                                      const canUnassign =
-                                        user?.id &&
-                                        property.userLegalID === user.id &&
-                                        property.status !== "REJECTED" &&
-                                        property.status !== "APPROVED";
-
-                                      if (canAssign) {
-                                        return (
-                                          <>
-                                            <button
-                                              className="border border-green-500 bg-green-500 text-white rounded-lg p-1 text-xs hover:bg-green-600 hover:shadow-md active:bg-green-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
-                                              onClick={() =>
-                                                handleToggleAssign(property)
-                                              }
-                                              aria-label="Asignar predio"
-                                              data-tooltip-id={`tooltip-assign-${property.id}`}
-                                              data-tooltip-content="Asignar predio a mí para revisión legal"
-                                            >
-                                              <FaUserPlus size={13} />
-                                            </button>
-                                            <div className="hidden md:block">
-                                              <ReactTooltip
-                                                id={`tooltip-assign-${property.id}`}
-                                                place="top"
-                                                effect="solid"
-                                              />
-                                            </div>
-                                          </>
-                                        );
-                                      } else if (canUnassign) {
-                                        return (
-                                          <>
-                                            <button
-                                              className="border border-red-500 bg-red-500 text-white rounded-lg p-1 text-xs hover:bg-red-600 hover:shadow-md active:bg-red-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
-                                              onClick={() =>
-                                                handleToggleAssign(property)
-                                              }
-                                              aria-label="Desasignar predio"
-                                              data-tooltip-id={`tooltip-unassign-${property.id}`}
-                                              data-tooltip-content="Desasignar predio de mi revisión legal"
-                                            >
-                                              <FaUserMinus size={13} />
-                                            </button>
-                                            <div className="hidden md:block">
-                                              <ReactTooltip
-                                                id={`tooltip-unassign-${property.id}`}
-                                                place="top"
-                                                effect="solid"
-                                              />
-                                            </div>
-                                          </>
-                                        );
-                                      }
-                                      return <div className="w-7 h-7"></div>; // Espacio vacío para mantener alineación
-                                    })()}
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-2 py-1 min-w-36">
-                                {property.name}
-                              </td>
-                              <td
-                                className="px-2 py-1 max-w-xs truncate"
-                                data-tooltip-id={`tooltip-description-${property.id}`}
-                                data-tooltip-content={
-                                  property.description || "Sin descripción"
-                                }
-                              >
-                                {property.description || "Sin descripción"}
+                          <td className="px-3 py-2">
+                            <div className="flex justify-between items-center w-full gap-2">
+                              {/* Columna 3: Ver Detalles */}
+                              <div className="flex justify-center flex-1">
+                                <button
+                                  onClick={() =>
+                                    navigate(`/property/${property.id}`)
+                                  }
+                                  className="border border-yellow-500 bg-yellow-500 text-white rounded-lg p-1 text-xs hover:bg-yellow-600 hover:shadow-md active:bg-yellow-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
+                                  aria-label="Detalles"
+                                  data-tooltip-id={`tooltip-details-${property.id}`}
+                                  data-tooltip-content="Ver detalles del predio"
+                                >
+                                  <FaInfoCircle size={13} />
+                                </button>
                                 <div className="hidden md:block">
                                   <ReactTooltip
-                                    id={`tooltip-description-${property.id}`}
+                                    id={`tooltip-details-${property.id}`}
                                     place="top"
                                     effect="solid"
-                                    style={{
-                                      maxWidth: 300,
-                                      whiteSpace: "pre-line",
-                                      wordBreak: "break-word",
-                                    }}
                                   />
                                 </div>
-                              </td>
-                              <td className="px-2 py-1 min-w-36">
-                                {property.campaign?.name || "-"}
-                              </td>
-                              <td className="px-2 py-1 min-w-28">
-                                {property.createdAt
-                                  ? new Date(
-                                      property.createdAt
-                                    ).toLocaleDateString("es-ES", {
-                                      year: "numeric",
-                                      month: "2-digit",
-                                      day: "2-digit",
-                                    })
-                                  : "-"}
-                              </td>
-                              <td className="px-2 py-1 min-w-20">
-                                {getPropertyArea(property)}
-                              </td>
-                              <td className="px-2 py-1">
-                                {property.department || "-"}
-                              </td>
-                              <td className="px-2 py-1 min-w-36">
+                              </div>
+
+                              {/* Columna 2: Revisar Documentación */}
+                              <div className="flex justify-center flex-1">
                                 {(() => {
-                                  const name =
-                                    property.userLegal?.name || "Sin Asignar";
-                                  const badgeColor = property.userLegal?.name
-                                    ? "bg-blue-100 text-blue-700 border border-blue-400"
-                                    : "bg-gray-200 text-gray-700 border border-gray-400";
-                                  return (
-                                    <span
-                                      className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${badgeColor}`}
-                                    >
-                                      {name}
-                                    </span>
-                                  );
-                                })()}
-                              </td>
-                              <td className="px-2 py-1 min-w-36">
-                                {(() => {
-                                  const label =
-                                    stateMapper[property.status].label ||
-                                    "No disponible";
-                                  let badgeColor =
-                                    "bg-gray-300 text-gray-800 border border-gray-400";
-                                  let tooltipContent = "";
-                                  if (property.status === "APPROVED") {
-                                    badgeColor =
-                                      "bg-green-100 text-green-700 border border-green-400";
-                                    tooltipContent =
-                                      "Aprobado: El predio ha sido aprobado legalmente.";
-                                  } else if (
-                                    property.status === "REJECTED" ||
-                                    property.status === "NOT_SELECTABLE"
-                                  ) {
-                                    badgeColor =
-                                      "bg-red-100 text-red-700 border border-red-400";
-                                    tooltipContent =
-                                      "Rechazado/No seleccionable: El predio no cumple los requisitos legales.";
-                                  } else if (property.status === "PENDING") {
-                                    badgeColor =
-                                      "bg-yellow-100 text-yellow-700 border border-yellow-400";
-                                    tooltipContent =
-                                      "Pendiente: El predio está pendiente de revisión legal.";
-                                  } else if (property.status === "SELECTABLE") {
-                                    badgeColor =
-                                      "bg-blue-100 text-blue-700 border border-blue-400";
-                                    tooltipContent =
-                                      "Seleccionable: El predio es elegible para continuar el proceso.";
-                                  } else {
-                                    tooltipContent = label;
-                                  }
+                                  const canValidate =
+                                    user?.id &&
+                                    property.userLegalID === user.id &&
+                                    property.status !== "APPROVED";
                                   return (
                                     <>
-                                      <span
-                                        className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase ${badgeColor}`}
-                                        data-tooltip-id={`tooltip-status-${property.id}`}
-                                        data-tooltip-content={tooltipContent}
+                                      <button
+                                        className={`border border-blue-500 bg-blue-500 text-white rounded-lg p-1 text-xs transition-all duration-200 flex items-center justify-center w-7 h-7 ${
+                                          canValidate
+                                            ? "hover:bg-blue-600 hover:shadow-md active:bg-blue-700 transform hover:scale-105"
+                                            : "opacity-50 cursor-not-allowed"
+                                        }`}
+                                        onClick={() =>
+                                          canValidate &&
+                                          handleOpenModal(property)
+                                        }
+                                        aria-label="Revisar documentación"
+                                        data-tooltip-id={`tooltip-validate-${property.id}`}
+                                        data-tooltip-content={
+                                          canValidate
+                                            ? "Revisar documentación del predio"
+                                            : "No tienes permisos para revisar documentación"
+                                        }
+                                        disabled={!canValidate}
                                       >
-                                        {label}
-                                      </span>
+                                        <FaEye size={13} />
+                                      </button>
                                       <div className="hidden md:block">
                                         <ReactTooltip
-                                          id={`tooltip-status-${property.id}`}
+                                          id={`tooltip-validate-${property.id}`}
                                           place="top"
                                           effect="solid"
                                         />
@@ -1370,28 +1217,206 @@ export default function LegalAdmon() {
                                     </>
                                   );
                                 })()}
-                              </td>
-                            </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
+                              </div>
+
+                              {/* Columna 1: Asignar/Desasignar */}
+                              <div className="flex justify-center flex-1">
+                                {(() => {
+                                  const canAssign =
+                                    property.userLegalID === null &&
+                                    property.status !== "REJECTED" &&
+                                    property.status !== "APPROVED";
+                                  const canUnassign =
+                                    user?.id &&
+                                    property.userLegalID === user.id &&
+                                    property.status !== "REJECTED" &&
+                                    property.status !== "APPROVED";
+
+                                  if (canAssign) {
+                                    return (
+                                      <>
+                                        <button
+                                          className="border border-green-500 bg-green-500 text-white rounded-lg p-1 text-xs hover:bg-green-600 hover:shadow-md active:bg-green-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
+                                          onClick={() =>
+                                            handleToggleAssign(property)
+                                          }
+                                          aria-label="Asignar predio"
+                                          data-tooltip-id={`tooltip-assign-${property.id}`}
+                                          data-tooltip-content="Asignar predio a mí para revisión legal"
+                                        >
+                                          <FaUserPlus size={13} />
+                                        </button>
+                                        <div className="hidden md:block">
+                                          <ReactTooltip
+                                            id={`tooltip-assign-${property.id}`}
+                                            place="top"
+                                            effect="solid"
+                                          />
+                                        </div>
+                                      </>
+                                    );
+                                  } else if (canUnassign) {
+                                    return (
+                                      <>
+                                        <button
+                                          className="border border-red-500 bg-red-500 text-white rounded-lg p-1 text-xs hover:bg-red-600 hover:shadow-md active:bg-red-700 transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
+                                          onClick={() =>
+                                            handleToggleAssign(property)
+                                          }
+                                          aria-label="Desasignar predio"
+                                          data-tooltip-id={`tooltip-unassign-${property.id}`}
+                                          data-tooltip-content="Desasignar predio de mi revisión legal"
+                                        >
+                                          <FaUserMinus size={13} />
+                                        </button>
+                                        <div className="hidden md:block">
+                                          <ReactTooltip
+                                            id={`tooltip-unassign-${property.id}`}
+                                            place="top"
+                                            effect="solid"
+                                          />
+                                        </div>
+                                      </>
+                                    );
+                                  }
+                                  return <div className="w-7 h-7"></div>; // Espacio vacío para mantener alineación
+                                })()}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-2 py-1 min-w-36 font-typographica">
+                            {property.name}
+                          </td>
+                          <td
+                            className="px-2 py-1 max-w-xs truncate font-typographica"
+                            data-tooltip-id={`tooltip-description-${property.id}`}
+                            data-tooltip-content={
+                              property.description || "Sin descripción"
+                            }
+                          >
+                            {property.description || "Sin descripción"}
+                            <div className="hidden md:block">
+                              <ReactTooltip
+                                id={`tooltip-description-${property.id}`}
+                                place="top"
+                                effect="solid"
+                                style={{
+                                  maxWidth: 300,
+                                  whiteSpace: "pre-line",
+                                  wordBreak: "break-word",
+                                }}
+                              />
+                            </div>
+                          </td>
+                          <td className="px-2 py-1 min-w-36 font-typographica">
+                            {property.campaign?.name || "-"}
+                          </td>
+                          <td className="px-2 py-1 min-w-28 font-typographica">
+                            {property.createdAt
+                              ? new Date(property.createdAt).toLocaleDateString(
+                                  "es-ES",
+                                  {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                  }
+                                )
+                              : "-"}
+                          </td>
+                          <td className="px-2 py-1 min-w-20 font-typographica">
+                            {getPropertyArea(property)}
+                          </td>
+                          <td className="px-2 py-1 font-typographica">
+                            {property.department || "-"}
+                          </td>
+                          <td className="px-2 py-1 min-w-36 font-typographica">
+                            {(() => {
+                              const name =
+                                property.userLegal?.name || "Sin Asignar";
+                              const badgeColor = property.userLegal?.name
+                                ? "bg-blue-100 text-blue-700 border border-blue-400"
+                                : "bg-gray-200 text-gray-700 border border-gray-400";
+                              return (
+                                <span
+                                  className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase font-typographica ${badgeColor}`}
+                                >
+                                  {name}
+                                </span>
+                              );
+                            })()}
+                          </td>
+                          <td className="px-2 py-1 min-w-36 font-typographica">
+                            {(() => {
+                              const label =
+                                stateMapper[property.status].label ||
+                                "No disponible";
+                              let badgeColor =
+                                "bg-gray-300 text-gray-800 border border-gray-400";
+                              let tooltipContent = "";
+                              if (property.status === "APPROVED") {
+                                badgeColor =
+                                  "bg-green-100 text-green-700 border border-green-400";
+                                tooltipContent =
+                                  "Aprobado: El predio ha sido aprobado legalmente.";
+                              } else if (
+                                property.status === "REJECTED" ||
+                                property.status === "NOT_SELECTABLE"
+                              ) {
+                                badgeColor =
+                                  "bg-red-100 text-red-700 border border-red-400";
+                                tooltipContent =
+                                  "Rechazado/No seleccionable: El predio no cumple los requisitos legales.";
+                              } else if (property.status === "PENDING") {
+                                badgeColor =
+                                  "bg-yellow-100 text-yellow-700 border border-yellow-400";
+                                tooltipContent =
+                                  "Pendiente: El predio está pendiente de revisión legal.";
+                              } else if (property.status === "SELECTABLE") {
+                                badgeColor =
+                                  "bg-blue-100 text-blue-700 border border-blue-400";
+                                tooltipContent =
+                                  "Seleccionable: El predio es elegible para continuar el proceso.";
+                              } else {
+                                tooltipContent = label;
+                              }
+                              return (
+                                <>
+                                  <span
+                                    className={`inline-block px-1 py-0 rounded text-[10px] font-semibold whitespace-nowrap uppercase font-typographica ${badgeColor}`}
+                                    data-tooltip-id={`tooltip-status-${property.id}`}
+                                    data-tooltip-content={tooltipContent}
+                                  >
+                                    {label}
+                                  </span>
+                                  <div className="hidden md:block">
+                                    <ReactTooltip
+                                      id={`tooltip-status-${property.id}`}
+                                      place="top"
+                                      effect="solid"
+                                    />
+                                  </div>
+                                </>
+                              );
+                            })()}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-            </section>
-            <DocumentationModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              property={selectedProperty}
-              fetchProperties={fetchProperties}
-              user={user}
-            />
-            <ToastContainer position="bottom-right" />
-          </div>
+            </div>
+          )}
         </div>
-      </div>
+      </section>
+      <DocumentationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        property={selectedProperty}
+        fetchProperties={fetchProperties}
+        user={user}
+      />
+      <ToastContainer position="bottom-right" />
     </>
   );
 }

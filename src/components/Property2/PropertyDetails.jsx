@@ -33,7 +33,20 @@ export default function PropertyDetails({
   setIsFormComplete,
   currentStep,
 }) {
-  const { propertyData } = usePropertyData();
+  const { propertyData, refresh } = usePropertyData();
+  // Envolver handleFieldChange para refrescar propertyData después de guardar
+  const handleFieldChangeWithRefresh = async (...args) => {
+    try {
+      const maybePromise = handleFieldChange ? handleFieldChange(...args) : undefined;
+      await Promise.resolve(maybePromise);
+    } finally {
+      try {
+        await refresh();
+      } catch (e) {
+        console.error("Error al refrescar propertyData:", e);
+      }
+    }
+  };
   const [autorizedUser, setAutorizedUser] = useState(false);
   const [isPostulant, setIsPostulant] = useState(false);
   const [isVerifier, setIsVerifier] = useState(false);
@@ -254,102 +267,120 @@ export default function PropertyDetails({
     return null;
   }
 
+  // --- Requisitos prediales (alineados con PropertyGeneral.jsx 76-82) ---
+  const featureIdMap = {
+    usoActualPotencial: ['D_USO_ACTUAL_POTENCIAL', 'ACTUAL_USE_POTENTIAL', 'D_actual_use'],
+    limitacionesUsoSuelo: ['D_LIMITACIONES_USO_SUELO', 'USE_RESTRICTIONS', 'E_restriccion_desc', 'E_resctriccion_other'],
+    aspectosEcosistema: ['D_ASPECTOS_ECOSISTEMA', 'ECOSYSTEM', 'D_aspects_ecosystem', 'F_nacimiento_agua'],
+    aspectosPredio: ['D_ASPECTOS_PREDIO', 'GENERAL_ASPECTS', 'D_aspects_property', 'G_habita_predio'],
+    relacionesEntidades: ['D_RELACIONES_ENTIDADES', 'RELATIONS', 'D_relations_entities', 'H_aliados_estrategicos_desc', 'H_grupo_comunitario_desc', 'H_asistance_desc'],
+  };
+
+  const isNonEmptyValue = (value) => {
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'string') {
+      const v = value.trim();
+      if (v.length === 0) return false;
+      try {
+        const parsed = JSON.parse(v);
+        if (parsed && typeof parsed === 'object') {
+          if (Array.isArray(parsed)) return parsed.length > 0;
+          return Object.keys(parsed).length > 0;
+        }
+      } catch (_) {
+        // no JSON, string no vacía es válida
+      }
+      return true;
+    }
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) return value.length > 0;
+      return Object.keys(value).length > 0;
+    }
+    return true;
+  };
+
+  const featureCompleted = (ids) => {
+    const pfs = propertyData?.propertyFeatures || [];
+    for (const pf of pfs) {
+      if (ids.includes(pf?.featureID) && isNonEmptyValue(pf?.value)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const requirements = [
+    { key: 'usoActualPotencial', label: 'Uso actual y potencial', completed: featureCompleted(featureIdMap.usoActualPotencial) },
+    { key: 'limitacionesUsoSuelo', label: 'Limitaciones de uso de suelo', completed: featureCompleted(featureIdMap.limitacionesUsoSuelo) },
+    { key: 'aspectosEcosistema', label: 'Aspectos generales del ecosistema', completed: featureCompleted(featureIdMap.aspectosEcosistema) },
+    { key: 'aspectosPredio', label: 'Aspectos generales del predio', completed: featureCompleted(featureIdMap.aspectosPredio) },
+    { key: 'relacionesEntidades', label: 'Relaciones con entidades y aliados estratégicos', completed: featureCompleted(featureIdMap.relacionesEntidades) },
+  ];
+
+  const missingList = requirements.filter(r => !r.completed).map(r => r.key);
+
+  const getLabel = (key) => {
+    switch (key) {
+      case 'usoActualPotencial':
+        return 'Uso actual y potencial';
+      case 'limitacionesUsoSuelo':
+        return 'Limitaciones de uso de suelo';
+      case 'aspectosEcosistema':
+        return 'Aspectos generales del ecosistema';
+      case 'aspectosPredio':
+        return 'Aspectos generales del predio';
+      case 'relacionesEntidades':
+        return 'Relaciones con entidades y aliados estratégicos';
+      default:
+        return key;
+    }
+  };
+
+  const handleScrollToForms = () => {
+    const el = document.getElementById("forms-start");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="space-y-6">
-      {/* Información Predial */}
-      <div className="bg-white p-4 sm:p-6 rounded-xl border border-terrasacha-light/20 shadow-terrasacha">
-        <h2 className="text-lg sm:text-xl font-bold text-terrasacha-primary mb-4 font-typographica">
-          Información Predial
-        </h2>
-
-        {/* Datos básicos del predio */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div className="space-y-3">
+      {/* Persuasión: alerta de campos requeridos */}
+      {missingList.length > 0 && (
+        <div className="bg-terrasacha-light/10 border border-terrasacha-light/40 rounded-xl p-4 sm:p-5">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
             <div>
-              <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                Nombre
+              <p className="text-sm text-terrasacha-secondary1 font-typographica">
+                Para avanzar con tu proyecto, completa la siguiente información requerida. ¡Esto mejora la verificación y acelera la aprobación!
               </p>
-              <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                {propertyData?.propertyInfo?.name || "Sin nombre"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                Departamento
-              </p>
-              <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                {propertyData?.propertyInfo?.department || "No especificado"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                Número Catastral
-              </p>
-              <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                {propertyData?.propertyInfo?.cadastralNumber || "No disponible"}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <div>
-              <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                Fecha de Creación
-              </p>
-              <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                {propertyData?.propertyInfo?.createdAt
-                  ? new Date(propertyData.propertyInfo.createdAt).toLocaleDateString(
-                      "es-ES"
-                    )
-                  : "No disponible"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                Última Actualización
-              </p>
-              <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                {propertyData?.propertyInfo?.updatedAt
-                  ? new Date(propertyData.propertyInfo.updatedAt).toLocaleDateString(
-                      "es-ES"
-                    )
-                  : "No disponible"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                Características
-              </p>
-              <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                {propertyData?.propertyFeatures?.length || 0}{" "}
-                características registradas
-              </p>
+              <ul className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1">
+                {missingList.map((key) => (
+                  <li key={key} className="text-xs font-typographica text-terrasacha-secondary1 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    {getLabel(key)} pendiente
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={handleScrollToForms}
+                className="mt-3 inline-flex items-center px-3 py-1.5 rounded-md bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white text-xs font-typographica transition-colors"
+              >
+                Completar ahora
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Descripción */}
-        {propertyData?.propertyInfo?.description && (
-          <div className="mb-4">
-            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-2">
-              Descripción
-            </p>
-            <p className="text-sm text-terrasacha-secondary1 font-typographica bg-terrasacha-light/10 p-3 rounded-lg">
-              {propertyData.propertyInfo.description}
-            </p>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Formularios de Información Detallada */}
-      <div className="space-y-6">
+      <div className="space-y-6" id="forms-start">
 
         {/* Uso Actual y Potencial */}
         <div className="bg-white p-4 sm:p-6 rounded-xl border border-terrasacha-light/20 shadow-terrasacha">
           <ActualUseAndPotential
             autorizedUser={autorizedUser}
             setHasUnsavedChanges={setHasUnsavedChanges}
-            handleFieldChange={handleFieldChange}
+            handleFieldChange={handleFieldChangeWithRefresh}
             updateFormCompletion={(isComplete) =>
               updateFormCompletion("actualUseAndPotential", isComplete)
             }
@@ -361,7 +392,7 @@ export default function PropertyDetails({
           <UseRestrictions
             autorizedUser={autorizedUser}
             setHasUnsavedChanges={setHasUnsavedChanges}
-            handleFieldChange={handleFieldChange}
+            handleFieldChange={handleFieldChangeWithRefresh}
             updateFormCompletion={(isComplete) =>
               updateFormCompletion("useRestrictions", isComplete)
             }
@@ -373,7 +404,7 @@ export default function PropertyDetails({
           <Ecosystem
             autorizedUser={autorizedUser}
             setHasUnsavedChanges={setHasUnsavedChanges}
-            handleFieldChange={handleFieldChange}
+            handleFieldChange={handleFieldChangeWithRefresh}
             updateFormCompletion={(isComplete) =>
               updateFormCompletion("ecosystem", isComplete)
             }
@@ -385,7 +416,7 @@ export default function PropertyDetails({
           <GeneralAspects
             autorizedUser={autorizedUser}
             setHasUnsavedChanges={setHasUnsavedChanges}
-            handleFieldChange={handleFieldChange}
+            handleFieldChange={handleFieldChangeWithRefresh}
             updateFormCompletion={(isComplete) =>
               updateFormCompletion("generalAspects", isComplete)
             }
@@ -397,22 +428,14 @@ export default function PropertyDetails({
           <Relations
             autorizedUser={autorizedUser}
             setHasUnsavedChanges={setHasUnsavedChanges}
-            handleFieldChange={handleFieldChange}
+            handleFieldChange={handleFieldChangeWithRefresh}
             updateFormCompletion={(isComplete) =>
               updateFormCompletion("relations", isComplete)
             }
           />
         </div>
 
-        {/* Archivos Adicionales */}
-        <div className="bg-white p-4 sm:p-6 rounded-xl border border-terrasacha-light/20 shadow-terrasacha">
-          <AdditionalFiles
-            autorizedUser={autorizedUser}
-            basePath={`projects/${propertyData.propertyInfo?.projectID}/other/`}
-            setHasUnsavedChanges={setHasUnsavedChanges}
-            handleFieldChange={handleFieldChange}
-          />
-        </div>
+        
 
 
         {/* Sección de Validación */}

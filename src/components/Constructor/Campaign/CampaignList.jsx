@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listCampaigns } from 'utilities/customQueries';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
-import NewHeaderNavbar from 'components/common/NewHeaderNavbar';
 
 export default function CampaignList() {
   const [campaignList, setCampaignList] = useState([]);
@@ -43,9 +42,6 @@ export default function CampaignList() {
 
   return (
     <div className="container-sm">
-      <div className="mb-24">
-        <NewHeaderNavbar />
-      </div>
       <h1>Campañas</h1>
       <table className="table-auto w-full border-collapse border border-gray-300">
         <thead>

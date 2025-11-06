@@ -5,6 +5,7 @@ import LOGO from "../../common/_images/suan_logo.png";
 import s from "./HeaderNavbar.module.css";
 import DropDownProjects from "components/common/DropDownProjects";
 import TerrasachaLogo from "components/common/TerrasachaLogo";
+import { navigate } from "../../../utilities/navigate";
 
 export default class HeaderNavbar extends Component {
   constructor(props) {
@@ -22,8 +23,8 @@ export default class HeaderNavbar extends Component {
 
   async logOut() {
     await Auth.signOut();
-    window.location.href = "/";
     localStorage.removeItem("role");
+    navigate("/");
   }
 
   getNavLinksByRole(role) {
@@ -40,47 +41,47 @@ export default class HeaderNavbar extends Component {
 
     const roleBasedLinks = {
       admon: [
-        <Nav.Link onClick={() => (window.location.href = "/admon")}>
+        <Nav.Link onClick={() => navigate("/admon")}>
           Administrar
         </Nav.Link>,
       ],
       investor: [
-        <Nav.Link onClick={() => (window.location.href = "/investor_admon")}>
+        <Nav.Link onClick={() => navigate("/investor_admon")}>
           Perfil
         </Nav.Link>,
-        <Nav.Link onClick={() => (window.location.href = "/PQRS")}>
+        <Nav.Link onClick={() => navigate("/PQRS")}>
           PQRS
         </Nav.Link>,
       ],
       validator: [
-        <Nav.Link onClick={() => (window.location.href = "/consultor_admon")}>
+        <Nav.Link onClick={() => navigate("/consultor_admon")}>
           Perfil
         </Nav.Link>,
-        <Nav.Link onClick={() => (window.location.href = "/PQRS")}>
+        <Nav.Link onClick={() => navigate("/PQRS")}>
           PQRS
         </Nav.Link>,
       ],
       legal: [
-        <Nav.Link onClick={() => (window.location.href = "/legal_admon")}>
+        <Nav.Link onClick={() => navigate("/legal_admon")}>
           Perfil
         </Nav.Link>,
-        <Nav.Link onClick={() => (window.location.href = "/PQRS")}>
+        <Nav.Link onClick={() => navigate("/PQRS")}>
           PQRS
         </Nav.Link>,
       ],
       analyst: [
-        <Nav.Link onClick={() => (window.location.href = "/PQRS")}>
+        <Nav.Link onClick={() => navigate("/PQRS")}>
           PQRS
         </Nav.Link>,
-        <Nav.Link onClick={() => (window.location.href = "/project_analyst")}>
+        <Nav.Link onClick={() => navigate("/project_analyst")}>
           Ver Proyectos
         </Nav.Link>,
       ],
       constructor: [
-        <Nav.Link onClick={() => (window.location.href = "/constructor")}>
+        <Nav.Link onClick={() => navigate("/constructor")}>
           Perfil
         </Nav.Link>,
-        <Nav.Link onClick={() => (window.location.href = "/PQRS")}>
+        <Nav.Link onClick={() => navigate("/PQRS")}>
           PQRS
         </Nav.Link>,
       ],
@@ -159,7 +160,7 @@ export default class HeaderNavbar extends Component {
                     <DropDownProjects variant="secondary" />
                     <button
                       className="text-green-700 font-bold w-fit"
-                      onClick={() => (window.location.href = "/login")}
+                      onClick={() => navigate("/login")}
                     >
                       Ingresar
                     </button>

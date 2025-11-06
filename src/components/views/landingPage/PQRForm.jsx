@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Storage, Auth } from "aws-amplify";
 import awsmobile from "aws-exports";
 import { FaArrowLeft, FaPaperPlane, FaFileUpload, FaEnvelope, FaEdit } from "react-icons/fa";
+import { navigate } from "../../../utilities/navigate";
 
 export default class PQRForm extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ export default class PQRForm extends Component {
       this.setState({ isAuthenticated: true });
     } catch (error) {
       console.error("Usuario no autenticado:", error);
-      window.location.href = "/";
+      navigate("/");
     }
   }
 

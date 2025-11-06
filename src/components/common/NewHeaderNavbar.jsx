@@ -107,15 +107,28 @@ export default function NewHeaderNavbar() {
 
   const handleSignOut = async () => {
     try {
-      const currentUser = await Auth.currentAuthenticatedUser();
-      const userId = currentUser.attributes.sub;
-      sessionStorage.removeItem(`pageReloadedForUser-${userId}`);
+      // Intentar limpiar la bandera de recarga si hay usuario
+      try {
+        const currentUser = await Auth.currentAuthenticatedUser();
+        const userId = currentUser?.attributes?.sub;
+        if (userId) {
+          sessionStorage.removeItem(`pageReloadedForUser-${userId}`);
+        }
+      } catch (_) {
+        // Si no hay usuario autenticado, continuar igualmente
+      }
 
-      await Auth.signOut();
+      // Cerrar sesión (si hay sesión activa)
+      try {
+        await Auth.signOut();
+      } catch (_) {
+        // Ignorar errores de signOut cuando no hay sesión
+      }
+
       localStorage.removeItem("role");
+    } finally {
+      // Forzar refresco completo de la página al finalizar el sign out
       window.location.href = "/";
-    } catch (error) {
-      console.log("error signing out: ", error);
     }
   };
 
@@ -147,6 +160,15 @@ export default function NewHeaderNavbar() {
     setShowProfileMenu(!showProfileMenu);
   };
 
+  const getDashboardPath = (r) => {
+    if (r === "constructor" || r === "investor") return "/constructor/home";
+    if (r === "validator") return "/consultor/home";
+    if (r === "legal") return "/legal/home";
+    if (r === "admon") return "/admon";
+    if (r === "analyst") return "/project_analyst";
+    return "/";
+  };
+
   /* const getNavLinksByRole = (role) => {
     const commonLinks = [
       <a
@@ -164,7 +186,7 @@ export default function NewHeaderNavbar() {
       admon: [
         <button
           key="administrar"
-          onClick={() => (window.location.href = "/admon")}
+          onClick={() => navigate("/admon")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           Administrar
@@ -173,14 +195,14 @@ export default function NewHeaderNavbar() {
       validator: [
         <button
           key="perfil-validator"
-          onClick={() => (window.location.href = "/consultor_admon")}
+          onClick={() => navigate("/consultor_admon")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           Perfil
         </button>,
         <button
           key="pqrs-validator"
-          onClick={() => (window.location.href = "/PQRS")}
+          onClick={() => navigate("/PQRS")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           PQRS
@@ -189,14 +211,14 @@ export default function NewHeaderNavbar() {
       legal: [
         <button
           key="perfil-legal"
-          onClick={() => (window.location.href = "/legal_admon")}
+          onClick={() => navigate("/legal_admon")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           Perfil
         </button>,
         <button
           key="pqrs-legal"
-          onClick={() => (window.location.href = "/PQRS")}
+          onClick={() => navigate("/PQRS")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           PQRS
@@ -205,14 +227,14 @@ export default function NewHeaderNavbar() {
       analyst: [
         <button
           key="pqrs-analyst"
-          onClick={() => (window.location.href = "/PQRS")}
+          onClick={() => navigate("/PQRS")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           PQRS
         </button>,
         <button
           key="proyectos-analyst"
-          onClick={() => (window.location.href = "/project_analyst")}
+          onClick={() => navigate("/project_analyst")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           Ver Proyectos
@@ -221,14 +243,14 @@ export default function NewHeaderNavbar() {
       constructor: [
         <button
           key="perfil-constructor"
-          onClick={() => (window.location.href = "/constructor")}
+          onClick={() => navigate("/constructor")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           Perfil
         </button>,
         <button
           key="pqrs-constructor"
-          onClick={() => (window.location.href = "/PQRS")}
+          onClick={() => navigate("/PQRS")}
           className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
         >
           PQRS
@@ -256,62 +278,14 @@ export default function NewHeaderNavbar() {
               {user ? (
                 // Authenticated User Navigation
                 <>
-                  {/* Botón "Mis Predios" para constructores e inversores */}
-                  {(user.attributes["custom:role"] === "constructor" ||
-                    user.attributes["custom:role"] === "investor") && (
-                      <>
-                        <button
-                          onClick={() => navigate("/constructor")}
-                          className="bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-2 text-sm rounded-lg shadow-terrasacha transition-all duration-300 transform hover:scale-105"
-                        >
-                          Mis Predios
-                        </button>
-                      </>
-                    )}
-
-                  {/* Enlace "Mis Campañas" para Validators */}
-                  {user.attributes["custom:role"] === "validator" && (
-                    <>
-                      <button
-                        onClick={() => navigate("/consultor_admon")}
-                        className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
-                      >
-                        Mis campañas
-                      </button>
-                      <button
-                        onClick={() => navigate("/new_campaign")}
-                        className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
-                      >
-                        Crear campaña
-                      </button>
-                    </>
-                  )}
-
-                  {user.attributes["custom:role"] === "admon" && (
-                    <>
-                      <button
-                        onClick={() => navigate("/admon")}
-                        className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
-                      >
-                        Administrar
-                      </button>
-                    </>
-                  )}
-
-                  {user.attributes["custom:role"] === "legal" && (
-                    <>
-                      <button
-                        onClick={() => navigate("/legal_admon")}
-                        className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
-                      >
-                        Perfil
-                      </button>
-                    </>
-                  )}
-
                   <button
-                    key="pqrs-constructor"
-                    onClick={() => (window.location.href = "/PQRS")}
+                    onClick={() => navigate(getDashboardPath(user.attributes["custom:role"]))}
+                    className="bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-2 text-sm rounded-lg shadow-terrasacha transition-all duration-300 transform hover:scale-105"
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={() => navigate("/PQRS")}
                     className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
                   >
                     PQRS
@@ -426,8 +400,9 @@ export default function NewHeaderNavbar() {
                   >
                     ¿Por qué Terrasacha?
                   </a>
+                  {/* PQRS oculto cuando no está logeado */}
                   <button
-                    onClick={() => (window.location.href = "/login")}
+                    onClick={() => navigate("/login")}
                     className="bg-terrasacha-secondary2 hover:bg-terrasacha-primary text-white font-semibold px-4 py-2 text-sm rounded-lg shadow-terrasacha transition-all duration-300 transform hover:scale-105"
                   >
                     Ingresar
@@ -488,76 +463,21 @@ export default function NewHeaderNavbar() {
                 {user ? (
                   // Authenticated User Mobile Navigation
                   <>
-                    {/* Botón "Mis Predios" para constructores e inversores */}
-                    {(user.attributes["custom:role"] === "constructor" ||
-                      user.attributes["custom:role"] === "investor") && (
-                        <button
-                          onClick={() => {
-                            navigate("/constructor");
-                            handleCloseOffcanvas();
-                          }}
-                          className="w-full bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-3 text-sm rounded-lg shadow-terrasacha transition-all duration-300"
-                        >
-                          Mis Predios
-                        </button>
-                      )}
-
-                    {/* Enlace "Mis Campañas" para Validators */}
-                    {user.attributes["custom:role"] === "validator" && (
-                      <>
-                        <button
-                          onClick={() => {
-                            navigate("/consultor_admon");
-                            handleCloseOffcanvas();
-                          }}
-                          className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
-                        >
-                          Mis campañas
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigate("/new_campaign");
-                            handleCloseOffcanvas();
-                          }}
-                          className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
-                        >
-                          Crear campaña
-                        </button>
-                      </>
-                    )}
-
-                    {user.attributes["custom:role"] === "admon" && (
-                      <>
-                        <button
-                          onClick={() => {
-                            navigate("/admon");
-                            handleCloseOffcanvas();
-                          }}
-                          className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
-                        >
-                          Administrar
-                        </button>
-                      </>
-                    )}
-
-                    {user.attributes["custom:role"] === "legal" && (
-                      <>
-                        <button
-                          onClick={() => {
-                            navigate("/legal_admon");
-                            handleCloseOffcanvas();
-                          }}
-                          className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
-                        >
-                          Perfil
-                        </button>
-                      </>
-                    )}
-
                     <button
-                      key="pqrs-validator"
-                      onClick={() => (window.location.href = "/PQRS")}
-                      className="text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300"
+                      onClick={() => {
+                        navigate(getDashboardPath(user.attributes["custom:role"]));
+                        handleCloseOffcanvas();
+                      }}
+                      className="w-full bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-semibold px-4 py-3 text-sm rounded-lg shadow-terrasacha transition-all duration-300"
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/PQRS");
+                        handleCloseOffcanvas();
+                      }}
+                      className="w-full text-terrasacha-secondary1 hover:text-terrasacha-primary font-medium text-sm transition-all duration-300 text-left py-2"
                     >
                       PQRS
                     </button>
@@ -657,6 +577,7 @@ export default function NewHeaderNavbar() {
                     >
                       ¿Por qué Terrasacha?
                     </a>
+                    {/* PQRS oculto cuando no está logeado */}
                     <a
                       key="ayuda"
                       href="https://terrasacha.gitbook.io/terrasacha"
@@ -668,7 +589,7 @@ export default function NewHeaderNavbar() {
                     </a>
                     <button
                       onClick={() => {
-                        window.location.href = "/login";
+                        navigate("/login");
                         handleCloseOffcanvas();
                       }}
                       className="w-full bg-terrasacha-secondary2 hover:bg-terrasacha-primary text-white font-semibold px-4 py-3 text-sm rounded-lg shadow-terrasacha transition-all duration-300"

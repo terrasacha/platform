@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 
 const faqs = [
   {
@@ -170,10 +169,8 @@ const Escrituras = () => {
 
   return (
     <div className="bg-[#f9f9f9] min-h-screen">
-      <NewHeaderNavbar />
-
-      <div className="pt-24 pb-20 px-4 max-w-5xl mx-auto">
-        <div className="bg-white shadow-md rounded-xl p-6 md:p-10">
+      <div className="pt-8 px-4 pb-4 sm:pt-6 sm:px-6 sm:pb-6 lg:pt-8 lg:px-8 lg:pb-8 max-w-5xl mx-auto font-typographica">
+        <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-terrasacha-light/20">
           <h1 className="text-3xl font-bold text-center text-[#4b4a2f] mb-4">
             Preguntas Frecuentes
           </h1>

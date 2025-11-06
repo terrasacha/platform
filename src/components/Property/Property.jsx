@@ -13,7 +13,6 @@ import {
 
 // Contexts
 import { S3ClientProvider, useS3Client } from "context/s3ClientContext";
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import { getProperty } from "graphql/queries";
 import PropertyDetails from "./PropertyDetails";
@@ -532,10 +531,6 @@ export default function Property() {
     <S3ClientProvider>
       <div className="min-h-screen bg-gradient-to-br from-terrasacha-earth via-terrasacha-light to-white">
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6 lg:py-8">
-          {/* Header Navigation */}
-          <div className="mb-6 sm:mb-8 md:mb-10">
-            <NewHeaderNavbar />
-          </div>
 
           {/* Separador visual */}
           <div className="border-b border-terrasacha-light/20 mb-6 sm:mb-8 md:mb-10"></div>

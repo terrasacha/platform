@@ -1,11 +1,6 @@
-import NewHeaderNavbar from "components/common/NewHeaderNavbar";
-
 export default function Dashboard(props) {
   return (
     <div className="container-sm">
-      <div className="mb-5">
-        <NewHeaderNavbar></NewHeaderNavbar>
-      </div>
       <div className="my-2">-</div>
       <div className="d-flex justify-center">
         <iframe
