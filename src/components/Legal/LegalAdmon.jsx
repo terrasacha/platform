@@ -66,6 +66,9 @@ const DocumentationModal = ({
   const [requiredDocuments, setRequiredDocuments] = useState([]);
   const [additionalDocuments, setAdditionalDocuments] = useState([]);
   const [owners, setOwners] = useState([]);
+  const [activeOwnerId, setActiveOwnerId] = useState(null);
+  const [previewSrc, setPreviewSrc] = useState(null);
+  const [previewAlt, setPreviewAlt] = useState("");
 
   // Tipos de documentos requeridos (igual que en PropertyDocumentation.jsx)
   const requiredDocumentTypes = [
@@ -198,6 +201,9 @@ const DocumentationModal = ({
     setRequiredDocuments(required);
     setAdditionalDocuments(additional);
     setOwners(ownersList);
+    if (!activeOwnerId && ownersList.length > 0) {
+      setActiveOwnerId(ownersList[0].id);
+    }
   }, [property]);
 
   // Manejar aprobación/rechazo de documento
@@ -262,6 +268,93 @@ const DocumentationModal = ({
     }
     setShowRejectionReasonModal(false);
     setSelectedDocumentId(null);
+  };
+
+  const activeOwner = owners.find(o => o.id === activeOwnerId) || null;
+  const getOwnerFile = (owner, code) => owner?.files?.find(f => f.type === code)?.url || null;
+
+  const renderOwnerPreview = () => {
+    if (!activeOwner) {
+      return (
+        <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
+          <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">Validación de Identificación</h3>
+          <p className="text-gray-500 italic text-center py-2 text-xs font-typographica">Selecciona un propietario</p>
+        </div>
+      );
+    }
+
+    const idFrontUrl = getOwnerFile(activeOwner, 'USER_ID_FRONT');
+    const idBackUrl = getOwnerFile(activeOwner, 'USER_ID_BACK');
+    const selfieUrl = getOwnerFile(activeOwner, 'USER_SELFIE');
+
+    return (
+      <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-0.5">Validación de Identificación</h3>
+            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0">{activeOwner.name} · {activeOwner.role === 'POSTULANTE' ? 'Postulante' : 'Propietario'}</p>
+          </div>
+          <div className="hidden sm:flex items-center gap-2">
+            {getStatusBadge(activeOwner.status, activeOwner.isApproved)}
+          </div>
+        </div>
+
+        {/* Vista comparativa profesional */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold text-gray-600">Cédula - Frente</p>
+            <div className="relative group border rounded-lg overflow-hidden bg-gray-50">
+              {idFrontUrl ? (
+                // eslint-disable-next-line jsx-a11y/alt-text
+                <img src={idFrontUrl} className="w-full h-52 object-cover" onClick={() => { setPreviewSrc(idFrontUrl); setPreviewAlt('Cédula - Frente'); }} />
+              ) : (
+                <div className="w-full h-52 flex items-center justify-center text-xs text-gray-400">Sin imagen</div>
+              )}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold text-gray-600">Cédula - Reverso</p>
+            <div className="relative group border rounded-lg overflow-hidden bg-gray-50">
+              {idBackUrl ? (
+                // eslint-disable-next-line jsx-a11y/alt-text
+                <img src={idBackUrl} className="w-full h-52 object-cover" onClick={() => { setPreviewSrc(idBackUrl); setPreviewAlt('Cédula - Reverso'); }} />
+              ) : (
+                <div className="w-full h-52 flex items-center justify-center text-xs text-gray-400">Sin imagen</div>
+              )}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold text-gray-600">Selfie</p>
+            <div className="relative group border rounded-lg overflow-hidden bg-gray-50">
+              {selfieUrl ? (
+                // eslint-disable-next-line jsx-a11y/alt-text
+                <img src={selfieUrl} className="w-full h-52 object-cover" onClick={() => { setPreviewSrc(selfieUrl); setPreviewAlt('Selfie'); }} />
+              ) : (
+                <div className="w-full h-52 flex items-center justify-center text-xs text-gray-400">Sin imagen</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Acciones rápidas */}
+        {activeOwner.status === 'pending_review' && (
+          <div className="flex flex-col sm:flex-row gap-2 mt-3">
+            <button
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-xs font-semibold"
+              onClick={() => handleOwnerStatus(activeOwner.id, 'approved')}
+            >
+              Aprobar propietario
+            </button>
+            <button
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-xs font-semibold"
+              onClick={() => { setSelectedDocumentId(activeOwner.id); setShowRejectionReasonModal(true); }}
+            >
+              Rechazar propietario
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
 
 
@@ -384,109 +477,34 @@ const DocumentationModal = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          {/* Columna 1: Validación de Identificación */}
+          {/* Columna 1: Validación de Identificación (nueva UI) */}
           <div className="space-y-3">
-            {owners.length > 0 ? (
-              <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
-                <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">
-                  Validación de Identificación
-                </h3>
-                <div className="space-y-2">
-                  {owners.map((owner) => (
-                    <div
-                      key={owner.id}
-                      className="border border-terrasacha-light/20 rounded-lg p-2 hover:shadow-md transition-shadow"
+            {/* Selector de propietarios */}
+            <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
+              <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">Propietarios / Postulantes</h3>
+              {owners.length > 0 ? (
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {owners.map((o) => (
+                    <button
+                      key={o.id}
+                      onClick={() => setActiveOwnerId(o.id)}
+                      className={`px-3 py-2 rounded-lg border text-xs font-typographica whitespace-nowrap transition-colors ${
+                        activeOwnerId === o.id
+                          ? 'bg-terrasacha-primary text-white border-terrasacha-primary'
+                          : 'bg-white text-terrasacha-primary border-terrasacha-light hover:bg-terrasacha-primary/5'
+                      }`}
                     >
-                      <div className="space-y-3">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {/* Columna izquierda: Información */}
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-xs font-semibold text-terrasacha-primary font-typographica mb-0.5">
-                              {owner.name}
-                            </h4>
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0.5">
-                              {owner.email}
-                            </p>
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
-                              {owner.phone}
-                            </p>
-                            <p className="text-xs text-gray-500 font-typographica mb-1">
-                              {owner.role === 'POSTULANTE' ? 'Postulante' : 'Propietario'}
-                            </p>
-                            {getStatusBadge(owner.status, owner.isApproved)}
-                          </div>
-                          
-                          {/* Columna derecha: Adjuntos */}
-                          <div className="flex flex-col">
-                            <p className="text-xs font-semibold text-terrasacha-primary font-typographica mb-1">
-                              Documentos Adjuntos
-                            </p>
-                            {owner.files && owner.files.length > 0 ? (
-                              <div className="space-y-1.5">
-                                {owner.files.map((file, idx) => (
-                                  <a
-                                    key={idx}
-                                    href={file.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 text-xs text-terrasacha-primary hover:text-terrasacha-primary/80 hover:underline font-typographica p-1.5 border border-terrasacha-light/20 rounded hover:bg-terrasacha-light/5 transition-colors"
-                                  >
-                                    <span>
-                                      {file.type === 'USER_ID_FRONT' ? '📄' :
-                                       file.type === 'USER_ID_BACK' ? '📄' :
-                                       file.type === 'USER_SELFIE' ? '📷' : '📎'}
-                                    </span>
-                                    <span>
-                                      {file.type === 'USER_ID_FRONT' ? 'Cédula Frente' :
-                                       file.type === 'USER_ID_BACK' ? 'Cédula Reverso' :
-                                       file.type === 'USER_SELFIE' ? 'Selfie' : 'Archivo'}
-                                    </span>
-                                  </a>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-xs text-gray-400 italic font-typographica">
-                                No hay documentos adjuntos
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        
-                        {/* Botones Aprobar/Rechazar en fila completa */}
-                        {owner.status === 'pending_review' && (
-                          <div className="flex gap-2 pt-2 border-t border-terrasacha-light/20">
-                            <button
-                              className="flex-1 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 font-typographica text-xs"
-                              onClick={() => handleOwnerStatus(owner.id, 'approved')}
-                            >
-                              Aprobar
-                            </button>
-                            <button
-                              className="flex-1 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 font-typographica text-xs"
-                              onClick={() => {
-                                setSelectedDocumentId(owner.id);
-                                setShowRejectionReasonModal(true);
-                              }}
-                            >
-                              Rechazar
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                      {o.name || 'Sin nombre'}
+                    </button>
                   ))}
                 </div>
-              </div>
-            ) : (
-              <div className="bg-white border border-terrasacha-light/20 rounded-lg p-3">
-                <h3 className="text-sm font-bold text-terrasacha-primary font-typographica mb-2">
-                  Validación de Identificación
-                </h3>
-                <p className="text-gray-500 italic text-center py-2 text-xs font-typographica">
-                  No hay propietarios registrados
-                </p>
-              </div>
-            )}
+              ) : (
+                <p className="text-gray-500 italic text-center py-2 text-xs font-typographica">No hay propietarios registrados</p>
+              )}
+            </div>
+
+            {/* Visor comparativo */}
+            {renderOwnerPreview()}
           </div>
 
           {/* Columna 2: Documentos Requeridos y Adicionales */}
@@ -604,6 +622,20 @@ const DocumentationModal = ({
             )}
           </div>
         </div>
+
+        {/* Modal de previsualización */}
+        {previewSrc && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={() => setPreviewSrc(null)}>
+            <div className="bg-white rounded-lg p-2 max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-semibold text-terrasacha-primary font-typographica">{previewAlt}</p>
+                <button className="text-gray-500 hover:text-gray-700 text-xl" onClick={() => setPreviewSrc(null)}>×</button>
+              </div>
+              {/* eslint-disable-next-line jsx-a11y/alt-text */}
+              <img src={previewSrc} className="w-full h-[70vh] object-contain bg-black/5 rounded" />
+            </div>
+          </div>
+        )}
 
         {/* Botones de Elegible/No Elegible */}
         <div className="mt-4 pt-4 border-t border-terrasacha-light/20">

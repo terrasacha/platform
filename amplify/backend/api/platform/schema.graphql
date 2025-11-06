@@ -184,6 +184,17 @@ type Property @model {
   reason: String
 }
 
+type OwnerValidationSession @model {
+  id: ID!
+  token: String! @index(name: "byToken")
+  propertyID: ID! @index(name: "byProperty")
+  ownerId: ID
+  status: String! # "pending", "completed", "expired"
+  expiresAt: AWSTimestamp!
+  createdAt: AWSTimestamp!
+  updatedAt: AWSTimestamp!
+}
+
 type PropertyFeature @model {
   id: ID!
   value: String

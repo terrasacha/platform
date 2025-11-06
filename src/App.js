@@ -33,6 +33,7 @@ import PQRForm from "components/views/landingPage/PQRForm";
 import Property from "components/Property/Property";
 import Property2 from "components/Property2/Property";
 import { PropertyDataProvider } from "context/PropertyDataContext";
+import MobileOwnerValidation from "components/Property2/MobileOwnerValidation";
 import AnalitycsAdmon from "components/Admon/Analitic/AnalitycsAdmon";
 import "./App.css";
 import { S3ClientProvider } from "context/s3ClientContext";
@@ -222,6 +223,14 @@ function App() {
               <Route path="/planos-catastrales" element={<PlanosCatastrales />} />
               <Route path="/campaigns" element={<CampaignList />} />
               <Route path="/campaign/:id" element={<Campaign />} exact />
+              <Route
+                path="/validate-owner/:token"
+                element={
+                  <S3ClientProvider>
+                    <MobileOwnerValidation />
+                  </S3ClientProvider>
+                }
+              />
               <Route
                 path="/settings"
                 element={

@@ -4,6 +4,8 @@ import { usePropertyData } from "context/PropertyDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { createDocument, deleteDocument, createPropertyFeature, updateDocument } from "graphql/mutations";
 import { listPropertyFeatures } from "graphql/queries";
+import { createOwnerValidationSession } from "graphql/customMutations";
+import { onUpdateDocument } from "graphql/subscriptions";
 import { toast } from "react-toastify";
 import { useS3Client } from "context/s3ClientContext";
 import Swal from "sweetalert2";
@@ -16,6 +18,8 @@ import {
   FaUpload,
   FaIdCard,
   FaCamera,
+  FaMobileAlt,
+  FaQrcode,
 } from "react-icons/fa";
 
 // --- Mapeo de roles ---
@@ -72,6 +76,9 @@ export default function PropertyOwners({
   const [postulanteData, setPostulanteData] = useState(null); // Datos del postulante guardados
   const [propietariosData, setPropietariosData] = useState([]); // Array de propietarios guardados
   const [showAddPropietario, setShowAddPropietario] = useState(false); // Mostrar card para agregar más propietarios
+  const [showQRModal, setShowQRModal] = useState(false); // Modal de QR para validación móvil
+  const [qrToken, setQrToken] = useState(null); // Token generado para QR
+  const [qrUrl, setQrUrl] = useState(""); // URL completa del QR
 
   // Carga inicial desde DB (OWNER_INFO, OWNER_RELATION, y archivos por ownerId)
   useEffect(() => {
@@ -1026,6 +1033,152 @@ export default function PropertyOwners({
     setEditingIndex(-1);
   };
 
+  // Generar token único
+  const generateToken = () => {
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+  };
+
+  // Crear sesión de validación móvil
+  const handleCreateMobileSession = async () => {
+    try {
+      if (!propertyData?.propertyInfo?.id) {
+        Swal.fire({
+          title: "Error",
+          text: "No se encontró información de la propiedad.",
+          icon: "error",
+          confirmButtonText: "Entendido",
+        });
+        return;
+      }
+
+      const token = generateToken();
+      const now = Math.floor(Date.now() / 1000);
+      const expiresAt = now + 30 * 60; // 30 minutos
+
+      const input = {
+        token,
+        propertyID: propertyData.propertyInfo.id,
+        status: "pending",
+        expiresAt,
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      console.log("Creando sesión con input:", input);
+
+      const response = await API.graphql(
+        graphqlOperation(createOwnerValidationSession, { input })
+      );
+
+      console.log("Respuesta de createOwnerValidationSession:", response);
+
+      if (response?.data?.createOwnerValidationSession) {
+        const session = response.data.createOwnerValidationSession;
+        // URL pública fija para abrir desde el celular
+        const baseUrl = 'http://192.168.1.8:3000';
+        const url = `${baseUrl}/validate-owner/${token}`;
+        
+        setQrToken(token);
+        setQrUrl(url);
+        setShowQRModal(true);
+      } else {
+        throw new Error("La respuesta no contiene la sesión creada");
+      }
+    } catch (error) {
+      console.error("Error creando sesión de validación:", error);
+      console.error("Detalles del error:", {
+        message: error.message,
+        errors: error.errors,
+        data: error.data,
+      });
+
+      let errorMessage = "No se pudo generar el código QR. Intenta nuevamente.";
+      
+      // Mensajes más específicos según el tipo de error
+      if (error.errors && error.errors.length > 0) {
+        const firstError = error.errors[0];
+        if (firstError.message?.includes("OwnerValidationSession")) {
+          errorMessage = "El modelo OwnerValidationSession no existe. Por favor ejecuta 'amplify push' primero.";
+        } else if (firstError.message?.includes("Unauthorized")) {
+          errorMessage = "No tienes permisos para realizar esta acción. Verifica tu sesión.";
+        } else {
+          errorMessage = firstError.message || errorMessage;
+        }
+      } else if (error.message) {
+        if (error.message.includes("not found") || error.message.includes("does not exist")) {
+          errorMessage = "El modelo OwnerValidationSession no existe. Por favor ejecuta 'amplify push' primero.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      Swal.fire({
+        title: "Error",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "Entendido",
+      });
+    }
+  };
+
+  // Subscription para actualización automática cuando se completa desde móvil
+  useEffect(() => {
+    if (!propertyData?.propertyInfo?.id || !showQRModal) return;
+
+    let subscription = null;
+
+    const setupSubscription = async () => {
+      // Asegurar que globalFilesFeatureRef esté inicializado
+      const globalFeature = await ensureGlobalFilesPropertyFeature();
+      if (!globalFeature?.id) return;
+
+      subscription = API.graphql(
+        graphqlOperation(onUpdateDocument, {
+          filter: {
+            propertyFeatureID: { eq: globalFeature.id }
+          }
+        })
+      ).subscribe({
+        next: ({ value }) => {
+          if (value?.data?.onUpdateDocument) {
+            const doc = value.data.onUpdateDocument;
+            try {
+              const data = JSON.parse(doc.data || '{}');
+              if (data.type === 'OWNER_BUNDLE') {
+                // Refrescar datos
+                if (refreshPropertyData) {
+                  refreshPropertyData();
+                }
+                // Cerrar modal y mostrar notificación
+                setShowQRModal(false);
+                Swal.fire({
+                  title: "¡Validación Completada!",
+                  text: "Los documentos han sido subidos desde el móvil y se han actualizado automáticamente.",
+                  icon: "success",
+                  timer: 3000,
+                  showConfirmButton: false,
+                });
+              }
+            } catch (e) {
+              // Ignorar errores de parsing
+            }
+          }
+        },
+        error: (err) => {
+          console.error("Error en subscription:", err);
+        }
+      });
+    };
+
+    setupSubscription();
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
+  }, [propertyData?.propertyInfo?.id, showQRModal, refreshPropertyData]);
+
   const validateOwnerData = (ownerData, isLoggedUser = false) => {
     const errors = [];
 
@@ -1097,16 +1250,12 @@ export default function PropertyOwners({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button
             onClick={async () => {
-              if (hasDataEntered()) return;
               setIsThirdParty(false);
               // Relación se integrará en OWNER_BUNDLE al crear el primer propietario
             }}
-            disabled={hasDataEntered()}
             className={`p-4 sm:p-6 border-2 rounded-xl transition-colors text-left ${
               isThirdParty === false
                 ? "border-terrasacha-primary bg-terrasacha-primary/5"
-                : hasDataEntered()
-                ? "border-[#849b50]/30 bg-[#b1c181]/10 cursor-not-allowed opacity-60"
                 : "border-terrasacha-light hover:border-terrasacha-primary"
             }`}
           >
@@ -1122,24 +1271,15 @@ export default function PropertyOwners({
                 ✓ Seleccionado
               </div>
             )}
-            {hasDataEntered() && isThirdParty !== false && (
-              <div className="mt-3 text-sm text-[#6e6c35] font-semibold font-typographica">
-                🔒 Bloqueado
-              </div>
-            )}
           </button>
           <button
             onClick={async () => {
-              if (hasDataEntered()) return;
               setIsThirdParty(true);
               // Relación se integrará en OWNER_BUNDLE al crear el primer propietario
             }}
-            disabled={hasDataEntered()}
             className={`p-4 sm:p-6 border-2 rounded-xl transition-colors text-left ${
               isThirdParty === true
                 ? "border-terrasacha-primary bg-terrasacha-primary/5"
-                : hasDataEntered()
-                ? "border-[#849b50]/30 bg-[#b1c181]/10 cursor-not-allowed opacity-60"
                 : "border-terrasacha-light hover:border-terrasacha-primary"
             }`}
           >
@@ -1155,20 +1295,8 @@ export default function PropertyOwners({
                 ✓ Seleccionado
               </div>
             )}
-            {hasDataEntered() && isThirdParty !== true && (
-              <div className="mt-3 text-sm text-[#6e6c35] font-semibold font-typographica">
-                🔒 Bloqueado
-              </div>
-            )}
           </button>
         </div>
-        {hasDataEntered() && isThirdParty === null && (
-          <div className="mt-4 p-3 sm:p-4 bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg">
-            <p className="text-xs sm:text-sm text-[#6e6c35] font-typographica mb-0">
-              ℹ️ Una vez que has ingresado información, no puedes cambiar tu relación con la propiedad.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Formulario de propietarios */}
@@ -1732,6 +1860,32 @@ export default function PropertyOwners({
                     </div>
                   </div>
 
+                  {/* Opción de validación móvil */}
+                  <div className="mb-4 sm:mb-6">
+                    <div className="bg-terrasacha-light/10 border border-terrasacha-light/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <FaMobileAlt className="text-terrasacha-primary text-xl" />
+                          <div>
+                            <h4 className="text-sm font-semibold text-terrasacha-primary font-typographica mb-1">
+                              Validar desde móvil
+                            </h4>
+                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0">
+                              Genera un código QR para completar la validación desde tu teléfono
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleCreateMobileSession}
+                          className="flex items-center gap-2 bg-terrasacha-primary text-white px-4 py-2 rounded-lg hover:bg-terrasacha-secondary1 transition text-sm font-semibold whitespace-nowrap"
+                          title="Generar código QR para móvil"
+                        >
+                          <FaQrcode /> Generar QR
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Archivos */}
                   <div className="grid grid-cols-1 gap-4 mb-4 sm:mb-6">
                     <div>
@@ -1808,6 +1962,75 @@ export default function PropertyOwners({
             </div>
           )}
         </>
+      )}
+
+      {/* Modal de QR para validación móvil */}
+      {showQRModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-terrasacha-primary font-typographica">
+                Validación desde Móvil
+              </h3>
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="text-center mb-4">
+              <p className="text-sm text-gray-600 mb-4 font-typographica">
+                Escanea este código QR con tu teléfono para completar la validación desde el móvil
+              </p>
+              
+              {/* QR Code usando API externa (simple) */}
+              <div className="bg-white p-4 rounded-lg border-2 border-gray-200 inline-block mb-4">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrUrl)}`}
+                  alt="QR Code"
+                  className="w-64 h-64 mx-auto"
+                />
+              </div>
+
+              <div className="bg-gray-50 p-3 rounded-lg mb-4">
+                <p className="text-xs text-gray-500 mb-2 font-typographica">O copia este enlace:</p>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={qrUrl}
+                    readOnly
+                    className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded font-typographica"
+                    onClick={(e) => e.target.select()}
+                  />
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(qrUrl);
+                      toast.success("Enlace copiado al portapapeles");
+                    }}
+                    className="bg-terrasacha-primary text-white px-3 py-2 rounded text-sm hover:bg-terrasacha-secondary1 transition font-typographica"
+                  >
+                    Copiar
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-500 font-typographica">
+                El código expirará en 30 minutos
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition font-semibold font-typographica"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

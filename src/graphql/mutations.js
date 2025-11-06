@@ -1840,6 +1840,60 @@ export const deleteProperty = /* GraphQL */ `
     }
   }
 `;
+export const createOwnerValidationSession = /* GraphQL */ `
+  mutation CreateOwnerValidationSession(
+    $input: CreateOwnerValidationSessionInput!
+    $condition: ModelOwnerValidationSessionConditionInput
+  ) {
+    createOwnerValidationSession(input: $input, condition: $condition) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateOwnerValidationSession = /* GraphQL */ `
+  mutation UpdateOwnerValidationSession(
+    $input: UpdateOwnerValidationSessionInput!
+    $condition: ModelOwnerValidationSessionConditionInput
+  ) {
+    updateOwnerValidationSession(input: $input, condition: $condition) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteOwnerValidationSession = /* GraphQL */ `
+  mutation DeleteOwnerValidationSession(
+    $input: DeleteOwnerValidationSessionInput!
+    $condition: ModelOwnerValidationSessionConditionInput
+  ) {
+    deleteOwnerValidationSession(input: $input, condition: $condition) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createPropertyFeature = /* GraphQL */ `
   mutation CreatePropertyFeature(
     $input: CreatePropertyFeatureInput!

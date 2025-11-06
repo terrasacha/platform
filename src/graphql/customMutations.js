@@ -34,3 +34,56 @@ mutation updateProperty($input: UpdatePropertyInput!) {
     id
   }
 }`
+
+export const createOwnerValidationSession = /* GraphQL */ `
+  mutation CreateOwnerValidationSession(
+    $input: CreateOwnerValidationSessionInput!
+    $condition: ModelOwnerValidationSessionConditionInput
+  ) {
+    createOwnerValidationSession(input: $input, condition: $condition) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const updateOwnerValidationSession = /* GraphQL */ `
+  mutation UpdateOwnerValidationSession(
+    $input: UpdateOwnerValidationSessionInput!
+    $condition: ModelOwnerValidationSessionConditionInput
+  ) {
+    updateOwnerValidationSession(input: $input, condition: $condition) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const getOwnerValidationSessionByToken = /* GraphQL */ `
+  query ListOwnerValidationSessions($filter: ModelOwnerValidationSessionFilterInput) {
+    listOwnerValidationSessions(filter: $filter) {
+      items {
+        id
+        token
+        propertyID
+        ownerId
+        status
+        expiresAt
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;

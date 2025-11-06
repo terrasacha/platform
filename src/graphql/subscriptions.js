@@ -1771,6 +1771,57 @@ export const onDeleteProperty = /* GraphQL */ `
     }
   }
 `;
+export const onCreateOwnerValidationSession = /* GraphQL */ `
+  subscription OnCreateOwnerValidationSession(
+    $filter: ModelSubscriptionOwnerValidationSessionFilterInput
+  ) {
+    onCreateOwnerValidationSession(filter: $filter) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateOwnerValidationSession = /* GraphQL */ `
+  subscription OnUpdateOwnerValidationSession(
+    $filter: ModelSubscriptionOwnerValidationSessionFilterInput
+  ) {
+    onUpdateOwnerValidationSession(filter: $filter) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteOwnerValidationSession = /* GraphQL */ `
+  subscription OnDeleteOwnerValidationSession(
+    $filter: ModelSubscriptionOwnerValidationSessionFilterInput
+  ) {
+    onDeleteOwnerValidationSession(filter: $filter) {
+      id
+      token
+      propertyID
+      ownerId
+      status
+      expiresAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onCreatePropertyFeature = /* GraphQL */ `
   subscription OnCreatePropertyFeature(
     $filter: ModelSubscriptionPropertyFeatureFilterInput
