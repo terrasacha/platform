@@ -337,6 +337,98 @@ const MobileOwnerValidation = () => {
     }
   };
 
+  // Función para determinar el role y propertyRelation basándose en documentos existentes
+  const determineOwnerRoleAndRelation = async () => {
+    try {
+      const globalFeature = await getGlobalFilesPropertyFeature();
+      if (!globalFeature?.id) {
+        // Si no hay feature, es el primer propietario, asumimos PROPIETARIO con SELF
+        return { role: "PROPIETARIO", propertyRelation: "SELF" };
+      }
+
+      // Consultar todos los documentos del feature
+      const { listDocuments } = await import("graphql/queries");
+      const docsResponse = await API.graphql(
+        graphqlOperation(listDocuments, {
+          filter: {
+            propertyFeatureID: { eq: globalFeature.id },
+          },
+        })
+      );
+
+      const allDocs = docsResponse?.data?.listDocuments?.items || [];
+      
+      let hasPostulante = false;
+      let hasPropietario = false;
+      let existingPropertyRelation = null;
+
+      // Analizar documentos existentes
+      for (const doc of allDocs) {
+        try {
+          const data = JSON.parse(doc.data || "{}");
+          if (data.type === "OWNER_BUNDLE") {
+            if (data.role === "POSTULANTE") {
+              hasPostulante = true;
+            } else if (data.role === "PROPIETARIO") {
+              hasPropietario = true;
+            }
+            
+            // Obtener propertyRelation si existe
+            if (data.propertyRelation && !existingPropertyRelation) {
+              existingPropertyRelation = data.propertyRelation;
+            }
+          }
+        } catch (e) {
+          // Ignorar errores de parsing
+        }
+      }
+
+      // Determinar role
+      let role = "PROPIETARIO";
+      if (!hasPostulante && !hasPropietario) {
+        // Si no hay nada, podría ser POSTULANTE si es tercero, o PROPIETARIO si es propio
+        // Por defecto asumimos PROPIETARIO, pero si hay propertyRelation THIRD_PARTY, sería POSTULANTE
+        if (existingPropertyRelation === "THIRD_PARTY") {
+          role = "POSTULANTE";
+        }
+      } else if (hasPostulante) {
+        // Si ya hay un POSTULANTE, este nuevo es PROPIETARIO
+        role = "PROPIETARIO";
+      } else {
+        // Si solo hay PROPIETARIOS, este nuevo también es PROPIETARIO
+        role = "PROPIETARIO";
+      }
+
+      // Determinar propertyRelation
+      let propertyRelation = "SELF";
+      if (existingPropertyRelation) {
+        // Si ya existe un propertyRelation, usar el mismo
+        propertyRelation = existingPropertyRelation;
+      } else {
+        // Si no existe, inferir basándose en el role
+        if (role === "POSTULANTE") {
+          propertyRelation = "THIRD_PARTY";
+        } else {
+          propertyRelation = "SELF";
+        }
+      }
+
+      console.log("🔍 Determinado role y propertyRelation:", {
+        role,
+        propertyRelation,
+        hasPostulante,
+        hasPropietario,
+        existingPropertyRelation,
+      });
+
+      return { role, propertyRelation };
+    } catch (error) {
+      console.error("Error determinando role y propertyRelation:", error);
+      // Fallback: PROPIETARIO con SELF
+      return { role: "PROPIETARIO", propertyRelation: "SELF" };
+    }
+  };
+
   const saveOwnerBundleToDB = async (ownerData) => {
     const globalFeature = await getGlobalFilesPropertyFeature();
     if (!globalFeature?.id) {
@@ -470,15 +562,18 @@ const MobileOwnerValidation = () => {
         { type: "USER_SELFIE", url: selfieUploaded.url, s3Key: selfieUploaded.key, name: documents.selfie.name },
       ];
 
+      // Determinar role y propertyRelation basándose en documentos existentes
+      const { role, propertyRelation } = await determineOwnerRoleAndRelation();
+
       // Guardar en DB
       await saveOwnerBundleToDB({
         ownerId: ownerUid,
-        role: "PROPIETARIO",
+        role,
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         files,
-        propertyRelation: "SELF",
+        propertyRelation,
       });
 
       // Actualizar sesión como completada
