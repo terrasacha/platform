@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { FaTimes, FaChevronLeft, FaChevronRight, FaSpinner } from "react-icons/fa";
 import { API, graphqlOperation } from "aws-amplify";
@@ -36,7 +36,10 @@ const DocumentViewerModal = ({
   const [formData, setFormData] = useState(null);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isSavingForm, setIsSavingForm] = useState(false);
+  const [hasAutoCentered, setHasAutoCentered] = useState(false);
   const { user } = useAuth();
+
+  const viewerScrollRef = useRef(null);
 
   // Verificar si el usuario tiene rol permitido (legal, administrador o consultor)
   const isAuthorizedUser = user?.role === "legal" || user?.role === "admon" || user?.role === "validator";
@@ -116,6 +119,7 @@ const DocumentViewerModal = ({
       setLoading(true);
       setError(null);
       setNumPages(null);
+      setHasAutoCentered(false);
     }
   }, [isOpen, documentUrl]);
 
@@ -135,6 +139,16 @@ const DocumentViewerModal = ({
     setNumPages(numPages);
     setError(null);
     setLoading(false);
+
+    // Centrar horizontalmente solo una vez al cargar el PDF
+    if (!hasAutoCentered && viewerScrollRef.current) {
+      const container = viewerScrollRef.current;
+      const { scrollWidth, clientWidth } = container;
+      if (scrollWidth > clientWidth) {
+        container.scrollLeft = (scrollWidth - clientWidth) / 2;
+      }
+      setHasAutoCentered(true);
+    }
   };
 
   const onDocumentLoadError = (error) => {
@@ -406,7 +420,8 @@ const DocumentViewerModal = ({
             
             {/* Área de visualización */}
             <div
-              className="flex-1 overflow-auto p-2 sm:p-3 md:p-4 flex items-center justify-center"
+              ref={viewerScrollRef}
+              className="flex-1 min-h-0 overflow-auto p-2 sm:p-3 md:p-4 bg-white"
               onWheel={(e) => {
                 // Evita que el scroll se propague al fondo
                 e.stopPropagation();
@@ -443,38 +458,36 @@ const DocumentViewerModal = ({
           )}
 
           {!error && !isImage && (
-            <div className="flex flex-col items-center space-y-4">
-              <div className="bg-white rounded-lg shadow-lg p-2">
-                <Document
-                  file={documentUrl}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                  onLoadError={onDocumentLoadError}
-                  loading={
-                    <div className="flex flex-col items-center justify-center space-y-4 p-8">
-                      <FaSpinner className="w-8 h-8 text-[#6e6c35] animate-spin" />
-                      <p className="text-[#6e6c35] font-typographica">Cargando PDF...</p>
+            <div className="inline-block bg-white rounded-lg shadow-lg p-2">
+              <Document
+                file={documentUrl}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={
+                  <div className="flex flex-col items-center justify-center space-y-4 p-8">
+                    <FaSpinner className="w-8 h-8 text-[#6e6c35] animate-spin" />
+                    <p className="text-[#6e6c35] font-typographica">Cargando PDF...</p>
+                  </div>
+                }
+                error={
+                  <div className="flex flex-col items-center justify-center space-y-4 p-8">
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                      <p className="text-red-600 font-typographica mb-0">
+                        No se pudo cargar el PDF para visualización.
+                      </p>
                     </div>
-                  }
-                  error={
-                    <div className="flex flex-col items-center justify-center space-y-4 p-8">
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-                        <p className="text-red-600 font-typographica mb-0">
-                          No se pudo cargar el PDF para visualización.
-                        </p>
-                      </div>
-                    </div>
-                  }
-                >
-                  <Page
-                    pageNumber={pageNumber}
-                    scale={scale}
-                    rotate={rotation}
-                    renderTextLayer={true}
-                    renderAnnotationLayer={true}
-                    className="shadow-lg"
-                  />
-                </Document>
-              </div>
+                  </div>
+                }
+              >
+                <Page
+                  pageNumber={pageNumber}
+                  scale={scale}
+                  rotate={rotation}
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                  className="shadow-lg"
+                />
+              </Document>
             </div>
           )}
             </div>
