@@ -172,9 +172,7 @@ const DocumentViewerModal = ({
   const handleKeyDown = (e) => {
     if (!isOpen) return;
     
-    if (e.key === "Escape") {
-      onClose();
-    } else if (e.key === "ArrowLeft" && !isImage && numPages) {
+    if (e.key === "ArrowLeft" && !isImage && numPages) {
       handlePreviousPage();
     } else if (e.key === "ArrowRight" && !isImage && numPages) {
       handleNextPage();
@@ -273,11 +271,6 @@ const DocumentViewerModal = ({
     <div
       data-document-viewer-modal
       className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[9999] p-2 sm:p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          onClose();
-        }
-      }}
     >
       <div className={`bg-white rounded-xl shadow-2xl w-full ${showForm ? 'max-w-[95vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-[1600px]' : 'max-w-[95vw] sm:max-w-[90vw] md:max-w-4xl lg:max-w-6xl'} max-h-[95vh] flex flex-col`}>
         {/* Header */}
