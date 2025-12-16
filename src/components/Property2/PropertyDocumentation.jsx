@@ -16,6 +16,7 @@ import {
   FaTrash,
   FaCheckCircle,
 } from "react-icons/fa";
+import DocumentViewerModal from "./DocumentViewerModal";
 
 // Tipos de documentos requeridos
 const requiredDocuments = [
@@ -77,6 +78,13 @@ export default function PropertyDocumentation({
   const [draggedOverCard, setDraggedOverCard] = useState(null);
   const [dragCounter, setDragCounter] = useState(0);
   const [hoveredBlockedDoc, setHoveredBlockedDoc] = useState(null);
+  
+  // Estados para el modal de visualización
+  const [viewerModalOpen, setViewerModalOpen] = useState(false);
+  const [viewerDocumentUrl, setViewerDocumentUrl] = useState(null);
+  const [viewerDocumentName, setViewerDocumentName] = useState(null);
+  const [viewerDocumentId, setViewerDocumentId] = useState(null);
+  const [viewerDocumentType, setViewerDocumentType] = useState(null);
 
   // Inicializar documentos requeridos
   useEffect(() => {
@@ -152,6 +160,7 @@ export default function PropertyDocumentation({
           isApproved: document.isApproved || false,
           documentId: document.id,
           s3Key: extractKeyFromUrl(fileUrl),
+          typeCode: typeCode,
         };
       } else {
         nextAdditional.push({
@@ -164,6 +173,7 @@ export default function PropertyDocumentation({
           status,
           documentId: document.id,
           s3Key: extractKeyFromUrl(fileUrl),
+          typeCode: typeCode,
         });
       }
     });
@@ -234,6 +244,31 @@ const saveDocumentToDB = async ({ url, name, typeCode, s3Key }) => {
       return decodeURIComponent(u.pathname.startsWith('/') ? u.pathname.slice(1) : u.pathname);
     } catch {
       return null;
+    }
+  };
+
+  // Función helper para detectar si un archivo es visualizable (PDF o imagen)
+  const isVisualizableFile = (url) => {
+    if (!url) return false;
+    const urlLower = url.toLowerCase();
+    const visualizableExtensions = [
+      '.pdf',
+      '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'
+    ];
+    return visualizableExtensions.some(ext => urlLower.includes(ext));
+  };
+
+  // Función para abrir el modal de visualización
+  const handleViewDocument = (url, name, documentId = null, typeCode = null) => {
+    if (isVisualizableFile(url)) {
+      setViewerDocumentUrl(url);
+      setViewerDocumentName(name);
+      setViewerDocumentId(documentId);
+      setViewerDocumentType(typeCode);
+      setViewerModalOpen(true);
+    } else {
+      // Si no es visualizable, abrir en nueva pestaña
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -733,14 +768,17 @@ const uploadFileToS3 = async (file, type, docId = null) => {
                         Subido: {new Date(isUploaded.uploadedAt).toLocaleDateString('es-ES')}
                       </div>
                       <div className="flex items-center justify-center space-x-3 mb-3">
-                        <a
-                          href={isUploaded.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
+                        <button
+                          onClick={() => handleViewDocument(
+                            isUploaded.url, 
+                            isUploaded.name, 
+                            isUploaded.documentId,
+                            isUploaded.typeCode || mapRequiredIdToTypeCode(doc.id)
+                          )}
+                          className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm transition-colors"
                         >
                           Ver
-                        </a>
+                        </button>
                         {isConsultant && (
                           <button
                             onClick={() => removeRequiredDoc(doc.id)}
@@ -864,14 +902,17 @@ const uploadFileToS3 = async (file, type, docId = null) => {
                   Subido: {new Date(doc.uploadedAt).toLocaleDateString('es-ES')}
                 </div>
                 <div className="flex items-center justify-center space-x-3">
-                  <a
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
+                  <button
+                    onClick={() => handleViewDocument(
+                      doc.url, 
+                      doc.name, 
+                      doc.documentId,
+                      doc.typeCode
+                    )}
+                    className="px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm transition-colors"
                   >
                     Ver
-                  </a>
+                  </button>
                   <button
                     onClick={() => removeAdditionalDoc(doc.id)}
                     className="px-3 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica text-xs sm:text-sm"
@@ -927,6 +968,24 @@ const uploadFileToS3 = async (file, type, docId = null) => {
           </div>
         </div>
       </div>
+
+      {/* Modal de visualización de documentos */}
+      <DocumentViewerModal
+        isOpen={viewerModalOpen}
+        onClose={() => {
+          setViewerModalOpen(false);
+          setViewerDocumentUrl(null);
+          setViewerDocumentName(null);
+          setViewerDocumentId(null);
+          setViewerDocumentType(null);
+        }}
+        documentUrl={viewerDocumentUrl}
+        documentName={viewerDocumentName}
+        documentId={viewerDocumentId}
+        documentType={viewerDocumentType}
+        propertyData={propertyData}
+        refreshPropertyData={refreshPropertyData}
+      />
     </div>
   );
 }
