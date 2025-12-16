@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { usePropertyData } from "context/PropertyDataContext";
 import { useS3Client } from "context/s3ClientContext";
 import { useAuth } from "context/AuthContext";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { API, graphqlOperation } from "aws-amplify";
-import { createDocument, deleteDocument } from "graphql/mutations";
+import { createDocument, deleteDocument, createPropertyFeature, createVerification } from "graphql/mutations";
+import { listPropertyFeatures, listVerifications } from "graphql/queries";
 import {
   FaFileAlt,
   FaFileContract,
@@ -66,6 +67,10 @@ export default function PropertyDocumentation({
   const { propertyData, refresh: refreshPropertyData } = usePropertyData();
   const { s3Client, bucketName } = useS3Client();
   const { user } = useAuth();
+  
+  // Cache para evitar crear múltiples veces el GLOBAL_PROPERTY_FILES
+  const globalFilesFeatureRef = useRef(null);
+  const isCreatingGlobalFeatureRef = useRef(false);
   
   // Verificar si el usuario es consultor
   const isConsultant = user?.role === "validator";
@@ -183,14 +188,221 @@ export default function PropertyDocumentation({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyData]);
 
-  // Helper: obtener PropertyFeature para GLOBAL_PROPERTY_FILES
+  // Helper: obtener PropertyFeature para GLOBAL_PROPERTY_FILES (desde contexto o cache local)
   const getGlobalFilesPropertyFeature = () => {
     try {
-      return propertyData?.propertyFeatures?.find(
+      const fromContext = propertyData?.propertyFeatures?.find(
         (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
       );
+      return fromContext || globalFilesFeatureRef.current || null;
     } catch {
       return null;
+    }
+  };
+
+  // Asegurar (obtener o crear) el PropertyFeature GLOBAL_PROPERTY_FILES, siguiendo la lógica de PropertyOwners
+  const ensureGlobalFilesPropertyFeature = async () => {
+    // 1) Si ya lo tenemos en cache, devolverlo
+    if (globalFilesFeatureRef.current?.id) return globalFilesFeatureRef.current;
+
+    // 2) Si viene en propertyData, cachearlo
+    const fromContext = propertyData?.propertyFeatures?.find(
+      (feature) => feature.featureID === "GLOBAL_PROPERTY_FILES"
+    );
+    if (fromContext?.id) {
+      globalFilesFeatureRef.current = fromContext;
+
+      // Verificar/crear Verification asociado (mismo patrón que PropertyOwners)
+      try {
+        const verificationResp = await API.graphql(
+          graphqlOperation(listVerifications, {
+            filter: {
+              propertyFeatureID: { eq: fromContext.id },
+            },
+          })
+        );
+
+        const existingVerification =
+          verificationResp?.data?.listVerifications?.items?.[0];
+
+        if (!existingVerification) {
+          const userId =
+            propertyData?.projectPostulant?.id ||
+            propertyData?.propertyInfo?.userID;
+          if (userId) {
+            const verificationInput = {
+              propertyFeatureID: fromContext.id,
+              userVerifiedID: userId,
+            };
+
+            await API.graphql(
+              graphqlOperation(createVerification, { input: verificationInput })
+            );
+            console.log(
+              "✅ Verification creado para GLOBAL_PROPERTY_FILES desde contexto (PropertyDocumentation)"
+            );
+          }
+        }
+      } catch (verificationErr) {
+        console.error(
+          "Error verificando/creando verification en PropertyDocumentation:",
+          verificationErr
+        );
+      }
+
+      return fromContext;
+    }
+
+    // 3) Evitar condiciones de carrera si otro flujo lo está creando
+    if (isCreatingGlobalFeatureRef.current) {
+      for (let i = 0; i < 10; i++) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (globalFilesFeatureRef.current?.id)
+          return globalFilesFeatureRef.current;
+      }
+    }
+
+    if (!propertyData?.propertyInfo?.id) return null;
+
+    // 4) Consultar en backend por si ya existe
+    try {
+      const resp = await API.graphql(
+        graphqlOperation(listPropertyFeatures, {
+          filter: {
+            propertyID: { eq: propertyData.propertyInfo.id },
+            featureID: { eq: "GLOBAL_PROPERTY_FILES" },
+          },
+        })
+      );
+      const found = resp?.data?.listPropertyFeatures?.items?.[0] || null;
+      if (found?.id) {
+        globalFilesFeatureRef.current = found;
+
+        // Verificar/crear Verification asociado
+        try {
+          const verificationResp = await API.graphql(
+            graphqlOperation(listVerifications, {
+              filter: {
+                propertyFeatureID: { eq: found.id },
+              },
+            })
+          );
+
+          const existingVerification =
+            verificationResp?.data?.listVerifications?.items?.[0];
+
+          if (!existingVerification) {
+            const userId =
+              propertyData?.projectPostulant?.id ||
+              propertyData?.propertyInfo?.userID;
+            if (userId) {
+              const verificationInput = {
+                propertyFeatureID: found.id,
+                userVerifiedID: userId,
+              };
+
+              await API.graphql(
+                graphqlOperation(createVerification, { input: verificationInput })
+              );
+              console.log(
+                "✅ Verification creado para GLOBAL_PROPERTY_FILES existente (PropertyDocumentation)"
+              );
+            }
+          }
+        } catch (verificationErr) {
+          console.error(
+            "Error verificando/creando verification existente en PropertyDocumentation:",
+            verificationErr
+          );
+        }
+
+        return found;
+      }
+    } catch (err) {
+      console.warn(
+        "Fallo consultando listPropertyFeatures en PropertyDocumentation:",
+        err
+      );
+    }
+
+    // 5) Crear un nuevo PropertyFeature GLOBAL_PROPERTY_FILES
+    try {
+      isCreatingGlobalFeatureRef.current = true;
+      const input = {
+        propertyID: propertyData.propertyInfo.id,
+        featureID: "GLOBAL_PROPERTY_FILES",
+        value: "{}",
+        isToBlockChain: false,
+        isOnMainCard: false,
+        isResult: false,
+        order: 0,
+      };
+
+      const resp = await API.graphql(
+        graphqlOperation(createPropertyFeature, { input })
+      );
+      const created = resp?.data?.createPropertyFeature || null;
+
+      if (created?.id) {
+        globalFilesFeatureRef.current = created;
+
+        // Crear Verification asociado
+        try {
+          const userId =
+            propertyData?.projectPostulant?.id ||
+            propertyData?.propertyInfo?.userID;
+          if (userId) {
+            const verificationResp = await API.graphql(
+              graphqlOperation(listVerifications, {
+                filter: {
+                  propertyFeatureID: { eq: created.id },
+                },
+              })
+            );
+
+            const existingVerification =
+              verificationResp?.data?.listVerifications?.items?.[0];
+
+            if (!existingVerification) {
+              const verificationInput = {
+                propertyFeatureID: created.id,
+                userVerifiedID: userId,
+              };
+
+              await API.graphql(
+                graphqlOperation(createVerification, { input: verificationInput })
+              );
+              console.log(
+                "✅ Verification creado para nuevo GLOBAL_PROPERTY_FILES (PropertyDocumentation)"
+              );
+            } else {
+              console.log(
+                "ℹ️ Verification ya existe para este feature (PropertyDocumentation)"
+              );
+            }
+          } else {
+            console.warn(
+              "⚠️ No se pudo crear verification: userId no disponible (PropertyDocumentation)"
+            );
+          }
+        } catch (verificationErr) {
+          console.error(
+            "Error creando verification para nuevo GLOBAL_PROPERTY_FILES en PropertyDocumentation:",
+            verificationErr
+          );
+        }
+      }
+
+      return created;
+    } catch (err) {
+      console.error(
+        "Error creando GLOBAL_PROPERTY_FILES en PropertyDocumentation:",
+        err
+      );
+      return null;
+    } finally {
+      isCreatingGlobalFeatureRef.current = false;
     }
   };
 
@@ -205,22 +417,27 @@ export default function PropertyDocumentation({
     return map[docId] || "OTRO";
   };
 
-// Persistir documento en DB
-const saveDocumentToDB = async ({ url, name, typeCode, s3Key }) => {
-    const globalFeature = getGlobalFilesPropertyFeature();
+  // Persistir documento en DB, asegurando previamente el GLOBAL_PROPERTY_FILES
+  const saveDocumentToDB = async ({ url, name, typeCode, s3Key }) => {
+    const globalFeature = await ensureGlobalFilesPropertyFeature();
     if (!globalFeature?.id) {
-      console.warn("No se encontró PropertyFeature GLOBAL_PROPERTY_FILES para el predio");
+      console.warn(
+        "No se pudo asegurar PropertyFeature GLOBAL_PROPERTY_FILES para el predio (PropertyDocumentation)"
+      );
       return null;
     }
 
-    const userId = propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+    const userId =
+      propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
     if (!userId) {
-      console.warn("No se encontró userID para asociar el documento");
+      console.warn(
+        "No se encontró userID para asociar el documento en PropertyDocumentation"
+      );
     }
 
-  const input = {
-    data: JSON.stringify({ name, type: typeCode, url, s3Key }),
-    url,
+    const input = {
+      data: JSON.stringify({ name, type: typeCode, url, s3Key }),
+      url,
       status: "pending_review",
       visible: true,
       propertyFeatureID: globalFeature.id,
@@ -231,7 +448,7 @@ const saveDocumentToDB = async ({ url, name, typeCode, s3Key }) => {
       const resp = await API.graphql(graphqlOperation(createDocument, { input }));
       return resp?.data?.createDocument || null;
     } catch (err) {
-      console.error("Error creando Document en DB:", err);
+      console.error("Error creando Document en DB (PropertyDocumentation):", err);
       return null;
     }
   };
