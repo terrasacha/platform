@@ -112,11 +112,24 @@ const DocumentViewerModal = ({
     if (isOpen) {
       setPageNumber(1);
       setScale(1.0);
+      setRotation(0);
       setLoading(true);
       setError(null);
       setNumPages(null);
     }
   }, [isOpen, documentUrl]);
+
+  // Bloquear scroll del body cuando el modal está abierto
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -399,7 +412,13 @@ const DocumentViewerModal = ({
             )}
             
             {/* Área de visualización */}
-            <div className="flex-1 overflow-auto p-2 sm:p-3 md:p-4 flex items-center justify-center">
+            <div
+              className="flex-1 overflow-auto p-2 sm:p-3 md:p-4 flex items-center justify-center"
+              onWheel={(e) => {
+                // Evita que el scroll se propague al fondo
+                e.stopPropagation();
+              }}
+            >
           {loading && isImage && (
             <div className="flex flex-col items-center justify-center space-y-4">
               <FaSpinner className="w-8 h-8 text-[#6e6c35] animate-spin" />
