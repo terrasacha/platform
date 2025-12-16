@@ -37,6 +37,10 @@ const DocumentViewerModal = ({
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isSavingForm, setIsSavingForm] = useState(false);
   const [hasAutoCentered, setHasAutoCentered] = useState(false);
+  const [pagesText, setPagesText] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchMatches, setSearchMatches] = useState([]);
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const { user } = useAuth();
 
   const viewerScrollRef = useRef(null);
@@ -120,8 +124,45 @@ const DocumentViewerModal = ({
       setError(null);
       setNumPages(null);
       setHasAutoCentered(false);
+      setPagesText([]);
+      setSearchQuery("");
+      setSearchMatches([]);
+      setCurrentMatchIndex(0);
     }
   }, [isOpen, documentUrl]);
+
+  // Cargar texto de todas las páginas del PDF para búsqueda
+  useEffect(() => {
+    const loadPdfText = async () => {
+      if (!isOpen || isImage || !documentUrl) {
+        setPagesText([]);
+        return;
+      }
+
+      try {
+        const loadingTask = pdfjs.getDocument(documentUrl);
+        const pdf = await loadingTask.promise;
+        const totalPages = pdf.numPages;
+        const textByPage = [];
+
+        for (let pageIndex = 1; pageIndex <= totalPages; pageIndex += 1) {
+          const page = await pdf.getPage(pageIndex);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items
+            .map((item) => item.str || "")
+            .join(" ");
+          textByPage.push(pageText);
+        }
+
+        setPagesText(textByPage);
+      } catch (err) {
+        console.error("Error cargando texto del PDF para búsqueda:", err);
+        setPagesText([]);
+      }
+    };
+
+    loadPdfText();
+  }, [isOpen, isImage, documentUrl]);
 
   // Bloquear scroll del body cuando el modal está abierto
   useEffect(() => {
@@ -181,10 +222,174 @@ const DocumentViewerModal = ({
     setRotation(prev => (prev + 90) % 360);
   };
 
+  // Aplicar resaltado de coincidencias en la capa de texto del PDF
+  const applySearchHighlight = () => {
+    if (!viewerScrollRef.current) return;
+
+    const query = searchQuery.trim().toLowerCase();
+    const container = viewerScrollRef.current;
+    const textSpans = container.querySelectorAll(
+      ".react-pdf__Page__textContent span"
+    );
+
+    // Determinar cuál es la coincidencia "actual" en esta página
+    let currentPageMatchOrder = null;
+    const currentMatch = searchMatches[currentMatchIndex];
+    if (currentMatch && currentMatch.pageNumber === pageNumber) {
+      const samePageMatches = searchMatches.filter(
+        (m) => m.pageNumber === currentMatch.pageNumber
+      );
+      currentPageMatchOrder = samePageMatches.findIndex(
+        (m) => m === currentMatch
+      );
+    }
+
+    let pageMatchCounter = 0;
+
+    textSpans.forEach((span) => {
+      const originalText =
+        span.dataset.originalText !== undefined
+          ? span.dataset.originalText
+          : span.textContent || "";
+
+      // Guardar el texto original una sola vez
+      if (span.dataset.originalText === undefined) {
+        // eslint-disable-next-line no-param-reassign
+        span.dataset.originalText = originalText;
+      }
+
+      if (!query) {
+        // Restaurar texto original si no hay búsqueda
+        // eslint-disable-next-line no-param-reassign
+        span.innerHTML = originalText;
+        return;
+      }
+
+      const lowerText = originalText.toLowerCase();
+      const index = lowerText.indexOf(query);
+
+      if (index === -1) {
+        // No hay coincidencia en este span
+        // eslint-disable-next-line no-param-reassign
+        span.innerHTML = originalText;
+        return;
+      }
+
+      const before = originalText.slice(0, index);
+      const match = originalText.slice(index, index + query.length);
+      const after = originalText.slice(index + query.length);
+
+      // Determinar clase para esta coincidencia:
+      // - Coincidencia actual en esta página: anaranjado
+      // - Resto de coincidencias: amarillo
+      const isCurrentPageActiveMatch =
+        currentPageMatchOrder !== null &&
+        pageMatchCounter === currentPageMatchOrder;
+
+      const highlightClass = isCurrentPageActiveMatch
+        ? "bg-orange-400/80 text-black"
+        : "bg-yellow-300/70 text-black";
+
+      pageMatchCounter += 1;
+
+      // Construir HTML con la parte resaltada
+      // eslint-disable-next-line no-param-reassign
+      span.innerHTML = `${before}<span class="${highlightClass} rounded px-[1px]">${match}</span>${after}`;
+    });
+  };
+
+  // Reaplicar resaltado cuando cambie el término de búsqueda, la página
+  // o el índice de coincidencia actual
+  useEffect(() => {
+    if (!isImage && !error) {
+      applySearchHighlight();
+    }
+  }, [searchQuery, pageNumber, currentMatchIndex, isImage, error, searchMatches]);
+
+  const handleSearchExecute = (queryOverride) => {
+    const trimmedQuery =
+      typeof queryOverride === "string"
+        ? queryOverride.trim()
+        : searchQuery.trim();
+    if (!trimmedQuery || !pagesText.length) {
+      setSearchMatches([]);
+      setCurrentMatchIndex(0);
+      return;
+    }
+
+    const lowerQuery = trimmedQuery.toLowerCase();
+    const matches = [];
+
+    pagesText.forEach((pageText, pageIdx) => {
+      const lowerText = pageText.toLowerCase();
+      let fromIndex = 0;
+
+      // Buscar todas las ocurrencias en la página
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const foundIndex = lowerText.indexOf(lowerQuery, fromIndex);
+        if (foundIndex === -1) break;
+
+        matches.push({
+          pageNumber: pageIdx + 1,
+          charIndex: foundIndex,
+        });
+
+        fromIndex = foundIndex + lowerQuery.length;
+      }
+    });
+
+    setSearchMatches(matches);
+    setCurrentMatchIndex(matches.length ? 0 : 0);
+
+    if (matches.length) {
+      setPageNumber(matches[0].pageNumber);
+    }
+  };
+
+  const handleNextMatch = () => {
+    if (!searchMatches.length) return;
+
+    setCurrentMatchIndex((prevIndex) => {
+      const nextIndex = (prevIndex + 1) % searchMatches.length;
+      const match = searchMatches[nextIndex];
+      if (match?.pageNumber) {
+        setPageNumber(match.pageNumber);
+      }
+      return nextIndex;
+    });
+  };
+
+  const handlePreviousMatch = () => {
+    if (!searchMatches.length) return;
+
+    setCurrentMatchIndex((prevIndex) => {
+      const nextIndex =
+        (prevIndex - 1 + searchMatches.length) % searchMatches.length;
+      const match = searchMatches[nextIndex];
+      if (match?.pageNumber) {
+        setPageNumber(match.pageNumber);
+      }
+      return nextIndex;
+    });
+  };
+
   // Pantalla completa deshabilitada a petición: solo controles de zoom y navegación
 
   const handleKeyDown = (e) => {
     if (!isOpen) return;
+
+    // Si el foco está en un campo editable (por ejemplo, el buscador),
+    // no aplicar atajos globales de zoom/navegación para no interferir con la escritura.
+    const activeElement = document.activeElement;
+    if (
+      activeElement &&
+      (activeElement.tagName === "INPUT" ||
+        activeElement.tagName === "TEXTAREA" ||
+        activeElement.isContentEditable)
+    ) {
+      return;
+    }
     
     if (e.key === "ArrowLeft" && !isImage && numPages) {
       handlePreviousPage();
@@ -356,65 +561,140 @@ const DocumentViewerModal = ({
               </div>
             )}
 
-            {/* Controles de zoom flotantes (solo para PDFs) */}
+            {/* Controles superiores (búsqueda + zoom/rotar) solo para PDFs */}
             {!isImage && (
-              <div className={`absolute ${showFormPanel && numPages && numPages > 1 ? 'top-14' : 'top-4'} right-4 z-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 flex items-center space-x-1 px-2 py-1.5`}>
-                <button
-                  onClick={handleZoomOut}
-                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
-                  aria-label="Alejar"
-                  title="Alejar (-)"
-                >
-                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
-                  </svg>
-                </button>
-                <span className="text-xs sm:text-sm font-typographica min-w-[2.5rem] text-center text-gray-700 font-semibold">
-                  {Math.round(scale * 100)}%
-                </span>
-                <button
-                  onClick={handleZoomIn}
-                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
-                  aria-label="Acercar"
-                  title="Acercar (+)"
-                >
-                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-                  </svg>
-                </button>
-                <div className="w-px h-5 bg-gray-200 mx-1" />
-                <button
-                  onClick={handleRotateLeft}
-                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
-                  aria-label="Rotar a la izquierda"
-                  title="Rotar 90° a la izquierda"
-                >
-                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    {/* Flecha curvada hacia la izquierda */}
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 5H9m0 0l2.5-2.5M9 5l2.5 2.5M19 13a7 7 0 00-7-7H9"
-                    />
-                  </svg>
-                </button>
-                <button
-                  onClick={handleRotateRight}
-                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
-                  aria-label="Rotar a la derecha"
-                  title="Rotar 90° a la derecha (tecla R)"
-                >
-                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    {/* Flecha curvada hacia la derecha */}
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5h6m0 0L12.5 2.5M15 5l-2.5 2.5M5 13a7 7 0 017-7h3"
-                    />
-                  </svg>
-                </button>
+              <div className="flex items-center justify-between px-3 py-2 bg-white border-b border-gray-200">
+                {/* Buscador */}
+                <div className="flex items-center space-x-1">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setSearchQuery(value);
+                      handleSearchExecute(value);
+                    }}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setSearchQuery(value);
+                      handleSearchExecute(value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSearchExecute();
+                      }
+                    }}
+                    placeholder="Buscar..."
+                    className="w-28 sm:w-40 px-2 py-1 text-xs sm:text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#6e6c35]/60 font-typographica"
+                    aria-label="Buscar en el documento"
+                  />
+                  <button
+                    onClick={handleSearchExecute}
+                    className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                    aria-label="Ejecutar búsqueda"
+                    title="Buscar (Enter)"
+                  >
+                    <svg
+                      className="w-4 h-4 text-gray-700"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"
+                      />
+                    </svg>
+                  </button>
+                  <div className="flex items-center space-x-1 text-[10px] sm:text-xs text-gray-600 font-typographica">
+                    <span>
+                      {searchMatches.length > 0
+                        ? `${currentMatchIndex + 1} / ${searchMatches.length}`
+                        : "0 / 0"}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handlePreviousMatch}
+                    disabled={!searchMatches.length}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    aria-label="Coincidencia anterior"
+                    title="Coincidencia anterior"
+                  >
+                    <FaChevronLeft className="w-3 h-3" />
+                  </button>
+                  <button
+                    onClick={handleNextMatch}
+                    disabled={!searchMatches.length}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    aria-label="Siguiente coincidencia"
+                    title="Siguiente coincidencia"
+                  >
+                    <FaChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+
+                {/* Zoom + rotación */}
+                <div className="flex items-center space-x-1 bg-white rounded-lg border border-gray-200 px-2 py-1.5">
+                  <button
+                    onClick={handleZoomOut}
+                    className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                    aria-label="Alejar"
+                    title="Alejar (-)"
+                  >
+                    <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                    </svg>
+                  </button>
+                  <span className="text-xs sm:text-sm font-typographica min-w-[2.5rem] text-center text-gray-700 font-semibold">
+                    {Math.round(scale * 100)}%
+                  </span>
+                  <button
+                    onClick={handleZoomIn}
+                    className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                    aria-label="Acercar"
+                    title="Acercar (+)"
+                  >
+                    <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                  </button>
+                  <div className="w-px h-5 bg-gray-200 mx-1" />
+                  <button
+                    onClick={handleRotateLeft}
+                    className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                    aria-label="Rotar a la izquierda"
+                    title="Rotar 90° a la izquierda"
+                  >
+                    <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {/* Flecha curvada hacia la izquierda */}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 5H9m0 0l2.5-2.5M9 5l2.5 2.5M19 13a7 7 0 00-7-7H9"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={handleRotateRight}
+                    className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                    aria-label="Rotar a la derecha"
+                    title="Rotar 90° a la derecha (tecla R)"
+                  >
+                    <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {/* Flecha curvada hacia la derecha */}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5h6m0 0L12.5 2.5M15 5l-2.5 2.5M5 13a7 7 0 017-7h3"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             )}
             
@@ -485,6 +765,7 @@ const DocumentViewerModal = ({
                   rotate={rotation}
                   renderTextLayer={true}
                   renderAnnotationLayer={true}
+                  onRenderTextLayerSuccess={applySearchHighlight}
                   className="shadow-lg"
                 />
               </Document>
