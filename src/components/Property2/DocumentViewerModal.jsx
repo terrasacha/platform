@@ -29,6 +29,7 @@ const DocumentViewerModal = ({
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1.0);
+  const [rotation, setRotation] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isImage, setIsImage] = useState(false);
@@ -120,6 +121,7 @@ const DocumentViewerModal = ({
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
     setError(null);
+    setLoading(false);
   };
 
   const onDocumentLoadError = (error) => {
@@ -144,6 +146,14 @@ const DocumentViewerModal = ({
     setScale(prev => Math.max(0.5, prev - 0.25));
   };
 
+  const handleRotateLeft = () => {
+    setRotation(prev => (prev - 90 + 360) % 360);
+  };
+
+  const handleRotateRight = () => {
+    setRotation(prev => (prev + 90) % 360);
+  };
+
   // Pantalla completa deshabilitada a petición: solo controles de zoom y navegación
 
   const handleKeyDown = (e) => {
@@ -161,6 +171,9 @@ const DocumentViewerModal = ({
     } else if (e.key === "-") {
       e.preventDefault();
       handleZoomOut();
+    } else if (e.key.toLowerCase() === "r" && !isImage) {
+      e.preventDefault();
+      handleRotateRight();
     }
   };
 
@@ -349,6 +362,39 @@ const DocumentViewerModal = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
                   </svg>
                 </button>
+                <div className="w-px h-5 bg-gray-200 mx-1" />
+                <button
+                  onClick={handleRotateLeft}
+                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                  aria-label="Rotar a la izquierda"
+                  title="Rotar 90° a la izquierda"
+                >
+                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {/* Flecha curvada hacia la izquierda */}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 5H9m0 0l2.5-2.5M9 5l2.5 2.5M19 13a7 7 0 00-7-7H9"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleRotateRight}
+                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                  aria-label="Rotar a la derecha"
+                  title="Rotar 90° a la derecha (tecla R)"
+                >
+                  <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {/* Flecha curvada hacia la derecha */}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5h6m0 0L12.5 2.5M15 5l-2.5 2.5M5 13a7 7 0 017-7h3"
+                    />
+                  </svg>
+                </button>
               </div>
             )}
             
@@ -410,6 +456,7 @@ const DocumentViewerModal = ({
                   <Page
                     pageNumber={pageNumber}
                     scale={scale}
+                    rotate={rotation}
                     renderTextLayer={true}
                     renderAnnotationLayer={true}
                     className="shadow-lg"
