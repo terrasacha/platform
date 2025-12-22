@@ -26,7 +26,7 @@ const CaracteristicasInmueble = () => {
             <option value="">Seleccione un tipo</option>
             <option value="Urbano">Urbano</option>
             <option value="Suburbano">Suburbano</option>
-            <option value="Rústico">Rústico</option>
+            <option value="Rural">Rural</option>
             <option value="Hipotecario">Hipotecario</option>
             <option value="Dominante">Dominante</option>
             <option value="Sirviente">Sirviente</option>

@@ -44,7 +44,7 @@ export const certificadoLibertadTradicionSchema = z.object({
   tipoPredio: z.enum([
     "Urbano",
     "Suburbano",
-    "Rústico",
+    "Rural",
     "Hipotecario",
     "Dominante",
     "Sirviente",
