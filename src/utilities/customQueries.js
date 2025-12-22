@@ -843,6 +843,10 @@ query ListProperties(
                 signedHash
                 isUploadedToBlockChain
                 isApproved
+                url
+                timeStamp
+                createdAt
+                updatedAt
               }
             }
             verifications {

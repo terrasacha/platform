@@ -36,6 +36,7 @@ const DocumentViewerModal = ({
   const [formData, setFormData] = useState(null);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isSavingForm, setIsSavingForm] = useState(false);
+  const [lastLoadedDocId, setLastLoadedDocId] = useState(null);
   const [hasAutoCentered, setHasAutoCentered] = useState(false);
   const [pagesText, setPagesText] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,6 +73,14 @@ const DocumentViewerModal = ({
     const loadFormData = async () => {
       if (!isOpen || !showForm || !documentId || !propertyData) {
         setFormData(null);
+        setLastLoadedDocId(null);
+        return;
+      }
+      console.log('propertyData XXX', propertyData);
+
+      // Si ya cargamos este documento y tenemos datos en el formulario,
+      // no volver a sobreescribir con lo que venga de propertyData
+      if (lastLoadedDocId === documentId && formData !== null) {
         return;
       }
 
@@ -97,22 +106,26 @@ const DocumentViewerModal = ({
           // Extraer datos del formulario si existen
           if (data.formData) {
             setFormData(data.formData);
+            setLastLoadedDocId(documentId);
           } else {
             setFormData(null);
+            setLastLoadedDocId(documentId);
           }
         } else {
           setFormData(null);
+          setLastLoadedDocId(null);
         }
       } catch (err) {
         console.error("Error cargando datos del formulario:", err);
         setFormData(null);
+        setLastLoadedDocId(null);
       } finally {
         setIsLoadingForm(false);
       }
     };
 
     loadFormData();
-  }, [isOpen, showForm, documentId, propertyData]);
+  }, [isOpen, showForm, documentId, propertyData, formData, lastLoadedDocId]);
 
   // Resetear estado cuando se abre/cierra el modal
   useEffect(() => {
@@ -470,6 +483,7 @@ const DocumentViewerModal = ({
 
       // Actualizar el estado local
       setFormData(formData);
+      setLastLoadedDocId(documentId);
     } catch (err) {
       console.error("Error guardando datos del formulario:", err);
       Swal.fire({

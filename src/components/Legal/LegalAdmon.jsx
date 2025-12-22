@@ -15,6 +15,7 @@ import {
   updateVerification,
   updateDocument,
 } from "graphql/mutations";
+import DocumentViewerModal from "components/Property2/DocumentViewerModal";
 import PropertyChat from "components/Legal/PropertyChat";
 import {
   FaEye,
@@ -44,6 +45,26 @@ const documentTypeMapper = {
   PLANO: "Plano Catastral",
 };
 
+// Normalizar tipos de documento a los usados por DocumentViewerModal
+const mapToFormDocumentType = (typeCode) => {
+  if (!typeCode) return null;
+  switch (typeCode) {
+    case "CERTIFICADO_TRADICION":
+    case "CERTIFICADO":
+      return "CERTIFICADO_TRADICION";
+    case "ESCRITURA_PUBLICA":
+    case "ESCRITURAS":
+    case "ESCRITURA":
+      return "ESCRITURA_PUBLICA";
+    case "PLANO_CATASTRAL":
+    case "PLANOS":
+    case "PLANO":
+      return "PLANO_CATASTRAL";
+    default:
+      return null;
+  }
+};
+
 const getPropertyArea = (property) => {
   const areaFeature = property.propertyFeatures?.items.find(
     (feature) => feature?.featureID === "D_area"
@@ -69,6 +90,8 @@ const DocumentationModal = ({
   const [activeOwnerId, setActiveOwnerId] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(null);
   const [previewAlt, setPreviewAlt] = useState("");
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [viewerDocument, setViewerDocument] = useState(null);
 
   // Tipos de documentos requeridos (igual que en PropertyDocumentation.jsx)
   const requiredDocumentTypes = [
@@ -162,6 +185,21 @@ const DocumentationModal = ({
         return;
       }
 
+      // Fecha de creación / subida del documento:
+      // 1. Preferir document.createdAt (ISO o fecha de la API)
+      // 2. Si no existe, usar timeStamp (epoch seconds) si está presente
+      // 3. Como último recurso, fecha actual
+      let createdAt = null;
+      if (document.createdAt) {
+        createdAt = document.createdAt;
+      } else if (document.timeStamp) {
+        try {
+          createdAt = new Date(document.timeStamp * 1000).toISOString();
+        } catch {
+          createdAt = null;
+        }
+      }
+
       const docInfo = {
         id: document.id,
         name: data.name || document.id,
@@ -170,10 +208,7 @@ const DocumentationModal = ({
         typeName: mapTypeCodeToName(typeCode),
         status: document.status || "pending_review",
         isApproved: document.isApproved || false,
-        createdAt:
-          document.createdAt || document.timeStamp
-            ? new Date(document.timeStamp * 1000).toISOString()
-            : new Date().toISOString(),
+        createdAt: createdAt,
       };
 
       if (requiredDocumentTypes.includes(typeCode)) {
@@ -278,6 +313,48 @@ const DocumentationModal = ({
 
   const activeOwner = owners.find(o => o.id === activeOwnerId) || null;
   const getOwnerFile = (owner, code) => owner?.files?.find(f => f.type === code)?.url || null;
+
+  // Agrupar documentos requeridos por tipo de documento
+  const groupedRequiredDocuments = requiredDocuments.reduce((acc, doc) => {
+    const key = doc.type || "OTRO";
+    if (!acc[key]) {
+      acc[key] = {
+        type: key,
+        typeName: doc.typeName || "Documento",
+        docs: [],
+      };
+    }
+    acc[key].docs.push(doc);
+    return acc;
+  }, {});
+
+  const requiredDocTypeOrder = ["CERTIFICADO_TRADICION", "ESCRITURA_PUBLICA", "PLANO_CATASTRAL"];
+
+  const sortedRequiredGroups = Object.values(groupedRequiredDocuments).sort(
+    (a, b) => {
+      const ia = requiredDocTypeOrder.indexOf(a.type);
+      const ib = requiredDocTypeOrder.indexOf(b.type);
+      const pa = ia === -1 ? Number.MAX_SAFE_INTEGER : ia;
+      const pb = ib === -1 ? Number.MAX_SAFE_INTEGER : ib;
+      if (pa !== pb) return pa - pb;
+      return a.typeName.localeCompare(b.typeName, "es");
+    }
+  );
+
+  const formatUploadDate = (dateStr) => {
+    if (!dateStr) return "Sin fecha de cargue";
+    try {
+      return new Date(dateStr).toLocaleString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "Sin fecha de cargue";
+    }
+  };
 
   const renderOwnerPreview = () => {
     if (!activeOwner) {
@@ -450,6 +527,9 @@ const DocumentationModal = ({
   };
 
   // Verificar si todos los documentos requeridos y propietarios están validados
+  // Regla para documentos: por cada tipo requerido, el último documento cargado
+  // (por createdAt / timeStamp) debe estar aprobado. Pueden existir versiones
+  // anteriores rechazadas, pero la versión más reciente debe ser "approved".
   const areAllValidated = () => {
     if (owners.length === 0) {
       return false;
@@ -459,13 +539,32 @@ const DocumentationModal = ({
       owners.length === 0 ||
       owners.every((owner) => owner.isApproved || owner.status === "approved");
 
-    const allDocumentsValidated =
-      requiredDocuments.length === 0 ||
-      requiredDocuments.every(
-        (doc) => doc.isApproved || doc.status === "approved"
+    // Para cada grupo de documentos requeridos por tipo,
+    // tomar el último subido y verificar que esté aprobado.
+    const allRequiredTypesValidated = sortedRequiredGroups.every((group) => {
+      // Filtrar solo documentos realmente cargados (no "not_uploaded")
+      const uploadedDocs = group.docs.filter(
+        (doc) => doc.status !== "not_uploaded"
       );
 
-    return allOwnersValidated && allDocumentsValidated;
+      // Si no hay ningún documento cargado para ese tipo, no está validado
+      if (uploadedDocs.length === 0) {
+        return false;
+      }
+
+      // Ordenar por fecha de creación (createdAt o timeStamp dentro de data si existiera en el futuro)
+      const sortedByDate = [...uploadedDocs].sort((a, b) => {
+        const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return da - db;
+      });
+
+      const latest = sortedByDate[sortedByDate.length - 1];
+
+      return latest.isApproved || latest.status === "approved";
+    });
+
+    return allOwnersValidated && allRequiredTypesValidated;
   };
 
   if (!isOpen) return null;
@@ -524,67 +623,85 @@ const DocumentationModal = ({
                 Documentos Requeridos
               </h3>
               {requiredDocuments.length > 0 ? (
-                <div className="space-y-2">
-                  {requiredDocuments.map((doc) => (
-                    <div
-                      key={doc.id}
-                      className="border border-terrasacha-light/20 rounded-lg p-2 hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-xs font-semibold text-terrasacha-primary font-typographica mb-0.5">
-                            {doc.typeName}
-                          </h4>
-                          {doc.status === "not_uploaded" ? (
-                            <p className="text-xs text-gray-400 font-typographica mb-1 italic">
-                              Aún no se ha cargado
-                            </p>
-                          ) : (
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1 truncate">
-                              {doc.name}
-                            </p>
-                          )}
-                          {doc.status === "not_uploaded" ? (
-                            <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-semibold font-typographica">
-                              No cargado
-                            </span>
-                          ) : (
-                            getStatusBadge(doc.status, doc.isApproved)
-                          )}
-                        </div>
-                        {doc.url && (
-                          <a
-                            href={doc.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-terrasacha-primary text-white px-2 py-1 rounded hover:bg-terrasacha-primary/90 flex items-center gap-1 text-xs font-typographica ml-2 flex-shrink-0"
-                          >
-                            <FaEye size={10} />
-                            Ver
-                          </a>
-                        )}
+                <div className="space-y-3 max-h-[32rem] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  {sortedRequiredGroups.map((group) => (
+                    <div key={group.type} className="space-y-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="text-xs font-semibold text-terrasacha-secondary2 font-typographica uppercase tracking-wide">
+                          {group.typeName}
+                        </h4>
+                        <span className="text-[11px] text-terrasacha-light font-typographica">
+                          {group.docs.filter((d) => d.status !== "not_uploaded").length} cargado(s)
+                        </span>
                       </div>
-                      {doc.status === "pending_review" && (
-                        <div className="flex gap-2 pt-2 border-t border-terrasacha-light/20">
-                          <button
-                            className="flex-1 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 font-typographica text-xs"
-                            onClick={() =>
-                              handleDocumentStatus(doc.id, "approved")
-                            }
-                          >
-                            Aprobar
-                          </button>
-                          <button
-                            className="flex-1 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 font-typographica text-xs"
-                            onClick={() => {
-                              setSelectedDocumentId(doc.id);
-                              setShowRejectionReasonModal(true);
-                            }}
-                          >
-                            Rechazar
-                          </button>
+                      {group.docs.map((doc) => (
+                        <div
+                          key={doc.id}
+                          className="border border-terrasacha-light/20 rounded-lg p-2 hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1 min-w-0">
+                              {doc.status === "not_uploaded" ? (
+                                <p className="text-xs text-gray-400 font-typographica mb-1 italic">
+                                  Aún no se ha cargado
+                                </p>
+                              ) : (
+                                <>
+                                  <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0.5 truncate">
+                                    {doc.name}
+                                  </p>
+                                  <p className="text-[11px] text-gray-500 font-typographica">
+                                    Cargado: {formatUploadDate(doc.createdAt)}
+                                  </p>
+                                </>
+                              )}
+                              {doc.status === "not_uploaded" ? (
+                                <span className="inline-block mt-1 px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-semibold font-typographica">
+                                  No cargado
+                                </span>
+                              ) : (
+                                <span className="inline-block mt-1">
+                                  {getStatusBadge(doc.status, doc.isApproved)}
+                                </span>
+                              )}
+                            </div>
+                            {doc.url && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setViewerDocument(doc);
+                                  setIsViewerOpen(true);
+                                }}
+                                className="bg-terrasacha-primary text-white px-2 py-1 rounded hover:bg-terrasacha-primary/90 flex items-center gap-1 text-xs font-typographica ml-2 flex-shrink-0"
+                              >
+                                <FaEye size={10} />
+                                Ver
+                              </button>
+                            )}
+                          </div>
+                          {doc.status === "pending_review" && (
+                            <div className="flex gap-2 pt-2 border-t border-terrasacha-light/20">
+                              <button
+                                className="flex-1 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 font-typographica text-xs"
+                                onClick={() =>
+                                  handleDocumentStatus(doc.id, "approved")
+                                }
+                              >
+                                Aprobar
+                              </button>
+                              <button
+                                className="flex-1 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 font-typographica text-xs"
+                                onClick={() => {
+                                  setSelectedDocumentId(doc.id);
+                                  setShowRejectionReasonModal(true);
+                                }}
+                              >
+                                Rechazar
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      ))}
                     </div>
                   ))}
                 </div>
@@ -616,15 +733,17 @@ const DocumentationModal = ({
                             {doc.name}
                           </p>
                         </div>
-                        <a
-                          href={doc.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setViewerDocument(doc);
+                            setIsViewerOpen(true);
+                          }}
                           className="bg-terrasacha-primary text-white px-2 py-1 rounded hover:bg-terrasacha-primary/90 flex items-center gap-1 text-xs font-typographica ml-2 flex-shrink-0"
                         >
                           <FaEye size={10} />
                           Ver
-                        </a>
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -700,6 +819,23 @@ const DocumentationModal = ({
           </div>
         </div>
       </div>
+
+      {/* Modal de visualización de documento */}
+      <DocumentViewerModal
+        isOpen={isViewerOpen}
+        onClose={() => {
+          setIsViewerOpen(false);
+          setViewerDocument(null);
+        }}
+        documentUrl={viewerDocument?.url || null}
+        documentName={
+          viewerDocument?.name || viewerDocument?.typeName || "Documento"
+        }
+        documentId={viewerDocument?.id || null}
+        documentType={mapToFormDocumentType(viewerDocument?.type || null)}
+        propertyData={{propertyFeatures: property.propertyFeatures.items}}
+        refreshPropertyData={fetchProperties}
+      />
 
       {/* Modal de razón de rechazo */}
       {showRejectionReasonModal && (
