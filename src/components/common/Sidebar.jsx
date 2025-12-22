@@ -256,6 +256,7 @@ const Sidebar = ({ children, onUserSettingsClick }) => {
     const role = authUser?.attributes?.["custom:role"];
     const items = [];
     const currentPath = location.pathname;
+    const currentSearch = location.search || "";
 
     // Inicio - Disponible para todos
     // Para constructor/propietario, "Inicio" lleva al banner de registro
@@ -373,33 +374,267 @@ const Sidebar = ({ children, onUserSettingsClick }) => {
 
     // Administrar - Admon
     if (role === "admon") {
-      items.push({
-        label: "Administrar",
-        path: "/admon",
-        icon: (
-          <svg
-            className="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-        ),
-        onClick: () => navigate("/admon"),
-        active: isRouteActive("/admon"),
-      });
+      const isOnAdmon = currentPath.startsWith("/admon");
+      const isTabActive = (tab) =>
+        isOnAdmon &&
+        (currentSearch.includes(`tab=${tab}`) ||
+          (!currentSearch && tab === "products"));
+
+      // Menú de administración (solo visible para admin)
+      items.push(
+        {
+          label: "Proyectos",
+          path: "/admon?tab=products",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 7h18M3 12h18M3 17h18"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=products"),
+          active: isTabActive("products"),
+        },
+        {
+          label: "Categorías",
+          path: "/admon?tab=categorys",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h8M4 18h4"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=categorys"),
+          active: isTabActive("categorys"),
+        },
+        {
+          label: "Items",
+          path: "/admon?tab=items",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=items"),
+          active: isTabActive("items"),
+        },
+        {
+          label: "Características",
+          path: "/admon?tab=features",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6V4m0 16v-2m8-6h-2M6 12H4m12.364-5.657l-1.414 1.414M7.05 16.95l-1.414 1.414m0-12.728L7.05 7.05m9.9 9.9l1.414 1.414"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=features"),
+          active: isTabActive("features"),
+        },
+        {
+          label: "Unidades de medida",
+          path: "/admon?tab=uom",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 3h18v4H3zM7 9h10v12H7z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=uom"),
+          active: isTabActive("uom"),
+        },
+        {
+          label: "Asignar consultores",
+          path: "/admon?tab=assign_pf",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015.356-1.857M15 11a3 3 0 10-6 0 3 3 0 006 0z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=assign_pf"),
+          active: isTabActive("assign_pf"),
+        },
+        {
+          label: "Asignar analistas",
+          path: "/admon?tab=assign_analyst",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 14l9-5-9-5-9 5 9 5zM12 14v7m-4-3h8"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=assign_analyst"),
+          active: isTabActive("assign_analyst"),
+        },
+        {
+          label: "Consultores",
+          path: "/admon?tab=validators",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 20h14M12 14a4 4 0 100-8 4 4 0 000 8z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=validators"),
+          active: isTabActive("validators"),
+        },
+        {
+          label: "Analistas",
+          path: "/admon?tab=analysts",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M11 5a4 4 0 110 8 4 4 0 010-8zm-7 14a7 7 0 0114 0H4z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=analysts"),
+          active: isTabActive("analysts"),
+        },
+        {
+          label: "Legales",
+          path: "/admon?tab=legales",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3h8v4M5 21h14V7H5v14z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=legales"),
+          active: isTabActive("legales"),
+        },
+        {
+          label: "Marketplace admin",
+          path: "/admon?tab=marketplace_admin",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 3h18v4H3zM5 7h14v14H5z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=marketplace_admin"),
+          active: isTabActive("marketplace_admin"),
+        },
+        {
+          label: "Estado de apps",
+          path: "/admon?tab=apps_status",
+          icon: (
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 17v-6l-2 2m8-2l-2 2v4M5 7h14M5 3h14v18H5z"
+              />
+            </svg>
+          ),
+          onClick: () => navigate("/admon?tab=apps_status"),
+          active: isTabActive("apps_status"),
+        }
+      );
     }
 
     // Validación de predios - Legal

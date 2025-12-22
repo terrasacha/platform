@@ -72,25 +72,54 @@ export default class Admon extends Component {
     this.setUserIDUsingCognitoSignedUser =
       this.setUserIDUsingCognitoSignedUser.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
+    this.applyTabFromLocation = this.applyTabFromLocation.bind(this);
+  }
+
+  applyTabFromLocation(location) {
+    if (!location) return;
+
+    const search = location.search || "";
+    const params = new URLSearchParams(search);
+    const tab = params.get("tab") || "products";
+
+    // Solo aceptar tabs conocidos para evitar estados inválidos
+    const allowedTabs = [
+      "admon_profile",
+      "products",
+      "categorys",
+      "items",
+      "features",
+      "uom",
+      "formulas",
+      "results",
+      "documents",
+      "assign_products",
+      "validation",
+      "settings",
+      "validators",
+      "assign_pf",
+      "marketplace_admin",
+      "apps_status",
+      "analysts",
+      "assign_analyst",
+      "legales",
+      "assign_Legales",
+    ];
+
+    const request = allowedTabs.includes(tab) ? tab : "products";
+    this.changeHeaderNavBarRequest(request);
   }
 
   async componentDidMount() {
-    // const tempActualUser =  await Auth.currentAuthenticatedUser()
-    // await this.setState({actualUser: tempActualUser})
-    // if (this.state.user.id === '') { // Is not logged
-    //     this.changeHeaderNavBarRequest('admon_profile')
-    // }
+    if (this.props.location) {
+      this.applyTabFromLocation(this.props.location);
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    // if (this.state.actualUser !== prevProps.actualUser) {
-    //     // this.fetchData(this.props.userID);
-    //
-    //     await this.setState({isActualUserLogged: true})
-    // }
-    // if (prevState.actualUser === null) {
-    //     await this.setState({isActualUserLogged: true})
-    // }
+    if (prevProps.location?.search !== this.props.location?.search) {
+      this.applyTabFromLocation(this.props.location);
+    }
   }
   async handleSignOut() {
     try {
@@ -682,18 +711,8 @@ export default class Admon extends Component {
     } = this.state;
     return (
       <div className="min-h-screen bg-gradient-terrasacha-subtle font-typographica">
-        {/* Header Section */}
-        <div className="fixed top-0 w-full z-50 bg-white shadow-terrasacha">
-          <HeaderNavbar
-            changeHeaderNavBarRequest={this.changeHeaderNavBarRequest}
-            handleSignOut={this.handleSignOut}
-            actualUser={this.state.actualUser}
-            isActualUserLogged={this.state.isActualUserLogged}
-          />
-        </div>
-
         {/* Main Content Area */}
-        <main className="pt-8 px-4 pb-4 sm:pt-6 sm:px-6 sm:pb-6 lg:pt-8 lg:px-8 lg:pb-8 max-w-9xl mx-auto">
+        <main className="px-4 py-4 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8 max-w-9xl mx-auto">
           <div className="bg-white rounded-xl shadow-lg border border-terrasacha-light/20 overflow-hidden animate-fade-in">
             {/* Content Header */}
             <div className="bg-terrasacha-primary px-6 py-4">

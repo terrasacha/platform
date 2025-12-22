@@ -36,7 +36,7 @@ const HeaderNavbar = ({ isActualUserLogged, changeHeaderNavBarRequest, handleSig
   if (!isActualUserLogged) return null;
 
   return (
-    <nav className="bg-white fixed top-0 w-full shadow-md z-10">
+    <nav className="bg-white w-full shadow-md rounded-lg">
       <div className="mx-auto flex justify-between items-center p-4">
         <a href="/" className="flex items-center flex-none">
       <TerrasachaLogo className={"w-48 h-auto"} />

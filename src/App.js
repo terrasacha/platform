@@ -11,7 +11,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ProjectDataProvider } from "./context/ProjectDataContext";
 // Routing
 // import { Auth } from 'aws-amplify';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import ValidatorAdmon from "./components/Validator/Validation/ValidatorAdmon.jsx";
 import LogIn from "./components/views/Login/Login";
 import Sidebar from "./components/common/Sidebar";
@@ -44,6 +44,11 @@ import TradicionLibertad from "components/views/Footer/TradicionLibertad";
 import Escrituras from "components/views/Footer/Escrituras";
 import PlanosCatastrales from "components/views/Footer/PlanosCatastrales";
 import SettingsPage from "components/views/Settings/SettingsPage";
+
+const AdmonWithLocation = () => {
+  const location = useLocation();
+  return <Admon location={location} />;
+};
 
 function App() {
   const handleUserSettings = () => {
@@ -153,7 +158,7 @@ function App() {
                 element={
                   <Sidebar onUserSettingsClick={handleUserSettings}>
                     <RoleMiddleware allowedRoles={["admon"]} redirectPath="/">
-                      <Admon />
+                      <AdmonWithLocation />
                     </RoleMiddleware>
                   </Sidebar>
                 }
