@@ -32,33 +32,35 @@ const HistorialJuridico = () => {
         emptyMessage="No hay eventos registrados en el historial"
         addButtonText="Agregar Evento"
         renderItem={(item, index) => (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <FormField
-              label="Fecha del Evento"
-              name={`historial.${index}.fechaEvento`}
-              error={errors.historial?.[index]?.fechaEvento}
-              required
-            >
-              <input
-                type="date"
-                {...register(`historial.${index}.fechaEvento`)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6e6c35] font-typographica"
-              />
-            </FormField>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                label="Fecha del Evento"
+                name={`historial.${index}.fechaEvento`}
+                error={errors.historial?.[index]?.fechaEvento}
+                required
+              >
+                <input
+                  type="date"
+                  {...register(`historial.${index}.fechaEvento`)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6e6c35] font-typographica"
+                />
+              </FormField>
 
-            <FormField
-              label="Tipo de Evento"
-              name={`historial.${index}.tipoEvento`}
-              error={errors.historial?.[index]?.tipoEvento}
-              required
-            >
-              <input
-                type="text"
-                {...register(`historial.${index}.tipoEvento`)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6e6c35] font-typographica"
-                placeholder="Ej: Transferencia, Embargo, etc."
-              />
-            </FormField>
+              <FormField
+                label="Tipo de Evento"
+                name={`historial.${index}.tipoEvento`}
+                error={errors.historial?.[index]?.tipoEvento}
+                required
+              >
+                <input
+                  type="text"
+                  {...register(`historial.${index}.tipoEvento`)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6e6c35] font-typographica"
+                  placeholder="Ej: Transferencia, Embargo, etc."
+                />
+              </FormField>
+            </div>
 
             <FormField
               label="Detalle del Evento"
@@ -66,10 +68,10 @@ const HistorialJuridico = () => {
               error={errors.historial?.[index]?.detalleEvento}
               required
             >
-              <input
-                type="text"
+              <textarea
                 {...register(`historial.${index}.detalleEvento`)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6e6c35] font-typographica"
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6e6c35] font-typographica resize-none"
                 placeholder="Descripción detallada del evento"
               />
             </FormField>

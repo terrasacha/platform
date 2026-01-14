@@ -14,7 +14,9 @@ const CertificadoLibertadTradicionForm = ({
   initialData, 
   onSubmit, 
   isLoading = false,
-  showFixedFooter = false
+  showFixedFooter = false,
+  onAutoFill,
+  canAutoFill = false
 }) => {
   const methods = useForm({
     resolver: zodResolver(certificadoLibertadTradicionSchema),
@@ -100,9 +102,14 @@ const CertificadoLibertadTradicionForm = ({
           <div className="flex justify-between items-center">
             <button
               type="button"
-              disabled={true}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg font-semibold font-typographica cursor-not-allowed opacity-60"
-              title="Funcionalidad de autocompletado desde PDF - Próximamente"
+              onClick={onAutoFill}
+              disabled={!canAutoFill || !onAutoFill}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold font-typographica transition-colors ${
+                canAutoFill && onAutoFill
+                  ? "bg-[#6e6c35] hover:bg-[#849b50] text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
+              }`}
+              title={canAutoFill && onAutoFill ? "Extraer datos automáticamente del PDF" : "Funcionalidad no disponible para este tipo de documento"}
             >
               <FaMagic className="w-4 h-4" />
               <span>Autorellenar desde PDF</span>

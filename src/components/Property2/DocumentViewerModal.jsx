@@ -105,7 +105,16 @@ const DocumentViewerModal = ({
 
           // Extraer datos del formulario si existen
           if (data.formData) {
-            setFormData(data.formData);
+            // Limpiar campos internos del historial (numeroAnotacion y fechaCancelacion)
+            // Estos campos son solo para lógica interna, no deben mostrarse en el formulario
+            const cleanedFormData = { ...data.formData };
+            if (cleanedFormData.historial && Array.isArray(cleanedFormData.historial)) {
+              cleanedFormData.historial = cleanedFormData.historial.map(item => {
+                const { numeroAnotacion, fechaCancelacion, ...rest } = item;
+                return rest;
+              });
+            }
+            setFormData(cleanedFormData);
             setLastLoadedDocId(documentId);
           } else {
             setFormData(null);
@@ -164,6 +173,7 @@ const DocumentViewerModal = ({
           const pageText = textContent.items
             .map((item) => item.str || "")
             .join(" ");
+          console.log(`textContent.items ${pageIndex}`, textContent.items);
           textByPage.push(pageText);
         }
 
@@ -460,10 +470,20 @@ const DocumentViewerModal = ({
         existingData = {};
       }
 
+      // Limpiar campos internos del historial antes de guardar
+      // numeroAnotacion y fechaCancelacion son solo para lógica interna, no deben guardarse en el formulario
+      const cleanedFormData = { ...formData };
+      if (cleanedFormData.historial && Array.isArray(cleanedFormData.historial)) {
+        cleanedFormData.historial = cleanedFormData.historial.map(item => {
+          const { numeroAnotacion, fechaCancelacion, ...rest } = item;
+          return rest;
+        });
+      }
+
       // Actualizar con los datos del formulario
       const updatedData = {
         ...existingData,
-        formData: formData,
+        formData: cleanedFormData,
       };
 
       // Actualizar el documento en la base de datos
@@ -495,6 +515,414 @@ const DocumentViewerModal = ({
       });
     } finally {
       setIsSavingForm(false);
+    }
+  };
+
+  // Función para limpiar texto repetitivo del PDF
+  const cleanRepetitiveText = (text) => {
+    if (!text) return text;
+    
+    // Patrón específico a eliminar - texto completo que se repite en encabezados
+    // Captura variaciones con "Y" o "&" y cualquier nombre de oficina
+    const patterns = [
+      /SUPERINTENDENCIA\s+DE\s+NOTARIADO\s+[Y&]\s+REGISTRO\s+LA\s+GUARDA\s+DE\s+LA\s+FE\s+PUBLICA\s+OFICINA\s+DE\s+REGISTRO\s+DE\s+INSTRUMENTOS\s+PUBLICOS\s+DE\s+[A-Z\s]+\s+ORIP/gi,
+      // Variación sin ORIP al final
+      /SUPERINTENDENCIA\s+DE\s+NOTARIADO\s+[Y&]\s+REGISTRO\s+LA\s+GUARDA\s+DE\s+LA\s+FE\s+PUBLICA\s+OFICINA\s+DE\s+REGISTRO\s+DE\s+INSTRUMENTOS\s+PUBLICOS\s+DE\s+[A-Z\s]+/gi,
+    ];
+    
+    let cleaned = text;
+    // Eliminar todas las ocurrencias de cada patrón
+    patterns.forEach(pattern => {
+      cleaned = cleaned.replace(pattern, '');
+    });
+    
+    // Limpiar espacios múltiples resultantes
+    cleaned = cleaned.replace(/\s{3,}/g, ' ');
+    cleaned = cleaned.replace(/\n\s*\n\s*\n+/g, '\n\n');
+    
+    return cleaned.trim();
+  };
+
+  // Función para extraer datos del PDF del certificado de tradición
+  const extractCertificadoData = (fullText) => {
+    const extracted = {};
+    let text = fullText || pagesText.join(" ");
+
+    // Limpiar texto repetitivo antes de procesar
+    text = cleanRepetitiveText(text);
+
+    // PIN del Certificado - "Pin No: 2504084411112032277"
+    const pinMatch = text.match(/Pin\s+No[:\s]+(\d+)/i);
+    if (pinMatch) extracted.pinCertificado = pinMatch[1].trim();
+
+    // Fecha de Expedición - "Impreso el 8 de Abril de 2025"
+    const fechaExpMatch = text.match(/Impreso\s+el\s+(\d{1,2})\s+de\s+([A-Za-z]+)\s+de\s+(\d{4})/i);
+    if (fechaExpMatch) {
+      const day = fechaExpMatch[1].padStart(2, '0');
+      const monthNames = {
+        'enero': '01', 'febrero': '02', 'marzo': '03', 'abril': '04',
+        'mayo': '05', 'junio': '06', 'julio': '07', 'agosto': '08',
+        'septiembre': '09', 'octubre': '10', 'noviembre': '11', 'diciembre': '12'
+      };
+      const month = monthNames[fechaExpMatch[2].toLowerCase()] || '01';
+      const year = fechaExpMatch[3];
+      extracted.fechaExpedicion = `${year}-${month}-${day}`;
+    }
+
+    // Estado del Folio - "ESTADO DEL FOLIO: ACTIVO"
+    const estadoFolioMatch = text.match(/ESTADO\s+DEL\s+FOLIO[:\s]+([A-Za-z]+)/i);
+    if (estadoFolioMatch) {
+      const estado = estadoFolioMatch[1].trim();
+      extracted.estadoFolio = estado.charAt(0).toUpperCase() + estado.slice(1).toLowerCase();
+    }
+
+    // Número de Matrícula Inmobiliaria - "Nro Matrícula: 234-5815"
+    const matriculaMatch = text.match(/Nro\s+Matr[ií]cula[:\s]+([0-9\-]+)/i);
+    if (matriculaMatch) extracted.numeroMatriculaInmobiliaria = matriculaMatch[1].trim();
+
+    // Código Catastral - "CÓDIGO CATASTRAL: 505680001000000010527000000000"
+    const codigoCatastralMatch = text.match(/C[ÓO]DIGO\s+CATASTRAL[:\s]+([A-Z0-9]+)/i);
+    if (codigoCatastralMatch) extracted.codigoCatastral = codigoCatastralMatch[1].trim();
+
+    // Departamento - "DEPTO: META"
+    const deptMatch = text.match(/DEPTO[:\s]+([A-Za-z\s]+?)(?:\s+MUNICIPIO|$)/i);
+    if (deptMatch) extracted.departamento = deptMatch[1].trim().toUpperCase();
+
+    // Municipio - "MUNICIPIO: PUERTO GAITAN"
+    const municipioMatch = text.match(/MUNICIPIO[:\s]+([A-Za-z\s]+?)(?:\s+VEREDA|$)/i);
+    if (municipioMatch) extracted.municipio = municipioMatch[1].trim().toUpperCase();
+
+    // Tipo de Predio - "Tipo Predio: RURAL"
+    const tipoPredioMatch = text.match(/Tipo\s+Predio[:\s]+([A-Za-z]+)/i);
+    if (tipoPredioMatch) {
+      const tipo = tipoPredioMatch[1].trim();
+      const validTypes = ["Urbano", "Suburbano", "Rural", "Hipotecario", "Dominante", "Sirviente"];
+      const tipoCapitalized = tipo.charAt(0).toUpperCase() + tipo.slice(1).toLowerCase();
+      if (validTypes.includes(tipoCapitalized)) extracted.tipoPredio = tipoCapitalized;
+    }
+
+    // Tipo de Inmueble - Buscar en descripción o inferir de contexto
+    // Si dice "LOTE" o similar, asignar "Lote"
+    const tipoInmuebleMatch = text.match(/LOTE\s+RURAL/i);
+    if (tipoInmuebleMatch) {
+      extracted.tipoInmueble = "Lote";
+    }
+
+    // Dirección del Inmueble - Buscar después de "DIRECCION DEL INMUEBLE"
+    const direccionMatch = text.match(/DIRECCION\s+DEL\s+INMUEBLE[\s\S]*?Tipo\s+Predio[:\s]+[A-Za-z]+\s+([A-Za-z0-9\s#\-\.,]+?)(?:\n|DETERMINACION|$)/i);
+    if (direccionMatch) {
+      const dir = direccionMatch[1].trim();
+      if (dir.length < 200 && dir.length > 0) extracted.direccionPredio = dir;
+    }
+
+    // Área del Terreno - "VEINTIDOS HECTAREAS (722 HAS)"
+    const areaTerrenoMatch = text.match(/(?:HECTAREAS|HAS)[\s:]*\((\d+(?:\.\d+)?)\s*HAS?\)/i);
+    if (areaTerrenoMatch) {
+      extracted.areaTerrenoM2 = areaTerrenoMatch[1].trim();
+    } else {
+      // Buscar en formato "AREA PRIVADA - METROS CUADRADOS:"
+      const areaM2Match = text.match(/AREA\s+PRIVADA[^\d]*METROS\s+CUADRADOS[:\s]+(\d+(?:\.\d+)?)/i);
+      if (areaM2Match) extracted.areaTerrenoM2 = areaM2Match[1].trim();
+    }
+
+    // Área Construida - "AREA CONSTRUIDA - METROS CUADRADOS:"
+    const areaConstruidaMatch = text.match(/AREA\s+CONSTRUIDA[^\d]*METROS\s+CUADRADOS[:\s]+(\d+(?:\.\d+)?)/i);
+    if (areaConstruidaMatch) extracted.areaConstruidaM2 = areaConstruidaMatch[1].trim();
+
+    // Datos de Complementación - Todo el texto entre "COMPLEMENTACION:" y "DIRECCION DEL INMUEBLE"
+    const complementacionMatch = text.match(/COMPLEMENTACION:([\s\S]*?)DIRECCION\s+DEL\s+INMUEBLE/i);
+    if (complementacionMatch) {
+      let complementacion = complementacionMatch[1].trim();
+      // Limpiar saltos de línea múltiples
+      complementacion = complementacion.replace(/\n+/g, '\n').trim();
+      if (complementacion.length > 0) extracted.datosComplementacion = complementacion;
+    }
+
+    // Extraer información del propietario actual (última anotación con "A:" que tenga NIT o CC)
+    // Buscar todas las anotaciones
+    const anotaciones = text.match(/ANOTACION[:\s]+Nro\s+(\d+)/gi);
+    
+    if (anotaciones && anotaciones.length > 0) {
+      // Obtener el número de la última anotación
+      const lastAnotacionNum = anotaciones[anotaciones.length - 1].match(/\d+/)[0];
+      
+      // Buscar la sección de la última anotación
+      const anotacionIndex = text.lastIndexOf(`ANOTACION: Nro ${lastAnotacionNum}`);
+      if (anotacionIndex !== -1) {
+        const anotacionSection = text.substring(anotacionIndex);
+        
+        // Buscar el propietario actual (último "A:" con documento)
+        const propietarioMatches = [...anotacionSection.matchAll(/A:\s+([^\n]+?)\s+(?:NIT|CC|CE|Pasaporte)[#:\s]+([0-9A-Z]+)/gi)];
+        if (propietarioMatches.length > 0) {
+          const lastPropietario = propietarioMatches[propietarioMatches.length - 1];
+          extracted.nombreCompletoORazonSocial = lastPropietario[1].trim();
+          
+          // Determinar tipo de documento
+          const docTypeMatch = lastPropietario[0].match(/(NIT|CC|CE|Pasaporte)[#:\s]+([0-9A-Z]+)/i);
+          if (docTypeMatch) {
+            const tipoDoc = docTypeMatch[1].toUpperCase();
+            if (tipoDoc === 'NIT') extracted.tipoDocumento = 'NIT';
+            else if (tipoDoc === 'CC') extracted.tipoDocumento = 'CC';
+            else if (tipoDoc === 'CE') extracted.tipoDocumento = 'CE';
+            else if (tipoDoc === 'PASAPORTE') extracted.tipoDocumento = 'Pasaporte';
+            
+            extracted.numeroDocumento = docTypeMatch[2].trim();
+          }
+        }
+        
+        // Modo de Adquisición Actual - "MODO DE ADQUISICION: 0128 CONSTITUCION DE FIDUCIA MERCANTIL"
+        const modoAdqMatch = anotacionSection.match(/MODO\s+DE\s+ADQUISICION[:\s]+([^\n]+)/i);
+        if (modoAdqMatch) {
+          extracted.modoAdquisicionActual = modoAdqMatch[1].trim();
+        }
+        
+        // Fecha de Inscripción - "Fecha: 10-12-2019"
+        const fechaInscMatch = anotacionSection.match(/Fecha[:\s]+(\d{1,2})-(\d{1,2})-(\d{4})/);
+        if (fechaInscMatch) {
+          const day = fechaInscMatch[1].padStart(2, '0');
+          const month = fechaInscMatch[2].padStart(2, '0');
+          const year = fechaInscMatch[3];
+          extracted.fechaInscripcion = `${year}-${month}-${day}`;
+        }
+      }
+    }
+
+    // Extraer Historial Jurídico - Extraer cada anotación completa
+    const historial = [];
+    
+    // Dividir el texto en anotaciones individuales
+    // El split crea bloques, pero el primero puede ser texto previo a la primera anotación
+    const anotacionesBlocks = text.split(/(?=ANOTACION[:\s]+Nro\s+\d+)/gi);
+    console.log('anotacionesBlocks', anotacionesBlocks);
+    
+    // Primero, crear un mapa de cancelaciones: número de anotación cancelada -> fecha de cancelación
+    // Buscamos el patrón "Se cancela anotación No: X" o variaciones
+    const cancelacionesMap = new Map();
+    
+    for (const block of anotacionesBlocks) {
+      if (!block.trim()) continue;
+      
+      const hasValidAnotacion = /ANOTACION[:\s]+Nro\s+\d+/i.test(block);
+      if (!hasValidAnotacion) continue;
+      
+      // Extraer fecha de esta anotación
+      const fechaMatch = block.match(/Fecha[:\s]+(\d{1,2})-(\d{1,2})-(\d{4})/);
+      if (!fechaMatch) continue;
+      
+      const day = fechaMatch[1].padStart(2, '0');
+      const month = fechaMatch[2].padStart(2, '0');
+      const year = fechaMatch[3];
+      const fechaCancelacion = `${year}-${month}-${day}`;
+      
+      // Extraer especificación para buscar el patrón de cancelación
+      const especMatch = block.match(/ESPECIFICACION[:\s]+(.+?)(?=\s*(?:PERSONAS\s+QUE\s+INTERVIENEN|ANOTACION[:\s]+Nro|$))/is);
+      if (!especMatch) continue;
+      
+      const especificacion = especMatch[1].trim().replace(/\s+/g, ' ');
+      
+      // Buscar patrón "Se cancela anotación No: X" o variaciones
+      // Patrones posibles:
+      // - "Se cancela anotación No: 5"
+      // - "Se cancela anotación Nro: 5"
+      // - "Se cancela anotación No. 5"
+      // - "Se cancela anotación Nro. 5"
+      // - "Se cancela anotación número 5"
+      // - "Se cancela anotación N° 5"
+      const cancelacionPatterns = [
+        /Se\s+cancela\s+anotaci[oó]n\s+(?:No|Nro|Número|N°)[:\s.]+(\d+)/i,
+        /Se\s+cancela\s+anotaci[oó]n\s+(\d+)/i,
+        /Cancela\s+anotaci[oó]n\s+(?:No|Nro|Número|N°)[:\s.]+(\d+)/i,
+        /Cancela\s+anotaci[oó]n\s+(\d+)/i,
+      ];
+      
+      for (const pattern of cancelacionPatterns) {
+        const match = especificacion.match(pattern);
+        if (match && match[1]) {
+          const numeroAnotacionCancelada = match[1];
+          cancelacionesMap.set(numeroAnotacionCancelada, fechaCancelacion);
+          break;
+        }
+      }
+    }
+    
+    // Ahora procesar todas las anotaciones y asignar fechas de cancelación
+    for (const block of anotacionesBlocks) {
+      if (!block.trim()) continue;
+      
+      // Validar que el bloque realmente contiene una anotación válida
+      // Debe contener "ANOTACION" seguido de "Nro" y un número (no "Nro Matrícula")
+      const hasValidAnotacion = /ANOTACION[:\s]+Nro\s+\d+/i.test(block);
+      if (!hasValidAnotacion) continue;
+      
+      // Extraer número de anotación
+      const nroMatch = block.match(/ANOTACION[:\s]+Nro\s+(\d+)/i);
+      if (!nroMatch) continue;
+      
+      // Validación adicional: debe tener una fecha para ser una anotación válida
+      const hasFecha = /Fecha[:\s]+\d{1,2}-\d{1,2}-\d{4}/.test(block);
+      if (!hasFecha) continue;
+      
+      // Extraer fecha
+      const fechaMatch = block.match(/Fecha[:\s]+(\d{1,2})-(\d{1,2})-(\d{4})/);
+      if (!fechaMatch) continue;
+      
+      const day = fechaMatch[1].padStart(2, '0');
+      const month = fechaMatch[2].padStart(2, '0');
+      const year = fechaMatch[3];
+      const fechaEvento = `${year}-${month}-${day}`;
+      
+      // Extraer especificación completa - desde ESPECIFICACION hasta PERSONAS QUE INTERVIENEN o siguiente ANOTACION
+      const especMatch = block.match(/ESPECIFICACION[:\s]+(.+?)(?=\s*(?:PERSONAS\s+QUE\s+INTERVIENEN|ANOTACION[:\s]+Nro|$))/is);
+      if (!especMatch) continue;
+      
+      let especificacion = especMatch[1].trim();
+      // Limpiar espacios múltiples
+      especificacion = especificacion.replace(/\s+/g, ' ').trim();
+      
+      // Función genérica para extraer contenido después de un título seguido de dos puntos
+      const extractAfterFirstTitle = (text) => {
+        // Patrón: "TITULO: contenido"
+        const match = text.match(/^([^:]+):\s*(.+)$/);
+        if (match && match[1] && match[2]) {
+          return {
+            tipoEvento: match[1].trim(),
+            detalleEvento: match[2].trim(),
+          };
+        }
+
+        // Si no hay ":", intentar patrón "COD TITULO detalle" o "TITULO detalle"
+        const tokens = text.split(/\s+/).filter(Boolean);
+        if (tokens.length >= 2) {
+          let tipoEvento = "";
+          let detalleEvento = "";
+
+          if (/^\d+$/.test(tokens[0])) {
+            // Ej: "0205 HIPOTECA ABIERTA VALOR..." -> tipoEvento = "HIPOTECA", detalle = resto
+            tipoEvento = tokens[1].trim();
+            detalleEvento = tokens.slice(2).join(" ").trim();
+          } else {
+            // Ej: "CANCELACION 0843 CANCELACION POR..." -> tipoEvento = "CANCELACION", detalle = resto
+            tipoEvento = tokens[0].trim();
+            detalleEvento = tokens.slice(1).join(" ").trim();
+          }
+
+          return { tipoEvento, detalleEvento };
+        }
+
+        // Si no se puede separar, usar todo como tipo y dejar detalle vacío
+        return {
+          tipoEvento: text.trim(),
+          detalleEvento: "",
+        };
+      };
+
+      const { tipoEvento, detalleEvento } = extractAfterFirstTitle(especificacion);
+      const numeroAnotacion = nroMatch[1];
+      
+      // Buscar si esta anotación fue cancelada usando el mapa de cancelaciones
+      const fechaCancelacion = cancelacionesMap.get(numeroAnotacion);
+      
+      // Agregar todas las anotaciones al historial, incluyendo cancelaciones
+      historial.push({
+        fechaEvento,
+        tipoEvento,
+        detalleEvento,
+        // Guardamos número de anotación y fecha de cancelación solo a nivel de datos,
+        // no se exponen como campos editables en el formulario.
+        numeroAnotacion,
+        fechaCancelacion: fechaCancelacion || undefined,
+      });
+    }
+    
+    if (historial.length > 0) extracted.historial = historial;
+
+    console.log('historial', historial);
+    // Extraer Gravámenes - solo anotaciones con tipoEvento "GRAVAMEN"
+    const gravamenes = [];
+    
+    // Buscar anotaciones que sean gravámenes (tipoEvento contiene HIPOTECA, EMBARGO, etc.)
+    for (const historialItem of historial) {
+      // Verificar si el tipoEvento indica que es un gravamen
+      const tipoEventoUpper = historialItem.tipoEvento.toUpperCase();
+      if (tipoEventoUpper.includes('HIPOTECA') || 
+          tipoEventoUpper.includes('EMBARGO') || 
+          tipoEventoUpper.includes('SERVIDUMBRE') || 
+          tipoEventoUpper.includes('PROHIBICION') || 
+          tipoEventoUpper.includes('GRAVAMEN')) {
+        
+        // Buscar el bloque de anotación correspondiente para extraer información adicional
+        const anotacionBlock = anotacionesBlocks.find(block => {
+          const nroMatch = block.match(/ANOTACION[:\s]+Nro\s+(\d+)/i);
+          return nroMatch && nroMatch[1] === historialItem.numeroAnotacion;
+        });
+        
+        if (anotacionBlock) {
+          // Determinar tipo de gravamen
+          let tipoGravamen = 'Otro';
+          if (tipoEventoUpper.includes('HIPOTECA')) tipoGravamen = 'Hipoteca';
+          else if (tipoEventoUpper.includes('EMBARGO')) tipoGravamen = 'Embargo';
+          else if (tipoEventoUpper.includes('SERVIDUMBRE')) tipoGravamen = 'Servidumbre';
+          else if (tipoEventoUpper.includes('PROHIBICION')) tipoGravamen = 'Prohibición de Enajenar';
+          
+          // Buscar entidad/persona asociada en la sección "DE:"
+          const deMatch = anotacionBlock.match(/DE:\s+([^\n]+?)\s+(?:NIT|CC|CE|Pasaporte)[#:\s]+([0-9A-Z]+)/i);
+          const entidadPersonaAsociada = deMatch ? deMatch[1].trim() : '';
+          
+          gravamenes.push({
+            tipoGravamen,
+            descripcionGravamen: historialItem.detalleEvento,
+            fechaRegistro: historialItem.fechaEvento,
+            fechaCancelacion: historialItem.fechaCancelacion || undefined,
+            entidadPersonaAsociada
+          });
+        }
+      }
+    }
+    
+    if (gravamenes.length > 0) extracted.gravamenes = gravamenes;
+
+    return extracted;
+  };
+
+  // Función para manejar el autorrellenado
+  const handleAutoFill = async () => {
+    if (isImage || !pagesText.length) {
+      toast.warning("El autorrellenado solo está disponible para documentos PDF");
+      return;
+    }
+
+    if (!isCertificadoForm) {
+      toast.warning("El autorrellenado solo está disponible para certificados de tradición");
+      return;
+    }
+
+    try {
+      const fullText = pagesText.join(" ");
+      const extractedData = extractCertificadoData(fullText);
+      
+      // Contar cuántos campos se extrajeron
+      const extractedCount = Object.keys(extractedData).filter(key => {
+        const value = extractedData[key];
+        if (Array.isArray(value)) return value.length > 0;
+        return value !== undefined && value !== null && value !== '';
+      }).length;
+      
+      if (extractedCount === 0) {
+        toast.warning("No se pudieron extraer datos del PDF. Verifique que el documento sea un certificado de tradición válido.");
+        return;
+      }
+
+      // Actualizar formData con los datos extraídos
+      const updatedFormData = {
+        ...formData,
+        ...extractedData,
+      };
+
+      setFormData(updatedFormData);
+      toast.success(`Se extrajeron ${extractedCount} campos del PDF. Revise y complete los campos faltantes.`);
+    } catch (error) {
+      console.error("Error en autorrellenado:", error);
+      toast.error("Error al extraer datos del PDF. Por favor, intente nuevamente.");
     }
   };
 
@@ -583,11 +1011,6 @@ const DocumentViewerModal = ({
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setSearchQuery(value);
-                      handleSearchExecute(value);
-                    }}
                     onChange={(e) => {
                       const value = e.target.value;
                       setSearchQuery(value);
@@ -826,6 +1249,8 @@ const DocumentViewerModal = ({
                         onSubmit={handleFormSubmit}
                         isLoading={isSavingForm}
                         showFixedFooter={true}
+                        onAutoFill={handleAutoFill}
+                        canAutoFill={!isImage && pagesText.length > 0 && isCertificadoForm}
                       />
                     )}
                     {isPlanosForm && (
