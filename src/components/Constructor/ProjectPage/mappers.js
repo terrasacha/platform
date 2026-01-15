@@ -20,7 +20,7 @@ export const marketplaceURLMapper = {
     PROD: "https://marketplace-cauca.suan.global/",
   },
   terrasacha: {
-    INTERNAL: "https://internal-platform.terrasacha.com/",
+    INTERNAL: "https://internal-marketplace.terrasacha.com/",
     TEST: "https://test-platform.terrasacha.com/",
     PROD: "https://platform.terrasacha.com/",
   },
@@ -667,9 +667,18 @@ export const mapProjectData = async (data) => {
     })[0]?.id || null;
 
   // A
-  const postulantName =
+  // Obtener datos del postulante: primero desde userProducts (usuario con rol "constructor"), 
+  // si no existe, usar productFeatures como fallback
+  const postulantUser = data.userProducts.items.filter((up) => up.user?.role === "constructor")[0]?.user;
+  
+  // Obtener datos desde productFeatures (siempre disponible)
+  const postulantNameFromFeatures =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "A_postulante_name";
+    })[0]?.value || "";
+  const postulantEmailFromFeatures =
+    data.productFeatures.items.filter((item) => {
+      return item.featureID === "A_postulante_email";
     })[0]?.value || "";
   const postulantDocType =
     data.productFeatures.items.filter((item) => {
@@ -679,10 +688,10 @@ export const mapProjectData = async (data) => {
     data.productFeatures.items.filter((item) => {
       return item.featureID === "A_postulante_id";
     })[0]?.value || "";
-  const postulantEmail =
-    data.productFeatures.items.filter((item) => {
-      return item.featureID === "A_postulante_email";
-    })[0]?.value || "";
+  
+  // Priorizar datos de userProducts si existen, sino usar productFeatures
+  const postulantName = postulantUser?.name || postulantNameFromFeatures || "";
+  const postulantEmail = postulantUser?.email || postulantEmailFromFeatures || "";
   const vereda =
     data.productFeatures.items.filter((item) => {
       return item.featureID === "A_vereda";
@@ -769,9 +778,8 @@ export const mapProjectData = async (data) => {
       return item.featureID === "H_grupo_comunitario_desc";
     })[0]?.value || "";
 
-  const postulantID =
-    data.userProducts.items.filter((up) => up.user?.role === "constructor")[0]
-      ?.user.id || "";
+  // postulantID ya se obtiene del mismo postulantUser definido arriba
+  const postulantID = postulantUser?.id || "";
 
   // ETADO DE INFORMACIÓN TECNICA Y FINANCIERA
   let isTechnicalComplete = false;
