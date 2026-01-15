@@ -96,6 +96,7 @@ export const getProduct = /* GraphQL */ `
             id
             role
             name
+            email
           }
         }
       }
