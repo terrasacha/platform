@@ -54,7 +54,6 @@ export default function Property2() {
   const [activeSection, setActiveSection] = useState("details");
   const [changedFields, setChangedFields] = useState({});
   const [isFormComplete, setIsFormComplete] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
   const [s3Files, setS3Files] = useState([]);
   const [filesAreComplete, setFilesAreComplete] = useState(false);
   const [s3Loading, setS3Loading] = useState(true);
@@ -629,6 +628,7 @@ export default function Property2() {
             <PropertyGeneral
               onNavigateToDocumentation={() => setActiveTab("documentacion")}
               onNavigateToOwners={() => setActiveTab("propietarios")}
+              onNavigateToPredial={() => setActiveTab("predial")}
             />
           )}
 
@@ -639,7 +639,6 @@ export default function Property2() {
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
               setIsFormComplete={setIsFormComplete}
-              currentStep={currentStep}
             />
           )}
 
@@ -650,7 +649,6 @@ export default function Property2() {
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
               setIsFormComplete={setIsFormComplete}
-              currentStep={currentStep}
             />
           )}
 
@@ -661,7 +659,6 @@ export default function Property2() {
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
               setIsFormComplete={setIsFormComplete}
-              currentStep={currentStep}
             />
           )}
 
@@ -672,7 +669,6 @@ export default function Property2() {
               setHasUnsavedChanges={setHasUnsavedChanges}
               handleFieldChange={handleFieldChange}
               setIsFormComplete={setIsFormComplete}
-              currentStep={currentStep}
             />
           )}
 

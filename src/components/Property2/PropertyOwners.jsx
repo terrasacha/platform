@@ -20,7 +20,16 @@ import {
   FaCamera,
   FaMobileAlt,
   FaQrcode,
+  FaExclamationCircle,
+  FaLock,
 } from "react-icons/fa";
+import {
+  ALLOWED_IMAGE_TYPES,
+  MAX_OWNER_FILE_SIZE_MB,
+  getOwnerFileError,
+  validateOwnerForm,
+  getModalContextDescription,
+} from "utilities/ownerFormValidation";
 
 // --- Mapeo de roles ---
 const roleMapping = {
@@ -36,11 +45,27 @@ export default function PropertyOwners({
   setHasUnsavedChanges,
   handleFieldChange,
   setIsFormComplete,
-  currentStep,
 }) {
   const { user } = useAuth();
   const { propertyData, refresh: refreshPropertyData } = usePropertyData();
   const { s3Client, bucketName } = useS3Client();
+
+  // Solo el dueño del predio (postulante) puede diligenciar propietarios
+  const propertyOwnerId =
+    propertyData?.projectPostulant?.id || propertyData?.propertyInfo?.userID;
+  const canEditOwners = Boolean(
+    user?.id && propertyOwnerId && user.id === propertyOwnerId
+  );
+
+  const showOwnerEditPermissionError = () => {
+    Swal.fire({
+      title: "Acción no permitida",
+      text: "Solo el propietario dueño del predio puede diligenciar o modificar la información de propietarios.",
+      icon: "info",
+      confirmButtonText: "Entendido",
+      confirmButtonColor: "#6e6c35",
+    });
+  };
 
   // Cache para evitar crear múltiples veces el GLOBAL_PROPERTY_FILES
   const globalFilesFeatureRef = useRef(null);
@@ -79,6 +104,7 @@ export default function PropertyOwners({
   const [showQRModal, setShowQRModal] = useState(false); // Modal de QR para validación móvil
   const [qrToken, setQrToken] = useState(null); // Token generado para QR
   const [qrUrl, setQrUrl] = useState(""); // URL completa del QR
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // Carga inicial desde DB (OWNER_INFO, OWNER_RELATION, y archivos por ownerId)
   useEffect(() => {
@@ -241,10 +267,17 @@ export default function PropertyOwners({
     }
   }, [user]);
 
-  const handleFileUpload = (file, type, ownerIndex = null) => {
+  const handleFileUpload = (file, type) => {
     if (!file) return null;
 
-    // Actualizar currentOwner con el archivo seleccionado
+    const fileError = getOwnerFileError(file);
+    if (fileError) {
+      setFieldErrors((prev) => ({ ...prev, [type]: fileError }));
+      toast.error(fileError);
+      return null;
+    }
+
+    setFieldErrors((prev) => ({ ...prev, [type]: undefined }));
     setCurrentOwner((prev) => ({
       ...prev,
       [type]: file,
@@ -253,6 +286,30 @@ export default function PropertyOwners({
     setHasUnsavedChanges(true);
     toast.success("Archivo seleccionado correctamente");
     return file;
+  };
+
+  const handleOwnerFieldChange = (field, value) => {
+    setCurrentOwner((prev) => ({ ...prev, [field]: value }));
+    setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+    setHasUnsavedChanges(true);
+  };
+
+  const runOwnerValidation = (requireFiles = true) => {
+    const result = validateOwnerForm(currentOwner, { requireFiles });
+    setFieldErrors(result.fieldErrors);
+    return result;
+  };
+
+  const contactValidation = validateOwnerForm(currentOwner, { requireFiles: false });
+  const fullValidation = validateOwnerForm(currentOwner, { requireFiles: true });
+
+  const getFieldInputClass = (fieldName) => {
+    const baseClass =
+      "w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-transparent font-typographica";
+    if (fieldErrors[fieldName]) {
+      return `${baseClass} border-red-400 focus:ring-red-300 bg-red-50`;
+    }
+    return `${baseClass} border-terrasacha-light focus:ring-terrasacha-primary`;
   };
 
   const uploadFileToS3 = async (file, type) => {
@@ -592,12 +649,17 @@ export default function PropertyOwners({
   };
 
   const openModal = (type) => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
     setModalType(type);
     if (type === "postulante") {
       setModalTitle("Información del Postulante");
     } else {
       setModalTitle("Información del Propietario");
     }
+    setFieldErrors({});
     setShowModal(true);
   };
 
@@ -605,6 +667,7 @@ export default function PropertyOwners({
     setShowModal(false);
     setModalType("");
     setModalTitle("");
+    setFieldErrors({});
     setCurrentOwner({
       name: "",
       email: "",
@@ -617,32 +680,13 @@ export default function PropertyOwners({
   };
 
   const addOwner = async () => {
-    // Validar campos requeridos
-    if (!currentOwner.name || !currentOwner.email || !currentOwner.phone) {
-      Swal.fire({
-        title: "Campos Requeridos",
-        text: "Por favor completa todos los campos obligatorios (Nombre, Email, Teléfono)",
-        icon: "warning",
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#8B4513",
-      });
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
       return;
     }
-
-    // Si estamos editando, permitir que los archivos existentes se mantengan
-    const isEditing = editingIndex !== -1;
-    const hasValidFiles = currentOwner.idFront instanceof File && 
-                         currentOwner.idBack instanceof File && 
-                         currentOwner.selfie instanceof File;
-    
-    if (!isEditing && !hasValidFiles) {
-      Swal.fire({
-        title: "Documentos Requeridos",
-        text: "Por favor sube todos los documentos obligatorios (Cédula frente, Cédula reverso, Selfie)",
-        icon: "warning",
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#8B4513",
-      });
+    const validation = runOwnerValidation(true);
+    if (!validation.isValid) {
+      toast.error("Revisa los campos marcados en rojo antes de continuar");
       return;
     }
 
@@ -794,12 +838,20 @@ export default function PropertyOwners({
   };
 
   const editOwner = (index) => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
     setCurrentOwner({ ...owners[index] });
     setEditingIndex(index);
     setIsAddingOwner(true);
   };
 
   const editPostulante = () => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
     if (!postulanteData) return;
     setCurrentOwner({
       name: postulanteData.name || "",
@@ -821,10 +873,15 @@ export default function PropertyOwners({
     setModalType("postulante");
     setModalTitle("Editar Información del Postulante");
     setEditingIndex(-2); // -2 para identificar que es postulante
+    setFieldErrors({});
     setShowModal(true);
   };
 
   const editPropietario = (index) => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
     if (index < 0 || index >= propietariosData.length) return;
     const propietario = propietariosData[index];
     setCurrentOwner({
@@ -847,35 +904,14 @@ export default function PropertyOwners({
     setModalType("propietario");
     setModalTitle("Editar Información del Propietario");
     setEditingIndex(index); // índice en propietariosData
+    setFieldErrors({});
     setShowModal(true);
   };
 
   const updateOwner = async () => {
-    // Validar campos requeridos
-    if (!currentOwner.name || !currentOwner.email || !currentOwner.phone) {
-      Swal.fire({
-        title: "Campos Requeridos",
-        text: "Por favor completa todos los campos obligatorios (Nombre, Email, Teléfono)",
-        icon: "warning",
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#8B4513",
-      });
-      return;
-    }
-
-    // Validar documentos requeridos
-    const hasValidFiles = currentOwner.idFront instanceof File && 
-                         currentOwner.idBack instanceof File && 
-                         currentOwner.selfie instanceof File;
-    
-    if (!hasValidFiles) {
-      Swal.fire({
-        title: "Documentos Requeridos",
-        text: "Por favor sube todos los documentos obligatorios (Cédula frente, Cédula reverso, Selfie)",
-        icon: "warning",
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#8B4513",
-      });
+    const validation = runOwnerValidation(true);
+    if (!validation.isValid) {
+      toast.error("Revisa los campos marcados en rojo antes de continuar");
       return;
     }
 
@@ -972,6 +1008,10 @@ export default function PropertyOwners({
   };
 
   const removeOwner = (index) => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
     const updatedOwners = owners.filter((_, i) => i !== index);
     setOwners(updatedOwners);
     setHasUnsavedChanges(true);
@@ -979,6 +1019,10 @@ export default function PropertyOwners({
   };
 
   const handleDeleteOwnerDoc = async (index, which) => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
     const owner = owners[index];
     if (!owner) return;
     const map = {
@@ -1026,6 +1070,10 @@ export default function PropertyOwners({
   };
 
   const removePropietario = async (id) => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
     try {
       // Encontrar el propietario a eliminar
       const propietarioToDelete = propietariosData.find(prop => prop.id === id);
@@ -1145,6 +1193,18 @@ export default function PropertyOwners({
 
   // Crear sesión de validación móvil
   const handleCreateMobileSession = async () => {
+    if (!canEditOwners) {
+      showOwnerEditPermissionError();
+      return;
+    }
+    const validation = runOwnerValidation(false);
+    if (!validation.isValid) {
+      toast.error(
+        "Completa nombre, correo y teléfono válidos antes de generar el QR"
+      );
+      return;
+    }
+
     try {
       if (!propertyData?.propertyInfo?.id) {
         Swal.fire({
@@ -1284,69 +1344,37 @@ export default function PropertyOwners({
     };
   }, [propertyData?.propertyInfo?.id, showQRModal, refreshPropertyData]);
 
-  const validateOwnerData = (ownerData, isLoggedUser = false) => {
-    const errors = [];
-
-    // Validar campos obligatorios
-    if (!ownerData.name || ownerData.name.trim() === "") {
-      errors.push(
-        `${isLoggedUser ? "Tu" : "El propietario"} nombre es obligatorio`
-      );
-    }
-
-    if (!ownerData.email || ownerData.email.trim() === "") {
-      errors.push(
-        `${
-          isLoggedUser ? "Tu" : "El propietario"
-        } correo electrónico es obligatorio`
-      );
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerData.email)) {
-      errors.push(
-        `${
-          isLoggedUser ? "Tu" : "El propietario"
-        } correo electrónico no tiene un formato válido`
-      );
-    }
-
-    if (!ownerData.phone || ownerData.phone.trim() === "") {
-      errors.push(
-        `${isLoggedUser ? "Tu" : "El propietario"} teléfono es obligatorio`
-      );
-    }
-
-    // Validar documentos obligatorios
-    if (!ownerData.idFront) {
-      errors.push(
-        `${
-          isLoggedUser ? "Tu" : "El propietario"
-        } cédula (frente) es obligatoria`
-      );
-    }
-
-    if (!ownerData.idBack) {
-      errors.push(
-        `${
-          isLoggedUser ? "Tu" : "El propietario"
-        } cédula (reverso) es obligatoria`
-      );
-    }
-
-    if (!ownerData.selfie) {
-      errors.push(
-        `${isLoggedUser ? "Tu" : "El propietario"} selfie es obligatoria`
-      );
-    }
-
-    return errors;
-  };
-
-
   if (!visible || !propertyData) {
     return null;
   }
 
   return (
     <div className="space-y-6">
+      {!canEditOwners && (
+        <div
+          className="bg-[#e8d79a]/20 border border-[#e8d79a] rounded-xl p-4 sm:p-5"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-start gap-3">
+            <FaLock
+              className="text-[#6e6c35] text-lg mt-0.5 flex-shrink-0"
+              aria-hidden="true"
+            />
+            <div>
+              <h4 className="text-sm font-semibold text-[#6e6c35] font-typographica mb-1">
+                Solo lectura — diligenciamiento restringido
+              </h4>
+              <p className="text-xs sm:text-sm text-[#6e6c35] font-typographica mb-0 opacity-90">
+                La información de propietarios solo puede ser diligenciada por el
+                propietario dueño del predio. Puedes consultar el estado y los
+                datos ya registrados.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Pregunta inicial - Siempre visible */}
       <div className="bg-white p-4 sm:p-6 rounded-xl border border-terrasacha-light/20 shadow-terrasacha">
         <h2 className="text-lg sm:text-xl font-bold text-terrasacha-primary mb-4 font-typographica">
@@ -1354,15 +1382,22 @@ export default function PropertyOwners({
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button
+            type="button"
             onClick={async () => {
+              if (!canEditOwners) {
+                showOwnerEditPermissionError();
+                return;
+              }
               setIsThirdParty(false);
               // Relación se integrará en OWNER_BUNDLE al crear el primer propietario
             }}
+            disabled={!canEditOwners && isThirdParty !== false}
+            aria-disabled={!canEditOwners}
             className={`p-4 sm:p-6 border-2 rounded-xl transition-colors text-left ${
               isThirdParty === false
                 ? "border-terrasacha-primary bg-terrasacha-primary/5"
                 : "border-terrasacha-light hover:border-terrasacha-primary"
-            }`}
+            } ${!canEditOwners ? "cursor-not-allowed opacity-90" : ""}`}
           >
             <div className="text-3xl sm:text-4xl mb-3">👤</div>
             <h3 className="text-base sm:text-lg font-semibold text-terrasacha-primary mb-2 font-typographica">
@@ -1378,15 +1413,22 @@ export default function PropertyOwners({
             )}
           </button>
           <button
+            type="button"
             onClick={async () => {
+              if (!canEditOwners) {
+                showOwnerEditPermissionError();
+                return;
+              }
               setIsThirdParty(true);
               // Relación se integrará en OWNER_BUNDLE al crear el primer propietario
             }}
+            disabled={!canEditOwners && isThirdParty !== true}
+            aria-disabled={!canEditOwners}
             className={`p-4 sm:p-6 border-2 rounded-xl transition-colors text-left ${
               isThirdParty === true
                 ? "border-terrasacha-primary bg-terrasacha-primary/5"
                 : "border-terrasacha-light hover:border-terrasacha-primary"
-            }`}
+            } ${!canEditOwners ? "cursor-not-allowed opacity-90" : ""}`}
           >
             <div className="text-3xl sm:text-4xl mb-3">👥</div>
             <h3 className="text-base sm:text-lg font-semibold text-terrasacha-primary mb-2 font-typographica">
@@ -1447,11 +1489,15 @@ export default function PropertyOwners({
               {/* Card Postulante (solo si es tercero) */}
               {isThirdParty && (
                 <div
-                  onClick={() => !postulanteData && openModal("postulante")}
+                  onClick={() =>
+                    canEditOwners && !postulanteData && openModal("postulante")
+                  }
                   className={`group p-4 sm:p-6 border-2 rounded-xl transition-all duration-300 flex flex-col h-full ${
                     postulanteData
                       ? "border-terrasacha-primary bg-terrasacha-primary/5 cursor-default"
-                      : "border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 cursor-pointer"
+                      : canEditOwners
+                      ? "border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 cursor-pointer"
+                      : "border-dashed border-terrasacha-light bg-terrasacha-light/5 cursor-not-allowed opacity-80"
                   }`}
                 >
                   {postulanteData ? (
@@ -1500,8 +1546,12 @@ export default function PropertyOwners({
                         if (status === 'rejected' || status === 'rechazado') {
                           return (
                             <div 
-                              onClick={() => editPostulante()}
-                              className="bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 cursor-pointer hover:bg-[#44482c]/20 transition-colors"
+                              onClick={() => canEditOwners && editPostulante()}
+                              className={`bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 transition-colors ${
+                                canEditOwners
+                                  ? "cursor-pointer hover:bg-[#44482c]/20"
+                                  : "cursor-default"
+                              }`}
                             >
                               <div className="flex items-center justify-center gap-1.5 mb-1.5">
                                 <span className="text-[#44482c] text-sm">✗</span>
@@ -1509,15 +1559,23 @@ export default function PropertyOwners({
                                   Rechazado
                                 </p>
                               </div>
-                              <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
-                                Haz clic para subir una versión corregida
-                              </p>
-                              <button className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                                Volver a Subir
-                              </button>
+                              {canEditOwners ? (
+                                <>
+                                  <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
+                                    Haz clic para subir una versión corregida
+                                  </p>
+                                  <button type="button" className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+                                    Volver a Subir
+                                  </button>
+                                </>
+                              ) : (
+                                <p className="text-xs text-[#44482c] font-typographica mb-0 text-center">
+                                  Pendiente de corrección por el propietario
+                                </p>
+                              )}
                             </div>
                           );
                         }
@@ -1554,11 +1612,17 @@ export default function PropertyOwners({
 
               {/* Card Propietario Principal */}
               <div
-                onClick={() => propietariosData.length === 0 && openModal("propietario")}
+                onClick={() =>
+                  canEditOwners &&
+                  propietariosData.length === 0 &&
+                  openModal("propietario")
+                }
                 className={`group p-6 border-2 rounded-xl transition-all duration-300 flex flex-col h-full ${
                   propietariosData.length > 0
                     ? "border-terrasacha-primary bg-terrasacha-primary/5 cursor-default"
-                    : "border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 cursor-pointer"
+                    : canEditOwners
+                    ? "border-dashed border-terrasacha-light hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 cursor-pointer"
+                    : "border-dashed border-terrasacha-light bg-terrasacha-light/5 cursor-not-allowed opacity-80"
                 }`}
               >
                 {propietariosData.length > 0 ? (
@@ -1607,8 +1671,12 @@ export default function PropertyOwners({
                         if (status === 'rejected' || status === 'rechazado') {
                           return (
                             <div 
-                              onClick={() => editPropietario(0)}
-                              className="bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 cursor-pointer hover:bg-[#44482c]/20 transition-colors"
+                              onClick={() => canEditOwners && editPropietario(0)}
+                              className={`bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 transition-colors ${
+                                canEditOwners
+                                  ? "cursor-pointer hover:bg-[#44482c]/20"
+                                  : "cursor-default"
+                              }`}
                             >
                               <div className="flex items-center justify-center gap-1.5 mb-1.5">
                                 <span className="text-[#44482c] text-sm">✗</span>
@@ -1616,15 +1684,23 @@ export default function PropertyOwners({
                                   Rechazado
                                 </p>
                               </div>
-                              <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
-                                Haz clic para subir una versión corregida
-                              </p>
-                              <button className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                                Volver a Subir
-                              </button>
+                              {canEditOwners ? (
+                                <>
+                                  <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
+                                    Haz clic para subir una versión corregida
+                                  </p>
+                                  <button type="button" className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+                                    Volver a Subir
+                                  </button>
+                                </>
+                              ) : (
+                                <p className="text-xs text-[#44482c] font-typographica mb-0 text-center">
+                                  Pendiente de corrección por el propietario
+                                </p>
+                              )}
                             </div>
                           );
                         }
@@ -1695,11 +1771,13 @@ export default function PropertyOwners({
                               <h4 className="text-sm sm:text-lg font-semibold text-terrasacha-primary font-typographica mb-2 sm:mb-3">
                                 {propietario.name}
                               </h4>
-                              {/* Solo mostrar Eliminar si no está aprobado */}
-                              {!(isApproved || status === 'approved') && (
+                              {/* Solo mostrar Eliminar si no está aprobado y el dueño puede editar */}
+                              {canEditOwners && !(isApproved || status === 'approved') && (
                                 <button
+                                  type="button"
                                   onClick={() => removePropietario(propietario.id)}
                                   className="text-xs text-[#44482c] hover:text-[#6e6c35] font-typographica"
+                                  aria-label={`Eliminar propietario ${propietario.name}`}
                                 >
                                   Eliminar
                                 </button>
@@ -1715,8 +1793,12 @@ export default function PropertyOwners({
                               </div>
                             ) : status === 'rejected' || status === 'rechazado' ? (
                               <div 
-                                onClick={() => editPropietario(index + 1)}
-                                className="bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 cursor-pointer hover:bg-[#44482c]/20 transition-colors"
+                                onClick={() => canEditOwners && editPropietario(index + 1)}
+                                className={`bg-[#44482c]/10 border border-[#44482c] rounded-lg p-2 transition-colors ${
+                                  canEditOwners
+                                    ? "cursor-pointer hover:bg-[#44482c]/20"
+                                    : "cursor-default"
+                                }`}
                               >
                                 <div className="flex items-center justify-center gap-1.5 mb-1.5">
                                   <span className="text-[#44482c] text-sm">✗</span>
@@ -1724,15 +1806,23 @@ export default function PropertyOwners({
                                     Rechazado
                                   </p>
                                 </div>
-                                <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
-                                  Haz clic para subir una versión corregida
-                                </p>
-                                <button className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                  </svg>
-                                  Volver a Subir
-                                </button>
+                                {canEditOwners ? (
+                                  <>
+                                    <p className="text-xs text-[#44482c] font-typographica mb-2 text-center">
+                                      Haz clic para subir una versión corregida
+                                    </p>
+                                    <button type="button" className="w-full bg-[#44482c] hover:bg-[#6e6c35] text-white font-semibold py-1.5 px-3 rounded transition-colors font-typographica text-xs flex items-center justify-center gap-1.5">
+                                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                      </svg>
+                                      Volver a Subir
+                                    </button>
+                                  </>
+                                ) : (
+                                  <p className="text-xs text-[#44482c] font-typographica mb-0 text-center">
+                                    Pendiente de corrección por el propietario
+                                  </p>
+                                )}
                               </div>
                             ) : (
                               <div className="bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg p-2">
@@ -1750,9 +1840,18 @@ export default function PropertyOwners({
               ))}
 
               {/* Card para Agregar Más Propietarios */}
-              {showAddPropietario && (
+              {canEditOwners && showAddPropietario && (
                 <div
                   onClick={() => openModal("propietario")}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Agregar otro propietario"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      openModal("propietario");
+                    }
+                  }}
                   className="group cursor-pointer p-4 sm:p-6 border-2 border-dashed border-terrasacha-light rounded-xl hover:border-terrasacha-primary hover:bg-terrasacha-primary/5 transition-all duration-300"
                 >
                   <div className="flex flex-col items-center justify-center text-center">
@@ -1812,12 +1911,15 @@ export default function PropertyOwners({
                               >
                                 Ver cédula (frente)
                               </a>
-                              <button
-                                onClick={() => handleDeleteOwnerDoc(index, 'idFront')}
-                                className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
-                              >
-                                Eliminar
-                              </button>
+                              {canEditOwners && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteOwnerDoc(index, 'idFront')}
+                                  className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
+                                >
+                                  Eliminar
+                                </button>
+                              )}
                             </div>
                           )}
                           {owner.idBack && (
@@ -1830,12 +1932,15 @@ export default function PropertyOwners({
                               >
                                 Ver cédula (reverso)
                               </a>
-                              <button
-                                onClick={() => handleDeleteOwnerDoc(index, 'idBack')}
-                                className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
-                              >
-                                Eliminar
-                              </button>
+                              {canEditOwners && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteOwnerDoc(index, 'idBack')}
+                                  className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
+                                >
+                                  Eliminar
+                                </button>
+                              )}
                             </div>
                           )}
                           {owner.selfie && (
@@ -1848,30 +1953,39 @@ export default function PropertyOwners({
                               >
                                 Ver selfie
                               </a>
-                              <button
-                                onClick={() => handleDeleteOwnerDoc(index, 'selfie')}
-                                className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
-                              >
-                                Eliminar
-                              </button>
+                              {canEditOwners && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteOwnerDoc(index, 'selfie')}
+                                  className="px-2 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica"
+                                >
+                                  Eliminar
+                                </button>
+                              )}
                             </div>
                           )}
                         </div>
                       </div>
-                      <div className="flex space-x-2 self-end sm:self-auto">
-                        <button
-                          onClick={() => editOwner(index)}
-                          className="px-2 sm:px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => removeOwner(index)}
-                          className="px-2 sm:px-3 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica text-xs sm:text-sm"
-                        >
-                          Eliminar
-                        </button>
-                      </div>
+                      {canEditOwners && (
+                        <div className="flex space-x-2 self-end sm:self-auto">
+                          <button
+                            type="button"
+                            onClick={() => editOwner(index)}
+                            className="px-2 sm:px-3 py-1 text-terrasacha-primary hover:bg-terrasacha-primary/10 rounded font-typographica text-xs sm:text-sm"
+                            aria-label={`Editar propietario ${owner.name}`}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeOwner(index)}
+                            className="px-2 sm:px-3 py-1 text-[#44482c] hover:bg-[#44482c]/10 rounded font-typographica text-xs sm:text-sm"
+                            aria-label={`Eliminar propietario ${owner.name}`}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1881,17 +1995,50 @@ export default function PropertyOwners({
           </div>
 
           {/* Modal para agregar/editar propietario */}
-          {showModal && (
+          {canEditOwners && showModal && (
             <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-50 flex items-center justify-center overflow-y-auto p-2 sm:p-4" style={{ margin: 0 }}>
               <div className="bg-white rounded-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto my-auto">
                 <div className="p-4 sm:p-6">
-                  <div className="flex justify-between items-center mb-4 sm:mb-6">
-                    <h3 className="text-lg sm:text-xl font-bold text-terrasacha-primary font-typographica">
-                      {modalTitle}
-                    </h3>
+                  <div className="flex justify-between items-start mb-4 sm:mb-6">
+                    <div className="flex items-start gap-3 pr-4">
+                      <div
+                        className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                          modalType === "postulante"
+                            ? "bg-terrasacha-primary/10 text-terrasacha-primary"
+                            : "bg-terrasacha-secondary2/20 text-terrasacha-secondary1"
+                        }`}
+                        aria-hidden="true"
+                      >
+                        {modalType === "postulante" ? (
+                          <FaUser className="text-lg" />
+                        ) : (
+                          <FaIdCard className="text-lg" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <h3 className="text-lg sm:text-xl font-bold text-terrasacha-primary font-typographica mb-0">
+                            {modalTitle}
+                          </h3>
+                          <span
+                            className={`text-xs font-semibold px-2 py-0.5 rounded-full font-typographica ${
+                              modalType === "postulante"
+                                ? "bg-terrasacha-primary/10 text-terrasacha-primary"
+                                : "bg-terrasacha-secondary2/20 text-terrasacha-secondary1"
+                            }`}
+                          >
+                            {modalType === "postulante" ? "Postulante" : "Propietario"}
+                          </span>
+                        </div>
+                        <p className="text-sm text-terrasacha-secondary1 font-typographica mb-0">
+                          {getModalContextDescription(modalType, isThirdParty)}
+                        </p>
+                      </div>
+                    </div>
                     <button
                       onClick={closeModal}
-                      className="text-terrasacha-secondary1 hover:text-terrasacha-primary transition-colors"
+                      className="text-terrasacha-secondary1 hover:text-terrasacha-primary transition-colors flex-shrink-0"
+                      aria-label="Cerrar modal"
                     >
                       <svg
                         className="w-5 h-5 sm:w-6 sm:h-6"
@@ -1911,79 +2058,131 @@ export default function PropertyOwners({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
                     <div>
-                      <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
+                      <label
+                        htmlFor="owner-name"
+                        className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica"
+                      >
                         Nombre Completo *
                       </label>
                       <input
+                        id="owner-name"
                         type="text"
                         value={currentOwner.name}
                         onChange={(e) =>
-                          setCurrentOwner({
-                            ...currentOwner,
-                            name: e.target.value,
-                          })
+                          handleOwnerFieldChange("name", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica"
+                        className={getFieldInputClass("name")}
                         placeholder="Nombre completo"
+                        aria-invalid={!!fieldErrors.name}
+                        aria-describedby={fieldErrors.name ? "owner-name-error" : undefined}
                       />
+                      {fieldErrors.name && (
+                        <p
+                          id="owner-name-error"
+                          className="mt-1 text-xs text-red-600 flex items-center gap-1 font-typographica"
+                          role="alert"
+                        >
+                          <FaExclamationCircle aria-hidden="true" />
+                          {fieldErrors.name}
+                        </p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
+                      <label
+                        htmlFor="owner-email"
+                        className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica"
+                      >
                         Correo Electrónico *
                       </label>
                       <input
+                        id="owner-email"
                         type="email"
                         value={currentOwner.email}
                         onChange={(e) =>
-                          setCurrentOwner({
-                            ...currentOwner,
-                            email: e.target.value,
-                          })
+                          handleOwnerFieldChange("email", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica"
+                        className={getFieldInputClass("email")}
                         placeholder="email@ejemplo.com"
+                        aria-invalid={!!fieldErrors.email}
+                        aria-describedby={fieldErrors.email ? "owner-email-error" : undefined}
                       />
+                      {fieldErrors.email && (
+                        <p
+                          id="owner-email-error"
+                          className="mt-1 text-xs text-red-600 flex items-center gap-1 font-typographica"
+                          role="alert"
+                        >
+                          <FaExclamationCircle aria-hidden="true" />
+                          {fieldErrors.email}
+                        </p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
+                      <label
+                        htmlFor="owner-phone"
+                        className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica"
+                      >
                         Teléfono *
                       </label>
                       <input
+                        id="owner-phone"
                         type="tel"
                         value={currentOwner.phone}
                         onChange={(e) =>
-                          setCurrentOwner({
-                            ...currentOwner,
-                            phone: e.target.value,
-                          })
+                          handleOwnerFieldChange("phone", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica"
+                        className={getFieldInputClass("phone")}
                         placeholder="+57 300 123 4567"
+                        aria-invalid={!!fieldErrors.phone}
+                        aria-describedby={fieldErrors.phone ? "owner-phone-error" : undefined}
                       />
+                      {fieldErrors.phone && (
+                        <p
+                          id="owner-phone-error"
+                          className="mt-1 text-xs text-red-600 flex items-center gap-1 font-typographica"
+                          role="alert"
+                        >
+                          <FaExclamationCircle aria-hidden="true" />
+                          {fieldErrors.phone}
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   {/* Opción de validación móvil */}
                   <div className="mb-4 sm:mb-6">
                     <div className="bg-terrasacha-light/10 border border-terrasacha-light/30 rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <FaMobileAlt className="text-terrasacha-primary text-xl" />
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <FaMobileAlt className="text-terrasacha-primary text-xl mt-0.5 flex-shrink-0" />
                           <div>
                             <h4 className="text-sm font-semibold text-terrasacha-primary font-typographica mb-1">
                               Validar desde móvil
                             </h4>
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0">
-                              Genera un código QR para completar la validación desde tu teléfono
+                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">
+                              Flujo recomendado: completa tus datos → genera el QR → escanea desde tu teléfono para capturar los documentos.
+                            </p>
+                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0 opacity-80">
+                              El QR es opcional y requiere nombre, correo y teléfono válidos.
                             </p>
                           </div>
                         </div>
                         <button
+                          type="button"
                           onClick={handleCreateMobileSession}
-                          className="flex items-center gap-2 bg-terrasacha-primary text-white px-4 py-2 rounded-lg hover:bg-terrasacha-secondary1 transition text-sm font-semibold whitespace-nowrap"
-                          title="Generar código QR para móvil"
+                          disabled={!contactValidation.isValid}
+                          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition font-typographica ${
+                            contactValidation.isValid
+                              ? "bg-terrasacha-primary text-white hover:bg-terrasacha-secondary1"
+                              : "bg-terrasacha-light text-terrasacha-secondary1 opacity-60 cursor-not-allowed"
+                          }`}
+                          title={
+                            contactValidation.isValid
+                              ? "Generar código QR para móvil"
+                              : "Completa nombre, correo y teléfono válidos para generar el QR"
+                          }
                         >
                           <FaQrcode /> Generar QR
                         </button>
@@ -1992,72 +2191,125 @@ export default function PropertyOwners({
                   </div>
 
                   {/* Archivos */}
+                  <div className="grid grid-cols-1 gap-4 mb-2">
+                    <p className="text-xs text-terrasacha-secondary1 font-typographica opacity-80 mb-0">
+                      Formatos permitidos: JPG, PNG o WEBP. Tamaño máximo: {MAX_OWNER_FILE_SIZE_MB} MB por archivo.
+                    </p>
+                  </div>
                   <div className="grid grid-cols-1 gap-4 mb-4 sm:mb-6">
                     <div>
-                      <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
+                      <label
+                        htmlFor="owner-id-front"
+                        className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica"
+                      >
                         Cédula (Frente) *
                       </label>
                       <input
+                        id="owner-id-front"
                         type="file"
-                        accept="image/*"
+                        accept={ALLOWED_IMAGE_TYPES.join(",")}
                         onChange={(e) =>
-                          handleFileUpload(
-                            e.target.files[0],
-                            "idFront",
-                            editingIndex
-                          )
+                          handleFileUpload(e.target.files[0], "idFront")
                         }
-                        className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent"
+                        className={getFieldInputClass("idFront")}
+                        aria-invalid={!!fieldErrors.idFront}
+                        aria-describedby={fieldErrors.idFront ? "owner-id-front-error" : undefined}
                       />
+                      {fieldErrors.idFront && (
+                        <p
+                          id="owner-id-front-error"
+                          className="mt-1 text-xs text-red-600 flex items-center gap-1 font-typographica"
+                          role="alert"
+                        >
+                          <FaExclamationCircle aria-hidden="true" />
+                          {fieldErrors.idFront}
+                        </p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
+                      <label
+                        htmlFor="owner-id-back"
+                        className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica"
+                      >
                         Cédula (Reverso) *
                       </label>
                       <input
+                        id="owner-id-back"
                         type="file"
-                        accept="image/*"
+                        accept={ALLOWED_IMAGE_TYPES.join(",")}
                         onChange={(e) =>
-                          handleFileUpload(
-                            e.target.files[0],
-                            "idBack",
-                            editingIndex
-                          )
+                          handleFileUpload(e.target.files[0], "idBack")
                         }
-                        className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent"
+                        className={getFieldInputClass("idBack")}
+                        aria-invalid={!!fieldErrors.idBack}
+                        aria-describedby={fieldErrors.idBack ? "owner-id-back-error" : undefined}
                       />
+                      {fieldErrors.idBack && (
+                        <p
+                          id="owner-id-back-error"
+                          className="mt-1 text-xs text-red-600 flex items-center gap-1 font-typographica"
+                          role="alert"
+                        >
+                          <FaExclamationCircle aria-hidden="true" />
+                          {fieldErrors.idBack}
+                        </p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica">
+                      <label
+                        htmlFor="owner-selfie"
+                        className="block text-sm font-medium text-terrasacha-secondary1 mb-2 font-typographica"
+                      >
                         Selfie *
                       </label>
                       <input
+                        id="owner-selfie"
                         type="file"
-                        accept="image/*"
+                        accept={ALLOWED_IMAGE_TYPES.join(",")}
                         onChange={(e) =>
-                          handleFileUpload(
-                            e.target.files[0],
-                            "selfie",
-                            editingIndex
-                          )
+                          handleFileUpload(e.target.files[0], "selfie")
                         }
-                        className="w-full px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent"
+                        className={getFieldInputClass("selfie")}
+                        aria-invalid={!!fieldErrors.selfie}
+                        aria-describedby={fieldErrors.selfie ? "owner-selfie-error" : undefined}
                       />
+                      {fieldErrors.selfie && (
+                        <p
+                          id="owner-selfie-error"
+                          className="mt-1 text-xs text-red-600 flex items-center gap-1 font-typographica"
+                          role="alert"
+                        >
+                          <FaExclamationCircle aria-hidden="true" />
+                          {fieldErrors.selfie}
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
                     <button
+                      type="button"
                       onClick={closeModal}
                       className="px-4 sm:px-6 py-2 text-terrasacha-secondary1 hover:bg-terrasacha-light/20 rounded-lg font-typographica text-sm sm:text-base"
                     >
                       Cancelar
                     </button>
                     <button
+                      type="button"
                       onClick={(editingIndex >= 0 && owners.length > editingIndex) ? updateOwner : addOwner}
-                      className="px-4 sm:px-6 py-2 bg-terrasacha-primary text-white rounded-lg hover:bg-terrasacha-primary/90 transition-colors font-typographica text-sm sm:text-base"
+                      disabled={!fullValidation.isValid}
+                      className={`px-4 sm:px-6 py-2 rounded-lg transition-colors font-typographica text-sm sm:text-base ${
+                        fullValidation.isValid
+                          ? "bg-terrasacha-primary text-white hover:bg-terrasacha-primary/90"
+                          : "bg-terrasacha-light text-terrasacha-secondary1 opacity-60 cursor-not-allowed"
+                      }`}
+                      title={
+                        fullValidation.isValid
+                          ? "Guardar información"
+                          : "Completa todos los campos y documentos válidos para continuar"
+                      }
                     >
                       {(editingIndex === -2 || (editingIndex >= 0 && propietariosData.length > editingIndex)) ? "Actualizar" : (editingIndex >= 0 && owners.length > editingIndex) ? "Actualizar" : "Agregar"}
                     </button>

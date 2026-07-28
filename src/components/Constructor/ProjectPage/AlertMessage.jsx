@@ -5,6 +5,7 @@ import { getProjectProgress } from "services/getProjectProgress";
 import { CheckIcon } from "components/common/icons/CheckIcon";
 import { HourGlassIcon } from "components/common/icons/HourGlassIcon";
 import { marketplaceURLMapper } from "./mappers";
+import { getMarketplaceRequirementDisplay } from "utilities/publicationRequirements";
 
 export default function AlertMessage({ visible }) {
   const { projectData } = useProjectData();
@@ -156,14 +157,36 @@ export default function AlertMessage({ visible }) {
                       )}
                       ) Distribución de tokens del proyecto
                     </li>
-                    <li className="font-bold flex">
-                      (
-                      {progressObj.sectionsStatus.projectOnMarketplace ? (
-                        <CheckIcon className="text-success" />
-                      ) : (
-                        <HourGlassIcon className="text-danger" />
+                    <li className="font-bold flex flex-col">
+                      <span className="flex">
+                        (
+                        {(() => {
+                          const marketplaceDisplay =
+                            getMarketplaceRequirementDisplay(
+                              progressObj.sectionsStatus
+                            );
+                          if (marketplaceDisplay.variant === "complete") {
+                            return <CheckIcon className="text-success" />;
+                          }
+                          if (marketplaceDisplay.variant === "partial") {
+                            return (
+                              <HourGlassIcon className="text-warning" />
+                            );
+                          }
+                          return <HourGlassIcon className="text-danger" />;
+                        })()}
+                        ) Proyecto visible en Marketplace
+                      </span>
+                      {getMarketplaceRequirementDisplay(progressObj.sectionsStatus)
+                        .helperText && (
+                        <span className="mt-1 text-xs font-normal">
+                          {
+                            getMarketplaceRequirementDisplay(
+                              progressObj.sectionsStatus
+                            ).helperText
+                          }
+                        </span>
                       )}
-                      ) Proyecto visible en Marketplace
                     </li>
                   </ul>
                 </div>
@@ -175,6 +198,13 @@ export default function AlertMessage({ visible }) {
                 ? "Este proyecto cumple la totalidad de los requerimientos"
                 : "Este proyecto aún no cumple la totalidad de requerimientos para su publicación"}
             </p>
+            {progressObj.progressValue !== 100 &&
+              progressObj.sectionsStatus.marketplacePublished && (
+                <p className="mb-0 mt-2 text-sm">
+                  La visibilidad en marketplace no implica que todos los
+                  requisitos del proceso estén completos.
+                </p>
+              )}
           </div>
         </div>
       )}

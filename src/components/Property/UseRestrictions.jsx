@@ -193,11 +193,13 @@ export default function UseRestrictions(props) {
 
         {/* Botón único para guardar todos los cambios */}
         {autorizedUser && (
-          <div className="d-flex justify-content-center mt-3">
+          <div className="flex justify-center mt-6">
             <button
-              className="btn-terrasacha-success p-2 font-typographica"
+              type="button"
+              className="btn-terrasacha-primary px-6 py-2.5 font-typographica"
               onClick={handleSaveBtn}
-              disabled={!Object.values(changedFields).some((changed) => changed)} // Se desactiva si no hay cambios
+              disabled={!Object.values(changedFields).some((changed) => changed)}
+              aria-label="Guardar limitaciones de uso de suelo"
             >
               Guardar
             </button>

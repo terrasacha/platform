@@ -45,7 +45,9 @@ export default function NewFolderOnS3Modal(props) {
   return (
     <div>
       <button
-        className="p-2 text-white bg-blue-600 rounded-md"
+        type="button"
+        className="p-2 text-white bg-terrasacha-primary hover:bg-terrasacha-primary-dark rounded-md transition-colors"
+        aria-label="Crear nueva carpeta"
         onClick={openModal}
       >
         <AddFolderIcon />
@@ -69,13 +71,17 @@ export default function NewFolderOnS3Modal(props) {
 
         <Modal.Footer>
           <button
-            className="p-2 text-white bg-slate-700 rounded-md"
+            type="button"
+            className="p-2 text-white bg-terrasacha-secondary1 hover:bg-terrasacha-secondary1-dark rounded-md transition-colors"
+            aria-label="Cerrar modal"
             onClick={closeModal}
           >
             Cerrar
           </button>
           <button
-            className="p-2 text-white bg-blue-600 rounded-md"
+            type="button"
+            className="p-2 text-white bg-terrasacha-primary hover:bg-terrasacha-primary-dark rounded-md transition-colors"
+            aria-label="Crear directorio"
             onClick={() => handleCreateFolderOnS3(newFolderName)}
           >
             Crear

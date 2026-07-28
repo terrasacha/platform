@@ -268,6 +268,8 @@ const Sidebar = ({ children, onUserSettingsClick }) => {
       ? "/legal/home"
       : role === "validator"
       ? "/consultor/home"
+      : role === "admon"
+      ? "/admindash"
       : "/";
     items.push({
       label: "Inicio",
@@ -294,6 +296,8 @@ const Sidebar = ({ children, onUserSettingsClick }) => {
           navigate("/legal/home");
         } else if (role === "validator") {
           navigate("/consultor/home");
+        } else if (role === "admon") {
+          navigate("/admindash");
         } else {
           navigate("/");
         }
@@ -488,27 +492,6 @@ const Sidebar = ({ children, onUserSettingsClick }) => {
           active: isTabActive("uom"),
         },
         {
-          label: "Asignar consultores",
-          path: "/admon?tab=assign_pf",
-          icon: (
-            <svg
-              className="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015.356-1.857M15 11a3 3 0 10-6 0 3 3 0 006 0z"
-              />
-            </svg>
-          ),
-          onClick: () => navigate("/admon?tab=assign_pf"),
-          active: isTabActive("assign_pf"),
-        },
-        {
           label: "Asignar analistas",
           path: "/admon?tab=assign_analyst",
           icon: (
@@ -613,27 +596,7 @@ const Sidebar = ({ children, onUserSettingsClick }) => {
           onClick: () => navigate("/admon?tab=marketplace_admin"),
           active: isTabActive("marketplace_admin"),
         },
-        {
-          label: "Estado de apps",
-          path: "/admon?tab=apps_status",
-          icon: (
-            <svg
-              className="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 17v-6l-2 2m8-2l-2 2v4M5 7h14M5 3h14v18H5z"
-              />
-            </svg>
-          ),
-          onClick: () => navigate("/admon?tab=apps_status"),
-          active: isTabActive("apps_status"),
-        }
+        
       );
     }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaClipboardCheck } from "react-icons/fa";
+import { FaArrowRight, FaClipboardCheck } from "react-icons/fa";
 
 export default function ConsultorBanner() {
   const navigate = useNavigate();
@@ -13,19 +13,22 @@ export default function ConsultorBanner() {
     <section className="pt-8 px-4 pb-4 sm:pt-6 sm:px-6 sm:pb-6 lg:pt-8 lg:px-8 lg:pb-8 overflow-hidden">
       <div className="bg-gradient-terrasacha-subtle rounded-3xl p-8 md:p-12 shadow-lg overflow-hidden">
         <div className="flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 text-left mb-10 md:mb-0 md:pr-12 relative z-10">
-            <h1 className="text-4xl md:text-5xl font-typographica font-bold text-terrasacha-secondary1 leading-tight">
-              Impulsa la
-              {" "}
-              <span className="text-terrasacha-primary">verificación</span> de predios
-            </h1>
-            <p className="mt-4 text-terrasacha-secondary1 text-lg font-typographica">
-              Gestiona campañas, coordina validaciones y haz seguimiento a los predios
-              desde un solo lugar con herramientas diseñadas para consultores.
-            </p>
+          <div className="md:w-1/2 text-left mb-10 md:mb-0 md:pr-12 relative z-10 space-y-6 md:space-y-8">
+            <div className="space-y-5 md:space-y-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-typographica font-bold text-terrasacha-secondary1 leading-tight tracking-tight">
+                Impulsa la
+                {" "}
+                <span className="text-terrasacha-primary">verificación</span> de predios
+              </h1>
+              <p className="max-w-xl text-base md:text-lg font-normal text-terrasacha-secondary1 opacity-80 font-typographica leading-relaxed">
+                Gestiona campañas, coordina validaciones y haz seguimiento a los predios
+                desde un solo lugar con herramientas diseñadas para consultores.
+              </p>
+            </div>
             <button
+              type="button"
               onClick={handleNavigateToConsultor}
-              className="mt-8 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 font-typographica"
+              className="btn-terrasacha-secondary inline-flex items-center gap-2 py-3.5 px-8 text-base md:text-lg shadow-terrasacha-xl"
               aria-label="Ir al panel del consultor"
               tabIndex={0}
               onKeyDown={(e) => {
@@ -36,6 +39,7 @@ export default function ConsultorBanner() {
               }}
             >
               Ir a mis campañas
+              <FaArrowRight aria-hidden="true" className="text-sm" />
             </button>
           </div>
 
@@ -91,9 +95,9 @@ export default function ConsultorBanner() {
                     "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
                 }}
               ></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-terrasacha-secondary1 px-6 py-3 rounded-full shadow-lg flex items-center z-10">
-                <span className="font-semibold mr-2 text-lg font-typographica">Consultor</span>
-                <FaClipboardCheck className="text-terrasacha-secondary2 text-3xl" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 text-terrasacha-secondary1 px-4 py-2 rounded-full shadow-md flex items-center z-10">
+                <span className="font-medium mr-2 text-base font-typographica">Consultor</span>
+                <FaClipboardCheck className="text-terrasacha-secondary2 text-2xl" aria-hidden="true" />
               </div>
             </div>
           </div>

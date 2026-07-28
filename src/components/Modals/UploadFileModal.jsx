@@ -213,7 +213,9 @@ export default function UploadFileModal(props) {
   return (
     <div>
       <button
-        className="p-2 text-white bg-blue-600 rounded-md"
+        type="button"
+        className="p-2 text-white bg-terrasacha-primary hover:bg-terrasacha-primary-dark rounded-md transition-colors"
+        aria-label="Subir archivo"
         onClick={openModal}
       >
         Subir archivo
@@ -248,13 +250,17 @@ export default function UploadFileModal(props) {
 
         <Modal.Footer>
           <button
-            className="p-2 text-white bg-slate-600 rounded-md"
+            type="button"
+            className="p-2 text-white bg-terrasacha-secondary1 hover:bg-terrasacha-secondary1-dark rounded-md transition-colors"
+            aria-label="Cerrar modal"
             onClick={closeModal}
           >
             Cerrar
           </button>
           <button
-            className="p-2 text-white bg-blue-600 rounded-md"
+            type="button"
+            className="p-2 text-white bg-terrasacha-primary hover:bg-terrasacha-primary-dark rounded-md transition-colors"
+            aria-label="Cargar archivos"
             onClick={() => handleSaveChanges()}
           >
             {isLoadingDoc ? (

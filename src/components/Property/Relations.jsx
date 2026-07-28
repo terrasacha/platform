@@ -228,15 +228,17 @@ export default function Relations(props) {
           </div>
         </div>
         {autorizedUser && (
-      <div className="flex justify-center mt-6">
-        <button
-          className="btn-terrasacha-success p-2 font-typographica"
-          onClick={handleSaveBtn}
-        >
-          Guardar
-        </button>
-      </div>
-    )}
+          <div className="flex justify-center mt-6">
+            <button
+              type="button"
+              className="btn-terrasacha-primary px-6 py-2.5 font-typographica"
+              onClick={handleSaveBtn}
+              aria-label="Guardar relaciones con entidades"
+            >
+              Guardar
+            </button>
+          </div>
+        )}
       </Card.Body>
     </Card>
   );

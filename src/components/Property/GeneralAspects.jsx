@@ -324,14 +324,10 @@ export default function GeneralAspects(props) {
         {autorizedUser && (
           <div className="flex justify-center mt-6">
             <button
-              className="btn p-2 font-typographica"
-              style={{
-                backgroundColor: '#849b50', // Verde Pradera
-                borderColor: '#849b50',
-                color: 'white'
-              }}
+              type="button"
+              className="btn-terrasacha-primary px-6 py-2.5 font-typographica"
               onClick={() => handleSaveBtn()}
-              variant="success"
+              aria-label="Guardar aspectos generales del predio"
             >
               Guardar
             </button>

@@ -16,6 +16,7 @@ import {
 } from "../../../graphql/subscriptions";
 import { getFilteredProductFeatures } from "services/getFilteredProductFeatures";
 import { getProductItemName } from "services/getProductItemName";
+import { normalizeItemRecord } from "utilities/normalizeItemText";
 
 class Items extends Component {
   constructor(props) {
@@ -54,7 +55,9 @@ class Items extends Component {
             updatedCategoryData.value.data.onUpdateProductItem.id ===
             mapCategory.id
           ) {
-            return updatedCategoryData.value.data.onUpdateProductItem;
+            return normalizeItemRecord(
+              updatedCategoryData.value.data.onUpdateProductItem
+            );
           } else {
             return mapCategory;
           }
@@ -75,7 +78,9 @@ class Items extends Component {
       a.type > b.type ? 1 : -1
     );
     this.setState({
-      categorys: listProductItemsResult.data.listProductItems.items,
+      categorys: listProductItemsResult.data.listProductItems.items.map(
+        normalizeItemRecord
+      ),
     });
   }
 
@@ -175,7 +180,7 @@ class Items extends Component {
 
   handleLoadEditCategory = async (category, event) => {
     this.setState({
-      newCategory: category,
+      newCategory: normalizeItemRecord(category),
       CRUDButtonName: "UPDATE",
       isCRUDButtonDisable: false,
     });

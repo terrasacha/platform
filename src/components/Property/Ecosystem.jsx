@@ -297,9 +297,10 @@ export default function Ecosystem(props) {
         {autorizedUser && (
           <div className="flex justify-center mt-6">
             <button
-              className="btn-terrasacha-success p-2 font-typographica"
+              type="button"
+              className="btn-terrasacha-primary px-6 py-2.5 font-typographica"
               onClick={() => handleSaveBtn()}
-              variant="success"
+              aria-label="Guardar aspectos del ecosistema"
             >
               Guardar
             </button>

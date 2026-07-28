@@ -49,6 +49,9 @@ export default function ProjectInfoCard(props) {
   const [planosPredio, setPlanosPredio] = useState([]);
   const [modifiedFields, setModifiedFields] = useState(new Set());
   const [totalArea, setTotalArea] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const hasPendingChanges = modifiedFields.size > 0;
 
   const fileInputRef = useRef(null);
 
@@ -315,13 +318,14 @@ export default function ProjectInfoCard(props) {
   };
 
   const handleSaveBtn = async () => {
-    if (modifiedFields.size === 0) {
+    if (!hasPendingChanges) {
       notify({ msg: "No hay cambios para guardar", type: "info" });
       return;
     }
-  
-    let error = false;
-  
+
+    setIsSaving(true);
+    let hasError = false;
+
     for (let field of modifiedFields) {
       try {
         if (field === "projectInfoTitle") {
@@ -354,17 +358,20 @@ export default function ProjectInfoCard(props) {
           handleUpdateContextProjectInfo({ area: formData.projectInfoArea });
         }
   
-      } catch (error) {
-        console.error(`Error al actualizar ${field}:`, error);
+      } catch (err) {
+        console.error(`Error al actualizar ${field}:`, err);
         notify({ msg: `Error al actualizar ${field}`, type: "error" });
-        error = true;
+        hasError = true;
       }
     }
-  
-    if (!error) {
+
+    if (!hasError) {
       notify({ msg: "Información actualizada con éxito", type: "success" });
-      setModifiedFields(new Set()); // Limpiar los campos modificados
+      setModifiedFields(new Set());
+      setProgressChange?.((prev) => !prev);
     }
+
+    setIsSaving(false);
   };
   
   return (
@@ -423,13 +430,37 @@ export default function ProjectInfoCard(props) {
   
           {/* Botón de Guardar */}
           {autorizedUser && (
-            <div className="col-12 text-center mt-4">
+            <div className="col-12 mt-4 flex flex-col items-center gap-2">
+              {hasPendingChanges && (
+                <p
+                  className="mb-0 text-xs font-typographica text-terrasacha-earth"
+                  role="status"
+                  aria-live="polite"
+                >
+                  Tienes cambios sin guardar
+                </p>
+              )}
               <button
-                className="px-6 py-2 bg-[#6e6c35] text-white rounded-md hover:bg-green-700 transition-all duration-300"
+                type="button"
                 onClick={handleSaveBtn}
-                disabled={modifiedFields.size === 0} // Deshabilitar si no hay cambios
+                disabled={!hasPendingChanges || isSaving}
+                className={`px-6 py-2.5 rounded-lg font-typographica font-semibold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/40 ${
+                  hasPendingChanges && !isSaving
+                    ? "bg-terrasacha-primary text-white shadow-terrasacha hover:bg-terrasacha-secondary1 hover:shadow-terrasacha-lg"
+                    : "cursor-not-allowed border border-terrasacha-light/40 bg-terrasacha-light text-terrasacha-secondary1 opacity-70"
+                }`}
+                aria-label={
+                  hasPendingChanges
+                    ? "Guardar cambios del proyecto"
+                    : "No hay cambios pendientes por guardar"
+                }
+                title={
+                  hasPendingChanges
+                    ? "Guardar los cambios realizados"
+                    : "Edita un campo para habilitar el guardado"
+                }
               >
-                Guardar Cambios
+                {isSaving ? "Guardando..." : "Guardar Cambios"}
               </button>
             </div>
           )}

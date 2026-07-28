@@ -19,6 +19,10 @@ import Imagen from "../../common/_images/Campaña.png";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import ModalAssignProperty from "./ModalAssignProperty";
+import {
+  convocatoriaActions,
+  getConvocatoriaStatus,
+} from "utilities/campaignStatusMapper";
 
 export default function Campaign() {
   const [campaign, setCampaign] = useState(null);
@@ -150,6 +154,10 @@ export default function Campaign() {
   };
 
   if (!campaign) return null;
+
+  const convocatoriaStatus = getConvocatoriaStatus(campaign);
+  const isConvocatoriaAbierta = campaign.available;
+  const linkedProjectId = campaign.products?.items?.[0]?.id;
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp * 1000);
@@ -367,10 +375,34 @@ export default function Campaign() {
               {/* Campaign Actions - Responsive */}
               <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-terrasacha-xl border border-gray-100">
                 <h3 className="font-champagne text-xl sm:text-2xl text-terrasacha-secondary1 mb-4 sm:mb-6">Acciones de Campaña</h3>
+
+                <div
+                  className="mb-4 flex flex-col items-center gap-2 sm:mb-6"
+                  role="status"
+                  aria-label={convocatoriaStatus.tooltip}
+                >
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-typographica font-semibold uppercase whitespace-nowrap ${convocatoriaStatus.badge}`}
+                  >
+                    {isConvocatoriaAbierta ? (
+                      <FiCalendar className="text-sm" aria-hidden="true" />
+                    ) : (
+                      <FiLock className="text-sm" aria-hidden="true" />
+                    )}
+                    {convocatoriaStatus.label}
+                  </span>
+                  {!isConvocatoriaAbierta && (
+                    <p className="mb-0 max-w-xs text-center text-xs font-typographica text-gray-600">
+                      {convocatoriaStatus.tooltip}
+                    </p>
+                  )}
+                </div>
+
                 <div className="space-y-3 sm:space-y-4">
-                  {campaign.available ? (
+                  {isConvocatoriaAbierta ? (
                     <>
                       <button
+                        type="button"
                         onClick={() =>
                           editable
                             ? handleShowEndCampaign()
@@ -383,38 +415,60 @@ export default function Campaign() {
                             ? "bg-red-500 hover:bg-red-600 text-white shadow-terrasacha hover:shadow-terrasacha-lg"
                             : "bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white shadow-terrasacha hover:shadow-terrasacha-lg"
                         }`}
+                        aria-label={
+                          editable
+                            ? convocatoriaActions.closeAriaLabel
+                            : "Postular un predio a esta campaña"
+                        }
                       >
-                        <FiLock className="text-lg sm:text-xl" />
+                        {editable ? (
+                          <FiLock className="text-lg sm:text-xl" aria-hidden="true" />
+                        ) : (
+                          <FiMapPin className="text-lg sm:text-xl" aria-hidden="true" />
+                        )}
                         <span className="hidden sm:inline">
-                          {editable ? "Cerrar Campaña" : "Postular Predio"}
+                          {editable
+                            ? convocatoriaActions.closeButtonLabel
+                            : "Postular Predio"}
                         </span>
                         <span className="sm:hidden">
-                          {editable ? "Cerrar" : "Postular"}
+                          {editable
+                            ? convocatoriaActions.closeButtonLabelShort
+                            : "Postular"}
                         </span>
                       </button>
                       <button
+                        type="button"
                         onClick={handleShare}
                         className="w-full flex items-center justify-center space-x-2 py-2.5 sm:py-3 px-4 sm:px-6 bg-white text-terrasacha-primary border border-terrasacha-light rounded-lg sm:rounded-xl font-typographica font-semibold shadow-sm hover:shadow-md hover:border-terrasacha-primary transition-all duration-300 text-sm sm:text-base"
+                        aria-label="Compartir enlace de la campaña"
                       >
-                        <FiShare2 className="text-lg sm:text-xl" />
+                        <FiShare2 className="text-lg sm:text-xl" aria-hidden="true" />
                         <span>Compartir</span>
                       </button>
                     </>
                   ) : (
                     <>
+                      {linkedProjectId && (
+                        <button
+                          type="button"
+                          onClick={() => handleClickSeeProject(linkedProjectId)}
+                          className="w-full flex items-center justify-center space-x-2 py-2.5 sm:py-3 px-4 sm:px-6 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white rounded-lg sm:rounded-xl font-typographica font-semibold shadow-terrasacha hover:shadow-terrasacha-lg transition-all duration-300 text-sm sm:text-base"
+                          aria-label="Ver proyecto asociado a esta campaña"
+                        >
+                          <FiEye className="text-lg sm:text-xl" aria-hidden="true" />
+                          <span className="hidden sm:inline">Ver proyecto</span>
+                          <span className="sm:hidden">Ver</span>
+                        </button>
+                      )}
                       <button
-                        disabled
-                        className="w-full py-2.5 sm:py-3 px-4 sm:px-6 bg-gray-400 text-white font-typographica font-semibold rounded-lg sm:rounded-xl text-center cursor-not-allowed text-sm sm:text-base"
+                        type="button"
+                        onClick={handleShare}
+                        className="w-full flex items-center justify-center space-x-2 py-2.5 sm:py-3 px-4 sm:px-6 bg-white text-terrasacha-primary border border-terrasacha-light rounded-lg sm:rounded-xl font-typographica font-semibold shadow-sm hover:shadow-md hover:border-terrasacha-primary transition-all duration-300 text-sm sm:text-base"
+                        aria-label="Compartir enlace de la campaña"
                       >
-                        Convocatoria cerrada
-                      </button>
-                      <button
-                        onClick={() => handleClickSeeProject(campaign.products.items[0].id)}
-                        className="w-full flex items-center justify-center space-x-2 py-2.5 sm:py-3 px-4 sm:px-6 bg-terrasacha-primary hover:bg-terrasacha-secondary1 text-white rounded-lg sm:rounded-xl font-typographica font-semibold shadow-terrasacha hover:shadow-terrasacha-lg transition-all duration-300 text-sm sm:text-base"
-                      >
-                        <FiEye className="text-lg sm:text-xl" />
-                        <span className="hidden sm:inline">Ver proyecto</span>
-                        <span className="sm:hidden">Ver</span>
+                        <FiShare2 className="text-lg sm:text-xl" aria-hidden="true" />
+                        <span>Compartir</span>
                       </button>
                     </>
                   )}

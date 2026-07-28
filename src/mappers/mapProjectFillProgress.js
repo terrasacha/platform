@@ -1,4 +1,5 @@
 import { useAuth } from "context/AuthContext";
+import { arePublicationPrerequisitesMet } from "utilities/publicationRequirements";
 
 const calcularPorcentajeTrue = (objeto) => {
   // Obtén las claves del objeto
@@ -283,7 +284,8 @@ export const mapProjectFillProgress = async (data, userRole) => {
     validationsComplete: false,
     ownerAcceptsConditions: false,
     tokenGenesis: false,
-    projectOnMarketplace: data.isActive
+    marketplacePublished: false,
+    projectOnMarketplace: false,
     // actualUseInfo: false,
     // limitationsInfo: false,
     // ecosystemInfo: false,
@@ -306,6 +308,11 @@ export const mapProjectFillProgress = async (data, userRole) => {
 
   // Token Genesis
   sectionsStatus.tokenGenesis = getTokenGenesisStatus(data);
+
+  sectionsStatus.marketplacePublished = Boolean(data.isActive);
+  sectionsStatus.projectOnMarketplace =
+    sectionsStatus.marketplacePublished &&
+    arePublicationPrerequisitesMet(sectionsStatus);
 
   // sectionsStatus.actualUseInfo = getActualUseInfoStatus(data);
   // sectionsStatus.limitationsInfo = getLimitationsInfoStatus(data);

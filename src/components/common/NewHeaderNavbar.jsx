@@ -164,7 +164,7 @@ export default function NewHeaderNavbar() {
     if (r === "constructor" || r === "investor") return "/constructor/home";
     if (r === "validator") return "/consultor/home";
     if (r === "legal") return "/legal/home";
-    if (r === "admon") return "/admon";
+    if (r === "admon") return "/admindash";
     if (r === "analyst") return "/project_analyst";
     return "/";
   };

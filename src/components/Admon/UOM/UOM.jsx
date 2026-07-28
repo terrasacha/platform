@@ -174,7 +174,7 @@ class UOM extends Component {
           <TerrasachaTable
             title="Unidades de Medida Configuradas"
             subtitle="Lista de todas las unidades de medida disponibles en el sistema"
-            headers={['Unidad de Ingeniería', 'Descripción', 'Es Float', 'Acción']}
+            headers={['Unidad de Ingeniería', 'Descripción', 'Permite decimales', 'Acción']}
             data={unitOfMeasures}
             renderRow={(unitOfMeasure) => (
               <>
@@ -249,7 +249,7 @@ class UOM extends Component {
             </div>
             <div>
               <label className="block text-sm font-bold text-terrasacha-secondary1 font-typographica mb-3">
-                ¿Es Float?
+                ¿Permite decimales?
               </label>
               <button
                 type="button"

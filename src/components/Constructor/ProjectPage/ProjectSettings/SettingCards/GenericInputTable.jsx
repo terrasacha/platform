@@ -8,6 +8,7 @@ import {
   updateProductFeature,
 } from "../../../../../graphql/mutations";
 import { notify } from "../../../../../utilities/notify";
+import { normalizeItemText } from "../../../../../utilities/normalizeItemText";
 
 export default function GenericInputTable(props) {
   const { className, title, fID, financialInfoType, canEdit, conceptOptions } =
@@ -25,9 +26,14 @@ export default function GenericInputTable(props) {
         ] || null
       );
       setRevenuesByProduct(
-        projectData.projectFinancialInfo[financialInfoType][
-          financialInfoType
-        ] || []
+        (
+          projectData.projectFinancialInfo[financialInfoType][
+            financialInfoType
+          ] || []
+        ).map((row) => ({
+          ...row,
+          CONCEPTO: normalizeItemText(row.CONCEPTO),
+        }))
       );
     }
   }, [projectData]);

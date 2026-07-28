@@ -12,7 +12,23 @@ import {
   FaInfoCircle,
   FaCheck,
   FaTimes,
+  FaClock,
+  FaCheckCircle,
+  FaFileAlt,
+  FaBan,
+  FaTimesCircle,
+  FaLock,
 } from "react-icons/fa";
+import {
+  campaignStatusMapper,
+  getCampaignStatus,
+} from "utilities/campaignStatusMapper";
+import {
+  getValidatorPropertyStatus,
+  validatorPropertyStatusMapper,
+  canPropertyBeAssignedToCampaign,
+  getPropertyAssignBlockedReason,
+} from "utilities/validatorPropertyStatusMapper";
 import { Row } from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
 import { API, graphqlOperation } from "aws-amplify";
@@ -30,12 +46,42 @@ const getPropertyArea = (property) => {
   return formatArea(areaFeature?.value) || "No disponible";
 };
 
-const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
+const CampaignAssignModal = ({
+  isOpen,
+  onClose,
+  campaigns,
+  onAssign,
+  selectedProperty,
+}) => {
   const [selectedCampaign, setSelectedCampaign] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const propertyCanBeAssigned = selectedProperty
+    ? canPropertyBeAssignedToCampaign(selectedProperty.status)
+    : false;
+
+  const assignBlockedReason = selectedProperty
+    ? getPropertyAssignBlockedReason(selectedProperty.status)
+    : "";
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedCampaign("");
+      setError("");
+      setLoading(false);
+    }
+  }, [isOpen]);
+
   const handleAssign = async () => {
+    if (!propertyCanBeAssigned) {
+      setError(
+        assignBlockedReason ||
+          "El predio aún no es elegible para asignarse a una campaña."
+      );
+      return;
+    }
+
     if (!selectedCampaign) {
       setError("Debes seleccionar una campaña.");
       return;
@@ -76,11 +122,28 @@ const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
             Asignar a campaña
           </Modal.Title>
           <div className="text-sm text-terrasacha-secondary1 font-typographica font-normal mt-1">
-            Selecciona la campaña a la que deseas asignar el predio.
+            {selectedProperty?.name
+              ? `Predio: ${selectedProperty.name}`
+              : "Selecciona la campaña a la que deseas asignar el predio."}
           </div>
         </div>
       </Modal.Header>
       <Modal.Body className="py-6 px-4 md:px-8">
+        {!propertyCanBeAssigned && (
+          <div
+            className="mb-4 flex items-start gap-2 rounded-lg border border-[#e8d79a] bg-[#e8d79a]/20 p-3"
+            role="alert"
+          >
+            <FaLock
+              className="mt-0.5 flex-shrink-0 text-[#6e6c35]"
+              aria-hidden="true"
+            />
+            <p className="mb-0 text-xs font-typographica text-[#6e6c35] opacity-90 sm:text-sm">
+              {assignBlockedReason ||
+                "Este predio no cumple las condiciones para ser asignado a una campaña."}
+            </p>
+          </div>
+        )}
         <label
           htmlFor="campaignSelect"
           className="block font-typographica font-semibold text-terrasacha-secondary1 mb-2"
@@ -99,6 +162,7 @@ const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
           value={selectedCampaign}
           aria-label="Selecciona una campaña"
           aria-invalid={!!error}
+          disabled={!propertyCanBeAssigned}
           required
         >
           <option value="" disabled>
@@ -132,8 +196,13 @@ const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
         <button
           type="button"
           onClick={handleAssign}
-          disabled={loading}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-typographica font-semibold text-white bg-terrasacha-primary hover:bg-terrasacha-primary/80 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 transition-all duration-300 shadow-terrasacha hover:shadow-terrasacha-lg w-full md:w-auto disabled:opacity-60"
+          disabled={loading || !propertyCanBeAssigned}
+          title={
+            propertyCanBeAssigned
+              ? "Confirmar asignación a campaña"
+              : assignBlockedReason
+          }
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-typographica font-semibold text-white bg-terrasacha-primary hover:bg-terrasacha-primary/80 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 transition-all duration-300 shadow-terrasacha hover:shadow-terrasacha-lg w-full md:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
           aria-label="Asignar campaña"
         >
           {loading ? (
@@ -148,41 +217,36 @@ const CampaignAssignModal = ({ isOpen, onClose, campaigns, onAssign }) => {
   );
 };
 
-// StateMapper actualizado con colores de Terrasacha
-const stateMapper = {
-  PENDING: {
-    label: "Pendiente",
-    badge: "bg-[#e8d79a] text-[#44482c] border border-[#b1c181]",
-    tooltip: "Pendiente: El predio está pendiente de revisión.",
-  },
-  APPROVED: {
-    label: "Aprobado",
-    badge:
-      "bg-terrasacha-light/20 text-terrasacha-secondary2 border border-terrasacha-light/40",
-    tooltip: "Aprobado: El predio ha sido aprobado.",
-  },
-  REJECTED: {
-    label: "Rechazado",
-    badge: "bg-red-100 text-red-700 border border-red-400",
-    tooltip: "Rechazado: El predio no cumple los requisitos.",
-  },
-  SELECTABLE: {
-    label: "Seleccionable",
-    badge:
-      "bg-terrasacha-primary/20 text-terrasacha-primary border border-terrasacha-primary/40",
-    tooltip: "Seleccionable: El predio es elegible para continuar el proceso.",
-  },
-  NOT_SELECTABLE: {
-    label: "No elegible",
-    badge: "bg-red-100 text-red-700 border border-red-400",
-    tooltip: "No elegible: El predio no es elegible para continuar el proceso.",
-  },
-  DOC_UPLOADED: {
-    label: "Documentos cargados",
-    badge:
-      "bg-terrasacha-secondary2/20 text-terrasacha-secondary2 border border-terrasacha-secondary2/40",
-    tooltip: "El usuario ha cargado la documentación requerida para el predio.",
-  },
+const statusIconMap = {
+  clock: FaClock,
+  file: FaFileAlt,
+  checkCircle: FaCheckCircle,
+  ban: FaBan,
+  check: FaCheck,
+  times: FaTimesCircle,
+};
+
+const PropertyStatusBadge = ({ status, tooltipId }) => {
+  const config = getValidatorPropertyStatus(status);
+  const StatusIcon = statusIconMap[config.iconKey] || FaInfoCircle;
+
+  return (
+    <>
+      <span
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-typographica font-semibold whitespace-nowrap uppercase ${config.badge}`}
+        data-tooltip-id={tooltipId}
+        data-tooltip-content={config.tooltip}
+      >
+        <StatusIcon size={11} aria-hidden="true" />
+        {config.label}
+      </span>
+      {tooltipId && (
+        <div className="hidden md:block">
+          <ReactTooltip id={tooltipId} place="top" effect="solid" />
+        </div>
+      )}
+    </>
+  );
 };
 
 export default function ValidatorAdmon() {
@@ -257,13 +321,17 @@ export default function ValidatorAdmon() {
     {
       key: "ALL",
       label: "Todos",
-      color: "bg-gray-200 text-gray-700 border border-gray-400",
+      filterInactive: "bg-gray-200 text-gray-700 border border-gray-400",
     },
-    ...Object.keys(stateMapper).map((key) => ({
-      key,
-      label: stateMapper[key].label,
-      color: stateMapper[key].badge,
-    })),
+    ...Object.keys(validatorPropertyStatusMapper).map((key) => {
+      const config = validatorPropertyStatusMapper[key];
+      return {
+        key,
+        label: config.label,
+        filterDot: config.filterDot,
+        filterInactive: config.filterInactive,
+      };
+    }),
   ];
   const filteredPropertiesByStatus =
     propertiesFilterStatus === "ALL"
@@ -294,6 +362,19 @@ export default function ValidatorAdmon() {
     });
   };
 
+  const handleOpenAssignModal = (property) => {
+    if (!canPropertyBeAssignedToCampaign(property.status)) {
+      toast.info(
+        getPropertyAssignBlockedReason(property.status) ||
+          "El predio aún no es elegible para asignarse a una campaña."
+      );
+      return;
+    }
+
+    setSelectedProperty(property);
+    setIsModalOpen(true);
+  };
+
   const handleAssignCampaign = async (campaignId) => {
     const selectedCampaign = userCampaigns.find(
       (campaign) => campaign.id === campaignId
@@ -319,8 +400,10 @@ export default function ValidatorAdmon() {
       return;
     }
 
-    if (selectedProperty.status !== "SELECTABLE") {
-      toast.error("El predio aún no es elegible.");
+    if (!canPropertyBeAssignedToCampaign(selectedProperty.status)) {
+      const reason = getPropertyAssignBlockedReason(selectedProperty.status);
+      toast.error(reason || "El predio aún no es elegible.");
+      setIsModalOpen(false);
       return;
     }
 
@@ -410,21 +493,30 @@ export default function ValidatorAdmon() {
             {/* Filtros de estado de campaña */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 mb-2">
               <div className="flex flex-col gap-2 md:flex-row md:gap-2 md:justify-start w-full">
-                {campaignsStatusFilterOptions.map((option) => (
-                  <button
-                    key={option.key}
-                    type="button"
-                    className={`flex items-center px-3 py-1.5 rounded-xl border text-xs font-typographica font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
-                      campaignsStatusFilter === option.key
-                        ? "bg-terrasacha-primary text-white border-terrasacha-primary shadow-terrasacha"
-                        : "bg-white text-terrasacha-secondary1 border-terrasacha-light/40 hover:bg-terrasacha-light/10"
-                    }`}
-                    aria-label={`Filtrar campañas por estado: ${option.label}`}
-                    onClick={() => setCampaignsStatusFilter(option.key)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
+                {campaignsStatusFilterOptions.map((option) => {
+                  const statusStyle = campaignStatusMapper[option.key];
+                  return (
+                    <button
+                      key={option.key}
+                      type="button"
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-typographica font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
+                        campaignsStatusFilter === option.key
+                          ? "bg-terrasacha-primary text-white border-terrasacha-primary shadow-terrasacha"
+                          : "bg-white text-terrasacha-secondary1 border-terrasacha-light/40 hover:bg-terrasacha-light/10"
+                      }`}
+                      aria-label={`Filtrar campañas por estado: ${option.label}`}
+                      onClick={() => setCampaignsStatusFilter(option.key)}
+                    >
+                      {statusStyle && (
+                        <span
+                          className={`h-2 w-2 rounded-full flex-shrink-0 ${statusStyle.filterDot}`}
+                          aria-hidden="true"
+                        />
+                      )}
+                      {option.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="bg-white rounded-t-lg shadow-lg border border-terrasacha-light/20">
@@ -553,22 +645,7 @@ export default function ValidatorAdmon() {
                           }
                         } catch (e) {}
                         const isExpanded = expandedRows.has(campaign.id);
-                        // Calcular estado de la campaña
-                        let campaignStatusLabel = "En curso";
-                        let campaignStatusColor =
-                          "bg-terrasacha-light/20 text-terrasacha-secondary2 border border-terrasacha-light/40";
-                        let campaignStatusTooltip = "La campaña sigue activa.";
-                        if (campaign.endDate) {
-                          const endDate = new Date(campaign.endDate * 1000);
-                          const now = new Date();
-                          if (endDate < now) {
-                            campaignStatusLabel = "Finalizada";
-                            campaignStatusColor =
-                              "bg-terrasacha-earth/20 text-terrasacha-secondary1 border border-terrasacha-earth/40";
-                            campaignStatusTooltip =
-                              "La campaña ya ha finalizado.";
-                          }
-                        }
+                        const campaignStatus = getCampaignStatus(campaign);
                         // Filtrar predios asociados a esta campaña
                         const campaignProperties = properties.filter(
                           (property) => property.campaignID === campaign.id
@@ -683,13 +760,18 @@ export default function ValidatorAdmon() {
                                     })()
                                   : "-"}
                               </td>
-                              <td className="px-2 py-1 min-w-24">
+                              <td className="px-2 py-1 min-w-28">
                                 <span
-                                  className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${campaignStatusColor}`}
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-typographica font-semibold whitespace-nowrap uppercase ${campaignStatus.badge}`}
                                   data-tooltip-id={`tooltip-campaign-status-${campaign.id}`}
-                                  data-tooltip-content={campaignStatusTooltip}
+                                  data-tooltip-content={campaignStatus.tooltip}
                                 >
-                                  {campaignStatusLabel}
+                                  {campaignStatus.key === "ACTIVE" ? (
+                                    <FaClock size={11} aria-hidden="true" />
+                                  ) : (
+                                    <FaCheckCircle size={11} aria-hidden="true" />
+                                  )}
+                                  {campaignStatus.label}
                                 </span>
                                 <ReactTooltip
                                   id={`tooltip-campaign-status-${campaign.id}`}
@@ -759,70 +841,56 @@ export default function ValidatorAdmon() {
                                   >
                                     <td></td>
                                     <td
-                                      colSpan={5}
-                                      className="pl-8 py-2 align-middle"
+                                      colSpan={6}
+                                      className="px-2 py-2 sm:px-3 sm:py-2.5 align-middle"
                                     >
-                                      <div className="flex items-center justify-between w-full">
-                                        <div className="flex items-center gap-4">
-                                          <span className="font-typographica font-semibold text-terrasacha-secondary1 text-xs">
-                                            {property.name
-                                              ? property.name.toUpperCase()
-                                              : "Predio sin nombre"}
-                                          </span>
-                                          <span
-                                            className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${
-                                              stateMapper[property.status]
-                                                ?.badge ||
-                                              "bg-gray-300 text-gray-800 border border-gray-400"
-                                            }`}
-                                            data-tooltip-id={`tooltip-property-status-${property.id}`}
-                                            data-tooltip-content={
-                                              stateMapper[property.status]
-                                                ?.tooltip || "Estado indefinido"
-                                            }
-                                          >
-                                            {stateMapper[property.status]
-                                              ?.label || "SIN DEFINIR"}
-                                          </span>
-                                          <ReactTooltip
-                                            id={`tooltip-property-status-${property.id}`}
-                                            place="top"
-                                            effect="solid"
-                                          />
-                                          <span className="text-xs text-terrasacha-secondary1">
-                                            {property.createdAt
-                                              ? new Date(
-                                                  property.createdAt
-                                                ).toLocaleDateString("es-ES", {
-                                                  year: "numeric",
-                                                  month: "2-digit",
-                                                  day: "2-digit",
-                                                })
-                                              : "-"}
-                                          </span>
+                                      <div className="w-full rounded-lg border border-terrasacha-light/50 bg-white/80 px-3 py-2 shadow-sm">
+                                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                          <div className="min-w-0 flex-1">
+                                            <div className="flex flex-col gap-1.5 md:flex-row md:items-center md:flex-wrap md:gap-3">
+                                              <span className="font-typographica font-semibold text-terrasacha-secondary1 text-xs break-words">
+                                                {property.name
+                                                  ? property.name.toUpperCase()
+                                                  : "Predio sin nombre"}
+                                              </span>
+                                              <PropertyStatusBadge
+                                                status={property.status}
+                                                tooltipId={`tooltip-property-status-${property.id}`}
+                                              />
+                                              <span className="text-[11px] text-terrasacha-secondary1/80 font-typographica">
+                                                {property.createdAt
+                                                  ? new Date(
+                                                      property.createdAt
+                                                    ).toLocaleDateString("es-ES", {
+                                                      year: "numeric",
+                                                      month: "2-digit",
+                                                      day: "2-digit",
+                                                    })
+                                                  : "-"}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div className="flex w-full md:w-auto md:justify-end">
+                                            <button
+                                              onClick={() =>
+                                                window.open(
+                                                  `/property/${property.id}`,
+                                                  "_blank"
+                                                )
+                                              }
+                                              className="inline-flex w-full md:w-auto items-center justify-center gap-1 border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg px-2.5 py-1.5 text-[11px] font-typographica font-semibold hover:bg-terrasacha-primary/90 hover:shadow-terrasacha transition-all duration-200"
+                                              aria-label="Ver detalles del predio"
+                                              tabIndex={0}
+                                              type="button"
+                                            >
+                                              <FaEye
+                                                size={11}
+                                                aria-hidden="true"
+                                              />
+                                              Ver
+                                            </button>
+                                          </div>
                                         </div>
-                                        {/* ✅ NUEVO: Botón para visualizar predio en la esquina derecha */}
-                                        <button
-                                          onClick={() =>
-                                            window.open(
-                                              `/property/${property.id}`,
-                                              "_blank"
-                                            )
-                                          }
-                                          className="border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-primary/80 hover:shadow-terrasacha active:bg-terrasacha-primary transition-all duration-200 flex items-center justify-center w-6 h-6 transform hover:scale-105"
-                                          aria-label="Ver detalles del predio"
-                                          data-tooltip-id={`tooltip-property-view-${property.id}`}
-                                          data-tooltip-content="Ver detalles del predio"
-                                          tabIndex={0}
-                                          type="button"
-                                        >
-                                          <FaEye size={10} />
-                                        </button>
-                                        <ReactTooltip
-                                          id={`tooltip-property-view-${property.id}`}
-                                          place="top"
-                                          effect="solid"
-                                        />
                                       </div>
                                     </td>
                                   </tr>
@@ -831,8 +899,8 @@ export default function ValidatorAdmon() {
                                 <tr className="bg-terrasacha-earth border-b border-terrasacha-light">
                                   <td></td>
                                   <td
-                                    colSpan={5}
-                                    className="pl-8 py-2 align-middle text-xs text-terrasacha-secondary1 italic"
+                                    colSpan={6}
+                                    className="px-4 py-4 align-middle text-xs text-terrasacha-secondary1 italic"
                                   >
                                     Sin predios asignados
                                   </td>
@@ -863,6 +931,20 @@ export default function ValidatorAdmon() {
                   Aquí puedes ver y gestionar todos los predios que aún no han
                   sido asignados a una campaña.
                 </p>
+                <div className="mt-3 flex items-start gap-2 rounded-lg border border-terrasacha-light/40 bg-terrasacha-light/10 p-3">
+                  <FaInfoCircle
+                    className="mt-0.5 flex-shrink-0 text-terrasacha-primary"
+                    aria-hidden="true"
+                  />
+                  <p className="mb-0 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm">
+                    Solo los predios en estado{" "}
+                    <span className="font-semibold text-terrasacha-primary">
+                      Seleccionable
+                    </span>{" "}
+                    pueden asignarse a una campaña. Los demás estados muestran
+                    la acción bloqueada con el motivo correspondiente.
+                  </p>
+                </div>
               </div>
             </div>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4 mb-2">
@@ -871,14 +953,20 @@ export default function ValidatorAdmon() {
                   <button
                     key={option.key}
                     type="button"
-                    className={`flex items-center px-3 py-1.5 rounded-xl border text-xs font-typographica font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-typographica font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terrasacha-primary/50 ${
                       propertiesFilterStatus === option.key
                         ? "bg-terrasacha-primary text-white border-terrasacha-primary shadow-terrasacha"
-                        : option.color + " hover:bg-terrasacha-light/10"
+                        : `${option.filterInactive} hover:bg-terrasacha-light/10`
                     }`}
                     aria-label={`Filtrar por estado: ${option.label}`}
                     onClick={() => setPropertiesFilterStatus(option.key)}
                   >
+                    {option.filterDot && (
+                      <span
+                        className={`h-2 w-2 rounded-full flex-shrink-0 ${option.filterDot}`}
+                        aria-hidden="true"
+                      />
+                    )}
                     {option.label}
                   </button>
                 ))}
@@ -1035,70 +1123,79 @@ export default function ValidatorAdmon() {
                             {property.department || "-"}
                           </td>
                           <td className="px-2 py-1">
-                            <span
-                              className={`inline-block px-1 py-0 rounded text-[10px] font-typographica font-semibold whitespace-nowrap uppercase ${
-                                stateMapper[property.status]?.badge ||
-                                "bg-terrasacha-earth/20 text-terrasacha-secondary1 border border-terrasacha-earth/40"
-                              }`}
-                              data-tooltip-id={`tooltip-status-${property.id}`}
-                              data-tooltip-content={
-                                stateMapper[property.status]?.tooltip ||
-                                "Estado indefinido"
-                              }
-                            >
-                              {stateMapper[property.status]?.label ||
-                                "SIN DEFINIR"}
-                            </span>
-                            <div className="hidden md:block">
-                              <ReactTooltip
-                                id={`tooltip-status-${property.id}`}
-                                place="top"
-                                effect="solid"
-                              />
-                            </div>
-                          </td>
-                          <td className="px-2 py-1 flex gap-2">
-                            <button
-                              onClick={() =>
-                                window.open(
-                                  `/property/${property.id}`,
-                                  "_blank"
-                                )
-                              }
-                              className="border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg p-1 text-xs hover:bg-terrasacha-primary hover:shadow-terrasacha active:bg-terrasacha-primary transition-all duration-200 flex items-center justify-center w-7 h-7 transform hover:scale-105"
-                              aria-label="Ver detalles del predio"
-                              data-tooltip-id={`tooltip-details-${property.id}`}
-                              data-tooltip-content="Ver detalles del predio"
-                              tabIndex={0}
-                              type="button"
-                            >
-                              <FaEye size={13} />
-                            </button>
-                            <ReactTooltip
-                              id={`tooltip-details-${property.id}`}
-                              place="top"
-                              effect="solid"
+                            <PropertyStatusBadge
+                              status={property.status}
+                              tooltipId={`tooltip-status-${property.id}`}
                             />
-                            <button
-                              className="inline-block bg-terrasacha-secondary2 text-white text-xs px-3 py-1.5 rounded-lg font-typographica font-semibold hover:bg-terrasacha-secondary2 transition-all duration-200 shadow-terrasacha hover:shadow-terrasacha-lg"
-                              onClick={() => {
-                                setSelectedProperty(property);
-                                setIsModalOpen(true);
-                              }}
-                              aria-label="Asignar"
-                              data-tooltip-id={`tooltip-assign-${property.id}`}
-                              data-tooltip-content="Asignar a campaña"
-                              tabIndex={0}
-                              type="button"
-                            >
-                              Asignar
-                            </button>
-                            <div className="hidden md:block">
-                              <ReactTooltip
-                                id={`tooltip-assign-${property.id}`}
-                                place="top"
-                                effect="solid"
-                              />
+                          </td>
+                          <td className="px-2 py-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              {(() => {
+                                const statusConfig = getValidatorPropertyStatus(
+                                  property.status
+                                );
+                                const canAssign = statusConfig.canAssignToCampaign;
+
+                                return (
+                                  <>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        window.open(
+                                          `/property/${property.id}`,
+                                          "_blank"
+                                        )
+                                      }
+                                      className="inline-flex items-center gap-1.5 border border-terrasacha-primary bg-terrasacha-primary text-white rounded-lg px-2.5 py-1.5 text-xs font-typographica font-semibold hover:bg-terrasacha-primary/90 transition-all duration-200 shadow-sm"
+                                      aria-label="Ver detalles del predio"
+                                    >
+                                      <FaEye size={12} aria-hidden="true" />
+                                      Ver predio
+                                    </button>
+                                    {canAssign ? (
+                                      <button
+                                        type="button"
+                                        className="inline-flex items-center gap-1.5 bg-terrasacha-secondary2 text-white text-xs px-2.5 py-1.5 rounded-lg font-typographica font-semibold hover:bg-terrasacha-secondary2/90 transition-all duration-200 shadow-terrasacha"
+                                        onClick={() =>
+                                          handleOpenAssignModal(property)
+                                        }
+                                        aria-label="Asignar predio a campaña"
+                                      >
+                                        <FaPlus size={11} aria-hidden="true" />
+                                        Asignar a campaña
+                                      </button>
+                                    ) : (
+                                      <span
+                                        className="inline-flex"
+                                        data-tooltip-id={`assign-blocked-${property.id}`}
+                                        data-tooltip-content={
+                                          statusConfig.assignBlockedReason
+                                        }
+                                      >
+                                        <button
+                                          type="button"
+                                          disabled
+                                          className="inline-flex items-center gap-1.5 bg-gray-200 text-gray-500 text-xs px-2.5 py-1.5 rounded-lg font-typographica font-semibold border border-gray-300 cursor-not-allowed"
+                                          aria-label={
+                                            statusConfig.assignBlockedReason
+                                          }
+                                        >
+                                          <FaLock
+                                            size={10}
+                                            aria-hidden="true"
+                                          />
+                                          No elegible
+                                        </button>
+                                        <ReactTooltip
+                                          id={`assign-blocked-${property.id}`}
+                                          place="top"
+                                          effect="solid"
+                                        />
+                                      </span>
+                                    )}
+                                  </>
+                                );
+                              })()}
                             </div>
                           </td>
                         </tr>
@@ -1113,9 +1210,13 @@ export default function ValidatorAdmon() {
       </div>
       <CampaignAssignModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedProperty(null);
+        }}
         campaigns={userCampaigns}
         onAssign={handleAssignCampaign}
+        selectedProperty={selectedProperty}
       />
       <ToastContainer />
     </div>

@@ -88,7 +88,9 @@ function App() {
               />
               <Route path="/admindash" element={
                 <Sidebar onUserSettingsClick={handleUserSettings}>
-                  <Dashboard />
+                  <RoleMiddleware allowedRoles={["admon"]} redirectPath="/">
+                    <Dashboard />
+                  </RoleMiddleware>
                 </Sidebar>
               } exact />
               <Route

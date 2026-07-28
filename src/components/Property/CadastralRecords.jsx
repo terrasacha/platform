@@ -990,6 +990,24 @@ export default function CadastralRecords(props) {
               </tr>
             </thead>
             <tbody>
+              {multipleData.length === 0 &&
+                !multipleData.some((item) => item.editing) && (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="py-8 text-center bg-terrasacha-earth/20 border border-terrasacha-light/30"
+                    >
+                      <p className="text-sm font-semibold font-typographica text-terrasacha-secondary1 mb-1">
+                        Sin registros catastrales agregados
+                      </p>
+                      <p className="text-xs font-typographica text-terrasacha-secondary1 opacity-80 mb-0 px-4">
+                        {autorizedUser
+                          ? "No hay registros catastrales asociados. Haz clic en «Agregar registro catastral» para añadir el identificador de ficha catastral."
+                          : "El postulante aún no ha agregado registros catastrales a este predio."}
+                      </p>
+                    </td>
+                  </tr>
+                )}
               {multipleData.map((data, index) => (
                 <tr key={index} className="text-center">
                   {data.editing ? (
@@ -1087,14 +1105,31 @@ export default function CadastralRecords(props) {
                 </tr>
               ))}
               <tr>
-                <td colSpan={5}>
-                  <div className="d-flex">
-                    <button className="btn btn-secondary p-2 w-100 d-flex justify-content-center disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={!autorizedUser || multipleData.some(item => item.editing) || deletingIndex !== null}
-                      onClick={handleAddNewPeriodToHistoricalData}>
-                      <PlusIcon />
-                    </button>
-                  </div>
+                <td colSpan={4} className="p-3">
+                  <button
+                    type="button"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-typographica font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-terrasacha-secondary2 text-white hover:bg-terrasacha-primary disabled:bg-gray-300 disabled:text-gray-500"
+                    disabled={
+                      !autorizedUser ||
+                      multipleData.some((item) => item.editing) ||
+                      deletingIndex !== null
+                    }
+                    onClick={handleAddNewPeriodToHistoricalData}
+                    aria-label="Agregar registro catastral"
+                    title={
+                      autorizedUser
+                        ? "Agregar un nuevo identificador catastral al predio"
+                        : "No tienes permisos para agregar registros catastrales"
+                    }
+                  >
+                    <PlusIcon />
+                    <span>Agregar registro catastral</span>
+                  </button>
+                  {!autorizedUser && (
+                    <p className="text-[11px] text-center font-typographica text-terrasacha-secondary1 opacity-70 mt-2 mb-0">
+                      Solo el postulante o usuarios autorizados pueden agregar registros.
+                    </p>
+                  )}
                 </td>
               </tr>
             </tbody>

@@ -25,6 +25,13 @@ import { API, graphqlOperation } from "aws-amplify";
 import ProjectAnalysis from "./ProjectAnalysis/ProjectAnalysis";
 import AlertMessage from "./AlertMessage";
 import { FiEdit3 } from "react-icons/fi";
+import { FaInfoCircle, FaEye, FaLock } from "react-icons/fa";
+import {
+  getConsultantProjectGuidance,
+  getCampaignConvocatoriaLabel,
+  getCampaignProjectStatusExplanation,
+} from "utilities/projectConsultantGuidance";
+import { getMarketplaceRequirementDisplay } from "utilities/publicationRequirements";
 import TimelineProject from "./TimeLineProject";
 import LOGO from "../../common/_images/suan_logo.png";
 import TerrasachaLogo from "components/common/TerrasachaLogo";
@@ -68,6 +75,17 @@ export default function ProjectPage() {
   const [campaign, setCampaign] = useState(null);
   const [userGroup, setUserGroup] = useState("");
   const [totalArea, setTotalArea] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
+  const isConsultantViewer = user?.role === "validator";
+  const consultantGuidance = getConsultantProjectGuidance(
+    projectData?.projectInfo?.status
+  );
+  const campaignStatusExplanation = campaign
+    ? getCampaignProjectStatusExplanation({
+        campaignAvailable: campaign.available,
+        currentStep,
+      })
+    : null;
   const projectStatusMapper = {
     draft: "En borrador",
     verified: "Verificado",
@@ -114,8 +132,6 @@ export default function ProjectPage() {
       color: 'white'
     };
   };
-
-  const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
   if (!projectData || !progressObj) return;
@@ -396,7 +412,7 @@ export default function ProjectPage() {
                       {/* Fecha de creación */}
                       {projectData.projectInfo.createdAt && (
                         <div className="flex items-start space-x-2">
-                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                           <div>
@@ -411,7 +427,7 @@ export default function ProjectPage() {
                       {/* Categoría */}
                       {projectData.projectInfo.category && (
                         <div className="flex items-start space-x-2">
-                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                           </svg>
                           <div>
@@ -424,60 +440,66 @@ export default function ProjectPage() {
                       )}
 
                       {/* Área total */}
-                      {totalArea > 0 && (
-                        <div className="flex items-start space-x-2">
-                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                          </svg>
-                          <div>
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica">Área total</p>
-                            <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                              {formatArea(totalArea)}
-                            </p>
-                          </div>
+                      <div className="flex items-start space-x-2">
+                        <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                        </svg>
+                        <div>
+                          <p className="text-xs text-terrasacha-secondary1 font-typographica">Área total</p>
+                          <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
+                            {totalArea > 0 ? formatArea(totalArea) : "Sin definir"}
+                          </p>
                         </div>
-                      )}
+                      </div>
 
                       {/* Ubicación */}
-                      {(projectData.projectInfo.location?.municipio || projectData.projectInfo.location?.vereda) && (
-                        <div className="flex items-start space-x-2">
-                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <div>
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica">Ubicación</p>
-                            <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                              {projectData.projectInfo.location.municipio || "No especificado"}
-                              {projectData.projectInfo.location.vereda && `, ${projectData.projectInfo.location.vereda}`}
-                            </p>
-                          </div>
+                      <div className="flex items-start space-x-2">
+                        <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <div>
+                          <p className="text-xs text-terrasacha-secondary1 font-typographica">Ubicación</p>
+                          <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
+                            {projectData.projectInfo.location?.municipio ||
+                            projectData.projectInfo.location?.vereda
+                              ? [
+                                  projectData.projectInfo.location.municipio,
+                                  projectData.projectInfo.location.vereda,
+                                ]
+                                  .filter(Boolean)
+                                  .join(", ")
+                              : "Sin definir"}
+                          </p>
                         </div>
-                      )}
+                      </div>
 
                       {/* Tokens totales */}
-                      {projectData.projectInfo.token?.totalTokenAmount && (
-                        <div className="flex items-start space-x-2">
-                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <div>
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica">Tokens totales</p>
-                            <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
-                              {formatNumberWithThousandsSeparator(projectData.projectInfo.token.totalTokenAmount)}
-                            </p>
-                          </div>
+                      <div className="flex items-start space-x-2">
+                        <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <p className="text-xs text-terrasacha-secondary1 font-typographica">Tokens totales</p>
+                          <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
+                            {projectData.projectInfo.token?.totalTokenAmount != null &&
+                            projectData.projectInfo.token?.totalTokenAmount !== ""
+                              ? `${formatNumberWithThousandsSeparator(
+                                  projectData.projectInfo.token.totalTokenAmount
+                                )} tokens`
+                              : "Sin definir"}
+                          </p>
                         </div>
-                      )}
+                      </div>
 
                       {/* Consultores */}
-                      {projectData.projectVerifierNames?.length > 0 && (
-                        <div className="flex items-start space-x-2">
-                          <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                          </svg>
-                          <div className="flex-1">
-                            <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">Consultores</p>
+                      <div className="flex items-start space-x-2">
+                        <svg className="w-5 h-5 text-terrasacha-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <div className="flex-1">
+                          <p className="text-xs text-terrasacha-secondary1 font-typographica mb-1">Consultores</p>
+                          {projectData.projectVerifierNames?.length > 0 ? (
                             <div className="flex flex-wrap gap-1.5">
                               {projectData.projectVerifierNames.map((name, index) => (
                                 <span
@@ -488,9 +510,13 @@ export default function ProjectPage() {
                                 </span>
                               ))}
                             </div>
-                          </div>
+                          ) : (
+                            <p className="text-sm font-semibold text-terrasacha-primary font-typographica">
+                              Sin asignar
+                            </p>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
 
                     {/* Descripción */}
@@ -544,6 +570,57 @@ export default function ProjectPage() {
                   </div>
                 </div>
               </div>
+
+              {isConsultantViewer && (
+                <div
+                  className="mb-6 sm:mb-8 rounded-xl border border-terrasacha-light/40 bg-terrasacha-light/10 p-4 sm:p-5"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <div className="flex items-start gap-3">
+                    <FaInfoCircle
+                      className="mt-0.5 flex-shrink-0 text-terrasacha-primary text-lg"
+                      aria-hidden="true"
+                    />
+                    <div className="space-y-3">
+                      <div>
+                        <h2 className="mb-1 text-base font-bold text-terrasacha-primary font-typographica sm:text-lg">
+                          Modo consulta — rol Consultor
+                        </h2>
+                        <p className="mb-0 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm">
+                          Estado actual:{" "}
+                          <span className="font-semibold text-terrasacha-primary">
+                            {consultantGuidance.statusLabel}
+                          </span>
+                        </p>
+                      </div>
+                      <p className="mb-0 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm">
+                        {consultantGuidance.statusMeaning}
+                      </p>
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                        <div className="rounded-lg border border-terrasacha-primary/20 bg-white/70 p-3">
+                          <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-terrasacha-primary font-typographica">
+                            <FaEye size={12} aria-hidden="true" />
+                            Qué puedes hacer
+                          </p>
+                          <p className="mb-0 text-xs font-typographica text-terrasacha-secondary1">
+                            {consultantGuidance.roleScope}
+                          </p>
+                        </div>
+                        <div className="rounded-lg border border-[#e8d79a] bg-[#e8d79a]/10 p-3">
+                          <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-[#6e6c35] font-typographica">
+                            <FaLock size={11} aria-hidden="true" />
+                            Limitaciones de tu rol
+                          </p>
+                          <p className="mb-0 text-xs font-typographica text-[#6e6c35] opacity-90">
+                            {consultantGuidance.restrictions}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Información Contextual: Verificación y Marketplace */}
               <div className="mb-6 sm:mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -846,23 +923,49 @@ export default function ProjectPage() {
                       )}
                       
                       <div className="pt-4 border-t border-terrasacha-light/20">
-                        <div className="flex items-center space-x-2">
-                          <span className={`inline-flex items-center px-3 py-1.5 text-sm rounded-md font-typographica font-medium ${
-                            campaign.available
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}>
-                            {campaign.available ? "Disponible" : "Cerrada"}
+                        <p className="text-xs text-terrasacha-secondary1 font-typographica mb-2">
+                          Estado de la campaña (convocatoria)
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            className={`inline-flex items-center px-3 py-1.5 text-sm rounded-md font-typographica font-semibold ${
+                              campaign.available
+                                ? "bg-green-100 text-green-800 border border-green-200"
+                                : "bg-[#e8d79a]/30 text-[#6e6c35] border border-[#e8d79a]"
+                            }`}
+                          >
+                            {getCampaignConvocatoriaLabel(campaign.available)}
+                          </span>
+                          <span className="text-xs font-typographica text-terrasacha-secondary1 opacity-80">
+                            {campaign.available
+                              ? "Acepta nuevas postulaciones de predios"
+                              : "No acepta nuevas postulaciones"}
                           </span>
                         </div>
+                      </div>
+
+                      <div
+                        className="rounded-lg border border-terrasacha-light/40 bg-terrasacha-light/10 p-3 sm:p-4"
+                        role="note"
+                      >
+                        <p className="mb-1 text-xs font-semibold text-terrasacha-primary font-typographica sm:text-sm">
+                          {campaignStatusExplanation.title}
+                        </p>
+                        <p className="mb-0 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm">
+                          {campaignStatusExplanation.message}
+                        </p>
                       </div>
                     </div>
                     
                     {/* Timeline sin steps - Versión mejorada */}
                     <div className="pt-6 border-t border-terrasacha-light/20">
-                      <h3 className="text-lg font-bold text-terrasacha-primary font-typographica mb-4">
+                      <h3 className="text-lg font-bold text-terrasacha-primary font-typographica mb-1">
                         Estado del Proyecto
                       </h3>
+                      <p className="mb-4 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm">
+                        Hitos del ciclo de vida del proyecto. Son independientes
+                        del estado de la convocatoria de la campaña.
+                      </p>
                       <div className="space-y-3">
                         {[
                           { id: 1, title: "Proyecto creado", completed: currentStep >= 1, current: currentStep === 1 },
@@ -1081,24 +1184,48 @@ export default function ProjectPage() {
                             </p>
                           </div>
                           <div className="flex items-start space-x-3">
-                            <div className="flex-shrink-0 mt-0.5">
-                              {progressObj.sectionsStatus.projectOnMarketplace ? (
-                                <div className="w-6 h-6 rounded-full bg-[#849b50] flex items-center justify-center">
-                                  <CheckIcon className="text-white w-3.5 h-3.5" />
-                                </div>
-                              ) : (
-                                <div className="w-6 h-6 rounded-full bg-[#dc3545] flex items-center justify-center">
-                                  <HourGlassIcon className="text-white w-3.5 h-3.5" />
-                                </div>
-                              )}
-                            </div>
-                            <p className={`text-sm font-typographica flex-1 ${
-                              progressObj.sectionsStatus.projectOnMarketplace
-                                ? "text-[#44482c]"
-                                : "text-[#44482c]/70"
-                            }`}>
-                              Proyecto visible en Marketplace
-                            </p>
+                            {(() => {
+                              const marketplaceDisplay =
+                                getMarketplaceRequirementDisplay(
+                                  progressObj.sectionsStatus
+                                );
+
+                              return (
+                                <>
+                                  <div className="flex-shrink-0 mt-0.5">
+                                    {marketplaceDisplay.variant === "complete" ? (
+                                      <div className="w-6 h-6 rounded-full bg-[#849b50] flex items-center justify-center">
+                                        <CheckIcon className="text-white w-3.5 h-3.5" />
+                                      </div>
+                                    ) : marketplaceDisplay.variant === "partial" ? (
+                                      <div className="w-6 h-6 rounded-full bg-[#e8d79a] flex items-center justify-center">
+                                        <HourGlassIcon className="text-[#44482c] w-3.5 h-3.5" />
+                                      </div>
+                                    ) : (
+                                      <div className="w-6 h-6 rounded-full bg-[#dc3545] flex items-center justify-center">
+                                        <HourGlassIcon className="text-white w-3.5 h-3.5" />
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="flex-1">
+                                    <p
+                                      className={`text-sm font-typographica ${
+                                        marketplaceDisplay.variant === "complete"
+                                          ? "text-[#44482c]"
+                                          : "text-[#44482c]/70"
+                                      }`}
+                                    >
+                                      Proyecto visible en Marketplace
+                                    </p>
+                                    {marketplaceDisplay.helperText && (
+                                      <p className="mt-1 mb-0 text-xs font-typographica text-[#6e6c35]">
+                                        {marketplaceDisplay.helperText}
+                                      </p>
+                                    )}
+                                  </div>
+                                </>
+                              );
+                            })()}
                           </div>
                         </div>
                       </div>
@@ -1129,6 +1256,13 @@ export default function ProjectPage() {
                             ? "Este proyecto cumple la totalidad de los requerimientos"
                             : "Este proyecto aún no cumple la totalidad de requerimientos para su publicación"}
                         </p>
+                        {progressObj.progressValue !== 100 &&
+                          progressObj.sectionsStatus.marketplacePublished && (
+                            <p className="mt-2 mb-0 text-xs font-typographica text-[#6e6c35]">
+                              La visibilidad en marketplace no implica que todos
+                              los requisitos del proceso estén completos.
+                            </p>
+                          )}
                       </div>
                     </div>
                   </div>

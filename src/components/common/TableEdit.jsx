@@ -5,6 +5,7 @@ import { TrashIcon } from "components/common/icons/TrashIcon";
 import { EditIcon } from "components/common/icons/EditIcon";
 import { PlusIcon } from "components/common/icons/PlusIcon";
 import { SaveDiskIcon } from "components/common/icons/SaveDiskIcon";
+import { normalizeItemText } from "utilities/normalizeItemText";
 export default function TableEdit({
   canEdit,
   infoTable,
@@ -60,8 +61,8 @@ export default function TableEdit({
                         >
                           <option disabled value=""></option>
                           {conceptOptions.map((op) => (
-                            <option value={op.name} key={op.id}>
-                              {op.name}
+                            <option value={normalizeItemText(op.name)} key={op.id}>
+                              {normalizeItemText(op.name)}
                             </option>
                           ))}
                         </Form.Select>
@@ -86,6 +87,8 @@ export default function TableEdit({
                       )
                     ) : column === "CANTIDAD" ? (
                       parseFloat(row[column]).toLocaleString("es-ES")
+                    ) : column === "CONCEPTO" ? (
+                      normalizeItemText(row[column])
                     ) : (
                       row[column]
                     )}

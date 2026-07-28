@@ -9,6 +9,10 @@ import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { createProduct, createUserProduct } from "graphql/mutations";
 import { FaRocket, FaLightbulb, FaCalendarAlt, FaImage, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import {
+  getNewCampaignFormProgress,
+  newCampaignFormSteps,
+} from "utilities/newCampaignFormProgress";
 
 const initialForm = {
   name: "",
@@ -27,7 +31,6 @@ export default function NewCampaign() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeField, setActiveField] = useState(null);
-  const [progress, setProgress] = useState(0);
   const userID = useRef(null);
   const navigate = useNavigate();
 
@@ -39,12 +42,16 @@ export default function NewCampaign() {
     });
   }, []);
 
-  // Calcular progreso del formulario
-  useEffect(() => {
-    const fields = ['name', 'description', 'initialDate', 'endDate'];
-    const filledFields = fields.filter(field => formData[field] && formData[field].toString().trim() !== '');
-    setProgress((filledFields.length / fields.length) * 100);
-  }, [formData]);
+  const {
+    progress,
+    completedSteps,
+    nextStep,
+    nextStepHint,
+    feedbackMessage,
+    isReadyToSubmit,
+  } = getNewCampaignFormProgress(formData, images);
+
+  const completedStepIds = new Set(completedSteps.map((step) => step.id));
 
   const validateForm = () => {
     const newErrors = {};
@@ -380,21 +387,113 @@ export default function NewCampaign() {
             </p>
           </div>
 
-          {/* Barra de progreso - Responsive */}
-          <div className="mb-6 sm:mb-8 animate-slide-up">
-            <div className="flex items-center justify-between mb-2 sm:mb-3 px-2">
+          {/* Barra de progreso y pasos — Responsive */}
+          <div className="mb-6 sm:mb-8 animate-slide-up px-2">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
               <span className="text-xs sm:text-sm font-typographica font-medium text-terrasacha-secondary1">
                 Progreso del formulario
               </span>
-              <span className="text-xs sm:text-sm font-typographica font-semibold text-terrasacha-primary">
+              <span
+                className="text-xs sm:text-sm font-typographica font-semibold text-terrasacha-primary"
+                aria-live="polite"
+              >
                 {Math.round(progress)}%
               </span>
             </div>
-            <div className="w-full bg-terrasacha-light/20 rounded-full h-2 sm:h-3 overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary2 rounded-full transition-all duration-1000 ease-out"
+            <div
+              className="w-full bg-terrasacha-light/20 rounded-full h-2 sm:h-3 overflow-hidden"
+              role="progressbar"
+              aria-valuenow={Math.round(progress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Progreso del formulario de nueva campaña"
+            >
+              <div
+                className="h-full bg-gradient-to-r from-terrasacha-primary to-terrasacha-secondary2 rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
-              ></div>
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+              {newCampaignFormSteps.map((step) => {
+                const isComplete = completedStepIds.has(step.id);
+                const isCurrent = nextStep?.id === step.id;
+
+                return (
+                  <div
+                    key={step.id}
+                    className={`rounded-xl border px-2 py-2 text-center transition-all duration-300 sm:px-3 sm:py-2.5 ${
+                      isComplete
+                        ? "border-terrasacha-secondary2/40 bg-terrasacha-secondary2/10"
+                        : isCurrent
+                        ? "border-terrasacha-primary bg-terrasacha-primary/5 ring-1 ring-terrasacha-primary/30"
+                        : "border-terrasacha-light/30 bg-white/60 opacity-70"
+                    }`}
+                  >
+                    <p className="mb-0 text-[10px] font-typographica font-semibold uppercase tracking-wide text-terrasacha-secondary1 sm:text-xs">
+                      {step.percent}%
+                    </p>
+                    <p className="mb-0 mt-0.5 text-xs font-typographica font-medium text-terrasacha-secondary1 sm:text-sm">
+                      {step.shortLabel}
+                      {step.required ? (
+                        <span className="text-red-500" aria-hidden="true">
+                          {" "}
+                          *
+                        </span>
+                      ) : (
+                        <span className="block text-[10px] font-normal text-terrasacha-secondary1/70 sm:text-xs">
+                          (opcional)
+                        </span>
+                      )}
+                    </p>
+                    {isComplete && (
+                      <FaCheckCircle
+                        className="mx-auto mt-1 text-terrasacha-secondary2"
+                        aria-hidden="true"
+                        size={12}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              className="mt-3 rounded-xl border border-terrasacha-light/30 bg-white/70 px-3 py-2.5 sm:px-4 sm:py-3"
+              role="status"
+              aria-live="polite"
+            >
+              {feedbackMessage && (
+                <p className="mb-0 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm">
+                  <FaCheckCircle
+                    className="mr-1.5 inline text-terrasacha-secondary2"
+                    aria-hidden="true"
+                  />
+                  {feedbackMessage}
+                </p>
+              )}
+              {nextStep ? (
+                <p
+                  className={`mb-0 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm ${
+                    feedbackMessage ? "mt-1.5" : ""
+                  }`}
+                >
+                  Siguiente paso ({nextStep.percent}%): {nextStep.label}.{" "}
+                  {nextStepHint}
+                </p>
+              ) : (
+                !feedbackMessage && (
+                  <p className="mb-0 text-xs font-typographica text-terrasacha-secondary1 sm:text-sm">
+                    {nextStepHint}
+                  </p>
+                )
+              )}
+              {isReadyToSubmit && progress < 100 && (
+                <p className="mb-0 mt-1.5 text-xs font-typographica text-terrasacha-earth">
+                  Los campos obligatorios están completos. Puedes crear la campaña o
+                  agregar imágenes para alcanzar el 100%.
+                </p>
+              )}
             </div>
           </div>
 
@@ -413,6 +512,8 @@ export default function NewCampaign() {
                     className="font-typographica font-semibold text-terrasacha-secondary1 text-base sm:text-lg"
                   >
                     Nombre de la Campaña
+                    <span className="text-red-500" aria-hidden="true"> *</span>
+                    <span className="sr-only"> (obligatorio, aporta 25% al progreso)</span>
                   </label>
                 </div>
                 <input
@@ -451,6 +552,8 @@ export default function NewCampaign() {
                     className="font-typographica font-semibold text-terrasacha-secondary1 text-base sm:text-lg"
                   >
                     Descripción
+                    <span className="text-red-500" aria-hidden="true"> *</span>
+                    <span className="sr-only"> (obligatorio, aporta hasta 50% al progreso)</span>
                   </label>
                 </div>
                 <div className="relative">
@@ -496,6 +599,7 @@ export default function NewCampaign() {
                       className="font-typographica font-semibold text-terrasacha-secondary1 text-base sm:text-lg"
                     >
                       Fecha de Inicio
+                      <span className="text-red-500" aria-hidden="true"> *</span>
                     </label>
                   </div>
                   <input
@@ -533,6 +637,8 @@ export default function NewCampaign() {
                       className="font-typographica font-semibold text-terrasacha-secondary1 text-base sm:text-lg"
                     >
                       Fecha de Finalización
+                      <span className="text-red-500" aria-hidden="true"> *</span>
+                      <span className="sr-only"> (obligatorias, aportan hasta 75% al progreso)</span>
                     </label>
                   </div>
                   <input
@@ -571,6 +677,9 @@ export default function NewCampaign() {
                     className="font-typographica font-semibold text-terrasacha-secondary1 text-base sm:text-lg"
                   >
                     Imágenes de la Campaña
+                    <span className="ml-1 text-sm font-normal text-terrasacha-secondary1/70">
+                      (opcional — 100% del progreso)
+                    </span>
                   </label>
                 </div>
                 <div className="relative">

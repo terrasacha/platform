@@ -15,9 +15,14 @@ import {
   FaInfoCircle,
   FaChevronDown,
   FaChevronUp,
+  FaArrowRight,
 } from "react-icons/fa";
 
-export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateToOwners }) {
+export default function PropertyGeneral({
+  onNavigateToDocumentation,
+  onNavigateToOwners,
+  onNavigateToPredial,
+}) {
   const { propertyData } = usePropertyData();
   const { user } = useAuth();
   
@@ -65,7 +70,7 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
     requirements: true,
     owners: true,
     documentation: true,
-    study: true,
+    study: false,
   });
 
   // Estados para almacenar la información procesada
@@ -244,38 +249,266 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
     }));
   };
 
+  const requirementsProgress = calculateRequirementsProgress();
+  const ownersProgress = calculateOwnersProgress();
+  const documentationProgress = calculateDocumentationProgress();
+
+  const getNextStepId = () => {
+    if (requirementsProgress < 100) return "requirements";
+    if (ownersInfo.length === 0 || ownersProgress < 100) return "owners";
+    if (documentationProgress < 100) return "documentation";
+    return null;
+  };
+
+  const nextStepId = getNextStepId();
+  const overallProgress = Math.round(
+    (requirementsProgress + ownersProgress + documentationProgress) / 3
+  );
+
+  const requiredDocsCount = documentRequirements.filter((req) => req.isRequired).length;
+  const uploadedRequiredDocs = documentRequirements.filter(
+    (req) => req.isRequired && documentsInfo[req.key]?.uploaded
+  ).length;
+  const validatedOwnersCount = ownersInfo.filter(
+    (owner) => owner.isApproved || owner.status === "approved"
+  ).length;
+  const completedRequirementsCount = requirements.filter((req) => req.completed).length;
+
+  const workflowSteps = [
+    {
+      id: "requirements",
+      step: 1,
+      title: "Información Predial",
+      progress: requirementsProgress,
+      done: completedRequirementsCount,
+      total: requirements.length,
+      isComplete: requirementsProgress === 100,
+      helperWhenEmpty: isConsultant
+        ? "El postulante debe completar 5 secciones en Información Predial."
+        : "Completa los 5 formularios en Información Predial para iniciar.",
+      actionLabel: "Ir a Información Predial",
+      onNavigate: onNavigateToPredial,
+    },
+    {
+      id: "owners",
+      step: 2,
+      title: "Propietarios",
+      progress: ownersProgress,
+      done: validatedOwnersCount,
+      total: ownersInfo.length || 1,
+      isComplete: ownersInfo.length > 0 && ownersProgress === 100,
+      helperWhenEmpty: isConsultant
+        ? "Registra al menos un propietario y valida su identidad."
+        : "Agrega propietarios y completa su validación de identidad.",
+      actionLabel: "Ir a Propietarios",
+      onNavigate: onNavigateToOwners,
+    },
+    {
+      id: "documentation",
+      step: 3,
+      title: "Documentación",
+      progress: documentationProgress,
+      done: uploadedRequiredDocs,
+      total: requiredDocsCount,
+      isComplete: documentationProgress === 100,
+      helperWhenEmpty: isConsultant
+        ? "Carga certificado, escrituras y planos en Documentación."
+        : "Sube los documentos obligatorios en la pestaña Documentación.",
+      actionLabel: "Ir a Documentación",
+      onNavigate: onNavigateToDocumentation,
+    },
+  ];
+
+  const getStepMeta = (stepId) =>
+    workflowSteps.find((step) => step.id === stepId);
+
+  const getStepCardClassName = (stepId) => {
+    const isNext = nextStepId === stepId;
+    const stepMeta = getStepMeta(stepId);
+    const base =
+      "bg-[#b1c181] p-3 sm:p-4 rounded-xl border shadow-md h-full flex flex-col transition-all duration-300";
+
+    if (isNext) {
+      return `${base} border-terrasacha-primary ring-2 ring-terrasacha-primary/30 shadow-terrasacha-lg`;
+    }
+
+    if (stepMeta?.isComplete) {
+      return `${base} border-[#849b50]`;
+    }
+
+    return `${base} border-[#849b50]/70`;
+  };
+
+  const renderProgressSummary = (stepMeta) => {
+    if (stepMeta.isComplete) {
+      return (
+        <p className="text-xs font-semibold text-terrasacha-secondary1 font-typographica mb-0">
+          Completado · {stepMeta.done} de {stepMeta.total}
+        </p>
+      );
+    }
+
+    if (stepMeta.progress === 0) {
+      return (
+        <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0 leading-snug">
+          0 de {stepMeta.total} · {stepMeta.helperWhenEmpty}
+        </p>
+      );
+    }
+
+    return (
+      <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0">
+        {stepMeta.done} de {stepMeta.total} · {stepMeta.progress}% completado
+      </p>
+    );
+  };
+
+  const renderStepNavigateButton = (stepId) => {
+    const stepMeta = getStepMeta(stepId);
+    if (!stepMeta?.onNavigate || stepMeta.isComplete || nextStepId !== stepId) {
+      return null;
+    }
+
+    return (
+      <button
+        type="button"
+        onClick={stepMeta.onNavigate}
+        className="mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold font-typographica bg-terrasacha-primary text-white rounded-lg hover:bg-terrasacha-secondary1 transition-colors shadow-sm"
+        aria-label={stepMeta.actionLabel}
+      >
+        {stepMeta.actionLabel}
+        <FaArrowRight size={10} aria-hidden="true" />
+      </button>
+    );
+  };
+
+  const requirementsMeta = getStepMeta("requirements");
+  const ownersMeta = getStepMeta("owners");
+  const documentationMeta = getStepMeta("documentation");
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+    <div className="space-y-4">
+      <section
+        className="bg-white rounded-xl border border-terrasacha-light/30 p-4 md:p-5 shadow-sm"
+        aria-label="Guía de diligenciamiento del predio"
+      >
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-lg font-bold text-terrasacha-secondary1 font-typographica mb-1">
+              Progreso del predio
+            </h2>
+            <p className="text-sm text-terrasacha-secondary1 opacity-80 font-typographica mb-0">
+              {nextStepId
+                ? "Sigue el orden sugerido. Cada paso habilita el avance del siguiente."
+                : "Los pasos principales del predio están completos."}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="w-28 md:w-36 bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-terrasacha-primary h-2 rounded-full transition-all duration-500"
+                style={{ width: `${overallProgress}%` }}
+              />
+            </div>
+            <span className="text-sm font-bold text-terrasacha-primary font-typographica">
+              {overallProgress}%
+            </span>
+          </div>
+        </div>
+        <ol className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {workflowSteps.map((step) => {
+            const isNext = nextStepId === step.id;
+
+            return (
+              <li
+                key={step.id}
+                className={`flex items-start gap-3 p-3 rounded-lg border ${
+                  isNext
+                    ? "border-terrasacha-primary bg-terrasacha-primary/5"
+                    : step.isComplete
+                    ? "border-terrasacha-secondary2/50 bg-terrasacha-secondary2/10"
+                    : "border-terrasacha-light/40 bg-terrasacha-earth/20"
+                }`}
+              >
+                <span
+                  className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-typographica ${
+                    step.isComplete
+                      ? "bg-terrasacha-secondary2 text-white"
+                      : isNext
+                      ? "bg-terrasacha-primary text-white"
+                      : "bg-gray-300 text-terrasacha-secondary1"
+                  }`}
+                >
+                  {step.isComplete ? (
+                    <FaCheckCircle className="text-sm" aria-hidden="true" />
+                  ) : (
+                    step.step
+                  )}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-terrasacha-secondary1 font-typographica mb-0.5">
+                    Paso {step.step}: {step.title}
+                    {isNext && (
+                      <span className="ml-1.5 text-[10px] uppercase tracking-wide text-terrasacha-primary">
+                        · Siguiente
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-[11px] text-terrasacha-secondary1 opacity-80 font-typographica mb-0 leading-snug">
+                    {step.progress === 0
+                      ? step.helperWhenEmpty
+                      : `${step.done} de ${step.total} · ${step.progress}%`}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-stretch">
       {/* Requisitos de Información Predial */}
-      <div className="bg-[#b1c181] p-4 rounded-xl border border-[#849b50] shadow-lg self-start flex flex-col">
+      <div className={getStepCardClassName("requirements")}>
         {/* Header con progreso */}
-        <div className={`${expandedSections.requirements ? "mb-4" : "mb-0"} flex-1 flex flex-col justify-center`}>
-          <div className="flex items-center justify-between mb-3">
+        <div className={`${expandedSections.requirements ? "mb-3" : "mb-0"}`}>
+          <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <div className="w-12 h-12 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <FaInfoCircle className="text-white text-lg" />
+              <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0 relative">
+                <span className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-terrasacha-primary text-white text-[10px] font-bold flex items-center justify-center font-typographica">
+                  1
+                </span>
+                <FaInfoCircle className="text-white text-base" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-terrasacha-primary font-typographica mb-1">
-                  Requisitos de Información Predial
-                </h3>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <h3 className="text-sm sm:text-base font-bold text-terrasacha-primary font-typographica mb-0">
+                    Información Predial
+                  </h3>
+                  {nextStepId === "requirements" && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-terrasacha-primary text-white font-typographica">
+                      Siguiente
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 mb-0.5">
                   <div className="w-20 bg-gray-200 rounded-full h-1.5 flex-1">
                     <div
                       className="bg-[#6e6c35] h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${calculateRequirementsProgress()}%` }}
+                      style={{ width: `${requirementsProgress}%` }}
                     ></div>
                   </div>
                   <span className="text-xs font-semibold text-terrasacha-secondary1 font-typographica whitespace-nowrap">
-                    {calculateRequirementsProgress()}%
+                    {requirementsProgress}%
                   </span>
                 </div>
+                {renderProgressSummary(requirementsMeta)}
               </div>
             </div>
             <button
+              type="button"
               onClick={() => toggleSection('requirements')}
               className="text-[#6e6c35] hover:bg-[#6e6c35]/10 p-2 rounded-lg transition-colors flex-shrink-0"
-              aria-label="Expandir/Colapsar sección"
+              aria-label="Expandir o colapsar información predial"
             >
               {expandedSections.requirements ? (
                 <FaChevronUp className="w-4 h-4" />
@@ -309,40 +542,53 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
                 </span>
               </div>
             ))}
+            {renderStepNavigateButton("requirements")}
           </div>
         )}
       </div>
 
       {/* Validación de Propietarios */}
-      <div className="bg-[#b1c181] p-4 rounded-xl border border-[#849b50] shadow-lg self-start flex flex-col">
+      <div className={getStepCardClassName("owners")}>
         {/* Header con progreso */}
-        <div className={`${expandedSections.owners ? "mb-4" : "mb-0"} flex-1 flex flex-col justify-center`}>
-          <div className="flex items-center justify-between mb-3">
+        <div className={`${expandedSections.owners ? "mb-3" : "mb-0"}`}>
+          <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <div className="w-12 h-12 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <FaUsers className="text-white text-lg" />
+              <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0 relative">
+                <span className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-terrasacha-primary text-white text-[10px] font-bold flex items-center justify-center font-typographica">
+                  2
+                </span>
+                <FaUsers className="text-white text-base" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-terrasacha-primary font-typographica mb-1">
-                  Validación de Propietarios
-                </h3>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <h3 className="text-sm sm:text-base font-bold text-terrasacha-primary font-typographica mb-0">
+                    Propietarios
+                  </h3>
+                  {nextStepId === "owners" && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-terrasacha-primary text-white font-typographica">
+                      Siguiente
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 mb-0.5">
                   <div className="w-20 bg-gray-200 rounded-full h-1.5 flex-1">
                     <div
                       className="bg-[#6e6c35] h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${calculateOwnersProgress()}%` }}
+                      style={{ width: `${ownersProgress}%` }}
                     ></div>
                   </div>
                   <span className="text-xs font-semibold text-terrasacha-secondary1 font-typographica whitespace-nowrap">
-                    {calculateOwnersProgress()}%
+                    {ownersProgress}%
                   </span>
                 </div>
+                {renderProgressSummary(ownersMeta)}
               </div>
             </div>
             <button
+              type="button"
               onClick={() => toggleSection('owners')}
               className="text-[#6e6c35] hover:bg-[#6e6c35]/10 p-2 rounded-lg transition-colors flex-shrink-0"
-              aria-label="Expandir/Colapsar sección"
+              aria-label="Expandir o colapsar propietarios"
             >
               {expandedSections.owners ? (
                 <FaChevronUp className="w-4 h-4" />
@@ -425,40 +671,53 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
               </div>
             )}
           </div>
+          {renderStepNavigateButton("owners")}
           </div>
         )}
       </div>
 
       {/* Validación de Documentación Predial */}
-      <div className="bg-[#b1c181] p-4 rounded-xl border border-[#849b50] shadow-lg self-start flex flex-col">
+      <div className={getStepCardClassName("documentation")}>
         {/* Header con progreso */}
-        <div className={`${expandedSections.documentation ? "mb-4" : "mb-0"} flex-1 flex flex-col justify-center`}>
-          <div className="flex items-center justify-between mb-3">
+        <div className={`${expandedSections.documentation ? "mb-3" : "mb-0"}`}>
+          <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <div className="w-12 h-12 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <FaFileAlt className="text-white text-lg" />
+              <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0 relative">
+                <span className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-terrasacha-primary text-white text-[10px] font-bold flex items-center justify-center font-typographica">
+                  3
+                </span>
+                <FaFileAlt className="text-white text-base" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-terrasacha-primary font-typographica mb-1">
-                  Documentación Predial
-                </h3>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <h3 className="text-sm sm:text-base font-bold text-terrasacha-primary font-typographica mb-0">
+                    Documentación
+                  </h3>
+                  {nextStepId === "documentation" && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-terrasacha-primary text-white font-typographica">
+                      Siguiente
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 mb-0.5">
                   <div className="w-20 bg-gray-200 rounded-full h-1.5 flex-1">
                     <div
                       className="bg-[#6e6c35] h-1.5 rounded-full transition-all duration-500"
-                      style={{ width: `${calculateDocumentationProgress()}%` }}
+                      style={{ width: `${documentationProgress}%` }}
                     ></div>
                   </div>
                   <span className="text-xs font-semibold text-terrasacha-secondary1 font-typographica whitespace-nowrap">
-                    {calculateDocumentationProgress()}%
+                    {documentationProgress}%
                   </span>
                 </div>
+                {renderProgressSummary(documentationMeta)}
               </div>
             </div>
             <button
+              type="button"
               onClick={() => toggleSection('documentation')}
               className="text-[#6e6c35] hover:bg-[#6e6c35]/10 p-2 rounded-lg transition-colors flex-shrink-0"
-              aria-label="Expandir/Colapsar sección"
+              aria-label="Expandir o colapsar documentación"
             >
               {expandedSections.documentation ? (
                 <FaChevronUp className="w-4 h-4" />
@@ -580,31 +839,33 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
                 </div>
               );
             })}
+            {renderStepNavigateButton("documentation")}
           </div>
         )}
       </div>
 
       {/* Estudio del Predio */}
-      <div className="bg-[#b1c181] p-4 rounded-xl border border-[#849b50] shadow-lg self-start flex flex-col">
-        <div className={`${expandedSections.study ? "mb-4" : "mb-0"} flex-1 flex flex-col justify-center`}>
-          <div className="flex items-center justify-between mb-3">
+      <div className="bg-[#b1c181] p-3 sm:p-4 rounded-xl border border-[#849b50] shadow-md h-full flex flex-col">
+        <div className={`${expandedSections.study ? "mb-3" : "mb-0"}`}>
+          <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <div className="w-12 h-12 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                <FaClipboardCheck className="text-white text-lg" />
+              <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#6e6c35] rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                <FaClipboardCheck className="text-white text-base" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-terrasacha-primary font-typographica mb-1">
+                <h3 className="text-sm sm:text-base font-bold text-terrasacha-primary font-typographica mb-0.5">
                   Estudio del Predio
                 </h3>
                 <p className="text-xs text-terrasacha-secondary1 font-typographica mb-0">
-                  Análisis técnico
+                  Análisis técnico · Próximamente
                 </p>
               </div>
             </div>
             <button
-              onClick={() => toggleSection('study')}
+              type="button"
+              onClick={() => toggleSection("study")}
               className="text-[#6e6c35] hover:bg-[#6e6c35]/10 p-2 rounded-lg transition-colors flex-shrink-0"
-              aria-label="Expandir/Colapsar sección"
+              aria-label="Expandir o colapsar estudio del predio"
             >
               {expandedSections.study ? (
                 <FaChevronUp className="w-4 h-4" />
@@ -626,6 +887,7 @@ export default function PropertyGeneral({ onNavigateToDocumentation, onNavigateT
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

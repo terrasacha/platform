@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useAuth } from "context/AuthContext";
 import { usePropertyData } from "context/PropertyDataContext";
 import { API, graphqlOperation } from "aws-amplify";
 import { toast } from "react-toastify";
 import { createNotification, updateProperty } from "graphql/mutations";
-import { listPropertyFeatures } from "graphql/queries";
 import Swal from "sweetalert2";
+import { FaInfoCircle } from "react-icons/fa";
+import { getPropertyVerificationGate } from "utilities/getPropertyVerificationGate";
+import PropertyVerifyActionBar from "./PropertyVerifyActionBar";
 
 // Componente de registros catastrales
 import CadastralRecords from "components/Property/CadastralRecords";
@@ -25,7 +27,6 @@ export default function PropertyCatastral({
   setHasUnsavedChanges,
   handleFieldChange,
   setIsFormComplete,
-  currentStep,
 }) {
   const { propertyData } = usePropertyData();
   const [autorizedUser, setAutorizedUser] = useState(false);
@@ -41,12 +42,10 @@ export default function PropertyCatastral({
     cadastralRecords: false,
   });
 
-  useEffect(() => {
-    console.log(
-      "📌 Valor actual de currentStep en PropertyCatastral:",
-      currentStep
-    );
-  }, [currentStep]);
+  const verificationGate = useMemo(
+    () => getPropertyVerificationGate(propertyData),
+    [propertyData]
+  );
 
   useEffect(() => {
     if (user && propertyData) {
@@ -169,49 +168,23 @@ export default function PropertyCatastral({
     });
   };
 
-  const checkAllStepsCompleted = async () => {
-    try {
-      const response = await API.graphql(
-        graphqlOperation(listPropertyFeatures, {
-          filter: {
-            propertyID: { eq: propertyData?.propertyInfo?.id },
-            featureID: { eq: "GLOBAL_PROPERTY_STATUS" },
-          },
-        })
-      );
-
-      const items = response?.data?.listPropertyFeatures?.items || [];
-      if (items.length === 0) return false;
-
-      const value = JSON.parse(items[0].value);
-
-      const booleanFieldsValid =
-        value.analisis === true &&
-        value.monitoreos === true &&
-        value.revision_memorando === true &&
-        value.validacion_inicial === true;
-
-      const memorandoValid =
-        value.memorando &&
-        !!value.memorando.uploadDate &&
-        !!value.memorando.url;
-
-      return booleanFieldsValid && memorandoValid;
-    } catch (error) {
-      console.error("❌ Error verificando pasos del propertyFeature:", error);
-      return false;
-    }
-  };
-
   // Función para mostrar el modal con las opciones de validación
   const handleVerifyClick = async () => {
-    const allStepsReady = await checkAllStepsCompleted();
+    const gate = getPropertyVerificationGate(propertyData);
 
-    if (!allStepsReady) {
+    if (!gate.isReady) {
       Swal.fire({
         icon: "warning",
         title: "Pasos pendientes",
-        text: "Aún hay pasos del propietario sin completar. Por favor, completa todos antes de validar.",
+        html: `
+          <p class="mb-2">Completa estos requisitos antes de validar el predio:</p>
+          <ul class="text-left text-sm" style="padding-left: 1.25rem;">
+            ${gate.pending
+              .map((item) => `<li>${item}</li>`)
+              .join("")}
+          </ul>
+        `,
+        confirmButtonColor: "#6e6c35",
       });
       return;
     }
@@ -248,9 +221,28 @@ export default function PropertyCatastral({
 
       {/* Registros Catastrales */}
       <div className="bg-white p-4 sm:p-6 rounded-xl border border-terrasacha-light/20 shadow-terrasacha">
-        <h3 className="text-lg font-bold mb-4 font-typographica text-terrasacha-primary">
+        <h3 className="text-lg font-bold mb-2 font-typographica text-terrasacha-primary">
           Registros Catastrales
         </h3>
+        <div className="mb-4 p-4 bg-terrasacha-light/10 border border-terrasacha-light/40 rounded-lg">
+          <div className="flex items-start gap-3">
+            <FaInfoCircle
+              className="text-terrasacha-primary mt-0.5 flex-shrink-0"
+              aria-hidden="true"
+            />
+            <div>
+              <p className="text-sm font-typographica text-terrasacha-secondary1 mb-1">
+                <span className="font-bold text-terrasacha-primary">Requerido:</span>{" "}
+                Debes registrar al menos un identificador catastral para continuar
+                con la validación del predio.
+              </p>
+              <p className="text-xs font-typographica text-terrasacha-secondary1 opacity-80 mb-0">
+                Ingresa el número de ficha catastral para consultar automáticamente
+                el nombre del predio y el área asociada.
+              </p>
+            </div>
+          </div>
+        </div>
         <CadastralRecords
           autorizedUser={autorizedUser}
           totalArea={totalArea}
@@ -258,6 +250,7 @@ export default function PropertyCatastral({
           setTotalArea={setTotalArea}
           setHasUnsavedChanges={setHasUnsavedChanges}
           handleFieldChange={handleFieldChange}
+          tooltip="Cada registro catastral vincula el predio con datos oficiales de área y nomenclatura. Puedes agregar más de uno si el predio tiene varias fichas."
           updateFormCompletion={(isComplete) =>
             updateFormCompletion("cadastralRecords", isComplete)
           }
@@ -266,62 +259,13 @@ export default function PropertyCatastral({
 
 
       {/* Sección de Validación */}
-      <div className="bg-white p-4 sm:p-6 rounded-xl border border-terrasacha-light/20 shadow-terrasacha">
-        <div className="text-center">
-          {/* Mostrar estado del predio */}
-          {status === "APPROVED" && (
-            <div 
-              className="px-4 py-2 text-white rounded-lg font-semibold font-typographica inline-block"
-              style={{ backgroundColor: '#849b50' }} // Verde Pradera
-            >
-              ✅ Predio Aprobado
-            </div>
-          )}
-
-          {status === "REJECTED" && (
-            <div 
-              className="px-4 py-2 text-white rounded-lg font-semibold font-typographica inline-block"
-              style={{ backgroundColor: '#dc3545' }} // Rojo
-            >
-              ❌ Predio Rechazado
-            </div>
-          )}
-
-          {status === "NOT_SELECTABLE" && (
-            <div 
-              className="px-4 py-2 text-white rounded-lg font-semibold font-typographica inline-block"
-              style={{ backgroundColor: '#dc3545' }} // Rojo
-            >
-              ❌ Predio no elegible
-            </div>
-          )}
-
-          {/* Mostrar el botón solo si el usuario es verificador y el estado es PENDING */}
-          {isVerifier && (
-            <>
-              <button
-                className="btn w-full mt-4 px-6 py-3 font-typographica"
-                style={{
-                  backgroundColor: '#6e6c35', // Verde Selva
-                  borderColor: '#6e6c35',
-                  color: 'white'
-                }}
-                onClick={handleVerifyClick}
-                disabled={isLoading || currentStep < 4}
-              >
-                {isLoading ? "Procesando..." : "Verificar"}
-              </button>
-
-              {/* Mensaje de advertencia si el usuario intenta verificar antes del paso 4 */}
-              {currentStep < 4 && (
-                <p className="text-terrasacha-danger text-sm mt-2 font-typographica">
-                  ⚠ Debes completar los pasos anteriores antes llegar al paso 4.
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+      <PropertyVerifyActionBar
+        isVerifier={isVerifier}
+        status={status}
+        isLoading={isLoading}
+        verificationGate={verificationGate}
+        onVerify={handleVerifyClick}
+      />
     </div>
   );
 }

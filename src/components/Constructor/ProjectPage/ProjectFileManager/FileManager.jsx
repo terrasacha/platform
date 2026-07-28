@@ -393,35 +393,43 @@ export default function FileManager(props) {
       <Card.Body>
         <div className="d-flex justify-content-between">
           <nav
-            className="flex  flex-start text-gray-700 py-3"
+            className="flex flex-start text-terrasacha-secondary1 py-3"
             aria-label="Breadcrumb"
           >
             <ol className="inline-flex items-center space-x-1 md:space-x-3">
               {currentPath.map((path, index) => (
                 <li key={index}>
                   <div
-                    className="flex items-center"
-                    href="#"
-                    key={index}
+                    className="flex items-center cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={index === 0 ? "Ir a Inicio" : `Ir a ${path}`}
                     onClick={() => backToAnyFolder(path)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        backToAnyFolder(path);
+                      }
+                    }}
                   >
                     {index !== 0 && (
                       <svg
-                        className="w-6 h-6 text-gray-400"
+                        className="w-6 h-6 text-terrasacha-light"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
                       >
                         <path
                           fillRule="evenodd"
                           d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                          cliprrule="evenodd"
+                          clipRule="evenodd"
                         ></path>
                       </svg>
                     )}
-                    <a className="text-gray-700 hover:text-gray-900 ml-1 md:ml-2 text-sm font-medium">
+                    <span className="text-terrasacha-secondary1 hover:text-terrasacha-primary ml-1 md:ml-2 text-sm font-medium">
                       {index === 0 ? "Inicio" : path}
-                    </a>
+                    </span>
                   </div>
                 </li>
               ))}
@@ -432,18 +440,32 @@ export default function FileManager(props) {
             <UploadFileModal uploadRoute={currentPath.join("/")} />
           </div>
         </div>
-        <table className="w-full">
-          <thead>
+        <table className="w-full border border-terrasacha-light/30 rounded overflow-hidden">
+          <thead className="bg-terrasacha-primary text-white">
             <tr>
-              <th style={{ width: "600px" }}>Nombre</th>
-              <th className="text-center">Tamaño</th>
-              <th className="text-center" style={{ width: "100px" }}>
+              <th className="px-3 py-2 text-left text-xs font-bold uppercase tracking-wider" style={{ width: "600px" }}>
+                Nombre
+              </th>
+              <th className="px-3 py-2 text-center text-xs font-bold uppercase tracking-wider">
+                Tamaño
+              </th>
+              <th
+                className="px-3 py-2 text-center text-xs font-bold uppercase tracking-wider"
+                style={{ width: "100px" }}
+              >
                 Ultima modificación
               </th>
-              <th className="text-center" style={{ width: "100px" }}>
+              <th
+                className="px-3 py-2 text-center text-xs font-bold uppercase tracking-wider"
+                style={{ width: "100px" }}
+              >
                 Subido por
               </th>
-              {userGroup !== 'analyst' && <th className="text-center">Visible</th>}
+              {userGroup !== "analyst" && (
+                <th className="px-3 py-2 text-center text-xs font-bold uppercase tracking-wider">
+                  Visible
+                </th>
+              )}
               <th></th>
             </tr>
           </thead>
@@ -456,7 +478,10 @@ export default function FileManager(props) {
               </tr>
             )} */}
             {currentPath.length > 1 && (
-              <tr className="border-t-[1px] w-full" style={{ height: "3rem" }}>
+              <tr
+                className="border-t border-terrasacha-light/20 hover:bg-terrasacha-light/10 w-full"
+                style={{ height: "3rem" }}
+              >
                 <td
                   onClick={() =>
                     backToAnyFolder(currentPath[currentPath.length - 2])
@@ -480,12 +505,21 @@ export default function FileManager(props) {
                 return (
                   <tr
                     key={index}
-                    className="border-t-[1px]"
+                    className="border-t border-terrasacha-light/20 hover:bg-terrasacha-light/10 even:bg-terrasacha-light/5"
                     style={{ height: "3rem" }}
                   >
                     <td
                       onClick={() => handleClickSelect(folder)}
-                      style={{ cursor: "pointer" }}
+                      className="cursor-pointer text-terrasacha-primary"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Abrir ${folder}`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleClickSelect(folder);
+                        }
+                      }}
                     >
                       <div className="flex items-end">
                         {selectedFolder[folder].type === "folder" ? (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { useAuth } from "context/AuthContext";
 import { usePropertyData } from "context/PropertyDataContext";
@@ -15,6 +15,7 @@ import {
   FaPaperPlane,
   FaComments,
   FaUser,
+  FaLock,
 } from "react-icons/fa";
 
 const roleMapper = {
@@ -38,148 +39,158 @@ export default function PropertyChat() {
   const [availableChatUsers, setAvailableChatUsers] = useState([]);
   const [verifierRole, setVerifierRole] = useState(null);
   const [userVerifiedName, setUserVerifiedName] = useState("");
+  const [userVerifierID, setUserVerifierID] = useState(null);
+  const [userVerifiedID, setUserVerifiedID] = useState(null);
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      // Esperar a que propertyData esté disponible
-      if (!propertyData || !propertyData?.propertyInfo?.id || !user?.id) {
-        console.log("⏳ Esperando propertyData o user...");
+  const loadMessages = useCallback(async () => {
+    if (!propertyData?.propertyInfo?.id || !user?.id) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const chatFeature = propertyData?.propertyFeatures?.find(
+        (feature) => feature.featureID === "GLOBAL_PROPERTY_CHAT"
+      );
+
+      if (!chatFeature) {
+        setVerificationID(null);
+        setUserVerifierID(null);
+        setUserVerifiedID(null);
+        setMessages([]);
+        setLoading(false);
         return;
       }
 
-      try {
-        setLoading(true);
-        console.log("🚀 Iniciando carga de mensajes para property:", propertyData.propertyInfo.id);
+      let propertyVerification = null;
 
-        // Refrescar propertyData para tener los datos más recientes
-        if (refreshPropertyData) {
-          console.log("🔄 Refrescando propertyData...");
-          await refreshPropertyData();
-        }
-
-        // Buscar el feature GLOBAL_PROPERTY_CHAT en propertyData
-        const chatFeature = propertyData?.propertyFeatures?.find(
-          (feature) => feature.featureID === "GLOBAL_PROPERTY_CHAT"
+      if (chatFeature?.verifications?.items?.length > 0) {
+        const existingVerifications = [...chatFeature.verifications.items];
+        existingVerifications.sort(
+          (a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0)
         );
-
-        // Si no existe el feature, no hacer nada - se creará al enviar el primer mensaje
-        if (!chatFeature) {
-          console.log("ℹ️ No hay feature GLOBAL_PROPERTY_CHAT aún. Se creará al enviar el primer mensaje.");
-          setVerificationID(null);
-          setMessages([]);
-          setLoading(false);
-          return;
-        }
-
-        console.log("✅ Feature encontrado en propertyData:", chatFeature.id);
-
-        // Buscar el verification asociado en propertyData
-        let propertyVerification = null;
-
-        if (chatFeature?.verifications?.items && chatFeature.verifications.items.length > 0) {
-          // Si hay múltiples verifications, usar el más antiguo
-          const existingVerifications = [...chatFeature.verifications.items];
-          existingVerifications.sort((a, b) => 
-            new Date(a.createdAt || 0) - new Date(b.createdAt || 0)
-          );
-          propertyVerification = existingVerifications[0];
-          console.log("✅ Verification encontrado en propertyData:", propertyVerification.id);
-          console.log("📋 VerificationComments en verification:", propertyVerification?.verificationComments?.items?.length || 0);
-          
-          // Log de los comentarios si existen
-          if (propertyVerification?.verificationComments?.items?.length > 0) {
-            console.log("📝 Comentarios encontrados en verification:", propertyVerification.verificationComments.items.map(c => ({
-              id: c.id,
-              comment: c.comment?.substring(0, 30),
-              isCommentByVerifier: c.isCommentByVerifier
-            })));
-          }
-        }
-
-        // NO crear verification aquí - se creará al enviar el primer mensaje
-        if (!propertyVerification) {
-          console.log("ℹ️ No hay Verification aún. Se creará al enviar el primer mensaje.");
-          setVerificationID(null);
-          setMessages([]);
-          setLoading(false);
-          return;
-        }
-
-        setVerificationID(propertyVerification.id);
-        setUserVerifiedName(propertyVerification?.userVerified?.name || "");
-
-        // Cargar mensajes desde verificationComments del verification en propertyData
-        let sortedMessages = [];
-        
-        if (propertyVerification?.verificationComments?.items && propertyVerification.verificationComments.items.length > 0) {
-          console.log("✅ Usando verificationComments del verification en propertyData");
-          const directComments = propertyVerification.verificationComments.items || [];
-          console.log("📝 Comentarios encontrados:", directComments.length);
-          
-          sortedMessages = directComments
-            .map((comment, idx) => {
-              // Generar ID único si no existe
-              const commentId = comment.id || `comment-${propertyVerification.id}-${idx}-${comment.createdAt || Date.now()}`;
-              return {
-                id: commentId,
-                comment: comment.comment || "",
-                isCommentByVerifier: comment.isCommentByVerifier || false,
-                verificationID: comment.verificationID || propertyVerification.id,
-                createdAt: comment.createdAt || new Date().toISOString(),
-                updatedAt: comment.updatedAt || new Date().toISOString(),
-                userID: propertyVerification.userVerifiedID,
-              };
-            })
-            .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-        } else {
-          console.log("⚠️ No se encontraron comentarios en verificationComments");
-          sortedMessages = [];
-        }
-        
-        console.log("✅ Mensajes procesados y ordenados:", sortedMessages.length);
-        if (sortedMessages.length > 0) {
-          console.log("📋 Primeros mensajes:", sortedMessages.slice(0, 3).map(m => ({ 
-            id: m.id, 
-            comment: m.comment?.substring(0, 50),
-            isCommentByVerifier: m.isCommentByVerifier,
-            createdAt: m.createdAt
-          })));
-        }
-
-        setMessages(sortedMessages);
-
-        // Asignar usuarios disponibles en el chat
-        const projectVerifiers = propertyData?.projectVerifiers || [];
-        const projectPostulant = propertyData?.projectPostulant?.id;
-        const userVerifierId = propertyVerification?.userVerifierID;
-        const userVerifiedId = propertyVerification.userVerifiedID;
-        
-        const allUsers = [
-          ...projectVerifiers,
-          ...(projectPostulant ? [projectPostulant] : []),
-          userVerifierId,
-          userVerifiedId,
-        ].filter(Boolean);
-        
-        setAvailableChatUsers([...new Set(allUsers)]);
-        setVerifierRole(propertyVerification?.userVerifier?.role);
-
-        console.log("✅ Chat inicializado:");
-        console.log("  - VerificationID:", propertyVerification.id);
-        console.log("  - Mensajes:", sortedMessages.length);
-        console.log("  - Usuarios:", [...new Set(allUsers)]);
-      } catch (error) {
-        console.error("❌ Error fetching messages:", error);
-        toast.error("Error al cargar los mensajes");
-      } finally {
-        setLoading(false);
+        propertyVerification = existingVerifications[0];
       }
-    };
 
-    fetchMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propertyData?.propertyInfo?.id, user?.id]);
+      if (!propertyVerification) {
+        setVerificationID(null);
+        setUserVerifierID(null);
+        setUserVerifiedID(null);
+        setMessages([]);
+        setLoading(false);
+        return;
+      }
+
+      setVerificationID(propertyVerification.id);
+      setUserVerifiedName(propertyVerification?.userVerified?.name || "");
+      setUserVerifierID(propertyVerification?.userVerifierID || null);
+      setUserVerifiedID(propertyVerification?.userVerifiedID || null);
+
+      let sortedMessages = [];
+
+      if (propertyVerification?.verificationComments?.items?.length > 0) {
+        sortedMessages = propertyVerification.verificationComments.items
+          .map((comment, idx) => ({
+            id:
+              comment.id ||
+              `comment-${propertyVerification.id}-${idx}-${comment.createdAt || Date.now()}`,
+            comment: comment.comment || "",
+            isCommentByVerifier: comment.isCommentByVerifier || false,
+            verificationID: comment.verificationID || propertyVerification.id,
+            createdAt: comment.createdAt || new Date().toISOString(),
+            updatedAt: comment.updatedAt || new Date().toISOString(),
+            userID: propertyVerification.userVerifiedID,
+          }))
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      }
+
+      setMessages(sortedMessages);
+
+      const projectVerifiers = propertyData?.projectVerifiers || [];
+      const projectPostulant = propertyData?.projectPostulant?.id;
+      const allUsers = [
+        ...projectVerifiers,
+        ...(projectPostulant ? [projectPostulant] : []),
+        propertyVerification?.userVerifierID,
+        propertyVerification.userVerifiedID,
+      ].filter(Boolean);
+
+      setAvailableChatUsers([...new Set(allUsers)]);
+      setVerifierRole(propertyVerification?.userVerifier?.role);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      toast.error("Error al cargar los mensajes");
+    } finally {
+      setLoading(false);
+    }
+  }, [propertyData, user?.id]);
+
+  useEffect(() => {
+    loadMessages();
+  }, [loadMessages]);
+
+  const chatPermission = useMemo(() => {
+    if (!user?.id) {
+      return {
+        canSend: false,
+        reason: "No se pudo identificar al usuario.",
+      };
+    }
+
+    if (!verificationID) {
+      if (user.role === "constructor") {
+        return { canSend: true, reason: null };
+      }
+
+      if (user.role === "validator") {
+        return {
+          canSend: false,
+          reason:
+            "Tu perfil no tiene permisos para enviar mensajes en este chat. Solo el propietario puede iniciar la conversación.",
+        };
+      }
+
+      return {
+        canSend: false,
+        reason:
+          "Tu perfil no tiene permisos para enviar mensajes en este chat.",
+      };
+    }
+
+    const ownerId = userVerifiedID || propertyData?.projectPostulant?.id;
+    const isOwnerParticipant =
+      user.role === "constructor" && user.id === ownerId;
+    const isVerifierParticipant =
+      (user.role === "validator" || user.role === "legal") &&
+      user.id === userVerifierID;
+
+    if (isOwnerParticipant || isVerifierParticipant) {
+      return { canSend: true, reason: null };
+    }
+
+    if (user.role === "validator" || user.role === "legal") {
+      return {
+        canSend: false,
+        reason:
+          "Tu perfil no tiene permisos para enviar mensajes en este chat. Debes estar asignado al predio para participar.",
+      };
+    }
+
+    return {
+      canSend: false,
+      reason:
+        "Tu perfil no tiene permisos para enviar mensajes en este chat.",
+    };
+  }, [
+    user?.id,
+    user?.role,
+    verificationID,
+    userVerifierID,
+    userVerifiedID,
+    propertyData?.projectPostulant?.id,
+  ]);
 
   // Ref para controlar si debe hacer scroll (solo cuando se envía un nuevo mensaje)
   const shouldScrollRef = useRef(false);
@@ -201,6 +212,14 @@ export default function PropertyChat() {
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
+    if (!chatPermission.canSend) {
+      toast.info(
+        chatPermission.reason ||
+          "Tu perfil no tiene permisos para enviar mensajes en este chat."
+      );
+      return;
+    }
+
     if (!user?.id) {
       toast.error("Error: No se pudo identificar al usuario");
       return;
@@ -211,22 +230,19 @@ export default function PropertyChat() {
       return;
     }
 
+    const messageText = newMessage.trim();
+
     try {
       setSending(true);
 
-      // Si no hay verificationID, crear el feature y verification primero
       let currentVerificationID = verificationID;
 
       if (!currentVerificationID) {
-        console.log("🆕 Creando Verification al enviar el primer mensaje");
-        
-        // Buscar o crear el feature GLOBAL_PROPERTY_CHAT
         let chatFeature = propertyData?.propertyFeatures?.find(
           (feature) => feature.featureID === "GLOBAL_PROPERTY_CHAT"
         );
 
         if (!chatFeature) {
-          console.log("🆕 Creando feature GLOBAL_PROPERTY_CHAT");
           const featureInput = {
             propertyID: propertyData.propertyInfo.id,
             featureID: "GLOBAL_PROPERTY_CHAT",
@@ -241,100 +257,120 @@ export default function PropertyChat() {
             graphqlOperation(createPropertyFeature, { input: featureInput })
           );
           chatFeature = featureResp?.data?.createPropertyFeature;
-          
-          // Refrescar propertyData
+
           if (refreshPropertyData) {
             await refreshPropertyData();
           }
         }
 
-        // Crear el Verification
+        const ownerId = propertyData?.projectPostulant?.id || user.id;
         const verificationInput = {
           propertyFeatureID: chatFeature.id,
-          userVerifiedID: user.id,
+          userVerifiedID: ownerId,
         };
 
         const verificationResp = await API.graphql(
           graphqlOperation(createVerification, { input: verificationInput })
         );
         const newVerification = verificationResp?.data?.createVerification;
-        
-        if (!newVerification) {
-          throw new Error("No se pudo crear el Verification");
+
+        if (!newVerification?.id) {
+          throw new Error("No se pudo iniciar el chat del predio");
         }
 
         currentVerificationID = newVerification.id;
         setVerificationID(newVerification.id);
-        
-        // Actualizar usuarios disponibles
+        setUserVerifiedID(ownerId);
+
         const projectVerifiers = propertyData?.projectVerifiers || [];
-        const projectPostulant = propertyData?.projectPostulant?.id;
         const allUsers = [
           ...projectVerifiers,
-          ...(projectPostulant ? [projectPostulant] : []),
+          ownerId,
           user.id,
         ].filter(Boolean);
         setAvailableChatUsers([...new Set(allUsers)]);
 
-        // Refrescar propertyData
         if (refreshPropertyData) {
           await refreshPropertyData();
         }
-
-        console.log("✅ Verification creado:", newVerification.id);
       }
 
       const commentData = {
         verificationID: currentVerificationID,
-        comment: newMessage.trim(),
+        comment: messageText,
         isCommentByVerifier: user.role === "legal" || user.role === "validator",
       };
 
       const propertyID = propertyData?.propertyInfo?.id;
       const propertyName = propertyData?.propertyInfo?.name || "Predio";
-
-      // Determinar el usuario que debe recibir la notificación
       const otherUser = availableChatUsers.find((id) => id !== user.id);
 
-      const notificationData = {
-        userOriginID: user.id,
-        userID: otherUser || "",
-        message: `Tienes un nuevo mensaje en el predio: ${propertyName}`,
-        type:
-          verifierRole === "legal"
-            ? "MESSAGE_LEGAL"
-            : verifierRole === "validator"
-            ? "MESSAGE_VALIDATOR"
-            : "MESSAGE",
-        resourceID: propertyID,
-        isRead: false,
-      };
-
-      await API.graphql(
+      const commentResp = await API.graphql(
         graphqlOperation(createVerificationComment, { input: commentData })
       );
+      const createdComment = commentResp?.data?.createVerificationComment;
+
+      if (!createdComment?.id) {
+        throw new Error("No se pudo guardar el mensaje");
+      }
 
       if (otherUser) {
+        const notificationData = {
+          userOriginID: user.id,
+          userID: otherUser,
+          message: `Tienes un nuevo mensaje en el predio: ${propertyName}`,
+          type:
+            verifierRole === "legal"
+              ? "MESSAGE_LEGAL"
+              : verifierRole === "validator"
+              ? "MESSAGE_VALIDATOR"
+              : "MESSAGE",
+          resourceID: propertyID,
+          isRead: false,
+        };
+
         await API.graphql(
           graphqlOperation(createNotification, { input: notificationData })
         );
       }
 
+      const persistedMessage = {
+        id: createdComment.id,
+        comment: messageText,
+        isCommentByVerifier: commentData.isCommentByVerifier,
+        verificationID: currentVerificationID,
+        createdAt: createdComment.createdAt || new Date().toISOString(),
+        updatedAt: createdComment.updatedAt || new Date().toISOString(),
+      };
+
+      setMessages((prevMessages) => [...prevMessages, persistedMessage]);
       setNewMessage("");
+      shouldScrollRef.current = true;
       toast.success("Mensaje enviado");
 
-      // Marcar que se debe hacer scroll cuando se actualicen los mensajes
-      shouldScrollRef.current = true;
-
-      // Refrescar propertyData para obtener los mensajes actualizados
-      // El useEffect se ejecutará automáticamente cuando propertyData se actualice
       if (refreshPropertyData) {
         await refreshPropertyData();
+        await loadMessages();
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      const errorMessage = error?.errors?.[0]?.message || error?.message || "Error desconocido";
-      toast.error(`Error al enviar el mensaje: ${errorMessage}`);
+      const errorMessage =
+        error?.errors?.[0]?.message || error?.message || "Error desconocido";
+      const normalizedError = errorMessage.toLowerCase();
+
+      if (
+        normalizedError.includes("unauthorized") ||
+        normalizedError.includes("not authorized") ||
+        normalizedError.includes("permission") ||
+        normalizedError.includes("forbidden")
+      ) {
+        toast.error(
+          "No tienes permisos para enviar mensajes en este chat con tu rol actual."
+        );
+        return;
+      }
+
+      toast.error(`No se pudo enviar el mensaje: ${errorMessage}`);
     } finally {
       setSending(false);
     }
@@ -385,6 +421,12 @@ export default function PropertyChat() {
 
   // Permitir usar el chat incluso si no hay verification aún (se creará al enviar el primer mensaje)
 
+  const emptyChatMessage = chatPermission.canSend
+    ? "No hay mensajes aún. ¡Sé el primero en escribir!"
+    : user?.role === "validator"
+    ? "No hay mensajes aún. Podrás ver la conversación cuando participes en el chat asignado a este predio."
+    : "No hay mensajes aún en este chat.";
+
   return (
     <div className="bg-white rounded-xl border border-terrasacha-light/20 shadow-terrasacha flex flex-col h-[600px]">
       {/* Header del chat */}
@@ -402,13 +444,31 @@ export default function PropertyChat() {
         </div>
       </div>
 
+      {!chatPermission.canSend && (
+        <div
+          className="mx-4 mt-4 bg-[#e8d79a]/20 border border-[#e8d79a] rounded-lg p-3"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-start gap-2">
+            <FaLock
+              className="text-[#6e6c35] mt-0.5 flex-shrink-0"
+              aria-hidden="true"
+            />
+            <p className="text-xs sm:text-sm text-[#6e6c35] font-typographica mb-0 opacity-90">
+              {chatPermission.reason}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Mensajes */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <FaComments className="text-6xl text-terrasacha-light mb-4" />
             <p className="text-terrasacha-secondary1 font-typographica">
-              No hay mensajes aún. ¡Sé el primero en escribir!
+              {emptyChatMessage}
             </p>
           </div>
         ) : (
@@ -503,19 +563,34 @@ export default function PropertyChat() {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={(e) => {
+              if (!chatPermission.canSend) return;
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleSendMessage();
               }
             }}
-            placeholder={verificationID ? "Escribe tu mensaje..." : "Escribe tu primer mensaje para iniciar el chat..."}
+            placeholder={
+              chatPermission.canSend
+                ? verificationID
+                  ? "Escribe tu mensaje..."
+                  : "Escribe tu primer mensaje para iniciar el chat..."
+                : "Tu perfil no tiene permisos para enviar mensajes en este chat."
+            }
             rows={2}
-            disabled={sending}
-            className="flex-1 px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={sending || !chatPermission.canSend}
+            aria-disabled={!chatPermission.canSend}
+            className="flex-1 px-3 py-2 border border-terrasacha-light rounded-lg focus:ring-2 focus:ring-terrasacha-primary focus:border-transparent font-typographica resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
           />
           <button
+            type="button"
             onClick={handleSendMessage}
-            disabled={!newMessage.trim() || sending}
+            disabled={!newMessage.trim() || sending || !chatPermission.canSend}
+            title={
+              chatPermission.canSend
+                ? "Enviar mensaje"
+                : chatPermission.reason ||
+                  "Tu perfil no tiene permisos para enviar mensajes en este chat."
+            }
             className="px-4 py-2 bg-terrasacha-primary text-white rounded-lg hover:bg-terrasacha-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 font-typographica"
           >
             <FaPaperPlane />

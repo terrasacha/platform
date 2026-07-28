@@ -46,11 +46,12 @@ const DocumentViewerModal = ({
 
   const viewerScrollRef = useRef(null);
 
-  // Verificar si el usuario tiene rol permitido (legal, administrador o consultor)
-  const isAuthorizedUser = user?.role === "legal" || user?.role === "admon" || user?.role === "validator";
+  // Formularios de revisión legal: solo legal y administrador
+  const canReviewLegalDocs =
+    user?.role === "legal" || user?.role === "admon";
 
   // Determinar si se debe mostrar el panel del formulario (solo para usuarios autorizados y estos tipos de documentos)
-  const showFormPanel = isAuthorizedUser && (documentType === "CERTIFICADO_TRADICION" || documentType === "PLANO_CATASTRAL" || documentType === "ESCRITURA_PUBLICA") && documentId;
+  const showFormPanel = canReviewLegalDocs && (documentType === "CERTIFICADO_TRADICION" || documentType === "PLANO_CATASTRAL" || documentType === "ESCRITURA_PUBLICA") && documentId;
   
   // Determinar qué formulario mostrar
   const showForm = showFormPanel;
